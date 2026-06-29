@@ -20,8 +20,8 @@ from eval.judge_csm import (
 )
 from eval.label_gold import ANCHORS
 from ultra_csm.agent1.slot_b import (
+    JUDGE_MODEL_ID,
     LIVE_MAX_RETRIES,
-    LIVE_SLOT_B_MODEL_ID,
     LIVE_TIMEOUT_S,
     _text_from_message,
 )
@@ -92,7 +92,7 @@ class AnthropicQualityJudge:
 
             client = Anthropic(timeout=LIVE_TIMEOUT_S, max_retries=LIVE_MAX_RETRIES)
         self._client = client
-        self.model_id = model_id or LIVE_SLOT_B_MODEL_ID
+        self.model_id = model_id or JUDGE_MODEL_ID
         self.reasoning = reasoning
         self._system = _system_prompt(reasoning=reasoning)
         # CoT needs room for six short reasons; the terse path stays tight.
