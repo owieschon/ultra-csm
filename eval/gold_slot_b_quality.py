@@ -136,6 +136,19 @@ def read_gold_label_key(path: Path = KEY_PATH) -> tuple[dict, ...]:
     return tuple(records)
 
 
+def _is_human_labeled(record: dict) -> bool:
+    """A record counts toward human-label completion only if a real human labeled it.
+    Provisional/auto pre-labels (labeler contains 'provisional' or 'pending') are a
+    starting point, NOT the human gold the judge is validated against."""
+    human_labels = record.get("human_labels")
+    if not human_labels:
+        return False
+    labeler = (human_labels.get("labeler") or "").lower()
+    if not labeler:
+        return False
+    return "provisional" not in labeler and "pending" not in labeler
+
+
 def gold_label_status(
     path: Path = GOLD_PATH,
     *,
@@ -146,12 +159,15 @@ def gold_label_status(
     key_records = read_gold_label_key(key_path) if key_path.exists() else ()
     invalid = []
     labeled = 0
+    human_labeled = 0
     blindness_errors = _blindness_errors(records)
     key_errors = _key_errors(records, key_records)
     for record in records:
         errors = _label_errors(record)
         if record.get("human_labels") is not None:
-            labeled += 1
+            labeled += 1  # a label is present (may be provisional or invalid)
+        if _is_human_labeled(record):
+            human_labeled += 1  # a real human labeled it — the gold the judge is validated against
         if errors:
             invalid.append(
                 {
@@ -163,12 +179,16 @@ def gold_label_status(
     key_counts = Counter(str(record.get("quality_variant")) for record in key_records)
     unlabeled = len(records) - labeled
     blind = not blindness_errors and not key_errors
+    # Readiness is gated on HUMAN labels, not provisional pre-labels: a judge validated
+    # against provisional (auto) labels would be circular.
+    human_complete = len(records) > 0 and human_labeled == len(records) and not invalid and blind
     return {
         "artifact": "slot_b_quality_gold_status",
         "gold_path": _display_path(path),
         "key_path": _display_path(key_path),
         "total": len(records),
         "labeled": labeled,
+        "human_labeled": human_labeled,
         "unlabeled": unlabeled,
         "key_total": len(key_records),
         "variant_counts": dict(sorted(key_counts.items())),
@@ -176,15 +196,10 @@ def gold_label_status(
         "blindness_errors": blindness_errors,
         "key_errors": key_errors,
         "invalid_records": invalid,
-        "ready_for_judge_validation": (
-            len(records) > 0
-            and unlabeled == 0
-            and not invalid
-            and blind
-        ),
+        "ready_for_judge_validation": human_complete,
         "next_gate": (
             "Validate judge agreement at kappa >= 0.6 per dimension."
-            if len(records) > 0 and unlabeled == 0 and not invalid and blind
+            if human_complete
             else "Fix gold-set blinding before labeling."
             if not blind
             else "Fill human_labels for every record before judge validation."
@@ -192,7 +207,7 @@ def gold_label_status(
         "claim_boundary": {
             "gold_queue_exists": True,
             "gold_queue_blinded": blind,
-            "human_labels_complete": unlabeled == 0 and not invalid and blind,
+            "human_labels_complete": human_complete,
             "judge_validated": False,
             "live_semantic_quality_proven": False,
         },

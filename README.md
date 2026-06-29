@@ -1,79 +1,71 @@
 # Ultra CSM
 
-Ultra CSM is an eval-first customer-success agent proof. The repo is focused on
-one spine: `CustomerDataPlane -> value_model -> ActionGate -> Agent 1 Slot B`.
+**What it is.** An eval-first proof-of-craft for applying AI to Customer Success: a
+deterministic Customer Value Model (the spine) plus a harness that treats the LLM as a
+*measured instrument*, not an oracle. It exists to demonstrate the hard parts of putting an
+agent near real customers — eval frameworks for non-deterministic AI, fail-closed safety, and
+honest claim boundaries — not to be a finished product.
 
-The current agent is a Time-to-Value accelerator. It reads deterministic CRM,
-CS-platform, and product-telemetry fixtures, computes a customer value model,
-projects a TTV priority lens, and emits only gated CSM action proposals.
+One spine: `CustomerDataPlane → value_model → ActionGate → Agent 1 (Slot B)`. The current agent
+is a Time-to-Value accelerator: it reads CRM / CS-platform / product-telemetry data, computes a
+customer value model, projects a TTV priority lens, and emits only **gated, proposal-only** CSM
+actions — it never sends or self-authorizes.
 
-Two things are evaluated separately, and keeping them apart is the point: the
-**deterministic spine** (exact, offline, zero-tolerance regression) and the
-**non-deterministic LLM slot** (a quality judge whose run-to-run noise is measured
-before it is trusted).
+## Quickstart
 
-## Verified state — deterministic spine
-
-- `make scorecard-csm` writes `eval/scorecard_csm.json`. Current: `23/23`, hard gates green.
-- `make regression-csm` compares the deterministic Agent 1 spine against
-  `eval/baseline_csm.json` and writes `eval/regression_csm.json`.
-- `make eval` runs the CSM pytest suite.
-- `make hygiene` scans active CSM surfaces for repo residue.
-
-## Quality eval — the non-deterministic LLM slot
-
-Slot B's `reason`/`customer_draft` output is graded by an LLM quality judge across six
-dimensions (grounding, on-task relevance, account specificity, priority fidelity, tone,
-safety). The harness treats the judge as a measurement instrument and characterizes it
-before trusting it:
-
-- **Blinded gold sets** — a clean corpus plus an adversarial *hard* layer of trap
-  families (fluent-but-wrong, soft-injection-comply, wrong-register, boundary cases),
-  with the answer key held out under opaque ids.
-- **Non-determinism is measured, not assumed** — `eval/determinism_probe.py` runs each
-  case N times and reports the judge's own gate-repeatability and per-dimension noise.
-- **N-run aggregation** (`eval/judge_nrun.py`) — fail-closed on safety, majority vote on
-  the rest, with genuinely indeterminate cases surfaced rather than hidden.
-- **Model and prompt are chosen from evidence**, recorded in `docs/DECISION_LOG.md`.
-
-These lanes are credential-gated (need `ANTHROPIC_API_KEY`) and are not in CI:
-`make judge-agreement-csm` and `make quality-regression-csm`. The judge's noise floor is
-measured and the gate is stabilized by N-run aggregation; human validation against a blind
-second labeler is the next milestone (see `docs/DECISION_LOG.md`) — deliberately not claimed
-until earned.
-
-## Setup
-
-Prerequisites:
-
-- Python 3.10 or newer.
-- PostgreSQL 16 local tooling: `initdb` and `pg_ctl`.
+**Prerequisites:** Python 3.10+ and PostgreSQL 16 client tooling (`initdb`, `pg_ctl`) on `PATH`.
+- macOS: `brew install postgresql@16`, then add `"$(brew --prefix postgresql@16)/bin"` to `PATH`.
+- Ubuntu: `sudo apt-get install -y postgresql-16`.
 
 ```sh
-python -m venv .venv
-.venv/bin/python -m pip install --upgrade pip
-.venv/bin/python -m pip install -e ".[dev]"
-
-make hygiene
-make scorecard-csm
-make regression-csm
-make eval
+make setup          # venv + editable install
+make scorecard-csm  # offline, no secrets → the 23/23 deterministic CSM scorecard
+make eval           # full pytest suite on an ephemeral, auto-torn-down Postgres
+make lint hygiene   # ruff lint + repo-residue scan
 ```
 
-The default proof is offline and credential-free. `make regression-csm-live` is
-credential-gated and exists only for live Slot B drift capture.
+No cloud, no credentials, and no customer data are needed for any of the above. The only
+credentialed lanes are the live quality judge and the live connectors (see below).
 
-## Active Docs
+## What's evaluated — and why they're kept apart
 
-- `docs/ARCHITECTURE.md`
-- `docs/CUSTOMER_VALUE_MODEL.md`
-- `docs/DATA_PLANE.md`
-- `docs/DECISION_LOG.md`
-- `docs/QUALITY_REGRESSION_EVAL_SPEC.md`
-- `docs/NONDETERMINISM_EVAL_HARDENING_SPEC.md`
-- `docs/QUALITY_LABELING_PROTOCOL.md`
-- `docs/OBSERVABILITY.md`
-- `docs/SECURITY.md`
-- `docs/ROCKETLANE_ONBOARDING_CONNECTOR_SPEC.md`
-- `docs/NEXT_DISPATCH.md`
-- `docs/prompts/agent1_slot_b_reason_draft_v1.md`
+- **The deterministic spine** — exact, offline, zero-tolerance regression. Tenant isolation,
+  consent gating, payload-hash binding, and no-authority-minting are enforced in code and proven
+  by tests that fail if you break them.
+- **The non-deterministic LLM slot** — a quality judge whose run-to-run noise is *measured before
+  it is trusted*: blinded adversarial gold sets, an N-run determinism probe, fail-closed N-run
+  aggregation, and evidence-based model/prompt selection (`docs/DECISION_LOG.md`).
+
+A non-deterministic instrument must never own a deterministic gate. That boundary is the point.
+
+## Where it stands (honest status)
+
+| Area | Status |
+|---|---|
+| Deterministic spine | **Proven** — `23/23` scorecard, 150 tests on real Postgres, hard security gates green |
+| LLM quality judge | **Characterized & stabilized**, not yet human-validated (noise measured, gate N-run-stabilized; human labels are the next gate) |
+| Connectors (Salesforce/Gainsight/Rocketlane/Attio) | **Built to the credential boundary**, fixture-tested; not yet run against a live tenant |
+| Data | Curated **fixtures**, not production customer data |
+| Outcome rail, Risk & Expansion lenses | **Designed, not built** |
+
+Nothing here claims production retention or expansion lift. It demonstrates judgment,
+architecture, and measurement discipline — `docs/DECISION_LOG.md` records what is and is not claimed.
+
+## Roadmap (next milestones, in order)
+
+1. **Human-validate the judge** — blind human labels on the hard gold layer plus a second
+   independent labeler to establish the human-agreement ceiling, then report judge-vs-human.
+2. **Drift-power experiment** — show the judge's residual noise floor is below the generation
+   drift it must detect, or scope the "detects quality drift" claim down to what's provable.
+3. **One live vertical, end-to-end** — run a real connector (Attio/Salesforce), close the loop on
+   live data with monitoring and rollback.
+4. **Risk & Expansion lenses** — the two value lenses that move NRR, on the same value model.
+
+The working plan lives in `docs/NEXT_DISPATCH.md`.
+
+## Docs
+
+- **Architecture & data:** `docs/ARCHITECTURE.md`, `docs/CUSTOMER_VALUE_MODEL.md`, `docs/DATA_PLANE.md`
+- **Eval & judge:** `docs/DECISION_LOG.md`, `docs/QUALITY_REGRESSION_EVAL_SPEC.md`, `docs/NONDETERMINISM_EVAL_HARDENING_SPEC.md`, `docs/QUALITY_LABELING_PROTOCOL.md`
+- **Ops & security:** `docs/OBSERVABILITY.md`, `docs/SECURITY.md`
+- **Connectors & roadmap:** `docs/ROCKETLANE_ONBOARDING_CONNECTOR_SPEC.md`, `docs/NEXT_DISPATCH.md`

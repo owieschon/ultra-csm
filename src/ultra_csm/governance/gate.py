@@ -14,15 +14,16 @@ Determinism: the "human" is an injectable `VerdictSource`. `FixtureVerdictSource
 returns a pre-supplied verdict for the offline scored path (no network, no key);
 the live console is a different source over the same tables/state machine.
 
-Composition with Slice 1 (additive — no DomainService signature change): when a
-gated action's `intent == 'confirm_order'`, an APPROVED verdict cast by a
-principal holding `order.confirm` is what the orchestrator turns into the
-code-minted `AuthorizationDecision` that `confirm_order` already requires
-(via the unchanged `issue_confirm_token` / `authorize` path).
+Authority composition (additive): when a gated action's `intent == 'confirm_order'`,
+an APPROVED verdict cast by a principal that holds `order.confirm` authority is what a
+caller turns into a code-minted authorization. The LLM-driven proposal never carries that
+authority itself — the separation-of-duties gate enforces that the agent principal cannot
+mint order-confirm authority through a proposal.
 """
 
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass
 
 from ultra_csm.governance.authorizer import Authorizer, canonical_payload_sha256
@@ -129,7 +130,6 @@ class ActionGate:
         """Emit an action_proposal (status='pending'). payload_sha256 is computed
         at emit and binds the action body until a verdict authorizes it."""
         sha = canonical_payload_sha256(payload)
-        import json as _json
         with session(self._conn, tenant_id=self._tenant_id, actor_id=self._actor,
                      cause_ref=cause_ref, request_id=request_id, turn_id=turn_id,
                      now=self._now) as cur:
@@ -140,7 +140,7 @@ class ActionGate:
                 "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) "
                 "RETURNING proposal_id",
                 (self._tenant_id, self._actor, case_id, intent, action,
-                 _json.dumps(payload), sha, grounding_ref, autonomy_tier,
+                 json.dumps(payload), sha, grounding_ref, autonomy_tier,
                  required_permission, request_id, turn_id),
             )
             proposal_id = str(cur.fetchone()[0])
@@ -175,7 +175,6 @@ class ActionGate:
         new_status = "denied" if v.verdict == "deny" else "approved"
         approved_sha = None if v.verdict == "deny" else eff_sha
 
-        import json as _json
         with session(self._conn, tenant_id=self._tenant_id, actor_id=self._actor,
                      cause_ref=cause_ref, now=self._now) as cur:
             # revise edits the proposal payload + hash atomically with the verdict.
@@ -184,7 +183,7 @@ class ActionGate:
                     "UPDATE action_proposal SET payload = %s, payload_sha256 = %s, "
                     "status = %s, row_version = row_version + 1 "
                     "WHERE proposal_id = %s",
-                    (_json.dumps(eff_payload), eff_sha, new_status,
+                    (json.dumps(eff_payload), eff_sha, new_status,
                      proposal.proposal_id),
                 )
             else:
@@ -198,7 +197,7 @@ class ActionGate:
                 "revised_payload, approved_payload_sha256, rationale, "
                 "human_principal_id) VALUES (%s, %s, %s, %s, %s, %s, %s)",
                 (self._tenant_id, proposal.proposal_id, v.verdict,
-                 _json.dumps(v.revised_payload) if v.revised_payload is not None
+                 json.dumps(v.revised_payload) if v.revised_payload is not None
                  else None, approved_sha, v.rationale, v.human_principal_id),
             )
         return GateOutcome(

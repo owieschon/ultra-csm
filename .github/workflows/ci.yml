@@ -54,6 +54,9 @@ jobs:
           .venv/bin/python --version
           .venv/bin/python -c "import psycopg, ultra_csm; print('ultra-csm import OK')"
 
+      - name: Lint
+        run: make lint
+
       - name: Posture suite
         run: make eval
 
