@@ -27,6 +27,7 @@ SLOT_B_PROMPT_PATH = (
 
 FIXTURE_SLOT_B_MODEL_ID = "fixture-agent1-slot-b-v1"
 LIVE_SLOT_B_MODEL_ID = "claude-opus-4-8"
+JUDGE_MODEL_ID = "claude-sonnet-4-6"
 LIVE_TIMEOUT_S = 30.0
 LIVE_MAX_RETRIES = 2
 LIVE_USD_PER_MTOK_INPUT = 5.00
