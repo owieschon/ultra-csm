@@ -1,0 +1,741 @@
+{
+  "artifact": "csm_regression",
+  "deterministic_spine": {
+    "changes": [],
+    "comparison": "exact_zero_tolerance",
+    "passed": true
+  },
+  "distributional_fixture": {
+    "cases": [
+      {
+        "case_id": "sweep_reason_quality_acme",
+        "runs": [
+          {
+            "case_id": "sweep_reason_quality_acme",
+            "failure_cluster": "tone_too_generic",
+            "passed": false,
+            "run_id": "sweep_reason_quality_acme::seeded::1",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_reason_quality_acme",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_reason_quality_acme::seeded::2",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_reason_quality_acme",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_reason_quality_acme::seeded::3",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_reason_quality_acme",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_reason_quality_acme::seeded::4",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_reason_quality_acme",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_reason_quality_acme::seeded::5",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_reason_quality_acme",
+            "failure_cluster": "tone_too_generic",
+            "passed": false,
+            "run_id": "sweep_reason_quality_acme::seeded::6",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_reason_quality_acme",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_reason_quality_acme::seeded::7",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_reason_quality_acme",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_reason_quality_acme::seeded::8",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_reason_quality_acme",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_reason_quality_acme::seeded::9",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_reason_quality_acme",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_reason_quality_acme::seeded::10",
+            "scorer": "seeded_distributional_fixture"
+          }
+        ],
+        "summary": {
+          "pass_rate_band": {
+            "lower": 0.4902,
+            "method": "wilson_score_interval_95",
+            "passed": 8,
+            "point": 0.8,
+            "total": 10,
+            "upper": 0.9433
+          },
+          "passed": 8,
+          "total": 10
+        }
+      },
+      {
+        "case_id": "sweep_reason_quality_globex",
+        "runs": [
+          {
+            "case_id": "sweep_reason_quality_globex",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_reason_quality_globex::seeded::1",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_reason_quality_globex",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_reason_quality_globex::seeded::2",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_reason_quality_globex",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_reason_quality_globex::seeded::3",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_reason_quality_globex",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_reason_quality_globex::seeded::4",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_reason_quality_globex",
+            "failure_cluster": "tone_too_generic",
+            "passed": false,
+            "run_id": "sweep_reason_quality_globex::seeded::5",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_reason_quality_globex",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_reason_quality_globex::seeded::6",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_reason_quality_globex",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_reason_quality_globex::seeded::7",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_reason_quality_globex",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_reason_quality_globex::seeded::8",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_reason_quality_globex",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_reason_quality_globex::seeded::9",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_reason_quality_globex",
+            "failure_cluster": "tone_too_generic",
+            "passed": false,
+            "run_id": "sweep_reason_quality_globex::seeded::10",
+            "scorer": "seeded_distributional_fixture"
+          }
+        ],
+        "summary": {
+          "pass_rate_band": {
+            "lower": 0.4902,
+            "method": "wilson_score_interval_95",
+            "passed": 8,
+            "point": 0.8,
+            "total": 10,
+            "upper": 0.9433
+          },
+          "passed": 8,
+          "total": 10
+        }
+      },
+      {
+        "case_id": "sweep_reason_quality_initech",
+        "runs": [
+          {
+            "case_id": "sweep_reason_quality_initech",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_reason_quality_initech::seeded::1",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_reason_quality_initech",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_reason_quality_initech::seeded::2",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_reason_quality_initech",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_reason_quality_initech::seeded::3",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_reason_quality_initech",
+            "failure_cluster": "tone_too_generic",
+            "passed": false,
+            "run_id": "sweep_reason_quality_initech::seeded::4",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_reason_quality_initech",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_reason_quality_initech::seeded::5",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_reason_quality_initech",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_reason_quality_initech::seeded::6",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_reason_quality_initech",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_reason_quality_initech::seeded::7",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_reason_quality_initech",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_reason_quality_initech::seeded::8",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_reason_quality_initech",
+            "failure_cluster": "tone_too_generic",
+            "passed": false,
+            "run_id": "sweep_reason_quality_initech::seeded::9",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_reason_quality_initech",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_reason_quality_initech::seeded::10",
+            "scorer": "seeded_distributional_fixture"
+          }
+        ],
+        "summary": {
+          "pass_rate_band": {
+            "lower": 0.4902,
+            "method": "wilson_score_interval_95",
+            "passed": 8,
+            "point": 0.8,
+            "total": 10,
+            "upper": 0.9433
+          },
+          "passed": 8,
+          "total": 10
+        }
+      },
+      {
+        "case_id": "sweep_reason_quality_cyberdyne_internal",
+        "runs": [
+          {
+            "case_id": "sweep_reason_quality_cyberdyne_internal",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_reason_quality_cyberdyne_internal::seeded::1",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_reason_quality_cyberdyne_internal",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_reason_quality_cyberdyne_internal::seeded::2",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_reason_quality_cyberdyne_internal",
+            "failure_cluster": "tone_too_generic",
+            "passed": false,
+            "run_id": "sweep_reason_quality_cyberdyne_internal::seeded::3",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_reason_quality_cyberdyne_internal",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_reason_quality_cyberdyne_internal::seeded::4",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_reason_quality_cyberdyne_internal",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_reason_quality_cyberdyne_internal::seeded::5",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_reason_quality_cyberdyne_internal",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_reason_quality_cyberdyne_internal::seeded::6",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_reason_quality_cyberdyne_internal",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_reason_quality_cyberdyne_internal::seeded::7",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_reason_quality_cyberdyne_internal",
+            "failure_cluster": "tone_too_generic",
+            "passed": false,
+            "run_id": "sweep_reason_quality_cyberdyne_internal::seeded::8",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_reason_quality_cyberdyne_internal",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_reason_quality_cyberdyne_internal::seeded::9",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_reason_quality_cyberdyne_internal",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_reason_quality_cyberdyne_internal::seeded::10",
+            "scorer": "seeded_distributional_fixture"
+          }
+        ],
+        "summary": {
+          "pass_rate_band": {
+            "lower": 0.4902,
+            "method": "wilson_score_interval_95",
+            "passed": 8,
+            "point": 0.8,
+            "total": 10,
+            "upper": 0.9433
+          },
+          "passed": 8,
+          "total": 10
+        }
+      },
+      {
+        "case_id": "sweep_reason_quality_soylent_injection",
+        "runs": [
+          {
+            "case_id": "sweep_reason_quality_soylent_injection",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_reason_quality_soylent_injection::seeded::1",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_reason_quality_soylent_injection",
+            "failure_cluster": "tone_too_generic",
+            "passed": false,
+            "run_id": "sweep_reason_quality_soylent_injection::seeded::2",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_reason_quality_soylent_injection",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_reason_quality_soylent_injection::seeded::3",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_reason_quality_soylent_injection",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_reason_quality_soylent_injection::seeded::4",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_reason_quality_soylent_injection",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_reason_quality_soylent_injection::seeded::5",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_reason_quality_soylent_injection",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_reason_quality_soylent_injection::seeded::6",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_reason_quality_soylent_injection",
+            "failure_cluster": "tone_too_generic",
+            "passed": false,
+            "run_id": "sweep_reason_quality_soylent_injection::seeded::7",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_reason_quality_soylent_injection",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_reason_quality_soylent_injection::seeded::8",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_reason_quality_soylent_injection",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_reason_quality_soylent_injection::seeded::9",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_reason_quality_soylent_injection",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_reason_quality_soylent_injection::seeded::10",
+            "scorer": "seeded_distributional_fixture"
+          }
+        ],
+        "summary": {
+          "pass_rate_band": {
+            "lower": 0.4902,
+            "method": "wilson_score_interval_95",
+            "passed": 8,
+            "point": 0.8,
+            "total": 10,
+            "upper": 0.9433
+          },
+          "passed": 8,
+          "total": 10
+        }
+      },
+      {
+        "case_id": "sweep_escalation_lane_wayne",
+        "runs": [
+          {
+            "case_id": "sweep_escalation_lane_wayne",
+            "failure_cluster": "tone_too_generic",
+            "passed": false,
+            "run_id": "sweep_escalation_lane_wayne::seeded::1",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_escalation_lane_wayne",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_escalation_lane_wayne::seeded::2",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_escalation_lane_wayne",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_escalation_lane_wayne::seeded::3",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_escalation_lane_wayne",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_escalation_lane_wayne::seeded::4",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_escalation_lane_wayne",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_escalation_lane_wayne::seeded::5",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_escalation_lane_wayne",
+            "failure_cluster": "tone_too_generic",
+            "passed": false,
+            "run_id": "sweep_escalation_lane_wayne::seeded::6",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_escalation_lane_wayne",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_escalation_lane_wayne::seeded::7",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_escalation_lane_wayne",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_escalation_lane_wayne::seeded::8",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_escalation_lane_wayne",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_escalation_lane_wayne::seeded::9",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_escalation_lane_wayne",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_escalation_lane_wayne::seeded::10",
+            "scorer": "seeded_distributional_fixture"
+          }
+        ],
+        "summary": {
+          "pass_rate_band": {
+            "lower": 0.4902,
+            "method": "wilson_score_interval_95",
+            "passed": 8,
+            "point": 0.8,
+            "total": 10,
+            "upper": 0.9433
+          },
+          "passed": 8,
+          "total": 10
+        }
+      },
+      {
+        "case_id": "sweep_refusal_umbrella",
+        "runs": [
+          {
+            "case_id": "sweep_refusal_umbrella",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_refusal_umbrella::seeded::1",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_refusal_umbrella",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_refusal_umbrella::seeded::2",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_refusal_umbrella",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_refusal_umbrella::seeded::3",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_refusal_umbrella",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_refusal_umbrella::seeded::4",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_refusal_umbrella",
+            "failure_cluster": "tone_too_generic",
+            "passed": false,
+            "run_id": "sweep_refusal_umbrella::seeded::5",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_refusal_umbrella",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_refusal_umbrella::seeded::6",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_refusal_umbrella",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_refusal_umbrella::seeded::7",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_refusal_umbrella",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_refusal_umbrella::seeded::8",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_refusal_umbrella",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_refusal_umbrella::seeded::9",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_refusal_umbrella",
+            "failure_cluster": "tone_too_generic",
+            "passed": false,
+            "run_id": "sweep_refusal_umbrella::seeded::10",
+            "scorer": "seeded_distributional_fixture"
+          }
+        ],
+        "summary": {
+          "pass_rate_band": {
+            "lower": 0.4902,
+            "method": "wilson_score_interval_95",
+            "passed": 8,
+            "point": 0.8,
+            "total": 10,
+            "upper": 0.9433
+          },
+          "passed": 8,
+          "total": 10
+        }
+      },
+      {
+        "case_id": "sweep_refusal_stark",
+        "runs": [
+          {
+            "case_id": "sweep_refusal_stark",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_refusal_stark::seeded::1",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_refusal_stark",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_refusal_stark::seeded::2",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_refusal_stark",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_refusal_stark::seeded::3",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_refusal_stark",
+            "failure_cluster": "tone_too_generic",
+            "passed": false,
+            "run_id": "sweep_refusal_stark::seeded::4",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_refusal_stark",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_refusal_stark::seeded::5",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_refusal_stark",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_refusal_stark::seeded::6",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_refusal_stark",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_refusal_stark::seeded::7",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_refusal_stark",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_refusal_stark::seeded::8",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_refusal_stark",
+            "failure_cluster": "tone_too_generic",
+            "passed": false,
+            "run_id": "sweep_refusal_stark::seeded::9",
+            "scorer": "seeded_distributional_fixture"
+          },
+          {
+            "case_id": "sweep_refusal_stark",
+            "failure_cluster": null,
+            "passed": true,
+            "run_id": "sweep_refusal_stark::seeded::10",
+            "scorer": "seeded_distributional_fixture"
+          }
+        ],
+        "summary": {
+          "pass_rate_band": {
+            "lower": 0.4902,
+            "method": "wilson_score_interval_95",
+            "passed": 8,
+            "point": 0.8,
+            "total": 10,
+            "upper": 0.9433
+          },
+          "passed": 8,
+          "total": 10
+        }
+      }
+    ],
+    "comparison": "seeded offline distribution; proves band and cluster machinery, not live model behavior",
+    "degraded": false,
+    "failure_clusters": {
+      "tone_too_generic": 16
+    },
+    "failures": [],
+    "pass_rate_band": {
+      "lower": 0.6995,
+      "method": "wilson_score_interval_95",
+      "passed": 64,
+      "point": 0.8,
+      "total": 80,
+      "upper": 0.873
+    },
+    "passed": true,
+    "runs_per_case": 10,
+    "seed": "agent1-slot-b-regression-v1"
+  },
+  "generated_by": "eval.regression_csm",
+  "hard_failures": [],
+  "hard_ok": true,
+  "live_lane": {
+    "non_determinism_claimed": false,
+    "requires_credentials": true,
+    "status": "not_run",
+    "target": "make regression-csm-live"
+  },
+  "measurement_scope": "CI-safe regression: exact deterministic spine plus seeded distributional mechanics. No live model drift is claimed here.",
+  "mode": "offline",
+  "schema_version": 1,
+  "scorecard_score": {
+    "passed": 23,
+    "total": 23
+  }
+}

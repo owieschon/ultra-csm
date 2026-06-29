@@ -1,0 +1,17 @@
+{
+  "totalSize": 2,
+  "done": false,
+  "nextRecordsUrl": "/services/data/v61.0/query/01g000000000001-2000",
+  "records": [
+    {
+      "attributes": {
+        "type": "Account",
+        "url": "/services/data/v61.0/sobjects/Account/001000000000001"
+      },
+      "Id": "001000000000001",
+      "Name": "Acme Logistics",
+      "OwnerId": "005000000000001",
+      "Industry": "Transportation"
+    }
+  ]
+}

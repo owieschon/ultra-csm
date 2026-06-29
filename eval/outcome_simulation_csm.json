@@ -1,0 +1,173 @@
+{
+  "accounts": [
+    "a317f5e7-575e-5879-8256-9082e40ef19f"
+  ],
+  "aggregate": {
+    "claim": "not_real_customer_outcome_evidence",
+    "scenario_count": 2,
+    "synthetic_baseline_mean_days_to_value": 69.5,
+    "synthetic_delta_days": 13.0,
+    "synthetic_improved_mean_days_to_value": 56.5
+  },
+  "artifact": "outcome_simulation_csm",
+  "book_level_projection": {
+    "claim": "synthetic_book_level_projection_not_real_customer_lift",
+    "escalation_count": 1,
+    "internal_review_count": 1,
+    "proposed_action_count": 4,
+    "source": "eval/csm_work_queue.json",
+    "synthetic_projected_ttv_days_saved": 49,
+    "work_item_count": 5
+  },
+  "data_sources": [
+    "Salesforce-mapped CRM fixture",
+    "Gainsight-mapped CS-platform fixture",
+    "Product telemetry fixture"
+  ],
+  "fixture_source": "src/ultra_csm/data_plane/fixtures.py",
+  "generated_by": "eval.outcome_simulation_csm",
+  "label": "synthetic training/eval evidence only; fixture counterfactuals are not real customer outcome evidence",
+  "measurement_scope": "Counterfactual Time-to-Value deltas over deterministic synthetic fixtures. Use this to test eval/training instrumentation only.",
+  "scenarios": [
+    {
+      "account_id": "a317f5e7-575e-5879-8256-9082e40ef19f",
+      "account_name": "Acme Logistics",
+      "achieved_at": null,
+      "baseline_agent_1_behavior": {
+        "estimated_days_to_value": 66,
+        "estimated_value_date": "2026-07-06",
+        "intervention": "CSM notices missed milestone during routine review",
+        "policy": "weekly_manual_review_after_gap"
+      },
+      "days_overdue_as_of_simulation": 6,
+      "evidence": {
+        "adoption_rate": 0.4,
+        "cta_ids": [
+          "d2212e35-9ab1-52ff-af61-7ed49fe36086"
+        ],
+        "entitlement_capabilities": [
+          "core_telematics",
+          "route_optimization",
+          "driver_coaching"
+        ],
+        "health_band": "yellow",
+        "health_drivers": [
+          "activation_gap",
+          "open_high_priority_case"
+        ],
+        "health_score": 62.0,
+        "lifecycle_stage": "onboarding",
+        "open_case_ids": [
+          "b5c73f99-0c4c-5c22-aa2b-bd223774f89c"
+        ],
+        "open_case_subjects": [
+          "Gateway install delayed for remaining assets"
+        ],
+        "opportunity_ids": [
+          "a89ff115-5979-5711-a480-c75e462c0859"
+        ],
+        "success_plan_ids": [
+          "e8171967-d726-5c85-814a-73aaa19dc2cf"
+        ],
+        "underused_capabilities": [
+          "route_optimization",
+          "driver_coaching"
+        ],
+        "usage_metrics": [
+          {
+            "metric_name": "daily_active_assets",
+            "observed_at": "2026-06-20T00:00:00Z",
+            "source_ref": "product-telemetry:daily_active_assets",
+            "unit": "assets",
+            "value": 32.0
+          }
+        ],
+        "usage_signal_ids": [
+          "6dcc1c92-e0fd-5d6f-808f-d2e747f04415"
+        ]
+      },
+      "expected_by": "2026-06-15",
+      "improved_agent_1_behavior": {
+        "estimated_days_to_value": 53,
+        "estimated_value_date": "2026-06-23",
+        "intervention": "Agent 1 surfaces milestone gap with telemetry, entitlement, support, CTA, and success-plan evidence for gated CSM action",
+        "policy": "evidence_triggered_ttv_accelerator"
+      },
+      "milestone": "activate_50_percent_of_assets",
+      "outcome_claim": "synthetic_counterfactual_not_real_customer_lift",
+      "scenario_id": "synthetic_ttv_activate_50_percent_of_assets",
+      "synthetic_delta_days": 13
+    },
+    {
+      "account_id": "a317f5e7-575e-5879-8256-9082e40ef19f",
+      "account_name": "Acme Logistics",
+      "achieved_at": null,
+      "baseline_agent_1_behavior": {
+        "estimated_days_to_value": 73,
+        "estimated_value_date": "2026-07-13",
+        "intervention": "CSM notices missed milestone during routine review",
+        "policy": "weekly_manual_review_after_gap"
+      },
+      "days_overdue_as_of_simulation": 0,
+      "evidence": {
+        "adoption_rate": 0.4,
+        "cta_ids": [
+          "d2212e35-9ab1-52ff-af61-7ed49fe36086"
+        ],
+        "entitlement_capabilities": [
+          "core_telematics",
+          "route_optimization",
+          "driver_coaching"
+        ],
+        "health_band": "yellow",
+        "health_drivers": [
+          "activation_gap",
+          "open_high_priority_case"
+        ],
+        "health_score": 62.0,
+        "lifecycle_stage": "onboarding",
+        "open_case_ids": [
+          "b5c73f99-0c4c-5c22-aa2b-bd223774f89c"
+        ],
+        "open_case_subjects": [
+          "Gateway install delayed for remaining assets"
+        ],
+        "opportunity_ids": [
+          "a89ff115-5979-5711-a480-c75e462c0859"
+        ],
+        "success_plan_ids": [
+          "e8171967-d726-5c85-814a-73aaa19dc2cf"
+        ],
+        "underused_capabilities": [
+          "route_optimization",
+          "driver_coaching"
+        ],
+        "usage_metrics": [
+          {
+            "metric_name": "route_optimization_trips",
+            "observed_at": "2026-06-20T00:00:00Z",
+            "source_ref": "product-telemetry:route_optimization_trips",
+            "unit": "trips",
+            "value": 6.0
+          }
+        ],
+        "usage_signal_ids": [
+          "f3505b98-7444-5eab-9224-a1e3073e75bc"
+        ]
+      },
+      "expected_by": "2026-06-22",
+      "improved_agent_1_behavior": {
+        "estimated_days_to_value": 60,
+        "estimated_value_date": "2026-06-30",
+        "intervention": "Agent 1 surfaces milestone gap with telemetry, entitlement, support, CTA, and success-plan evidence for gated CSM action",
+        "policy": "evidence_triggered_ttv_accelerator"
+      },
+      "milestone": "first_route_optimization_workflow",
+      "outcome_claim": "synthetic_counterfactual_not_real_customer_lift",
+      "scenario_id": "synthetic_ttv_first_route_optimization_workflow",
+      "synthetic_delta_days": 13
+    }
+  ],
+  "schema_version": 1,
+  "simulation_date": "2026-06-21"
+}

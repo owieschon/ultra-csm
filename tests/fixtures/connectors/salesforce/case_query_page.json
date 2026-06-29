@@ -1,0 +1,20 @@
+{
+  "totalSize": 1,
+  "done": true,
+  "records": [
+    {
+      "attributes": {
+        "type": "Case",
+        "url": "/services/data/v61.0/sobjects/Case/500000000000001"
+      },
+      "Id": "500000000000001",
+      "AccountId": "001000000000001",
+      "Status": "New",
+      "Priority": "High",
+      "Origin": "Email",
+      "Subject": "Needs onboarding route setup",
+      "CreatedDate": "2026-06-01T12:00:00.000+0000",
+      "ClosedDate": null
+    }
+  ]
+}

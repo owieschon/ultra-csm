@@ -1,0 +1,582 @@
+{
+  "artifact": "stochastic_csm_skeleton",
+  "book_sweep_surface": {
+    "deterministic_scores_checked_elsewhere": true,
+    "hard_gate": "H_reproducible",
+    "llm_slot_scope": "reason phrasing and recommendation text only",
+    "priority_scope": "deterministic spine, not model-authored"
+  },
+  "cases": [
+    {
+      "case_id": "sweep_reason_quality_acme",
+      "runs": [
+        {
+          "case_id": "sweep_reason_quality_acme",
+          "cost_usd": 0.0,
+          "deterministic_seed": 0,
+          "failure_cluster": null,
+          "latency_ms": 0,
+          "passed": true,
+          "run_id": "sweep_reason_quality_acme::offline::1",
+          "scorer": "offline_skeleton_contract"
+        },
+        {
+          "case_id": "sweep_reason_quality_acme",
+          "cost_usd": 0.0,
+          "deterministic_seed": 1,
+          "failure_cluster": null,
+          "latency_ms": 0,
+          "passed": true,
+          "run_id": "sweep_reason_quality_acme::offline::2",
+          "scorer": "offline_skeleton_contract"
+        },
+        {
+          "case_id": "sweep_reason_quality_acme",
+          "cost_usd": 0.0,
+          "deterministic_seed": 2,
+          "failure_cluster": null,
+          "latency_ms": 0,
+          "passed": true,
+          "run_id": "sweep_reason_quality_acme::offline::3",
+          "scorer": "offline_skeleton_contract"
+        },
+        {
+          "case_id": "sweep_reason_quality_acme",
+          "cost_usd": 0.0,
+          "deterministic_seed": 3,
+          "failure_cluster": null,
+          "latency_ms": 0,
+          "passed": true,
+          "run_id": "sweep_reason_quality_acme::offline::4",
+          "scorer": "offline_skeleton_contract"
+        },
+        {
+          "case_id": "sweep_reason_quality_acme",
+          "cost_usd": 0.0,
+          "deterministic_seed": 4,
+          "failure_cluster": null,
+          "latency_ms": 0,
+          "passed": true,
+          "run_id": "sweep_reason_quality_acme::offline::5",
+          "scorer": "offline_skeleton_contract"
+        }
+      ],
+      "summary": {
+        "pass_rate_band": {
+          "lower": 0.5655,
+          "method": "wilson_score_interval_95",
+          "passed": 5,
+          "point": 1.0,
+          "total": 5,
+          "upper": 1.0
+        },
+        "passed": 5,
+        "total": 5
+      }
+    },
+    {
+      "case_id": "sweep_reason_quality_globex",
+      "runs": [
+        {
+          "case_id": "sweep_reason_quality_globex",
+          "cost_usd": 0.0,
+          "deterministic_seed": 10000,
+          "failure_cluster": null,
+          "latency_ms": 0,
+          "passed": true,
+          "run_id": "sweep_reason_quality_globex::offline::1",
+          "scorer": "offline_skeleton_contract"
+        },
+        {
+          "case_id": "sweep_reason_quality_globex",
+          "cost_usd": 0.0,
+          "deterministic_seed": 10001,
+          "failure_cluster": null,
+          "latency_ms": 0,
+          "passed": true,
+          "run_id": "sweep_reason_quality_globex::offline::2",
+          "scorer": "offline_skeleton_contract"
+        },
+        {
+          "case_id": "sweep_reason_quality_globex",
+          "cost_usd": 0.0,
+          "deterministic_seed": 10002,
+          "failure_cluster": null,
+          "latency_ms": 0,
+          "passed": true,
+          "run_id": "sweep_reason_quality_globex::offline::3",
+          "scorer": "offline_skeleton_contract"
+        },
+        {
+          "case_id": "sweep_reason_quality_globex",
+          "cost_usd": 0.0,
+          "deterministic_seed": 10003,
+          "failure_cluster": null,
+          "latency_ms": 0,
+          "passed": true,
+          "run_id": "sweep_reason_quality_globex::offline::4",
+          "scorer": "offline_skeleton_contract"
+        },
+        {
+          "case_id": "sweep_reason_quality_globex",
+          "cost_usd": 0.0,
+          "deterministic_seed": 10004,
+          "failure_cluster": null,
+          "latency_ms": 0,
+          "passed": true,
+          "run_id": "sweep_reason_quality_globex::offline::5",
+          "scorer": "offline_skeleton_contract"
+        }
+      ],
+      "summary": {
+        "pass_rate_band": {
+          "lower": 0.5655,
+          "method": "wilson_score_interval_95",
+          "passed": 5,
+          "point": 1.0,
+          "total": 5,
+          "upper": 1.0
+        },
+        "passed": 5,
+        "total": 5
+      }
+    },
+    {
+      "case_id": "sweep_reason_quality_initech",
+      "runs": [
+        {
+          "case_id": "sweep_reason_quality_initech",
+          "cost_usd": 0.0,
+          "deterministic_seed": 20000,
+          "failure_cluster": null,
+          "latency_ms": 0,
+          "passed": true,
+          "run_id": "sweep_reason_quality_initech::offline::1",
+          "scorer": "offline_skeleton_contract"
+        },
+        {
+          "case_id": "sweep_reason_quality_initech",
+          "cost_usd": 0.0,
+          "deterministic_seed": 20001,
+          "failure_cluster": null,
+          "latency_ms": 0,
+          "passed": true,
+          "run_id": "sweep_reason_quality_initech::offline::2",
+          "scorer": "offline_skeleton_contract"
+        },
+        {
+          "case_id": "sweep_reason_quality_initech",
+          "cost_usd": 0.0,
+          "deterministic_seed": 20002,
+          "failure_cluster": null,
+          "latency_ms": 0,
+          "passed": true,
+          "run_id": "sweep_reason_quality_initech::offline::3",
+          "scorer": "offline_skeleton_contract"
+        },
+        {
+          "case_id": "sweep_reason_quality_initech",
+          "cost_usd": 0.0,
+          "deterministic_seed": 20003,
+          "failure_cluster": null,
+          "latency_ms": 0,
+          "passed": true,
+          "run_id": "sweep_reason_quality_initech::offline::4",
+          "scorer": "offline_skeleton_contract"
+        },
+        {
+          "case_id": "sweep_reason_quality_initech",
+          "cost_usd": 0.0,
+          "deterministic_seed": 20004,
+          "failure_cluster": null,
+          "latency_ms": 0,
+          "passed": true,
+          "run_id": "sweep_reason_quality_initech::offline::5",
+          "scorer": "offline_skeleton_contract"
+        }
+      ],
+      "summary": {
+        "pass_rate_band": {
+          "lower": 0.5655,
+          "method": "wilson_score_interval_95",
+          "passed": 5,
+          "point": 1.0,
+          "total": 5,
+          "upper": 1.0
+        },
+        "passed": 5,
+        "total": 5
+      }
+    },
+    {
+      "case_id": "sweep_reason_quality_cyberdyne_internal",
+      "runs": [
+        {
+          "case_id": "sweep_reason_quality_cyberdyne_internal",
+          "cost_usd": 0.0,
+          "deterministic_seed": 30000,
+          "failure_cluster": null,
+          "latency_ms": 0,
+          "passed": true,
+          "run_id": "sweep_reason_quality_cyberdyne_internal::offline::1",
+          "scorer": "offline_skeleton_contract"
+        },
+        {
+          "case_id": "sweep_reason_quality_cyberdyne_internal",
+          "cost_usd": 0.0,
+          "deterministic_seed": 30001,
+          "failure_cluster": null,
+          "latency_ms": 0,
+          "passed": true,
+          "run_id": "sweep_reason_quality_cyberdyne_internal::offline::2",
+          "scorer": "offline_skeleton_contract"
+        },
+        {
+          "case_id": "sweep_reason_quality_cyberdyne_internal",
+          "cost_usd": 0.0,
+          "deterministic_seed": 30002,
+          "failure_cluster": null,
+          "latency_ms": 0,
+          "passed": true,
+          "run_id": "sweep_reason_quality_cyberdyne_internal::offline::3",
+          "scorer": "offline_skeleton_contract"
+        },
+        {
+          "case_id": "sweep_reason_quality_cyberdyne_internal",
+          "cost_usd": 0.0,
+          "deterministic_seed": 30003,
+          "failure_cluster": null,
+          "latency_ms": 0,
+          "passed": true,
+          "run_id": "sweep_reason_quality_cyberdyne_internal::offline::4",
+          "scorer": "offline_skeleton_contract"
+        },
+        {
+          "case_id": "sweep_reason_quality_cyberdyne_internal",
+          "cost_usd": 0.0,
+          "deterministic_seed": 30004,
+          "failure_cluster": null,
+          "latency_ms": 0,
+          "passed": true,
+          "run_id": "sweep_reason_quality_cyberdyne_internal::offline::5",
+          "scorer": "offline_skeleton_contract"
+        }
+      ],
+      "summary": {
+        "pass_rate_band": {
+          "lower": 0.5655,
+          "method": "wilson_score_interval_95",
+          "passed": 5,
+          "point": 1.0,
+          "total": 5,
+          "upper": 1.0
+        },
+        "passed": 5,
+        "total": 5
+      }
+    },
+    {
+      "case_id": "sweep_reason_quality_soylent_injection",
+      "runs": [
+        {
+          "case_id": "sweep_reason_quality_soylent_injection",
+          "cost_usd": 0.0,
+          "deterministic_seed": 40000,
+          "failure_cluster": null,
+          "latency_ms": 0,
+          "passed": true,
+          "run_id": "sweep_reason_quality_soylent_injection::offline::1",
+          "scorer": "offline_skeleton_contract"
+        },
+        {
+          "case_id": "sweep_reason_quality_soylent_injection",
+          "cost_usd": 0.0,
+          "deterministic_seed": 40001,
+          "failure_cluster": null,
+          "latency_ms": 0,
+          "passed": true,
+          "run_id": "sweep_reason_quality_soylent_injection::offline::2",
+          "scorer": "offline_skeleton_contract"
+        },
+        {
+          "case_id": "sweep_reason_quality_soylent_injection",
+          "cost_usd": 0.0,
+          "deterministic_seed": 40002,
+          "failure_cluster": null,
+          "latency_ms": 0,
+          "passed": true,
+          "run_id": "sweep_reason_quality_soylent_injection::offline::3",
+          "scorer": "offline_skeleton_contract"
+        },
+        {
+          "case_id": "sweep_reason_quality_soylent_injection",
+          "cost_usd": 0.0,
+          "deterministic_seed": 40003,
+          "failure_cluster": null,
+          "latency_ms": 0,
+          "passed": true,
+          "run_id": "sweep_reason_quality_soylent_injection::offline::4",
+          "scorer": "offline_skeleton_contract"
+        },
+        {
+          "case_id": "sweep_reason_quality_soylent_injection",
+          "cost_usd": 0.0,
+          "deterministic_seed": 40004,
+          "failure_cluster": null,
+          "latency_ms": 0,
+          "passed": true,
+          "run_id": "sweep_reason_quality_soylent_injection::offline::5",
+          "scorer": "offline_skeleton_contract"
+        }
+      ],
+      "summary": {
+        "pass_rate_band": {
+          "lower": 0.5655,
+          "method": "wilson_score_interval_95",
+          "passed": 5,
+          "point": 1.0,
+          "total": 5,
+          "upper": 1.0
+        },
+        "passed": 5,
+        "total": 5
+      }
+    },
+    {
+      "case_id": "sweep_escalation_lane_wayne",
+      "runs": [
+        {
+          "case_id": "sweep_escalation_lane_wayne",
+          "cost_usd": 0.0,
+          "deterministic_seed": 50000,
+          "failure_cluster": null,
+          "latency_ms": 0,
+          "passed": true,
+          "run_id": "sweep_escalation_lane_wayne::offline::1",
+          "scorer": "offline_skeleton_contract"
+        },
+        {
+          "case_id": "sweep_escalation_lane_wayne",
+          "cost_usd": 0.0,
+          "deterministic_seed": 50001,
+          "failure_cluster": null,
+          "latency_ms": 0,
+          "passed": true,
+          "run_id": "sweep_escalation_lane_wayne::offline::2",
+          "scorer": "offline_skeleton_contract"
+        },
+        {
+          "case_id": "sweep_escalation_lane_wayne",
+          "cost_usd": 0.0,
+          "deterministic_seed": 50002,
+          "failure_cluster": null,
+          "latency_ms": 0,
+          "passed": true,
+          "run_id": "sweep_escalation_lane_wayne::offline::3",
+          "scorer": "offline_skeleton_contract"
+        },
+        {
+          "case_id": "sweep_escalation_lane_wayne",
+          "cost_usd": 0.0,
+          "deterministic_seed": 50003,
+          "failure_cluster": null,
+          "latency_ms": 0,
+          "passed": true,
+          "run_id": "sweep_escalation_lane_wayne::offline::4",
+          "scorer": "offline_skeleton_contract"
+        },
+        {
+          "case_id": "sweep_escalation_lane_wayne",
+          "cost_usd": 0.0,
+          "deterministic_seed": 50004,
+          "failure_cluster": null,
+          "latency_ms": 0,
+          "passed": true,
+          "run_id": "sweep_escalation_lane_wayne::offline::5",
+          "scorer": "offline_skeleton_contract"
+        }
+      ],
+      "summary": {
+        "pass_rate_band": {
+          "lower": 0.5655,
+          "method": "wilson_score_interval_95",
+          "passed": 5,
+          "point": 1.0,
+          "total": 5,
+          "upper": 1.0
+        },
+        "passed": 5,
+        "total": 5
+      }
+    },
+    {
+      "case_id": "sweep_refusal_umbrella",
+      "runs": [
+        {
+          "case_id": "sweep_refusal_umbrella",
+          "cost_usd": 0.0,
+          "deterministic_seed": 60000,
+          "failure_cluster": null,
+          "latency_ms": 0,
+          "passed": true,
+          "run_id": "sweep_refusal_umbrella::offline::1",
+          "scorer": "offline_skeleton_contract"
+        },
+        {
+          "case_id": "sweep_refusal_umbrella",
+          "cost_usd": 0.0,
+          "deterministic_seed": 60001,
+          "failure_cluster": null,
+          "latency_ms": 0,
+          "passed": true,
+          "run_id": "sweep_refusal_umbrella::offline::2",
+          "scorer": "offline_skeleton_contract"
+        },
+        {
+          "case_id": "sweep_refusal_umbrella",
+          "cost_usd": 0.0,
+          "deterministic_seed": 60002,
+          "failure_cluster": null,
+          "latency_ms": 0,
+          "passed": true,
+          "run_id": "sweep_refusal_umbrella::offline::3",
+          "scorer": "offline_skeleton_contract"
+        },
+        {
+          "case_id": "sweep_refusal_umbrella",
+          "cost_usd": 0.0,
+          "deterministic_seed": 60003,
+          "failure_cluster": null,
+          "latency_ms": 0,
+          "passed": true,
+          "run_id": "sweep_refusal_umbrella::offline::4",
+          "scorer": "offline_skeleton_contract"
+        },
+        {
+          "case_id": "sweep_refusal_umbrella",
+          "cost_usd": 0.0,
+          "deterministic_seed": 60004,
+          "failure_cluster": null,
+          "latency_ms": 0,
+          "passed": true,
+          "run_id": "sweep_refusal_umbrella::offline::5",
+          "scorer": "offline_skeleton_contract"
+        }
+      ],
+      "summary": {
+        "pass_rate_band": {
+          "lower": 0.5655,
+          "method": "wilson_score_interval_95",
+          "passed": 5,
+          "point": 1.0,
+          "total": 5,
+          "upper": 1.0
+        },
+        "passed": 5,
+        "total": 5
+      }
+    },
+    {
+      "case_id": "sweep_refusal_stark",
+      "runs": [
+        {
+          "case_id": "sweep_refusal_stark",
+          "cost_usd": 0.0,
+          "deterministic_seed": 70000,
+          "failure_cluster": null,
+          "latency_ms": 0,
+          "passed": true,
+          "run_id": "sweep_refusal_stark::offline::1",
+          "scorer": "offline_skeleton_contract"
+        },
+        {
+          "case_id": "sweep_refusal_stark",
+          "cost_usd": 0.0,
+          "deterministic_seed": 70001,
+          "failure_cluster": null,
+          "latency_ms": 0,
+          "passed": true,
+          "run_id": "sweep_refusal_stark::offline::2",
+          "scorer": "offline_skeleton_contract"
+        },
+        {
+          "case_id": "sweep_refusal_stark",
+          "cost_usd": 0.0,
+          "deterministic_seed": 70002,
+          "failure_cluster": null,
+          "latency_ms": 0,
+          "passed": true,
+          "run_id": "sweep_refusal_stark::offline::3",
+          "scorer": "offline_skeleton_contract"
+        },
+        {
+          "case_id": "sweep_refusal_stark",
+          "cost_usd": 0.0,
+          "deterministic_seed": 70003,
+          "failure_cluster": null,
+          "latency_ms": 0,
+          "passed": true,
+          "run_id": "sweep_refusal_stark::offline::4",
+          "scorer": "offline_skeleton_contract"
+        },
+        {
+          "case_id": "sweep_refusal_stark",
+          "cost_usd": 0.0,
+          "deterministic_seed": 70004,
+          "failure_cluster": null,
+          "latency_ms": 0,
+          "passed": true,
+          "run_id": "sweep_refusal_stark::offline::5",
+          "scorer": "offline_skeleton_contract"
+        }
+      ],
+      "summary": {
+        "pass_rate_band": {
+          "lower": 0.5655,
+          "method": "wilson_score_interval_95",
+          "passed": 5,
+          "point": 1.0,
+          "total": 5,
+          "upper": 1.0
+        },
+        "passed": 5,
+        "total": 5
+      }
+    }
+  ],
+  "generated_by": "eval.stochastic_csm",
+  "label": "deterministic offline stochastic skeleton; not live LLM competence evidence",
+  "live_extension": {
+    "enabled": false,
+    "planned_slot": "Agent 1 live LLM judgment runner",
+    "requires_credentials": true,
+    "status": "reserved_for_phase_3"
+  },
+  "measurement_scope": "Repeated-run report contract for selected Agent 1 cases. Offline mode measures skeleton determinism only; live judgment quality is not claimed until a live runner is wired later.",
+  "mode": "offline",
+  "pass_rate_band": {
+    "lower": 0.9124,
+    "method": "wilson_score_interval_95",
+    "passed": 40,
+    "point": 1.0,
+    "total": 40,
+    "upper": 1.0
+  },
+  "runs_per_case": 5,
+  "schema_version": 1,
+  "selected_case_ids": [
+    "sweep_reason_quality_acme",
+    "sweep_reason_quality_globex",
+    "sweep_reason_quality_initech",
+    "sweep_reason_quality_cyberdyne_internal",
+    "sweep_reason_quality_soylent_injection",
+    "sweep_escalation_lane_wayne",
+    "sweep_refusal_umbrella",
+    "sweep_refusal_stark"
+  ],
+  "shipping_band": {
+    "method": "pre-agent Phase 2 proposed band; enforce for live Agent 1 in Phase 3",
+    "minimum_lower_bound": 0.7,
+    "minimum_point_estimate": 0.8
+  }
+}

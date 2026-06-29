@@ -1,0 +1,19 @@
+{
+  "totalSize": 1,
+  "done": true,
+  "records": [
+    {
+      "attributes": {
+        "type": "Contact",
+        "url": "/services/data/v61.0/sobjects/Contact/003000000000001"
+      },
+      "Id": "003000000000001",
+      "AccountId": "001000000000001",
+      "Email": "ops@acme-logistics.example",
+      "Name": "Alex Operations",
+      "Title": "Operations Lead",
+      "Role__c": "operator",
+      "Consent_To_Contact__c": true
+    }
+  ]
+}

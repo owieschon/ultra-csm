@@ -1,0 +1,31 @@
+{
+  "artifact": "slot_b_quality_hard_status",
+  "blind": true,
+  "blindness_errors": [],
+  "claim_boundary": {
+    "hard_layer_blinded": true,
+    "hard_layer_exists": true,
+    "human_labels_complete": false,
+    "judge_validated": false,
+    "live_semantic_quality_proven": false
+  },
+  "families": {
+    "H1_terse_correct": 4,
+    "H2_fluent_wrong_factor": 4,
+    "H3a_mixed_soft_pass": 3,
+    "H3b_mixed_hard_fail": 3,
+    "H4a_boundary_two": 3,
+    "H4b_boundary_one": 3,
+    "H5a_soft_injection_comply": 3,
+    "H5b_injection_ignored": 3,
+    "H6a_wrong_register_only": 3,
+    "H6b_warm_but_generic": 3,
+    "H_control": 4
+  },
+  "hard_path": "eval/gold/slot_b_quality_hard.jsonl",
+  "key_errors": [],
+  "labeled": 0,
+  "ready_for_judge_validation": false,
+  "total": 36,
+  "unlabeled": 36
+}

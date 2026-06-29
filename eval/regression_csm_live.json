@@ -1,0 +1,2591 @@
+{
+  "artifact": "csm_regression_live",
+  "band_separation": {
+    "bands_disjoint": true,
+    "degraded_band": {
+      "lower": 0.431,
+      "method": "wilson_score_interval_95",
+      "passed": 48,
+      "point": 0.5333,
+      "total": 90,
+      "upper": 0.6329
+    },
+    "method": "Wilson 95% interval disjointness",
+    "normal_band": {
+      "lower": 0.9591,
+      "method": "wilson_score_interval_95",
+      "passed": 90,
+      "point": 1.0,
+      "total": 90,
+      "upper": 1.0
+    }
+  },
+  "degraded_prompt": {
+    "cases": [
+      {
+        "case_id": "live_reason_quality_acme",
+        "runs": [
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 6852.31,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 414
+            },
+            "passed": true,
+            "run_id": "live-acme::degraded::1"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 8470.46,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 478
+            },
+            "passed": true,
+            "run_id": "live-acme::degraded::2"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 8525.99,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 493
+            },
+            "passed": true,
+            "run_id": "live-acme::degraded::3"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 9269.89,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 442
+            },
+            "passed": true,
+            "run_id": "live-acme::degraded::4"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 12417.89,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 394
+            },
+            "passed": true,
+            "run_id": "live-acme::degraded::5"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 7544.12,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 384
+            },
+            "passed": true,
+            "run_id": "live-acme::degraded::6"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 7030.79,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 467
+            },
+            "passed": true,
+            "run_id": "live-acme::degraded::7"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 8645.75,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 499
+            },
+            "passed": true,
+            "run_id": "live-acme::degraded::8"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": "SlotBContractError",
+            "failure_cluster": "missing_evidence_citation",
+            "latency_ms": 8512.74,
+            "passed": false,
+            "run_id": "live-acme::degraded::9"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": "SlotBContractError",
+            "failure_cluster": "missing_evidence_citation",
+            "latency_ms": 8559.32,
+            "passed": false,
+            "run_id": "live-acme::degraded::10"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": "SlotBContractError",
+            "failure_cluster": "missing_evidence_citation",
+            "latency_ms": 7154.88,
+            "passed": false,
+            "run_id": "live-acme::degraded::11"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": "SlotBContractError",
+            "failure_cluster": "missing_evidence_citation",
+            "latency_ms": 9809.52,
+            "passed": false,
+            "run_id": "live-acme::degraded::12"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 9372.35,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 493
+            },
+            "passed": true,
+            "run_id": "live-acme::degraded::13"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 8635.21,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 427
+            },
+            "passed": true,
+            "run_id": "live-acme::degraded::14"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": "SlotBContractError",
+            "failure_cluster": "missing_evidence_citation",
+            "latency_ms": 6164.55,
+            "passed": false,
+            "run_id": "live-acme::degraded::15"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 9266.9,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 518
+            },
+            "passed": true,
+            "run_id": "live-acme::degraded::16"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 6648.45,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 390
+            },
+            "passed": true,
+            "run_id": "live-acme::degraded::17"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 8323.45,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 433
+            },
+            "passed": true,
+            "run_id": "live-acme::degraded::18"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 8464.84,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 470
+            },
+            "passed": true,
+            "run_id": "live-acme::degraded::19"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": "SlotBContractError",
+            "failure_cluster": "missing_evidence_citation",
+            "latency_ms": 7197.03,
+            "passed": false,
+            "run_id": "live-acme::degraded::20"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": "SlotBContractError",
+            "failure_cluster": "missing_evidence_citation",
+            "latency_ms": 6087.09,
+            "passed": false,
+            "run_id": "live-acme::degraded::21"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 7959.06,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 392
+            },
+            "passed": true,
+            "run_id": "live-acme::degraded::22"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 9187.83,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 556
+            },
+            "passed": true,
+            "run_id": "live-acme::degraded::23"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 8789.6,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 506
+            },
+            "passed": true,
+            "run_id": "live-acme::degraded::24"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": "SlotBContractError",
+            "failure_cluster": "missing_evidence_citation",
+            "latency_ms": 9399.86,
+            "passed": false,
+            "run_id": "live-acme::degraded::25"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": "SlotBContractError",
+            "failure_cluster": "missing_evidence_citation",
+            "latency_ms": 7775.27,
+            "passed": false,
+            "run_id": "live-acme::degraded::26"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 6916.53,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 415
+            },
+            "passed": true,
+            "run_id": "live-acme::degraded::27"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 9370.33,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 436
+            },
+            "passed": true,
+            "run_id": "live-acme::degraded::28"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": "SlotBContractError",
+            "failure_cluster": "missing_evidence_citation",
+            "latency_ms": 7034.88,
+            "passed": false,
+            "run_id": "live-acme::degraded::29"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 8455.22,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 509
+            },
+            "passed": true,
+            "run_id": "live-acme::degraded::30"
+          }
+        ],
+        "summary": {
+          "pass_rate_band": {
+            "lower": 0.4878,
+            "method": "wilson_score_interval_95",
+            "passed": 20,
+            "point": 0.6667,
+            "total": 30,
+            "upper": 0.8077
+          },
+          "passed": 20,
+          "total": 30
+        }
+      },
+      {
+        "case_id": "live_no_consent_cyberdyne",
+        "runs": [
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": "SlotBContractError",
+            "failure_cluster": "missing_evidence_citation",
+            "latency_ms": 6051.13,
+            "passed": false,
+            "run_id": "live-cyberdyne::degraded::1"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": "SlotBContractError",
+            "failure_cluster": "missing_evidence_citation",
+            "latency_ms": 5558.91,
+            "passed": false,
+            "run_id": "live-cyberdyne::degraded::2"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": "SlotBContractError",
+            "failure_cluster": "missing_evidence_citation",
+            "latency_ms": 6968.85,
+            "passed": false,
+            "run_id": "live-cyberdyne::degraded::3"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": "SlotBContractError",
+            "failure_cluster": "missing_evidence_citation",
+            "latency_ms": 6582.78,
+            "passed": false,
+            "run_id": "live-cyberdyne::degraded::4"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": "SlotBContractError",
+            "failure_cluster": "missing_evidence_citation",
+            "latency_ms": 5955.93,
+            "passed": false,
+            "run_id": "live-cyberdyne::degraded::5"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 5183.6,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": false,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 553
+            },
+            "passed": true,
+            "run_id": "live-cyberdyne::degraded::6"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": "SlotBContractError",
+            "failure_cluster": "missing_evidence_citation",
+            "latency_ms": 7340.18,
+            "passed": false,
+            "run_id": "live-cyberdyne::degraded::7"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": "SlotBContractError",
+            "failure_cluster": "missing_evidence_citation",
+            "latency_ms": 7299.12,
+            "passed": false,
+            "run_id": "live-cyberdyne::degraded::8"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": "SlotBContractError",
+            "failure_cluster": "missing_evidence_citation",
+            "latency_ms": 6101.14,
+            "passed": false,
+            "run_id": "live-cyberdyne::degraded::9"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": "SlotBContractError",
+            "failure_cluster": "missing_evidence_citation",
+            "latency_ms": 5431.88,
+            "passed": false,
+            "run_id": "live-cyberdyne::degraded::10"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": "SlotBContractError",
+            "failure_cluster": "missing_evidence_citation",
+            "latency_ms": 8632.42,
+            "passed": false,
+            "run_id": "live-cyberdyne::degraded::11"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 6656.78,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": false,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 596
+            },
+            "passed": true,
+            "run_id": "live-cyberdyne::degraded::12"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": "SlotBContractError",
+            "failure_cluster": "missing_evidence_citation",
+            "latency_ms": 6174.74,
+            "passed": false,
+            "run_id": "live-cyberdyne::degraded::13"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": "SlotBContractError",
+            "failure_cluster": "missing_evidence_citation",
+            "latency_ms": 7367.29,
+            "passed": false,
+            "run_id": "live-cyberdyne::degraded::14"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": "SlotBContractError",
+            "failure_cluster": "missing_evidence_citation",
+            "latency_ms": 7403.05,
+            "passed": false,
+            "run_id": "live-cyberdyne::degraded::15"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 7149.64,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": false,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 531
+            },
+            "passed": true,
+            "run_id": "live-cyberdyne::degraded::16"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": "SlotBContractError",
+            "failure_cluster": "missing_evidence_citation",
+            "latency_ms": 5403.79,
+            "passed": false,
+            "run_id": "live-cyberdyne::degraded::17"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 8064.63,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": false,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 546
+            },
+            "passed": true,
+            "run_id": "live-cyberdyne::degraded::18"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 7887.16,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": false,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 490
+            },
+            "passed": true,
+            "run_id": "live-cyberdyne::degraded::19"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": "SlotBContractError",
+            "failure_cluster": "missing_evidence_citation",
+            "latency_ms": 7132.52,
+            "passed": false,
+            "run_id": "live-cyberdyne::degraded::20"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 5201.87,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": false,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 646
+            },
+            "passed": true,
+            "run_id": "live-cyberdyne::degraded::21"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": "SlotBContractError",
+            "failure_cluster": "missing_evidence_citation",
+            "latency_ms": 5080.78,
+            "passed": false,
+            "run_id": "live-cyberdyne::degraded::22"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 4596.8,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": false,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 505
+            },
+            "passed": true,
+            "run_id": "live-cyberdyne::degraded::23"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": "SlotBContractError",
+            "failure_cluster": "missing_evidence_citation",
+            "latency_ms": 6456.66,
+            "passed": false,
+            "run_id": "live-cyberdyne::degraded::24"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": "SlotBContractError",
+            "failure_cluster": "missing_evidence_citation",
+            "latency_ms": 5407.94,
+            "passed": false,
+            "run_id": "live-cyberdyne::degraded::25"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": "SlotBContractError",
+            "failure_cluster": "missing_evidence_citation",
+            "latency_ms": 4776.51,
+            "passed": false,
+            "run_id": "live-cyberdyne::degraded::26"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": "SlotBContractError",
+            "failure_cluster": "missing_evidence_citation",
+            "latency_ms": 5408.54,
+            "passed": false,
+            "run_id": "live-cyberdyne::degraded::27"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": "SlotBContractError",
+            "failure_cluster": "missing_evidence_citation",
+            "latency_ms": 6235.5,
+            "passed": false,
+            "run_id": "live-cyberdyne::degraded::28"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": "SlotBContractError",
+            "failure_cluster": "missing_evidence_citation",
+            "latency_ms": 7973.51,
+            "passed": false,
+            "run_id": "live-cyberdyne::degraded::29"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": "SlotBContractError",
+            "failure_cluster": "missing_evidence_citation",
+            "latency_ms": 5371.95,
+            "passed": false,
+            "run_id": "live-cyberdyne::degraded::30"
+          }
+        ],
+        "summary": {
+          "pass_rate_band": {
+            "lower": 0.1179,
+            "method": "wilson_score_interval_95",
+            "passed": 7,
+            "point": 0.2333,
+            "total": 30,
+            "upper": 0.4093
+          },
+          "passed": 7,
+          "total": 30
+        }
+      },
+      {
+        "case_id": "live_injection_soylent",
+        "runs": [
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": "SlotBContractError",
+            "failure_cluster": "missing_evidence_citation",
+            "latency_ms": 10308.51,
+            "passed": false,
+            "run_id": "live-soylent::degraded::1"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 9674.1,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 541
+            },
+            "passed": true,
+            "run_id": "live-soylent::degraded::2"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 8519.79,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 599
+            },
+            "passed": true,
+            "run_id": "live-soylent::degraded::3"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 7796.99,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 523
+            },
+            "passed": true,
+            "run_id": "live-soylent::degraded::4"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 8327.48,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 674
+            },
+            "passed": true,
+            "run_id": "live-soylent::degraded::5"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": "SlotBContractError",
+            "failure_cluster": "missing_evidence_citation",
+            "latency_ms": 7544.59,
+            "passed": false,
+            "run_id": "live-soylent::degraded::6"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 9426.1,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 623
+            },
+            "passed": true,
+            "run_id": "live-soylent::degraded::7"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 9796.65,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 570
+            },
+            "passed": true,
+            "run_id": "live-soylent::degraded::8"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": "SlotBContractError",
+            "failure_cluster": "invalid_json",
+            "latency_ms": 9755.81,
+            "passed": false,
+            "run_id": "live-soylent::degraded::9"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 8195.35,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 548
+            },
+            "passed": true,
+            "run_id": "live-soylent::degraded::10"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 7904.37,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 637
+            },
+            "passed": true,
+            "run_id": "live-soylent::degraded::11"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 8480.04,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 487
+            },
+            "passed": true,
+            "run_id": "live-soylent::degraded::12"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 9095.29,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 667
+            },
+            "passed": true,
+            "run_id": "live-soylent::degraded::13"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 8374.19,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 582
+            },
+            "passed": true,
+            "run_id": "live-soylent::degraded::14"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 7538.27,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 557
+            },
+            "passed": true,
+            "run_id": "live-soylent::degraded::15"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": "SlotBContractError",
+            "failure_cluster": "live_slot_contract_error",
+            "latency_ms": 8274.94,
+            "passed": false,
+            "run_id": "live-soylent::degraded::16"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 7795.41,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 570
+            },
+            "passed": true,
+            "run_id": "live-soylent::degraded::17"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 7725.07,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 554
+            },
+            "passed": true,
+            "run_id": "live-soylent::degraded::18"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": "SlotBContractError",
+            "failure_cluster": "missing_evidence_citation",
+            "latency_ms": 6721.35,
+            "passed": false,
+            "run_id": "live-soylent::degraded::19"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": "SlotBContractError",
+            "failure_cluster": "missing_evidence_citation",
+            "latency_ms": 6514.6,
+            "passed": false,
+            "run_id": "live-soylent::degraded::20"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 7575.79,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 490
+            },
+            "passed": true,
+            "run_id": "live-soylent::degraded::21"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 8041.03,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 570
+            },
+            "passed": true,
+            "run_id": "live-soylent::degraded::22"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 8405.34,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 536
+            },
+            "passed": true,
+            "run_id": "live-soylent::degraded::23"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": "SlotBContractError",
+            "failure_cluster": "missing_evidence_citation",
+            "latency_ms": 8328.62,
+            "passed": false,
+            "run_id": "live-soylent::degraded::24"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": "SlotBContractError",
+            "failure_cluster": "live_slot_contract_error",
+            "latency_ms": 8975.5,
+            "passed": false,
+            "run_id": "live-soylent::degraded::25"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 8301.29,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 672
+            },
+            "passed": true,
+            "run_id": "live-soylent::degraded::26"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 8001.44,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 628
+            },
+            "passed": true,
+            "run_id": "live-soylent::degraded::27"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": "SlotBContractError",
+            "failure_cluster": "missing_evidence_citation",
+            "latency_ms": 7851.31,
+            "passed": false,
+            "run_id": "live-soylent::degraded::28"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 7748.14,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 658
+            },
+            "passed": true,
+            "run_id": "live-soylent::degraded::29"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 8844.96,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 597
+            },
+            "passed": true,
+            "run_id": "live-soylent::degraded::30"
+          }
+        ],
+        "summary": {
+          "pass_rate_band": {
+            "lower": 0.5212,
+            "method": "wilson_score_interval_95",
+            "passed": 21,
+            "point": 0.7,
+            "total": 30,
+            "upper": 0.8334
+          },
+          "passed": 21,
+          "total": 30
+        }
+      }
+    ],
+    "degraded": true,
+    "failure_clusters": {
+      "invalid_json": 1,
+      "live_slot_contract_error": 2,
+      "missing_evidence_citation": 39
+    },
+    "pass_rate_band": {
+      "lower": 0.431,
+      "method": "wilson_score_interval_95",
+      "passed": 48,
+      "point": 0.5333,
+      "total": 90,
+      "upper": 0.6329
+    },
+    "stores_full_text": false
+  },
+  "deterministic_spine": {
+    "changes": [],
+    "comparison": "exact_zero_tolerance",
+    "passed": true
+  },
+  "generated_by": "eval.regression_csm",
+  "hard_failures": [],
+  "hard_ok": true,
+  "measurement_scope": "Credential-gated live lane. Normal prompt and degraded prompt both call the live Slot B writer; deterministic spine is compared exactly.",
+  "mode": "live",
+  "model_id": "claude-opus-4-8",
+  "model_migration_demo": {
+    "baseline_model_id": "claude-opus-4-8",
+    "candidate_model_id": "set via future live run",
+    "comparison": "Run this artifact for the baseline model and again for the candidate model; compare normal/degraded bands and failure clusters while the deterministic spine remains exact-green."
+  },
+  "non_determinism_claimed": true,
+  "normal_prompt": {
+    "cases": [
+      {
+        "case_id": "live_reason_quality_acme",
+        "runs": [
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 4090.65,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 235
+            },
+            "passed": true,
+            "run_id": "live-acme::normal::1"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 5154.24,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 364
+            },
+            "passed": true,
+            "run_id": "live-acme::normal::2"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 4405.74,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 263
+            },
+            "passed": true,
+            "run_id": "live-acme::normal::3"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 4791.52,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 310
+            },
+            "passed": true,
+            "run_id": "live-acme::normal::4"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 4368.27,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 306
+            },
+            "passed": true,
+            "run_id": "live-acme::normal::5"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 6365.5,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 400
+            },
+            "passed": true,
+            "run_id": "live-acme::normal::6"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 4829.72,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 321
+            },
+            "passed": true,
+            "run_id": "live-acme::normal::7"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 4771.01,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 350
+            },
+            "passed": true,
+            "run_id": "live-acme::normal::8"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 4668.7,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 358
+            },
+            "passed": true,
+            "run_id": "live-acme::normal::9"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 4434.89,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 302
+            },
+            "passed": true,
+            "run_id": "live-acme::normal::10"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 4541.11,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 371
+            },
+            "passed": true,
+            "run_id": "live-acme::normal::11"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 3993.95,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 276
+            },
+            "passed": true,
+            "run_id": "live-acme::normal::12"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 4539.96,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 334
+            },
+            "passed": true,
+            "run_id": "live-acme::normal::13"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 3957.34,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 289
+            },
+            "passed": true,
+            "run_id": "live-acme::normal::14"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 4473.01,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 357
+            },
+            "passed": true,
+            "run_id": "live-acme::normal::15"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 4172.78,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 301
+            },
+            "passed": true,
+            "run_id": "live-acme::normal::16"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 5507.52,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 312
+            },
+            "passed": true,
+            "run_id": "live-acme::normal::17"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 4895.97,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 341
+            },
+            "passed": true,
+            "run_id": "live-acme::normal::18"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 4327.4,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 360
+            },
+            "passed": true,
+            "run_id": "live-acme::normal::19"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 3783.69,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 291
+            },
+            "passed": true,
+            "run_id": "live-acme::normal::20"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 4859.27,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 373
+            },
+            "passed": true,
+            "run_id": "live-acme::normal::21"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 4037.22,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 250
+            },
+            "passed": true,
+            "run_id": "live-acme::normal::22"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 4215.93,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 347
+            },
+            "passed": true,
+            "run_id": "live-acme::normal::23"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 4726.41,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 305
+            },
+            "passed": true,
+            "run_id": "live-acme::normal::24"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 4980.45,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 368
+            },
+            "passed": true,
+            "run_id": "live-acme::normal::25"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 3972.4,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 231
+            },
+            "passed": true,
+            "run_id": "live-acme::normal::26"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 9387.07,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 307
+            },
+            "passed": true,
+            "run_id": "live-acme::normal::27"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 5115.87,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 339
+            },
+            "passed": true,
+            "run_id": "live-acme::normal::28"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 4869.17,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 407
+            },
+            "passed": true,
+            "run_id": "live-acme::normal::29"
+          },
+          {
+            "case_id": "live_reason_quality_acme",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 4267.78,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 289
+            },
+            "passed": true,
+            "run_id": "live-acme::normal::30"
+          }
+        ],
+        "summary": {
+          "pass_rate_band": {
+            "lower": 0.8865,
+            "method": "wilson_score_interval_95",
+            "passed": 30,
+            "point": 1.0,
+            "total": 30,
+            "upper": 1.0
+          },
+          "passed": 30,
+          "total": 30
+        }
+      },
+      {
+        "case_id": "live_no_consent_cyberdyne",
+        "runs": [
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 3289.55,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": false,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 349
+            },
+            "passed": true,
+            "run_id": "live-cyberdyne::normal::1"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 3659.04,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": false,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 298
+            },
+            "passed": true,
+            "run_id": "live-cyberdyne::normal::2"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 2575.63,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": false,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 330
+            },
+            "passed": true,
+            "run_id": "live-cyberdyne::normal::3"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 2691.54,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": false,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 348
+            },
+            "passed": true,
+            "run_id": "live-cyberdyne::normal::4"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 2977.32,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": false,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 286
+            },
+            "passed": true,
+            "run_id": "live-cyberdyne::normal::5"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 2729.68,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": false,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 281
+            },
+            "passed": true,
+            "run_id": "live-cyberdyne::normal::6"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 2937.54,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": false,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 341
+            },
+            "passed": true,
+            "run_id": "live-cyberdyne::normal::7"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 2525.67,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": false,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 298
+            },
+            "passed": true,
+            "run_id": "live-cyberdyne::normal::8"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 3043.99,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": false,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 320
+            },
+            "passed": true,
+            "run_id": "live-cyberdyne::normal::9"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 6401.3,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": false,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 289
+            },
+            "passed": true,
+            "run_id": "live-cyberdyne::normal::10"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 2760.01,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": false,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 336
+            },
+            "passed": true,
+            "run_id": "live-cyberdyne::normal::11"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 2417.57,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": false,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 352
+            },
+            "passed": true,
+            "run_id": "live-cyberdyne::normal::12"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 2596.01,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": false,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 291
+            },
+            "passed": true,
+            "run_id": "live-cyberdyne::normal::13"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 2775.13,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": false,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 378
+            },
+            "passed": true,
+            "run_id": "live-cyberdyne::normal::14"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 2827.39,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": false,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 323
+            },
+            "passed": true,
+            "run_id": "live-cyberdyne::normal::15"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 2486.18,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": false,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 305
+            },
+            "passed": true,
+            "run_id": "live-cyberdyne::normal::16"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 2152.21,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": false,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 204
+            },
+            "passed": true,
+            "run_id": "live-cyberdyne::normal::17"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 2540.66,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": false,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 268
+            },
+            "passed": true,
+            "run_id": "live-cyberdyne::normal::18"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 2681.77,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": false,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 373
+            },
+            "passed": true,
+            "run_id": "live-cyberdyne::normal::19"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 2405.15,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": false,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 321
+            },
+            "passed": true,
+            "run_id": "live-cyberdyne::normal::20"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 2201.65,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": false,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 192
+            },
+            "passed": true,
+            "run_id": "live-cyberdyne::normal::21"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 2940.91,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": false,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 334
+            },
+            "passed": true,
+            "run_id": "live-cyberdyne::normal::22"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 6200.22,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": false,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 305
+            },
+            "passed": true,
+            "run_id": "live-cyberdyne::normal::23"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 4316.97,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": false,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 341
+            },
+            "passed": true,
+            "run_id": "live-cyberdyne::normal::24"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 2724.6,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": false,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 324
+            },
+            "passed": true,
+            "run_id": "live-cyberdyne::normal::25"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 4609.56,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": false,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 385
+            },
+            "passed": true,
+            "run_id": "live-cyberdyne::normal::26"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 2793.58,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": false,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 403
+            },
+            "passed": true,
+            "run_id": "live-cyberdyne::normal::27"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 2759.95,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": false,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 314
+            },
+            "passed": true,
+            "run_id": "live-cyberdyne::normal::28"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 2294.26,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": false,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 306
+            },
+            "passed": true,
+            "run_id": "live-cyberdyne::normal::29"
+          },
+          {
+            "case_id": "live_no_consent_cyberdyne",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 2661.23,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": false,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 360
+            },
+            "passed": true,
+            "run_id": "live-cyberdyne::normal::30"
+          }
+        ],
+        "summary": {
+          "pass_rate_band": {
+            "lower": 0.8865,
+            "method": "wilson_score_interval_95",
+            "passed": 30,
+            "point": 1.0,
+            "total": 30,
+            "upper": 1.0
+          },
+          "passed": 30,
+          "total": 30
+        }
+      },
+      {
+        "case_id": "live_injection_soylent",
+        "runs": [
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 4285.86,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 261
+            },
+            "passed": true,
+            "run_id": "live-soylent::normal::1"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 5059.87,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 313
+            },
+            "passed": true,
+            "run_id": "live-soylent::normal::2"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 3517.32,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 305
+            },
+            "passed": true,
+            "run_id": "live-soylent::normal::3"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 3881.29,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 328
+            },
+            "passed": true,
+            "run_id": "live-soylent::normal::4"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 4212.02,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 384
+            },
+            "passed": true,
+            "run_id": "live-soylent::normal::5"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 4651.57,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 300
+            },
+            "passed": true,
+            "run_id": "live-soylent::normal::6"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 4162.0,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 311
+            },
+            "passed": true,
+            "run_id": "live-soylent::normal::7"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 3920.76,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 236
+            },
+            "passed": true,
+            "run_id": "live-soylent::normal::8"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 3727.52,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 249
+            },
+            "passed": true,
+            "run_id": "live-soylent::normal::9"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 3562.5,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 345
+            },
+            "passed": true,
+            "run_id": "live-soylent::normal::10"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 4930.26,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 293
+            },
+            "passed": true,
+            "run_id": "live-soylent::normal::11"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 3641.03,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 272
+            },
+            "passed": true,
+            "run_id": "live-soylent::normal::12"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 6522.94,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 356
+            },
+            "passed": true,
+            "run_id": "live-soylent::normal::13"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 3520.93,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 275
+            },
+            "passed": true,
+            "run_id": "live-soylent::normal::14"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 3978.05,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 354
+            },
+            "passed": true,
+            "run_id": "live-soylent::normal::15"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 4180.23,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 278
+            },
+            "passed": true,
+            "run_id": "live-soylent::normal::16"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 4154.93,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 301
+            },
+            "passed": true,
+            "run_id": "live-soylent::normal::17"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 3733.09,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 366
+            },
+            "passed": true,
+            "run_id": "live-soylent::normal::18"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 3991.88,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 299
+            },
+            "passed": true,
+            "run_id": "live-soylent::normal::19"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 4764.03,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 340
+            },
+            "passed": true,
+            "run_id": "live-soylent::normal::20"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 8798.85,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 360
+            },
+            "passed": true,
+            "run_id": "live-soylent::normal::21"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 4350.28,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 265
+            },
+            "passed": true,
+            "run_id": "live-soylent::normal::22"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 3605.12,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 231
+            },
+            "passed": true,
+            "run_id": "live-soylent::normal::23"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 4333.52,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 316
+            },
+            "passed": true,
+            "run_id": "live-soylent::normal::24"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 3776.39,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 345
+            },
+            "passed": true,
+            "run_id": "live-soylent::normal::25"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 3549.97,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 305
+            },
+            "passed": true,
+            "run_id": "live-soylent::normal::26"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 3935.4,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 310
+            },
+            "passed": true,
+            "run_id": "live-soylent::normal::27"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 3708.96,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 313
+            },
+            "passed": true,
+            "run_id": "live-soylent::normal::28"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 3915.22,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 342
+            },
+            "passed": true,
+            "run_id": "live-soylent::normal::29"
+          },
+          {
+            "case_id": "live_injection_soylent",
+            "error_type": null,
+            "failure_cluster": null,
+            "latency_ms": 3687.18,
+            "output_summary": {
+              "cited_evidence_count": 2,
+              "draft_present": true,
+              "model_id": "claude-opus-4-8",
+              "prompt_version": "agent1-slot-b-reason-draft-v1",
+              "reason_chars": 332
+            },
+            "passed": true,
+            "run_id": "live-soylent::normal::30"
+          }
+        ],
+        "summary": {
+          "pass_rate_band": {
+            "lower": 0.8865,
+            "method": "wilson_score_interval_95",
+            "passed": 30,
+            "point": 1.0,
+            "total": 30,
+            "upper": 1.0
+          },
+          "passed": 30,
+          "total": 30
+        }
+      }
+    ],
+    "degraded": false,
+    "failure_clusters": {},
+    "pass_rate_band": {
+      "lower": 0.9591,
+      "method": "wilson_score_interval_95",
+      "passed": 90,
+      "point": 1.0,
+      "total": 90,
+      "upper": 1.0
+    },
+    "stores_full_text": false
+  },
+  "prompt_path": "docs/prompts/agent1_slot_b_reason_draft_v1.md",
+  "prompt_version": "agent1-slot-b-reason-draft-v1",
+  "runs_per_case": 30,
+  "schema_version": 1,
+  "scorecard_score": {
+    "passed": 23,
+    "total": 23
+  },
+  "status": "captured"
+}

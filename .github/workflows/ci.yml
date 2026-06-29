@@ -1,0 +1,115 @@
+# CI/CD - Ultra CSM
+#
+# Keep the core gate conservative and clean-checkout friendly:
+#
+#   * eval          - offline pytest posture suite, no secrets.
+#   * scorecard-csm - Agent 1 CSM-native deterministic scorecard, no secrets.
+#   * regression-csm - exact spine + seeded distributional regression, no secrets.
+#   * endor         - optional security lane, separate from offline eval.
+
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  eval:
+    name: eval + CSM scorecard
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out Ultra CSM
+        uses: actions/checkout@v4
+
+      - name: Ensure PostgreSQL 16 binaries on PATH
+        run: |
+          if [ ! -x /usr/lib/postgresql/16/bin/initdb ]; then
+            sudo apt-get update
+            sudo apt-get install -y postgresql-16
+          fi
+          echo "/usr/lib/postgresql/16/bin" >> "$GITHUB_PATH"
+
+      - name: Show Postgres tooling
+        run: |
+          initdb --version
+          pg_ctl --version
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Ultra CSM
+        run: |
+          make setup
+          .venv/bin/python --version
+          .venv/bin/python -c "import psycopg, ultra_csm; print('ultra-csm import OK')"
+
+      - name: Posture suite
+        run: make eval
+
+      - name: Hygiene scan
+        run: make hygiene
+
+      - name: Agent 1 CSM scorecard
+        run: make scorecard-csm
+
+      - name: Agent 1 CSM regression
+        run: make regression-csm
+
+      - name: Upload scorecards
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: scorecards
+          path: |
+            eval/scorecard_csm.json
+            eval/regression_csm.json
+            eval/baseline_csm.json
+          if-no-files-found: warn
+
+  endor:
+    name: endor security scan
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
+      id-token: write
+    env:
+      ENDOR_TOKEN: ${{ secrets.ENDOR_TOKEN }}
+      ENDOR_NAMESPACE: ${{ vars.ENDOR_NAMESPACE }}
+    steps:
+      - name: Skip notice when Endor is not configured
+        if: ${{ env.ENDOR_TOKEN == '' }}
+        run: echo "::notice::ENDOR_TOKEN not set; skipping the Endor security lane."
+
+      - name: Check out Ultra CSM
+        if: ${{ env.ENDOR_TOKEN != '' }}
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Endor scan
+        if: ${{ env.ENDOR_TOKEN != '' }}
+        uses: endorlabs/github-action@main
+        with:
+          namespace: ${{ env.ENDOR_NAMESPACE }}
+          scan_dependencies: true
+          scan_secrets: true
+          scan_sast: true
+          pr: true
+          pr_incremental: true
+          pr_baseline: main
+          enable_pr_comments: true
+          scan_summary_output_type: table
+          github_token: ${{ secrets.GITHUB_TOKEN }}

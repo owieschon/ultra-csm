@@ -1,0 +1,287 @@
+"""Ultra CSM integration contracts.
+
+This module defines the customer-success data plane before any agent logic is
+written. The boundary is intentionally integration-first:
+
+* Salesforce-backed CRM context: account, contact, case, opportunity, activity.
+* Gainsight-backed CS context: company, health score, CTA, success plan,
+  adoption summary.
+* Product telemetry: entitlements and usage signals from the product/telemetry
+  system, which a CS platform may also ingest or summarize.
+
+The contracts are read-mostly and tenant-scoped at construction. Writes are kept
+explicit and idempotent so a future agent can place them behind the existing action
+gate instead of smuggling authority through a connector.
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+from typing import Literal, Protocol
+
+
+ResolutionState = Literal["exactly_one", "ambiguous", "none"]
+LifecycleStage = Literal["onboarding", "adopting", "steady_state", "renewal", "at_risk"]
+CTAStatus = Literal["open", "in_progress", "closed"]
+HealthBand = Literal["green", "yellow", "red", "unknown"]
+SignalGrain = Literal["company", "person", "asset"]
+EvidenceSource = Literal["rocketlane", "telemetry", "cs_platform", "crm"]
+
+
+@dataclass(frozen=True)
+class EvidenceRef:
+    """Pointer to one grounded fact in a source fixture or connector payload."""
+
+    source: EvidenceSource
+    source_id: str
+    field: str
+    observed_at: str
+
+
+@dataclass(frozen=True)
+class AccountResolution:
+    """0/1/many identity resolution. Ambiguous results never auto-pick."""
+
+    state: ResolutionState
+    account_id: str | None
+    candidates: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
+class CRMAccount:
+    """Salesforce Account customer context."""
+
+    account_id: str
+    name: str
+    owner_id: str
+    industry: str | None
+
+
+@dataclass(frozen=True)
+class CRMContact:
+    """Salesforce Contact person context."""
+
+    contact_id: str
+    account_id: str
+    email: str
+    name: str
+    role: str | None
+    title: str | None
+    consent_to_contact: bool
+
+
+@dataclass(frozen=True)
+class CRMCase:
+    """Salesforce Case support context."""
+
+    case_id: str
+    account_id: str
+    status: str
+    priority: str
+    origin: str
+    subject: str
+    created_at: str
+    closed_at: str | None = None
+
+
+@dataclass(frozen=True)
+class CRMOpportunity:
+    """Salesforce Opportunity revenue context."""
+
+    opportunity_id: str
+    account_id: str
+    stage_name: str
+    amount_cents: int
+    close_date: str
+    opportunity_type: str
+
+
+@dataclass(frozen=True)
+class CRMActivity:
+    """CRM activity/timeline write-back shape."""
+
+    activity_id: str
+    account_id: str
+    channel: str
+    direction: str
+    summary: str
+    occurred_at: str
+    idempotency_key: str
+
+
+@dataclass(frozen=True)
+class CSCompany:
+    """Gainsight Company customer-success account context."""
+
+    company_id: str
+    name: str
+    industry: str | None
+    arr_cents: int
+    lifecycle_stage: LifecycleStage
+    status: str
+    original_contract_date: str
+    renewal_date: str
+    csm_owner_id: str
+    current_score: float | None
+
+
+@dataclass(frozen=True)
+class HealthScore:
+    """Gainsight scorecard output."""
+
+    account_id: str
+    score: float
+    band: HealthBand
+    drivers: tuple[str, ...]
+    measured_at: str
+
+
+@dataclass(frozen=True)
+class CTA:
+    """Gainsight CTA work item."""
+
+    cta_id: str
+    account_id: str
+    reason: str
+    priority: str
+    status: CTAStatus
+    due_date: str
+    owner_id: str
+
+
+@dataclass(frozen=True)
+class SuccessPlan:
+    """Gainsight success-plan outcome plan."""
+
+    plan_id: str
+    account_id: str
+    status: str
+    objectives: tuple[str, ...]
+    target_date: str
+
+
+@dataclass(frozen=True)
+class AdoptionSummary:
+    """CS-platform adoption rollup, often derived from product usage data."""
+
+    account_id: str
+    active_users: int
+    licensed_users: int
+    active_assets: int
+    entitled_assets: int
+    adoption_rate: float
+    underused_capabilities: tuple[str, ...]
+    measured_at: str
+
+
+@dataclass(frozen=True)
+class Entitlement:
+    """What the account is entitled to use."""
+
+    account_id: str
+    capability: str
+    entitled_quantity: int
+    unit: str
+    starts_at: str
+    ends_at: str | None = None
+
+
+@dataclass(frozen=True)
+class UsageSignal:
+    """A product-telemetry observation at company/person/asset grain."""
+
+    signal_id: str
+    account_id: str
+    grain: SignalGrain
+    subject_id: str | None
+    metric_name: str
+    value: float
+    unit: str
+    observed_at: str
+    source_ref: str
+
+
+@dataclass(frozen=True)
+class TimeToValueMilestone:
+    """Activation milestone expected during onboarding/adoption."""
+
+    account_id: str
+    milestone: str
+    expected_by: str
+    achieved_at: str | None
+    evidence_signal_ids: tuple[str, ...]
+
+
+def resolve_candidates(account_ids: list[str]) -> AccountResolution:
+    ids = tuple(sorted(set(account_ids)))
+    if len(ids) == 1:
+        return AccountResolution("exactly_one", ids[0], ())
+    if len(ids) > 1:
+        return AccountResolution("ambiguous", None, ids)
+    return AccountResolution("none", None, ())
+
+
+class CRMDataConnector(Protocol):
+    """Salesforce-backed CRM seam. Tenant-bound and fail-closed by implementation."""
+
+    def list_accounts(self, *, tenant_id: str | None = None) -> list[CRMAccount]: ...
+
+    def resolve_account_by_email(self, email: str) -> AccountResolution: ...
+
+    def get_account(self, account_id: str) -> CRMAccount | None: ...
+
+    def list_contacts(self, account_id: str) -> list[CRMContact]: ...
+
+    def list_cases(self, account_id: str) -> list[CRMCase]: ...
+
+    def list_opportunities(self, account_id: str) -> list[CRMOpportunity]: ...
+
+    def log_activity(
+        self,
+        account_id: str,
+        *,
+        channel: str,
+        direction: str,
+        summary: str,
+        idempotency_key: str,
+    ) -> str: ...
+
+
+class CSPlatformConnector(Protocol):
+    """Gainsight-backed customer-success seam."""
+
+    def get_company(self, account_id: str) -> CSCompany | None: ...
+
+    def get_health_score(self, account_id: str) -> HealthScore | None: ...
+
+    def list_ctas(self, account_id: str, *, status: CTAStatus | None = None) -> list[CTA]: ...
+
+    def list_success_plans(self, account_id: str) -> list[SuccessPlan]: ...
+
+    def get_adoption_summary(self, account_id: str) -> AdoptionSummary | None: ...
+
+
+class ProductTelemetryConnector(Protocol):
+    """Product telemetry seam; independent from CRM and CS-platform summaries."""
+
+    def list_entitlements(self, account_id: str) -> list[Entitlement]: ...
+
+    def list_usage_signals(
+        self,
+        account_id: str,
+        *,
+        metric_name: str | None = None,
+        since: str | None = None,
+        until: str | None = None,
+    ) -> list[UsageSignal]: ...
+
+    def list_ttv_milestones(self, account_id: str) -> list[TimeToValueMilestone]: ...
+
+
+@dataclass(frozen=True)
+class CustomerDataPlane:
+    """The three integration seams an Ultra CSM agent consumes."""
+
+    crm: CRMDataConnector
+    cs: CSPlatformConnector
+    telemetry: ProductTelemetryConnector
