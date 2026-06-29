@@ -1,10 +1,10 @@
 # Ultra CSM
 
-**What it is.** An eval-first proof-of-craft for scaling the traditional SaaS Customer Success function with agents: a
+**What it is.** An eval-first functional prototype for scaling the traditional SaaS Customer Success function with agents: a
 deterministic Customer Value Model (the spine) plus a harness that treats the LLM as a
-*measured instrument*, not an oracle. It exists to demonstrate the hard parts of putting an
-agent near real customers — eval frameworks for non-deterministic AI, fail-closed safety, and
-honest claim boundaries — not to be a finished product.
+*measured instrument*, not an oracle. An evolving framework for understanding the hard parts of involving agents
+in customer-facing work (eval frameworks for non-deterministic AI, fail-closed safety, and
+honest claim boundaries), not a finished product.
 
 One spine: `CustomerDataPlane → value_model → ActionGate → Agent 1 (Slot B)`. The current agent
 is a Time-to-Value accelerator: it reads CRM / CS-platform / product-telemetry data, computes a
