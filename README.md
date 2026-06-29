@@ -37,8 +37,10 @@ before trusting it:
 - **Model and prompt are chosen from evidence**, recorded in `docs/DECISION_LOG.md`.
 
 These lanes are credential-gated (need `ANTHROPIC_API_KEY`) and are not in CI:
-`make judge-agreement-csm` and `make quality-regression-csm`. The honest claim today is a
-*characterized and stabilized* judge — not yet a human-validated one. See the decision log.
+`make judge-agreement-csm` and `make quality-regression-csm`. The judge's noise floor is
+measured and the gate is stabilized by N-run aggregation; human validation against a blind
+second labeler is the next milestone (see `docs/DECISION_LOG.md`) — deliberately not claimed
+until earned.
 
 ## Setup
 
