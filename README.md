@@ -84,7 +84,7 @@ architecture, and measurement discipline — `docs/DECISION_LOG.md` records what
    independent labeler to establish the human-agreement ceiling, then report judge-vs-human1-vs-human2.
 2. **Drift-power experiment** — show the judge's residual noise floor is below the generation
    drift it must detect, or scope the "detects quality drift" claim down to what's provable.
-3. **One live vertical, end-to-end** — run a real connector (Attio/Salesforce), close the loop on
+3. **Live verticals, end-to-end** — run real connectors (RocketLane, Gainsight, OTel, Attio/Salesforce), close the loop on
    live data with monitoring and rollback.
 4. **Risk & Expansion lenses** — the two value lenses that move NRR, on the same value model.
 
