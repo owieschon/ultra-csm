@@ -120,6 +120,22 @@ Carries the **causation + leakage** discipline (correlation ≠ causation; selec
 bias; demographics scoped to role/persona, never protected attributes). Deferred behind its
 trip-wire.
 
+### Deferred facet — friction → content planning
+
+A **friction** signal class ("where do customers struggle": support tickets, deflection,
+search-with-no-result, repeated questions; product friction telemetry — error rates, rage-clicks,
+flow drop-off) is distinct from the value rails ("are they getting value"). Per *compute-once*, it
+enters as a **shared-model signal source**, not an Agent 4 input: the per-account enablement play
+(Agent 1/3) reads it as "this account hit X → send the X guide," and Agent 4 reads the same signal
+at population altitude → a prioritized **content plan** (docs/education roadmap) for
+Enablement/Product. Discipline if/when built: (1) classify each pattern as **doc-gap vs
+product-defect vs expectation/sequencing-gap** and route to the right owner — never default to
+"write content"; (2) recommend a plan, never author/publish; (3) close the flywheel with the
+**outcome rail** — each recommendation carries the friction-delta to re-measure (did tickets /
+drop-off for X fall after publishing?), or it is theater. Maps to standard CS-org needs —
+self-serve education programs, and using real-world usage data to drive what changes next.
+**Deferred behind the same trip-wire** — not built until the model + per-account lenses are proven.
+
 ## Grounding — buildable now vs Planned
 
 | Dimension / factor | Source | Status |
