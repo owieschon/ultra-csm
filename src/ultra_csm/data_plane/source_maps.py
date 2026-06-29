@@ -219,8 +219,8 @@ GAINSIGHT_SOURCE_MAPS: dict[str, SourceObjectMap] = {
 PRODUCT_TELEMETRY_SOURCE_MAPS: dict[str, SourceObjectMap] = {
     "UsageSignal": SourceObjectMap(
         vendor="Product telemetry",
-        object_name="Samsara-style fleet telemetry endpoints",
-        docs_url="https://developers.samsara.com/docs/rest-api-overview",
+        object_name="Fleet telemetry / IoT usage endpoints",
+        docs_url="",
         fields={
             "signal_id": SourceField("event/stat id", True),
             "account_id": SourceField("external customer/account join key", False),

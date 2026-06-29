@@ -25,14 +25,11 @@ detection under catastrophic prompt sabotage; it does **not** yet prove semantic
 quality drift. The remaining proof is the realistic quality-regression lane:
 human-validated judge + plausible degradation + candidate model comparison.
 
-Direction set by the owner: **do all three build tracks, then apply** — sequenced below.
+Direction set by the owner: **do all three build tracks** — sequenced below.
 The ruled-out path was shipping with the N=6 soft spot unaddressed; that soft spot is now
 closed for contract/safety drift only. Quality drift stays open until the judge lane lands.
 
-## The roadmap — prove → apply → deepen → apply
-
-Application is woven in at the two points where each screening's story becomes *whole* —
-not deferred to the end.
+## The roadmap — prove → stabilize → deepen
 
 ### Phase 1 — offline, no credentials (complete)
 - **Slice B machinery** — `regression-csm-live --runs N` + the **paired McNemar**
@@ -42,7 +39,7 @@ not deferred to the end.
   hard, no value"). The rail that makes "time-to-*value*" honest. Eval-first, per
   [`CUSTOMER_VALUE_MODEL.md`](CUSTOMER_VALUE_MODEL.md).
 
-### Phase 2 — prove live quality drift, then apply (Samsara)
+### Phase 2 — prove live quality drift
 - **Structural capture:** done at `--runs 30`; `eval/regression_csm_live.json` records
   disjoint Wilson bands, named degraded failure clusters, exact-green deterministic spine,
   and no full generated text. Scope: contract/safety drift, not semantic quality.
@@ -50,22 +47,19 @@ not deferred to the end.
   degradation described in [`QUALITY_REGRESSION_EVAL_SPEC.md`](QUALITY_REGRESSION_EVAL_SPEC.md).
 - **Migration capture:** pending; run the paired McNemar artifact with a candidate model id
   before claiming a model-migration result.
-- **Then apply for the differentiator-led role:** with the non-determinism regression
-  proven on quality, the Samsara story is complete — resume bullet, role bridge, demo path.
-  Do not wait for Phase 3.
+- **Milestone:** non-determinism regression proven on quality — the eval story for live
+  LLM drift detection is complete. Do not wait for Phase 3.
 
-### Phase 3 — deepen + breadth, then apply (Centralize)
+### Phase 3 — deepen + breadth
 - **Rocketlane connector** feeding the model (decide the **account-join**), then a **second
   lens** (Risk or Expansion) over the now-deeper model.
   Spec: [`ROCKETLANE_ONBOARDING_CONNECTOR_SPEC.md`](ROCKETLANE_ONBOARDING_CONNECTOR_SPEC.md).
-- **Then apply for the CS-depth-led role:** with Rocketlane as a pluggable source + the
-  value model + multiple lenses, the source-pluggability story is complete and grounded in
-  the tool that screening uses.
+- **Milestone:** with Rocketlane as a pluggable source + the value model + multiple lenses,
+  the source-pluggability and multi-lens architecture are proven end-to-end.
 
 **Ordering guard:** keep each step an eval-first slice, and **do not start Phase 3 before
-Phases 1–2 are solid** — breadth must build on the stable model + proven differentiator,
-not shifting abstractions. This is what keeps "do all three" from becoming
-breadth-as-procrastination.
+Phases 1–2 are solid** — breadth must build on the stable model + proven eval coverage,
+not shifting abstractions.
 
 ## Discipline (all phases)
 
