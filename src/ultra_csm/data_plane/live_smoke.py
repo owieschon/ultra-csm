@@ -307,7 +307,7 @@ def run_smoke(
         if step.name == "oauth_refresh":
             try:
                 oauth = response.json()
-            except (ValueError, TypeError) as exc:
+            except (ValueError, TypeError):
                 errors.append(f"{step.name}: invalid token response")
                 break
             if not isinstance(oauth, dict) or not isinstance(oauth.get("access_token"), str):

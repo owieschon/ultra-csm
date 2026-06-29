@@ -15,10 +15,18 @@ dependencies = [
 ucsm = "ultra_csm.cli:main"
 
 [project.optional-dependencies]
-dev = ["pytest>=8"]
+dev = ["pytest>=8", "ruff>=0.6"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint.per-file-ignores]
+# pytest fixtures are imported into test modules and used as parameters; ruff reads
+# the parameter as a redefinition of the import (F811). That is the intended idiom.
+"tests/**" = ["F811"]
 
 [tool.pytest.ini_options]
 # pythonpath over editable install: dodges the macOS/3.14 editable .pth hazard

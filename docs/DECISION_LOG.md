@@ -45,6 +45,14 @@ per-case traps + `intended_failing_dimensions`):
 4. **Three `H3a` "false positives" are pending human adjudication, not judge fixes.** The
    judge consistently fails a peppy-hype draft to an at-risk account; the key says pass. The
    key is the suspect. Resolved by a blind human, never by the judge.
+5. **Primary metric is the per-dimension 1-vs-2 confusion (false-pass / false-fail) with
+   Wilson CIs, NOT weighted Cohen's kappa.** This is a deliberate supersession, not a moved
+   goalpost: the original protocol set a kappa >= 0.6/dim bar, but kappa is the wrong
+   instrument for a *binary gate* at n=36 — it is prevalence-distorted (safety is ~always-pass
+   so kappa is trivially high; specificity is paradox-deflated to ~0.2) and its CI (~+-0.25)
+   is wider than the 0.6 line it would test. The current kappa artifact (`judge_agreement.json`)
+   genuinely sits at ~0.19-0.25 and is reported as a CI'd *secondary*, never hidden. The gate
+   the product actually consumes is the confusion-count, which is what we optimize and report.
 
 **Still open (not claimed yet).** Human-validated reference + a second-labeler agreement
 ceiling; the drift-power experiment showing the judge's residual noise floor is below the

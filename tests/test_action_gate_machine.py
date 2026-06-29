@@ -13,10 +13,10 @@ from ultra_csm.governance import (
     PERM_ORDER_CONFIRM,
 )
 
-from tests._govhelpers import (
+from tests._govhelpers import (  # noqa: F401 - gov_conn is a pytest fixture used by injection
     CLOCK,
-    gov_conn,
     T1,
+    gov_conn,
     setup_roster,
 )
 

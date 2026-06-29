@@ -527,7 +527,6 @@ def _live_slot_b_report(
     degraded: bool,
     client_factory,
 ) -> dict[str, Any]:
-    prompt_text = DEGRADED_PROMPT_TEXT if degraded else None
     runs_by_case = []
     for request in _live_slot_b_requests():
         runs = []

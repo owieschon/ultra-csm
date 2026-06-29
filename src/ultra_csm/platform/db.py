@@ -13,7 +13,6 @@ from datetime import datetime
 from pathlib import Path
 
 import psycopg
-from psycopg import sql
 
 # The app.* GUCs the platform recognizes, in the order session() sets them.
 # Only tenant_id + actor_id are mandatory; the rest are optional lineage.

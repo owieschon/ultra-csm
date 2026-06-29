@@ -8,7 +8,7 @@ from types import SimpleNamespace
 import pytest
 
 from eval.judge_csm import QUALITY_DIMENSIONS
-from eval.judge_anthropic import AnthropicQualityJudge, _parse_scores, overall_pass
+from eval.judge_anthropic import AnthropicQualityJudge, _parse_scores
 from eval.run_quality_judge import score_agreement, by_family
 
 
