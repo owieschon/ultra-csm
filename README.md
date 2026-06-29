@@ -1,6 +1,6 @@
 # Ultra CSM
 
-**What it is.** An eval-first proof-of-craft for applying AI to Customer Success: a
+**What it is.** An eval-first proof-of-craft for scaling the traditional SaaS Customer Success function with agents: a
 deterministic Customer Value Model (the spine) plus a harness that treats the LLM as a
 *measured instrument*, not an oracle. It exists to demonstrate the hard parts of putting an
 agent near real customers — eval frameworks for non-deterministic AI, fail-closed safety, and
