@@ -65,7 +65,7 @@ credentialed lanes are the live quality judge and the live connectors (see below
 
 A non-deterministic instrument must never own a deterministic gate. That boundary is the point.
 
-## Where it stands (honest status)
+## Where it stands
 
 | Area | Status |
 |---|---|
@@ -80,8 +80,8 @@ architecture, and measurement discipline — `docs/DECISION_LOG.md` records what
 
 ## Roadmap (next milestones, in order)
 
-1. **Human-validate the judge** — blind human labels on the hard gold layer plus a second
-   independent labeler to establish the human-agreement ceiling, then report judge-vs-human.
+1. **Validate the judge** — blind second
+   independent labeler to establish the human-agreement ceiling, then report judge-vs-human1-vs-human2.
 2. **Drift-power experiment** — show the judge's residual noise floor is below the generation
    drift it must detect, or scope the "detects quality drift" claim down to what's provable.
 3. **One live vertical, end-to-end** — run a real connector (Attio/Salesforce), close the loop on
