@@ -35,6 +35,10 @@ class HttpClient(Protocol):
 
 class UrllibHttpClient:
     def send(self, req: HttpRequest) -> HttpResponse:
+        # Block non-web schemes (e.g. file://) before issuing the request: urllib would
+        # otherwise honor them, turning a misconfigured URL into a local file read.
+        if parse.urlparse(req.url).scheme not in ("https", "http"):
+            raise ValueError(f"refusing non-http(s) request URL: {req.url!r}")
         raw = request.Request(
             req.url,
             data=req.body,
@@ -42,7 +46,7 @@ class UrllibHttpClient:
             method=req.method,
         )
         try:
-            with request.urlopen(raw, timeout=15) as resp:  # noqa: S310 - explicit live smoke path.
+            with request.urlopen(raw, timeout=15) as resp:  # noqa: S310 - scheme-guarded live smoke path.
                 return HttpResponse(
                     status=resp.status,
                     body=resp.read(),
