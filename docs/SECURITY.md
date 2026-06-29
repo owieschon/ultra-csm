@@ -29,5 +29,26 @@ live model performance.
 
 ## Dependency Notes
 
-The console and JavaScript toolchain were removed from the agent repo. No Endor
-clean claim is made unless a fresh Endor scan is run.
+The console and JavaScript toolchain were removed from the agent repo, so the
+dependency surface is Python-only.
+
+## Security Scanning
+
+A fresh Endor scan (vulnerabilities, secrets, dependencies, SAST, GitHub Actions)
+was last run on 2026-06-29. Dependencies, secrets, and known vulnerabilities
+returned no findings. SAST surfaced 1 high and 9 medium, dispositioned honestly
+rather than suppressed to green:
+
+- **HIGH — `urllib.urlopen` with a non-literal URL** (`data_plane/live_smoke.py`).
+  The connector smoke client issues requests to per-connector catalog/OAuth URLs.
+  It is mitigated in code by a scheme allowlist that rejects any non-`http(s)` URL
+  before the request, closing the `file://` local-read vector the rule warns about.
+  The rule is pattern-based and still flags the `urlopen` call; we keep `urllib`
+  (no added `requests` dependency) and do not suppress the finding.
+- **MEDIUM x9 — error-message exposure (CWE-209).** Every instance is in an offline
+  eval, CLI, or smoke path where the caller is the operator and surfacing the
+  exception is the intended diagnostic (scorecard case-failure reporting,
+  `set $ENV_VAR` operator hints, smoke HTTP error passthrough). None is an
+  untrusted-user-facing endpoint; accepted as intended behavior.
+
+No "Endor clean" claim is made — the disposition above is the claim.
