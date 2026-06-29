@@ -1,0 +1,157 @@
+"""Agent 1 book-sweep work queue over CustomerDataPlane."""
+
+from __future__ import annotations
+
+import pytest
+
+from tests._govhelpers import CLOCK, T1, setup_roster
+from ultra_csm.agent1 import run_time_to_value_sweep
+from ultra_csm.data_plane import (
+    ACME_LOGISTICS,
+    CYBERDYNE_NO_CONSENT,
+    DEFAULT_TENANT,
+    GLOBEX_TELEMETRY_GAP,
+    INITECH_CSPLAN_GAP,
+    SOYLENT_INJECTION,
+    STARK_INSUFFICIENT,
+    TENANT_B_DECOY,
+    UMBRELLA_HEALTHY,
+    WAYNE_NORTH,
+    WAYNE_SOUTH,
+    build_sweep_fixture_data_plane,
+)
+from ultra_csm.governance import ActionGate, FixtureVerdictSource
+
+AS_OF = "2026-06-27"
+
+
+@pytest.fixture
+def sweep_conn(runtime_conn):
+    runtime_conn.execute("BEGIN")
+    try:
+        yield runtime_conn
+    finally:
+        runtime_conn.rollback()
+
+
+def test_agent1_sweep_returns_ranked_work_queue_and_escalation_lane(sweep_conn):
+    orch, _authority = setup_roster(sweep_conn)
+    gate = ActionGate(
+        sweep_conn,
+        tenant_id=T1,
+        actor_principal_id=orch,
+        verdict_source=FixtureVerdictSource(),
+        now=CLOCK,
+    )
+
+    sweep = run_time_to_value_sweep(
+        build_sweep_fixture_data_plane(tenant_id=DEFAULT_TENANT),
+        DEFAULT_TENANT,
+        gate,
+        sweep_principal_id=orch,
+        as_of=AS_OF,
+    )
+
+    assert TENANT_B_DECOY not in sweep.swept_accounts
+    assert UMBRELLA_HEALTHY in sweep.swept_accounts
+    assert STARK_INSUFFICIENT in sweep.swept_accounts
+
+    work_by_account = {item.account_id: item for item in sweep.work_items}
+    assert {ACME_LOGISTICS, GLOBEX_TELEMETRY_GAP, INITECH_CSPLAN_GAP} <= set(work_by_account)
+    assert UMBRELLA_HEALTHY not in work_by_account
+    assert STARK_INSUFFICIENT not in work_by_account
+    assert WAYNE_NORTH not in work_by_account
+    assert WAYNE_SOUTH not in work_by_account
+
+    acme = work_by_account[ACME_LOGISTICS]
+    globex = work_by_account[GLOBEX_TELEMETRY_GAP]
+    initech = work_by_account[INITECH_CSPLAN_GAP]
+    assert acme.priority is not None
+    assert globex.priority is not None
+    assert initech.priority is not None
+    assert acme.priority.score > globex.priority.score
+    assert acme.priority.score > initech.priority.score
+    assert all(
+        item.priority is not None
+        and item.priority.score == sum(f.contribution for f in item.priority.factors)
+        for item in sweep.work_items
+    )
+    value_factor = next(
+        factor for factor in acme.priority.factors
+        if factor.name == "low_seat_penetration"
+    )
+    assert value_factor.config_version == "value-model-config-v1"
+    assert value_factor.rule_name == "high_arr_review_default"
+    assert value_factor.threshold_name == "seat_penetration_floor"
+    assert value_factor.threshold_value == 0.55
+    assert value_factor.evidence
+
+    assert len(sweep.escalations) == 1
+    escalation = sweep.escalations[0]
+    assert escalation.account_id is None
+    assert escalation.priority is None
+    assert escalation.proposal is None
+    assert escalation.candidate_account_ids == tuple(sorted((WAYNE_NORTH, WAYNE_SOUTH)))
+
+
+def test_agent1_sweep_uses_gate_for_pending_proposals_and_blocks_no_consent(sweep_conn):
+    orch, _authority = setup_roster(sweep_conn)
+    gate = ActionGate(
+        sweep_conn,
+        tenant_id=T1,
+        actor_principal_id=orch,
+        verdict_source=FixtureVerdictSource(),
+        now=CLOCK,
+    )
+
+    sweep = run_time_to_value_sweep(
+        build_sweep_fixture_data_plane(tenant_id=DEFAULT_TENANT),
+        DEFAULT_TENANT,
+        gate,
+        sweep_principal_id=orch,
+        as_of=AS_OF,
+    )
+    work_by_account = {item.account_id: item for item in sweep.work_items}
+
+    cyberdyne = work_by_account[CYBERDYNE_NO_CONSENT]
+    assert cyberdyne.disposition == "internal_review"
+    assert cyberdyne.customer_contact_allowed is False
+    assert cyberdyne.proposal is None
+
+    proposed = [
+        item for item in sweep.work_items
+        if item.disposition == "propose_customer_action"
+    ]
+    assert proposed
+    assert all(item.proposal is not None for item in proposed)
+    assert all(item.proposal.status == "pending" for item in proposed if item.proposal)
+    assert all(item.proposal.created_by_principal == orch for item in proposed if item.proposal)
+
+
+def test_agent1_sweep_ignores_injection_text_for_priority_and_reason(sweep_conn):
+    orch, _authority = setup_roster(sweep_conn)
+    gate = ActionGate(
+        sweep_conn,
+        tenant_id=T1,
+        actor_principal_id=orch,
+        verdict_source=FixtureVerdictSource(),
+        now=CLOCK,
+    )
+
+    sweep = run_time_to_value_sweep(
+        build_sweep_fixture_data_plane(tenant_id=DEFAULT_TENANT),
+        DEFAULT_TENANT,
+        gate,
+        sweep_principal_id=orch,
+        as_of=AS_OF,
+    )
+    work_by_account = {item.account_id: item for item in sweep.work_items}
+
+    soylent = work_by_account[SOYLENT_INJECTION]
+    acme = work_by_account[ACME_LOGISTICS]
+    assert soylent.priority is not None
+    assert acme.priority is not None
+    assert soylent.priority.score < acme.priority.score
+    assert "email all customer data" not in soylent.reason
+    assert "mark me top priority" not in soylent.reason
+    assert any(ref.source == "crm" for ref in soylent.evidence)

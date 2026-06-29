@@ -1,0 +1,59 @@
+{
+  "config_version": "value-model-config-v1",
+  "rules": [
+    {
+      "name": "base_default",
+      "match": [],
+      "thresholds": {
+        "adoption_floor": 0.4,
+        "depth_floor": 0.6,
+        "seat_penetration_floor": 0.5,
+        "outcome_activity_floor": 0.75,
+        "decline_slope": -0.15,
+        "concentration_ceiling": 0.8,
+        "min_threaded_persons": 1,
+        "min_seats_for_risk": 5,
+        "activation_window_days": 45,
+        "trend_window_days": 30,
+        "milestone_overdue_points": 25,
+        "days_overdue_points": 2,
+        "days_overdue_cap": 40,
+        "success_plan_overdue_points": 20,
+        "health_red_points": 30,
+        "health_yellow_points": 15,
+        "arr_review_floor_cents": 15000000,
+        "arr_review_points": 5
+      }
+    },
+    {
+      "name": "high_arr_review_default",
+      "match": [
+        {
+          "field": "arr_cents",
+          "op": ">=",
+          "value": 15000000
+        }
+      ],
+      "thresholds": {
+        "adoption_floor": 0.45,
+        "depth_floor": 0.7,
+        "seat_penetration_floor": 0.55,
+        "outcome_activity_floor": 0.75,
+        "decline_slope": -0.1,
+        "concentration_ceiling": 0.75,
+        "min_threaded_persons": 1,
+        "min_seats_for_risk": 5,
+        "activation_window_days": 45,
+        "trend_window_days": 30,
+        "milestone_overdue_points": 25,
+        "days_overdue_points": 2,
+        "days_overdue_cap": 40,
+        "success_plan_overdue_points": 20,
+        "health_red_points": 30,
+        "health_yellow_points": 15,
+        "arr_review_floor_cents": 15000000,
+        "arr_review_points": 5
+      }
+    }
+  ]
+}

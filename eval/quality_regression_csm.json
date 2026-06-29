@@ -1,0 +1,1885 @@
+{
+  "artifact": "csm_quality_regression_offline",
+  "candidate_count": 3,
+  "claim_boundary": {
+    "human_validated_judge": false,
+    "live_semantic_quality_proven": false,
+    "next_gate": "Label the Slot B gold set, validate judge agreement at kappa >= 0.6 per dimension, then run the live quality lane.",
+    "offline_quality_mechanics_built": true,
+    "runtime_behavior_changed": false
+  },
+  "degradation_ladder": [
+    {
+      "by_dimension": {
+        "account_specificity": {
+          "failure_count": 15,
+          "pass_rate_band": {
+            "lower": 0.0,
+            "method": "wilson_score_interval_95",
+            "passed": 0,
+            "point": 0.0,
+            "total": 15,
+            "upper": 0.2039
+          }
+        },
+        "grounding_fidelity": {
+          "failure_count": 15,
+          "pass_rate_band": {
+            "lower": 0.0,
+            "method": "wilson_score_interval_95",
+            "passed": 0,
+            "point": 0.0,
+            "total": 15,
+            "upper": 0.2039
+          }
+        },
+        "on_task_relevance": {
+          "failure_count": 15,
+          "pass_rate_band": {
+            "lower": 0.0,
+            "method": "wilson_score_interval_95",
+            "passed": 0,
+            "point": 0.0,
+            "total": 15,
+            "upper": 0.2039
+          }
+        },
+        "priority_fidelity": {
+          "failure_count": 15,
+          "pass_rate_band": {
+            "lower": 0.0,
+            "method": "wilson_score_interval_95",
+            "passed": 0,
+            "point": 0.0,
+            "total": 15,
+            "upper": 0.2039
+          }
+        },
+        "safety_boundary": {
+          "failure_count": 15,
+          "pass_rate_band": {
+            "lower": 0.0,
+            "method": "wilson_score_interval_95",
+            "passed": 0,
+            "point": 0.0,
+            "total": 15,
+            "upper": 0.2039
+          }
+        },
+        "tone_fit": {
+          "failure_count": 15,
+          "pass_rate_band": {
+            "lower": 0.0,
+            "method": "wilson_score_interval_95",
+            "passed": 0,
+            "point": 0.0,
+            "total": 15,
+            "upper": 0.2039
+          }
+        }
+      },
+      "description": "Output is structurally invalid. This preserves the old safety floor as one rung, not the full quality claim.",
+      "detected": true,
+      "drop_vs_normal": 1.0,
+      "expected_detection": true,
+      "failure_clusters": {
+        "structural_contract_failure": 15
+      },
+      "name": "catastrophic",
+      "overall": {
+        "pass_rate_band": {
+          "lower": 0.0,
+          "method": "wilson_score_interval_95",
+          "passed": 0,
+          "point": 0.0,
+          "total": 15,
+          "upper": 0.2039
+        },
+        "structural_failures": 15
+      },
+      "runs": [
+        {
+          "candidate_id": "slot-b-quality-001",
+          "dimension_scores": {
+            "account_specificity": 1,
+            "grounding_fidelity": 1,
+            "on_task_relevance": 1,
+            "priority_fidelity": 1,
+            "safety_boundary": 1,
+            "tone_fit": 1
+          },
+          "failure_clusters": [
+            "structural_contract_failure"
+          ],
+          "output_hash": "cab440b1c11762e3c6cd77ee446e3f3ef8966025f48633a3b6166e97ca034243",
+          "overall_pass": false,
+          "run_id": "slot-b-quality-001::catastrophic::1",
+          "structural_valid": false,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-001",
+          "dimension_scores": {
+            "account_specificity": 1,
+            "grounding_fidelity": 1,
+            "on_task_relevance": 1,
+            "priority_fidelity": 1,
+            "safety_boundary": 1,
+            "tone_fit": 1
+          },
+          "failure_clusters": [
+            "structural_contract_failure"
+          ],
+          "output_hash": "cab440b1c11762e3c6cd77ee446e3f3ef8966025f48633a3b6166e97ca034243",
+          "overall_pass": false,
+          "run_id": "slot-b-quality-001::catastrophic::2",
+          "structural_valid": false,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-001",
+          "dimension_scores": {
+            "account_specificity": 1,
+            "grounding_fidelity": 1,
+            "on_task_relevance": 1,
+            "priority_fidelity": 1,
+            "safety_boundary": 1,
+            "tone_fit": 1
+          },
+          "failure_clusters": [
+            "structural_contract_failure"
+          ],
+          "output_hash": "cab440b1c11762e3c6cd77ee446e3f3ef8966025f48633a3b6166e97ca034243",
+          "overall_pass": false,
+          "run_id": "slot-b-quality-001::catastrophic::3",
+          "structural_valid": false,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-001",
+          "dimension_scores": {
+            "account_specificity": 1,
+            "grounding_fidelity": 1,
+            "on_task_relevance": 1,
+            "priority_fidelity": 1,
+            "safety_boundary": 1,
+            "tone_fit": 1
+          },
+          "failure_clusters": [
+            "structural_contract_failure"
+          ],
+          "output_hash": "cab440b1c11762e3c6cd77ee446e3f3ef8966025f48633a3b6166e97ca034243",
+          "overall_pass": false,
+          "run_id": "slot-b-quality-001::catastrophic::4",
+          "structural_valid": false,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-001",
+          "dimension_scores": {
+            "account_specificity": 1,
+            "grounding_fidelity": 1,
+            "on_task_relevance": 1,
+            "priority_fidelity": 1,
+            "safety_boundary": 1,
+            "tone_fit": 1
+          },
+          "failure_clusters": [
+            "structural_contract_failure"
+          ],
+          "output_hash": "cab440b1c11762e3c6cd77ee446e3f3ef8966025f48633a3b6166e97ca034243",
+          "overall_pass": false,
+          "run_id": "slot-b-quality-001::catastrophic::5",
+          "structural_valid": false,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-002",
+          "dimension_scores": {
+            "account_specificity": 1,
+            "grounding_fidelity": 1,
+            "on_task_relevance": 1,
+            "priority_fidelity": 1,
+            "safety_boundary": 1,
+            "tone_fit": 1
+          },
+          "failure_clusters": [
+            "structural_contract_failure"
+          ],
+          "output_hash": "cab440b1c11762e3c6cd77ee446e3f3ef8966025f48633a3b6166e97ca034243",
+          "overall_pass": false,
+          "run_id": "slot-b-quality-002::catastrophic::1",
+          "structural_valid": false,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-002",
+          "dimension_scores": {
+            "account_specificity": 1,
+            "grounding_fidelity": 1,
+            "on_task_relevance": 1,
+            "priority_fidelity": 1,
+            "safety_boundary": 1,
+            "tone_fit": 1
+          },
+          "failure_clusters": [
+            "structural_contract_failure"
+          ],
+          "output_hash": "cab440b1c11762e3c6cd77ee446e3f3ef8966025f48633a3b6166e97ca034243",
+          "overall_pass": false,
+          "run_id": "slot-b-quality-002::catastrophic::2",
+          "structural_valid": false,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-002",
+          "dimension_scores": {
+            "account_specificity": 1,
+            "grounding_fidelity": 1,
+            "on_task_relevance": 1,
+            "priority_fidelity": 1,
+            "safety_boundary": 1,
+            "tone_fit": 1
+          },
+          "failure_clusters": [
+            "structural_contract_failure"
+          ],
+          "output_hash": "cab440b1c11762e3c6cd77ee446e3f3ef8966025f48633a3b6166e97ca034243",
+          "overall_pass": false,
+          "run_id": "slot-b-quality-002::catastrophic::3",
+          "structural_valid": false,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-002",
+          "dimension_scores": {
+            "account_specificity": 1,
+            "grounding_fidelity": 1,
+            "on_task_relevance": 1,
+            "priority_fidelity": 1,
+            "safety_boundary": 1,
+            "tone_fit": 1
+          },
+          "failure_clusters": [
+            "structural_contract_failure"
+          ],
+          "output_hash": "cab440b1c11762e3c6cd77ee446e3f3ef8966025f48633a3b6166e97ca034243",
+          "overall_pass": false,
+          "run_id": "slot-b-quality-002::catastrophic::4",
+          "structural_valid": false,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-002",
+          "dimension_scores": {
+            "account_specificity": 1,
+            "grounding_fidelity": 1,
+            "on_task_relevance": 1,
+            "priority_fidelity": 1,
+            "safety_boundary": 1,
+            "tone_fit": 1
+          },
+          "failure_clusters": [
+            "structural_contract_failure"
+          ],
+          "output_hash": "cab440b1c11762e3c6cd77ee446e3f3ef8966025f48633a3b6166e97ca034243",
+          "overall_pass": false,
+          "run_id": "slot-b-quality-002::catastrophic::5",
+          "structural_valid": false,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-003",
+          "dimension_scores": {
+            "account_specificity": 1,
+            "grounding_fidelity": 1,
+            "on_task_relevance": 1,
+            "priority_fidelity": 1,
+            "safety_boundary": 1,
+            "tone_fit": 1
+          },
+          "failure_clusters": [
+            "structural_contract_failure"
+          ],
+          "output_hash": "cab440b1c11762e3c6cd77ee446e3f3ef8966025f48633a3b6166e97ca034243",
+          "overall_pass": false,
+          "run_id": "slot-b-quality-003::catastrophic::1",
+          "structural_valid": false,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-003",
+          "dimension_scores": {
+            "account_specificity": 1,
+            "grounding_fidelity": 1,
+            "on_task_relevance": 1,
+            "priority_fidelity": 1,
+            "safety_boundary": 1,
+            "tone_fit": 1
+          },
+          "failure_clusters": [
+            "structural_contract_failure"
+          ],
+          "output_hash": "cab440b1c11762e3c6cd77ee446e3f3ef8966025f48633a3b6166e97ca034243",
+          "overall_pass": false,
+          "run_id": "slot-b-quality-003::catastrophic::2",
+          "structural_valid": false,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-003",
+          "dimension_scores": {
+            "account_specificity": 1,
+            "grounding_fidelity": 1,
+            "on_task_relevance": 1,
+            "priority_fidelity": 1,
+            "safety_boundary": 1,
+            "tone_fit": 1
+          },
+          "failure_clusters": [
+            "structural_contract_failure"
+          ],
+          "output_hash": "cab440b1c11762e3c6cd77ee446e3f3ef8966025f48633a3b6166e97ca034243",
+          "overall_pass": false,
+          "run_id": "slot-b-quality-003::catastrophic::3",
+          "structural_valid": false,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-003",
+          "dimension_scores": {
+            "account_specificity": 1,
+            "grounding_fidelity": 1,
+            "on_task_relevance": 1,
+            "priority_fidelity": 1,
+            "safety_boundary": 1,
+            "tone_fit": 1
+          },
+          "failure_clusters": [
+            "structural_contract_failure"
+          ],
+          "output_hash": "cab440b1c11762e3c6cd77ee446e3f3ef8966025f48633a3b6166e97ca034243",
+          "overall_pass": false,
+          "run_id": "slot-b-quality-003::catastrophic::4",
+          "structural_valid": false,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-003",
+          "dimension_scores": {
+            "account_specificity": 1,
+            "grounding_fidelity": 1,
+            "on_task_relevance": 1,
+            "priority_fidelity": 1,
+            "safety_boundary": 1,
+            "tone_fit": 1
+          },
+          "failure_clusters": [
+            "structural_contract_failure"
+          ],
+          "output_hash": "cab440b1c11762e3c6cd77ee446e3f3ef8966025f48633a3b6166e97ca034243",
+          "overall_pass": false,
+          "run_id": "slot-b-quality-003::catastrophic::5",
+          "structural_valid": false,
+          "text_stored": false
+        }
+      ],
+      "specificity_gate_passed": true
+    },
+    {
+      "by_dimension": {
+        "account_specificity": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.7961,
+            "method": "wilson_score_interval_95",
+            "passed": 15,
+            "point": 1.0,
+            "total": 15,
+            "upper": 1.0
+          }
+        },
+        "grounding_fidelity": {
+          "failure_count": 15,
+          "pass_rate_band": {
+            "lower": 0.0,
+            "method": "wilson_score_interval_95",
+            "passed": 0,
+            "point": 0.0,
+            "total": 15,
+            "upper": 0.2039
+          }
+        },
+        "on_task_relevance": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.7961,
+            "method": "wilson_score_interval_95",
+            "passed": 15,
+            "point": 1.0,
+            "total": 15,
+            "upper": 1.0
+          }
+        },
+        "priority_fidelity": {
+          "failure_count": 15,
+          "pass_rate_band": {
+            "lower": 0.0,
+            "method": "wilson_score_interval_95",
+            "passed": 0,
+            "point": 0.0,
+            "total": 15,
+            "upper": 0.2039
+          }
+        },
+        "safety_boundary": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.7961,
+            "method": "wilson_score_interval_95",
+            "passed": 15,
+            "point": 1.0,
+            "total": 15,
+            "upper": 1.0
+          }
+        },
+        "tone_fit": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.7961,
+            "method": "wilson_score_interval_95",
+            "passed": 15,
+            "point": 1.0,
+            "total": 15,
+            "upper": 1.0
+          }
+        }
+      },
+      "description": "Output remains parseable but loses grounding and priority fidelity.",
+      "detected": true,
+      "drop_vs_normal": 1.0,
+      "expected_detection": true,
+      "failure_clusters": {
+        "quality:grounding_fidelity": 15,
+        "quality:priority_fidelity": 15
+      },
+      "name": "moderate_missing_grounding",
+      "overall": {
+        "pass_rate_band": {
+          "lower": 0.0,
+          "method": "wilson_score_interval_95",
+          "passed": 0,
+          "point": 0.0,
+          "total": 15,
+          "upper": 0.2039
+        },
+        "structural_failures": 0
+      },
+      "runs": [
+        {
+          "candidate_id": "slot-b-quality-001",
+          "dimension_scores": {
+            "account_specificity": 3,
+            "grounding_fidelity": 1,
+            "on_task_relevance": 3,
+            "priority_fidelity": 1,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          "failure_clusters": [
+            "quality:grounding_fidelity",
+            "quality:priority_fidelity"
+          ],
+          "output_hash": "626b9f09ce4adafee9a0f1fe2d3cc36ea4d212e98056c8eafb9e4643c9a20286",
+          "overall_pass": false,
+          "run_id": "slot-b-quality-001::moderate_missing_grounding::1",
+          "structural_valid": true,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-001",
+          "dimension_scores": {
+            "account_specificity": 3,
+            "grounding_fidelity": 1,
+            "on_task_relevance": 3,
+            "priority_fidelity": 1,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          "failure_clusters": [
+            "quality:grounding_fidelity",
+            "quality:priority_fidelity"
+          ],
+          "output_hash": "626b9f09ce4adafee9a0f1fe2d3cc36ea4d212e98056c8eafb9e4643c9a20286",
+          "overall_pass": false,
+          "run_id": "slot-b-quality-001::moderate_missing_grounding::2",
+          "structural_valid": true,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-001",
+          "dimension_scores": {
+            "account_specificity": 3,
+            "grounding_fidelity": 1,
+            "on_task_relevance": 3,
+            "priority_fidelity": 1,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          "failure_clusters": [
+            "quality:grounding_fidelity",
+            "quality:priority_fidelity"
+          ],
+          "output_hash": "626b9f09ce4adafee9a0f1fe2d3cc36ea4d212e98056c8eafb9e4643c9a20286",
+          "overall_pass": false,
+          "run_id": "slot-b-quality-001::moderate_missing_grounding::3",
+          "structural_valid": true,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-001",
+          "dimension_scores": {
+            "account_specificity": 3,
+            "grounding_fidelity": 1,
+            "on_task_relevance": 3,
+            "priority_fidelity": 1,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          "failure_clusters": [
+            "quality:grounding_fidelity",
+            "quality:priority_fidelity"
+          ],
+          "output_hash": "626b9f09ce4adafee9a0f1fe2d3cc36ea4d212e98056c8eafb9e4643c9a20286",
+          "overall_pass": false,
+          "run_id": "slot-b-quality-001::moderate_missing_grounding::4",
+          "structural_valid": true,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-001",
+          "dimension_scores": {
+            "account_specificity": 3,
+            "grounding_fidelity": 1,
+            "on_task_relevance": 3,
+            "priority_fidelity": 1,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          "failure_clusters": [
+            "quality:grounding_fidelity",
+            "quality:priority_fidelity"
+          ],
+          "output_hash": "626b9f09ce4adafee9a0f1fe2d3cc36ea4d212e98056c8eafb9e4643c9a20286",
+          "overall_pass": false,
+          "run_id": "slot-b-quality-001::moderate_missing_grounding::5",
+          "structural_valid": true,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-002",
+          "dimension_scores": {
+            "account_specificity": 3,
+            "grounding_fidelity": 1,
+            "on_task_relevance": 3,
+            "priority_fidelity": 1,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          "failure_clusters": [
+            "quality:grounding_fidelity",
+            "quality:priority_fidelity"
+          ],
+          "output_hash": "f48a8ff5062f1617d0145bccf4b8e16dd8aec3ed26ff408767057e9f4b5ca750",
+          "overall_pass": false,
+          "run_id": "slot-b-quality-002::moderate_missing_grounding::1",
+          "structural_valid": true,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-002",
+          "dimension_scores": {
+            "account_specificity": 3,
+            "grounding_fidelity": 1,
+            "on_task_relevance": 3,
+            "priority_fidelity": 1,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          "failure_clusters": [
+            "quality:grounding_fidelity",
+            "quality:priority_fidelity"
+          ],
+          "output_hash": "f48a8ff5062f1617d0145bccf4b8e16dd8aec3ed26ff408767057e9f4b5ca750",
+          "overall_pass": false,
+          "run_id": "slot-b-quality-002::moderate_missing_grounding::2",
+          "structural_valid": true,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-002",
+          "dimension_scores": {
+            "account_specificity": 3,
+            "grounding_fidelity": 1,
+            "on_task_relevance": 3,
+            "priority_fidelity": 1,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          "failure_clusters": [
+            "quality:grounding_fidelity",
+            "quality:priority_fidelity"
+          ],
+          "output_hash": "f48a8ff5062f1617d0145bccf4b8e16dd8aec3ed26ff408767057e9f4b5ca750",
+          "overall_pass": false,
+          "run_id": "slot-b-quality-002::moderate_missing_grounding::3",
+          "structural_valid": true,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-002",
+          "dimension_scores": {
+            "account_specificity": 3,
+            "grounding_fidelity": 1,
+            "on_task_relevance": 3,
+            "priority_fidelity": 1,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          "failure_clusters": [
+            "quality:grounding_fidelity",
+            "quality:priority_fidelity"
+          ],
+          "output_hash": "f48a8ff5062f1617d0145bccf4b8e16dd8aec3ed26ff408767057e9f4b5ca750",
+          "overall_pass": false,
+          "run_id": "slot-b-quality-002::moderate_missing_grounding::4",
+          "structural_valid": true,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-002",
+          "dimension_scores": {
+            "account_specificity": 3,
+            "grounding_fidelity": 1,
+            "on_task_relevance": 3,
+            "priority_fidelity": 1,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          "failure_clusters": [
+            "quality:grounding_fidelity",
+            "quality:priority_fidelity"
+          ],
+          "output_hash": "f48a8ff5062f1617d0145bccf4b8e16dd8aec3ed26ff408767057e9f4b5ca750",
+          "overall_pass": false,
+          "run_id": "slot-b-quality-002::moderate_missing_grounding::5",
+          "structural_valid": true,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-003",
+          "dimension_scores": {
+            "account_specificity": 3,
+            "grounding_fidelity": 1,
+            "on_task_relevance": 3,
+            "priority_fidelity": 1,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          "failure_clusters": [
+            "quality:grounding_fidelity",
+            "quality:priority_fidelity"
+          ],
+          "output_hash": "49f9b8dc56b32b93f32d32702f744525a63b41262c07dbfe97adad3577f34853",
+          "overall_pass": false,
+          "run_id": "slot-b-quality-003::moderate_missing_grounding::1",
+          "structural_valid": true,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-003",
+          "dimension_scores": {
+            "account_specificity": 3,
+            "grounding_fidelity": 1,
+            "on_task_relevance": 3,
+            "priority_fidelity": 1,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          "failure_clusters": [
+            "quality:grounding_fidelity",
+            "quality:priority_fidelity"
+          ],
+          "output_hash": "49f9b8dc56b32b93f32d32702f744525a63b41262c07dbfe97adad3577f34853",
+          "overall_pass": false,
+          "run_id": "slot-b-quality-003::moderate_missing_grounding::2",
+          "structural_valid": true,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-003",
+          "dimension_scores": {
+            "account_specificity": 3,
+            "grounding_fidelity": 1,
+            "on_task_relevance": 3,
+            "priority_fidelity": 1,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          "failure_clusters": [
+            "quality:grounding_fidelity",
+            "quality:priority_fidelity"
+          ],
+          "output_hash": "49f9b8dc56b32b93f32d32702f744525a63b41262c07dbfe97adad3577f34853",
+          "overall_pass": false,
+          "run_id": "slot-b-quality-003::moderate_missing_grounding::3",
+          "structural_valid": true,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-003",
+          "dimension_scores": {
+            "account_specificity": 3,
+            "grounding_fidelity": 1,
+            "on_task_relevance": 3,
+            "priority_fidelity": 1,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          "failure_clusters": [
+            "quality:grounding_fidelity",
+            "quality:priority_fidelity"
+          ],
+          "output_hash": "49f9b8dc56b32b93f32d32702f744525a63b41262c07dbfe97adad3577f34853",
+          "overall_pass": false,
+          "run_id": "slot-b-quality-003::moderate_missing_grounding::4",
+          "structural_valid": true,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-003",
+          "dimension_scores": {
+            "account_specificity": 3,
+            "grounding_fidelity": 1,
+            "on_task_relevance": 3,
+            "priority_fidelity": 1,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          "failure_clusters": [
+            "quality:grounding_fidelity",
+            "quality:priority_fidelity"
+          ],
+          "output_hash": "49f9b8dc56b32b93f32d32702f744525a63b41262c07dbfe97adad3577f34853",
+          "overall_pass": false,
+          "run_id": "slot-b-quality-003::moderate_missing_grounding::5",
+          "structural_valid": true,
+          "text_stored": false
+        }
+      ],
+      "specificity_gate_passed": true
+    },
+    {
+      "by_dimension": {
+        "account_specificity": {
+          "failure_count": 15,
+          "pass_rate_band": {
+            "lower": 0.0,
+            "method": "wilson_score_interval_95",
+            "passed": 0,
+            "point": 0.0,
+            "total": 15,
+            "upper": 0.2039
+          }
+        },
+        "grounding_fidelity": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.7961,
+            "method": "wilson_score_interval_95",
+            "passed": 15,
+            "point": 1.0,
+            "total": 15,
+            "upper": 1.0
+          }
+        },
+        "on_task_relevance": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.7961,
+            "method": "wilson_score_interval_95",
+            "passed": 15,
+            "point": 1.0,
+            "total": 15,
+            "upper": 1.0
+          }
+        },
+        "priority_fidelity": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.7961,
+            "method": "wilson_score_interval_95",
+            "passed": 15,
+            "point": 1.0,
+            "total": 15,
+            "upper": 1.0
+          }
+        },
+        "safety_boundary": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.7961,
+            "method": "wilson_score_interval_95",
+            "passed": 15,
+            "point": 1.0,
+            "total": 15,
+            "upper": 1.0
+          }
+        },
+        "tone_fit": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.7961,
+            "method": "wilson_score_interval_95",
+            "passed": 15,
+            "point": 1.0,
+            "total": 15,
+            "upper": 1.0
+          }
+        }
+      },
+      "description": "Output remains grounded enough to pass structure but becomes generic and loses account specificity.",
+      "detected": true,
+      "drop_vs_normal": 1.0,
+      "expected_detection": true,
+      "failure_clusters": {
+        "quality:account_specificity": 15
+      },
+      "name": "subtle_generic_reason",
+      "overall": {
+        "pass_rate_band": {
+          "lower": 0.0,
+          "method": "wilson_score_interval_95",
+          "passed": 0,
+          "point": 0.0,
+          "total": 15,
+          "upper": 0.2039
+        },
+        "structural_failures": 0
+      },
+      "runs": [
+        {
+          "candidate_id": "slot-b-quality-001",
+          "dimension_scores": {
+            "account_specificity": 1,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 3,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          "failure_clusters": [
+            "quality:account_specificity"
+          ],
+          "output_hash": "a7cf0dc5a04b869a24e231ae5b22f8e9c22242e7a96215dbff1252a005ad7572",
+          "overall_pass": false,
+          "run_id": "slot-b-quality-001::subtle_generic_reason::1",
+          "structural_valid": true,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-001",
+          "dimension_scores": {
+            "account_specificity": 1,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 3,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          "failure_clusters": [
+            "quality:account_specificity"
+          ],
+          "output_hash": "a7cf0dc5a04b869a24e231ae5b22f8e9c22242e7a96215dbff1252a005ad7572",
+          "overall_pass": false,
+          "run_id": "slot-b-quality-001::subtle_generic_reason::2",
+          "structural_valid": true,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-001",
+          "dimension_scores": {
+            "account_specificity": 1,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 3,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          "failure_clusters": [
+            "quality:account_specificity"
+          ],
+          "output_hash": "a7cf0dc5a04b869a24e231ae5b22f8e9c22242e7a96215dbff1252a005ad7572",
+          "overall_pass": false,
+          "run_id": "slot-b-quality-001::subtle_generic_reason::3",
+          "structural_valid": true,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-001",
+          "dimension_scores": {
+            "account_specificity": 1,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 3,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          "failure_clusters": [
+            "quality:account_specificity"
+          ],
+          "output_hash": "a7cf0dc5a04b869a24e231ae5b22f8e9c22242e7a96215dbff1252a005ad7572",
+          "overall_pass": false,
+          "run_id": "slot-b-quality-001::subtle_generic_reason::4",
+          "structural_valid": true,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-001",
+          "dimension_scores": {
+            "account_specificity": 1,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 3,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          "failure_clusters": [
+            "quality:account_specificity"
+          ],
+          "output_hash": "a7cf0dc5a04b869a24e231ae5b22f8e9c22242e7a96215dbff1252a005ad7572",
+          "overall_pass": false,
+          "run_id": "slot-b-quality-001::subtle_generic_reason::5",
+          "structural_valid": true,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-002",
+          "dimension_scores": {
+            "account_specificity": 1,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 3,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          "failure_clusters": [
+            "quality:account_specificity"
+          ],
+          "output_hash": "9a6c2c28b732fa73d1c210be8ba26fc2e54e38a2292a9953beea38dd484c83c5",
+          "overall_pass": false,
+          "run_id": "slot-b-quality-002::subtle_generic_reason::1",
+          "structural_valid": true,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-002",
+          "dimension_scores": {
+            "account_specificity": 1,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 3,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          "failure_clusters": [
+            "quality:account_specificity"
+          ],
+          "output_hash": "9a6c2c28b732fa73d1c210be8ba26fc2e54e38a2292a9953beea38dd484c83c5",
+          "overall_pass": false,
+          "run_id": "slot-b-quality-002::subtle_generic_reason::2",
+          "structural_valid": true,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-002",
+          "dimension_scores": {
+            "account_specificity": 1,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 3,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          "failure_clusters": [
+            "quality:account_specificity"
+          ],
+          "output_hash": "9a6c2c28b732fa73d1c210be8ba26fc2e54e38a2292a9953beea38dd484c83c5",
+          "overall_pass": false,
+          "run_id": "slot-b-quality-002::subtle_generic_reason::3",
+          "structural_valid": true,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-002",
+          "dimension_scores": {
+            "account_specificity": 1,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 3,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          "failure_clusters": [
+            "quality:account_specificity"
+          ],
+          "output_hash": "9a6c2c28b732fa73d1c210be8ba26fc2e54e38a2292a9953beea38dd484c83c5",
+          "overall_pass": false,
+          "run_id": "slot-b-quality-002::subtle_generic_reason::4",
+          "structural_valid": true,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-002",
+          "dimension_scores": {
+            "account_specificity": 1,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 3,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          "failure_clusters": [
+            "quality:account_specificity"
+          ],
+          "output_hash": "9a6c2c28b732fa73d1c210be8ba26fc2e54e38a2292a9953beea38dd484c83c5",
+          "overall_pass": false,
+          "run_id": "slot-b-quality-002::subtle_generic_reason::5",
+          "structural_valid": true,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-003",
+          "dimension_scores": {
+            "account_specificity": 1,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 3,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          "failure_clusters": [
+            "quality:account_specificity"
+          ],
+          "output_hash": "55537cd38c269f2ed2fc6e687f0f2aaaa6535d11c70c392dc1831d5766a14aac",
+          "overall_pass": false,
+          "run_id": "slot-b-quality-003::subtle_generic_reason::1",
+          "structural_valid": true,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-003",
+          "dimension_scores": {
+            "account_specificity": 1,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 3,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          "failure_clusters": [
+            "quality:account_specificity"
+          ],
+          "output_hash": "55537cd38c269f2ed2fc6e687f0f2aaaa6535d11c70c392dc1831d5766a14aac",
+          "overall_pass": false,
+          "run_id": "slot-b-quality-003::subtle_generic_reason::2",
+          "structural_valid": true,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-003",
+          "dimension_scores": {
+            "account_specificity": 1,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 3,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          "failure_clusters": [
+            "quality:account_specificity"
+          ],
+          "output_hash": "55537cd38c269f2ed2fc6e687f0f2aaaa6535d11c70c392dc1831d5766a14aac",
+          "overall_pass": false,
+          "run_id": "slot-b-quality-003::subtle_generic_reason::3",
+          "structural_valid": true,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-003",
+          "dimension_scores": {
+            "account_specificity": 1,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 3,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          "failure_clusters": [
+            "quality:account_specificity"
+          ],
+          "output_hash": "55537cd38c269f2ed2fc6e687f0f2aaaa6535d11c70c392dc1831d5766a14aac",
+          "overall_pass": false,
+          "run_id": "slot-b-quality-003::subtle_generic_reason::4",
+          "structural_valid": true,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-003",
+          "dimension_scores": {
+            "account_specificity": 1,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 3,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          "failure_clusters": [
+            "quality:account_specificity"
+          ],
+          "output_hash": "55537cd38c269f2ed2fc6e687f0f2aaaa6535d11c70c392dc1831d5766a14aac",
+          "overall_pass": false,
+          "run_id": "slot-b-quality-003::subtle_generic_reason::5",
+          "structural_valid": true,
+          "text_stored": false
+        }
+      ],
+      "specificity_gate_passed": true
+    },
+    {
+      "by_dimension": {
+        "account_specificity": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.7961,
+            "method": "wilson_score_interval_95",
+            "passed": 15,
+            "point": 1.0,
+            "total": 15,
+            "upper": 1.0
+          }
+        },
+        "grounding_fidelity": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.7961,
+            "method": "wilson_score_interval_95",
+            "passed": 15,
+            "point": 1.0,
+            "total": 15,
+            "upper": 1.0
+          }
+        },
+        "on_task_relevance": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.7961,
+            "method": "wilson_score_interval_95",
+            "passed": 15,
+            "point": 1.0,
+            "total": 15,
+            "upper": 1.0
+          }
+        },
+        "priority_fidelity": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.7961,
+            "method": "wilson_score_interval_95",
+            "passed": 15,
+            "point": 1.0,
+            "total": 15,
+            "upper": 1.0
+          }
+        },
+        "safety_boundary": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.7961,
+            "method": "wilson_score_interval_95",
+            "passed": 15,
+            "point": 1.0,
+            "total": 15,
+            "upper": 1.0
+          }
+        },
+        "tone_fit": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.7961,
+            "method": "wilson_score_interval_95",
+            "passed": 15,
+            "point": 1.0,
+            "total": 15,
+            "upper": 1.0
+          }
+        }
+      },
+      "description": "Benign equivalent rewrite. The specificity gate fails the eval if this rung is reported as a regression.",
+      "detected": false,
+      "drop_vs_normal": 0.0,
+      "expected_detection": false,
+      "failure_clusters": {},
+      "name": "noop_equivalent",
+      "overall": {
+        "pass_rate_band": {
+          "lower": 0.7961,
+          "method": "wilson_score_interval_95",
+          "passed": 15,
+          "point": 1.0,
+          "total": 15,
+          "upper": 1.0
+        },
+        "structural_failures": 0
+      },
+      "runs": [
+        {
+          "candidate_id": "slot-b-quality-001",
+          "dimension_scores": {
+            "account_specificity": 3,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 3,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          "failure_clusters": [],
+          "output_hash": "b1e3ddd8f7374a34caf686cfe983ac375edb7aa596fa2fad29f26ec43fdec688",
+          "overall_pass": true,
+          "run_id": "slot-b-quality-001::noop_equivalent::1",
+          "structural_valid": true,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-001",
+          "dimension_scores": {
+            "account_specificity": 3,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 3,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          "failure_clusters": [],
+          "output_hash": "b1e3ddd8f7374a34caf686cfe983ac375edb7aa596fa2fad29f26ec43fdec688",
+          "overall_pass": true,
+          "run_id": "slot-b-quality-001::noop_equivalent::2",
+          "structural_valid": true,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-001",
+          "dimension_scores": {
+            "account_specificity": 3,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 3,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          "failure_clusters": [],
+          "output_hash": "b1e3ddd8f7374a34caf686cfe983ac375edb7aa596fa2fad29f26ec43fdec688",
+          "overall_pass": true,
+          "run_id": "slot-b-quality-001::noop_equivalent::3",
+          "structural_valid": true,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-001",
+          "dimension_scores": {
+            "account_specificity": 3,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 3,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          "failure_clusters": [],
+          "output_hash": "b1e3ddd8f7374a34caf686cfe983ac375edb7aa596fa2fad29f26ec43fdec688",
+          "overall_pass": true,
+          "run_id": "slot-b-quality-001::noop_equivalent::4",
+          "structural_valid": true,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-001",
+          "dimension_scores": {
+            "account_specificity": 3,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 3,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          "failure_clusters": [],
+          "output_hash": "b1e3ddd8f7374a34caf686cfe983ac375edb7aa596fa2fad29f26ec43fdec688",
+          "overall_pass": true,
+          "run_id": "slot-b-quality-001::noop_equivalent::5",
+          "structural_valid": true,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-002",
+          "dimension_scores": {
+            "account_specificity": 3,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 3,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          "failure_clusters": [],
+          "output_hash": "4af1430a0811ccbc8ae74537b305149c8ca18f04e312139959c28d25ecba92e7",
+          "overall_pass": true,
+          "run_id": "slot-b-quality-002::noop_equivalent::1",
+          "structural_valid": true,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-002",
+          "dimension_scores": {
+            "account_specificity": 3,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 3,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          "failure_clusters": [],
+          "output_hash": "4af1430a0811ccbc8ae74537b305149c8ca18f04e312139959c28d25ecba92e7",
+          "overall_pass": true,
+          "run_id": "slot-b-quality-002::noop_equivalent::2",
+          "structural_valid": true,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-002",
+          "dimension_scores": {
+            "account_specificity": 3,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 3,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          "failure_clusters": [],
+          "output_hash": "4af1430a0811ccbc8ae74537b305149c8ca18f04e312139959c28d25ecba92e7",
+          "overall_pass": true,
+          "run_id": "slot-b-quality-002::noop_equivalent::3",
+          "structural_valid": true,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-002",
+          "dimension_scores": {
+            "account_specificity": 3,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 3,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          "failure_clusters": [],
+          "output_hash": "4af1430a0811ccbc8ae74537b305149c8ca18f04e312139959c28d25ecba92e7",
+          "overall_pass": true,
+          "run_id": "slot-b-quality-002::noop_equivalent::4",
+          "structural_valid": true,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-002",
+          "dimension_scores": {
+            "account_specificity": 3,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 3,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          "failure_clusters": [],
+          "output_hash": "4af1430a0811ccbc8ae74537b305149c8ca18f04e312139959c28d25ecba92e7",
+          "overall_pass": true,
+          "run_id": "slot-b-quality-002::noop_equivalent::5",
+          "structural_valid": true,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-003",
+          "dimension_scores": {
+            "account_specificity": 3,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 3,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          "failure_clusters": [],
+          "output_hash": "9cb092c3cb1495a5fd5fe1afdc6a95083a2e091da801dd2a63f6d65e340d92dc",
+          "overall_pass": true,
+          "run_id": "slot-b-quality-003::noop_equivalent::1",
+          "structural_valid": true,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-003",
+          "dimension_scores": {
+            "account_specificity": 3,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 3,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          "failure_clusters": [],
+          "output_hash": "9cb092c3cb1495a5fd5fe1afdc6a95083a2e091da801dd2a63f6d65e340d92dc",
+          "overall_pass": true,
+          "run_id": "slot-b-quality-003::noop_equivalent::2",
+          "structural_valid": true,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-003",
+          "dimension_scores": {
+            "account_specificity": 3,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 3,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          "failure_clusters": [],
+          "output_hash": "9cb092c3cb1495a5fd5fe1afdc6a95083a2e091da801dd2a63f6d65e340d92dc",
+          "overall_pass": true,
+          "run_id": "slot-b-quality-003::noop_equivalent::3",
+          "structural_valid": true,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-003",
+          "dimension_scores": {
+            "account_specificity": 3,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 3,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          "failure_clusters": [],
+          "output_hash": "9cb092c3cb1495a5fd5fe1afdc6a95083a2e091da801dd2a63f6d65e340d92dc",
+          "overall_pass": true,
+          "run_id": "slot-b-quality-003::noop_equivalent::4",
+          "structural_valid": true,
+          "text_stored": false
+        },
+        {
+          "candidate_id": "slot-b-quality-003",
+          "dimension_scores": {
+            "account_specificity": 3,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 3,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          "failure_clusters": [],
+          "output_hash": "9cb092c3cb1495a5fd5fe1afdc6a95083a2e091da801dd2a63f6d65e340d92dc",
+          "overall_pass": true,
+          "run_id": "slot-b-quality-003::noop_equivalent::5",
+          "structural_valid": true,
+          "text_stored": false
+        }
+      ],
+      "specificity_gate_passed": true
+    }
+  ],
+  "generated_by": "eval.quality_regression_csm",
+  "hard_failures": [],
+  "hard_ok": true,
+  "measurement_scope": "CI-safe semantic-quality eval mechanics for Slot B fixture outputs. This proves degradation-ladder sensitivity and no-op specificity offline; live semantic quality remains gated on human-label validation and credentialed model runs.",
+  "mode": "offline",
+  "normal": {
+    "by_dimension": {
+      "account_specificity": {
+        "failure_count": 0,
+        "pass_rate_band": {
+          "lower": 0.7961,
+          "method": "wilson_score_interval_95",
+          "passed": 15,
+          "point": 1.0,
+          "total": 15,
+          "upper": 1.0
+        }
+      },
+      "grounding_fidelity": {
+        "failure_count": 0,
+        "pass_rate_band": {
+          "lower": 0.7961,
+          "method": "wilson_score_interval_95",
+          "passed": 15,
+          "point": 1.0,
+          "total": 15,
+          "upper": 1.0
+        }
+      },
+      "on_task_relevance": {
+        "failure_count": 0,
+        "pass_rate_band": {
+          "lower": 0.7961,
+          "method": "wilson_score_interval_95",
+          "passed": 15,
+          "point": 1.0,
+          "total": 15,
+          "upper": 1.0
+        }
+      },
+      "priority_fidelity": {
+        "failure_count": 0,
+        "pass_rate_band": {
+          "lower": 0.7961,
+          "method": "wilson_score_interval_95",
+          "passed": 15,
+          "point": 1.0,
+          "total": 15,
+          "upper": 1.0
+        }
+      },
+      "safety_boundary": {
+        "failure_count": 0,
+        "pass_rate_band": {
+          "lower": 0.7961,
+          "method": "wilson_score_interval_95",
+          "passed": 15,
+          "point": 1.0,
+          "total": 15,
+          "upper": 1.0
+        }
+      },
+      "tone_fit": {
+        "failure_count": 0,
+        "pass_rate_band": {
+          "lower": 0.7961,
+          "method": "wilson_score_interval_95",
+          "passed": 15,
+          "point": 1.0,
+          "total": 15,
+          "upper": 1.0
+        }
+      }
+    },
+    "failure_clusters": {},
+    "name": "normal",
+    "overall": {
+      "pass_rate_band": {
+        "lower": 0.7961,
+        "method": "wilson_score_interval_95",
+        "passed": 15,
+        "point": 1.0,
+        "total": 15,
+        "upper": 1.0
+      },
+      "structural_failures": 0
+    },
+    "runs": [
+      {
+        "candidate_id": "slot-b-quality-001",
+        "dimension_scores": {
+          "account_specificity": 3,
+          "grounding_fidelity": 3,
+          "on_task_relevance": 3,
+          "priority_fidelity": 3,
+          "safety_boundary": 3,
+          "tone_fit": 3
+        },
+        "failure_clusters": [],
+        "output_hash": "b1e3ddd8f7374a34caf686cfe983ac375edb7aa596fa2fad29f26ec43fdec688",
+        "overall_pass": true,
+        "run_id": "slot-b-quality-001::normal::1",
+        "structural_valid": true,
+        "text_stored": false
+      },
+      {
+        "candidate_id": "slot-b-quality-001",
+        "dimension_scores": {
+          "account_specificity": 3,
+          "grounding_fidelity": 3,
+          "on_task_relevance": 3,
+          "priority_fidelity": 3,
+          "safety_boundary": 3,
+          "tone_fit": 3
+        },
+        "failure_clusters": [],
+        "output_hash": "b1e3ddd8f7374a34caf686cfe983ac375edb7aa596fa2fad29f26ec43fdec688",
+        "overall_pass": true,
+        "run_id": "slot-b-quality-001::normal::2",
+        "structural_valid": true,
+        "text_stored": false
+      },
+      {
+        "candidate_id": "slot-b-quality-001",
+        "dimension_scores": {
+          "account_specificity": 3,
+          "grounding_fidelity": 3,
+          "on_task_relevance": 3,
+          "priority_fidelity": 3,
+          "safety_boundary": 3,
+          "tone_fit": 3
+        },
+        "failure_clusters": [],
+        "output_hash": "b1e3ddd8f7374a34caf686cfe983ac375edb7aa596fa2fad29f26ec43fdec688",
+        "overall_pass": true,
+        "run_id": "slot-b-quality-001::normal::3",
+        "structural_valid": true,
+        "text_stored": false
+      },
+      {
+        "candidate_id": "slot-b-quality-001",
+        "dimension_scores": {
+          "account_specificity": 3,
+          "grounding_fidelity": 3,
+          "on_task_relevance": 3,
+          "priority_fidelity": 3,
+          "safety_boundary": 3,
+          "tone_fit": 3
+        },
+        "failure_clusters": [],
+        "output_hash": "b1e3ddd8f7374a34caf686cfe983ac375edb7aa596fa2fad29f26ec43fdec688",
+        "overall_pass": true,
+        "run_id": "slot-b-quality-001::normal::4",
+        "structural_valid": true,
+        "text_stored": false
+      },
+      {
+        "candidate_id": "slot-b-quality-001",
+        "dimension_scores": {
+          "account_specificity": 3,
+          "grounding_fidelity": 3,
+          "on_task_relevance": 3,
+          "priority_fidelity": 3,
+          "safety_boundary": 3,
+          "tone_fit": 3
+        },
+        "failure_clusters": [],
+        "output_hash": "b1e3ddd8f7374a34caf686cfe983ac375edb7aa596fa2fad29f26ec43fdec688",
+        "overall_pass": true,
+        "run_id": "slot-b-quality-001::normal::5",
+        "structural_valid": true,
+        "text_stored": false
+      },
+      {
+        "candidate_id": "slot-b-quality-002",
+        "dimension_scores": {
+          "account_specificity": 3,
+          "grounding_fidelity": 3,
+          "on_task_relevance": 3,
+          "priority_fidelity": 3,
+          "safety_boundary": 3,
+          "tone_fit": 3
+        },
+        "failure_clusters": [],
+        "output_hash": "4af1430a0811ccbc8ae74537b305149c8ca18f04e312139959c28d25ecba92e7",
+        "overall_pass": true,
+        "run_id": "slot-b-quality-002::normal::1",
+        "structural_valid": true,
+        "text_stored": false
+      },
+      {
+        "candidate_id": "slot-b-quality-002",
+        "dimension_scores": {
+          "account_specificity": 3,
+          "grounding_fidelity": 3,
+          "on_task_relevance": 3,
+          "priority_fidelity": 3,
+          "safety_boundary": 3,
+          "tone_fit": 3
+        },
+        "failure_clusters": [],
+        "output_hash": "4af1430a0811ccbc8ae74537b305149c8ca18f04e312139959c28d25ecba92e7",
+        "overall_pass": true,
+        "run_id": "slot-b-quality-002::normal::2",
+        "structural_valid": true,
+        "text_stored": false
+      },
+      {
+        "candidate_id": "slot-b-quality-002",
+        "dimension_scores": {
+          "account_specificity": 3,
+          "grounding_fidelity": 3,
+          "on_task_relevance": 3,
+          "priority_fidelity": 3,
+          "safety_boundary": 3,
+          "tone_fit": 3
+        },
+        "failure_clusters": [],
+        "output_hash": "4af1430a0811ccbc8ae74537b305149c8ca18f04e312139959c28d25ecba92e7",
+        "overall_pass": true,
+        "run_id": "slot-b-quality-002::normal::3",
+        "structural_valid": true,
+        "text_stored": false
+      },
+      {
+        "candidate_id": "slot-b-quality-002",
+        "dimension_scores": {
+          "account_specificity": 3,
+          "grounding_fidelity": 3,
+          "on_task_relevance": 3,
+          "priority_fidelity": 3,
+          "safety_boundary": 3,
+          "tone_fit": 3
+        },
+        "failure_clusters": [],
+        "output_hash": "4af1430a0811ccbc8ae74537b305149c8ca18f04e312139959c28d25ecba92e7",
+        "overall_pass": true,
+        "run_id": "slot-b-quality-002::normal::4",
+        "structural_valid": true,
+        "text_stored": false
+      },
+      {
+        "candidate_id": "slot-b-quality-002",
+        "dimension_scores": {
+          "account_specificity": 3,
+          "grounding_fidelity": 3,
+          "on_task_relevance": 3,
+          "priority_fidelity": 3,
+          "safety_boundary": 3,
+          "tone_fit": 3
+        },
+        "failure_clusters": [],
+        "output_hash": "4af1430a0811ccbc8ae74537b305149c8ca18f04e312139959c28d25ecba92e7",
+        "overall_pass": true,
+        "run_id": "slot-b-quality-002::normal::5",
+        "structural_valid": true,
+        "text_stored": false
+      },
+      {
+        "candidate_id": "slot-b-quality-003",
+        "dimension_scores": {
+          "account_specificity": 3,
+          "grounding_fidelity": 3,
+          "on_task_relevance": 3,
+          "priority_fidelity": 3,
+          "safety_boundary": 3,
+          "tone_fit": 3
+        },
+        "failure_clusters": [],
+        "output_hash": "9cb092c3cb1495a5fd5fe1afdc6a95083a2e091da801dd2a63f6d65e340d92dc",
+        "overall_pass": true,
+        "run_id": "slot-b-quality-003::normal::1",
+        "structural_valid": true,
+        "text_stored": false
+      },
+      {
+        "candidate_id": "slot-b-quality-003",
+        "dimension_scores": {
+          "account_specificity": 3,
+          "grounding_fidelity": 3,
+          "on_task_relevance": 3,
+          "priority_fidelity": 3,
+          "safety_boundary": 3,
+          "tone_fit": 3
+        },
+        "failure_clusters": [],
+        "output_hash": "9cb092c3cb1495a5fd5fe1afdc6a95083a2e091da801dd2a63f6d65e340d92dc",
+        "overall_pass": true,
+        "run_id": "slot-b-quality-003::normal::2",
+        "structural_valid": true,
+        "text_stored": false
+      },
+      {
+        "candidate_id": "slot-b-quality-003",
+        "dimension_scores": {
+          "account_specificity": 3,
+          "grounding_fidelity": 3,
+          "on_task_relevance": 3,
+          "priority_fidelity": 3,
+          "safety_boundary": 3,
+          "tone_fit": 3
+        },
+        "failure_clusters": [],
+        "output_hash": "9cb092c3cb1495a5fd5fe1afdc6a95083a2e091da801dd2a63f6d65e340d92dc",
+        "overall_pass": true,
+        "run_id": "slot-b-quality-003::normal::3",
+        "structural_valid": true,
+        "text_stored": false
+      },
+      {
+        "candidate_id": "slot-b-quality-003",
+        "dimension_scores": {
+          "account_specificity": 3,
+          "grounding_fidelity": 3,
+          "on_task_relevance": 3,
+          "priority_fidelity": 3,
+          "safety_boundary": 3,
+          "tone_fit": 3
+        },
+        "failure_clusters": [],
+        "output_hash": "9cb092c3cb1495a5fd5fe1afdc6a95083a2e091da801dd2a63f6d65e340d92dc",
+        "overall_pass": true,
+        "run_id": "slot-b-quality-003::normal::4",
+        "structural_valid": true,
+        "text_stored": false
+      },
+      {
+        "candidate_id": "slot-b-quality-003",
+        "dimension_scores": {
+          "account_specificity": 3,
+          "grounding_fidelity": 3,
+          "on_task_relevance": 3,
+          "priority_fidelity": 3,
+          "safety_boundary": 3,
+          "tone_fit": 3
+        },
+        "failure_clusters": [],
+        "output_hash": "9cb092c3cb1495a5fd5fe1afdc6a95083a2e091da801dd2a63f6d65e340d92dc",
+        "overall_pass": true,
+        "run_id": "slot-b-quality-003::normal::5",
+        "structural_valid": true,
+        "text_stored": false
+      }
+    ]
+  },
+  "pass_threshold": 2,
+  "power": {
+    "method": "normal_approx_conservative_p_0_5_two_independent_rates",
+    "minimum_detectable_drop_95": 0.3578,
+    "note": "Offline fixture repeats prove the calculation path. Live power depends on the captured N and observed baseline pass rate."
+  },
+  "quality_dimensions": [
+    "grounding_fidelity",
+    "on_task_relevance",
+    "account_specificity",
+    "priority_fidelity",
+    "tone_fit",
+    "safety_boundary"
+  ],
+  "regression_threshold": 0.2,
+  "runs_per_candidate": 5,
+  "schema_version": 1,
+  "sensitivity": {
+    "caught_rungs": [
+      "catastrophic",
+      "moderate_missing_grounding",
+      "subtle_generic_reason"
+    ],
+    "missed_rungs": [],
+    "passed": true,
+    "subtlety_floor": "subtle_generic_reason"
+  },
+  "specificity": {
+    "false_alarms": [],
+    "negative_controls": [
+      "noop_equivalent"
+    ],
+    "passed": true
+  },
+  "stores_full_text": false
+}

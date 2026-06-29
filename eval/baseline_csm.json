@@ -1,0 +1,697 @@
+{
+  "artifact": "csm_regression_baseline",
+  "deterministic_spine": {
+    "escalations": [
+      {
+        "account_id": null,
+        "account_resolution": "ambiguous",
+        "candidate_account_ids": [
+          "00d7906a-f1fc-5921-af5f-a709e69c308f",
+          "f64a581c-ddfe-52ef-be7b-fda9987c3514"
+        ],
+        "disposition": "escalate",
+        "evidence_ids": [
+          "dd638660-a13a-595c-a117-72a1ed5f15d0"
+        ],
+        "priority": null,
+        "proposal": null
+      }
+    ],
+    "swept_accounts": [
+      "00d7906a-f1fc-5921-af5f-a709e69c308f",
+      "64eca28b-7ca4-5117-83d1-b6e794dd388f",
+      "87883d32-d4e1-59d3-831d-5e48278ceb7e",
+      "9bbdd7b2-55b0-5257-acf8-808ad224e276",
+      "a317f5e7-575e-5879-8256-9082e40ef19f",
+      "ac5ddaea-764f-57ef-866d-593d57a20a00",
+      "b2178254-7d72-55e3-84af-27846a0cb7d5",
+      "efe1d86f-af21-5ca6-8719-3ba8b4429292",
+      "f64a581c-ddfe-52ef-be7b-fda9987c3514"
+    ],
+    "tenant_id": "ultra-demo",
+    "work_items": [
+      {
+        "account_id": "a317f5e7-575e-5879-8256-9082e40ef19f",
+        "account_resolution": "exactly_one",
+        "customer_contact_allowed": true,
+        "disposition": "propose_customer_action",
+        "evidence_ids": [
+          "6dcc1c92-e0fd-5d6f-808f-d2e747f04415",
+          "d2212e35-9ab1-52ff-af61-7ed49fe36086",
+          "e8171967-d726-5c85-814a-73aaa19dc2cf",
+          "4ddf4d0e-2600-56f7-9edc-a5a0071d8186",
+          "a317f5e7-575e-5879-8256-9082e40ef19f"
+        ],
+        "has_customer_draft": true,
+        "priority": {
+          "factors": [
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 50,
+              "evidence": [
+                {
+                  "field": "ttv_milestone",
+                  "observed_at": "2026-06-12",
+                  "source": "telemetry",
+                  "source_id": "6dcc1c92-e0fd-5d6f-808f-d2e747f04415"
+                },
+                {
+                  "field": "ttv_milestone",
+                  "observed_at": "2026-06-22",
+                  "source": "telemetry",
+                  "source_id": "6dcc1c92-e0fd-5d6f-808f-d2e747f04415"
+                }
+              ],
+              "name": "milestones_overdue",
+              "rule_name": "high_arr_review_default",
+              "threshold_name": "milestone_overdue_points",
+              "threshold_value": 25,
+              "value": 2.0
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 30,
+              "evidence": [
+                {
+                  "field": "ttv_milestone",
+                  "observed_at": "2026-06-12",
+                  "source": "telemetry",
+                  "source_id": "6dcc1c92-e0fd-5d6f-808f-d2e747f04415"
+                },
+                {
+                  "field": "ttv_milestone",
+                  "observed_at": "2026-06-22",
+                  "source": "telemetry",
+                  "source_id": "6dcc1c92-e0fd-5d6f-808f-d2e747f04415"
+                }
+              ],
+              "name": "days_overdue",
+              "rule_name": "high_arr_review_default",
+              "threshold_name": "days_overdue_cap",
+              "threshold_value": 40,
+              "value": 15.0
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 20,
+              "evidence": [
+                {
+                  "field": "target_date",
+                  "observed_at": "2026-06-12",
+                  "source": "cs_platform",
+                  "source_id": "e8171967-d726-5c85-814a-73aaa19dc2cf"
+                }
+              ],
+              "name": "success_plan_overdue",
+              "rule_name": "high_arr_review_default",
+              "threshold_name": "success_plan_overdue_points",
+              "threshold_value": 20,
+              "value": 1.0
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 30,
+              "evidence": [
+                {
+                  "field": "health_score",
+                  "observed_at": "2026-06-21T00:00:00Z",
+                  "source": "cs_platform",
+                  "source_id": "a317f5e7-575e-5879-8256-9082e40ef19f"
+                }
+              ],
+              "name": "health_red",
+              "rule_name": "high_arr_review_default",
+              "threshold_name": "health_red_points",
+              "threshold_value": 30,
+              "value": 1.0
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 5,
+              "evidence": [
+                {
+                  "field": "arr_cents",
+                  "observed_at": "2026-05-01",
+                  "source": "cs_platform",
+                  "source_id": "a317f5e7-575e-5879-8256-9082e40ef19f"
+                }
+              ],
+              "name": "arr_tier",
+              "rule_name": "high_arr_review_default",
+              "threshold_name": "arr_review_floor_cents",
+              "threshold_value": 15000000,
+              "value": 18400000.0
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 12,
+              "evidence": [
+                {
+                  "field": "active_users",
+                  "observed_at": "2026-06-21T00:00:00Z",
+                  "source": "cs_platform",
+                  "source_id": "a317f5e7-575e-5879-8256-9082e40ef19f"
+                }
+              ],
+              "name": "low_seat_penetration",
+              "rule_name": "high_arr_review_default",
+              "threshold_name": "seat_penetration_floor",
+              "threshold_value": 0.55,
+              "value": 0.11428571428571428
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 15,
+              "evidence": [
+                {
+                  "field": "underused_capabilities",
+                  "observed_at": "2026-06-21T00:00:00Z",
+                  "source": "cs_platform",
+                  "source_id": "a317f5e7-575e-5879-8256-9082e40ef19f"
+                },
+                {
+                  "field": "capability",
+                  "observed_at": "2026-05-01",
+                  "source": "telemetry",
+                  "source_id": "a317f5e7-575e-5879-8256-9082e40ef19f:core_telematics"
+                }
+              ],
+              "name": "feature_depth_gap",
+              "rule_name": "high_arr_review_default",
+              "threshold_name": "depth_floor",
+              "threshold_value": 0.7,
+              "value": 0.0
+            }
+          ],
+          "score": 162
+        },
+        "proposal_action_type": "draft_customer_outreach",
+        "proposal_status": "pending",
+        "recommended_action": "draft_customer_outreach"
+      },
+      {
+        "account_id": "9bbdd7b2-55b0-5257-acf8-808ad224e276",
+        "account_resolution": "exactly_one",
+        "customer_contact_allowed": false,
+        "disposition": "internal_review",
+        "evidence_ids": [
+          "947b1c03-4cfd-57d1-8734-96a9a1d0580a",
+          "094d20f6-589f-523d-8c1a-57ee263b4b15",
+          "7c951754-708e-54c9-a308-927f4898a051",
+          "9bbdd7b2-55b0-5257-acf8-808ad224e276"
+        ],
+        "has_customer_draft": false,
+        "priority": {
+          "factors": [
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 25,
+              "evidence": [
+                {
+                  "field": "ttv_milestone",
+                  "observed_at": "2026-06-16",
+                  "source": "telemetry",
+                  "source_id": "947b1c03-4cfd-57d1-8734-96a9a1d0580a"
+                }
+              ],
+              "name": "milestones_overdue",
+              "rule_name": "base_default",
+              "threshold_name": "milestone_overdue_points",
+              "threshold_value": 25,
+              "value": 1.0
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 22,
+              "evidence": [
+                {
+                  "field": "ttv_milestone",
+                  "observed_at": "2026-06-16",
+                  "source": "telemetry",
+                  "source_id": "947b1c03-4cfd-57d1-8734-96a9a1d0580a"
+                }
+              ],
+              "name": "days_overdue",
+              "rule_name": "base_default",
+              "threshold_name": "days_overdue_cap",
+              "threshold_value": 40,
+              "value": 11.0
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 20,
+              "evidence": [
+                {
+                  "field": "target_date",
+                  "observed_at": "2026-06-18",
+                  "source": "cs_platform",
+                  "source_id": "7c951754-708e-54c9-a308-927f4898a051"
+                }
+              ],
+              "name": "success_plan_overdue",
+              "rule_name": "base_default",
+              "threshold_name": "success_plan_overdue_points",
+              "threshold_value": 20,
+              "value": 1.0
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 15,
+              "evidence": [
+                {
+                  "field": "health_score",
+                  "observed_at": "2026-06-21T00:00:00Z",
+                  "source": "cs_platform",
+                  "source_id": "9bbdd7b2-55b0-5257-acf8-808ad224e276"
+                }
+              ],
+              "name": "health_yellow",
+              "rule_name": "base_default",
+              "threshold_name": "health_yellow_points",
+              "threshold_value": 15,
+              "value": 1.0
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 12,
+              "evidence": [
+                {
+                  "field": "active_users",
+                  "observed_at": "2026-06-21T00:00:00Z",
+                  "source": "cs_platform",
+                  "source_id": "9bbdd7b2-55b0-5257-acf8-808ad224e276"
+                }
+              ],
+              "name": "low_seat_penetration",
+              "rule_name": "base_default",
+              "threshold_name": "seat_penetration_floor",
+              "threshold_value": 0.5,
+              "value": 0.11428571428571428
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 15,
+              "evidence": [
+                {
+                  "field": "underused_capabilities",
+                  "observed_at": "2026-06-21T00:00:00Z",
+                  "source": "cs_platform",
+                  "source_id": "9bbdd7b2-55b0-5257-acf8-808ad224e276"
+                },
+                {
+                  "field": "capability",
+                  "observed_at": "2026-05-01",
+                  "source": "telemetry",
+                  "source_id": "9bbdd7b2-55b0-5257-acf8-808ad224e276:core_telematics"
+                }
+              ],
+              "name": "feature_depth_gap",
+              "rule_name": "base_default",
+              "threshold_name": "depth_floor",
+              "threshold_value": 0.6,
+              "value": 0.0
+            }
+          ],
+          "score": 109
+        },
+        "proposal_action_type": null,
+        "proposal_status": null,
+        "recommended_action": "recommend_next_best_action"
+      },
+      {
+        "account_id": "ac5ddaea-764f-57ef-866d-593d57a20a00",
+        "account_resolution": "exactly_one",
+        "customer_contact_allowed": true,
+        "disposition": "propose_customer_action",
+        "evidence_ids": [
+          "a6a68e4b-b7af-5b71-8e33-8964271ee848",
+          "de370721-fcfe-5b52-9682-fa7b8e79a07a",
+          "ef71210b-a3d3-5953-ad04-71bc869c6789",
+          "fefff49b-e3f3-5127-86dd-970eedbf8ce1",
+          "ac5ddaea-764f-57ef-866d-593d57a20a00"
+        ],
+        "has_customer_draft": true,
+        "priority": {
+          "factors": [
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 25,
+              "evidence": [
+                {
+                  "field": "ttv_milestone",
+                  "observed_at": "2026-06-18",
+                  "source": "telemetry",
+                  "source_id": "a6a68e4b-b7af-5b71-8e33-8964271ee848"
+                }
+              ],
+              "name": "milestones_overdue",
+              "rule_name": "base_default",
+              "threshold_name": "milestone_overdue_points",
+              "threshold_value": 25,
+              "value": 1.0
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 18,
+              "evidence": [
+                {
+                  "field": "ttv_milestone",
+                  "observed_at": "2026-06-18",
+                  "source": "telemetry",
+                  "source_id": "a6a68e4b-b7af-5b71-8e33-8964271ee848"
+                }
+              ],
+              "name": "days_overdue",
+              "rule_name": "base_default",
+              "threshold_name": "days_overdue_cap",
+              "threshold_value": 40,
+              "value": 9.0
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 20,
+              "evidence": [
+                {
+                  "field": "target_date",
+                  "observed_at": "2026-06-19",
+                  "source": "cs_platform",
+                  "source_id": "ef71210b-a3d3-5953-ad04-71bc869c6789"
+                }
+              ],
+              "name": "success_plan_overdue",
+              "rule_name": "base_default",
+              "threshold_name": "success_plan_overdue_points",
+              "threshold_value": 20,
+              "value": 1.0
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 15,
+              "evidence": [
+                {
+                  "field": "health_score",
+                  "observed_at": "2026-06-21T00:00:00Z",
+                  "source": "cs_platform",
+                  "source_id": "ac5ddaea-764f-57ef-866d-593d57a20a00"
+                }
+              ],
+              "name": "health_yellow",
+              "rule_name": "base_default",
+              "threshold_name": "health_yellow_points",
+              "threshold_value": 15,
+              "value": 1.0
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 12,
+              "evidence": [
+                {
+                  "field": "active_users",
+                  "observed_at": "2026-06-21T00:00:00Z",
+                  "source": "cs_platform",
+                  "source_id": "ac5ddaea-764f-57ef-866d-593d57a20a00"
+                }
+              ],
+              "name": "low_seat_penetration",
+              "rule_name": "base_default",
+              "threshold_name": "seat_penetration_floor",
+              "threshold_value": 0.5,
+              "value": 0.11428571428571428
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 15,
+              "evidence": [
+                {
+                  "field": "underused_capabilities",
+                  "observed_at": "2026-06-21T00:00:00Z",
+                  "source": "cs_platform",
+                  "source_id": "ac5ddaea-764f-57ef-866d-593d57a20a00"
+                },
+                {
+                  "field": "capability",
+                  "observed_at": "2026-05-01",
+                  "source": "telemetry",
+                  "source_id": "ac5ddaea-764f-57ef-866d-593d57a20a00:core_telematics"
+                }
+              ],
+              "name": "feature_depth_gap",
+              "rule_name": "base_default",
+              "threshold_name": "depth_floor",
+              "threshold_value": 0.6,
+              "value": 0.0
+            }
+          ],
+          "score": 105
+        },
+        "proposal_action_type": "draft_customer_outreach",
+        "proposal_status": "pending",
+        "recommended_action": "draft_customer_outreach"
+      },
+      {
+        "account_id": "b2178254-7d72-55e3-84af-27846a0cb7d5",
+        "account_resolution": "exactly_one",
+        "customer_contact_allowed": true,
+        "disposition": "propose_customer_action",
+        "evidence_ids": [
+          "85b3431d-1fe0-5c97-86da-c33dbc2d01c8",
+          "0f5ea32b-c798-5a0d-b21b-28f3eb5f85ee",
+          "b2178254-7d72-55e3-84af-27846a0cb7d5"
+        ],
+        "has_customer_draft": true,
+        "priority": {
+          "factors": [
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 25,
+              "evidence": [
+                {
+                  "field": "ttv_milestone",
+                  "observed_at": "2026-06-15",
+                  "source": "telemetry",
+                  "source_id": "85b3431d-1fe0-5c97-86da-c33dbc2d01c8"
+                }
+              ],
+              "name": "milestones_overdue",
+              "rule_name": "base_default",
+              "threshold_name": "milestone_overdue_points",
+              "threshold_value": 25,
+              "value": 1.0
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 24,
+              "evidence": [
+                {
+                  "field": "ttv_milestone",
+                  "observed_at": "2026-06-15",
+                  "source": "telemetry",
+                  "source_id": "85b3431d-1fe0-5c97-86da-c33dbc2d01c8"
+                }
+              ],
+              "name": "days_overdue",
+              "rule_name": "base_default",
+              "threshold_name": "days_overdue_cap",
+              "threshold_value": 40,
+              "value": 12.0
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 15,
+              "evidence": [
+                {
+                  "field": "health_score",
+                  "observed_at": "2026-06-21T00:00:00Z",
+                  "source": "cs_platform",
+                  "source_id": "b2178254-7d72-55e3-84af-27846a0cb7d5"
+                }
+              ],
+              "name": "health_yellow",
+              "rule_name": "base_default",
+              "threshold_name": "health_yellow_points",
+              "threshold_value": 15,
+              "value": 1.0
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 12,
+              "evidence": [
+                {
+                  "field": "active_users",
+                  "observed_at": "2026-06-21T00:00:00Z",
+                  "source": "cs_platform",
+                  "source_id": "b2178254-7d72-55e3-84af-27846a0cb7d5"
+                }
+              ],
+              "name": "low_seat_penetration",
+              "rule_name": "base_default",
+              "threshold_name": "seat_penetration_floor",
+              "threshold_value": 0.5,
+              "value": 0.11428571428571428
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 15,
+              "evidence": [
+                {
+                  "field": "underused_capabilities",
+                  "observed_at": "2026-06-21T00:00:00Z",
+                  "source": "cs_platform",
+                  "source_id": "b2178254-7d72-55e3-84af-27846a0cb7d5"
+                },
+                {
+                  "field": "capability",
+                  "observed_at": "2026-05-01",
+                  "source": "telemetry",
+                  "source_id": "b2178254-7d72-55e3-84af-27846a0cb7d5:core_telematics"
+                }
+              ],
+              "name": "feature_depth_gap",
+              "rule_name": "base_default",
+              "threshold_name": "depth_floor",
+              "threshold_value": 0.6,
+              "value": 0.0
+            }
+          ],
+          "score": 91
+        },
+        "proposal_action_type": "draft_customer_outreach",
+        "proposal_status": "pending",
+        "recommended_action": "draft_customer_outreach"
+      },
+      {
+        "account_id": "efe1d86f-af21-5ca6-8719-3ba8b4429292",
+        "account_resolution": "exactly_one",
+        "customer_contact_allowed": true,
+        "disposition": "propose_customer_action",
+        "evidence_ids": [
+          "7dd6a2dc-67d4-5087-9708-7d3c5a83df44",
+          "efe1d86f-af21-5ca6-8719-3ba8b4429292"
+        ],
+        "has_customer_draft": true,
+        "priority": {
+          "factors": [
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 20,
+              "evidence": [
+                {
+                  "field": "target_date",
+                  "observed_at": "2026-06-17",
+                  "source": "cs_platform",
+                  "source_id": "7dd6a2dc-67d4-5087-9708-7d3c5a83df44"
+                }
+              ],
+              "name": "success_plan_overdue",
+              "rule_name": "base_default",
+              "threshold_name": "success_plan_overdue_points",
+              "threshold_value": 20,
+              "value": 1.0
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 15,
+              "evidence": [
+                {
+                  "field": "health_score",
+                  "observed_at": "2026-06-21T00:00:00Z",
+                  "source": "cs_platform",
+                  "source_id": "efe1d86f-af21-5ca6-8719-3ba8b4429292"
+                }
+              ],
+              "name": "health_yellow",
+              "rule_name": "base_default",
+              "threshold_name": "health_yellow_points",
+              "threshold_value": 15,
+              "value": 1.0
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 12,
+              "evidence": [
+                {
+                  "field": "active_users",
+                  "observed_at": "2026-06-21T00:00:00Z",
+                  "source": "cs_platform",
+                  "source_id": "efe1d86f-af21-5ca6-8719-3ba8b4429292"
+                }
+              ],
+              "name": "low_seat_penetration",
+              "rule_name": "base_default",
+              "threshold_name": "seat_penetration_floor",
+              "threshold_value": 0.5,
+              "value": 0.11428571428571428
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 15,
+              "evidence": [
+                {
+                  "field": "underused_capabilities",
+                  "observed_at": "2026-06-21T00:00:00Z",
+                  "source": "cs_platform",
+                  "source_id": "efe1d86f-af21-5ca6-8719-3ba8b4429292"
+                },
+                {
+                  "field": "capability",
+                  "observed_at": "2026-05-01",
+                  "source": "telemetry",
+                  "source_id": "efe1d86f-af21-5ca6-8719-3ba8b4429292:core_telematics"
+                }
+              ],
+              "name": "feature_depth_gap",
+              "rule_name": "base_default",
+              "threshold_name": "depth_floor",
+              "threshold_value": 0.6,
+              "value": 0.0
+            }
+          ],
+          "score": 62
+        },
+        "proposal_action_type": "draft_customer_outreach",
+        "proposal_status": "pending",
+        "recommended_action": "draft_customer_outreach"
+      }
+    ]
+  },
+  "distributional_fixture": {
+    "allowed_failure_clusters": [
+      "tone_too_generic"
+    ],
+    "baseline_pass_rate_band": {
+      "lower": 0.6995,
+      "method": "wilson_score_interval_95",
+      "passed": 64,
+      "point": 0.8,
+      "total": 80,
+      "upper": 0.873
+    },
+    "case_ids": [
+      "sweep_reason_quality_acme",
+      "sweep_reason_quality_globex",
+      "sweep_reason_quality_initech",
+      "sweep_reason_quality_cyberdyne_internal",
+      "sweep_reason_quality_soylent_injection",
+      "sweep_escalation_lane_wayne",
+      "sweep_refusal_umbrella",
+      "sweep_refusal_stark"
+    ],
+    "minimum_lower_bound": 0.62,
+    "minimum_point_estimate": 0.78,
+    "note": "Seeded fixture proves statistical regression machinery offline; real nondeterminism is measured only by regression-csm-live.",
+    "runs_per_case": 10,
+    "seed": "agent1-slot-b-regression-v1"
+  },
+  "generated_by": "eval.regression_csm",
+  "measurement_scope": "Offline CI baseline: exact deterministic Agent 1 spine plus seeded distributional fixture mechanics. This is not live model drift evidence.",
+  "schema_version": 1,
+  "scorecard_score": {
+    "passed": 23,
+    "total": 23
+  },
+  "slot_b": {
+    "fixture_model_id": "fixture-agent1-slot-b-v1",
+    "live_model_id": "claude-opus-4-8",
+    "prompt_version": "agent1-slot-b-reason-draft-v1"
+  }
+}

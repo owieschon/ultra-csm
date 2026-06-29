@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ultra-csm"
+version = "0.0.0"
+description = "Ultra CSM — eval-first multi-agent customer success platform"
+requires-python = ">=3.10"
+dependencies = [
+    "psycopg[binary]>=3.2",
+]
+
+[project.scripts]
+ucsm = "ultra_csm.cli:main"
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+# pythonpath over editable install: dodges the macOS/3.14 editable .pth hazard
+# so tests import from src/ deterministically.
+pythonpath = ["src", "."]
+testpaths = ["tests"]
