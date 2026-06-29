@@ -11,6 +11,33 @@ is a Time-to-Value accelerator: it reads CRM / CS-platform / product-telemetry d
 customer value model, projects a TTV priority lens, and emits only **gated, proposal-only** CSM
 actions — it never sends or self-authorizes.
 
+## Architecture: one model, three lenses, one analyst
+
+The naive design is four independent agents, each re-deriving account health. That duplicates the
+hard part and fights over boundaries — an account can be a *risk* and an *expansion* case at once.
+Instead:
+
+- **One deterministic Customer Value Model** computes account health *once* — four rails (usage,
+  penetration, feature-depth, outcome) plus a cross-rail divergence layer. The LLM computes none of
+  the health; it only narrates the reason and drafts outreach in two slots.
+- **Agents 1–3 are thin lenses** — policies that *project* that one model at different lifecycle
+  states, each with its own action and gate. Priority is the model viewed through a lens, not a
+  re-derivation.
+  - **Agent 1 — Time-to-Value** *(built)*: onboarding/activation stalls → next-best action to first value.
+  - **Agent 2 — Risk / Retention** *(roadmap)*: steady-state fragility (single-threaded champion, missing sponsor), renewal proximity.
+  - **Agent 3 — Expansion** *(roadmap)*: unrealized value in healthy accounts — low penetration, unused entitlements.
+- **Agent 4 — Cohort / Program analyst** *(roadmap)*: population-level, not per-account. Finds
+  segment patterns (e.g. "onboarding path Y predicts churn"), feeds the CS manager and Product, and
+  *reduces the symptom load* lenses 1–3 chase — Agent 1's outcomes become Agent 4's labels. A flywheel.
+
+Because they're lenses over *one* model, a single account can be in view of several at once without
+conflict (a single-threaded account is simultaneously Agent 2's risk and Agent 3's expansion target —
+same model fact, two actions). Every customer-facing action from any lens routes through the same
+gate: **proposal → human verdict → committer.** The CSM is the actor; the agents triage and draft,
+the human decides. Today the shared model, the gate, and Agent 1 are built; 2–4 are specced behind an
+ordering guard (don't build breadth until the model and the differentiator are proven). Full spec:
+`docs/CUSTOMER_VALUE_MODEL.md`.
+
 ## Quickstart
 
 **Prerequisites:** Python 3.10+ and PostgreSQL 16 client tooling (`initdb`, `pg_ctl`) on `PATH`.
