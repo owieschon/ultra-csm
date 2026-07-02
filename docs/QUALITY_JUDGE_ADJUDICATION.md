@@ -104,3 +104,43 @@ The current queue contains `151` cells: `grounding_fidelity=45`,
 
 Hard-layer designer intent was also aligned with the ratified priority rule:
 score-only or one-factor priority explanations are `priority_fidelity=2`, not `3`.
+
+## Iteration 3 Re-Check Gate
+
+The 151 approved cells are not applied until a tool-blinded re-check passes. `make
+judge-reference-recheck-csm` writes:
+
+- `eval/gold/reference_recheck_iteration3.json`: the 40-card labeler-facing deck.
+- `eval/gold/reference_recheck_iteration3_key.json`: the held-out prior-score and bucket
+  key.
+
+The deck is stratified across the three re-scored dimensions and the three owner buckets,
+but exposes only the dimension to score plus request/output context. It does not expose
+the prior final score, bucket, judge score, or judge rationale.
+
+Gate: no more than `2` disagreements out of `40`. If the gate fails, tighten the affected
+anchor and re-pass before applying the 151 cells.
+
+The `Hi <first name>` opener remains an owner-ratified tone call before any tone-scoped
+judge revision. Do not change the judge prompt during the frozen `quality-judge-v3`
+iteration-3 reference pass.
+
+## Claim Boundary After Re-Reference
+
+The iteration-3 claim is: the judge agrees with the human application of the ratified
+rubric. It is not yet a claim that the judge agrees with a pre-existing independent
+standard.
+
+That distinction matters because the reference pass moved many stale cells toward the
+ratified definitions. The defense is procedural, not rhetorical:
+
+- D1 and D3 were ratified before the re-reference pass, based on explicit rubric
+  boundaries: truthfulness is separate from thoroughness, and specificity requires an
+  operational account detail.
+- The same pass preserved an honest judge-error ledger by ruling against the judge on
+  `34` cells and against both old reference and judge on `10` cells.
+- The re-check deck strips prior final scores, buckets, judge scores, and judge rationales
+  before the owner re-scores the sample.
+
+The remaining independence limit is the single-labeler limit. A blind second-labeler pass is
+the future check for the human-agreement ceiling.
