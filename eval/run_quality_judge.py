@@ -177,6 +177,7 @@ def build_report(judge) -> dict:
         "artifact": "slot_b_judge_agreement",
         "model_id": judge.model_id,
         "judge_prompt_version": JUDGE_PROMPT_VERSION,
+        "judge_reasoning": judge.reasoning,
         "deterministic_dimensions": list(DETERMINISTIC_DIMENSIONS),
         "clean_layer": score_agreement(clean),
         "hard_layer": {**score_agreement(hard), "by_family": by_family(hard)},
@@ -194,9 +195,14 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--model", default=None)
     parser.add_argument("--output", default=str(REPORT_PATH))
+    parser.add_argument(
+        "--terse",
+        action="store_true",
+        help="Use bare-score judge output; default uses reasoning-before-score.",
+    )
     args = parser.parse_args(argv)
 
-    judge = AnthropicQualityJudge(model_id=args.model)
+    judge = AnthropicQualityJudge(model_id=args.model, reasoning=not args.terse)
     report = build_report(judge)
     Path(args.output).write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
