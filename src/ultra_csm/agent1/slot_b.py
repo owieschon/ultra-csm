@@ -16,6 +16,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Protocol
 
 from ultra_csm._util import evidence_ids
+from ultra_csm.knowledge import is_safe_customer_ask
 from ultra_csm.observability import Meter, NoOpMeter, NoOpTracer, Tracer
 
 if TYPE_CHECKING:
@@ -23,12 +24,12 @@ if TYPE_CHECKING:
 
 log = logging.getLogger(__name__)
 
-SLOT_B_PROMPT_VERSION = "agent1-slot-b-reason-draft-v1"
+SLOT_B_PROMPT_VERSION = "agent1-slot-b-reason-draft-v2"
 SLOT_B_PROMPT_PATH = (
     Path(__file__).resolve().parents[3]
     / "docs"
     / "prompts"
-    / "agent1_slot_b_reason_draft_v1.md"
+    / "agent1_slot_b_reason_draft_v2.md"
 )
 
 FIXTURE_SLOT_B_MODEL_ID = "fixture-agent1-slot-b-v1"
@@ -75,6 +76,7 @@ class ReasonDraftRequest:
     contact_name: str | None = None
     contact_email: str | None = None
     untrusted_text_fragments: tuple[str, ...] = ()
+    org_context: dict | None = None
 
     def evidence_ids(self) -> tuple[str, ...]:
         return evidence_ids(self.evidence)
@@ -125,10 +127,13 @@ class FixtureReasonDraftWriter:
         draft = None
         if request.customer_contact_allowed:
             contact = request.contact_name or "there"
+            ask = _play_ask(request) or "review the activation blockers and next steps"
+            factor_names = ", ".join(
+                factor.name for factor in request.priority.factors[:2]
+            )
             draft = (
-                f"Hi {contact}, I found an onboarding risk for {request.account_name} "
-                f"grounded in {len(request.evidence)} account records. Can we review "
-                "the activation blockers and next steps?"
+                f"Hi {contact}, {request.account_name} is showing an onboarding "
+                f"risk tied to {factor_names}. Can we {ask}?"
             )
         output = ReasonDraftOutput(
             reason=reason,
@@ -352,6 +357,25 @@ def _jsonable_request(request: ReasonDraftRequest) -> dict:
     data = asdict(request)
     data["prompt_version"] = SLOT_B_PROMPT_VERSION
     return data
+
+
+def _play_ask(request: ReasonDraftRequest) -> str | None:
+    context = request.org_context or {}
+    plays = context.get("gap_plays")
+    if not isinstance(plays, list):
+        return None
+    factor_names = {factor.name for factor in request.priority.factors}
+    for play in plays:
+        if not isinstance(play, dict):
+            continue
+        customer_ask = play.get("customer_ask")
+        if (
+            play.get("factor") in factor_names
+            and isinstance(customer_ask, str)
+            and is_safe_customer_ask(customer_ask)
+        ):
+            return customer_ask
+    return None
 
 
 def _citation_text(evidence_ids: tuple[str, ...]) -> str:

@@ -30,6 +30,7 @@ from ultra_csm.data_plane import (
 from ultra_csm.data_plane.contracts import ResolutionState
 from ultra_csm.governance import ActionGate, ActionProposal, proposal_fields_for
 from ultra_csm.governance.csm_actions import CSMActionType
+from ultra_csm.knowledge import load_org_pack
 from ultra_csm.quality_breaker import (
     QualityBreakerConfig,
     QualityBreakerDecision,
@@ -125,6 +126,7 @@ def run_time_to_value_sweep(
     quality_breaker: QualityBreakerConfig | None = None,
     cost_tracker: "CostTracker | None" = None,
     cost_budget: "CostBudget | None" = None,
+    org_context: dict | None = None,
 ) -> SweepResult:
     """Run Agent 1 across a tenant book and emit a deterministic work queue."""
 
@@ -132,6 +134,11 @@ def run_time_to_value_sweep(
 
     sweep_start = time.perf_counter()
     writer = reason_draft_writer or FixtureReasonDraftWriter()
+    slot_b_org_context = (
+        org_context
+        if org_context is not None
+        else load_org_pack().slot_b_context()
+    )
     breaker_decision = (
         evaluate_quality_breaker(quality_breaker)
         if quality_breaker is not None
@@ -213,6 +220,7 @@ def run_time_to_value_sweep(
             contacts=contacts,
             reason_draft_writer=current_writer,
             quality_breaker=breaker_decision,
+            org_context=slot_b_org_context,
             timing=timing,
         )
         if built is not None:
@@ -353,6 +361,7 @@ def _work_item_for_account(
     contacts: tuple[CRMContact, ...],
     reason_draft_writer: ReasonDraftWriter,
     quality_breaker: QualityBreakerDecision | None = None,
+    org_context: dict | None = None,
     timing: _SweepTimingAccum | None = None,
 ) -> CSMWorkItem | None:
     company = data_plane.cs.get_company(account.account_id)
@@ -442,6 +451,7 @@ def _work_item_for_account(
         as_of=as_of,
         contact=contact if not customer_action_blocked else None,
         cases=cases,
+        org_context=org_context,
     )
     slot_start = time.perf_counter()
     slot_b, draft_mode = _write_slot_b_with_fallback(slot_b_request, reason_draft_writer)
@@ -680,6 +690,7 @@ def _slot_b_request(
     as_of: str,
     contact: CRMContact | None,
     cases: tuple,
+    org_context: dict | None = None,
 ) -> ReasonDraftRequest:
     return ReasonDraftRequest(
         tenant_id=tenant_id,
@@ -711,6 +722,7 @@ def _slot_b_request(
             for case in cases
             if getattr(case, "subject", "")
         ),
+        org_context=org_context,
     )
 
 

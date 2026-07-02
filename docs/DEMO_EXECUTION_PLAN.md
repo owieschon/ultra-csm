@@ -82,15 +82,15 @@ landed); `LIVE_REGRESSION_STRENGTHENING_SPEC` → `QUALITY_REGRESSION_EVAL_SPEC.
 |---|---|---|
 | Deterministic sweep + value model + TTV lens | BUILT | `make scorecard-csm` hard gates green |
 | Gate (proposal→verdict, hash-bound) + `csm_actions` **with tier semantics** (`autonomy_tier` 1/2, `release_condition` incl. `auto_internal_only`) | BUILT | `grep -n autonomy_tier src/ultra_csm/governance/csm_actions.py` |
-| Slot B (fixture + live Anthropic writers, contract validator) | BUILT — **no org knowledge** | `grep -n org_context src/ultra_csm/agent1/slot_b.py` → empty |
+| Slot B (fixture + live Anthropic writers, contract validator) | BUILT — org context wired through prompt v2 | `grep -n org_context src/ultra_csm/agent1/slot_b.py` |
 | Judge (`eval/judge_anthropic.py`, `judge_csm.py`) + diagnosis toolkit (`diagnose_judge.py`, `compare_judges.py`, `judge_nrun.py`, `determinism_probe.py`) | BUILT — **κ not cleared** | `cat eval/gold/judge_agreement.json` |
-| Gold sets: clean 63 (9 variants × 7, blinded, draft labels **pending human approval**) + hard layer + keys + status/validate gates + labeling helper (`eval/label_gold.py`) | BUILT | `make quality-gold-status-csm` |
+| Gold sets: clean 63 (9 variants × 7, blinded, owner-approved single-labeler labels) + hard layer + keys + status/validate gates + labeling helper (`eval/label_gold.py`) | BUILT — judge validation still open | `make quality-gold-status-csm` |
 | Quality regression ladder + no-op control (offline mechanics) | BUILT | `make quality-regression-csm` |
 | Two-lane structural regression + live N=30 contract capture + paired McNemar machinery | BUILT | `make regression-csm` |
 | Connector smoke + schema explorer (5 sources, cred-gated, fail-clean) | BUILT — discovery only; mapping→config NOT wired | `PYTHONPATH=src:. python -m ultra_csm.cli connectors explore attio_crm` (no creds → clean missing-env report) |
 | CLI | ONLY `connectors smoke|explore` — **`proposals` commands DO NOT exist** | `grep -n add_parser src/ultra_csm/cli.py` |
 | Committers / send mechanism | **DO NOT EXIST** | `grep -rn Committer src/` → only gate/authorizer hits |
-| `agent_wikis/` org-knowledge | **DELETED in simplification** — greenfield | `ls agent_wikis` → gone |
+| Org-knowledge pack | BUILT for the demo product; ablation proof still open | `pytest tests/test_knowledge.py tests/test_agent1_slot_b.py -q` |
 | `sim/` directory | PARTIAL survivor of the cut — contents unverified | `ls sim/; find sim -name '*.py' \| head` — implementer MUST inspect before deciding reuse-vs-build in Slice 3 |
 | Outcome rail | `realized_state` hardcoded `not_instrumented` | `grep -n not_instrumented src/ultra_csm/value_model.py` |
 
@@ -101,9 +101,10 @@ landed); `LIVE_REGRESSION_STRENGTHENING_SPEC` → `QUALITY_REGRESSION_EVAL_SPEC.
 **Goal:** all six dimensions reach weighted κ ≥ 0.6 vs approved human labels, with
 hard-layer `overall_pass_false_negative == 0`, without Goodharting the judge.
 
-**Current facts:** `judge_agreement.json` clean layer: on_task 0.761, safety 1.0 pass;
-grounding 0.185, specificity 0.286, tone 0.386, priority 0.394 FAIL. Reference = draft
-labels pending human approval → the κs are provisional.
+**Current facts:** `quality-gold-status-csm` reports 63/63 blinded records labeled by an
+owner-approved single labeler, with `judge_validated=false`. The next gate is a fresh
+`make judge-agreement-csm` run against that reference; any prior κ table is historical
+unless it names the same reference and judge prompt version.
 
 **Iteration counter:** the first blind agreed-cell audit returned 8/10. The misses were
 classified as rubric ambiguity, so the grounding-vs-safety and grounding-severity anchors
@@ -171,24 +172,28 @@ terminology, and voice — and the demo path runs the real model.
 
 **Already built / reuse:** Slot B request/writer seam (`ReasonDraftRequest`,
 `AnthropicReasonDraftWriter`), contract validator, versioned prompt pattern
-(`docs/prompts/`). **Greenfield:** the knowledge content and its loader (`agent_wikis/`
-was deleted — do NOT resurrect the old wiki module; build the minimal new thing).
+(`docs/prompts/`), `knowledge/org_pack.json`, and the validated loader
+(`src/ultra_csm/knowledge.py`). `agent_wikis/` was deleted in the simplification cut; keep
+the minimal `knowledge/` package instead of resurrecting that module.
 
 **Build:**
-1. `knowledge/org_pack.json` (or `.md` set) — ONE versioned artifact: product value-props
+1. `knowledge/org_pack.json` — ONE versioned artifact: product value-props
    (the sim product's), terminology, voice/tone rules, gap→play map. Content is for the
-   **simulated product**; mark `fictional: true` in the pack metadata.
+   **simulated product**; mark `fictional: true` in the pack metadata. **Built.**
 2. A loader (`src/ultra_csm/knowledge.py`, ~small): validates schema, exposes
-   `load_org_pack() -> OrgPack`, carries `pack_version`.
+   `load_org_pack() -> OrgPack`, carries `pack_version`. **Built.**
 3. Wire into Slot B as `org_context` in the request payload + prompt section. Rules:
    org_context may shape LANGUAGE and play selection; **operational claims still require
    evidence ids** (existing validator unchanged). Bump Slot B `prompt_version` →
-   re-baseline regression (intended change; say so in commit).
+   re-baseline regression (intended change; say so in commit). **Built through prompt v2;
+   artifacts must be re-baselined in the implementation commit.**
 4. Evals (extend existing suites, don't create parallel ones): **authority invariance**
    (a hostile/absurd org pack cannot change priority, disposition, recipient, or consent
    — hard gate); **citation preserved** (pack facts don't count as evidence); **ablation**
    (judge scores with-pack > without-pack on specificity/tone — run via judge once Slice 1
-   clears); **hostile pack** (pack containing injection text is neutralized).
+   clears); **hostile pack** (pack containing unsafe authority language is neutralized).
+   Authority invariance and hostile-pack rejection are built; judge-scored ablation remains
+   open.
 
 **Decision criteria:** IF a pack field would let the LLM assert a customer-specific fact
 not in evidence → that field is forbidden; packs hold product/org knowledge only.
