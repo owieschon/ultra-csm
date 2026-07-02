@@ -2,11 +2,17 @@ PYTHON := .venv/bin/python
 
 # One-time reviewer setup. Requires Python 3.10+ and local PostgreSQL 16 tooling
 # (`initdb`/`pg_ctl`) available on PATH or through the platform package.
-.PHONY: setup eval lint scorecard-csm csm-work-queue demo-loop demo clean outcome-simulation-csm stochastic-csm regression-csm regression-csm-live quality-regression-csm quality-gold-csm quality-gold-label-csm quality-gold-status-csm quality-gold-validate-csm quality-gold-hard-csm quality-gold-hard-label-csm quality-gold-hard-status-csm quality-gold-hard-validate-csm judge-agreement-csm judge-diagnosis-csm judge-reference-review-csm judge-reference-recheck-csm judge-reference-apply-csm hygiene
+.PHONY: setup eval lint scorecard-csm csm-work-queue demo-loop demo clean outcome-simulation-csm stochastic-csm regression-csm regression-csm-live quality-regression-csm quality-gold-csm quality-gold-label-csm quality-gold-status-csm quality-gold-validate-csm quality-gold-hard-csm quality-gold-hard-label-csm quality-gold-hard-status-csm quality-gold-hard-validate-csm judge-agreement-csm judge-diagnosis-csm judge-reference-review-csm judge-reference-recheck-csm judge-reference-apply-csm hygiene serve mcp
 setup:
 	python3 -m venv .venv
 	$(PYTHON) -m pip install --upgrade pip
-	$(PYTHON) -m pip install -e ".[dev]"
+	$(PYTHON) -m pip install -e ".[dev,api,mcp]"
+
+serve:
+	PYTHONPATH=src:. $(PYTHON) -m uvicorn ultra_csm.api:app --host 0.0.0.0 --port 8000 --reload
+
+mcp:
+	PYTHONPATH=src:. $(PYTHON) -m ultra_csm.mcp_server
 
 eval:
 	$(PYTHON) -m pytest tests/ -q
