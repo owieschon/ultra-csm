@@ -211,6 +211,96 @@ def _score_book(
     return results
 
 
+def _score_book_deep(
+    base_data: "FixtureCustomerData",
+    bundle: "SimulatedDataBundle",
+    as_of: str,
+) -> list[dict[str, Any]]:
+    """Score all accounts using the value-model bridge with deep simulation data.
+
+    Instead of consuming pre-set HealthScore and AdoptionSummary fixtures,
+    this computes rail scores directly from the granular data in *bundle*.
+    """
+    from ultra_csm.value_model import load_value_model_config, project_ttv_lens
+    from ultra_csm.value_model_bridge import build_deep_value_model
+
+    config = load_value_model_config()
+    results: list[dict[str, Any]] = []
+
+    companies_by_id = {c.company_id: c for c in base_data.companies}
+    adoption_by_id = {a.account_id: a for a in base_data.adoption_summaries}
+    entitlements_by_acct: dict[str, list] = {}
+    for e in base_data.entitlements:
+        entitlements_by_acct.setdefault(e.account_id, []).append(e)
+    plans_by_acct: dict[str, list] = {}
+    for p in base_data.success_plans:
+        plans_by_acct.setdefault(p.account_id, []).append(p)
+    milestones_by_acct: dict[str, list] = {}
+    for m in base_data.milestones:
+        milestones_by_acct.setdefault(m.account_id, []).append(m)
+
+    for account in base_data.accounts:
+        aid = account.account_id
+        company = companies_by_id.get(aid)
+        if company is None:
+            continue
+        if aid not in bundle.accounts:
+            continue
+
+        adoption = adoption_by_id.get(aid)
+        licensed_users = adoption.licensed_users if adoption else 0
+        entitlements = tuple(entitlements_by_acct.get(aid, []))
+        success_plans = tuple(plans_by_acct.get(aid, []))
+        milestones = tuple(milestones_by_acct.get(aid, []))
+
+        model, health = build_deep_value_model(
+            bundle=bundle,
+            account_id=aid,
+            account=account,
+            company=company,
+            entitlements=entitlements,
+            success_plans=success_plans,
+            licensed_users=licensed_users,
+            config=config,
+        )
+
+        open_milestones = tuple(
+            m for m in milestones
+            if m.achieved_at is None
+            and m.expected_by < as_of
+        )
+        overdue_plans = tuple(
+            p for p in success_plans
+            if p.status in ("active",)
+            and p.target_date < as_of
+        )
+
+        priority = project_ttv_lens(
+            model,
+            company=company,
+            health=health,
+            open_milestone_gaps=open_milestones,
+            overdue_success_plans=overdue_plans,
+            as_of=as_of,
+        )
+
+        results.append({
+            "account_id": aid,
+            "name": account.name,
+            "health_band": health.band,
+            "health_score": health.score,
+            "health_drivers": list(health.drivers),
+            "priority_score": priority.score,
+            "priority_factors": [f.name for f in priority.factors],
+            "arr_cents": company.arr_cents,
+            "lifecycle_stage": company.lifecycle_stage,
+            "renewal_date": company.renewal_date,
+        })
+
+    results.sort(key=lambda r: r["priority_score"], reverse=True)
+    return results
+
+
 def _apply_deep_data_overlay(
     data: "FixtureCustomerData",
     day: int,
@@ -321,20 +411,23 @@ def _demo_sweep(args: argparse.Namespace) -> int:
     from ultra_csm.data_plane.synthetic_book import SEED_DATE
 
     day = args.day
+    use_deep = getattr(args, "deep", False)
     base_date = datetime.strptime(SEED_DATE, "%Y-%m-%d")
     as_of = (base_date + timedelta(days=day)).strftime("%Y-%m-%d")
 
     base_book = build_synthetic_book()
-    if day == 0:
-        mutated = base_book
+
+    if use_deep:
+        # Deep path: compute value model from granular simulation data
+        from ultra_csm.data_plane.data_simulator import simulate_data
+        bundle = simulate_data(base_book, day=day)
+        scored = _score_book_deep(base_book, bundle, as_of)
     else:
-        mutated = simulate_book(base_book, day_offset=day)
-
-    # Overlay deep data simulation when --deep is set
-    if getattr(args, "deep", False) and day > 0:
-        mutated = _apply_deep_data_overlay(mutated, day)
-
-    scored = _score_book(mutated, as_of)
+        if day == 0:
+            mutated = base_book
+        else:
+            mutated = simulate_book(base_book, day_offset=day)
+        scored = _score_book(mutated, as_of)
 
     # Health distribution
     green = sum(1 for r in scored if r["health_band"] == "green")
@@ -349,7 +442,11 @@ def _demo_sweep(args: argparse.Namespace) -> int:
             "accounts": scored,
         }
         if day > 0:
-            base_scored = _score_book(base_book, SEED_DATE)
+            if use_deep:
+                from ultra_csm.data_plane.data_simulator import simulate_data as _sim
+                base_scored = _score_book_deep(base_book, _sim(base_book, day=0), SEED_DATE)
+            else:
+                base_scored = _score_book(base_book, SEED_DATE)
             base_bands = {r["account_id"]: r["health_band"] for r in base_scored}
             changes = []
             for r in scored:
@@ -396,7 +493,11 @@ def _demo_sweep(args: argparse.Namespace) -> int:
     print()
 
     if day > 0:
-        base_scored = _score_book(base_book, SEED_DATE)
+        if use_deep:
+            from ultra_csm.data_plane.data_simulator import simulate_data as _sim2
+            base_scored = _score_book_deep(base_book, _sim2(base_book, day=0), SEED_DATE)
+        else:
+            base_scored = _score_book(base_book, SEED_DATE)
         base_bands = {r["account_id"]: r["health_band"] for r in base_scored}
         print(f"Changes from Day 0:")
         print("  Health Band Changes:")
@@ -440,13 +541,16 @@ def _demo_timeline(args: argparse.Namespace) -> int:
 
     for day in timeline_days:
         as_of = (base_date + timedelta(days=day)).strftime("%Y-%m-%d")
-        if day == 0:
-            data = base_book
+        if use_deep:
+            from ultra_csm.data_plane.data_simulator import simulate_data
+            bundle = simulate_data(base_book, day=day)
+            scored = _score_book_deep(base_book, bundle, as_of)
         else:
-            data = simulate_book(base_book, day_offset=day)
-            if use_deep:
-                data = _apply_deep_data_overlay(data, day)
-        scored = _score_book(data, as_of)
+            if day == 0:
+                data = base_book
+            else:
+                data = simulate_book(base_book, day_offset=day)
+            scored = _score_book(data, as_of)
         all_scored[day] = scored
 
         green = sum(1 for r in scored if r["health_band"] == "green")
