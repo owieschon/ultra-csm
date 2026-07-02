@@ -83,6 +83,7 @@ META_RESIDUE_PATTERNS = (
     re.compile(r"\bhiring\b", re.IGNORECASE),
     re.compile(r"\bJD\b"),
     re.compile(r"\bjob description\b", re.IGNORECASE),
+    re.compile(r"\bCentralize screening\b", re.IGNORECASE),
     re.compile(r"\brole-relevant\b", re.IGNORECASE),
     re.compile(r"\bproof-of-craft\b", re.IGNORECASE),
     re.compile(r"\bapply for the\b", re.IGNORECASE),

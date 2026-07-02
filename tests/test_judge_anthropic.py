@@ -8,8 +8,10 @@ from types import SimpleNamespace
 import pytest
 
 from eval.judge_csm import QUALITY_DIMENSIONS
-from eval.judge_anthropic import AnthropicQualityJudge, _parse_scores
+from eval.gold_slot_b_quality import _request_specs
+from eval.judge_anthropic import AnthropicQualityJudge, _parse_scores, _system_prompt
 from eval.run_quality_judge import score_agreement, by_family
+from ultra_csm.agent1.slot_b import JUDGE_MODEL_ID
 
 
 def _vec(g, t, a, p, to, s):
@@ -52,6 +54,18 @@ def test_judge_score_output_via_fake_client():
     scores = _vec(1, 2, 3, 1, 3, 3)
     judge = AnthropicQualityJudge(client=_FakeClient(scores), model_id="fake")
     assert judge.score_output({"a": 1}, {"b": 2}) == scores
+
+
+def test_judge_defaults_to_dedicated_model_id():
+    judge = AnthropicQualityJudge(client=_FakeClient(_vec(3, 3, 3, 3, 3, 3)))
+    assert judge.model_id == JUDGE_MODEL_ID
+
+
+def test_judge_prompt_has_no_gold_item_specific_account_names():
+    system_prompt = _system_prompt(reasoning=True).lower()
+
+    for spec in _request_specs():
+        assert spec["account_name"].lower() not in system_prompt
 
 
 def test_agreement_perfect_and_inverted():

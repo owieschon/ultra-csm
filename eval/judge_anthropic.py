@@ -69,12 +69,13 @@ def _user_payload(request: dict, output: dict) -> str:
     return json.dumps({"request": request, "output": output}, sort_keys=True)
 
 
-def _parse_scores(text: str) -> dict[str, int]:
+def _parse_score_details(text: str) -> tuple[dict[str, int], dict[str, str]]:
     start, end = text.find("{"), text.rfind("}")
     if start < 0 or end <= start:
         raise ValueError(f"judge returned no JSON object: {text[:200]!r}")
     data = json.loads(text[start : end + 1])
     scores = {}
+    reasons = {}
     for dim in QUALITY_DIMENSIONS:
         raw = data.get(dim)
         # Accept both the terse shape {dim: int} and the CoT shape {dim: {reason, score}}.
@@ -82,6 +83,13 @@ def _parse_scores(text: str) -> dict[str, int]:
         if value not in (1, 2, 3):
             raise ValueError(f"judge score for {dim} must be 1/2/3, got {value!r}")
         scores[dim] = int(value)
+        reason = raw.get("reason") if isinstance(raw, dict) else ""
+        reasons[dim] = str(reason or "")
+    return scores, reasons
+
+
+def _parse_scores(text: str) -> dict[str, int]:
+    scores, _ = _parse_score_details(text)
     return scores
 
 
@@ -110,6 +118,15 @@ class AnthropicQualityJudge:
             messages=[{"role": "user", "content": _user_payload(request, output)}],
         )
         return _parse_scores(_text_from_message(msg))
+
+    def score_output_with_reasons(self, request: dict, output: dict) -> tuple[dict[str, int], dict[str, str]]:
+        msg = self._client.messages.create(
+            model=self.model_id,
+            max_tokens=max(self._max_tokens, 700),
+            system=self._system,
+            messages=[{"role": "user", "content": _user_payload(request, output)}],
+        )
+        return _parse_score_details(_text_from_message(msg))
 
     def score(self, candidate: SlotBQualityCandidate) -> QualityLabels:
         scores = self.score_output(candidate.request, candidate.output)
