@@ -21,6 +21,7 @@ from ultra_csm.agent1 import (
     UnsafeReasonDraftWriter,
     validate_reason_draft_output,
 )
+from ultra_csm.cost_tracker import CostTracker
 from ultra_csm.knowledge import load_org_pack
 from ultra_csm.observability import RecordingMeter, RecordingTracer
 
@@ -228,6 +229,24 @@ def test_anthropic_slot_b_payload_includes_org_context():
     )
 
     AnthropicReasonDraftWriter(client=client).write(request)
+
+
+def test_anthropic_slot_b_records_cost_without_meter():
+    request = _request(org_context=load_org_pack().slot_b_context())
+    client = _FakeClient(
+        '{"reason":"Score 95 from evidence [evidence:sig-1].",'
+        '"cited_evidence_ids":["sig-1"],'
+        '"customer_draft":"Hi Jordan Lee, can we review activation blockers?"}'
+    )
+    tracker = CostTracker()
+
+    AnthropicReasonDraftWriter(client=client, cost_tracker=tracker).write(request)
+
+    stats = tracker.stats()
+    assert stats["total_calls"] == 1
+    assert stats["total_tokens"] == 125
+    assert stats["total_cost_usd"] > 0
+    assert tracker.cost_per_account()["acct-1"] > 0
 
     assert client.messages.last_kwargs is not None
     payload = json.loads(client.messages.last_kwargs["messages"][0]["content"])

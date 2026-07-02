@@ -224,7 +224,8 @@ class AnthropicReasonDraftWriter:
                 "prompt_version": self.prompt_version,
             },
         ) as span:
-            start = time.perf_counter() if self._meter.enabled else 0.0
+            should_time = self._meter.enabled or self._cost_tracker is not None
+            start = time.perf_counter() if should_time else 0.0
             msg = self._client.messages.create(
                 model=self.model_id,
                 max_tokens=700,
@@ -238,8 +239,8 @@ class AnthropicReasonDraftWriter:
                 span.set_attribute("usage.input_tokens", in_tok)
             if out_tok is not None:
                 span.set_attribute("usage.output_tokens", out_tok)
+            latency_ms = (time.perf_counter() - start) * 1000.0 if should_time else 0.0
             if self._meter.enabled:
-                latency_ms = (time.perf_counter() - start) * 1000.0
                 span.set_attribute("latency_ms", latency_ms)
                 self._latency.record(latency_ms, {"slot": "agent1_reason_draft", "model_id": self.model_id})
                 attrs = {"slot": "agent1_reason_draft", "model_id": self.model_id}
@@ -252,15 +253,15 @@ class AnthropicReasonDraftWriter:
                 span.set_attribute("usage.cost_usd", cost)
                 self._cost.record(cost, attrs)
 
-                # Record in cumulative cost tracker for API /metrics.
-                if self._cost_tracker is not None and in_tok is not None:
-                    self._cost_tracker.record(
-                        model_id=self.model_id,
-                        input_tokens=in_tok,
-                        output_tokens=out_tok or 0,
-                        latency_ms=latency_ms,
-                        account_id=request.account_id,
-                    )
+            # Record in cumulative cost tracker for API /metrics and demo artifacts.
+            if self._cost_tracker is not None and in_tok is not None:
+                self._cost_tracker.record(
+                    model_id=self.model_id,
+                    input_tokens=in_tok,
+                    output_tokens=out_tok or 0,
+                    latency_ms=latency_ms,
+                    account_id=request.account_id,
+                )
 
         output = _parse_live_output(
             _text_from_message(msg),
