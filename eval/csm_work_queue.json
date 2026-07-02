@@ -11,6 +11,7 @@
       "customer_contact_allowed": false,
       "customer_draft": null,
       "disposition": "escalate",
+      "draft_mode": "none",
       "evidence": [
         {
           "field": "email",
@@ -50,6 +51,7 @@
       "customer_contact_allowed": true,
       "customer_draft": "Hi Jordan Lee, I found an onboarding risk for Acme Logistics grounded in 5 account records. Can we review the activation blockers and next steps?",
       "disposition": "propose_customer_action",
+      "draft_mode": "fixture",
       "evidence": [
         {
           "field": "daily_active_assets",
@@ -243,6 +245,7 @@
       "customer_contact_allowed": false,
       "customer_draft": null,
       "disposition": "internal_review",
+      "draft_mode": "fixture",
       "evidence": [
         {
           "field": "daily_active_assets",
@@ -395,6 +398,7 @@
       "customer_contact_allowed": true,
       "customer_draft": "Hi Avery Kim, I found an onboarding risk for Soylent Distribution grounded in 5 account records. Can we review the activation blockers and next steps?",
       "disposition": "propose_customer_action",
+      "draft_mode": "fixture",
       "evidence": [
         {
           "field": "daily_active_assets",
@@ -559,6 +563,7 @@
       "customer_contact_allowed": true,
       "customer_draft": "Hi Alex Rivers, I found an onboarding risk for Globex Fleet grounded in 3 account records. Can we review the activation blockers and next steps?",
       "disposition": "propose_customer_action",
+      "draft_mode": "fixture",
       "evidence": [
         {
           "field": "daily_active_assets",
@@ -694,6 +699,7 @@
       "customer_contact_allowed": true,
       "customer_draft": "Hi Samir Rao, I found an onboarding risk for Initech Services grounded in 2 account records. Can we review the activation blockers and next steps?",
       "disposition": "propose_customer_action",
+      "draft_mode": "fixture",
       "evidence": [
         {
           "field": "target_date",

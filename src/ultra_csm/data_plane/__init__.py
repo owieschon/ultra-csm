@@ -46,6 +46,14 @@ from ultra_csm.data_plane.fixtures import (
     det_id,
     sweep_fixture_data,
 )
+from ultra_csm.data_plane.sim_tenant import (
+    DEFAULT_DEMO_STATE_DIR,
+    SimCRMDataConnector,
+    SimCSPlatformConnector,
+    SimProductTelemetryConnector,
+    SimTenantState,
+    SimTenantStore,
+)
 from ultra_csm.data_plane.connector_catalog import (
     ATTIO_CRM_SPEC,
     CONNECTOR_SPECS,
@@ -154,6 +162,12 @@ __all__ = [
     "default_fixture_data",
     "det_id",
     "sweep_fixture_data",
+    "DEFAULT_DEMO_STATE_DIR",
+    "SimCRMDataConnector",
+    "SimCSPlatformConnector",
+    "SimProductTelemetryConnector",
+    "SimTenantState",
+    "SimTenantStore",
     "ALL_SOURCE_MAPS",
     "GAINSIGHT_SOURCE_MAPS",
     "PRODUCT_TELEMETRY_SOURCE_MAPS",
