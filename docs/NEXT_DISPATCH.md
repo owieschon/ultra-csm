@@ -25,6 +25,11 @@ detection under catastrophic prompt sabotage; it does **not** yet prove semantic
 quality drift. The remaining proof is the realistic quality-regression lane:
 human-validated judge + plausible degradation + candidate model comparison.
 
+The local simulated operating surface is now verified separately from the judge lane:
+REST API, MCP tools, CLI demo commands, deep simulated timeline, demo loop, cost/budget
+metrics, and quality-breaker fallback were executed. See
+[`OPERATING_PROOF.md`](OPERATING_PROOF.md). This is not live-tenant proof.
+
 Direction set by the owner: **do all three build tracks, then package the demo** — sequenced below.
 The ruled-out path was shipping with the N=6 soft spot unaddressed; that soft spot is now
 closed for contract/safety drift only. Quality drift stays open until the judge lane lands.
