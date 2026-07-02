@@ -67,6 +67,11 @@ SALESFORCE_SOURCE_MAPS: dict[str, SourceObjectMap] = {
                 False,
                 "communication-policy extension",
             ),
+            "org_level": SourceField(
+                "Org_Level__c",
+                False,
+                "optional org-chart hierarchy extension",
+            ),
         },
     ),
     "CRMCase": SourceObjectMap(

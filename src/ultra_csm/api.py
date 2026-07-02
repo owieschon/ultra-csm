@@ -29,9 +29,6 @@ from ultra_csm.platform.seed import det_uuid, seed, SEED_CLOCK
 from ultra_csm.data_plane import (
     CustomerDataPlane,
     DEFAULT_TENANT,
-    FixtureCRMDataConnector,
-    FixtureCSPlatformConnector,
-    FixtureProductTelemetryConnector,
     build_sweep_fixture_data_plane,
 )
 from ultra_csm.governance import (

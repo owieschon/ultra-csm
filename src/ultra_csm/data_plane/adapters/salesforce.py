@@ -18,6 +18,7 @@ from ultra_csm.data_plane.transforms import (
     TransformError,
     money_to_cents,
     optional_bool,
+    optional_int,
     optional_str,
     require_str,
 )
@@ -41,6 +42,7 @@ def parse_contact(record: dict[str, Any]) -> CRMContact:
         role=optional_str(record, "Role__c"),
         title=optional_str(record, "Title"),
         consent_to_contact=optional_bool(record, "Consent_To_Contact__c", default=False),
+        org_level=optional_int(record, "Org_Level__c"),
     )
 
 

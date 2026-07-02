@@ -50,6 +50,24 @@ def optional_bool(payload: dict[str, Any], path: str, *, default: bool) -> bool:
     raise TransformError(f"expected boolean at {path}, got {type(value).__name__}")
 
 
+def optional_int(payload: dict[str, Any], path: str) -> int | None:
+    value = get_path(payload, path, default=None)
+    if value is None or value == "":
+        return None
+    if isinstance(value, bool):
+        raise TransformError(f"expected optional integer at {path}, got bool")
+    if isinstance(value, int):
+        return value
+    if isinstance(value, float) and value.is_integer():
+        return int(value)
+    if isinstance(value, str):
+        try:
+            return int(value)
+        except ValueError as exc:
+            raise TransformError(f"expected optional integer at {path}") from exc
+    raise TransformError(f"expected optional integer at {path}, got {type(value).__name__}")
+
+
 def money_to_cents(payload: dict[str, Any], path: str) -> int:
     value = get_path(payload, path)
     if value is None or value == "":

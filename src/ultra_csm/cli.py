@@ -7,12 +7,16 @@ import json
 import os
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 from urllib import error, request
 
 from ultra_csm.data_plane.explorer import run_explorer
 from ultra_csm.data_plane.live_smoke import run_smoke
 from ultra_csm.data_plane.synthetic_book import build_synthetic_book, synthetic_book_summary
+
+if TYPE_CHECKING:
+    from ultra_csm.data_plane.data_simulator import SimulatedDataBundle
+    from ultra_csm.data_plane.fixtures import FixtureCustomerData
 
 DEFAULT_API_URL = "http://127.0.0.1:8000"
 
@@ -132,9 +136,7 @@ def _score_book(
     as_of: str,
 ) -> list[dict[str, Any]]:
     """Score all accounts in a FixtureCustomerData, return list of dicts."""
-    from ultra_csm.data_plane.contracts import CustomerDataPlane
     from ultra_csm.data_plane.fixtures import (
-        FixtureCRMDataConnector,
         FixtureCSPlatformConnector,
         FixtureProductTelemetryConnector,
     )
@@ -144,7 +146,6 @@ def _score_book(
         project_ttv_lens,
     )
 
-    crm = FixtureCRMDataConnector(data=data)
     cs = FixtureCSPlatformConnector(data=data)
     telemetry = FixtureProductTelemetryConnector(data=data)
     config = load_value_model_config()
@@ -315,9 +316,6 @@ def _apply_deep_data_overlay(
 
     bundle = simulate_data(data, day=day)
 
-    adoption_by_id: dict[str, AdoptionSummary] = {
-        a.account_id: a for a in data.adoption_summaries
-    }
     signal_by_key: dict[tuple[str, str], UsageSignal] = {
         (s.account_id, s.metric_name): s for s in data.usage_signals
     }
@@ -499,7 +497,7 @@ def _demo_sweep(args: argparse.Namespace) -> int:
         else:
             base_scored = _score_book(base_book, SEED_DATE)
         base_bands = {r["account_id"]: r["health_band"] for r in base_scored}
-        print(f"Changes from Day 0:")
+        print("Changes from Day 0:")
         print("  Health Band Changes:")
         any_changes = False
         for r in scored:

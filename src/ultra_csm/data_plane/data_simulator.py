@@ -38,19 +38,16 @@ from ultra_csm.data_plane.contracts import (
 )
 from ultra_csm.data_plane.fixtures import FixtureCustomerData, det_id
 from ultra_csm.data_plane.synthetic_book import (
-    SEED_DATE,
     _ACCT_DATA,
-    _ADOPTION,
     _CONTACTS,
     _ENTITLEMENTS,
     _COMPANY,
-    _HEALTH,
     _OPPS,
     _id,
 )
 
 # Re-use the date helpers from book_simulator.
-from ultra_csm.data_plane.book_simulator import _SEED_DT, _day_iso, _day_clock
+from ultra_csm.data_plane.book_simulator import _SEED_DT, _day_iso
 
 # ---------------------------------------------------------------------------
 # Deterministic pseudo-random utilities
@@ -594,11 +591,8 @@ def _opportunity_stages_at_day(
 
     Returns ``(stage_history, current_stage)``.
     """
-    # Find the index of the base stage
-    try:
-        base_idx = _OPP_STAGES.index(base_stage)
-    except ValueError:
-        base_idx = 1  # default to Qualification
+    if base_stage not in _OPP_STAGES:
+        base_stage = "Qualification"
 
     stages: list[tuple[str, int]] = [(base_stage, 0)]
 
