@@ -62,6 +62,10 @@ SOURCE_COMPANY_PATTERNS = (
     re.compile("".join((r"\bow", "en", r"\b")), re.IGNORECASE),
     re.compile("".join(("osch", "oeniger")), re.IGNORECASE),
     re.compile("".join((r"\bG", r"R\b"))),
+    # Split so this file never matches itself; case-sensitive so the lowercase verb
+    # form does not false-positive.
+    re.compile("".join((r"\bCe", "ntralize", r"\b"))),
+    re.compile("".join((r"\bSa", "msara", r"\b")), re.IGNORECASE),
 )
 
 WRONG_DOMAIN_PATTERNS = (
