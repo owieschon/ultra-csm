@@ -42,6 +42,13 @@ from ultra_csm.governance import (
 )
 from ultra_csm.value_model import build_customer_value_model, project_ttv_lens
 from ultra_csm.agent1 import run_time_to_value_sweep
+from ultra_csm.agent1.precedence import (
+    ActionPacket,
+    FindingPacket,
+    approval_decision,
+    evaluate_precedence,
+    load_precedence_config,
+)
 from ultra_csm.api_metrics import APIMetrics, SweepTiming
 from ultra_csm.cohort_packets import build_cohort_rollup_packets
 from ultra_csm.cost_tracker import CostBudget, CostTracker
@@ -496,6 +503,122 @@ def _fixture_data_for_day(day: int | None, *, deep: bool = False):
 
         data = _apply_deep_data_overlay(data, day)
     return data
+
+
+def _current_precedence_state(as_of: str = _AS_OF):
+    assert _data_plane is not None
+    config = load_precedence_config()
+    findings = _current_precedence_findings(_data_plane, as_of=as_of)
+    actions = _current_expansion_actions(_data_plane, as_of=as_of)
+    return evaluate_precedence(findings, actions, config, as_of=as_of)
+
+
+def _current_precedence_findings(
+    data_plane: CustomerDataPlane,
+    *,
+    as_of: str,
+) -> tuple[FindingPacket, ...]:
+    findings: list[FindingPacket] = []
+    for account in data_plane.crm.list_accounts(tenant_id=DEFAULT_TENANT):
+        company = data_plane.cs.get_company(account.account_id)
+        health = data_plane.cs.get_health_score(account.account_id)
+        ctas = tuple(data_plane.cs.list_ctas(account.account_id, status="open"))
+        milestones = tuple(data_plane.telemetry.list_ttv_milestones(account.account_id))
+        open_milestones = tuple(
+            milestone for milestone in milestones
+            if milestone.achieved_at is None and milestone.expected_by < as_of
+        )
+        if (
+            company is not None
+            and company.lifecycle_stage in {"onboarding", "adopting"}
+            and (
+                open_milestones
+                or ctas
+                or (health is not None and health.band in {"yellow", "red"})
+            )
+        ):
+            findings.append(FindingPacket(
+                finding_id=f"ttv_gap:{account.account_id}",
+                account_id=account.account_id,
+                lens="ttv_gap",
+                condition_instance=f"ttv_gap:{account.account_id}:{as_of}",
+                evidence_refs=tuple(
+                    [
+                        *(
+                            f"milestone:{account.account_id}:{milestone.milestone}"
+                            for milestone in open_milestones
+                        ),
+                        *(f"cta:{cta.cta_id}" for cta in ctas),
+                    ]
+                ),
+                payload={
+                    "account_name": account.name,
+                    "reason": "active onboarding or adoption gap",
+                },
+            ))
+        if health is not None and health.band == "red":
+            findings.append(FindingPacket(
+                finding_id=f"risk:{account.account_id}",
+                account_id=account.account_id,
+                lens="risk",
+                condition_instance=f"risk:{account.account_id}:{health.measured_at}",
+                evidence_refs=(f"health:{account.account_id}",),
+                payload={
+                    "account_name": account.name,
+                    "reason": "red health",
+                },
+            ))
+    return tuple(findings)
+
+
+def _current_expansion_actions(
+    data_plane: CustomerDataPlane,
+    *,
+    as_of: str,
+) -> tuple[ActionPacket, ...]:
+    actions: list[ActionPacket] = []
+    for account in data_plane.crm.list_accounts(tenant_id=DEFAULT_TENANT):
+        opportunities = tuple(
+            opp for opp in data_plane.crm.list_opportunities(account.account_id)
+            if opp.opportunity_type.lower() == "expansion"
+        )
+        for opportunity in opportunities:
+            payload = {
+                "account_id": account.account_id,
+                "account_name": account.name,
+                "opportunity_id": opportunity.opportunity_id,
+                "opportunity_stage": opportunity.stage_name,
+                "action": "initiate_customer_call",
+                "as_of": as_of,
+            }
+            actions.append(ActionPacket(
+                action_id=f"expansion:{account.account_id}:{opportunity.opportunity_id}",
+                account_id=account.account_id,
+                lens="expansion",
+                scope="customer_facing",
+                action_type="initiate_customer_call",
+                autonomy_tier=3,
+                payload=payload,
+            ))
+    return tuple(actions)
+
+
+def _action_packet_for_proposal(proposal: ActionProposal) -> ActionPacket | None:
+    if proposal.action != "initiate_customer_call":
+        return None
+    account_id = str(proposal.payload.get("account_id") or "")
+    if not account_id:
+        return None
+    return ActionPacket(
+        action_id=f"proposal:{proposal.proposal_id}",
+        account_id=account_id,
+        lens="expansion",
+        scope="customer_facing",
+        action_type=proposal.action,
+        autonomy_tier=proposal.autonomy_tier,
+        payload=proposal.payload,
+        payload_sha256=proposal.payload_sha256,
+    )
 
 
 def _lookup_proposal(proposal_id: str) -> ActionProposal:
@@ -1131,11 +1254,12 @@ async def list_proposals():
 async def get_delegation_queue():
     """Read-only tier grouping for pending delegated work."""
     groups = _delegation_groups()
+    precedence = _current_precedence_state()
     return DelegationResponse(
         tenant_id=_TENANT_ID,
         pending_count=sum(group["pending_count"] for group in groups.values()),
         groups=groups,
-        held_actions=[],
+        held_actions=[item.to_dict() for item in precedence.held_actions],
     )
 
 
@@ -1156,6 +1280,26 @@ async def submit_verdict(proposal_id: str, body: VerdictRequest, request: Reques
                 "proposal_id": proposal_id,
             },
         )
+
+    action_packet = _action_packet_for_proposal(proposal)
+    if body.verdict == "approve" and action_packet is not None:
+        blockers = _current_precedence_findings(_data_plane, as_of=_AS_OF)  # type: ignore[arg-type]
+        decision = approval_decision(
+            action_packet,
+            blockers,
+            load_precedence_config(),
+            as_of=_AS_OF,
+        )
+        if not decision.allowed:
+            raise HTTPException(
+                status_code=409,
+                detail={
+                    "error": "Proposal is held by current precedence blockers",
+                    "code": "PRECEDENCE_HELD",
+                    "proposal_id": proposal_id,
+                    "blocking_refs": list(decision.blocking_refs),
+                },
+            )
 
     gate = _gate()
     human_verdict = Verdict(

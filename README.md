@@ -29,8 +29,8 @@ Instead:
   states, each with its own action and gate. Priority is the model viewed through a lens, not a
   re-derivation.
   - **Agent 1 — Time-to-Value** *(built)*: onboarding/activation stalls → next-best action to first value.
-  - **Agent 2 — Risk / Retention** *(roadmap)*: steady-state fragility (single-threaded champion, missing sponsor), renewal proximity.
-  - **Agent 3 — Expansion** *(roadmap)*: unrealized value in healthy accounts — low penetration, unused entitlements.
+  - **Agent 2 — Risk / Retention** *(deterministic lens built)*: steady-state fragility (single-threaded champion, missing sponsor), renewal proximity.
+  - **Agent 3 — Expansion** *(deterministic lens built)*: unrealized value in healthy accounts — low penetration, unused entitlements.
 - **Agent 4 — Cohort / Program analyst** *(roadmap)*: population-level, not per-account. Finds
   segment patterns (e.g. "onboarding path Y predicts churn"), feeds the CS manager and Product, and
   *reduces the symptom load* lenses 1–3 chase — Agent 1's outcomes become Agent 4's labels. A flywheel.
@@ -39,8 +39,8 @@ Because they're lenses over *one* model, a single account can be in view of seve
 conflict (a single-threaded account is simultaneously Agent 2's risk and Agent 3's expansion target —
 same model fact, two actions). Every customer-facing action from any lens routes through the same
 gate: **proposal → human verdict → committer.** The CSM is the actor; the agents triage and draft,
-the human decides. Today the shared model, the gate, and Agent 1 are built; 2–4 are specced behind an
-ordering guard (don't build breadth until the model and the differentiator are proven). Full spec:
+the human decides. Today the shared model, the gate, Agent 1, and the deterministic Risk/Expansion
+lenses are built; the cohort analyst and quality-scored lens drafts stay gated. Full spec:
 `docs/CUSTOMER_VALUE_MODEL.md`.
 
 ## Quickstart
@@ -78,7 +78,7 @@ A non-deterministic instrument must never own a deterministic gate. That boundar
 | LLM quality judge | **Partially validated by dimension**, not globally validated. The definitive single-labeler pass is applied; `priority_fidelity` is deterministic, and frozen-v3 judge agreement clears several dimensions by point estimate. `account_specificity` and hard-layer `on_task_relevance` remain open |
 | Connectors (Salesforce/Gainsight/Rocketlane/Attio) | **Built to the credential boundary**, fixture-tested; not yet run against a live tenant |
 | Data | Curated **fixtures**, not production customer data |
-| Outcome rail, Risk & Expansion lenses | **Designed, not built** |
+| Outcome rail, Risk & Expansion lenses | Outcome rail partially instrumented; deterministic Risk and Expansion lenses are built, with draft-quality claims gated on judge validation |
 
 Nothing here claims production retention or expansion lift. It demonstrates judgment,
 architecture, and measurement discipline — `docs/DECISION_LOG.md` records what is and is not claimed.
@@ -95,7 +95,7 @@ architecture, and measurement discipline — `docs/DECISION_LOG.md` records what
    re-observation — per `docs/DEMO_EXECUTION_PLAN.md`.
 4. **Live verticals, end-to-end** *(credential-gated, post-demo)* — run real connectors
    (Rocketlane, Gainsight, OTel, Attio/Salesforce) against a live tenant, with monitoring and rollback.
-5. **Risk & Expansion lenses** — the two value lenses that move NRR, on the same value model.
+5. **Risk & Expansion depth** — expand the built deterministic lenses only where the shared value model and evals support it.
 
 The working plan lives in `docs/NEXT_DISPATCH.md`.
 

@@ -1,0 +1,39 @@
+{
+  "schema_version": "g4.autonomy_policy.v1",
+  "auto_apply": false,
+  "window": {
+    "start": "2026-06-01",
+    "end": "2026-06-30"
+  },
+  "tier_bounds": {
+    "min": 1,
+    "max": 3
+  },
+  "promotion": {
+    "min_n": 6,
+    "min_approve_rate": 0.95,
+    "max_revise_rate": 0.05,
+    "max_deny_rate": 0.0,
+    "tier_step": 1
+  },
+  "demotion": {
+    "min_n": 4,
+    "min_deny_rate": 0.25,
+    "min_revise_rate": 0.35,
+    "min_high_risk_deny_rate": 0.01,
+    "tier_step": 1
+  },
+  "high_risk_rejection_reasons": [
+    "consent_missing",
+    "missing_evidence",
+    "policy_boundary",
+    "unsafe_customer_claim"
+  ],
+  "owner_tunable_stubs": {
+    "requires_owner_review": true,
+    "notes": [
+      "Thresholds are deterministic defaults for the G4 demo artifact.",
+      "Changing autonomy tiers requires a separate owner-approved config change; this report never applies one."
+    ]
+  }
+}
