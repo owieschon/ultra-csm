@@ -217,15 +217,40 @@ it; ELSE build `src/ultra_csm/data_plane/sim_tenant.py` and leave `sim/` untouch
    auto-execute (existing gate, now exercised through committers); commit without approved
    verdict = impossible (red-path test); idempotent re-commit; re-observation changes the
    model only via real sim-state change (no fabricated outcomes).
+7. **Degradation ladder (the "worse, not wrong" mechanism).** Because correctness lives in
+   the deterministic spine and the LLM supplies only quality, runtime LLM failure must
+   degrade output quality — never correctness, never coverage. Two pieces, both small:
+   - **Slot fallback policy:** IF the live Slot B writer errors, times out, or exhausts its
+     retry budget mid-sweep → fall back to `FixtureReasonDraftWriter` for that item and
+     continue the sweep. The affected item carries `draft_mode: "template_fallback"` (vs
+     `"live"`) in the work item AND the sweep artifact carries a top-level
+     `degraded_items` count. Reuse the existing writer seam — do NOT build a new
+     writer or a retry orchestrator; ONE fallback rung is the design (the spine carries
+     correctness, so more rungs are resilience theater).
+   - **Quality circuit breaker (deterministic policy, human reset):** a config stanza in
+     the existing policy domain: IF the quality-regression artifact is red (or, later, the
+     production drift signal fires) → customer-facing draft actions revert to
+     template/internal-review until an operator clears the breaker (a recorded verdict-like
+     event, not an env flag). The breaker rule is deterministic code reading a
+     deterministic artifact — NO LLM involvement in the breaker decision, ever.
+   - **Loudness rule (hard):** degradation is always flagged — on the item, in the
+     artifact, in the demo output. A silent fallback is a defect equal to fabrication:
+     add a red-path test that a fallback WITHOUT the flag fails the scorecard.
 
 **Decision criteria:** IF a committer would need to touch anything outside the sim tenant
 / `demo_state/` → STOP (that's the live lane, out of scope). IF the auto-verdict design
 requires a new principal/permission → follow the existing roster/SoD pattern in
-`governance/`; the system principal must NOT hold tier-2/3 approve permission.
+`governance/`; the system principal must NOT hold tier-2/3 approve permission. IF tempted
+to add multi-provider failover, retry storms, or self-healing → STOP; the single
+fallback-to-deterministic rung + breaker is the complete design.
 
 **DoD:** `make demo-loop` runs offline, deterministic, twice → identical end-state
 artifacts; scorecard extended gates green; the outcome rail shows a `sim`-labeled realized
 outcome; `claim_boundary`: `loop_closed_sim: true, loop_closed_live: false`.
+**Degradation DoD:** a red-path eval kills the (fake) live writer mid-sweep → the sweep
+completes the full book, N items flagged `template_fallback`, zero items lost, zero
+fabrication, hard gates green; the unflagged-fallback red-path test fails closed; the
+breaker trips on a red quality artifact and requires an operator event to clear.
 
 ---
 
@@ -277,7 +302,10 @@ gains the `slot_a_unknown_discipline` hard gate; `unknown` rate reported in the 
    Act 2 decide-draft-act (sweep, divergence surfaces, Slot B live w/ org pack, tier-1
    auto-executes, tier-3 approved in CLI, committer delivers to outbox);
    Act 3 the-system-tells-the-truth (re-observation, outcome recorded `sim`, judge scores
-   the draft, planted degradation caught, STATUS.md regenerated live).
+   the draft, planted degradation caught, STATUS.md regenerated live — **and the
+   degradation beat:** kill the live-writer key mid-sweep, the agent finishes the full
+   book with items loudly flagged `template_fallback`, correctness intact; "worse, not
+   wrong," demonstrated live per §4.7).
    Each act lists which artifacts a skeptical reviewer should open.
 
 **DoD:** a fresh clone + `make setup && make demo-loop && make status` reproduces the
