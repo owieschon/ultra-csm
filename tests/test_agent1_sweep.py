@@ -22,6 +22,7 @@ from ultra_csm.data_plane import (
     build_sweep_fixture_data_plane,
 )
 from ultra_csm.governance import ActionGate, FixtureVerdictSource
+from ultra_csm.quality_breaker import QualityBreakerConfig, record_quality_breaker_reset
 
 AS_OF = "2026-06-27"
 
@@ -191,3 +192,89 @@ def test_agent1_sweep_loudly_falls_back_when_live_writer_fails(sweep_conn):
     assert {ACME_LOGISTICS, GLOBEX_TELEMETRY_GAP, INITECH_CSPLAN_GAP} <= {
         item.account_id for item in sweep.work_items
     }
+
+
+def test_quality_breaker_routes_customer_drafts_to_internal_review(sweep_conn, tmp_path):
+    orch, _authority = setup_roster(sweep_conn)
+    gate = ActionGate(
+        sweep_conn,
+        tenant_id=T1,
+        actor_principal_id=orch,
+        verdict_source=FixtureVerdictSource(),
+        now=CLOCK,
+    )
+    config = _quality_breaker_config(tmp_path, hard_ok=False)
+
+    sweep = run_time_to_value_sweep(
+        build_sweep_fixture_data_plane(tenant_id=DEFAULT_TENANT),
+        DEFAULT_TENANT,
+        gate,
+        sweep_principal_id=orch,
+        as_of=AS_OF,
+        quality_breaker=config,
+    )
+
+    assert sweep.quality_breaker is not None
+    assert sweep.quality_breaker["state"] == "open"
+    blocked = [item for item in sweep.work_items if item.customer_contact_allowed]
+    assert blocked
+    assert sweep.degraded_items == len(blocked)
+    assert all(item.disposition == "internal_review" for item in blocked)
+    assert all(item.recommended_action == "recommend_next_best_action" for item in blocked)
+    assert all(item.proposal is None for item in blocked)
+    assert all(item.customer_draft is None for item in blocked)
+    assert all(item.draft_mode == "template_fallback" for item in blocked)
+
+
+def test_quality_breaker_requires_operator_event_to_clear(sweep_conn, tmp_path):
+    orch, _authority = setup_roster(sweep_conn)
+    gate = ActionGate(
+        sweep_conn,
+        tenant_id=T1,
+        actor_principal_id=orch,
+        verdict_source=FixtureVerdictSource(),
+        now=CLOCK,
+    )
+    config = _quality_breaker_config(tmp_path, hard_ok=False)
+    record_quality_breaker_reset(
+        config,
+        operator_id=orch,
+        rationale="reviewed red artifact for demo",
+        recorded_at=AS_OF,
+    )
+
+    sweep = run_time_to_value_sweep(
+        build_sweep_fixture_data_plane(tenant_id=DEFAULT_TENANT),
+        DEFAULT_TENANT,
+        gate,
+        sweep_principal_id=orch,
+        as_of=AS_OF,
+        quality_breaker=config,
+    )
+
+    assert sweep.quality_breaker is not None
+    assert sweep.quality_breaker["state"] == "closed"
+    assert sweep.quality_breaker["cleared_by_event"]
+    assert sweep.degraded_items == 0
+    proposed = [
+        item for item in sweep.work_items
+        if item.disposition == "propose_customer_action"
+    ]
+    assert proposed
+    assert all(item.proposal is not None for item in proposed)
+
+
+def _quality_breaker_config(tmp_path, *, hard_ok: bool) -> QualityBreakerConfig:
+    artifact = tmp_path / "quality_artifact.json"
+    artifact.write_text(
+        (
+            '{"artifact":"quality-test","hard_ok":'
+            f'{"true" if hard_ok else "false"}'
+            ',"hard_failures":[]}\n'
+        ),
+        encoding="utf-8",
+    )
+    return QualityBreakerConfig(
+        artifact_path=artifact,
+        operator_events_path=tmp_path / "operator_events.jsonl",
+    )
