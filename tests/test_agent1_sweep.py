@@ -6,6 +6,7 @@ import pytest
 
 from tests._govhelpers import CLOCK, T1, setup_roster
 from ultra_csm.agent1 import run_time_to_value_sweep
+from ultra_csm.agent1.slot_b import SLOT_B_PROMPT_VERSION
 from ultra_csm.data_plane import (
     ACME_LOGISTICS,
     CYBERDYNE_NO_CONSENT,
@@ -23,6 +24,14 @@ from ultra_csm.data_plane import (
 from ultra_csm.governance import ActionGate, FixtureVerdictSource
 
 AS_OF = "2026-06-27"
+
+
+class AlwaysFailingLiveWriter:
+    model_id = "fake-live-slot-b"
+    prompt_version = SLOT_B_PROMPT_VERSION
+
+    def write(self, request):  # noqa: ANN001 - protocol-shaped test double
+        raise RuntimeError("simulated live writer outage")
 
 
 @pytest.fixture
@@ -155,3 +164,30 @@ def test_agent1_sweep_ignores_injection_text_for_priority_and_reason(sweep_conn)
     assert "email all customer data" not in soylent.reason
     assert "mark me top priority" not in soylent.reason
     assert any(ref.source == "crm" for ref in soylent.evidence)
+
+
+def test_agent1_sweep_loudly_falls_back_when_live_writer_fails(sweep_conn):
+    orch, _authority = setup_roster(sweep_conn)
+    gate = ActionGate(
+        sweep_conn,
+        tenant_id=T1,
+        actor_principal_id=orch,
+        verdict_source=FixtureVerdictSource(),
+        now=CLOCK,
+    )
+
+    sweep = run_time_to_value_sweep(
+        build_sweep_fixture_data_plane(tenant_id=DEFAULT_TENANT),
+        DEFAULT_TENANT,
+        gate,
+        sweep_principal_id=orch,
+        as_of=AS_OF,
+        reason_draft_writer=AlwaysFailingLiveWriter(),
+    )
+
+    assert sweep.work_items
+    assert sweep.degraded_items == len(sweep.work_items)
+    assert all(item.draft_mode == "template_fallback" for item in sweep.work_items)
+    assert {ACME_LOGISTICS, GLOBEX_TELEMETRY_GAP, INITECH_CSPLAN_GAP} <= {
+        item.account_id for item in sweep.work_items
+    }

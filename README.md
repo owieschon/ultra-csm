@@ -51,7 +51,7 @@ ordering guard (don't build breadth until the model and the differentiator are p
 
 ```sh
 make setup          # venv + editable install
-make scorecard-csm  # offline, no secrets → the 23/23 deterministic CSM scorecard
+make scorecard-csm  # offline, no secrets → deterministic CSM scorecard
 make eval           # full pytest suite on an ephemeral, auto-torn-down Postgres
 make lint hygiene   # ruff lint + repo-residue scan
 ```
@@ -74,7 +74,7 @@ A non-deterministic instrument must never own a deterministic gate. That boundar
 
 | Area | Status |
 |---|---|
-| Deterministic spine | **Proven** — `23/23` scorecard, 166 tests on real Postgres, hard security gates green |
+| Deterministic spine | **Proven** — scorecard hard gates green on real Postgres |
 | LLM quality judge | **Partially validated by dimension**, not globally validated. The definitive single-labeler pass is applied; `priority_fidelity` is deterministic, and frozen-v3 judge agreement clears several dimensions by point estimate. `account_specificity` and hard-layer `on_task_relevance` remain open |
 | Connectors (Salesforce/Gainsight/Rocketlane/Attio) | **Built to the credential boundary**, fixture-tested; not yet run against a live tenant |
 | Data | Curated **fixtures**, not production customer data |

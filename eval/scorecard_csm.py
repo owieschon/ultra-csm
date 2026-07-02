@@ -5,7 +5,7 @@ from __future__ import annotations
 import argparse
 import inspect
 import json
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 from pathlib import Path
 from typing import Callable
 
@@ -108,6 +108,14 @@ class ScorecardContext:
                 (proposal_id,),
             )
             return cur.fetchone()[0]
+
+
+class AlwaysFailingLiveWriter:
+    model_id = "scorecard-failing-live-slot-b"
+    prompt_version = SLOT_B_PROMPT_VERSION
+
+    def write(self, request):  # noqa: ANN001 - protocol-shaped scorecard double
+        raise RuntimeError("scorecard simulated live writer outage")
 
 
 def build_scorecard(
@@ -385,6 +393,24 @@ def slot_b_rejects_unknown_evidence(_ctx: ScorecardContext) -> None:
     raise AssertionError("invented evidence id passed validation")
 
 
+def degradation_fallback_is_loud(ctx: ScorecardContext) -> None:
+    sweep = run_time_to_value_sweep(
+        build_sweep_fixture_data_plane(tenant_id=DEFAULT_TENANT),
+        DEFAULT_TENANT,
+        ctx.gate(),
+        sweep_principal_id=ctx.actor_id,
+        as_of=AS_OF,
+        reason_draft_writer=AlwaysFailingLiveWriter(),
+    )
+    _assert_fallback_loud(sweep)
+    silent = replace(sweep, degraded_items=0)
+    try:
+        _assert_fallback_loud(silent)
+    except AssertionError:
+        return
+    raise AssertionError("silent fallback passed degradation loudness check")
+
+
 CASES = (
     evidence_bundle_complete,
     gated_outreach_pending,
@@ -398,6 +424,7 @@ CASES = (
     slot_b_blocks_no_consent_draft,
     slot_b_rejects_unsafe_output,
     slot_b_rejects_unknown_evidence,
+    degradation_fallback_is_loud,
 )
 
 
@@ -574,6 +601,19 @@ def _assert_harness(sweep: SweepResult) -> None:
     assert expected <= {item.account_id for item in sweep.work_items}
     assert sweep.escalations
     assert sweep.swept_accounts
+    assert sweep.degraded_items == 0
+    assert all(item.draft_mode != "template_fallback" for item in sweep.work_items)
+
+
+def _assert_fallback_loud(sweep: SweepResult) -> None:
+    fallback_items = [
+        item for item in sweep.work_items
+        if item.draft_mode == "template_fallback"
+    ]
+    assert fallback_items
+    assert sweep.degraded_items == len(fallback_items)
+    assert len(fallback_items) == len(sweep.work_items)
+    assert all(item.customer_draft or item.disposition == "internal_review" for item in fallback_items)
 
 
 def _all_items(sweep: SweepResult) -> tuple[CSMWorkItem, ...]:

@@ -17,9 +17,12 @@ from ultra_csm.data_plane.contracts import ResolutionState
 from ultra_csm.governance import ActionGate, ActionProposal, proposal_fields_for
 from ultra_csm.governance.csm_actions import CSMActionType
 from ultra_csm.agent1.slot_b import (
+    FIXTURE_SLOT_B_MODEL_ID,
     FixtureReasonDraftWriter,
+    ReasonDraftOutput,
     ReasonDraftRequest,
     ReasonDraftWriter,
+    SlotBContractError,
     SlotBEvidence,
     SlotBPriority,
     SlotBPriorityFactor,
@@ -35,6 +38,7 @@ from ultra_csm.value_model import (
 Disposition = Literal["propose_customer_action", "internal_review", "escalate"]
 ProposalStatus = Literal["pending", "approved", "denied"]
 PriorityFactor = ValueFactor
+DraftMode = Literal["fixture", "live", "template_fallback", "none"]
 
 
 @dataclass(frozen=True)
@@ -70,6 +74,7 @@ class CSMWorkItem:
     customer_contact_allowed: bool
     proposal: ProposalRef | None
     swept_at: str
+    draft_mode: DraftMode = "none"
     customer_draft: str | None = None
 
 
@@ -79,6 +84,7 @@ class SweepResult:
     work_items: tuple[CSMWorkItem, ...]
     escalations: tuple[CSMWorkItem, ...]
     swept_accounts: tuple[str, ...]
+    degraded_items: int = 0
 
     def to_dict(self) -> dict:
         return asdict(self)
@@ -100,6 +106,7 @@ def run_time_to_value_sweep(
     swept_accounts = tuple(account.account_id for account in accounts)
     items: list[CSMWorkItem] = []
     escalations: list[CSMWorkItem] = []
+    degraded_items = 0
     emitted_escalations: set[tuple[str, ...]] = set()
 
     for account in accounts:
@@ -129,6 +136,8 @@ def run_time_to_value_sweep(
             reason_draft_writer=writer,
         )
         if built is not None:
+            if built.draft_mode == "template_fallback":
+                degraded_items += 1
             items.append(built)
 
     ordered = tuple(sorted(
@@ -148,6 +157,7 @@ def run_time_to_value_sweep(
             reverse=True,
         )),
         swept_accounts=swept_accounts,
+        degraded_items=degraded_items,
     )
 
 
@@ -310,8 +320,7 @@ def _work_item_for_account(
         contact=contact,
         cases=cases,
     )
-    slot_b = reason_draft_writer.write(slot_b_request)
-    validate_reason_draft_output(slot_b_request, slot_b)
+    slot_b, draft_mode = _write_slot_b_with_fallback(slot_b_request, reason_draft_writer)
     proposal_ref = None
     if customer_contact_allowed:
         proposal = _propose_outreach(
@@ -339,8 +348,23 @@ def _work_item_for_account(
         customer_contact_allowed=customer_contact_allowed,
         proposal=proposal_ref,
         swept_at=as_of,
+        draft_mode=draft_mode,
         customer_draft=slot_b.customer_draft,
     )
+
+
+def _write_slot_b_with_fallback(
+    request: ReasonDraftRequest,
+    writer: ReasonDraftWriter,
+) -> tuple[ReasonDraftOutput, DraftMode]:
+    try:
+        output = writer.write(request)
+        validate_reason_draft_output(request, output)
+        mode: DraftMode = "fixture" if output.model_id == FIXTURE_SLOT_B_MODEL_ID else "live"
+        return output, mode
+    except (Exception, SlotBContractError):
+        fallback = FixtureReasonDraftWriter().write(request)
+        return fallback, "template_fallback"
 
 
 def _propose_outreach(

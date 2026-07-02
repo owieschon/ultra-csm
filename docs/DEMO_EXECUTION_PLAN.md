@@ -80,7 +80,7 @@ landed); `LIVE_REGRESSION_STRENGTHENING_SPEC` → `QUALITY_REGRESSION_EVAL_SPEC.
 
 | Capability | State | Verify with |
 |---|---|---|
-| Deterministic sweep + value model + TTV lens | BUILT | `make scorecard-csm` → 23/23 |
+| Deterministic sweep + value model + TTV lens | BUILT | `make scorecard-csm` hard gates green |
 | Gate (proposal→verdict, hash-bound) + `csm_actions` **with tier semantics** (`autonomy_tier` 1/2, `release_condition` incl. `auto_internal_only`) | BUILT | `grep -n autonomy_tier src/ultra_csm/governance/csm_actions.py` |
 | Slot B (fixture + live Anthropic writers, contract validator) | BUILT — **no org knowledge** | `grep -n org_context src/ultra_csm/agent1/slot_b.py` → empty |
 | Judge (`eval/judge_anthropic.py`, `judge_csm.py`) + diagnosis toolkit (`diagnose_judge.py`, `compare_judges.py`, `judge_nrun.py`, `determinism_probe.py`) | BUILT — **κ not cleared** | `cat eval/gold/judge_agreement.json` |
@@ -339,7 +339,7 @@ gains the `slot_a_unknown_discipline` hard gate; `unknown` rate reported in the 
 
 **DoD:** a fresh clone + `make setup && make demo-loop && make status` reproduces the
 script's expected outputs; CI stale-STATUS check active; zero hand-typed current-state
-metrics remain in active docs (spot-check: grep for `κ`, `23/23`, `%` in docs/ and verify
+metrics remain in active docs (spot-check: grep for `κ`, score counts, `%` in docs/ and verify
 each is rendered or hash-tagged).
 
 ---

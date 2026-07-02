@@ -8,6 +8,7 @@
 *.sqlite
 *.sqlite3
 data/*.db
+demo_state/
 
 # Python
 .venv/

@@ -1,0 +1,265 @@
+{
+  "advance": {
+    "as_of": "2026-06-28",
+    "completed_accounts": [
+      "a317f5e7-575e-5879-8256-9082e40ef19f"
+    ],
+    "source": "sim"
+  },
+  "artifact": "demo_loop_csm",
+  "claim_boundary": {
+    "degradation_flagged": true,
+    "loop_closed_live": false,
+    "loop_closed_sim": true,
+    "writes_external_systems": false
+  },
+  "commits": {
+    "crm_activity": {
+      "account_id": "a317f5e7-575e-5879-8256-9082e40ef19f",
+      "action": "draft_customer_outreach",
+      "committed": true,
+      "dry_run": false,
+      "idempotency_key": "runtime-generated:a317f5e7-575e-5879-8256-9082e40ef19f:draft_customer_outreach:idempotency",
+      "payload_sha256": "5e405bdd0efe86c6e6d9f4efde563a1279e3c37d1f8c7d0869fa22d36ad92f47",
+      "proposal_id": "runtime-generated:a317f5e7-575e-5879-8256-9082e40ef19f:draft_customer_outreach",
+      "receipt_id": "receipt:a317f5e7-575e-5879-8256-9082e40ef19f:draft_customer_outreach:demo_state/tenant_state.json",
+      "target": "demo_state/tenant_state.json"
+    },
+    "idempotent_outbound_retry": {
+      "account_id": "a317f5e7-575e-5879-8256-9082e40ef19f",
+      "action": "draft_customer_outreach",
+      "committed": false,
+      "dry_run": false,
+      "idempotency_key": "runtime-generated:a317f5e7-575e-5879-8256-9082e40ef19f:draft_customer_outreach:idempotency",
+      "payload_sha256": "5e405bdd0efe86c6e6d9f4efde563a1279e3c37d1f8c7d0869fa22d36ad92f47",
+      "proposal_id": "runtime-generated:a317f5e7-575e-5879-8256-9082e40ef19f:draft_customer_outreach",
+      "receipt_id": "receipt:a317f5e7-575e-5879-8256-9082e40ef19f:draft_customer_outreach:demo_state/outbox.jsonl",
+      "target": "demo_state/outbox.jsonl"
+    },
+    "outbound": {
+      "account_id": "a317f5e7-575e-5879-8256-9082e40ef19f",
+      "action": "draft_customer_outreach",
+      "committed": true,
+      "dry_run": false,
+      "idempotency_key": "runtime-generated:a317f5e7-575e-5879-8256-9082e40ef19f:draft_customer_outreach:idempotency",
+      "payload_sha256": "5e405bdd0efe86c6e6d9f4efde563a1279e3c37d1f8c7d0869fa22d36ad92f47",
+      "proposal_id": "runtime-generated:a317f5e7-575e-5879-8256-9082e40ef19f:draft_customer_outreach",
+      "receipt_id": "receipt:a317f5e7-575e-5879-8256-9082e40ef19f:draft_customer_outreach:demo_state/outbox.jsonl",
+      "target": "demo_state/outbox.jsonl"
+    }
+  },
+  "first_sweep": {
+    "degraded_items": 1,
+    "escalations": [
+      {
+        "candidate_account_ids": [
+          "00d7906a-f1fc-5921-af5f-a709e69c308f",
+          "f64a581c-ddfe-52ef-be7b-fda9987c3514"
+        ],
+        "reason": "Ambiguous contact identity; no account was auto-selected."
+      }
+    ],
+    "swept_accounts": [
+      "a317f5e7-575e-5879-8256-9082e40ef19f",
+      "b2178254-7d72-55e3-84af-27846a0cb7d5",
+      "efe1d86f-af21-5ca6-8719-3ba8b4429292",
+      "87883d32-d4e1-59d3-831d-5e48278ceb7e",
+      "64eca28b-7ca4-5117-83d1-b6e794dd388f",
+      "00d7906a-f1fc-5921-af5f-a709e69c308f",
+      "f64a581c-ddfe-52ef-be7b-fda9987c3514",
+      "9bbdd7b2-55b0-5257-acf8-808ad224e276",
+      "ac5ddaea-764f-57ef-866d-593d57a20a00"
+    ],
+    "tenant_id": "ultra-demo",
+    "work_items": [
+      {
+        "account_id": "a317f5e7-575e-5879-8256-9082e40ef19f",
+        "disposition": "propose_customer_action",
+        "draft_mode": "template_fallback",
+        "priority_factors": [
+          "milestones_overdue",
+          "days_overdue",
+          "success_plan_overdue",
+          "health_red",
+          "arr_tier",
+          "low_seat_penetration",
+          "feature_depth_gap"
+        ],
+        "priority_score": 162,
+        "proposal_id": "runtime-generated:a317f5e7-575e-5879-8256-9082e40ef19f:draft_customer_outreach"
+      },
+      {
+        "account_id": "9bbdd7b2-55b0-5257-acf8-808ad224e276",
+        "disposition": "internal_review",
+        "draft_mode": "live",
+        "priority_factors": [
+          "milestones_overdue",
+          "days_overdue",
+          "success_plan_overdue",
+          "health_yellow",
+          "low_seat_penetration",
+          "feature_depth_gap"
+        ],
+        "priority_score": 109,
+        "proposal_id": null
+      },
+      {
+        "account_id": "ac5ddaea-764f-57ef-866d-593d57a20a00",
+        "disposition": "propose_customer_action",
+        "draft_mode": "live",
+        "priority_factors": [
+          "milestones_overdue",
+          "days_overdue",
+          "success_plan_overdue",
+          "health_yellow",
+          "low_seat_penetration",
+          "feature_depth_gap"
+        ],
+        "priority_score": 105,
+        "proposal_id": "runtime-generated:ac5ddaea-764f-57ef-866d-593d57a20a00:draft_customer_outreach"
+      },
+      {
+        "account_id": "b2178254-7d72-55e3-84af-27846a0cb7d5",
+        "disposition": "propose_customer_action",
+        "draft_mode": "live",
+        "priority_factors": [
+          "milestones_overdue",
+          "days_overdue",
+          "health_yellow",
+          "low_seat_penetration",
+          "feature_depth_gap"
+        ],
+        "priority_score": 91,
+        "proposal_id": "runtime-generated:b2178254-7d72-55e3-84af-27846a0cb7d5:draft_customer_outreach"
+      },
+      {
+        "account_id": "efe1d86f-af21-5ca6-8719-3ba8b4429292",
+        "disposition": "propose_customer_action",
+        "draft_mode": "live",
+        "priority_factors": [
+          "success_plan_overdue",
+          "health_yellow",
+          "low_seat_penetration",
+          "feature_depth_gap"
+        ],
+        "priority_score": 62,
+        "proposal_id": "runtime-generated:efe1d86f-af21-5ca6-8719-3ba8b4429292:draft_customer_outreach"
+      }
+    ]
+  },
+  "generated_by": "eval.demo_loop_csm",
+  "outcomes": [
+    {
+      "account_id": "a317f5e7-575e-5879-8256-9082e40ef19f",
+      "realized_state": "known",
+      "source": "sim",
+      "stated_objectives": [
+        "activate_core_fleet",
+        "complete_driver_rollout"
+      ]
+    }
+  ],
+  "second_sweep": {
+    "degraded_items": 0,
+    "escalations": [
+      {
+        "candidate_account_ids": [
+          "00d7906a-f1fc-5921-af5f-a709e69c308f",
+          "f64a581c-ddfe-52ef-be7b-fda9987c3514"
+        ],
+        "reason": "Ambiguous contact identity; no account was auto-selected."
+      }
+    ],
+    "swept_accounts": [
+      "a317f5e7-575e-5879-8256-9082e40ef19f",
+      "b2178254-7d72-55e3-84af-27846a0cb7d5",
+      "efe1d86f-af21-5ca6-8719-3ba8b4429292",
+      "87883d32-d4e1-59d3-831d-5e48278ceb7e",
+      "64eca28b-7ca4-5117-83d1-b6e794dd388f",
+      "00d7906a-f1fc-5921-af5f-a709e69c308f",
+      "f64a581c-ddfe-52ef-be7b-fda9987c3514",
+      "9bbdd7b2-55b0-5257-acf8-808ad224e276",
+      "ac5ddaea-764f-57ef-866d-593d57a20a00"
+    ],
+    "tenant_id": "ultra-demo",
+    "work_items": [
+      {
+        "account_id": "9bbdd7b2-55b0-5257-acf8-808ad224e276",
+        "disposition": "internal_review",
+        "draft_mode": "fixture",
+        "priority_factors": [
+          "milestones_overdue",
+          "days_overdue",
+          "success_plan_overdue",
+          "health_yellow",
+          "low_seat_penetration",
+          "feature_depth_gap"
+        ],
+        "priority_score": 111,
+        "proposal_id": null
+      },
+      {
+        "account_id": "ac5ddaea-764f-57ef-866d-593d57a20a00",
+        "disposition": "propose_customer_action",
+        "draft_mode": "fixture",
+        "priority_factors": [
+          "milestones_overdue",
+          "days_overdue",
+          "success_plan_overdue",
+          "health_yellow",
+          "low_seat_penetration",
+          "feature_depth_gap"
+        ],
+        "priority_score": 107,
+        "proposal_id": "runtime-generated:ac5ddaea-764f-57ef-866d-593d57a20a00:draft_customer_outreach"
+      },
+      {
+        "account_id": "b2178254-7d72-55e3-84af-27846a0cb7d5",
+        "disposition": "propose_customer_action",
+        "draft_mode": "fixture",
+        "priority_factors": [
+          "milestones_overdue",
+          "days_overdue",
+          "health_yellow",
+          "low_seat_penetration",
+          "feature_depth_gap"
+        ],
+        "priority_score": 93,
+        "proposal_id": "runtime-generated:b2178254-7d72-55e3-84af-27846a0cb7d5:draft_customer_outreach"
+      },
+      {
+        "account_id": "a317f5e7-575e-5879-8256-9082e40ef19f",
+        "disposition": "propose_customer_action",
+        "draft_mode": "fixture",
+        "priority_factors": [
+          "success_plan_overdue",
+          "health_red",
+          "arr_tier",
+          "low_seat_penetration",
+          "feature_depth_gap"
+        ],
+        "priority_score": 82,
+        "proposal_id": "runtime-generated:a317f5e7-575e-5879-8256-9082e40ef19f:draft_customer_outreach"
+      },
+      {
+        "account_id": "efe1d86f-af21-5ca6-8719-3ba8b4429292",
+        "disposition": "propose_customer_action",
+        "draft_mode": "fixture",
+        "priority_factors": [
+          "success_plan_overdue",
+          "health_yellow",
+          "low_seat_penetration",
+          "feature_depth_gap"
+        ],
+        "priority_score": 62,
+        "proposal_id": "runtime-generated:efe1d86f-af21-5ca6-8719-3ba8b4429292:draft_customer_outreach"
+      }
+    ]
+  },
+  "tenant_id": "ultra-demo",
+  "writer": {
+    "calls": 5,
+    "failures": 1,
+    "model_id": "fake-live-slot-b"
+  }
+}

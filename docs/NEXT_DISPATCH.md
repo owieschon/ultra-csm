@@ -13,8 +13,8 @@ offline `regression-csm` (CI-gated) and `regression-csm-live` (credential-gated,
 at **N=30 for structural contract drift**). **Customer Value Model refactor landed**: `value_model.py` with the
 criteria rule-resolver (fail-closed field validation, most-specific-wins, recorded
 resolution), the buildable factors as metric-vs-resolved-threshold (positive-evidence
-only), `project_ttv_lens`, and full provenance enforced by a hard gate. CSM scorecard
-23/23, 520 tests green.
+only), `project_ttv_lens`, and full provenance enforced by a hard gate. The current
+scorecard and test counts are artifact-owned; do not hand-type them here.
 
 Phase 1 is now implemented offline: `regression-csm-live --runs N`, paired McNemar
 comparison with fake-client coverage, stated outcomes, `not_instrumented` realized state,
