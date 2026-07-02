@@ -1,6 +1,6 @@
 """Synthetic 35-account book for a fictional fleet-management / industrial IoT SaaS.
 
-Every company name, person name, SKU, and datum is entirely fictional.
+Every company name, person name, product code, and datum is entirely fictional.
 The book exercises a representative spread of lifecycle stages, health bands,
 and CS scenarios including onboarding stalls, champion departure, single-
 threaded risk, expansion signals, renewal pressure, and churn.

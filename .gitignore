@@ -9,9 +9,11 @@
 *.sqlite3
 data/*.db
 demo_state/
+verification_output.log
 
 # Python
 .venv/
+.venv-sandbox/
 __pycache__/
 *.egg-info/
 .pytest_cache/

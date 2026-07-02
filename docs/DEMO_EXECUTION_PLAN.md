@@ -9,26 +9,18 @@ execution time; the repo moves fast.**
 
 ---
 
-## START HERE — dispatch state as of 2026-07-02
+## START HERE
 
-**Judge status** (artifact: `eval/gold/judge_agreement.json`, judge frozen at
-`quality-judge-v3`, reference = human-approved definitive labels, 40-card blind re-check
-passed 0/40): cleared by point estimate — `grounding_fidelity`, `tone_fit`, clean-layer
-`on_task_relevance`, `safety_boundary`, and deterministic `priority_fidelity`. **Still
-open:** `account_specificity` (clean 0.42 / hard 0.369) and hard-layer `on_task_relevance`
-(0.421). **The Slice-1 iteration budget is exhausted → all further judge/label/rubric
-changes are OWNER-GATED. Do not tune the judge, edit labels, or change anchors. The open
-dimensions wait for the owner's decision.**
-
-**Unblocked work (proceed without the owner):**
-- Slice 2 non-ablation parts: org-knowledge pack + loader + wiring + authority-invariance
-  evals (§3). The judge-scored ablation waits for the judge.
-- Slice 3 in full, including the degradation ladder (§4, esp. §4.7).
-- Slice 4 once Slice 3's sim tenant exists (§5).
-- Slice 5's `render_status.py` may land early (§6).
+**Current state + the next work queue live in [`EXECUTOR_HANDOFF.md`](EXECUTOR_HANDOFF.md)**
+(2026-07-02, post-dispatch). Read it before anything else in this plan — it supersedes
+stale state below, carries the corrected git sequence (**do not run the prior handoff's
+`reset --hard` housekeeping — data-loss footgun; use its Task 0 instead**), and restates
+the active lane split: judge, gold labels, rubric anchors, and judge artifacts are owned
+by the separate judge-gate lane. This execution lane does not touch them.
 
 **Companion docs:** `docs/SYSTEM_ARCHITECTURE.md` is a narrative architecture companion,
-not the binding execution spec. This file remains the execution plan.
+not the binding execution spec. This file remains the execution plan; the handoff is the
+current state.
 
 **Doc successor map** (four session docs were consolidated and no longer exist; if you hit
 a stale reference, resolve it here): `AGENT1_BUILD_PLAN` → `CUSTOMER_VALUE_MODEL.md`
@@ -351,11 +343,13 @@ each is rendered or hash-tagged).
 
 ## §7 — Hard out-of-scope (do not build; do not "quickly add")
 
-Lenses 2/3 · Agent 4 (incl. friction→content facet) · real/live connectors beyond the
-existing recorded-shape + smoke boundary · any UI beyond the CLI · scheduler, SLOs,
-cost dashboards · framework extraction · multi-tenant · RAG / conversational memory /
-autonomous tool-calling (§0b trip-wires unchanged) · Rocketlane account-join (still an
-owner decision) · any writes outside `demo_state/` + repo artifacts.
+The sanctioned demo surface now includes the REST API, MCP server, CLI, cost budgets,
+API metrics, quality breaker, and the simulated timeline/book flows. Keep the rest of the
+fence tight: no live connectors beyond the recorded-shape + smoke boundary, no UI beyond
+the CLI, no scheduler or SLO system, no cost dashboard beyond `/metrics`, no framework
+extraction, no multi-tenant productization, no RAG / conversational memory / autonomous
+tool-calling (§0b trip-wires unchanged), no Rocketlane account-join without an owner
+decision, and no writes outside `demo_state/` + repo artifacts.
 
 ## §8 — Escalation table (owner-gated decisions)
 
@@ -371,8 +365,8 @@ owner decision) · any writes outside `demo_state/` + repo artifacts.
 
 ## §9 — Execution order & parallelism
 
-Slice 1 first (blocks Act 3 and the Slice-2 ablation). Slice 3 may proceed in parallel
-with Slice 1 (disjoint files). Slice 2 after Slice 1's judge clears (its ablation needs a
-valid judge) — its non-judge parts (pack, loader, wiring, authority evals) may start
-anytime. Slice 4 after Slice 3's sim tenant exists. Slice 5 last, but `render_status.py`
-may land early (it only reads artifacts). Every slice: small commits, universal DoD, push.
+The judge gate is a separate active lane. For this execution lane: Task 0 → Task 1 are
+strictly first, then doc reconciliation and the degradation ladder. Slice 2's non-judge
+parts (pack, loader, wiring, authority evals) may proceed; judge-scored ablation waits
+for the judge lane. Slice 4 waits on the sim tenant, and Slice 5 may start with
+artifact-only rendering. Every slice: small commits, universal DoD, push.

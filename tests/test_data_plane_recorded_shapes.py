@@ -106,6 +106,7 @@ def test_salesforce_parsers_match_declared_source_maps():
             "Role__c",
             "Title",
             "Consent_To_Contact__c",
+            "Org_Level__c",
         },
         "CRMCase": {
             "Id",

@@ -30,7 +30,6 @@ from ultra_csm.data_plane.contracts import (
 )
 from ultra_csm.data_plane.fixtures import FixtureCustomerData, det_id
 from ultra_csm.data_plane.synthetic_book import (
-    SEED_CLOCK,
     SEED_DATE,
     _ADOPTION,
     _id,

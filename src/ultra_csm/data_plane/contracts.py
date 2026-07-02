@@ -68,6 +68,9 @@ class CRMContact:
     role: str | None
     title: str | None
     consent_to_contact: bool
+    # Optional org-chart hierarchy position
+    # (1=C-suite, 2=VP, 3=Director, 4=Manager, 5=IC).
+    org_level: int | None = None
 
 
 @dataclass(frozen=True)
@@ -251,6 +254,8 @@ class StakeholderRelationship:
     strength: Literal["strong", "moderate", "weak"]
     last_interaction: str
     multi_thread_depth: int
+    # Optional relationship graph edge: who knows whom, or who introduced whom.
+    related_contact_id: str | None = None
 
 
 @dataclass(frozen=True)
