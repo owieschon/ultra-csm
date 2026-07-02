@@ -601,7 +601,16 @@ def sweep_fixture_data(*, tenant_id: str = DEFAULT_TENANT) -> FixtureCustomerDat
             created_at="2026-06-19T12:00:00Z",
         ),
     )
-    opportunities = tuple(
+    opportunities = (
+        CRMOpportunity(
+            opportunity_id=det_id("opp", ACME_LOGISTICS, "expansion"),
+            account_id=ACME_LOGISTICS,
+            stage_name="Qualification",
+            amount_cents=4200000,
+            close_date="2026-09-30",
+            opportunity_type="Expansion",
+        ),
+        *tuple(
         CRMOpportunity(
             opportunity_id=det_id("opp", account.account_id, "renewal"),
             account_id=account.account_id,
@@ -611,6 +620,7 @@ def sweep_fixture_data(*, tenant_id: str = DEFAULT_TENANT) -> FixtureCustomerDat
             opportunity_type="Renewal",
         )
         for account in accounts
+        ),
     )
     health_bands = {
         ACME_LOGISTICS: ("red", 38.0, ("activation_gap", "implementation_blocker")),

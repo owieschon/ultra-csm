@@ -116,7 +116,7 @@ class TestHoldAndTrajectoryReads:
     def test_get_hold_status_projects_ttv_gap_hold_without_writing(self):
         result = mcp_server.get_hold_status(ACME_LOGISTICS)
 
-        assert result["status"] == "blocked_no_action"
+        assert result["status"] == "held"
         assert result["action_scope"] == "customer_facing"
         assert result["lens"] == "expansion"
         assert "ttv_gap" in {blocker["lens"] for blocker in result["blockers"]}

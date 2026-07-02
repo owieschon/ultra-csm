@@ -1,0 +1,49 @@
+{
+  "confirmations": {
+    "CRMAccount.owner_id": {
+      "contract": "CRMAccount",
+      "internal_field": "owner_id",
+      "source_object": "companies",
+      "source_field": "owner",
+      "source_path": "values.owner",
+      "semantic_role": "context",
+      "value_direction": "not_applicable"
+    },
+    "CRMContact.account_id": {
+      "contract": "CRMContact",
+      "internal_field": "account_id",
+      "source_object": "people",
+      "source_field": "associated_company",
+      "source_path": "values.associated_company",
+      "semantic_role": "identity_join",
+      "value_direction": "not_applicable"
+    },
+    "CRMContact.consent_to_contact": {
+      "contract": "CRMContact",
+      "internal_field": "consent_to_contact",
+      "source_object": "people",
+      "source_field": "consent_to_contact",
+      "source_path": "values.consent_to_contact",
+      "semantic_role": "context",
+      "value_direction": "not_applicable"
+    },
+    "CRMContact.role": {
+      "contract": "CRMContact",
+      "internal_field": "role",
+      "source_object": "people",
+      "source_field": "role",
+      "source_path": "values.role",
+      "semantic_role": "context",
+      "value_direction": "not_applicable"
+    },
+    "CRMContact.title": {
+      "contract": "CRMContact",
+      "internal_field": "title",
+      "source_object": "people",
+      "source_field": "job_title",
+      "source_path": "values.job_title",
+      "semantic_role": "context",
+      "value_direction": "not_applicable"
+    }
+  }
+}

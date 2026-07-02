@@ -110,7 +110,7 @@ def _hold_answer(status: dict[str, Any]) -> str:
             f"it because of active blocker(s): {blocker_text}."
         )
     return (
-        f"{status['account_name']}'s customer-facing expansion action is held because "
+        f"The customer-facing expansion action for {status['account_name']} is held because "
         f"the precedence matrix found active blocker(s): {blocker_text}. "
         "Findings remain visible; release requires blocker clearance, dismissal, or "
         "authorized override."

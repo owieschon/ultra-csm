@@ -16,7 +16,8 @@ make demo
 ```
 
 This runs the deterministic CSM scorecard and offline regression. It proves fixture/sim
-behavior only.
+behavior only. It also regenerates the Slot A scorecard, earned-autonomy report, Attio
+simulated onboarding artifact, and read-only MCP transcript.
 
 ## Inspect The Synthetic Book
 
@@ -43,6 +44,16 @@ ULTRA_CSM_ATTIO_ACCESS_TOKEN=dummy \
 Dry-run connector commands verify configured request shapes only. Replace the dummy env
 vars with real connector credentials and omit `--dry-run` when you are ready to test your
 own tenant; the repository does not claim live-tenant proof.
+
+The local Attio-shaped onboarding path can also be exercised without live credentials
+against the simulated customer book:
+
+```sh
+make attio-simulated-onboarding-csm
+```
+
+The artifact is written to `eval/attio_simulated_onboarding.json` and freezes the
+confirmed mapping over fixture data while preserving the live-credential boundary.
 
 ## Render Current Status
 

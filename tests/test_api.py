@@ -15,6 +15,8 @@ fastapi_mod = pytest.importorskip("fastapi")
 
 from fastapi.testclient import TestClient  # noqa: E402
 
+from ultra_csm.data_plane.fixtures import ACME_LOGISTICS  # noqa: E402
+from ultra_csm.governance import proposal_fields_for  # noqa: E402
 from ultra_csm import api  # noqa: E402
 from ultra_csm.api import app  # noqa: E402
 
@@ -246,7 +248,11 @@ class TestGovernanceEndpoints:
             "tier_3_escalation",
         }
         assert "pending_count" in body
-        assert body["held_actions"] == []
+        assert body["held_actions"]
+        held = body["held_actions"][0]
+        assert held["status"] == "held"
+        assert held["action"]["account_id"] == ACME_LOGISTICS
+        assert set(held["blocking_refs"]) >= {f"ttv_gap:{ACME_LOGISTICS}"}
 
     def test_verdict_requires_auth(self, client: TestClient):
         resp = client.post(
@@ -310,6 +316,31 @@ class TestGovernanceEndpoints:
             )
             row = cur.fetchone()
         assert row == ("human", "Lane A Manager")
+
+    def test_verdict_refuses_blocked_expansion_proposal(self, client: TestClient):
+        assert api._conn is not None
+        gate = api._gate()
+        proposal = gate.propose(
+            intent="test_blocked_expansion",
+            payload={
+                "account_id": ACME_LOGISTICS,
+                "account_name": "Acme Logistics",
+                "body": "Discuss expansion despite active onboarding risk.",
+            },
+            grounding_ref=f"test:{ACME_LOGISTICS}:expansion",
+            cause_ref=f"test:{ACME_LOGISTICS}:expansion",
+            **proposal_fields_for("initiate_customer_call"),
+        )
+
+        resp = client.post(
+            f"/proposals/{proposal.proposal_id}/verdict",
+            json={"verdict": "approve", "reason": "Approved in test"},
+            headers=AUTH_HEADERS,
+        )
+
+        assert resp.status_code == 409
+        assert resp.json()["code"] == "PRECEDENCE_HELD"
+        assert f"ttv_gap:{ACME_LOGISTICS}" in resp.json()["blocking_refs"]
 
     def test_verdict_already_decided_409(self, client: TestClient):
         # Sweep to create proposals.
