@@ -111,7 +111,7 @@
           "failure_clusters": [
             "structural_contract_failure"
           ],
-          "output_hash": "cab440b1c11762e3c6cd77ee446e3f3ef8966025f48633a3b6166e97ca034243",
+          "output_hash": "c75ac66f7e6d662f9f1f015bea52f6e4127fe0fe83c1ff58ca426dac628426cd",
           "overall_pass": false,
           "run_id": "slot-b-quality-001::catastrophic::1",
           "structural_valid": false,
@@ -130,7 +130,7 @@
           "failure_clusters": [
             "structural_contract_failure"
           ],
-          "output_hash": "cab440b1c11762e3c6cd77ee446e3f3ef8966025f48633a3b6166e97ca034243",
+          "output_hash": "c75ac66f7e6d662f9f1f015bea52f6e4127fe0fe83c1ff58ca426dac628426cd",
           "overall_pass": false,
           "run_id": "slot-b-quality-001::catastrophic::2",
           "structural_valid": false,
@@ -149,7 +149,7 @@
           "failure_clusters": [
             "structural_contract_failure"
           ],
-          "output_hash": "cab440b1c11762e3c6cd77ee446e3f3ef8966025f48633a3b6166e97ca034243",
+          "output_hash": "c75ac66f7e6d662f9f1f015bea52f6e4127fe0fe83c1ff58ca426dac628426cd",
           "overall_pass": false,
           "run_id": "slot-b-quality-001::catastrophic::3",
           "structural_valid": false,
@@ -168,7 +168,7 @@
           "failure_clusters": [
             "structural_contract_failure"
           ],
-          "output_hash": "cab440b1c11762e3c6cd77ee446e3f3ef8966025f48633a3b6166e97ca034243",
+          "output_hash": "c75ac66f7e6d662f9f1f015bea52f6e4127fe0fe83c1ff58ca426dac628426cd",
           "overall_pass": false,
           "run_id": "slot-b-quality-001::catastrophic::4",
           "structural_valid": false,
@@ -187,7 +187,7 @@
           "failure_clusters": [
             "structural_contract_failure"
           ],
-          "output_hash": "cab440b1c11762e3c6cd77ee446e3f3ef8966025f48633a3b6166e97ca034243",
+          "output_hash": "c75ac66f7e6d662f9f1f015bea52f6e4127fe0fe83c1ff58ca426dac628426cd",
           "overall_pass": false,
           "run_id": "slot-b-quality-001::catastrophic::5",
           "structural_valid": false,
@@ -206,7 +206,7 @@
           "failure_clusters": [
             "structural_contract_failure"
           ],
-          "output_hash": "cab440b1c11762e3c6cd77ee446e3f3ef8966025f48633a3b6166e97ca034243",
+          "output_hash": "c75ac66f7e6d662f9f1f015bea52f6e4127fe0fe83c1ff58ca426dac628426cd",
           "overall_pass": false,
           "run_id": "slot-b-quality-002::catastrophic::1",
           "structural_valid": false,
@@ -225,7 +225,7 @@
           "failure_clusters": [
             "structural_contract_failure"
           ],
-          "output_hash": "cab440b1c11762e3c6cd77ee446e3f3ef8966025f48633a3b6166e97ca034243",
+          "output_hash": "c75ac66f7e6d662f9f1f015bea52f6e4127fe0fe83c1ff58ca426dac628426cd",
           "overall_pass": false,
           "run_id": "slot-b-quality-002::catastrophic::2",
           "structural_valid": false,
@@ -244,7 +244,7 @@
           "failure_clusters": [
             "structural_contract_failure"
           ],
-          "output_hash": "cab440b1c11762e3c6cd77ee446e3f3ef8966025f48633a3b6166e97ca034243",
+          "output_hash": "c75ac66f7e6d662f9f1f015bea52f6e4127fe0fe83c1ff58ca426dac628426cd",
           "overall_pass": false,
           "run_id": "slot-b-quality-002::catastrophic::3",
           "structural_valid": false,
@@ -263,7 +263,7 @@
           "failure_clusters": [
             "structural_contract_failure"
           ],
-          "output_hash": "cab440b1c11762e3c6cd77ee446e3f3ef8966025f48633a3b6166e97ca034243",
+          "output_hash": "c75ac66f7e6d662f9f1f015bea52f6e4127fe0fe83c1ff58ca426dac628426cd",
           "overall_pass": false,
           "run_id": "slot-b-quality-002::catastrophic::4",
           "structural_valid": false,
@@ -282,7 +282,7 @@
           "failure_clusters": [
             "structural_contract_failure"
           ],
-          "output_hash": "cab440b1c11762e3c6cd77ee446e3f3ef8966025f48633a3b6166e97ca034243",
+          "output_hash": "c75ac66f7e6d662f9f1f015bea52f6e4127fe0fe83c1ff58ca426dac628426cd",
           "overall_pass": false,
           "run_id": "slot-b-quality-002::catastrophic::5",
           "structural_valid": false,
@@ -301,7 +301,7 @@
           "failure_clusters": [
             "structural_contract_failure"
           ],
-          "output_hash": "cab440b1c11762e3c6cd77ee446e3f3ef8966025f48633a3b6166e97ca034243",
+          "output_hash": "c75ac66f7e6d662f9f1f015bea52f6e4127fe0fe83c1ff58ca426dac628426cd",
           "overall_pass": false,
           "run_id": "slot-b-quality-003::catastrophic::1",
           "structural_valid": false,
@@ -320,7 +320,7 @@
           "failure_clusters": [
             "structural_contract_failure"
           ],
-          "output_hash": "cab440b1c11762e3c6cd77ee446e3f3ef8966025f48633a3b6166e97ca034243",
+          "output_hash": "c75ac66f7e6d662f9f1f015bea52f6e4127fe0fe83c1ff58ca426dac628426cd",
           "overall_pass": false,
           "run_id": "slot-b-quality-003::catastrophic::2",
           "structural_valid": false,
@@ -339,7 +339,7 @@
           "failure_clusters": [
             "structural_contract_failure"
           ],
-          "output_hash": "cab440b1c11762e3c6cd77ee446e3f3ef8966025f48633a3b6166e97ca034243",
+          "output_hash": "c75ac66f7e6d662f9f1f015bea52f6e4127fe0fe83c1ff58ca426dac628426cd",
           "overall_pass": false,
           "run_id": "slot-b-quality-003::catastrophic::3",
           "structural_valid": false,
@@ -358,7 +358,7 @@
           "failure_clusters": [
             "structural_contract_failure"
           ],
-          "output_hash": "cab440b1c11762e3c6cd77ee446e3f3ef8966025f48633a3b6166e97ca034243",
+          "output_hash": "c75ac66f7e6d662f9f1f015bea52f6e4127fe0fe83c1ff58ca426dac628426cd",
           "overall_pass": false,
           "run_id": "slot-b-quality-003::catastrophic::4",
           "structural_valid": false,
@@ -377,7 +377,7 @@
           "failure_clusters": [
             "structural_contract_failure"
           ],
-          "output_hash": "cab440b1c11762e3c6cd77ee446e3f3ef8966025f48633a3b6166e97ca034243",
+          "output_hash": "c75ac66f7e6d662f9f1f015bea52f6e4127fe0fe83c1ff58ca426dac628426cd",
           "overall_pass": false,
           "run_id": "slot-b-quality-003::catastrophic::5",
           "structural_valid": false,
@@ -490,7 +490,7 @@
             "quality:grounding_fidelity",
             "quality:priority_fidelity"
           ],
-          "output_hash": "626b9f09ce4adafee9a0f1fe2d3cc36ea4d212e98056c8eafb9e4643c9a20286",
+          "output_hash": "7d7ca7f63f671a630147061cf1f07ba6e1b09c026431a19636c91ac3c2f6e162",
           "overall_pass": false,
           "run_id": "slot-b-quality-001::moderate_missing_grounding::1",
           "structural_valid": true,
@@ -510,7 +510,7 @@
             "quality:grounding_fidelity",
             "quality:priority_fidelity"
           ],
-          "output_hash": "626b9f09ce4adafee9a0f1fe2d3cc36ea4d212e98056c8eafb9e4643c9a20286",
+          "output_hash": "7d7ca7f63f671a630147061cf1f07ba6e1b09c026431a19636c91ac3c2f6e162",
           "overall_pass": false,
           "run_id": "slot-b-quality-001::moderate_missing_grounding::2",
           "structural_valid": true,
@@ -530,7 +530,7 @@
             "quality:grounding_fidelity",
             "quality:priority_fidelity"
           ],
-          "output_hash": "626b9f09ce4adafee9a0f1fe2d3cc36ea4d212e98056c8eafb9e4643c9a20286",
+          "output_hash": "7d7ca7f63f671a630147061cf1f07ba6e1b09c026431a19636c91ac3c2f6e162",
           "overall_pass": false,
           "run_id": "slot-b-quality-001::moderate_missing_grounding::3",
           "structural_valid": true,
@@ -550,7 +550,7 @@
             "quality:grounding_fidelity",
             "quality:priority_fidelity"
           ],
-          "output_hash": "626b9f09ce4adafee9a0f1fe2d3cc36ea4d212e98056c8eafb9e4643c9a20286",
+          "output_hash": "7d7ca7f63f671a630147061cf1f07ba6e1b09c026431a19636c91ac3c2f6e162",
           "overall_pass": false,
           "run_id": "slot-b-quality-001::moderate_missing_grounding::4",
           "structural_valid": true,
@@ -570,7 +570,7 @@
             "quality:grounding_fidelity",
             "quality:priority_fidelity"
           ],
-          "output_hash": "626b9f09ce4adafee9a0f1fe2d3cc36ea4d212e98056c8eafb9e4643c9a20286",
+          "output_hash": "7d7ca7f63f671a630147061cf1f07ba6e1b09c026431a19636c91ac3c2f6e162",
           "overall_pass": false,
           "run_id": "slot-b-quality-001::moderate_missing_grounding::5",
           "structural_valid": true,
@@ -590,7 +590,7 @@
             "quality:grounding_fidelity",
             "quality:priority_fidelity"
           ],
-          "output_hash": "f48a8ff5062f1617d0145bccf4b8e16dd8aec3ed26ff408767057e9f4b5ca750",
+          "output_hash": "db1eb406daea959995974fae291f83379c5670a89d5bf8d81908eb8644dfea71",
           "overall_pass": false,
           "run_id": "slot-b-quality-002::moderate_missing_grounding::1",
           "structural_valid": true,
@@ -610,7 +610,7 @@
             "quality:grounding_fidelity",
             "quality:priority_fidelity"
           ],
-          "output_hash": "f48a8ff5062f1617d0145bccf4b8e16dd8aec3ed26ff408767057e9f4b5ca750",
+          "output_hash": "db1eb406daea959995974fae291f83379c5670a89d5bf8d81908eb8644dfea71",
           "overall_pass": false,
           "run_id": "slot-b-quality-002::moderate_missing_grounding::2",
           "structural_valid": true,
@@ -630,7 +630,7 @@
             "quality:grounding_fidelity",
             "quality:priority_fidelity"
           ],
-          "output_hash": "f48a8ff5062f1617d0145bccf4b8e16dd8aec3ed26ff408767057e9f4b5ca750",
+          "output_hash": "db1eb406daea959995974fae291f83379c5670a89d5bf8d81908eb8644dfea71",
           "overall_pass": false,
           "run_id": "slot-b-quality-002::moderate_missing_grounding::3",
           "structural_valid": true,
@@ -650,7 +650,7 @@
             "quality:grounding_fidelity",
             "quality:priority_fidelity"
           ],
-          "output_hash": "f48a8ff5062f1617d0145bccf4b8e16dd8aec3ed26ff408767057e9f4b5ca750",
+          "output_hash": "db1eb406daea959995974fae291f83379c5670a89d5bf8d81908eb8644dfea71",
           "overall_pass": false,
           "run_id": "slot-b-quality-002::moderate_missing_grounding::4",
           "structural_valid": true,
@@ -670,7 +670,7 @@
             "quality:grounding_fidelity",
             "quality:priority_fidelity"
           ],
-          "output_hash": "f48a8ff5062f1617d0145bccf4b8e16dd8aec3ed26ff408767057e9f4b5ca750",
+          "output_hash": "db1eb406daea959995974fae291f83379c5670a89d5bf8d81908eb8644dfea71",
           "overall_pass": false,
           "run_id": "slot-b-quality-002::moderate_missing_grounding::5",
           "structural_valid": true,
@@ -690,7 +690,7 @@
             "quality:grounding_fidelity",
             "quality:priority_fidelity"
           ],
-          "output_hash": "49f9b8dc56b32b93f32d32702f744525a63b41262c07dbfe97adad3577f34853",
+          "output_hash": "0ca2a61427cacf20f2f2227bc98f12c16578a722aaae6648583add94cbaccf00",
           "overall_pass": false,
           "run_id": "slot-b-quality-003::moderate_missing_grounding::1",
           "structural_valid": true,
@@ -710,7 +710,7 @@
             "quality:grounding_fidelity",
             "quality:priority_fidelity"
           ],
-          "output_hash": "49f9b8dc56b32b93f32d32702f744525a63b41262c07dbfe97adad3577f34853",
+          "output_hash": "0ca2a61427cacf20f2f2227bc98f12c16578a722aaae6648583add94cbaccf00",
           "overall_pass": false,
           "run_id": "slot-b-quality-003::moderate_missing_grounding::2",
           "structural_valid": true,
@@ -730,7 +730,7 @@
             "quality:grounding_fidelity",
             "quality:priority_fidelity"
           ],
-          "output_hash": "49f9b8dc56b32b93f32d32702f744525a63b41262c07dbfe97adad3577f34853",
+          "output_hash": "0ca2a61427cacf20f2f2227bc98f12c16578a722aaae6648583add94cbaccf00",
           "overall_pass": false,
           "run_id": "slot-b-quality-003::moderate_missing_grounding::3",
           "structural_valid": true,
@@ -750,7 +750,7 @@
             "quality:grounding_fidelity",
             "quality:priority_fidelity"
           ],
-          "output_hash": "49f9b8dc56b32b93f32d32702f744525a63b41262c07dbfe97adad3577f34853",
+          "output_hash": "0ca2a61427cacf20f2f2227bc98f12c16578a722aaae6648583add94cbaccf00",
           "overall_pass": false,
           "run_id": "slot-b-quality-003::moderate_missing_grounding::4",
           "structural_valid": true,
@@ -770,7 +770,7 @@
             "quality:grounding_fidelity",
             "quality:priority_fidelity"
           ],
-          "output_hash": "49f9b8dc56b32b93f32d32702f744525a63b41262c07dbfe97adad3577f34853",
+          "output_hash": "0ca2a61427cacf20f2f2227bc98f12c16578a722aaae6648583add94cbaccf00",
           "overall_pass": false,
           "run_id": "slot-b-quality-003::moderate_missing_grounding::5",
           "structural_valid": true,
@@ -881,7 +881,7 @@
           "failure_clusters": [
             "quality:account_specificity"
           ],
-          "output_hash": "a7cf0dc5a04b869a24e231ae5b22f8e9c22242e7a96215dbff1252a005ad7572",
+          "output_hash": "d3173f95972d01b398a24a96822e005c6776ebc52df4d9e5351b6a5497b0ccd1",
           "overall_pass": false,
           "run_id": "slot-b-quality-001::subtle_generic_reason::1",
           "structural_valid": true,
@@ -900,7 +900,7 @@
           "failure_clusters": [
             "quality:account_specificity"
           ],
-          "output_hash": "a7cf0dc5a04b869a24e231ae5b22f8e9c22242e7a96215dbff1252a005ad7572",
+          "output_hash": "d3173f95972d01b398a24a96822e005c6776ebc52df4d9e5351b6a5497b0ccd1",
           "overall_pass": false,
           "run_id": "slot-b-quality-001::subtle_generic_reason::2",
           "structural_valid": true,
@@ -919,7 +919,7 @@
           "failure_clusters": [
             "quality:account_specificity"
           ],
-          "output_hash": "a7cf0dc5a04b869a24e231ae5b22f8e9c22242e7a96215dbff1252a005ad7572",
+          "output_hash": "d3173f95972d01b398a24a96822e005c6776ebc52df4d9e5351b6a5497b0ccd1",
           "overall_pass": false,
           "run_id": "slot-b-quality-001::subtle_generic_reason::3",
           "structural_valid": true,
@@ -938,7 +938,7 @@
           "failure_clusters": [
             "quality:account_specificity"
           ],
-          "output_hash": "a7cf0dc5a04b869a24e231ae5b22f8e9c22242e7a96215dbff1252a005ad7572",
+          "output_hash": "d3173f95972d01b398a24a96822e005c6776ebc52df4d9e5351b6a5497b0ccd1",
           "overall_pass": false,
           "run_id": "slot-b-quality-001::subtle_generic_reason::4",
           "structural_valid": true,
@@ -957,7 +957,7 @@
           "failure_clusters": [
             "quality:account_specificity"
           ],
-          "output_hash": "a7cf0dc5a04b869a24e231ae5b22f8e9c22242e7a96215dbff1252a005ad7572",
+          "output_hash": "d3173f95972d01b398a24a96822e005c6776ebc52df4d9e5351b6a5497b0ccd1",
           "overall_pass": false,
           "run_id": "slot-b-quality-001::subtle_generic_reason::5",
           "structural_valid": true,
@@ -976,7 +976,7 @@
           "failure_clusters": [
             "quality:account_specificity"
           ],
-          "output_hash": "9a6c2c28b732fa73d1c210be8ba26fc2e54e38a2292a9953beea38dd484c83c5",
+          "output_hash": "6100f6f188e499eef96896aa1ec594311d3618e952f2e29e57e0cefe19044369",
           "overall_pass": false,
           "run_id": "slot-b-quality-002::subtle_generic_reason::1",
           "structural_valid": true,
@@ -995,7 +995,7 @@
           "failure_clusters": [
             "quality:account_specificity"
           ],
-          "output_hash": "9a6c2c28b732fa73d1c210be8ba26fc2e54e38a2292a9953beea38dd484c83c5",
+          "output_hash": "6100f6f188e499eef96896aa1ec594311d3618e952f2e29e57e0cefe19044369",
           "overall_pass": false,
           "run_id": "slot-b-quality-002::subtle_generic_reason::2",
           "structural_valid": true,
@@ -1014,7 +1014,7 @@
           "failure_clusters": [
             "quality:account_specificity"
           ],
-          "output_hash": "9a6c2c28b732fa73d1c210be8ba26fc2e54e38a2292a9953beea38dd484c83c5",
+          "output_hash": "6100f6f188e499eef96896aa1ec594311d3618e952f2e29e57e0cefe19044369",
           "overall_pass": false,
           "run_id": "slot-b-quality-002::subtle_generic_reason::3",
           "structural_valid": true,
@@ -1033,7 +1033,7 @@
           "failure_clusters": [
             "quality:account_specificity"
           ],
-          "output_hash": "9a6c2c28b732fa73d1c210be8ba26fc2e54e38a2292a9953beea38dd484c83c5",
+          "output_hash": "6100f6f188e499eef96896aa1ec594311d3618e952f2e29e57e0cefe19044369",
           "overall_pass": false,
           "run_id": "slot-b-quality-002::subtle_generic_reason::4",
           "structural_valid": true,
@@ -1052,7 +1052,7 @@
           "failure_clusters": [
             "quality:account_specificity"
           ],
-          "output_hash": "9a6c2c28b732fa73d1c210be8ba26fc2e54e38a2292a9953beea38dd484c83c5",
+          "output_hash": "6100f6f188e499eef96896aa1ec594311d3618e952f2e29e57e0cefe19044369",
           "overall_pass": false,
           "run_id": "slot-b-quality-002::subtle_generic_reason::5",
           "structural_valid": true,
@@ -1071,7 +1071,7 @@
           "failure_clusters": [
             "quality:account_specificity"
           ],
-          "output_hash": "55537cd38c269f2ed2fc6e687f0f2aaaa6535d11c70c392dc1831d5766a14aac",
+          "output_hash": "7a6a6371fcef9c76fe02599f6b191bfb2ee454b947179719f05d4f8908e7b57a",
           "overall_pass": false,
           "run_id": "slot-b-quality-003::subtle_generic_reason::1",
           "structural_valid": true,
@@ -1090,7 +1090,7 @@
           "failure_clusters": [
             "quality:account_specificity"
           ],
-          "output_hash": "55537cd38c269f2ed2fc6e687f0f2aaaa6535d11c70c392dc1831d5766a14aac",
+          "output_hash": "7a6a6371fcef9c76fe02599f6b191bfb2ee454b947179719f05d4f8908e7b57a",
           "overall_pass": false,
           "run_id": "slot-b-quality-003::subtle_generic_reason::2",
           "structural_valid": true,
@@ -1109,7 +1109,7 @@
           "failure_clusters": [
             "quality:account_specificity"
           ],
-          "output_hash": "55537cd38c269f2ed2fc6e687f0f2aaaa6535d11c70c392dc1831d5766a14aac",
+          "output_hash": "7a6a6371fcef9c76fe02599f6b191bfb2ee454b947179719f05d4f8908e7b57a",
           "overall_pass": false,
           "run_id": "slot-b-quality-003::subtle_generic_reason::3",
           "structural_valid": true,
@@ -1128,7 +1128,7 @@
           "failure_clusters": [
             "quality:account_specificity"
           ],
-          "output_hash": "55537cd38c269f2ed2fc6e687f0f2aaaa6535d11c70c392dc1831d5766a14aac",
+          "output_hash": "7a6a6371fcef9c76fe02599f6b191bfb2ee454b947179719f05d4f8908e7b57a",
           "overall_pass": false,
           "run_id": "slot-b-quality-003::subtle_generic_reason::4",
           "structural_valid": true,
@@ -1147,7 +1147,7 @@
           "failure_clusters": [
             "quality:account_specificity"
           ],
-          "output_hash": "55537cd38c269f2ed2fc6e687f0f2aaaa6535d11c70c392dc1831d5766a14aac",
+          "output_hash": "7a6a6371fcef9c76fe02599f6b191bfb2ee454b947179719f05d4f8908e7b57a",
           "overall_pass": false,
           "run_id": "slot-b-quality-003::subtle_generic_reason::5",
           "structural_valid": true,
@@ -1254,7 +1254,7 @@
             "tone_fit": 3
           },
           "failure_clusters": [],
-          "output_hash": "b1e3ddd8f7374a34caf686cfe983ac375edb7aa596fa2fad29f26ec43fdec688",
+          "output_hash": "7a388b7069c42e0e4657477ed7f173cfd3acb481ce04d84ad33795a56798ceed",
           "overall_pass": true,
           "run_id": "slot-b-quality-001::noop_equivalent::1",
           "structural_valid": true,
@@ -1271,7 +1271,7 @@
             "tone_fit": 3
           },
           "failure_clusters": [],
-          "output_hash": "b1e3ddd8f7374a34caf686cfe983ac375edb7aa596fa2fad29f26ec43fdec688",
+          "output_hash": "7a388b7069c42e0e4657477ed7f173cfd3acb481ce04d84ad33795a56798ceed",
           "overall_pass": true,
           "run_id": "slot-b-quality-001::noop_equivalent::2",
           "structural_valid": true,
@@ -1288,7 +1288,7 @@
             "tone_fit": 3
           },
           "failure_clusters": [],
-          "output_hash": "b1e3ddd8f7374a34caf686cfe983ac375edb7aa596fa2fad29f26ec43fdec688",
+          "output_hash": "7a388b7069c42e0e4657477ed7f173cfd3acb481ce04d84ad33795a56798ceed",
           "overall_pass": true,
           "run_id": "slot-b-quality-001::noop_equivalent::3",
           "structural_valid": true,
@@ -1305,7 +1305,7 @@
             "tone_fit": 3
           },
           "failure_clusters": [],
-          "output_hash": "b1e3ddd8f7374a34caf686cfe983ac375edb7aa596fa2fad29f26ec43fdec688",
+          "output_hash": "7a388b7069c42e0e4657477ed7f173cfd3acb481ce04d84ad33795a56798ceed",
           "overall_pass": true,
           "run_id": "slot-b-quality-001::noop_equivalent::4",
           "structural_valid": true,
@@ -1322,7 +1322,7 @@
             "tone_fit": 3
           },
           "failure_clusters": [],
-          "output_hash": "b1e3ddd8f7374a34caf686cfe983ac375edb7aa596fa2fad29f26ec43fdec688",
+          "output_hash": "7a388b7069c42e0e4657477ed7f173cfd3acb481ce04d84ad33795a56798ceed",
           "overall_pass": true,
           "run_id": "slot-b-quality-001::noop_equivalent::5",
           "structural_valid": true,
@@ -1339,7 +1339,7 @@
             "tone_fit": 3
           },
           "failure_clusters": [],
-          "output_hash": "4af1430a0811ccbc8ae74537b305149c8ca18f04e312139959c28d25ecba92e7",
+          "output_hash": "96984c4906c33d94b5e3b685e7016201d3183827308517776b69948ad0ea91fe",
           "overall_pass": true,
           "run_id": "slot-b-quality-002::noop_equivalent::1",
           "structural_valid": true,
@@ -1356,7 +1356,7 @@
             "tone_fit": 3
           },
           "failure_clusters": [],
-          "output_hash": "4af1430a0811ccbc8ae74537b305149c8ca18f04e312139959c28d25ecba92e7",
+          "output_hash": "96984c4906c33d94b5e3b685e7016201d3183827308517776b69948ad0ea91fe",
           "overall_pass": true,
           "run_id": "slot-b-quality-002::noop_equivalent::2",
           "structural_valid": true,
@@ -1373,7 +1373,7 @@
             "tone_fit": 3
           },
           "failure_clusters": [],
-          "output_hash": "4af1430a0811ccbc8ae74537b305149c8ca18f04e312139959c28d25ecba92e7",
+          "output_hash": "96984c4906c33d94b5e3b685e7016201d3183827308517776b69948ad0ea91fe",
           "overall_pass": true,
           "run_id": "slot-b-quality-002::noop_equivalent::3",
           "structural_valid": true,
@@ -1390,7 +1390,7 @@
             "tone_fit": 3
           },
           "failure_clusters": [],
-          "output_hash": "4af1430a0811ccbc8ae74537b305149c8ca18f04e312139959c28d25ecba92e7",
+          "output_hash": "96984c4906c33d94b5e3b685e7016201d3183827308517776b69948ad0ea91fe",
           "overall_pass": true,
           "run_id": "slot-b-quality-002::noop_equivalent::4",
           "structural_valid": true,
@@ -1407,7 +1407,7 @@
             "tone_fit": 3
           },
           "failure_clusters": [],
-          "output_hash": "4af1430a0811ccbc8ae74537b305149c8ca18f04e312139959c28d25ecba92e7",
+          "output_hash": "96984c4906c33d94b5e3b685e7016201d3183827308517776b69948ad0ea91fe",
           "overall_pass": true,
           "run_id": "slot-b-quality-002::noop_equivalent::5",
           "structural_valid": true,
@@ -1424,7 +1424,7 @@
             "tone_fit": 3
           },
           "failure_clusters": [],
-          "output_hash": "9cb092c3cb1495a5fd5fe1afdc6a95083a2e091da801dd2a63f6d65e340d92dc",
+          "output_hash": "7f2c3afd0fe9953297f10f167cd3ad660923697e261232769934704018ed1d48",
           "overall_pass": true,
           "run_id": "slot-b-quality-003::noop_equivalent::1",
           "structural_valid": true,
@@ -1441,7 +1441,7 @@
             "tone_fit": 3
           },
           "failure_clusters": [],
-          "output_hash": "9cb092c3cb1495a5fd5fe1afdc6a95083a2e091da801dd2a63f6d65e340d92dc",
+          "output_hash": "7f2c3afd0fe9953297f10f167cd3ad660923697e261232769934704018ed1d48",
           "overall_pass": true,
           "run_id": "slot-b-quality-003::noop_equivalent::2",
           "structural_valid": true,
@@ -1458,7 +1458,7 @@
             "tone_fit": 3
           },
           "failure_clusters": [],
-          "output_hash": "9cb092c3cb1495a5fd5fe1afdc6a95083a2e091da801dd2a63f6d65e340d92dc",
+          "output_hash": "7f2c3afd0fe9953297f10f167cd3ad660923697e261232769934704018ed1d48",
           "overall_pass": true,
           "run_id": "slot-b-quality-003::noop_equivalent::3",
           "structural_valid": true,
@@ -1475,7 +1475,7 @@
             "tone_fit": 3
           },
           "failure_clusters": [],
-          "output_hash": "9cb092c3cb1495a5fd5fe1afdc6a95083a2e091da801dd2a63f6d65e340d92dc",
+          "output_hash": "7f2c3afd0fe9953297f10f167cd3ad660923697e261232769934704018ed1d48",
           "overall_pass": true,
           "run_id": "slot-b-quality-003::noop_equivalent::4",
           "structural_valid": true,
@@ -1492,7 +1492,7 @@
             "tone_fit": 3
           },
           "failure_clusters": [],
-          "output_hash": "9cb092c3cb1495a5fd5fe1afdc6a95083a2e091da801dd2a63f6d65e340d92dc",
+          "output_hash": "7f2c3afd0fe9953297f10f167cd3ad660923697e261232769934704018ed1d48",
           "overall_pass": true,
           "run_id": "slot-b-quality-003::noop_equivalent::5",
           "structural_valid": true,
@@ -1601,7 +1601,7 @@
           "tone_fit": 3
         },
         "failure_clusters": [],
-        "output_hash": "b1e3ddd8f7374a34caf686cfe983ac375edb7aa596fa2fad29f26ec43fdec688",
+        "output_hash": "7a388b7069c42e0e4657477ed7f173cfd3acb481ce04d84ad33795a56798ceed",
         "overall_pass": true,
         "run_id": "slot-b-quality-001::normal::1",
         "structural_valid": true,
@@ -1618,7 +1618,7 @@
           "tone_fit": 3
         },
         "failure_clusters": [],
-        "output_hash": "b1e3ddd8f7374a34caf686cfe983ac375edb7aa596fa2fad29f26ec43fdec688",
+        "output_hash": "7a388b7069c42e0e4657477ed7f173cfd3acb481ce04d84ad33795a56798ceed",
         "overall_pass": true,
         "run_id": "slot-b-quality-001::normal::2",
         "structural_valid": true,
@@ -1635,7 +1635,7 @@
           "tone_fit": 3
         },
         "failure_clusters": [],
-        "output_hash": "b1e3ddd8f7374a34caf686cfe983ac375edb7aa596fa2fad29f26ec43fdec688",
+        "output_hash": "7a388b7069c42e0e4657477ed7f173cfd3acb481ce04d84ad33795a56798ceed",
         "overall_pass": true,
         "run_id": "slot-b-quality-001::normal::3",
         "structural_valid": true,
@@ -1652,7 +1652,7 @@
           "tone_fit": 3
         },
         "failure_clusters": [],
-        "output_hash": "b1e3ddd8f7374a34caf686cfe983ac375edb7aa596fa2fad29f26ec43fdec688",
+        "output_hash": "7a388b7069c42e0e4657477ed7f173cfd3acb481ce04d84ad33795a56798ceed",
         "overall_pass": true,
         "run_id": "slot-b-quality-001::normal::4",
         "structural_valid": true,
@@ -1669,7 +1669,7 @@
           "tone_fit": 3
         },
         "failure_clusters": [],
-        "output_hash": "b1e3ddd8f7374a34caf686cfe983ac375edb7aa596fa2fad29f26ec43fdec688",
+        "output_hash": "7a388b7069c42e0e4657477ed7f173cfd3acb481ce04d84ad33795a56798ceed",
         "overall_pass": true,
         "run_id": "slot-b-quality-001::normal::5",
         "structural_valid": true,
@@ -1686,7 +1686,7 @@
           "tone_fit": 3
         },
         "failure_clusters": [],
-        "output_hash": "4af1430a0811ccbc8ae74537b305149c8ca18f04e312139959c28d25ecba92e7",
+        "output_hash": "96984c4906c33d94b5e3b685e7016201d3183827308517776b69948ad0ea91fe",
         "overall_pass": true,
         "run_id": "slot-b-quality-002::normal::1",
         "structural_valid": true,
@@ -1703,7 +1703,7 @@
           "tone_fit": 3
         },
         "failure_clusters": [],
-        "output_hash": "4af1430a0811ccbc8ae74537b305149c8ca18f04e312139959c28d25ecba92e7",
+        "output_hash": "96984c4906c33d94b5e3b685e7016201d3183827308517776b69948ad0ea91fe",
         "overall_pass": true,
         "run_id": "slot-b-quality-002::normal::2",
         "structural_valid": true,
@@ -1720,7 +1720,7 @@
           "tone_fit": 3
         },
         "failure_clusters": [],
-        "output_hash": "4af1430a0811ccbc8ae74537b305149c8ca18f04e312139959c28d25ecba92e7",
+        "output_hash": "96984c4906c33d94b5e3b685e7016201d3183827308517776b69948ad0ea91fe",
         "overall_pass": true,
         "run_id": "slot-b-quality-002::normal::3",
         "structural_valid": true,
@@ -1737,7 +1737,7 @@
           "tone_fit": 3
         },
         "failure_clusters": [],
-        "output_hash": "4af1430a0811ccbc8ae74537b305149c8ca18f04e312139959c28d25ecba92e7",
+        "output_hash": "96984c4906c33d94b5e3b685e7016201d3183827308517776b69948ad0ea91fe",
         "overall_pass": true,
         "run_id": "slot-b-quality-002::normal::4",
         "structural_valid": true,
@@ -1754,7 +1754,7 @@
           "tone_fit": 3
         },
         "failure_clusters": [],
-        "output_hash": "4af1430a0811ccbc8ae74537b305149c8ca18f04e312139959c28d25ecba92e7",
+        "output_hash": "96984c4906c33d94b5e3b685e7016201d3183827308517776b69948ad0ea91fe",
         "overall_pass": true,
         "run_id": "slot-b-quality-002::normal::5",
         "structural_valid": true,
@@ -1771,7 +1771,7 @@
           "tone_fit": 3
         },
         "failure_clusters": [],
-        "output_hash": "9cb092c3cb1495a5fd5fe1afdc6a95083a2e091da801dd2a63f6d65e340d92dc",
+        "output_hash": "7f2c3afd0fe9953297f10f167cd3ad660923697e261232769934704018ed1d48",
         "overall_pass": true,
         "run_id": "slot-b-quality-003::normal::1",
         "structural_valid": true,
@@ -1788,7 +1788,7 @@
           "tone_fit": 3
         },
         "failure_clusters": [],
-        "output_hash": "9cb092c3cb1495a5fd5fe1afdc6a95083a2e091da801dd2a63f6d65e340d92dc",
+        "output_hash": "7f2c3afd0fe9953297f10f167cd3ad660923697e261232769934704018ed1d48",
         "overall_pass": true,
         "run_id": "slot-b-quality-003::normal::2",
         "structural_valid": true,
@@ -1805,7 +1805,7 @@
           "tone_fit": 3
         },
         "failure_clusters": [],
-        "output_hash": "9cb092c3cb1495a5fd5fe1afdc6a95083a2e091da801dd2a63f6d65e340d92dc",
+        "output_hash": "7f2c3afd0fe9953297f10f167cd3ad660923697e261232769934704018ed1d48",
         "overall_pass": true,
         "run_id": "slot-b-quality-003::normal::3",
         "structural_valid": true,
@@ -1822,7 +1822,7 @@
           "tone_fit": 3
         },
         "failure_clusters": [],
-        "output_hash": "9cb092c3cb1495a5fd5fe1afdc6a95083a2e091da801dd2a63f6d65e340d92dc",
+        "output_hash": "7f2c3afd0fe9953297f10f167cd3ad660923697e261232769934704018ed1d48",
         "overall_pass": true,
         "run_id": "slot-b-quality-003::normal::4",
         "structural_valid": true,
@@ -1839,7 +1839,7 @@
           "tone_fit": 3
         },
         "failure_clusters": [],
-        "output_hash": "9cb092c3cb1495a5fd5fe1afdc6a95083a2e091da801dd2a63f6d65e340d92dc",
+        "output_hash": "7f2c3afd0fe9953297f10f167cd3ad660923697e261232769934704018ed1d48",
         "overall_pass": true,
         "run_id": "slot-b-quality-003::normal::5",
         "structural_valid": true,
