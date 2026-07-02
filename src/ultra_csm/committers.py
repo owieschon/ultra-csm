@@ -166,7 +166,11 @@ class SimCrmActivityCommitter:
         *,
         dry_run: bool = False,
     ) -> CommitReceipt:
-        if proposal.action not in {"log_crm_activity", "draft_customer_outreach"}:
+        if proposal.action not in {
+            "log_crm_activity",
+            "draft_customer_outreach",
+            "recommend_next_best_action",
+        }:
             raise CommitError(f"SimCrmActivityCommitter cannot commit {proposal.action}")
         self._gate.assert_payload_bound(outcome, proposal.payload)
         account_id = _required_str(proposal.payload, "account_id")
@@ -186,7 +190,7 @@ class SimCrmActivityCommitter:
         self._store.record_activity(
             account_id,
             channel=str(proposal.payload.get("draft_channel") or proposal.payload.get("channel") or "email"),
-            direction="outbound",
+            direction=_activity_direction(proposal.action),
             summary=str(proposal.payload.get("subject") or proposal.payload.get("body") or proposal.intent),
             idempotency_key=key,
             occurred_at=str(proposal.payload.get("as_of") or "2026-06-28") + "T12:00:00Z",
@@ -233,6 +237,10 @@ def _required_str(payload: dict[str, Any], key: str) -> str:
     if not isinstance(value, str) or not value:
         raise CommitError(f"payload missing required string field: {key}")
     return value
+
+
+def _activity_direction(action: str) -> str:
+    return "internal" if action == "recommend_next_best_action" else "outbound"
 
 
 def _contains_key(path: Path, key: str) -> bool:

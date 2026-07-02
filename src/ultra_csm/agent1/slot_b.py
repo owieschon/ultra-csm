@@ -9,13 +9,19 @@ or other accounts.
 from __future__ import annotations
 
 import json
+import logging
 import time
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Protocol
+from typing import TYPE_CHECKING, Protocol
 
 from ultra_csm._util import evidence_ids
 from ultra_csm.observability import Meter, NoOpMeter, NoOpTracer, Tracer
+
+if TYPE_CHECKING:
+    from ultra_csm.cost_tracker import CostTracker
+
+log = logging.getLogger(__name__)
 
 SLOT_B_PROMPT_VERSION = "agent1-slot-b-reason-draft-v1"
 SLOT_B_PROMPT_PATH = (
@@ -168,6 +174,7 @@ class AnthropicReasonDraftWriter:
         prompt_text: str | None = None,
         tracer: Tracer | None = None,
         meter: Meter | None = None,
+        cost_tracker: "CostTracker | None" = None,
     ) -> None:
         if client is None:  # pragma: no cover - live lane
             from anthropic import Anthropic
@@ -178,6 +185,7 @@ class AnthropicReasonDraftWriter:
         self._prompt_text = prompt_text
         self._tracer: Tracer = tracer or NoOpTracer()
         self._meter: Meter = meter or NoOpMeter()
+        self._cost_tracker = cost_tracker
         self._tokens = self._meter.counter(
             "pcs.llm.tokens",
             description="live LLM token usage (in+out)",
@@ -238,6 +246,16 @@ class AnthropicReasonDraftWriter:
                          + (out_tok or 0) * LIVE_USD_PER_MTOK_OUTPUT) / 1_000_000.0)
                 span.set_attribute("usage.cost_usd", cost)
                 self._cost.record(cost, attrs)
+
+                # Record in cumulative cost tracker for API /metrics.
+                if self._cost_tracker is not None and in_tok is not None:
+                    self._cost_tracker.record(
+                        model_id=self.model_id,
+                        input_tokens=in_tok,
+                        output_tokens=out_tok or 0,
+                        latency_ms=latency_ms,
+                        account_id=request.account_id,
+                    )
 
         output = _parse_live_output(
             _text_from_message(msg),

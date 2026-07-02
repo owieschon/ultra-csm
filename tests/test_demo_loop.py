@@ -8,10 +8,17 @@ from ultra_csm.agent1 import run_time_to_value_sweep
 from ultra_csm.committers import (
     SimCrmActivityCommitter,
     SimOutboundCommitter,
+    auto_approve_internal,
     load_action_proposal,
 )
 from ultra_csm.data_plane import ACME_LOGISTICS, DEFAULT_TENANT, SimTenantStore
-from ultra_csm.governance import ActionGate, FixtureVerdictSource, GateError, Verdict
+from ultra_csm.governance import (
+    ActionGate,
+    FixtureVerdictSource,
+    GateError,
+    Verdict,
+    proposal_fields_for,
+)
 from ultra_csm.value_model import build_customer_value_model
 
 from tests._govhelpers import CLOCK, T1, setup_roster
@@ -120,6 +127,72 @@ def test_sim_committer_requires_approved_bound_payload(runtime_conn, tmp_path):
                     "payload_sha256": proposal.payload_sha256,
                 })(),
             )
+    finally:
+        runtime_conn.rollback()
+
+
+def test_tier_one_internal_action_auto_executes_through_gate(runtime_conn, tmp_path):
+    runtime_conn.execute("BEGIN")
+    try:
+        orch, _authority = setup_roster(runtime_conn)
+        gate = ActionGate(
+            runtime_conn,
+            tenant_id=T1,
+            actor_principal_id=orch,
+            verdict_source=FixtureVerdictSource(),
+            now=CLOCK,
+        )
+        store = SimTenantStore.seed(tmp_path, tenant_id=DEFAULT_TENANT, reset=True)
+        proposal = gate.propose(
+            intent="demo_internal_recommendation",
+            payload={
+                "account_id": ACME_LOGISTICS,
+                "subject": "Review activation blockers",
+                "body": "Internal next-best action for the CSM.",
+                "as_of": AS_OF,
+            },
+            grounding_ref=f"demo:{ACME_LOGISTICS}:internal",
+            cause_ref="test:auto-internal",
+            **proposal_fields_for("recommend_next_best_action"),
+        )
+
+        outcome = auto_approve_internal(gate, proposal, system_principal_id=orch)
+        receipt = SimCrmActivityCommitter(gate, store).commit(proposal, outcome)
+
+        assert outcome.authorized is True
+        assert receipt.committed is True
+        activity = store.state().activities[0]
+        assert activity.account_id == ACME_LOGISTICS
+        assert activity.direction == "internal"
+    finally:
+        runtime_conn.rollback()
+
+
+def test_tier_two_and_three_actions_never_auto_execute(runtime_conn):
+    runtime_conn.execute("BEGIN")
+    try:
+        orch, _authority = setup_roster(runtime_conn)
+        gate = ActionGate(
+            runtime_conn,
+            tenant_id=T1,
+            actor_principal_id=orch,
+            verdict_source=FixtureVerdictSource(),
+            now=CLOCK,
+        )
+        for action in ("draft_customer_outreach", "initiate_customer_call"):
+            proposal = gate.propose(
+                intent=f"demo_forbidden_auto_{action}",
+                payload={
+                    "account_id": ACME_LOGISTICS,
+                    "subject": "Customer-affecting action",
+                    "body": "Requires human approval.",
+                },
+                grounding_ref=f"demo:{ACME_LOGISTICS}:{action}",
+                cause_ref=f"test:forbidden-auto:{action}",
+                **proposal_fields_for(action),
+            )
+            with pytest.raises(GateError):
+                auto_approve_internal(gate, proposal, system_principal_id=orch)
     finally:
         runtime_conn.rollback()
 
