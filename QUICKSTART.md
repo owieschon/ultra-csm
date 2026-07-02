@@ -69,3 +69,22 @@ The fail-closed loader and command path are covered by:
 ```sh
 PYTHONPATH=src:. .venv/bin/python -m pytest tests/test_connector_explorer.py -q
 ```
+
+## Talk To The Book In Read-Only Mode
+
+Use MCP as a conversational shell over read-only tools. Multi-turn memory and wording live
+in the host; this process only exposes deterministic reads when read-only mode is enabled.
+
+```sh
+ULTRA_CSM_MCP_READONLY=1 \
+  PYTHONPATH=src:. .venv/bin/python -m ultra_csm.mcp_server
+```
+
+The read-only mode refuses sweep and verdict tools. Capture the fixture transcript with:
+
+```sh
+make mcp-readonly-demo-csm
+```
+
+The transcript is written to `demo_state/mcp_readonly_transcript.json` and maps each demo
+answer to the tool calls that grounded it.

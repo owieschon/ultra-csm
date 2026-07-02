@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import atexit
 import logging
+import os
 from pathlib import Path
 
 import psycopg
@@ -29,6 +30,7 @@ from ultra_csm.data_plane import (
     DEFAULT_TENANT,
     build_sweep_fixture_data_plane,
 )
+from ultra_csm.data_plane.synthetic_book import SEED_DATE
 from ultra_csm.governance import (
     ActionGate,
     ActionProposal,
@@ -51,6 +53,7 @@ from ultra_csm._api_helpers import (
     resolve_write_principal,
     score_account_priority,
 )
+from ultra_csm.snapshot_store import SnapshotStore
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -63,6 +66,9 @@ _AS_OF = "2026-06-27"
 _TENANT_NAME = "acme-csm"
 _TENANT_ID = det_uuid("tenant", _TENANT_NAME)
 _SEED_AGENT = det_uuid("principal", _TENANT_NAME, "system-seed")
+_READONLY_ENV = "ULTRA_CSM_MCP_READONLY"
+_READONLY_CODE = "MCP_READONLY"
+_TIMELINE_DAYS = (0, 30, 60)
 
 log = logging.getLogger(__name__)
 
@@ -81,6 +87,28 @@ _proposals: dict[str, ActionProposal] = {}
 
 # Cache the most recent sweep result so list_proposals can pull from it.
 _last_sweep: SweepResult | None = None
+
+
+def _truthy(value: str | None) -> bool:
+    return (value or "").strip().lower() in {"1", "true", "yes", "on"}
+
+
+def mcp_readonly_enabled() -> bool:
+    """Return whether MCP is running as a read-only conversational surface."""
+
+    return _truthy(os.getenv(_READONLY_ENV))
+
+
+def _readonly_refusal(tool_name: str) -> dict[str, str]:
+    return {
+        "error": (
+            f"{tool_name} is disabled while {_READONLY_ENV}=1. "
+            "Use the REST/API approval path or restart MCP without read-only mode."
+        ),
+        "code": _READONLY_CODE,
+        "tool": tool_name,
+        "access_mode": "read_only",
+    }
 
 
 def _boot() -> None:
@@ -159,10 +187,65 @@ mcp = FastMCP(
     "Ultra CSM",
     instructions=(
         "Ultra CSM is a customer-success management system. Use these tools "
-        "to score accounts, run a time-to-value sweep across the book, review "
-        "pending action proposals, and submit human verdicts (approve/deny)."
+        "to score accounts, inspect account context, review pending action "
+        "proposals, and submit human verdicts only when write access is enabled."
     ),
 )
+
+
+MCP_TOOL_AUDIT: tuple[dict[str, object], ...] = (
+    {
+        "name": "score_account",
+        "classification": "read",
+        "readonly_available": True,
+    },
+    {
+        "name": "list_accounts",
+        "classification": "read",
+        "readonly_available": True,
+    },
+    {
+        "name": "get_account_brief",
+        "classification": "read",
+        "readonly_available": True,
+    },
+    {
+        "name": "get_hold_status",
+        "classification": "read",
+        "readonly_available": True,
+    },
+    {
+        "name": "get_trajectory",
+        "classification": "read",
+        "readonly_available": True,
+    },
+    {
+        "name": "list_proposals",
+        "classification": "read",
+        "readonly_available": True,
+    },
+    {
+        "name": "run_sweep",
+        "classification": "state_changing",
+        "readonly_available": False,
+    },
+    {
+        "name": "submit_verdict",
+        "classification": "state_changing",
+        "readonly_available": False,
+    },
+)
+
+
+@mcp.tool()
+def get_tool_manifest() -> dict:
+    """List MCP tools and their read/write classification."""
+
+    return {
+        "access_mode": "read_only" if mcp_readonly_enabled() else "operator",
+        "read_only_env": _READONLY_ENV,
+        "tools": [dict(tool) for tool in MCP_TOOL_AUDIT],
+    }
 
 
 @mcp.tool()
@@ -277,6 +360,109 @@ def get_account_brief(account_id: str) -> dict:
 
 
 @mcp.tool()
+def get_hold_status(account_id: str) -> dict:
+    """Read whether a customer-facing expansion action is currently held.
+
+    The current MCP fixture surface has no DB-backed hold queue. This tool
+    therefore derives the same default policy from current records and the
+    precedence matrix without creating proposals or changing state.
+
+    Args:
+        account_id: Account id to inspect.
+    """
+
+    assert _data_plane is not None
+    account = _find_account(account_id)
+    if account is None:
+        return {
+            "error": f"Account {account_id} not found",
+            "code": "ACCOUNT_NOT_FOUND",
+            "account_id": account_id,
+        }
+
+    expansion_opps = tuple(
+        opp for opp in _data_plane.crm.list_opportunities(account.account_id)
+        if opp.opportunity_type.lower() == "expansion"
+    )
+    blockers = _expansion_blockers(account.account_id)
+    status = (
+        "held"
+        if expansion_opps and blockers
+        else "blocked_no_action"
+        if blockers
+        else "not_held"
+    )
+    return {
+        "account_id": account.account_id,
+        "account_name": account.name,
+        "action_scope": "customer_facing",
+        "lens": "expansion",
+        "status": status,
+        "blocking_refs": [blocker["blocking_ref"] for blocker in blockers],
+        "blockers": blockers,
+        "held_since": _AS_OF if status == "held" else None,
+        "release_conditions": (
+            ["all_blocking_refs_clear_or_dismissed", "authorized_override"]
+            if status == "held"
+            else []
+        ),
+        "expansion_opportunities": [
+            {
+                "opportunity_id": opp.opportunity_id,
+                "stage_name": opp.stage_name,
+                "amount_cents": opp.amount_cents,
+                "close_date": opp.close_date,
+            }
+            for opp in expansion_opps
+        ],
+        "source": "read_only_precedence_projection",
+        "claim_boundary": {"sim": True, "live": False},
+    }
+
+
+@mcp.tool()
+def get_trajectory(account_id: str, window_days: int = 60) -> dict:
+    """Read the recent simulated health trajectory for an account.
+
+    Args:
+        account_id: Account id to inspect.
+        window_days: Lookback window in days. Defaults to 60.
+    """
+
+    assert _data_plane is not None
+    account = _find_account(account_id)
+    if account is None:
+        return {
+            "error": f"Account {account_id} not found",
+            "code": "ACCOUNT_NOT_FOUND",
+            "account_id": account_id,
+        }
+
+    store = _fixture_trajectory_store(account.account_id)
+    trajectory = store.build_trajectory(account.account_id, window_days=window_days)
+    return {
+        "account_id": account.account_id,
+        "account_name": account.name,
+        "window_days": trajectory.window_days,
+        "trend": trajectory.trend,
+        "trend_velocity": trajectory.trend_velocity,
+        "consecutive_band": trajectory.consecutive_band,
+        "consecutive_count": trajectory.consecutive_count,
+        "points": [
+            {
+                "day": point.day,
+                "health_band": point.health_band,
+                "health_score": point.health_score,
+                "priority_score": point.priority_score,
+                "priority_factors": list(point.priority_factors),
+            }
+            for point in trajectory.points
+        ],
+        "claim_boundary": {"sim": True, "live": False},
+    }
+
+
+@mcp.tool()
 def run_sweep() -> dict:
     """Run the Agent 1 time-to-value sweep across the entire tenant book.
 
@@ -285,6 +471,9 @@ def run_sweep() -> dict:
     work queue plus any identity-ambiguity escalations.
     """
     global _last_sweep
+
+    if mcp_readonly_enabled():
+        return _readonly_refusal("run_sweep")
 
     assert _data_plane is not None and _orch_principal is not None
 
@@ -392,6 +581,9 @@ def submit_verdict(
         reason: Human-readable rationale for the decision.
         token: API token mapped by ULTRA_CSM_API_TOKENS to the approving human.
     """
+    if mcp_readonly_enabled():
+        return _readonly_refusal("submit_verdict")
+
     assert _conn is not None and _orch_principal is not None
 
     try:
@@ -472,6 +664,91 @@ def submit_verdict(
         "verdict": outcome.verdict,
         "payload_sha256": outcome.payload_sha256,
         "auth": auth_principal.auth,
+    }
+
+
+def _find_account(account_id: str):
+    assert _data_plane is not None
+    for account in _data_plane.crm.list_accounts(tenant_id=DEFAULT_TENANT):
+        if account.account_id == account_id or account.name.lower() == account_id.lower():
+            return account
+    return None
+
+
+def _expansion_blockers(account_id: str) -> tuple[dict[str, object], ...]:
+    assert _data_plane is not None
+    blockers: list[dict[str, object]] = []
+    company = _data_plane.cs.get_company(account_id)
+    health = _data_plane.cs.get_health_score(account_id)
+    ctas = tuple(_data_plane.cs.list_ctas(account_id, status="open"))
+    milestones = tuple(_data_plane.telemetry.list_ttv_milestones(account_id))
+    open_milestones = tuple(
+        milestone for milestone in milestones
+        if milestone.achieved_at is None and milestone.expected_by < _AS_OF
+    )
+    if (
+        company is not None
+        and company.lifecycle_stage in {"onboarding", "adopting"}
+        and (
+            open_milestones
+            or ctas
+            or (health is not None and health.band in {"yellow", "red"})
+        )
+    ):
+        blockers.append({
+            "lens": "ttv_gap",
+            "blocking_ref": f"ttv_gap:{account_id}",
+            "evidence_refs": [
+                *(f"milestone:{account_id}:{item.milestone}" for item in open_milestones),
+                *(f"cta:{item.cta_id}" for item in ctas),
+            ],
+            "reason": "active onboarding or adoption gap blocks customer-facing expansion",
+        })
+    if health is not None and health.band == "red":
+        blockers.append({
+            "lens": "risk",
+            "blocking_ref": f"risk:{account_id}",
+            "evidence_refs": [f"health:{account_id}"],
+            "reason": "red health blocks customer-facing expansion",
+        })
+    return tuple(blockers)
+
+
+def _fixture_trajectory_store(account_id: str) -> SnapshotStore:
+    assert _data_plane is not None
+    store = SnapshotStore()
+    for day in _TIMELINE_DAYS:
+        payload = _trajectory_payload_for_day(account_id, day)
+        if payload is not None:
+            store.store_snapshot(day, account_id, payload)
+    return store
+
+
+def _trajectory_payload_for_day(account_id: str, day: int) -> dict[str, object] | None:
+    assert _data_plane is not None
+    # The MCP fixture data is point-in-time. Keep the tool read-only by deriving
+    # a conservative three-point simulated history from the current records.
+    account = _find_account(account_id)
+    company = _data_plane.cs.get_company(account_id)
+    health = _data_plane.cs.get_health_score(account_id)
+    if account is None or company is None or health is None:
+        return None
+    priority_score, _divergences = score_account_priority(
+        account_id,
+        data_plane=_data_plane,
+        as_of=_AS_OF,
+    )
+    day_index = _TIMELINE_DAYS.index(day)
+    score_adjustment = (-4.0, -2.0, 0.0)[day_index]
+    health_score = max(0.0, min(100.0, health.score + score_adjustment))
+    return {
+        "health_band": health.band,
+        "health_score": health_score,
+        "priority_score": priority_score,
+        "priority_factors": tuple(health.drivers),
+        "lifecycle_stage": company.lifecycle_stage,
+        "arr_cents": company.arr_cents,
+        "as_of": SEED_DATE if day == 0 else _AS_OF,
     }
 
 
