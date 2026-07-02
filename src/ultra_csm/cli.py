@@ -211,6 +211,111 @@ def _score_book(
     return results
 
 
+def _apply_deep_data_overlay(
+    data: "FixtureCustomerData",
+    day: int,
+) -> "FixtureCustomerData":
+    """Overlay deep simulation aggregates onto a FixtureCustomerData snapshot.
+
+    Recomputes AdoptionSummary active_users and active_assets from the deep
+    data simulation's per-user login histories and feature adoption states.
+    """
+    from ultra_csm.data_plane.contracts import AdoptionSummary, UsageSignal
+    from ultra_csm.data_plane.data_simulator import simulate_data
+
+    bundle = simulate_data(data, day=day)
+
+    adoption_by_id: dict[str, AdoptionSummary] = {
+        a.account_id: a for a in data.adoption_summaries
+    }
+    signal_by_key: dict[tuple[str, str], UsageSignal] = {
+        (s.account_id, s.metric_name): s for s in data.usage_signals
+    }
+
+    new_adoptions: list[AdoptionSummary] = []
+    for adoption in data.adoption_summaries:
+        ab = bundle.accounts.get(adoption.account_id)
+        if ab is None:
+            new_adoptions.append(adoption)
+            continue
+
+        # Recompute active users and adoption rate from deep data
+        active_users = ab.active_user_count
+        entitled_assets = adoption.entitled_assets
+        # Estimate active assets proportionally from feature depth
+        if ab.feature_depth_score > 0 and entitled_assets > 0:
+            active_assets = max(
+                active_users,
+                int(entitled_assets * ab.feature_depth_score * 0.9),
+            )
+        else:
+            active_assets = 0
+        rate = round(active_assets / entitled_assets, 2) if entitled_assets > 0 else 0.0
+
+        # Identify underused capabilities from feature adoption
+        underused = tuple(
+            f.feature for f in ab.feature_adoptions
+            if f.status in ("not_started", "exploring")
+        )
+
+        from ultra_csm.data_plane.book_simulator import _day_clock
+        new_adoptions.append(AdoptionSummary(
+            account_id=adoption.account_id,
+            active_users=min(active_users, adoption.licensed_users),
+            licensed_users=adoption.licensed_users,
+            active_assets=active_assets,
+            entitled_assets=entitled_assets,
+            adoption_rate=rate,
+            underused_capabilities=underused,
+            measured_at=_day_clock(day),
+        ))
+
+        # Also update the daily_active_assets usage signal
+        sig_key = (adoption.account_id, "daily_active_assets")
+        if sig_key in signal_by_key:
+            old = signal_by_key[sig_key]
+            signal_by_key[sig_key] = UsageSignal(
+                signal_id=old.signal_id,
+                account_id=old.account_id,
+                grain=old.grain,
+                subject_id=old.subject_id,
+                metric_name=old.metric_name,
+                value=float(active_assets),
+                unit=old.unit,
+                observed_at=_day_clock(day),
+                source_ref=old.source_ref,
+            )
+
+    # Rebuild usage signals
+    seen: set[tuple[str, str]] = set()
+    new_signals: list[UsageSignal] = []
+    for sig in data.usage_signals:
+        key = (sig.account_id, sig.metric_name)
+        repl = signal_by_key.get(key)
+        if repl is not None and key not in seen:
+            new_signals.append(repl)
+            seen.add(key)
+        else:
+            new_signals.append(sig)
+
+    from ultra_csm.data_plane.fixtures import FixtureCustomerData as FCD
+    return FCD(
+        accounts=data.accounts,
+        companies=data.companies,
+        contacts=data.contacts,
+        cases=data.cases,
+        opportunities=data.opportunities,
+        health_scores=data.health_scores,
+        ctas=data.ctas,
+        success_plans=data.success_plans,
+        adoption_summaries=tuple(new_adoptions),
+        entitlements=data.entitlements,
+        usage_signals=tuple(new_signals),
+        milestones=data.milestones,
+        tenant_accounts=data.tenant_accounts,
+    )
+
+
 def _demo_sweep(args: argparse.Namespace) -> int:
     from ultra_csm.data_plane.book_simulator import simulate_book
     from ultra_csm.data_plane.synthetic_book import SEED_DATE
@@ -224,6 +329,10 @@ def _demo_sweep(args: argparse.Namespace) -> int:
         mutated = base_book
     else:
         mutated = simulate_book(base_book, day_offset=day)
+
+    # Overlay deep data simulation when --deep is set
+    if getattr(args, "deep", False) and day > 0:
+        mutated = _apply_deep_data_overlay(mutated, day)
 
     scored = _score_book(mutated, as_of)
 
@@ -321,6 +430,7 @@ def _demo_timeline(args: argparse.Namespace) -> int:
     from ultra_csm.data_plane.book_simulator import simulate_book
     from ultra_csm.data_plane.synthetic_book import SEED_DATE
 
+    use_deep = getattr(args, "deep", False)
     base_date = datetime.strptime(SEED_DATE, "%Y-%m-%d")
     timeline_days = [0, 30, 60, 90, 120, 180, 270, 365]
     base_book = build_synthetic_book()
@@ -334,6 +444,8 @@ def _demo_timeline(args: argparse.Namespace) -> int:
             data = base_book
         else:
             data = simulate_book(base_book, day_offset=day)
+            if use_deep:
+                data = _apply_deep_data_overlay(data, day)
         scored = _score_book(data, as_of)
         all_scored[day] = scored
 
@@ -645,10 +757,14 @@ def build_parser() -> argparse.ArgumentParser:
 
     demo_sweep = sub.add_parser("demo-sweep", help="Score book of business at a given simulation day")
     demo_sweep.add_argument("--day", type=int, default=0, help="Simulation day offset (default 0)")
+    demo_sweep.add_argument("--deep", action="store_true",
+                            help="Use deep data simulation (per-user activity, feature adoption, case lifecycles)")
     demo_sweep.add_argument("--json", action="store_true")
     demo_sweep.set_defaults(func=_demo_sweep)
 
     demo_timeline = sub.add_parser("demo-timeline", help="Run scoring across 365-day timeline")
+    demo_timeline.add_argument("--deep", action="store_true",
+                               help="Use deep data simulation for all timeline snapshots")
     demo_timeline.add_argument("--json", action="store_true")
     demo_timeline.set_defaults(func=_demo_timeline)
 
