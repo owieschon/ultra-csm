@@ -879,6 +879,18 @@ def _queue_view(args: argparse.Namespace) -> int:
     return 0
 
 
+def _tick(args: argparse.Namespace) -> int:
+    from ultra_csm.tick import run_tick_cli
+
+    return run_tick_cli(
+        as_of=args.as_of,
+        config_path=Path(args.config),
+        state_dir=Path(args.state_dir),
+        dry_run=args.dry_run,
+        json_output=args.json,
+    )
+
+
 def _api_json(
     api_url: str,
     path: str,
@@ -990,6 +1002,14 @@ def build_parser() -> argparse.ArgumentParser:
     queue = sub.add_parser("queue", help="Show delegated work queue")
     _add_api_args(queue)
     queue.set_defaults(func=_queue_view)
+
+    tick = sub.add_parser("tick", help="Run one deterministic trigger tick")
+    tick.add_argument("--as-of", required=True, help="Tick date or timestamp")
+    tick.add_argument("--config", default="config/trigger_config.json")
+    tick.add_argument("--state-dir", default="demo_state")
+    tick.add_argument("--dry-run", action="store_true")
+    tick.add_argument("--json", action="store_true")
+    tick.set_defaults(func=_tick)
 
     proposals = sub.add_parser("proposals")
     proposal_sub = proposals.add_subparsers(dest="proposal_command", required=True)

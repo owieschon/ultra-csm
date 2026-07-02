@@ -1,0 +1,37 @@
+{
+  "fixture": "risk_lens_weight_robust_ordering_v1",
+  "claim_boundary": "deterministic_ordering_fixture",
+  "expected_top_account": "Acme Logistics",
+  "weight_sets": [
+    {
+      "name": "default",
+      "weights": {
+        "arr": 1.0,
+        "health": 1.0,
+        "shared_model": 1.0,
+        "support": 1.0,
+        "trajectory": 1.0
+      }
+    },
+    {
+      "name": "health-heavy",
+      "weights": {
+        "arr": 0.8,
+        "health": 1.25,
+        "shared_model": 0.9,
+        "support": 1.0,
+        "trajectory": 1.1
+      }
+    },
+    {
+      "name": "shared-model-heavy",
+      "weights": {
+        "arr": 0.9,
+        "health": 0.9,
+        "shared_model": 1.25,
+        "support": 1.15,
+        "trajectory": 1.0
+      }
+    }
+  ]
+}
