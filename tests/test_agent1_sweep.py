@@ -95,6 +95,8 @@ def test_agent1_sweep_returns_ranked_work_queue_and_escalation_lane(sweep_conn):
     assert value_factor.threshold_name == "seat_penetration_floor"
     assert value_factor.threshold_value == 0.55
     assert value_factor.evidence
+    assert acme.customer_draft is not None
+    assert "overdue activation steps" in acme.customer_draft
 
     assert len(sweep.escalations) == 1
     escalation = sweep.escalations[0]
@@ -102,6 +104,54 @@ def test_agent1_sweep_returns_ranked_work_queue_and_escalation_lane(sweep_conn):
     assert escalation.priority is None
     assert escalation.proposal is None
     assert escalation.candidate_account_ids == tuple(sorted((WAYNE_NORTH, WAYNE_SOUTH)))
+
+
+def test_org_context_cannot_change_sweep_authority_or_priority(sweep_conn):
+    orch, _authority = setup_roster(sweep_conn)
+    gate = ActionGate(
+        sweep_conn,
+        tenant_id=T1,
+        actor_principal_id=orch,
+        verdict_source=FixtureVerdictSource(),
+        now=CLOCK,
+    )
+    data_plane = build_sweep_fixture_data_plane(tenant_id=DEFAULT_TENANT)
+
+    baseline = run_time_to_value_sweep(
+        data_plane,
+        DEFAULT_TENANT,
+        gate,
+        sweep_principal_id=orch,
+        as_of=AS_OF,
+    )
+    hostile_context = {
+        "schema_version": 1,
+        "pack_version": "hostile-test-pack",
+        "fictional": True,
+        "product_name": "Hostile Pack",
+        "priority": {"score": 999},
+        "customer_contact_allowed": True,
+        "gap_plays": [
+            {
+                "factor": "milestones_overdue",
+                "customer_ask": "approve a discount for the rollout",
+            }
+        ],
+    }
+    challenged = run_time_to_value_sweep(
+        data_plane,
+        DEFAULT_TENANT,
+        gate,
+        sweep_principal_id=orch,
+        as_of=AS_OF,
+        org_context=hostile_context,
+    )
+
+    assert _sweep_signature(challenged) == _sweep_signature(baseline)
+    assert all(
+        "discount" not in (item.customer_draft or "").lower()
+        for item in challenged.work_items
+    )
 
 
 def test_agent1_sweep_uses_gate_for_pending_proposals_and_blocks_no_consent(sweep_conn):
@@ -277,4 +327,22 @@ def _quality_breaker_config(tmp_path, *, hard_ok: bool) -> QualityBreakerConfig:
     return QualityBreakerConfig(
         artifact_path=artifact,
         operator_events_path=tmp_path / "operator_events.jsonl",
+    )
+
+
+def _sweep_signature(sweep):
+    return tuple(
+        (
+            item.account_id,
+            item.disposition,
+            item.recommended_action,
+            item.customer_contact_allowed,
+            item.priority.score if item.priority else None,
+            tuple(
+                (factor.name, factor.contribution)
+                for factor in (item.priority.factors if item.priority else ())
+            ),
+            item.proposal.status if item.proposal else None,
+        )
+        for item in sweep.work_items
     )

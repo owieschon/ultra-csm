@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from eval.scorecard_csm import build_scorecard
+from ultra_csm.agent1.slot_b import SLOT_B_PROMPT_VERSION
 
 
 def test_agent1_csm_scorecard_writes_passing_artifact(tmp_path):
@@ -47,4 +48,4 @@ def test_agent1_csm_scorecard_writes_passing_artifact(tmp_path):
     assert artifact["unsafe_placeholder"]["expected_to_fail"] is True
     assert artifact["unsafe_placeholder"]["passed"] is True
     assert len(artifact["unsafe_placeholder"]["failed_hard_gates"]) >= 5
-    assert artifact["slot_b"]["prompt_version"] == "agent1-slot-b-reason-draft-v1"
+    assert artifact["slot_b"]["prompt_version"] == SLOT_B_PROMPT_VERSION

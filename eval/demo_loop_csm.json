@@ -32,7 +32,7 @@
       "committed": true,
       "dry_run": false,
       "idempotency_key": "runtime-generated:a317f5e7-575e-5879-8256-9082e40ef19f:draft_customer_outreach:idempotency",
-      "payload_sha256": "5e405bdd0efe86c6e6d9f4efde563a1279e3c37d1f8c7d0869fa22d36ad92f47",
+      "payload_sha256": "dd7ff8488f285e24ed7bb2f814019f940c0b6a7e1e03039ab41dabb2a124ccd4",
       "proposal_id": "runtime-generated:a317f5e7-575e-5879-8256-9082e40ef19f:draft_customer_outreach",
       "receipt_id": "receipt:a317f5e7-575e-5879-8256-9082e40ef19f:draft_customer_outreach:demo_state/tenant_state.json",
       "target": "demo_state/tenant_state.json"
@@ -43,7 +43,7 @@
       "committed": false,
       "dry_run": false,
       "idempotency_key": "runtime-generated:a317f5e7-575e-5879-8256-9082e40ef19f:draft_customer_outreach:idempotency",
-      "payload_sha256": "5e405bdd0efe86c6e6d9f4efde563a1279e3c37d1f8c7d0869fa22d36ad92f47",
+      "payload_sha256": "dd7ff8488f285e24ed7bb2f814019f940c0b6a7e1e03039ab41dabb2a124ccd4",
       "proposal_id": "runtime-generated:a317f5e7-575e-5879-8256-9082e40ef19f:draft_customer_outreach",
       "receipt_id": "receipt:a317f5e7-575e-5879-8256-9082e40ef19f:draft_customer_outreach:demo_state/outbox.jsonl",
       "target": "demo_state/outbox.jsonl"
@@ -54,7 +54,7 @@
       "committed": true,
       "dry_run": false,
       "idempotency_key": "runtime-generated:a317f5e7-575e-5879-8256-9082e40ef19f:draft_customer_outreach:idempotency",
-      "payload_sha256": "5e405bdd0efe86c6e6d9f4efde563a1279e3c37d1f8c7d0869fa22d36ad92f47",
+      "payload_sha256": "dd7ff8488f285e24ed7bb2f814019f940c0b6a7e1e03039ab41dabb2a124ccd4",
       "proposal_id": "runtime-generated:a317f5e7-575e-5879-8256-9082e40ef19f:draft_customer_outreach",
       "receipt_id": "receipt:a317f5e7-575e-5879-8256-9082e40ef19f:draft_customer_outreach:demo_state/outbox.jsonl",
       "target": "demo_state/outbox.jsonl"
