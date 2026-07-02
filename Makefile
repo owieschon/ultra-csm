@@ -2,7 +2,7 @@ PYTHON := .venv/bin/python
 
 # One-time reviewer setup. Requires Python 3.10+ and local PostgreSQL 16 tooling
 # (`initdb`/`pg_ctl`) available on PATH or through the platform package.
-.PHONY: setup eval lint scorecard-csm csm-work-queue demo clean outcome-simulation-csm stochastic-csm regression-csm regression-csm-live quality-regression-csm quality-gold-csm quality-gold-label-csm quality-gold-status-csm quality-gold-validate-csm quality-gold-hard-csm quality-gold-hard-label-csm quality-gold-hard-status-csm quality-gold-hard-validate-csm judge-agreement-csm hygiene
+.PHONY: setup eval lint scorecard-csm csm-work-queue demo clean outcome-simulation-csm stochastic-csm regression-csm regression-csm-live quality-regression-csm quality-gold-csm quality-gold-label-csm quality-gold-status-csm quality-gold-validate-csm quality-gold-hard-csm quality-gold-hard-label-csm quality-gold-hard-status-csm quality-gold-hard-validate-csm judge-agreement-csm judge-diagnosis-csm hygiene
 setup:
 	python3 -m venv .venv
 	$(PYTHON) -m pip install --upgrade pip
@@ -62,6 +62,9 @@ quality-gold-hard-validate-csm:
 # Not a CI gate. The number that matters is hard-layer kappa with zero false negatives.
 judge-agreement-csm:
 	PYTHONPATH=src:. $(PYTHON) -m eval.run_quality_judge $${MODEL:+--model $${MODEL}}
+
+judge-diagnosis-csm:
+	PYTHONPATH=src:. $(PYTHON) -m eval.diagnose_judge $${MODEL:+--model $${MODEL}}
 
 # Credential-gated live regression lane. Not a CI gate.
 regression-csm-live:
