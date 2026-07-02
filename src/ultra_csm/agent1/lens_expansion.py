@@ -7,7 +7,9 @@ module makes no quality claim about generated wording without judge validation.
 from __future__ import annotations
 
 from dataclasses import dataclass, replace
+from pathlib import Path
 
+from ultra_csm.agent1.lens_spec import LensSpec
 from ultra_csm.data_plane import (
     CRMAccount,
     CRMContact,
@@ -26,12 +28,36 @@ from ultra_csm.value_model import (
 
 EXPANSION_LENS_VERSION = "agent1-expansion-lens-v1"
 EXPANSION_SLOT_B_PROMPT_VERSION = "agent1-expansion-slot-b-v1"
-EXPANSION_SLOT_B_PROMPT = """
-Expansion Slot B v1.
-Use only the supplied deterministic expansion priority, evidence ids, contact,
-and action taxonomy binding. Do not change priority, tier, recipient, or
-authority. Produce customer-call prep only after the tier-3 gate proposal exists.
-""".strip()
+EXPANSION_SLOT_B_PROMPT_PATH = (
+    Path(__file__).resolve().parents[3]
+    / "docs"
+    / "prompts"
+    / "agent1_slot_b_expansion_v1.md"
+)
+EXPANSION_LENS_SPEC = LensSpec(
+    lens_id="expansion",
+    lens_version=EXPANSION_LENS_VERSION,
+    trigger_subscriptions=(
+        "weekly_book_sweep",
+        "renewal_window",
+        "band_drop",
+        "hold_released",
+    ),
+    factor_profile=(
+        "sustained_healthy_trajectory",
+        "consumption_vs_entitlement",
+        "new_function_activity",
+        "unrealized_value_prop",
+        "overage_signal",
+        "open_expansion_opportunity",
+        "expansion_readiness_high_adoption",
+        "arr_expansion_surface",
+    ),
+    action_bindings=("initiate_customer_call",),
+    prompt_version=EXPANSION_SLOT_B_PROMPT_VERSION,
+    customer_facing=True,
+    claim_boundary="deterministic expansion findings only; customer action precedence-gated",
+)
 
 
 @dataclass(frozen=True)

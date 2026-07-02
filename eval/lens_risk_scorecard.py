@@ -11,7 +11,9 @@ from typing import Callable
 import psycopg
 
 from ultra_csm.agent1.lens_risk import (
+    RISK_LENS_SPEC,
     RISK_LENS_VERSION,
+    RISK_SLOT_B_PROMPT_PATH,
     RISK_SLOT_B_PROMPT_VERSION,
     RiskLensResult,
     RiskLensWeights,
@@ -104,7 +106,16 @@ def build_scorecard(*, output_path: Path = DEFAULT_OUTPUT) -> dict:
         },
         "slot_b": {
             "prompt_version": RISK_SLOT_B_PROMPT_VERSION,
+            "prompt_path": str(RISK_SLOT_B_PROMPT_PATH.relative_to(REPO)),
             "claim_boundary": "prompt artifact only; no judge-validated quality claim",
+        },
+        "lens_spec": {
+            "lens_id": RISK_LENS_SPEC.lens_id,
+            "trigger_subscriptions": RISK_LENS_SPEC.trigger_subscriptions,
+            "factor_profile": RISK_LENS_SPEC.factor_profile,
+            "action_bindings": RISK_LENS_SPEC.action_bindings,
+            "customer_facing": RISK_LENS_SPEC.customer_facing,
+            "claim_boundary": RISK_LENS_SPEC.claim_boundary,
         },
     }
     output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -148,6 +159,9 @@ def _run_case(fn: Callable[[ScorecardContext], None], ctx: ScorecardContext) -> 
 
 def prompt_artifact_is_versioned(_ctx: ScorecardContext) -> None:
     assert RISK_SLOT_B_PROMPT_VERSION == "agent1-risk-slot-b-v1"
+    assert RISK_SLOT_B_PROMPT_PATH.exists()
+    assert RISK_SLOT_B_PROMPT_VERSION in RISK_SLOT_B_PROMPT_PATH.read_text()
+    assert RISK_LENS_SPEC.prompt_version == RISK_SLOT_B_PROMPT_VERSION
 
 
 def weight_robust_ordering(ctx: ScorecardContext) -> None:

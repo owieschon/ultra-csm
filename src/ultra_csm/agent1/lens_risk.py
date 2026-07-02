@@ -7,7 +7,9 @@ module makes no quality claim about generated wording without judge validation.
 from __future__ import annotations
 
 from dataclasses import dataclass, replace
+from pathlib import Path
 
+from ultra_csm.agent1.lens_spec import LensSpec
 from ultra_csm._util import iso_date
 from ultra_csm.agent1.sweep import _trajectory_decline_evaluation
 from ultra_csm.data_plane import CRMAccount, CustomerDataPlane, EvidenceRef
@@ -22,12 +24,37 @@ from ultra_csm.value_model import (
 
 RISK_LENS_VERSION = "agent1-risk-lens-v1"
 RISK_SLOT_B_PROMPT_VERSION = "agent1-risk-slot-b-v1"
-RISK_SLOT_B_PROMPT = """
-Risk Slot B v1.
-Use only the supplied deterministic risk priority, evidence ids, and internal
-action taxonomy binding. Do not change priority, tier, recipient, or authority.
-Return internal CSM prep; do not draft customer-facing outreach.
-""".strip()
+RISK_SLOT_B_PROMPT_PATH = (
+    Path(__file__).resolve().parents[3]
+    / "docs"
+    / "prompts"
+    / "agent1_slot_b_risk_v1.md"
+)
+RISK_LENS_SPEC = LensSpec(
+    lens_id="risk",
+    lens_version=RISK_LENS_VERSION,
+    trigger_subscriptions=(
+        "weekly_book_sweep",
+        "renewal_window",
+        "band_drop",
+        "champion_inactive",
+    ),
+    factor_profile=(
+        "trajectory_decline",
+        "renewal_proximity_health_band",
+        "champion_fragility",
+        "engagement_collapse",
+        "survey_detractor",
+        "billing_friction",
+        "open_support_pressure",
+        "open_risk_cta",
+        "overdue_success_plan",
+    ),
+    action_bindings=("recommend_next_best_action",),
+    prompt_version=RISK_SLOT_B_PROMPT_VERSION,
+    customer_facing=False,
+    claim_boundary="deterministic risk findings only; no churn probability claim",
+)
 
 
 @dataclass(frozen=True)

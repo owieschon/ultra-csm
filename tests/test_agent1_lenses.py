@@ -7,8 +7,16 @@ import pytest
 from eval.lens_expansion_scorecard import build_scorecard as build_expansion_scorecard
 from eval.lens_risk_scorecard import build_scorecard as build_risk_scorecard
 from tests._govhelpers import CLOCK, T1, setup_roster
-from ultra_csm.agent1.lens_expansion import run_expansion_lens
-from ultra_csm.agent1.lens_risk import run_risk_lens
+from ultra_csm.agent1.lens_expansion import (
+    EXPANSION_LENS_SPEC,
+    EXPANSION_SLOT_B_PROMPT_PATH,
+    run_expansion_lens,
+)
+from ultra_csm.agent1.lens_risk import (
+    RISK_LENS_SPEC,
+    RISK_SLOT_B_PROMPT_PATH,
+    run_risk_lens,
+)
 from ultra_csm.data_plane import ACME_LOGISTICS, DEFAULT_TENANT, build_sweep_fixture_data_plane
 from ultra_csm.governance import ActionGate, FixtureVerdictSource
 
@@ -22,6 +30,26 @@ def lens_conn(runtime_conn):
         yield runtime_conn
     finally:
         runtime_conn.rollback()
+
+
+def test_risk_and_expansion_lens_specs_are_declarative_and_versioned():
+    assert RISK_LENS_SPEC.lens_id == "risk"
+    assert RISK_LENS_SPEC.customer_facing is False
+    assert RISK_LENS_SPEC.action_bindings == ("recommend_next_best_action",)
+    assert "churn probability" in RISK_LENS_SPEC.claim_boundary
+    assert "trajectory_decline" in RISK_LENS_SPEC.factor_profile
+    assert "band_drop" in RISK_LENS_SPEC.trigger_subscriptions
+    assert RISK_SLOT_B_PROMPT_PATH.exists()
+    assert RISK_LENS_SPEC.prompt_version in RISK_SLOT_B_PROMPT_PATH.read_text()
+
+    assert EXPANSION_LENS_SPEC.lens_id == "expansion"
+    assert EXPANSION_LENS_SPEC.customer_facing is True
+    assert EXPANSION_LENS_SPEC.action_bindings == ("initiate_customer_call",)
+    assert "precedence-gated" in EXPANSION_LENS_SPEC.claim_boundary
+    assert "consumption_vs_entitlement" in EXPANSION_LENS_SPEC.factor_profile
+    assert "hold_released" in EXPANSION_LENS_SPEC.trigger_subscriptions
+    assert EXPANSION_SLOT_B_PROMPT_PATH.exists()
+    assert EXPANSION_LENS_SPEC.prompt_version in EXPANSION_SLOT_B_PROMPT_PATH.read_text()
 
 
 def test_risk_lens_defaults_to_internal_only_gate_binding(lens_conn):

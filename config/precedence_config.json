@@ -1,0 +1,15 @@
+{
+  "config_version": "precedence-v1",
+  "precedence": [
+    {
+      "blocker": "risk",
+      "blocked": "expansion",
+      "scope": "customer_facing"
+    },
+    {
+      "blocker": "ttv_gap",
+      "blocked": "expansion",
+      "scope": "customer_facing"
+    }
+  ]
+}
