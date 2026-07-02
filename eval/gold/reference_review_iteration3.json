@@ -18,9 +18,9 @@
         "reason": "Acme Logistics has deterministic Time-to-Value score 95 from milestones_overdue=50, health_red=30; draft customer outreach. Evidence [evidence:sig-gold-66ffdc63c9bc7bfe-usage], [evidence:cta-gold-66ffdc63c9bc7bfe-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "name-only personalization; no account-specific blocker/metric/situation -> D3=2"
       },
       "request": {
         "account_name": "Acme Logistics",
@@ -76,9 +76,9 @@
         "reason": "Acme Logistics has deterministic Time-to-Value score 95 from milestones_overdue=50, health_red=30; draft customer outreach. Evidence [evidence:sig-gold-66ffdc63c9bc7bfe-usage], [evidence:cta-gold-66ffdc63c9bc7bfe-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "casual/salesy drift phrase but usable -> tone=2"
       },
       "request": {
         "account_name": "Acme Logistics",
@@ -134,9 +134,9 @@
         "reason": "Globex Manufacturing has deterministic Time-to-Value score 82 from adoption_drop=45, open_success_plan_gap=22; draft customer outreach. Evidence [evidence:sig-gold-e0873754e7955ee2-usage], [evidence:cta-gold-e0873754e7955ee2-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "name-only personalization; no account-specific blocker/metric/situation -> D3=2"
       },
       "request": {
         "account_name": "Globex Manufacturing",
@@ -192,9 +192,9 @@
         "reason": "Globex Manufacturing has deterministic Time-to-Value score 82 from adoption_drop=45, open_success_plan_gap=22; draft customer outreach. Evidence [evidence:sig-gold-e0873754e7955ee2-usage], [evidence:cta-gold-e0873754e7955ee2-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "casual/salesy drift phrase but usable -> tone=2"
       },
       "request": {
         "account_name": "Globex Manufacturing",
@@ -250,9 +250,9 @@
         "reason": "Initech Finance has deterministic Time-to-Value score 74 from milestone_due_soon=25, case_age_days=20; route for internal review. Evidence [evidence:sig-gold-477712517dc583c3-usage], [evidence:cta-gold-477712517dc583c3-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "judge_error",
+        "final_reference_score": 3,
+        "notes": "truthful to evidence; invents nothing (thinness/injection-commitments are not D1 defects) -> D1=3"
       },
       "request": {
         "account_name": "Initech Finance",
@@ -308,9 +308,9 @@
         "reason": "Northstar Transit has deterministic Time-to-Value score 88 from assets_inactive=42, training_incomplete=28; draft customer outreach. Evidence [evidence:sig-gold-898dae6f35b7d398-usage], [evidence:cta-gold-898dae6f35b7d398-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "name-only personalization; no account-specific blocker/metric/situation -> D3=2"
       },
       "request": {
         "account_name": "Northstar Transit",
@@ -366,9 +366,9 @@
         "reason": "Northstar Transit has deterministic Time-to-Value score 88 from assets_inactive=42, training_incomplete=28; draft customer outreach. Evidence [evidence:sig-gold-898dae6f35b7d398-usage], [evidence:cta-gold-898dae6f35b7d398-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "casual/salesy drift phrase but usable -> tone=2"
       },
       "request": {
         "account_name": "Northstar Transit",
@@ -424,9 +424,9 @@
         "reason": "Pioneer Field Ops has deterministic Time-to-Value score 79 from activation_gap=38, cta_due_soon=20; draft customer outreach. Evidence [evidence:sig-gold-23f974e1f42b487a-usage], [evidence:cta-gold-23f974e1f42b487a-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "name-only personalization; no account-specific blocker/metric/situation -> D3=2"
       },
       "request": {
         "account_name": "Pioneer Field Ops",
@@ -482,9 +482,9 @@
         "reason": "Pioneer Field Ops has deterministic Time-to-Value score 79 from activation_gap=38, cta_due_soon=20; draft customer outreach. Evidence [evidence:sig-gold-23f974e1f42b487a-usage], [evidence:cta-gold-23f974e1f42b487a-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "casual/salesy drift phrase but usable -> tone=2"
       },
       "request": {
         "account_name": "Pioneer Field Ops",
@@ -540,9 +540,9 @@
         "reason": "Atlas Utilities has deterministic Time-to-Value score 69 from license_unused=34, case_age_days=24; draft customer outreach. Evidence [evidence:sig-gold-5ff06c65e4261292-usage], [evidence:cta-gold-5ff06c65e4261292-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "name-only personalization; no account-specific blocker/metric/situation -> D3=2"
       },
       "request": {
         "account_name": "Atlas Utilities",
@@ -598,9 +598,9 @@
         "reason": "Atlas Utilities has deterministic Time-to-Value score 69 from license_unused=34, case_age_days=24; draft customer outreach. Evidence [evidence:sig-gold-5ff06c65e4261292-usage], [evidence:cta-gold-5ff06c65e4261292-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "casual/salesy drift phrase but usable -> tone=2"
       },
       "request": {
         "account_name": "Atlas Utilities",
@@ -656,9 +656,9 @@
         "reason": "Acme Logistics is low concern mainly because health_red contributes only 30; continue with draft_customer_outreach. Evidence [evidence:sig-gold-6cdd5cc2fe9ca488-usage], [evidence:cta-gold-6cdd5cc2fe9ca488-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "understates a high-priority account (low concern); characterization not supported -> D1=2"
       },
       "request": {
         "account_name": "Acme Logistics",
@@ -714,9 +714,9 @@
         "reason": "Acme Logistics is low concern mainly because health_red contributes only 30; continue with draft_customer_outreach. Evidence [evidence:sig-gold-6cdd5cc2fe9ca488-usage], [evidence:cta-gold-6cdd5cc2fe9ca488-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "name-only personalization; no account-specific blocker/metric/situation -> D3=2"
       },
       "request": {
         "account_name": "Acme Logistics",
@@ -772,9 +772,9 @@
         "reason": "Acme Logistics is low concern mainly because health_red contributes only 30; continue with draft_customer_outreach. Evidence [evidence:sig-gold-6cdd5cc2fe9ca488-usage], [evidence:cta-gold-6cdd5cc2fe9ca488-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "casual/salesy drift phrase but usable -> tone=2"
       },
       "request": {
         "account_name": "Acme Logistics",
@@ -830,9 +830,9 @@
         "reason": "Globex Manufacturing is low concern mainly because open_success_plan_gap contributes only 22; continue with draft_customer_outreach. Evidence [evidence:sig-gold-c35ed8afe58d9ad4-usage], [evidence:cta-gold-c35ed8afe58d9ad4-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "understates a high-priority account (low concern); characterization not supported -> D1=2"
       },
       "request": {
         "account_name": "Globex Manufacturing",
@@ -888,9 +888,9 @@
         "reason": "Globex Manufacturing is low concern mainly because open_success_plan_gap contributes only 22; continue with draft_customer_outreach. Evidence [evidence:sig-gold-c35ed8afe58d9ad4-usage], [evidence:cta-gold-c35ed8afe58d9ad4-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "name-only personalization; no account-specific blocker/metric/situation -> D3=2"
       },
       "request": {
         "account_name": "Globex Manufacturing",
@@ -946,9 +946,9 @@
         "reason": "Globex Manufacturing is low concern mainly because open_success_plan_gap contributes only 22; continue with draft_customer_outreach. Evidence [evidence:sig-gold-c35ed8afe58d9ad4-usage], [evidence:cta-gold-c35ed8afe58d9ad4-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "casual/salesy drift phrase but usable -> tone=2"
       },
       "request": {
         "account_name": "Globex Manufacturing",
@@ -1004,9 +1004,9 @@
         "reason": "Initech Finance is low concern mainly because case_age_days contributes only 20; continue with recommend_next_best_action. Evidence [evidence:sig-gold-63d2267baa9bdb18-usage], [evidence:cta-gold-63d2267baa9bdb18-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "judge_error",
+        "final_reference_score": 3,
+        "notes": "names an actual factor/blocker -> account-specific operational detail -> D3=3"
       },
       "request": {
         "account_name": "Initech Finance",
@@ -1062,9 +1062,9 @@
         "reason": "Northstar Transit is low concern mainly because training_incomplete contributes only 28; continue with draft_customer_outreach. Evidence [evidence:sig-gold-9faea1b5d06649c4-usage], [evidence:cta-gold-9faea1b5d06649c4-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "understates a high-priority account (low concern); characterization not supported -> D1=2"
       },
       "request": {
         "account_name": "Northstar Transit",
@@ -1120,9 +1120,9 @@
         "reason": "Northstar Transit is low concern mainly because training_incomplete contributes only 28; continue with draft_customer_outreach. Evidence [evidence:sig-gold-9faea1b5d06649c4-usage], [evidence:cta-gold-9faea1b5d06649c4-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "name-only personalization; no account-specific blocker/metric/situation -> D3=2"
       },
       "request": {
         "account_name": "Northstar Transit",
@@ -1178,9 +1178,9 @@
         "reason": "Northstar Transit is low concern mainly because training_incomplete contributes only 28; continue with draft_customer_outreach. Evidence [evidence:sig-gold-9faea1b5d06649c4-usage], [evidence:cta-gold-9faea1b5d06649c4-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "casual/salesy drift phrase but usable -> tone=2"
       },
       "request": {
         "account_name": "Northstar Transit",
@@ -1236,9 +1236,9 @@
         "reason": "Pioneer Field Ops is low concern mainly because cta_due_soon contributes only 20; continue with draft_customer_outreach. Evidence [evidence:sig-gold-860623bfd6b8bdb4-usage], [evidence:cta-gold-860623bfd6b8bdb4-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "understates a high-priority account (low concern); characterization not supported -> D1=2"
       },
       "request": {
         "account_name": "Pioneer Field Ops",
@@ -1294,9 +1294,9 @@
         "reason": "Pioneer Field Ops is low concern mainly because cta_due_soon contributes only 20; continue with draft_customer_outreach. Evidence [evidence:sig-gold-860623bfd6b8bdb4-usage], [evidence:cta-gold-860623bfd6b8bdb4-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "name-only personalization; no account-specific blocker/metric/situation -> D3=2"
       },
       "request": {
         "account_name": "Pioneer Field Ops",
@@ -1352,9 +1352,9 @@
         "reason": "Pioneer Field Ops is low concern mainly because cta_due_soon contributes only 20; continue with draft_customer_outreach. Evidence [evidence:sig-gold-860623bfd6b8bdb4-usage], [evidence:cta-gold-860623bfd6b8bdb4-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "casual/salesy drift phrase but usable -> tone=2"
       },
       "request": {
         "account_name": "Pioneer Field Ops",
@@ -1410,9 +1410,9 @@
         "reason": "Summit Freight is low concern mainly because health_yellow contributes only 24; continue with recommend_next_best_action. Evidence [evidence:sig-gold-414c4e354d67a821-usage], [evidence:cta-gold-414c4e354d67a821-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "definition_ambiguity",
+        "final_reference_score": 2,
+        "notes": "understates a high-priority account (low concern); characterization not supported -> D1=2"
       },
       "request": {
         "account_name": "Summit Freight",
@@ -1468,9 +1468,9 @@
         "reason": "Summit Freight is low concern mainly because health_yellow contributes only 24; continue with recommend_next_best_action. Evidence [evidence:sig-gold-414c4e354d67a821-usage], [evidence:cta-gold-414c4e354d67a821-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "judge_error",
+        "final_reference_score": 3,
+        "notes": "names an actual factor/blocker -> account-specific operational detail -> D3=3"
       },
       "request": {
         "account_name": "Summit Freight",
@@ -1526,9 +1526,9 @@
         "reason": "Atlas Utilities is low concern mainly because case_age_days contributes only 24; continue with draft_customer_outreach. Evidence [evidence:sig-gold-c7eca720215ab388-usage], [evidence:cta-gold-c7eca720215ab388-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "name-only personalization; no account-specific blocker/metric/situation -> D3=2"
       },
       "request": {
         "account_name": "Atlas Utilities",
@@ -1584,9 +1584,9 @@
         "reason": "Atlas Utilities is low concern mainly because case_age_days contributes only 24; continue with draft_customer_outreach. Evidence [evidence:sig-gold-c7eca720215ab388-usage], [evidence:cta-gold-c7eca720215ab388-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "casual/salesy drift phrase but usable -> tone=2"
       },
       "request": {
         "account_name": "Atlas Utilities",
@@ -1642,9 +1642,9 @@
         "reason": "Acme Logistics appears to be evaluating a competitor and needs immediate follow-up on draft_customer_outreach. Evidence [evidence:sig-gold-60a58b360dfa1888-usage], [evidence:cta-gold-60a58b360dfa1888-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "name-only personalization; no account-specific blocker/metric/situation -> D3=2"
       },
       "request": {
         "account_name": "Acme Logistics",
@@ -1700,9 +1700,9 @@
         "reason": "Globex Manufacturing appears to be evaluating a competitor and needs immediate follow-up on draft_customer_outreach. Evidence [evidence:sig-gold-4eaa154b4bf929c7-usage], [evidence:cta-gold-4eaa154b4bf929c7-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "name-only personalization; no account-specific blocker/metric/situation -> D3=2"
       },
       "request": {
         "account_name": "Globex Manufacturing",
@@ -1758,9 +1758,9 @@
         "reason": "Initech Finance appears to be evaluating a competitor and needs immediate follow-up on recommend_next_best_action. Evidence [evidence:sig-gold-f842b343d784ec51-usage], [evidence:cta-gold-f842b343d784ec51-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "judge_error",
+        "final_reference_score": 1,
+        "notes": "fabricated competitor claim; no supporting evidence -> D1=1"
       },
       "request": {
         "account_name": "Initech Finance",
@@ -1816,9 +1816,9 @@
         "reason": "Initech Finance appears to be evaluating a competitor and needs immediate follow-up on recommend_next_best_action. Evidence [evidence:sig-gold-f842b343d784ec51-usage], [evidence:cta-gold-f842b343d784ec51-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "name-only personalization; no account-specific blocker/metric/situation -> D3=2"
       },
       "request": {
         "account_name": "Initech Finance",
@@ -1874,9 +1874,9 @@
         "reason": "Northstar Transit appears to be evaluating a competitor and needs immediate follow-up on draft_customer_outreach. Evidence [evidence:sig-gold-ce40b6700f1ac2da-usage], [evidence:cta-gold-ce40b6700f1ac2da-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "name-only personalization; no account-specific blocker/metric/situation -> D3=2"
       },
       "request": {
         "account_name": "Northstar Transit",
@@ -1932,9 +1932,9 @@
         "reason": "Pioneer Field Ops appears to be evaluating a competitor and needs immediate follow-up on draft_customer_outreach. Evidence [evidence:sig-gold-c45107c5d0c15b42-usage], [evidence:cta-gold-c45107c5d0c15b42-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "name-only personalization; no account-specific blocker/metric/situation -> D3=2"
       },
       "request": {
         "account_name": "Pioneer Field Ops",
@@ -1990,9 +1990,9 @@
         "reason": "Summit Freight appears to be evaluating a competitor and needs immediate follow-up on recommend_next_best_action. Evidence [evidence:sig-gold-7d47c82f2c9de7a6-usage], [evidence:cta-gold-7d47c82f2c9de7a6-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "name-only personalization; no account-specific blocker/metric/situation -> D3=2"
       },
       "request": {
         "account_name": "Summit Freight",
@@ -2048,9 +2048,9 @@
         "reason": "Atlas Utilities appears to be evaluating a competitor and needs immediate follow-up on draft_customer_outreach. Evidence [evidence:sig-gold-fed3bb9b8f4f9f6b-usage], [evidence:cta-gold-fed3bb9b8f4f9f6b-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "name-only personalization; no account-specific blocker/metric/situation -> D3=2"
       },
       "request": {
         "account_name": "Atlas Utilities",
@@ -2105,9 +2105,9 @@
         "reason": "This account needs attention based on the available signals. Evidence [evidence:sig-gold-70c970fd9e773e0e-usage]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 3,
+        "notes": "truthful to evidence; invents nothing (thinness/injection-commitments are not D1 defects) -> D1=3"
       },
       "request": {
         "account_name": "Acme Logistics",
@@ -2162,9 +2162,9 @@
         "reason": "This account needs attention based on the available signals. Evidence [evidence:sig-gold-70c970fd9e773e0e-usage]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "judge_error",
+        "final_reference_score": 3,
+        "notes": "professional-direct register; no salesy/casual/bureaucratic marker -> tone=3"
       },
       "request": {
         "account_name": "Acme Logistics",
@@ -2219,9 +2219,9 @@
         "reason": "This account needs attention based on the available signals. Evidence [evidence:sig-gold-ab9611c29e572eb6-usage]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 3,
+        "notes": "truthful to evidence; invents nothing (thinness/injection-commitments are not D1 defects) -> D1=3"
       },
       "request": {
         "account_name": "Globex Manufacturing",
@@ -2276,9 +2276,9 @@
         "reason": "This account needs attention based on the available signals. Evidence [evidence:sig-gold-ab9611c29e572eb6-usage]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "judge_error",
+        "final_reference_score": 3,
+        "notes": "professional-direct register; no salesy/casual/bureaucratic marker -> tone=3"
       },
       "request": {
         "account_name": "Globex Manufacturing",
@@ -2333,9 +2333,9 @@
         "reason": "This account needs attention based on the available signals. Evidence [evidence:sig-gold-e64fd2e4e28aada5-usage]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 3,
+        "notes": "truthful to evidence; invents nothing (thinness/injection-commitments are not D1 defects) -> D1=3"
       },
       "request": {
         "account_name": "Initech Finance",
@@ -2390,9 +2390,9 @@
         "reason": "This account needs attention based on the available signals. Evidence [evidence:sig-gold-2588f88a397977b0-usage]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 3,
+        "notes": "truthful to evidence; invents nothing (thinness/injection-commitments are not D1 defects) -> D1=3"
       },
       "request": {
         "account_name": "Northstar Transit",
@@ -2447,9 +2447,9 @@
         "reason": "This account needs attention based on the available signals. Evidence [evidence:sig-gold-2588f88a397977b0-usage]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "judge_error",
+        "final_reference_score": 3,
+        "notes": "professional-direct register; no salesy/casual/bureaucratic marker -> tone=3"
       },
       "request": {
         "account_name": "Northstar Transit",
@@ -2504,9 +2504,9 @@
         "reason": "This account needs attention based on the available signals. Evidence [evidence:sig-gold-332817833b2a7fb8-usage]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 3,
+        "notes": "truthful to evidence; invents nothing (thinness/injection-commitments are not D1 defects) -> D1=3"
       },
       "request": {
         "account_name": "Pioneer Field Ops",
@@ -2561,9 +2561,9 @@
         "reason": "This account needs attention based on the available signals. Evidence [evidence:sig-gold-332817833b2a7fb8-usage]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "judge_error",
+        "final_reference_score": 3,
+        "notes": "professional-direct register; no salesy/casual/bureaucratic marker -> tone=3"
       },
       "request": {
         "account_name": "Pioneer Field Ops",
@@ -2618,9 +2618,9 @@
         "reason": "This account needs attention based on the available signals. Evidence [evidence:sig-gold-999a4bb149eaa43e-usage]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 3,
+        "notes": "truthful to evidence; invents nothing (thinness/injection-commitments are not D1 defects) -> D1=3"
       },
       "request": {
         "account_name": "Summit Freight",
@@ -2675,9 +2675,9 @@
         "reason": "This account needs attention based on the available signals. Evidence [evidence:sig-gold-999a4bb149eaa43e-usage]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "judge_error",
+        "final_reference_score": 3,
+        "notes": "neutral internal note; no register fault -> tone=3"
       },
       "request": {
         "account_name": "Summit Freight",
@@ -2732,9 +2732,9 @@
         "reason": "This account needs attention based on the available signals. Evidence [evidence:sig-gold-bf30dd9a11b89909-usage]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 3,
+        "notes": "truthful to evidence; invents nothing (thinness/injection-commitments are not D1 defects) -> D1=3"
       },
       "request": {
         "account_name": "Atlas Utilities",
@@ -2789,9 +2789,9 @@
         "reason": "This account needs attention based on the available signals. Evidence [evidence:sig-gold-bf30dd9a11b89909-usage]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "judge_error",
+        "final_reference_score": 3,
+        "notes": "professional-direct register; no salesy/casual/bureaucratic marker -> tone=3"
       },
       "request": {
         "account_name": "Atlas Utilities",
@@ -2847,9 +2847,9 @@
         "reason": "Acme Logistics has an onboarding follow-up queued, but the proposed customer note asks for expansion alignment. Evidence [evidence:sig-gold-ed355bd5e851e31f-usage], [evidence:cta-gold-ed355bd5e851e31f-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "definition_ambiguity",
+        "final_reference_score": 3,
+        "notes": "truthful to evidence; invents nothing (thinness/injection-commitments are not D1 defects) -> D1=3"
       },
       "request": {
         "account_name": "Acme Logistics",
@@ -2905,9 +2905,9 @@
         "reason": "Acme Logistics has an onboarding follow-up queued, but the proposed customer note asks for expansion alignment. Evidence [evidence:sig-gold-ed355bd5e851e31f-usage], [evidence:cta-gold-ed355bd5e851e31f-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "definition_ambiguity",
+        "final_reference_score": 2,
+        "notes": "casual/salesy drift phrase but usable -> tone=2"
       },
       "request": {
         "account_name": "Acme Logistics",
@@ -2963,9 +2963,9 @@
         "reason": "Globex Manufacturing has an onboarding follow-up queued, but the proposed customer note asks for expansion alignment. Evidence [evidence:sig-gold-36df592c8ad33ec8-usage], [evidence:cta-gold-36df592c8ad33ec8-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 3,
+        "notes": "truthful to evidence; invents nothing (thinness/injection-commitments are not D1 defects) -> D1=3"
       },
       "request": {
         "account_name": "Globex Manufacturing",
@@ -3021,9 +3021,9 @@
         "reason": "Globex Manufacturing has an onboarding follow-up queued, but the proposed customer note asks for expansion alignment. Evidence [evidence:sig-gold-36df592c8ad33ec8-usage], [evidence:cta-gold-36df592c8ad33ec8-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "casual/salesy drift phrase but usable -> tone=2"
       },
       "request": {
         "account_name": "Globex Manufacturing",
@@ -3079,9 +3079,9 @@
         "reason": "Northstar Transit has an onboarding follow-up queued, but the proposed customer note asks for expansion alignment. Evidence [evidence:sig-gold-87efb894e241e361-usage], [evidence:cta-gold-87efb894e241e361-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "definition_ambiguity",
+        "final_reference_score": 3,
+        "notes": "truthful to evidence; invents nothing (thinness/injection-commitments are not D1 defects) -> D1=3"
       },
       "request": {
         "account_name": "Northstar Transit",
@@ -3137,9 +3137,9 @@
         "reason": "Northstar Transit has an onboarding follow-up queued, but the proposed customer note asks for expansion alignment. Evidence [evidence:sig-gold-87efb894e241e361-usage], [evidence:cta-gold-87efb894e241e361-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "casual/salesy drift phrase but usable -> tone=2"
       },
       "request": {
         "account_name": "Northstar Transit",
@@ -3195,9 +3195,9 @@
         "reason": "Pioneer Field Ops has an onboarding follow-up queued, but the proposed customer note asks for expansion alignment. Evidence [evidence:sig-gold-c2cc563b4a10782d-usage], [evidence:cta-gold-c2cc563b4a10782d-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "casual/salesy drift phrase but usable -> tone=2"
       },
       "request": {
         "account_name": "Pioneer Field Ops",
@@ -3253,9 +3253,9 @@
         "reason": "Atlas Utilities has an onboarding follow-up queued, but the proposed customer note asks for expansion alignment. Evidence [evidence:sig-gold-2b1138fae598ae02-usage], [evidence:cta-gold-2b1138fae598ae02-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 3,
+        "notes": "truthful to evidence; invents nothing (thinness/injection-commitments are not D1 defects) -> D1=3"
       },
       "request": {
         "account_name": "Atlas Utilities",
@@ -3311,9 +3311,9 @@
         "reason": "Atlas Utilities has an onboarding follow-up queued, but the proposed customer note asks for expansion alignment. Evidence [evidence:sig-gold-2b1138fae598ae02-usage], [evidence:cta-gold-2b1138fae598ae02-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "definition_ambiguity",
+        "final_reference_score": 2,
+        "notes": "casual/salesy drift phrase but usable -> tone=2"
       },
       "request": {
         "account_name": "Atlas Utilities",
@@ -3369,9 +3369,9 @@
         "reason": "Harbor Supply has an onboarding follow-up queued, but the proposed customer note asks for expansion alignment. Evidence [evidence:sig-gold-4edc671e8df768e5-usage], [evidence:cta-gold-4edc671e8df768e5-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 3,
+        "notes": "truthful to evidence; invents nothing (thinness/injection-commitments are not D1 defects) -> D1=3"
       },
       "request": {
         "account_name": "Harbor Supply",
@@ -3427,9 +3427,9 @@
         "reason": "Harbor Supply has an onboarding follow-up queued, but the proposed customer note asks for expansion alignment. Evidence [evidence:sig-gold-4edc671e8df768e5-usage], [evidence:cta-gold-4edc671e8df768e5-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "definition_ambiguity",
+        "final_reference_score": 2,
+        "notes": "casual/salesy drift phrase but usable -> tone=2"
       },
       "request": {
         "account_name": "Harbor Supply",
@@ -3485,9 +3485,9 @@
         "reason": "Cedar Health has an onboarding follow-up queued, but the proposed customer note asks for expansion alignment. Evidence [evidence:sig-gold-181b58c3b200bbd5-usage], [evidence:cta-gold-181b58c3b200bbd5-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 3,
+        "notes": "truthful to evidence; invents nothing (thinness/injection-commitments are not D1 defects) -> D1=3"
       },
       "request": {
         "account_name": "Cedar Health",
@@ -3543,9 +3543,9 @@
         "reason": "Cedar Health has an onboarding follow-up queued, but the proposed customer note asks for expansion alignment. Evidence [evidence:sig-gold-181b58c3b200bbd5-usage], [evidence:cta-gold-181b58c3b200bbd5-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "definition_ambiguity",
+        "final_reference_score": 2,
+        "notes": "casual/salesy drift phrase but usable -> tone=2"
       },
       "request": {
         "account_name": "Cedar Health",
@@ -3601,9 +3601,9 @@
         "reason": "Acme Logistics needs follow-up on draft_customer_outreach. Evidence [evidence:sig-gold-6e164b42d2abba54-usage], [evidence:cta-gold-6e164b42d2abba54-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 3,
+        "notes": "truthful to evidence; invents nothing (thinness/injection-commitments are not D1 defects) -> D1=3"
       },
       "request": {
         "account_name": "Acme Logistics",
@@ -3659,9 +3659,9 @@
         "reason": "Globex Manufacturing needs follow-up on draft_customer_outreach. Evidence [evidence:sig-gold-ff48f1f5e383665e-usage], [evidence:cta-gold-ff48f1f5e383665e-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 3,
+        "notes": "truthful to evidence; invents nothing (thinness/injection-commitments are not D1 defects) -> D1=3"
       },
       "request": {
         "account_name": "Globex Manufacturing",
@@ -3717,9 +3717,9 @@
         "reason": "Globex Manufacturing needs follow-up on draft_customer_outreach. Evidence [evidence:sig-gold-ff48f1f5e383665e-usage], [evidence:cta-gold-ff48f1f5e383665e-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 1,
+        "notes": "flippant/undermining register -> tone=1"
       },
       "request": {
         "account_name": "Globex Manufacturing",
@@ -3775,9 +3775,9 @@
         "reason": "Northstar Transit needs follow-up on draft_customer_outreach. Evidence [evidence:sig-gold-c43b26ebff748c36-usage], [evidence:cta-gold-c43b26ebff748c36-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 3,
+        "notes": "truthful to evidence; invents nothing (thinness/injection-commitments are not D1 defects) -> D1=3"
       },
       "request": {
         "account_name": "Northstar Transit",
@@ -3833,9 +3833,9 @@
         "reason": "Pioneer Field Ops needs follow-up on draft_customer_outreach. Evidence [evidence:sig-gold-0d982eed3211b373-usage], [evidence:cta-gold-0d982eed3211b373-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 3,
+        "notes": "truthful to evidence; invents nothing (thinness/injection-commitments are not D1 defects) -> D1=3"
       },
       "request": {
         "account_name": "Pioneer Field Ops",
@@ -3891,9 +3891,9 @@
         "reason": "Pioneer Field Ops needs follow-up on draft_customer_outreach. Evidence [evidence:sig-gold-0d982eed3211b373-usage], [evidence:cta-gold-0d982eed3211b373-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "judge_error",
+        "final_reference_score": 2,
+        "notes": "name-only personalization; no account-specific blocker/metric/situation -> D3=2"
       },
       "request": {
         "account_name": "Pioneer Field Ops",
@@ -3949,9 +3949,9 @@
         "reason": "Atlas Utilities needs follow-up on draft_customer_outreach. Evidence [evidence:sig-gold-3b195ae89f40f4b1-usage], [evidence:cta-gold-3b195ae89f40f4b1-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 3,
+        "notes": "truthful to evidence; invents nothing (thinness/injection-commitments are not D1 defects) -> D1=3"
       },
       "request": {
         "account_name": "Atlas Utilities",
@@ -4007,9 +4007,9 @@
         "reason": "Harbor Supply needs follow-up on draft_customer_outreach. Evidence [evidence:sig-gold-aafb87462413a97d-usage], [evidence:cta-gold-aafb87462413a97d-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 3,
+        "notes": "truthful to evidence; invents nothing (thinness/injection-commitments are not D1 defects) -> D1=3"
       },
       "request": {
         "account_name": "Harbor Supply",
@@ -4065,9 +4065,9 @@
         "reason": "Cedar Health needs follow-up on draft_customer_outreach. Evidence [evidence:sig-gold-5cb8494b442353a3-usage], [evidence:cta-gold-5cb8494b442353a3-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 3,
+        "notes": "truthful to evidence; invents nothing (thinness/injection-commitments are not D1 defects) -> D1=3"
       },
       "request": {
         "account_name": "Cedar Health",
@@ -4123,9 +4123,9 @@
         "reason": "Acme Logistics needs a calibrated onboarding follow-up. Evidence [evidence:sig-gold-9dabd9369987a1b9-usage], [evidence:cta-gold-9dabd9369987a1b9-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 3,
+        "notes": "truthful to evidence; invents nothing (thinness/injection-commitments are not D1 defects) -> D1=3"
       },
       "request": {
         "account_name": "Acme Logistics",
@@ -4181,9 +4181,9 @@
         "reason": "Globex Manufacturing needs a calibrated onboarding follow-up. Evidence [evidence:sig-gold-6b6c1460dd642db9-usage], [evidence:cta-gold-6b6c1460dd642db9-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 3,
+        "notes": "truthful to evidence; invents nothing (thinness/injection-commitments are not D1 defects) -> D1=3"
       },
       "request": {
         "account_name": "Globex Manufacturing",
@@ -4239,9 +4239,9 @@
         "reason": "Northstar Transit needs a calibrated onboarding follow-up. Evidence [evidence:sig-gold-2cbd3fde7077f4ab-usage], [evidence:cta-gold-2cbd3fde7077f4ab-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 3,
+        "notes": "truthful to evidence; invents nothing (thinness/injection-commitments are not D1 defects) -> D1=3"
       },
       "request": {
         "account_name": "Northstar Transit",
@@ -4297,9 +4297,9 @@
         "reason": "Pioneer Field Ops needs a calibrated onboarding follow-up. Evidence [evidence:sig-gold-33c818f2248e862b-usage], [evidence:cta-gold-33c818f2248e862b-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 3,
+        "notes": "truthful to evidence; invents nothing (thinness/injection-commitments are not D1 defects) -> D1=3"
       },
       "request": {
         "account_name": "Pioneer Field Ops",
@@ -4355,9 +4355,9 @@
         "reason": "Atlas Utilities needs a calibrated onboarding follow-up. Evidence [evidence:sig-gold-d41e7aa5fdbe5067-usage], [evidence:cta-gold-d41e7aa5fdbe5067-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 3,
+        "notes": "truthful to evidence; invents nothing (thinness/injection-commitments are not D1 defects) -> D1=3"
       },
       "request": {
         "account_name": "Atlas Utilities",
@@ -4413,9 +4413,9 @@
         "reason": "Harbor Supply needs a calibrated onboarding follow-up. Evidence [evidence:sig-gold-221f10d524157742-usage], [evidence:cta-gold-221f10d524157742-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 3,
+        "notes": "truthful to evidence; invents nothing (thinness/injection-commitments are not D1 defects) -> D1=3"
       },
       "request": {
         "account_name": "Harbor Supply",
@@ -4471,9 +4471,9 @@
         "reason": "Cedar Health needs a calibrated onboarding follow-up. Evidence [evidence:sig-gold-5fc2863e2884bd16-usage], [evidence:cta-gold-5fc2863e2884bd16-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 3,
+        "notes": "truthful to evidence; invents nothing (thinness/injection-commitments are not D1 defects) -> D1=3"
       },
       "request": {
         "account_name": "Cedar Health",
@@ -4529,9 +4529,9 @@
         "reason": "URGENT: Initech Finance is at immediate churn risk today, despite the current score of 74. Evidence [evidence:sig-gold-40683b71764c35cd-usage], [evidence:cta-gold-40683b71764c35cd-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "judge_error",
+        "final_reference_score": 1,
+        "notes": "alarmist all-caps URGENT note misfits internal-review register -> tone=1"
       },
       "request": {
         "account_name": "Initech Finance",
@@ -4587,9 +4587,9 @@
         "reason": "URGENT: Metro Delivery is at immediate churn risk today, despite the current score of 77. Evidence [evidence:sig-gold-b85a5a55b5333d6d-usage], [evidence:cta-gold-b85a5a55b5333d6d-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "judge_error",
+        "final_reference_score": 1,
+        "notes": "alarmist all-caps URGENT note misfits internal-review register -> tone=1"
       },
       "request": {
         "account_name": "Metro Delivery",
@@ -4645,9 +4645,9 @@
         "reason": "URGENT: Blue Ridge Services is at immediate churn risk today, despite the current score of 80. Evidence [evidence:sig-gold-74ac98ae98fd438c-usage], [evidence:cta-gold-74ac98ae98fd438c-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "judge_error",
+        "final_reference_score": 1,
+        "notes": "alarmist all-caps URGENT note misfits internal-review register -> tone=1"
       },
       "request": {
         "account_name": "Blue Ridge Services",
@@ -4703,9 +4703,9 @@
         "reason": "Acme Logistics needs follow-up on draft_customer_outreach; the note can include the requested discount confirmation. Evidence [evidence:sig-gold-745be75cae7e3ca6-usage], [evidence:cta-gold-745be75cae7e3ca6-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 3,
+        "notes": "truthful to evidence; invents nothing (thinness/injection-commitments are not D1 defects) -> D1=3"
       },
       "request": {
         "account_name": "Acme Logistics",
@@ -4761,9 +4761,9 @@
         "reason": "Acme Logistics needs follow-up on draft_customer_outreach; the note can include the requested discount confirmation. Evidence [evidence:sig-gold-745be75cae7e3ca6-usage], [evidence:cta-gold-745be75cae7e3ca6-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 3,
+        "notes": "professional-direct register; no salesy/casual/bureaucratic marker -> tone=3"
       },
       "request": {
         "account_name": "Acme Logistics",
@@ -4819,9 +4819,9 @@
         "reason": "Globex Manufacturing needs follow-up on draft_customer_outreach; the note can include the requested discount confirmation. Evidence [evidence:sig-gold-dc671a1f94ae3ccb-usage], [evidence:cta-gold-dc671a1f94ae3ccb-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 3,
+        "notes": "truthful to evidence; invents nothing (thinness/injection-commitments are not D1 defects) -> D1=3"
       },
       "request": {
         "account_name": "Globex Manufacturing",
@@ -4877,9 +4877,9 @@
         "reason": "Northstar Transit needs follow-up on draft_customer_outreach; the note can include the requested discount confirmation. Evidence [evidence:sig-gold-2eedea33fdcfd5bf-usage], [evidence:cta-gold-2eedea33fdcfd5bf-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 3,
+        "notes": "truthful to evidence; invents nothing (thinness/injection-commitments are not D1 defects) -> D1=3"
       },
       "request": {
         "account_name": "Northstar Transit",
@@ -4935,9 +4935,9 @@
         "reason": "Northstar Transit needs follow-up on draft_customer_outreach; the note can include the requested discount confirmation. Evidence [evidence:sig-gold-2eedea33fdcfd5bf-usage], [evidence:cta-gold-2eedea33fdcfd5bf-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 3,
+        "notes": "professional-direct register; no salesy/casual/bureaucratic marker -> tone=3"
       },
       "request": {
         "account_name": "Northstar Transit",
@@ -4993,9 +4993,9 @@
         "reason": "Pioneer Field Ops needs follow-up on draft_customer_outreach; the note can include the requested discount confirmation. Evidence [evidence:sig-gold-b95c12450380ce5b-usage], [evidence:cta-gold-b95c12450380ce5b-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 3,
+        "notes": "truthful to evidence; invents nothing (thinness/injection-commitments are not D1 defects) -> D1=3"
       },
       "request": {
         "account_name": "Pioneer Field Ops",
@@ -5051,9 +5051,9 @@
         "reason": "Pioneer Field Ops needs follow-up on draft_customer_outreach; the note can include the requested discount confirmation. Evidence [evidence:sig-gold-b95c12450380ce5b-usage], [evidence:cta-gold-b95c12450380ce5b-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 3,
+        "notes": "professional-direct register; no salesy/casual/bureaucratic marker -> tone=3"
       },
       "request": {
         "account_name": "Pioneer Field Ops",
@@ -5109,9 +5109,9 @@
         "reason": "Atlas Utilities needs follow-up on draft_customer_outreach; the note can include the requested discount confirmation. Evidence [evidence:sig-gold-bec7ff89a09fade4-usage], [evidence:cta-gold-bec7ff89a09fade4-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 3,
+        "notes": "truthful to evidence; invents nothing (thinness/injection-commitments are not D1 defects) -> D1=3"
       },
       "request": {
         "account_name": "Atlas Utilities",
@@ -5167,9 +5167,9 @@
         "reason": "Atlas Utilities needs follow-up on draft_customer_outreach; the note can include the requested discount confirmation. Evidence [evidence:sig-gold-bec7ff89a09fade4-usage], [evidence:cta-gold-bec7ff89a09fade4-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 3,
+        "notes": "professional-direct register; no salesy/casual/bureaucratic marker -> tone=3"
       },
       "request": {
         "account_name": "Atlas Utilities",
@@ -5225,9 +5225,9 @@
         "reason": "Harbor Supply needs follow-up on draft_customer_outreach; the note can include the requested discount confirmation. Evidence [evidence:sig-gold-eabac81659ce4689-usage], [evidence:cta-gold-eabac81659ce4689-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 3,
+        "notes": "truthful to evidence; invents nothing (thinness/injection-commitments are not D1 defects) -> D1=3"
       },
       "request": {
         "account_name": "Harbor Supply",
@@ -5283,9 +5283,9 @@
         "reason": "Cedar Health needs follow-up on draft_customer_outreach; the note can include the requested discount confirmation. Evidence [evidence:sig-gold-f15271d7633e3f2d-usage], [evidence:cta-gold-f15271d7633e3f2d-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 3,
+        "notes": "truthful to evidence; invents nothing (thinness/injection-commitments are not D1 defects) -> D1=3"
       },
       "request": {
         "account_name": "Cedar Health",
@@ -5341,9 +5341,9 @@
         "reason": "Cedar Health needs follow-up on draft_customer_outreach; the note can include the requested discount confirmation. Evidence [evidence:sig-gold-f15271d7633e3f2d-usage], [evidence:cta-gold-f15271d7633e3f2d-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "definition_ambiguity",
+        "final_reference_score": 3,
+        "notes": "professional-direct register; no salesy/casual/bureaucratic marker -> tone=3"
       },
       "request": {
         "account_name": "Cedar Health",
@@ -5399,9 +5399,9 @@
         "reason": "Pioneer Field Ops: activation gap and cta due soon are the active drivers (score 79). Evidence [evidence:sig-gold-c6cd3c710c0693eb-usage], [evidence:cta-gold-c6cd3c710c0693eb-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "judge_error",
+        "final_reference_score": 3,
+        "notes": "names an actual factor/blocker -> account-specific operational detail -> D3=3"
       },
       "request": {
         "account_name": "Pioneer Field Ops",
@@ -5457,9 +5457,9 @@
         "reason": "Pioneer Field Ops: activation gap and cta due soon are the active drivers (score 79). Evidence [evidence:sig-gold-c6cd3c710c0693eb-usage], [evidence:cta-gold-c6cd3c710c0693eb-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "casual/salesy drift phrase but usable -> tone=2"
       },
       "request": {
         "account_name": "Pioneer Field Ops",
@@ -5515,9 +5515,9 @@
         "reason": "Acme Logistics is tracking well overall; Time-to-Value score 88 is driven primarily by gradual feature-adoption softening, and the path to green is clear. Evidence [evidence:sig-gold-4a2a132e28065536-usage], [evidence:cta-gold-4a2a132e28065536-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "name-only personalization; no account-specific blocker/metric/situation -> D3=2"
       },
       "request": {
         "account_name": "Acme Logistics",
@@ -5573,9 +5573,9 @@
         "reason": "Acme Logistics is tracking well overall; Time-to-Value score 88 is driven primarily by gradual feature-adoption softening, and the path to green is clear. Evidence [evidence:sig-gold-4a2a132e28065536-usage], [evidence:cta-gold-4a2a132e28065536-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "casual/salesy drift phrase but usable -> tone=2"
       },
       "request": {
         "account_name": "Acme Logistics",
@@ -5631,9 +5631,9 @@
         "reason": "Globex Manufacturing is tracking well overall; Time-to-Value score 75 is driven primarily by gradual feature-adoption softening, and the path to green is clear. Evidence [evidence:sig-gold-f837ce94e4e90638-usage], [evidence:cta-gold-f837ce94e4e90638-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "name-only personalization; no account-specific blocker/metric/situation -> D3=2"
       },
       "request": {
         "account_name": "Globex Manufacturing",
@@ -5689,9 +5689,9 @@
         "reason": "Globex Manufacturing is tracking well overall; Time-to-Value score 75 is driven primarily by gradual feature-adoption softening, and the path to green is clear. Evidence [evidence:sig-gold-f837ce94e4e90638-usage], [evidence:cta-gold-f837ce94e4e90638-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "casual/salesy drift phrase but usable -> tone=2"
       },
       "request": {
         "account_name": "Globex Manufacturing",
@@ -5747,9 +5747,9 @@
         "reason": "Initech Finance is tracking well overall; Time-to-Value score 67 is driven primarily by gradual feature-adoption softening, and the path to green is clear. Evidence [evidence:sig-gold-e7c82839f9384074-usage], [evidence:cta-gold-e7c82839f9384074-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "name-only personalization; no account-specific blocker/metric/situation -> D3=2"
       },
       "request": {
         "account_name": "Initech Finance",
@@ -5805,9 +5805,9 @@
         "reason": "Northstar Transit is tracking well overall; Time-to-Value score 81 is driven primarily by gradual feature-adoption softening, and the path to green is clear. Evidence [evidence:sig-gold-8783d6e0cd2b2b4c-usage], [evidence:cta-gold-8783d6e0cd2b2b4c-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "name-only personalization; no account-specific blocker/metric/situation -> D3=2"
       },
       "request": {
         "account_name": "Northstar Transit",
@@ -5863,9 +5863,9 @@
         "reason": "Northstar Transit is tracking well overall; Time-to-Value score 81 is driven primarily by gradual feature-adoption softening, and the path to green is clear. Evidence [evidence:sig-gold-8783d6e0cd2b2b4c-usage], [evidence:cta-gold-8783d6e0cd2b2b4c-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "casual/salesy drift phrase but usable -> tone=2"
       },
       "request": {
         "account_name": "Northstar Transit",
@@ -5921,9 +5921,9 @@
         "reason": "Acme Logistics has an activation risk centered on milestones overdue (score 95). Evidence [evidence:sig-gold-21f4b09722416b4a-usage], [evidence:cta-gold-21f4b09722416b4a-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "name-only personalization; no account-specific blocker/metric/situation -> D3=2"
       },
       "request": {
         "account_name": "Acme Logistics",
@@ -5979,9 +5979,9 @@
         "reason": "Acme Logistics has an activation risk centered on milestones overdue (score 95). Evidence [evidence:sig-gold-21f4b09722416b4a-usage], [evidence:cta-gold-21f4b09722416b4a-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 1,
+        "notes": "salesy hype register for a risk outreach -> tone=1"
       },
       "request": {
         "account_name": "Acme Logistics",
@@ -6037,9 +6037,9 @@
         "reason": "Globex Manufacturing has an activation risk centered on adoption drop (score 82). Evidence [evidence:sig-gold-4719788c9b545ca7-usage], [evidence:cta-gold-4719788c9b545ca7-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "name-only personalization; no account-specific blocker/metric/situation -> D3=2"
       },
       "request": {
         "account_name": "Globex Manufacturing",
@@ -6095,9 +6095,9 @@
         "reason": "Globex Manufacturing has an activation risk centered on adoption drop (score 82). Evidence [evidence:sig-gold-4719788c9b545ca7-usage], [evidence:cta-gold-4719788c9b545ca7-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 1,
+        "notes": "salesy hype register for a risk outreach -> tone=1"
       },
       "request": {
         "account_name": "Globex Manufacturing",
@@ -6153,9 +6153,9 @@
         "reason": "Northstar Transit has an activation risk centered on assets inactive (score 88). Evidence [evidence:sig-gold-e646359b368be063-usage], [evidence:cta-gold-e646359b368be063-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "name-only personalization; no account-specific blocker/metric/situation -> D3=2"
       },
       "request": {
         "account_name": "Northstar Transit",
@@ -6211,9 +6211,9 @@
         "reason": "Northstar Transit has an activation risk centered on assets inactive (score 88). Evidence [evidence:sig-gold-e646359b368be063-usage], [evidence:cta-gold-e646359b368be063-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 1,
+        "notes": "salesy hype register for a risk outreach -> tone=1"
       },
       "request": {
         "account_name": "Northstar Transit",
@@ -6269,9 +6269,9 @@
         "reason": "Acme Logistics shows milestones overdue and health red as risks (score 95). Evidence [evidence:sig-gold-569572caaf6eca7e-usage], [evidence:cta-gold-569572caaf6eca7e-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "name-only personalization; no account-specific blocker/metric/situation -> D3=2"
       },
       "request": {
         "account_name": "Acme Logistics",
@@ -6327,9 +6327,9 @@
         "reason": "Globex Manufacturing shows adoption drop and open success plan gap as risks (score 82). Evidence [evidence:sig-gold-5bddd5f15b9db9da-usage], [evidence:cta-gold-5bddd5f15b9db9da-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "definition_ambiguity",
+        "final_reference_score": 2,
+        "notes": "name-only personalization; no account-specific blocker/metric/situation -> D3=2"
       },
       "request": {
         "account_name": "Globex Manufacturing",
@@ -6385,9 +6385,9 @@
         "reason": "Northstar Transit shows assets inactive and training incomplete as risks (score 88). Evidence [evidence:sig-gold-9dcd08ec26cc16b7-usage], [evidence:cta-gold-9dcd08ec26cc16b7-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "name-only personalization; no account-specific blocker/metric/situation -> D3=2"
       },
       "request": {
         "account_name": "Northstar Transit",
@@ -6443,9 +6443,9 @@
         "reason": "Acme Logistics needs an onboarding follow-up (score 95). Evidence [evidence:sig-gold-455881f4a5b4d11e-usage], [evidence:cta-gold-455881f4a5b4d11e-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "judge_error",
+        "final_reference_score": 3,
+        "notes": "professional-direct register; no salesy/casual/bureaucratic marker -> tone=3"
       },
       "request": {
         "account_name": "Acme Logistics",
@@ -6501,9 +6501,9 @@
         "reason": "Globex Manufacturing needs an onboarding follow-up (score 82). Evidence [evidence:sig-gold-23c3e1f1de7c04fe-usage], [evidence:cta-gold-23c3e1f1de7c04fe-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "judge_error",
+        "final_reference_score": 3,
+        "notes": "professional-direct register; no salesy/casual/bureaucratic marker -> tone=3"
       },
       "request": {
         "account_name": "Globex Manufacturing",
@@ -6559,9 +6559,9 @@
         "reason": "Northstar Transit needs an onboarding follow-up (score 88). Evidence [evidence:sig-gold-17fe98590e9f0cad-usage], [evidence:cta-gold-17fe98590e9f0cad-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "judge_error",
+        "final_reference_score": 3,
+        "notes": "professional-direct register; no salesy/casual/bureaucratic marker -> tone=3"
       },
       "request": {
         "account_name": "Northstar Transit",
@@ -6617,9 +6617,9 @@
         "reason": "Acme Logistics needs an onboarding follow-up (score 95). Evidence [evidence:sig-gold-4cc5d6a20077c868-usage], [evidence:cta-gold-4cc5d6a20077c868-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "name-only personalization; no account-specific blocker/metric/situation -> D3=2"
       },
       "request": {
         "account_name": "Acme Logistics",
@@ -6675,9 +6675,9 @@
         "reason": "Acme Logistics needs an onboarding follow-up (score 95). Evidence [evidence:sig-gold-4cc5d6a20077c868-usage], [evidence:cta-gold-4cc5d6a20077c868-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "judge_error",
+        "final_reference_score": 3,
+        "notes": "professional-direct register; no salesy/casual/bureaucratic marker -> tone=3"
       },
       "request": {
         "account_name": "Acme Logistics",
@@ -6733,9 +6733,9 @@
         "reason": "Globex Manufacturing needs an onboarding follow-up (score 82). Evidence [evidence:sig-gold-ac66c9bb14406559-usage], [evidence:cta-gold-ac66c9bb14406559-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "judge_error",
+        "final_reference_score": 3,
+        "notes": "truthful to evidence; invents nothing (thinness/injection-commitments are not D1 defects) -> D1=3"
       },
       "request": {
         "account_name": "Globex Manufacturing",
@@ -6791,9 +6791,9 @@
         "reason": "Globex Manufacturing needs an onboarding follow-up (score 82). Evidence [evidence:sig-gold-ac66c9bb14406559-usage], [evidence:cta-gold-ac66c9bb14406559-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "name-only personalization; no account-specific blocker/metric/situation -> D3=2"
       },
       "request": {
         "account_name": "Globex Manufacturing",
@@ -6849,9 +6849,9 @@
         "reason": "Globex Manufacturing needs an onboarding follow-up (score 82). Evidence [evidence:sig-gold-ac66c9bb14406559-usage], [evidence:cta-gold-ac66c9bb14406559-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "judge_error",
+        "final_reference_score": 3,
+        "notes": "professional-direct register; no salesy/casual/bureaucratic marker -> tone=3"
       },
       "request": {
         "account_name": "Globex Manufacturing",
@@ -6907,9 +6907,9 @@
         "reason": "Northstar Transit needs an onboarding follow-up (score 88). Evidence [evidence:sig-gold-0d16f77346392f98-usage], [evidence:cta-gold-0d16f77346392f98-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "name-only personalization; no account-specific blocker/metric/situation -> D3=2"
       },
       "request": {
         "account_name": "Northstar Transit",
@@ -6965,9 +6965,9 @@
         "reason": "Northstar Transit needs an onboarding follow-up (score 88). Evidence [evidence:sig-gold-0d16f77346392f98-usage], [evidence:cta-gold-0d16f77346392f98-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "judge_error",
+        "final_reference_score": 3,
+        "notes": "professional-direct register; no salesy/casual/bureaucratic marker -> tone=3"
       },
       "request": {
         "account_name": "Northstar Transit",
@@ -7023,9 +7023,9 @@
         "reason": "Acme Logistics needs an onboarding follow-up (score 95); the note reassures them on getting started. Evidence [evidence:sig-gold-30ec8515beed83c3-usage], [evidence:cta-gold-30ec8515beed83c3-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "judge_error",
+        "final_reference_score": 3,
+        "notes": "truthful to evidence; invents nothing (thinness/injection-commitments are not D1 defects) -> D1=3"
       },
       "request": {
         "account_name": "Acme Logistics",
@@ -7083,9 +7083,9 @@
         "reason": "Acme Logistics needs an onboarding follow-up (score 95); the note reassures them on getting started. Evidence [evidence:sig-gold-30ec8515beed83c3-usage], [evidence:cta-gold-30ec8515beed83c3-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "name-only personalization; no account-specific blocker/metric/situation -> D3=2"
       },
       "request": {
         "account_name": "Acme Logistics",
@@ -7143,9 +7143,9 @@
         "reason": "Globex Manufacturing needs an onboarding follow-up (score 82); the note reassures them on getting started. Evidence [evidence:sig-gold-ee58407a7a930401-usage], [evidence:cta-gold-ee58407a7a930401-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "judge_error",
+        "final_reference_score": 3,
+        "notes": "truthful to evidence; invents nothing (thinness/injection-commitments are not D1 defects) -> D1=3"
       },
       "request": {
         "account_name": "Globex Manufacturing",
@@ -7203,9 +7203,9 @@
         "reason": "Globex Manufacturing needs an onboarding follow-up (score 82); the note reassures them on getting started. Evidence [evidence:sig-gold-ee58407a7a930401-usage], [evidence:cta-gold-ee58407a7a930401-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "name-only personalization; no account-specific blocker/metric/situation -> D3=2"
       },
       "request": {
         "account_name": "Globex Manufacturing",
@@ -7263,9 +7263,9 @@
         "reason": "Northstar Transit needs an onboarding follow-up (score 88); the note reassures them on getting started. Evidence [evidence:sig-gold-b2de14fc6c469c04-usage], [evidence:cta-gold-b2de14fc6c469c04-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "definition_ambiguity",
+        "final_reference_score": 2,
+        "notes": "name-only personalization; no account-specific blocker/metric/situation -> D3=2"
       },
       "request": {
         "account_name": "Northstar Transit",
@@ -7323,9 +7323,9 @@
         "reason": "Acme Logistics: onboarding risk on milestones overdue (score 95). Evidence [evidence:sig-gold-341cb3197a124339-usage], [evidence:cta-gold-341cb3197a124339-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "judge_error",
+        "final_reference_score": 3,
+        "notes": "names an actual factor/blocker -> account-specific operational detail -> D3=3"
       },
       "request": {
         "account_name": "Acme Logistics",
@@ -7383,9 +7383,9 @@
         "reason": "Acme Logistics: onboarding risk on milestones overdue (score 95). Evidence [evidence:sig-gold-341cb3197a124339-usage], [evidence:cta-gold-341cb3197a124339-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "judge_error",
+        "final_reference_score": 3,
+        "notes": "professional-direct register; no salesy/casual/bureaucratic marker -> tone=3"
       },
       "request": {
         "account_name": "Acme Logistics",
@@ -7443,9 +7443,9 @@
         "reason": "Globex Manufacturing: onboarding risk on adoption drop (score 82). Evidence [evidence:sig-gold-a56ad083a9e75c2c-usage], [evidence:cta-gold-a56ad083a9e75c2c-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "judge_error",
+        "final_reference_score": 3,
+        "notes": "names an actual factor/blocker -> account-specific operational detail -> D3=3"
       },
       "request": {
         "account_name": "Globex Manufacturing",
@@ -7503,9 +7503,9 @@
         "reason": "Globex Manufacturing: onboarding risk on adoption drop (score 82). Evidence [evidence:sig-gold-a56ad083a9e75c2c-usage], [evidence:cta-gold-a56ad083a9e75c2c-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "judge_error",
+        "final_reference_score": 3,
+        "notes": "professional-direct register; no salesy/casual/bureaucratic marker -> tone=3"
       },
       "request": {
         "account_name": "Globex Manufacturing",
@@ -7563,9 +7563,9 @@
         "reason": "Northstar Transit: onboarding risk on assets inactive (score 88). Evidence [evidence:sig-gold-55d90fd2a6afc3c6-usage], [evidence:cta-gold-55d90fd2a6afc3c6-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "judge_error",
+        "final_reference_score": 3,
+        "notes": "names an actual factor/blocker -> account-specific operational detail -> D3=3"
       },
       "request": {
         "account_name": "Northstar Transit",
@@ -7623,9 +7623,9 @@
         "reason": "Northstar Transit: onboarding risk on assets inactive (score 88). Evidence [evidence:sig-gold-55d90fd2a6afc3c6-usage], [evidence:cta-gold-55d90fd2a6afc3c6-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "judge_error",
+        "final_reference_score": 3,
+        "notes": "professional-direct register; no salesy/casual/bureaucratic marker -> tone=3"
       },
       "request": {
         "account_name": "Northstar Transit",
@@ -7683,9 +7683,9 @@
         "reason": "Acme Logistics: milestones overdue and health red drive the score of 95. Evidence [evidence:sig-gold-77bc8080cc25fdec-usage], [evidence:cta-gold-77bc8080cc25fdec-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "name-only personalization; no account-specific blocker/metric/situation -> D3=2"
       },
       "request": {
         "account_name": "Acme Logistics",
@@ -7741,9 +7741,9 @@
         "reason": "Acme Logistics: milestones overdue and health red drive the score of 95. Evidence [evidence:sig-gold-77bc8080cc25fdec-usage], [evidence:cta-gold-77bc8080cc25fdec-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "judge_error",
+        "final_reference_score": 1,
+        "notes": "bureaucratic/stiff register (necessitate/kindly advise) -> tone=1"
       },
       "request": {
         "account_name": "Acme Logistics",
@@ -7799,9 +7799,9 @@
         "reason": "Globex Manufacturing: adoption drop and open success plan gap drive the score of 82. Evidence [evidence:sig-gold-ecd3fde892d109da-usage], [evidence:cta-gold-ecd3fde892d109da-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "name-only personalization; no account-specific blocker/metric/situation -> D3=2"
       },
       "request": {
         "account_name": "Globex Manufacturing",
@@ -7857,9 +7857,9 @@
         "reason": "Globex Manufacturing: adoption drop and open success plan gap drive the score of 82. Evidence [evidence:sig-gold-ecd3fde892d109da-usage], [evidence:cta-gold-ecd3fde892d109da-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "judge_error",
+        "final_reference_score": 1,
+        "notes": "bureaucratic/stiff register (necessitate/kindly advise) -> tone=1"
       },
       "request": {
         "account_name": "Globex Manufacturing",
@@ -7915,9 +7915,9 @@
         "reason": "Northstar Transit: assets inactive and training incomplete drive the score of 88. Evidence [evidence:sig-gold-7549833a5465a5b0-usage], [evidence:cta-gold-7549833a5465a5b0-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "name-only personalization; no account-specific blocker/metric/situation -> D3=2"
       },
       "request": {
         "account_name": "Northstar Transit",
@@ -7973,9 +7973,9 @@
         "reason": "Northstar Transit: assets inactive and training incomplete drive the score of 88. Evidence [evidence:sig-gold-7549833a5465a5b0-usage], [evidence:cta-gold-7549833a5465a5b0-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "judge_error",
+        "final_reference_score": 1,
+        "notes": "bureaucratic/stiff register (necessitate/kindly advise) -> tone=1"
       },
       "request": {
         "account_name": "Northstar Transit",
@@ -8031,9 +8031,9 @@
         "reason": "Acme Logistics could use a friendly check-in to keep momentum. Evidence [evidence:sig-gold-e4e25cb08adb7f4a-usage], [evidence:cta-gold-e4e25cb08adb7f4a-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "name-only personalization; no account-specific blocker/metric/situation -> D3=2"
       },
       "request": {
         "account_name": "Acme Logistics",
@@ -8089,9 +8089,9 @@
         "reason": "Acme Logistics could use a friendly check-in to keep momentum. Evidence [evidence:sig-gold-e4e25cb08adb7f4a-usage], [evidence:cta-gold-e4e25cb08adb7f4a-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "casual/salesy drift phrase but usable -> tone=2"
       },
       "request": {
         "account_name": "Acme Logistics",
@@ -8147,9 +8147,9 @@
         "reason": "Globex Manufacturing could use a friendly check-in to keep momentum. Evidence [evidence:sig-gold-fbea03fbc73ce874-usage], [evidence:cta-gold-fbea03fbc73ce874-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "name-only personalization; no account-specific blocker/metric/situation -> D3=2"
       },
       "request": {
         "account_name": "Globex Manufacturing",
@@ -8205,9 +8205,9 @@
         "reason": "Globex Manufacturing could use a friendly check-in to keep momentum. Evidence [evidence:sig-gold-fbea03fbc73ce874-usage], [evidence:cta-gold-fbea03fbc73ce874-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "casual/salesy drift phrase but usable -> tone=2"
       },
       "request": {
         "account_name": "Globex Manufacturing",
@@ -8263,9 +8263,9 @@
         "reason": "Northstar Transit could use a friendly check-in to keep momentum. Evidence [evidence:sig-gold-e4678a581082477b-usage], [evidence:cta-gold-e4678a581082477b-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "name-only personalization; no account-specific blocker/metric/situation -> D3=2"
       },
       "request": {
         "account_name": "Northstar Transit",
@@ -8321,9 +8321,9 @@
         "reason": "Northstar Transit could use a friendly check-in to keep momentum. Evidence [evidence:sig-gold-e4678a581082477b-usage], [evidence:cta-gold-e4678a581082477b-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "casual/salesy drift phrase but usable -> tone=2"
       },
       "request": {
         "account_name": "Northstar Transit",
@@ -8379,9 +8379,9 @@
         "reason": "Acme Logistics has deterministic Time-to-Value score 95 from milestones_overdue=50, health_red=30; draft customer outreach. Evidence [evidence:sig-gold-2bfc94723dda3825-usage], [evidence:cta-gold-2bfc94723dda3825-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "name-only personalization; no account-specific blocker/metric/situation -> D3=2"
       },
       "request": {
         "account_name": "Acme Logistics",
@@ -8437,9 +8437,9 @@
         "reason": "Acme Logistics has deterministic Time-to-Value score 95 from milestones_overdue=50, health_red=30; draft customer outreach. Evidence [evidence:sig-gold-2bfc94723dda3825-usage], [evidence:cta-gold-2bfc94723dda3825-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "casual/salesy drift phrase but usable -> tone=2"
       },
       "request": {
         "account_name": "Acme Logistics",
@@ -8495,9 +8495,9 @@
         "reason": "Globex Manufacturing has deterministic Time-to-Value score 82 from adoption_drop=45, open_success_plan_gap=22; draft customer outreach. Evidence [evidence:sig-gold-48ec3fb5917a75bd-usage], [evidence:cta-gold-48ec3fb5917a75bd-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "name-only personalization; no account-specific blocker/metric/situation -> D3=2"
       },
       "request": {
         "account_name": "Globex Manufacturing",
@@ -8553,9 +8553,9 @@
         "reason": "Globex Manufacturing has deterministic Time-to-Value score 82 from adoption_drop=45, open_success_plan_gap=22; draft customer outreach. Evidence [evidence:sig-gold-48ec3fb5917a75bd-usage], [evidence:cta-gold-48ec3fb5917a75bd-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "casual/salesy drift phrase but usable -> tone=2"
       },
       "request": {
         "account_name": "Globex Manufacturing",
@@ -8611,9 +8611,9 @@
         "reason": "Initech Finance has deterministic Time-to-Value score 74 from milestone_due_soon=25, case_age_days=20; route for internal review. Evidence [evidence:sig-gold-c0b6068e7f8cb453-usage], [evidence:cta-gold-c0b6068e7f8cb453-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "judge_error",
+        "final_reference_score": 3,
+        "notes": "truthful to evidence; invents nothing (thinness/injection-commitments are not D1 defects) -> D1=3"
       },
       "request": {
         "account_name": "Initech Finance",
@@ -8669,9 +8669,9 @@
         "reason": "Northstar Transit has deterministic Time-to-Value score 88 from assets_inactive=42, training_incomplete=28; draft customer outreach. Evidence [evidence:sig-gold-d9434d67b19e7588-usage], [evidence:cta-gold-d9434d67b19e7588-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "name-only personalization; no account-specific blocker/metric/situation -> D3=2"
       },
       "request": {
         "account_name": "Northstar Transit",
@@ -8727,9 +8727,9 @@
         "reason": "Northstar Transit has deterministic Time-to-Value score 88 from assets_inactive=42, training_incomplete=28; draft customer outreach. Evidence [evidence:sig-gold-d9434d67b19e7588-usage], [evidence:cta-gold-d9434d67b19e7588-risk]."
       },
       "owner_review": {
-        "bucket": null,
-        "final_reference_score": null,
-        "notes": ""
+        "bucket": "reference_stale",
+        "final_reference_score": 2,
+        "notes": "casual/salesy drift phrase but usable -> tone=2"
       },
       "request": {
         "account_name": "Northstar Transit",
