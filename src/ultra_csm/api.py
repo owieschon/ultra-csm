@@ -363,12 +363,21 @@ def _require_account(account_id: str, dp: CustomerDataPlane | None = None):
     return account
 
 
-def _data_plane_for_day(day: int | None) -> tuple[CustomerDataPlane, str]:
+def _data_plane_for_day(
+    day: int | None,
+    *,
+    deep: bool = False,
+) -> tuple[CustomerDataPlane, str]:
     """Return a data plane and as_of date for a given simulation day.
 
     When *day* is ``None``, the default (static) data plane is returned.
     When *day* >= 0, the 35-account synthetic book is used, optionally
     evolved to the requested day.
+
+    When *deep* is ``True`` and *day* > 0, the deep data simulation layer
+    overlays per-user activity, feature adoption, and case lifecycle data
+    onto the book-simulator snapshot.  The value model then scores from
+    granular data rather than pre-computed health scores.
     """
     if day is None:
         assert _data_plane is not None
@@ -387,6 +396,12 @@ def _data_plane_for_day(day: int | None) -> tuple[CustomerDataPlane, str]:
 
     base = build_synthetic_book()
     data = simulate_book(base, day_offset=day) if day > 0 else base
+
+    # Overlay deep data simulation when requested
+    if deep and day > 0:
+        from ultra_csm.cli import _apply_deep_data_overlay
+        data = _apply_deep_data_overlay(data, day)
+
     base_date = datetime.strptime(SEED_DATE, "%Y-%m-%d")
     as_of = (base_date + timedelta(days=day)).strftime("%Y-%m-%d")
     dp = CustomerDataPlane(
@@ -666,12 +681,16 @@ async def health_check():
 
 
 @app.get("/accounts", response_model=AccountListResponse)
-async def list_accounts(day: int | None = Query(None, ge=0, le=365)):
+async def list_accounts(
+    day: int | None = Query(None, ge=0, le=365),
+    deep: bool = Query(False, description="Use deep data simulation layer"),
+):
     """List all accounts with current value model scores.
 
     Pass ``?day=N`` to view the synthetic book at simulation day *N*.
+    Add ``&deep=true`` to use the deep data simulation overlay.
     """
-    dp, as_of = _data_plane_for_day(day)
+    dp, as_of = _data_plane_for_day(day, deep=deep)
     accounts = dp.crm.list_accounts(tenant_id=DEFAULT_TENANT)
     results: list[dict[str, Any]] = []
 
@@ -749,33 +768,43 @@ async def list_accounts(day: int | None = Query(None, ge=0, le=365)):
 
 
 @app.get("/accounts/{account_id}")
-async def get_account_detail(account_id: str,
-                             day: int | None = Query(None, ge=0, le=365)):
+async def get_account_detail(
+    account_id: str,
+    day: int | None = Query(None, ge=0, le=365),
+    deep: bool = Query(False, description="Use deep data simulation layer"),
+):
     """Single account detail: value model output, active factors, divergence
     signals, lens projections."""
-    dp, as_of = _data_plane_for_day(day)
+    dp, as_of = _data_plane_for_day(day, deep=deep)
     return _score_one_account(account_id, dp=dp, as_of=as_of)
 
 
 @app.get("/accounts/{account_id}/brief")
-async def get_account_brief(account_id: str,
-                            day: int | None = Query(None, ge=0, le=365)):
+async def get_account_brief(
+    account_id: str,
+    day: int | None = Query(None, ge=0, le=365),
+    deep: bool = Query(False, description="Use deep data simulation layer"),
+):
     """Account brief — the key demo endpoint.
 
     Health snapshot, recent changes, risks, expansion signals, and suggested
     talking points.
     """
-    dp, as_of = _data_plane_for_day(day)
+    dp, as_of = _data_plane_for_day(day, deep=deep)
     return _build_account_brief(account_id, dp=dp, as_of=as_of)
 
 
 @app.post("/sweep", response_model=SweepResponse)
-async def trigger_sweep(day: int | None = Query(None, ge=0, le=365)):
+async def trigger_sweep(
+    day: int | None = Query(None, ge=0, le=365),
+    deep: bool = Query(False, description="Use deep data simulation layer"),
+):
     """Trigger a sweep of the book, return the SweepResult.
 
     Pass ``?day=N`` to sweep the synthetic book at simulation day *N*.
+    Add ``&deep=true`` to use the deep data simulation overlay.
     """
-    dp, as_of = _data_plane_for_day(day)
+    dp, as_of = _data_plane_for_day(day, deep=deep)
     assert _orch_principal is not None
 
     log.info("Sweep triggered", extra={"tenant_id": _TENANT_ID, "day": day})
@@ -925,12 +954,16 @@ async def submit_verdict(proposal_id: str, body: VerdictRequest):
 
 
 @app.get("/digest", response_model=DigestResponse)
-async def get_digest(day: int | None = Query(None, ge=0, le=365)):
+async def get_digest(
+    day: int | None = Query(None, ge=0, le=365),
+    deep: bool = Query(False, description="Use deep data simulation layer"),
+):
     """Daily digest — prioritized accounts, proposals, commitments.
 
     Pass ``?day=N`` for the synthetic book at simulation day *N*.
+    Add ``&deep=true`` to use the deep data simulation overlay.
     """
-    dp, as_of = _data_plane_for_day(day)
+    dp, as_of = _data_plane_for_day(day, deep=deep)
     assert _conn is not None
 
     # 1. Prioritized accounts with a quick sweep.
