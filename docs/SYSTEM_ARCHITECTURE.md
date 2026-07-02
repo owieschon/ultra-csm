@@ -471,7 +471,7 @@ reliability is reported with confidence intervals, not asserted.
 ### Connectors and Contracts
 
 The system reads from CRM (Salesforce, Attio, HubSpot), CS platforms (Gainsight),
-onboarding tools (Rocketlane), relationship intelligence (Centralize), product
+onboarding tools (Rocketlane), relationship intelligence platforms, product
 telemetry, billing, and support. Each connector maps external data into a shared set of
 typed contracts — rigid data structures that every downstream component depends on.
 

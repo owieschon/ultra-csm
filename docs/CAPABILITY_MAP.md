@@ -37,7 +37,7 @@ DP-6: Salesforce live connector (OAuth, SOQL, pagination, rate limiting) — Not
 DP-7: Attio live connector — Not built. Depends on DP-1.
 DP-8: Gainsight live connector (health, CTAs, success plans, renewal center, education) — Not built. Depends on DP-1.
 DP-9: Rocketlane live connector (milestones, tasks, timeline) — Not built. Depends on DP-1.
-DP-10: Centralize live connector (stakeholder map, multi-threading, engagement) — Not built. Depends on DP-1.
+DP-10: Relationship intelligence live connector (stakeholder map, multi-threading, engagement) — Not built. Depends on DP-1.
 DP-11: Product telemetry connector (usage events, feature activation, sessions) — Not built. Depends on DP-1.
 DP-12: Billing connector (plan, consumption, invoices, payment status) — Not built. Depends on DP-1.
 DP-13: Calendar connector (meeting events, attendees, frequency) — Not built.
@@ -124,7 +124,7 @@ Phase 1 — First real data, first real output: Salesforce live connector (DP-5 
 
 Phase 2 — The CSM's daily workflow: daily digest (OL-1), commitment tracker (OL-5), Gainsight connector (DP-8), Rocketlane connector (DP-9), Risk/Retention lens (L-5, L-8), Risk lens eval battery (EV-6), calendar integration (DP-13, OL-3). Definition of done: the CSM starts their day with the digest, walks into meetings with briefs, has commitments tracked automatically, and the Risk lens detects at-risk accounts with real data.
 
-Phase 3 — Growth and cross-functional value: Expansion lens (L-6, L-7, L-8, EV-6), Centralize connector (DP-10), knowledge base foundation (KB-1 through KB-4), internal bridge feedback aggregation (IB-1, IB-2), QBR narrative generation (IB-5), outcome rail instrumentation (VM-8). Definition of done: the system identifies expansion opportunities with evidence, provides playbook context for Slot B, aggregates feedback weighted by revenue impact, and generates QBR narratives.
+Phase 3 — Growth and cross-functional value: Expansion lens (L-6, L-7, L-8, EV-6), relationship intelligence connector (DP-10), knowledge base foundation (KB-1 through KB-4), internal bridge feedback aggregation (IB-1, IB-2), QBR narrative generation (IB-5), outcome rail instrumentation (VM-8). Definition of done: the system identifies expansion opportunities with evidence, provides playbook context for Slot B, aggregates feedback weighted by revenue impact, and generates QBR narratives.
 
 Phase 4 — The flywheel: cohort analyst intervention effectiveness (CA-1, CA-2), churn signal discovery (CA-3), onboarding and expansion patterns (CA-4, CA-5), system self-diagnosis (CA-6), cohort to knowledge base pipeline (CA-7, KB-6), feedback loop closure (IB-4), autonomy graduation (G-8, G-9, EV-7), CSM reflection and retrospective (OL-8). Definition of done: the system discovers population-level patterns, proposes improvements through governance, the knowledge base grows from cohort findings, and autonomy for proven action types can be graduated.
 
