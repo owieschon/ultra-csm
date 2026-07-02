@@ -112,6 +112,13 @@ class _SweepTimingAccum:
 
 
 @dataclass(frozen=True)
+class _SlotBInputs:
+    cases: tuple
+    evidence: tuple[EvidenceRef, ...]
+    priority: Priority
+
+
+@dataclass(frozen=True)
 class SweepResult:
     tenant_id: str
     work_items: tuple[CSMWorkItem, ...]
@@ -290,6 +297,163 @@ def run_time_to_value_sweep(
     )
 
 
+def build_reason_draft_request_for_account(
+    data_plane: CustomerDataPlane,
+    tenant_id: str,
+    account_id: str,
+    *,
+    as_of: str,
+    action: CSMActionType = "draft_customer_outreach",
+    evidence_source_ids: tuple[str, ...] | None = None,
+    contact_id: str | None = None,
+    org_context: dict | None = None,
+) -> ReasonDraftRequest | None:
+    """Reconstruct the Slot B request for a current fixture account.
+
+    This is used by the bounded revise path. It reuses the same deterministic
+    evidence and priority helpers as the sweep, then optionally narrows evidence
+    to the ids captured in the original proposal.
+    """
+
+    account = data_plane.crm.get_account(account_id)
+    if account is None:
+        return None
+
+    contacts = tuple(data_plane.crm.list_contacts(account.account_id))
+    inputs = _slot_b_inputs_for_account(
+        data_plane,
+        account,
+        as_of=as_of,
+        evidence_source_ids=evidence_source_ids,
+    )
+    if inputs is None:
+        return None
+
+    contact = _proposal_contact(contacts, contact_id)
+    customer_contact_allowed = action == "draft_customer_outreach" and contact is not None
+    if action == "draft_customer_outreach" and not customer_contact_allowed:
+        return None
+    disposition: Disposition = (
+        "propose_customer_action" if customer_contact_allowed else "internal_review"
+    )
+    return _slot_b_request(
+        tenant_id=tenant_id,
+        account=account,
+        disposition=disposition,
+        action=action,
+        customer_contact_allowed=customer_contact_allowed,
+        priority=inputs.priority,
+        evidence=inputs.evidence,
+        as_of=as_of,
+        contact=contact,
+        cases=inputs.cases,
+        org_context=(
+            org_context if org_context is not None else load_org_pack().slot_b_context()
+        ),
+    )
+
+
+def _slot_b_inputs_for_account(
+    data_plane: CustomerDataPlane,
+    account: CRMAccount,
+    *,
+    as_of: str,
+    evidence_source_ids: tuple[str, ...] | None = None,
+    snapshot_store: SnapshotStore | None = None,
+) -> _SlotBInputs | None:
+    company = data_plane.cs.get_company(account.account_id)
+    health = data_plane.cs.get_health_score(account.account_id)
+    adoption = data_plane.cs.get_adoption_summary(account.account_id)
+    if company is None or health is None or adoption is None:
+        return None
+
+    ctas = tuple(data_plane.cs.list_ctas(account.account_id, status="open"))
+    plans = tuple(data_plane.cs.list_success_plans(account.account_id))
+    cases = tuple(data_plane.crm.list_cases(account.account_id))
+    signals = tuple(data_plane.telemetry.list_usage_signals(account.account_id))
+    entitlements = tuple(data_plane.telemetry.list_entitlements(account.account_id))
+    signal_ids = {signal.signal_id for signal in signals}
+    milestones = tuple(data_plane.telemetry.list_ttv_milestones(account.account_id))
+    open_gaps = tuple(
+        milestone for milestone in milestones
+        if milestone.achieved_at is None and iso_date(milestone.expected_by) <= iso_date(as_of)
+    )
+    telemetry_backed_gaps = tuple(
+        milestone for milestone in open_gaps
+        if any(signal_id in signal_ids for signal_id in milestone.evidence_signal_ids)
+    )
+    overdue_plans = tuple(plan for plan in plans if iso_date(plan.target_date) <= iso_date(as_of))
+
+    evidence = _evidence_refs(
+        account.account_id,
+        as_of=as_of,
+        open_gaps=telemetry_backed_gaps,
+        signals=signals,
+        ctas=ctas,
+        plans=overdue_plans,
+        cases=cases,
+        health_observed_at=health.measured_at,
+    )
+    if evidence_source_ids is not None:
+        evidence = _filter_evidence_refs_by_source_id(evidence, evidence_source_ids)
+    if not evidence:
+        return None
+
+    model = build_customer_value_model(
+        account=account,
+        company=company,
+        health=health,
+        adoption=adoption,
+        entitlements=entitlements,
+        usage_signals=signals,
+        success_plans=plans,
+    )
+    trajectory = _trajectory_decline_evaluation(
+        snapshot_store,
+        account_id=account.account_id,
+        model=model,
+    )
+    priority = _priority(
+        model,
+        company=company,
+        health=health,
+        open_gaps=telemetry_backed_gaps,
+        overdue_plans=overdue_plans,
+        as_of=as_of,
+        trajectory_factor=trajectory.factor,
+    )
+    if priority.score <= 0:
+        return None
+    return _SlotBInputs(cases=cases, evidence=evidence, priority=priority)
+
+
+def _proposal_contact(
+    contacts: tuple[CRMContact, ...],
+    contact_id: str | None,
+) -> CRMContact | None:
+    if contact_id:
+        contact = next((item for item in contacts if item.contact_id == contact_id), None)
+        return contact if contact is not None and contact.consent_to_contact else None
+    return next((item for item in contacts if item.consent_to_contact), None)
+
+
+def _filter_evidence_refs_by_source_id(
+    evidence: tuple[EvidenceRef, ...],
+    source_ids: tuple[str, ...],
+) -> tuple[EvidenceRef, ...]:
+    refs_by_id: dict[str, EvidenceRef] = {}
+    for ref in evidence:
+        refs_by_id.setdefault(ref.source_id, ref)
+
+    filtered: list[EvidenceRef] = []
+    for source_id in source_ids:
+        ref = refs_by_id.get(source_id)
+        if ref is None:
+            return ()
+        filtered.append(ref)
+    return tuple(filtered)
+
+
 def unsafe_placeholder_sweep(
     data_plane: CustomerDataPlane,
     tenant_id: str,
@@ -377,69 +541,16 @@ def _work_item_for_account(
     timing: _SweepTimingAccum | None = None,
     snapshot_store: SnapshotStore | None = None,
 ) -> CSMWorkItem | None:
-    company = data_plane.cs.get_company(account.account_id)
-    health = data_plane.cs.get_health_score(account.account_id)
-    adoption = data_plane.cs.get_adoption_summary(account.account_id)
-    if company is None or health is None or adoption is None:
-        return None
-
-    ctas = tuple(data_plane.cs.list_ctas(account.account_id, status="open"))
-    plans = tuple(data_plane.cs.list_success_plans(account.account_id))
-    cases = tuple(data_plane.crm.list_cases(account.account_id))
-    signals = tuple(data_plane.telemetry.list_usage_signals(account.account_id))
-    entitlements = tuple(data_plane.telemetry.list_entitlements(account.account_id))
-    signal_ids = {signal.signal_id for signal in signals}
-    milestones = tuple(data_plane.telemetry.list_ttv_milestones(account.account_id))
-    open_gaps = tuple(
-        milestone for milestone in milestones
-        if milestone.achieved_at is None and iso_date(milestone.expected_by) <= iso_date(as_of)
-    )
-    telemetry_backed_gaps = tuple(
-        milestone for milestone in open_gaps
-        if any(signal_id in signal_ids for signal_id in milestone.evidence_signal_ids)
-    )
-    overdue_plans = tuple(plan for plan in plans if iso_date(plan.target_date) <= iso_date(as_of))
-
-    evidence = _evidence_refs(
-        account.account_id,
-        as_of=as_of,
-        open_gaps=telemetry_backed_gaps,
-        signals=signals,
-        ctas=ctas,
-        plans=overdue_plans,
-        cases=cases,
-        health_observed_at=health.measured_at,
-    )
-    if not evidence:
-        return None
-
     value_start = time.perf_counter()
-    model = build_customer_value_model(
-        account=account,
-        company=company,
-        health=health,
-        adoption=adoption,
-        entitlements=entitlements,
-        usage_signals=signals,
-        success_plans=plans,
-    )
-    trajectory = _trajectory_decline_evaluation(
-        snapshot_store,
-        account_id=account.account_id,
-        model=model,
-    )
-    priority = _priority(
-        model,
-        company=company,
-        health=health,
-        open_gaps=telemetry_backed_gaps,
-        overdue_plans=overdue_plans,
+    inputs = _slot_b_inputs_for_account(
+        data_plane,
+        account,
         as_of=as_of,
-        trajectory_factor=trajectory.factor,
+        snapshot_store=snapshot_store,
     )
     if timing is not None:
         timing.value_model_ms += (time.perf_counter() - value_start) * 1000.0
-    if priority.score <= 0:
+    if inputs is None:
         return None
 
     contact = next((contact for contact in contacts if contact.consent_to_contact), None)
@@ -465,11 +576,11 @@ def _work_item_for_account(
         disposition=disposition,
         action=action,
         customer_contact_allowed=customer_contact_allowed and not customer_action_blocked,
-        priority=priority,
-        evidence=evidence,
+        priority=inputs.priority,
+        evidence=inputs.evidence,
         as_of=as_of,
         contact=contact if not customer_action_blocked else None,
-        cases=cases,
+        cases=inputs.cases,
         org_context=org_context,
     )
     slot_start = time.perf_counter()
@@ -488,8 +599,8 @@ def _work_item_for_account(
             contact=contact,
             action=action,
             as_of=as_of,
-            evidence=evidence,
-            priority=priority,
+            evidence=inputs.evidence,
+            priority=inputs.priority,
             draft_body=slot_b.customer_draft,
         )
         if timing is not None:
@@ -504,8 +615,8 @@ def _work_item_for_account(
         disposition=disposition,
         recommended_action=action,
         reason=slot_b.reason,
-        priority=priority,
-        evidence=evidence,
+        priority=inputs.priority,
+        evidence=inputs.evidence,
         customer_contact_allowed=customer_contact_allowed,
         proposal=proposal_ref,
         swept_at=as_of,
