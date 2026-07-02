@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from eval.diagnose_judge import build_report
+from eval.diagnose_judge import build_agreed_cell_audit, build_report
 from eval.judge_csm import QUALITY_DIMENSIONS
 
 
@@ -66,6 +66,7 @@ def test_disagreement_report_includes_review_context(monkeypatch):
             "judge_reason": "reason for account_specificity",
         }
     }
+    assert "regenerate_candidate" in row["review_fields"]["allowed_buckets"]
     assert row["review_fields"]["bucket"] is None
 
 
@@ -102,3 +103,46 @@ def test_disagreement_report_supports_limit_and_progress(monkeypatch):
         (1, 2, "slot-b-gold-0"),
         (2, 2, "slot-b-gold-1"),
     ]
+
+
+def test_agreed_cell_audit_is_blind_and_keyed_separately():
+    item = {
+        "candidate_id": "slot-b-gold-agreed",
+        "layer": "clean",
+        "family": "control_good",
+        "request": {
+            "account_name": "Acme Logistics",
+            "priority": {"score": 95},
+            "evidence": [{"evidence_id": "e1"}],
+        },
+        "output": {
+            "reason": "Specific claim [evidence:e1].",
+            "customer_draft": "Hi Jordan, can we review blockers?",
+            "cited_evidence_ids": ["e1"],
+        },
+        "reference": _vec(3, 2, 3, 3, 3, 3),
+        "judge": _vec(3, 1, 3, 3, 2, 3),
+        "judge_reasons": {
+            dimension: f"reason for {dimension}"
+            for dimension in QUALITY_DIMENSIONS
+        },
+    }
+
+    audit, key = build_agreed_cell_audit([item], sample_size=3)
+
+    assert audit["blind"] is True
+    assert audit["sample_size"] == 3
+    assert key["sample_size"] == 3
+    assert {card["audit_id"] for card in audit["cards"]} == {
+        record["audit_id"] for record in key["key_records"]
+    }
+    for card in audit["cards"]:
+        assert "reference_score" not in card
+        assert "judge_score" not in card
+        assert "judge_reason" not in card
+        assert "family" not in card
+        assert card["human_score"] is None
+    assert all(
+        record["reference_score"] == record["judge_score"]
+        for record in key["key_records"]
+    )

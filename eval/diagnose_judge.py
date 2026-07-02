@@ -8,6 +8,7 @@ gold layers as `run_quality_judge`, and it never edits labels.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from collections import Counter, defaultdict
 from pathlib import Path
@@ -18,6 +19,8 @@ from eval.judge_anthropic import AnthropicQualityJudge, overall_pass
 from eval.run_quality_judge import load_clean, load_hard
 
 OUT_PATH = Path(__file__).resolve().parent / "gold" / "judge_disagreement_report.json"
+AGREED_AUDIT_PATH = Path(__file__).resolve().parent / "gold" / "judge_agreed_audit.json"
+AGREED_AUDIT_KEY_PATH = Path(__file__).resolve().parent / "gold" / "judge_agreed_audit_key.json"
 
 
 Progress = Callable[[int, int, dict], None]
@@ -125,25 +128,106 @@ def _review_row(item: dict) -> dict | None:
         "output": _output_text(item["output"]),
         "review_fields": {
             "bucket": None,
+            "allowed_buckets": [
+                "label_error",
+                "rubric_ambiguity",
+                "judge_systematic_error",
+                "dimension_conflation",
+                "regenerate_candidate",
+            ],
             "label_change": None,
             "rubric_change": None,
             "judge_prompt_change": None,
+            "candidate_change": None,
             "notes": "",
         },
     }
 
 
-def build_report(
-    judge: AnthropicQualityJudge,
+def _audit_id(item: dict, dimension: str) -> str:
+    raw = f"{item['layer']}:{item['candidate_id']}:{dimension}"
+    digest = hashlib.sha256(raw.encode("utf-8")).hexdigest()[:16]
+    return f"judge-audit-{digest}"
+
+
+def _agreed_cell_candidates(items: Iterable[dict]) -> list[tuple[str, dict]]:
+    cells = []
+    for item in items:
+        for dimension in QUALITY_DIMENSIONS:
+            if item["reference"][dimension] == item["judge"][dimension]:
+                cells.append((dimension, item))
+    return sorted(
+        cells,
+        key=lambda cell: hashlib.sha256(
+            f"{cell[1]['candidate_id']}:{cell[0]}".encode("utf-8")
+        ).hexdigest(),
+    )
+
+
+def build_agreed_cell_audit(
+    items: Iterable[dict],
     *,
-    layer: str = "both",
-    limit: int | None = None,
-    progress: Progress | None = None,
+    sample_size: int = 10,
+) -> tuple[dict, dict]:
+    """Return a blind agreed-cell audit and a separate key.
+
+    The labeler-facing artifact contains no reference scores, judge scores,
+    judge reasons, family names, or quality variants. It is intentionally a
+    second, smaller review path for cells the disagreement report does not show.
+    """
+
+    selected = _agreed_cell_candidates(items)[:sample_size]
+    cards = []
+    key = []
+    for dimension, item in selected:
+        audit_id = _audit_id(item, dimension)
+        cards.append(
+            {
+                "audit_id": audit_id,
+                "candidate_id": item["candidate_id"],
+                "layer": item["layer"],
+                "dimension_to_score": dimension,
+                "request": _request_context(item["request"]),
+                "output": _output_text(item["output"]),
+                "human_score": None,
+                "notes": "",
+            }
+        )
+        key.append(
+            {
+                "audit_id": audit_id,
+                "candidate_id": item["candidate_id"],
+                "layer": item["layer"],
+                "dimension": dimension,
+                "reference_score": item["reference"][dimension],
+                "judge_score": item["judge"][dimension],
+            }
+        )
+    return (
+        {
+            "artifact": "slot_b_judge_agreed_cell_audit",
+            "sample_size": len(cards),
+            "blind": True,
+            "cards": cards,
+            "claim_boundary": {
+                "agreed_cells_sampled": True,
+                "contains_reference_scores": False,
+                "contains_judge_scores": False,
+                "contains_judge_reasons": False,
+            },
+        },
+        {
+            "artifact": "slot_b_judge_agreed_cell_audit_key",
+            "sample_size": len(key),
+            "key_records": key,
+        },
+    )
+
+
+def _report_from_scored_items(
+    judge: AnthropicQualityJudge,
+    items: list[dict],
 ) -> dict:
-    raw_items = _layer_items(layer)
-    if limit is not None:
-        raw_items = raw_items[:limit]
-    items = _score_with_judge(judge, raw_items, progress=progress)
     rows = [row for item in items if (row := _review_row(item)) is not None]
     by_layer: dict[str, list[dict]] = defaultdict(list)
     for item in items:
@@ -167,6 +251,12 @@ def build_report(
         "summary": {
             "total_items_scored": len(items),
             "disagreement_items": len(rows),
+            "agreed_cell_count": sum(
+                1
+                for item in items
+                for dimension in QUALITY_DIMENSIONS
+                if item["reference"][dimension] == item["judge"][dimension]
+            ),
             "disagreement_counts_by_dimension": dict(sorted(dim_counts.items())),
             "verdict_counts": dict(sorted(verdict_counts.items())),
             "hard_family_counts": dict(sorted(family_counts.items())),
@@ -184,11 +274,29 @@ def build_report(
     }
 
 
+def build_report(
+    judge: AnthropicQualityJudge,
+    *,
+    layer: str = "both",
+    limit: int | None = None,
+    progress: Progress | None = None,
+) -> dict:
+    raw_items = _layer_items(layer)
+    if limit is not None:
+        raw_items = raw_items[:limit]
+    items = _score_with_judge(judge, raw_items, progress=progress)
+    return _report_from_scored_items(judge, items)
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--model", default=None)
     parser.add_argument("--layer", choices=("clean", "hard", "both"), default="both")
     parser.add_argument("--output", default=str(OUT_PATH))
+    parser.add_argument("--audit-output", default=str(AGREED_AUDIT_PATH))
+    parser.add_argument("--audit-key-output", default=str(AGREED_AUDIT_KEY_PATH))
+    parser.add_argument("--audit-size", type=int, default=10)
+    parser.add_argument("--no-audit", action="store_true")
     parser.add_argument("--limit", type=int, default=None)
     parser.add_argument(
         "--terse",
@@ -206,9 +314,27 @@ def main(argv: list[str] | None = None) -> int:
             flush=True,
         )
 
-    report = build_report(judge, layer=args.layer, limit=args.limit, progress=_progress)
+    raw_items = _layer_items(args.layer)
+    if args.limit is not None:
+        raw_items = raw_items[: args.limit]
+    scored_items = _score_with_judge(judge, raw_items, progress=_progress)
+
+    report = _report_from_scored_items(judge, scored_items)
     out_path = Path(args.output)
     out_path.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    if not args.no_audit:
+        audit, audit_key = build_agreed_cell_audit(
+            scored_items,
+            sample_size=args.audit_size,
+        )
+        Path(args.audit_output).write_text(
+            json.dumps(audit, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        Path(args.audit_key_output).write_text(
+            json.dumps(audit_key, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
 
     summary = report["summary"]
     print(
@@ -224,6 +350,9 @@ def main(argv: list[str] | None = None) -> int:
         }
         print(f"[{layer_name}] below_gate={below_gate}")
     print(f"report -> {out_path}")
+    if not args.no_audit:
+        print(f"agreed audit -> {args.audit_output}")
+        print(f"agreed audit key -> {args.audit_key_output}")
     return 0
 
 
