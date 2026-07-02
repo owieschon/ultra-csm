@@ -2,13 +2,18 @@
 
 Boots an ephemeral Postgres, seeds governance, builds the fixture data plane,
 and exposes tools for scoring, sweeping, and governing customer-success work.
+
+The default MCP stdio transport is local-operator trust: it is intended for a
+trusted local process on the same workstation. Any HTTP transport for this
+server must require the same bearer token mapping used by the REST API. Verdict
+tools still take an API token so approvals are signed by a token-mapped human
+principal rather than a server-held authority.
 """
 
 from __future__ import annotations
 
 import atexit
 import logging
-from dataclasses import asdict
 from pathlib import Path
 
 import psycopg
@@ -33,13 +38,19 @@ from ultra_csm.governance import (
     seed_roster,
     make_principal,
     ROLE_CS_ORCHESTRATOR,
-    ROLE_ORDER_CONFIRM_AUTHORITY,
-)
-from ultra_csm.value_model import (
-    build_customer_value_model,
-    project_ttv_lens,
 )
 from ultra_csm.agent1 import run_time_to_value_sweep, SweepResult
+from ultra_csm._api_helpers import (
+    AccountDataError,
+    AuthError,
+    _build_account_brief,
+    _score_one_account,
+    auth_marker,
+    demo_noauth_enabled,
+    parse_api_tokens,
+    resolve_write_principal,
+    score_account_priority,
+)
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -63,7 +74,6 @@ _cluster: EphemeralCluster | None = None
 _conn: psycopg.Connection | None = None
 _data_plane: CustomerDataPlane | None = None
 _orch_principal: str | None = None
-_authority_principal: str | None = None
 
 # Map proposal_id -> ActionProposal kept in memory so submit_verdict can
 # reconstruct the full proposal from just an id.
@@ -77,10 +87,16 @@ def _boot() -> None:
     """Boot the ephemeral Postgres, run migrations, seed governance, and build
     the fixture data plane.  Called once at import time."""
 
-    global _cluster, _conn, _data_plane, _orch_principal, _authority_principal
+    global _cluster, _conn, _data_plane, _orch_principal
 
     setup_logging("INFO")
     log.info("Booting ephemeral Postgres cluster")
+    if demo_noauth_enabled():
+        log.warning(
+            "ULTRA_CSM_DEMO_NOAUTH=1 enabled; MCP verdict tools allow "
+            "tokenless local demo approvals",
+            extra={"auth": "demo-noauth"},
+        )
 
     _cluster = EphemeralCluster().start()
     atexit.register(_cluster.stop)
@@ -108,21 +124,18 @@ def _boot() -> None:
         role=ROLE_CS_ORCHESTRATOR,
         now=_CLOCK,
     )
-    _authority_principal = make_principal(
-        _conn,
-        tenant_id=_TENANT_ID,
-        actor_id=_SEED_AGENT,
-        display_name="order-confirm-authority",
-        role=ROLE_ORDER_CONFIRM_AUTHORITY,
-        now=_CLOCK,
-    )
 
     # Build the fixture data plane (in-memory, no DB needed).
     _data_plane = build_sweep_fixture_data_plane(tenant_id=DEFAULT_TENANT)
 
     log.info(
         "Ultra CSM MCP server ready",
-        extra={"tenant_id": _TENANT_ID, "orch_principal": _orch_principal},
+        extra={
+            "tenant_id": _TENANT_ID,
+            "orch_principal": _orch_principal,
+            "auth": auth_marker(),
+            "configured_api_tokens": len(parse_api_tokens()),
+        },
     )
 
 
@@ -136,202 +149,6 @@ def _gate() -> ActionGate:
         verdict_source=FixtureVerdictSource(),
         now=_CLOCK,
     )
-
-
-# ---------------------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------------------
-
-
-def _score_one_account(account_id: str) -> dict:
-    """Build the value model + projected priority for a single account and
-    return a serialisable dict."""
-
-    assert _data_plane is not None
-
-    account = _data_plane.crm.get_account(account_id)
-    if account is None:
-        return {"error": f"Account {account_id} not found in CRM"}
-
-    company = _data_plane.cs.get_company(account_id)
-    health = _data_plane.cs.get_health_score(account_id)
-    adoption = _data_plane.cs.get_adoption_summary(account_id)
-
-    if company is None or health is None:
-        return {"error": f"Missing CS platform data for account {account_id}"}
-
-    entitlements = tuple(_data_plane.telemetry.list_entitlements(account_id))
-    signals = tuple(_data_plane.telemetry.list_usage_signals(account_id))
-    plans = tuple(_data_plane.cs.list_success_plans(account_id))
-    milestones = tuple(_data_plane.telemetry.list_ttv_milestones(account_id))
-
-    model = build_customer_value_model(
-        account=account,
-        company=company,
-        health=health,
-        adoption=adoption,
-        entitlements=entitlements,
-        usage_signals=signals,
-        success_plans=plans,
-    )
-
-    open_gaps = tuple(
-        m for m in milestones if m.achieved_at is None
-    )
-    overdue_plans = tuple(
-        p for p in plans
-        if p.target_date and p.target_date <= _AS_OF
-    )
-
-    projected = project_ttv_lens(
-        model,
-        company=company,
-        health=health,
-        open_milestone_gaps=open_gaps,
-        overdue_success_plans=overdue_plans,
-        as_of=_AS_OF,
-    )
-
-    return {
-        "account_id": account_id,
-        "account_name": account.name,
-        "lifecycle_stage": model.lifecycle_stage,
-        "resolved_thresholds": asdict(model.resolved_thresholds),
-        "usage": asdict(model.usage),
-        "penetration": asdict(model.penetration),
-        "feature_depth": asdict(model.feature_depth),
-        "outcome": asdict(model.outcome),
-        "divergences": [asdict(d) for d in model.divergences],
-        "priority": {
-            "score": projected.score,
-            "factors": [asdict(f) for f in projected.factors],
-        },
-    }
-
-
-def _build_account_brief(account_id: str) -> dict:
-    """Compose a rich account brief from all data-plane sources."""
-
-    assert _data_plane is not None
-
-    account = _data_plane.crm.get_account(account_id)
-    if account is None:
-        return {"error": f"Account {account_id} not found in CRM"}
-
-    company = _data_plane.cs.get_company(account_id)
-    health = _data_plane.cs.get_health_score(account_id)
-    adoption = _data_plane.cs.get_adoption_summary(account_id)
-
-    if company is None or health is None:
-        return {"error": f"Missing CS platform data for account {account_id}"}
-
-    entitlements = tuple(_data_plane.telemetry.list_entitlements(account_id))
-    signals = tuple(_data_plane.telemetry.list_usage_signals(account_id))
-    plans = tuple(_data_plane.cs.list_success_plans(account_id))
-    milestones = tuple(_data_plane.telemetry.list_ttv_milestones(account_id))
-    ctas = _data_plane.cs.list_ctas(account_id)
-    cases = _data_plane.crm.list_cases(account_id)
-    contacts = _data_plane.crm.list_contacts(account_id)
-    opportunities = _data_plane.crm.list_opportunities(account_id)
-
-    model = build_customer_value_model(
-        account=account,
-        company=company,
-        health=health,
-        adoption=adoption,
-        entitlements=entitlements,
-        usage_signals=signals,
-        success_plans=plans,
-    )
-
-    open_gaps = tuple(m for m in milestones if m.achieved_at is None)
-    overdue_plans = tuple(
-        p for p in plans if p.target_date and p.target_date <= _AS_OF
-    )
-
-    projected = project_ttv_lens(
-        model,
-        company=company,
-        health=health,
-        open_milestone_gaps=open_gaps,
-        overdue_success_plans=overdue_plans,
-        as_of=_AS_OF,
-    )
-
-    # Derive talking points from evidence and model factors.
-    talking_points: list[str] = []
-    for factor in projected.factors:
-        if factor.contribution > 0:
-            talking_points.append(
-                f"{factor.name}: value={factor.value:.2f}, "
-                f"contribution=+{factor.contribution} "
-                f"(rule: {factor.rule_name})"
-            )
-    for div in model.divergences:
-        talking_points.append(
-            f"Divergence signal: {div.name} "
-            f"(value={div.value:.2f}, contribution={div.contribution:+d})"
-        )
-    if health.band in ("red", "yellow"):
-        talking_points.append(
-            f"Health is {health.band} (score {health.score}) -- "
-            f"drivers: {', '.join(health.drivers) if health.drivers else 'unknown'}"
-        )
-    if adoption and adoption.underused_capabilities:
-        talking_points.append(
-            f"Underused capabilities: {', '.join(adoption.underused_capabilities)}"
-        )
-    for gap in open_gaps:
-        talking_points.append(
-            f"Overdue milestone: {gap.milestone} (expected by {gap.expected_by})"
-        )
-
-    open_ctas = [c for c in ctas if c.status in ("open", "in_progress")]
-    open_cases = [c for c in cases if c.closed_at is None]
-
-    return {
-        "account_id": account_id,
-        "account_name": account.name,
-        "industry": account.industry,
-        "company": {
-            "arr_cents": company.arr_cents,
-            "lifecycle_stage": company.lifecycle_stage,
-            "status": company.status,
-            "renewal_date": company.renewal_date,
-            "csm_owner_id": company.csm_owner_id,
-        },
-        "health_snapshot": {
-            "score": health.score,
-            "band": health.band,
-            "drivers": list(health.drivers) if health.drivers else [],
-            "measured_at": health.measured_at,
-        },
-        "adoption": asdict(adoption) if adoption else None,
-        "priority": {
-            "score": projected.score,
-            "factors": [asdict(f) for f in projected.factors],
-        },
-        "lifecycle_stage": model.lifecycle_stage,
-        "divergences": [asdict(d) for d in model.divergences],
-        "open_ctas": [asdict(c) for c in open_ctas],
-        "success_plans": [asdict(p) for p in plans],
-        "open_cases": [asdict(c) for c in open_cases],
-        "contacts": [
-            {
-                "name": c.name,
-                "email": c.email,
-                "role": c.role,
-                "title": c.title,
-                "consent_to_contact": c.consent_to_contact,
-            }
-            for c in contacts
-        ],
-        "opportunities": [asdict(o) for o in opportunities],
-        "entitlements": [asdict(e) for e in entitlements],
-        "recent_usage_signals": [asdict(s) for s in signals[:20]],
-        "milestones": [asdict(m) for m in milestones],
-        "suggested_talking_points": talking_points,
-    }
 
 
 # ---------------------------------------------------------------------------
@@ -359,7 +176,11 @@ def score_account(account_id: str) -> dict:
     Args:
         account_id: The UUID of the account to score.
     """
-    return _score_one_account(account_id)
+    assert _data_plane is not None
+    try:
+        return _score_one_account(account_id, data_plane=_data_plane, as_of=_AS_OF)
+    except AccountDataError as exc:
+        return {"error": str(exc), "code": exc.code, "account_id": exc.account_id}
 
 
 @mcp.tool()
@@ -404,50 +225,29 @@ def list_accounts() -> dict:
         # Compute priority if we have enough data.
         if company and health and adoption:
             try:
-                entitlements = tuple(
-                    _data_plane.telemetry.list_entitlements(account.account_id)
-                )
-                signals = tuple(
-                    _data_plane.telemetry.list_usage_signals(account.account_id)
-                )
-                plans = tuple(
-                    _data_plane.cs.list_success_plans(account.account_id)
-                )
-                milestones = tuple(
-                    _data_plane.telemetry.list_ttv_milestones(account.account_id)
-                )
-
-                model = build_customer_value_model(
-                    account=account,
-                    company=company,
-                    health=health,
-                    adoption=adoption,
-                    entitlements=entitlements,
-                    usage_signals=signals,
-                    success_plans=plans,
-                )
-                open_gaps = tuple(m for m in milestones if m.achieved_at is None)
-                overdue_plans = tuple(
-                    p for p in plans
-                    if p.target_date and p.target_date <= _AS_OF
-                )
-                projected = project_ttv_lens(
-                    model,
-                    company=company,
-                    health=health,
-                    open_milestone_gaps=open_gaps,
-                    overdue_success_plans=overdue_plans,
+                priority_score, _divergences = score_account_priority(
+                    account.account_id,
+                    data_plane=_data_plane,
                     as_of=_AS_OF,
                 )
-                entry["priority_score"] = projected.score
+                entry["priority_score"] = priority_score
             except Exception as exc:
-                entry["priority_error"] = str(exc)
+                log.warning(
+                    "priority_score_failed",
+                    extra={
+                        "surface": "mcp.list_accounts",
+                        "account_id": account.account_id,
+                        "error_type": exc.__class__.__name__,
+                    },
+                )
+                entry["priority_score"] = None
+                entry["priority_score_error"] = exc.__class__.__name__
 
         results.append(entry)
 
     # Sort by priority score descending (accounts without a score go to the end).
     results.sort(
-        key=lambda r: r.get("priority_score", -1),
+        key=lambda r: r["priority_score"] if r.get("priority_score") is not None else -1,
         reverse=True,
     )
 
@@ -469,7 +269,11 @@ def get_account_brief(account_id: str) -> dict:
     Args:
         account_id: The UUID of the account.
     """
-    return _build_account_brief(account_id)
+    assert _data_plane is not None
+    try:
+        return _build_account_brief(account_id, data_plane=_data_plane, as_of=_AS_OF)
+    except AccountDataError as exc:
+        return {"error": str(exc), "code": exc.code, "account_id": exc.account_id}
 
 
 @mcp.tool()
@@ -571,7 +375,12 @@ def list_proposals() -> dict:
 
 
 @mcp.tool()
-def submit_verdict(proposal_id: str, verdict: str, reason: str) -> dict:
+def submit_verdict(
+    proposal_id: str,
+    verdict: str,
+    reason: str,
+    token: str | None = None,
+) -> dict:
     """Submit a human verdict on a pending action proposal.
 
     Approves or denies a proposal that was created during a sweep.
@@ -581,8 +390,20 @@ def submit_verdict(proposal_id: str, verdict: str, reason: str) -> dict:
         proposal_id: The UUID of the proposal to judge.
         verdict: One of "approve" or "deny".
         reason: Human-readable rationale for the decision.
+        token: API token mapped by ULTRA_CSM_API_TOKENS to the approving human.
     """
-    assert _conn is not None and _authority_principal is not None
+    assert _conn is not None and _orch_principal is not None
+
+    try:
+        auth_principal = resolve_write_principal(
+            _conn,
+            tenant_id=_TENANT_ID,
+            actor_id=_orch_principal,
+            now=_CLOCK,
+            token=token,
+        )
+    except AuthError as exc:
+        return {"error": str(exc), "code": exc.code}
 
     if verdict not in ("approve", "deny"):
         return {"error": f"Invalid verdict '{verdict}'. Must be 'approve' or 'deny'."}
@@ -632,7 +453,7 @@ def submit_verdict(proposal_id: str, verdict: str, reason: str) -> dict:
     gate = _gate()
     human_verdict = Verdict(
         verdict=verdict,
-        human_principal_id=_authority_principal,
+        human_principal_id=auth_principal.principal_id,
         rationale=reason,
     )
 
@@ -650,6 +471,7 @@ def submit_verdict(proposal_id: str, verdict: str, reason: str) -> dict:
         "authorized": outcome.authorized,
         "verdict": outcome.verdict,
         "payload_sha256": outcome.payload_sha256,
+        "auth": auth_principal.auth,
     }
 
 

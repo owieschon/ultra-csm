@@ -15,7 +15,10 @@ fastapi_mod = pytest.importorskip("fastapi")
 
 from fastapi.testclient import TestClient  # noqa: E402
 
+from ultra_csm import api  # noqa: E402
 from ultra_csm.api import app  # noqa: E402
+
+AUTH_HEADERS = {"Authorization": "Bearer lane-a-token"}
 
 
 # ---------------------------------------------------------------------------
@@ -27,8 +30,14 @@ from ultra_csm.api import app  # noqa: E402
 def client():
     """A TestClient that triggers the FastAPI lifespan (ephemeral Postgres,
     seed, governance roster) once for the whole test module."""
-    with TestClient(app) as c:
-        yield c
+    env = pytest.MonkeyPatch()
+    env.setenv("ULTRA_CSM_API_TOKENS", "lane-a-token:Lane A Manager")
+    env.delenv("ULTRA_CSM_DEMO_NOAUTH", raising=False)
+    try:
+        with TestClient(app) as c:
+            yield c
+    finally:
+        env.undo()
 
 
 # ---------------------------------------------------------------------------
@@ -46,6 +55,7 @@ class TestHealthEndpoint:
         assert body["config_loaded"] is True
         assert body["accounts_loaded"] > 0
         assert "tenant_id" in body
+        assert body["auth"] == "bearer-token"
 
 
 # ---------------------------------------------------------------------------
@@ -144,17 +154,42 @@ class TestAccountBriefEndpoint:
 
 
 class TestSweepEndpoint:
-    def test_trigger_sweep(self, client: TestClient):
+    def test_sweep_requires_bearer_token(self, client: TestClient):
         resp = client.post("/sweep")
+        assert resp.status_code == 401
+        assert resp.json()["code"] == "AUTH_REQUIRED"
+
+    def test_sweep_rejects_unknown_token(self, client: TestClient):
+        resp = client.post(
+            "/sweep",
+            headers={"Authorization": "Bearer not-a-real-token"},
+        )
+        assert resp.status_code == 401
+        assert resp.json()["code"] == "AUTH_INVALID"
+
+    def test_demo_noauth_marks_health_and_sweep(self, client: TestClient, monkeypatch):
+        monkeypatch.setenv("ULTRA_CSM_DEMO_NOAUTH", "1")
+
+        health = client.get("/health")
+        assert health.status_code == 200
+        assert health.json()["auth"] == "demo-noauth"
+
+        resp = client.post("/sweep")
+        assert resp.status_code == 200
+        assert resp.json()["auth"] == "demo-noauth"
+
+    def test_trigger_sweep(self, client: TestClient):
+        resp = client.post("/sweep", headers=AUTH_HEADERS)
         assert resp.status_code == 200
         body = resp.json()
         assert "work_items" in body
         assert "escalations" in body
         assert "swept_accounts" in body
         assert len(body["swept_accounts"]) > 0
+        assert body["auth"] == "bearer-token"
 
     def test_sweep_produces_work_items(self, client: TestClient):
-        body = client.post("/sweep").json()
+        body = client.post("/sweep", headers=AUTH_HEADERS).json()
         # The fixture data should produce at least one work item.
         assert len(body["work_items"]) > 0
 
@@ -166,7 +201,7 @@ class TestSweepEndpoint:
 
 class TestMetricsEndpoint:
     def test_metrics_reports_requests_sweeps_and_budget(self, client: TestClient):
-        client.post("/sweep")
+        client.post("/sweep", headers=AUTH_HEADERS)
         resp = client.get("/metrics")
 
         assert resp.status_code == 200
@@ -193,23 +228,53 @@ class TestGovernanceEndpoints:
 
     def test_sweep_then_list_proposals(self, client: TestClient):
         # A sweep should generate proposals.
-        client.post("/sweep")
+        client.post("/sweep", headers=AUTH_HEADERS)
         resp = client.get("/proposals")
         assert resp.status_code == 200
         body = resp.json()
         # May or may not have pending proposals depending on fixture state.
         assert "pending_count" in body
 
+    def test_delegation_queue_groups_pending_proposals(self, client: TestClient):
+        client.post("/sweep", headers=AUTH_HEADERS)
+        resp = client.get("/queue/delegation")
+        assert resp.status_code == 200
+        body = resp.json()
+        assert set(body["groups"]) == {
+            "tier_1_auto_executed_audit_trail",
+            "tier_2_batch_approvable",
+            "tier_3_escalation",
+        }
+        assert "pending_count" in body
+
+    def test_verdict_requires_auth(self, client: TestClient):
+        resp = client.post(
+            "/proposals/00000000-0000-0000-0000-000000000000/verdict",
+            json={"verdict": "approve", "reason": "test"},
+        )
+        assert resp.status_code == 401
+        assert resp.json()["code"] == "AUTH_REQUIRED"
+
+    def test_verdict_rejects_unknown_token(self, client: TestClient):
+        resp = client.post(
+            "/proposals/00000000-0000-0000-0000-000000000000/verdict",
+            json={"verdict": "approve", "reason": "test"},
+            headers={"Authorization": "Bearer not-a-real-token"},
+        )
+        assert resp.status_code == 401
+        assert resp.json()["code"] == "AUTH_INVALID"
+
     def test_verdict_on_missing_proposal_404(self, client: TestClient):
         resp = client.post(
             "/proposals/00000000-0000-0000-0000-000000000000/verdict",
             json={"verdict": "approve", "reason": "test"},
+            headers=AUTH_HEADERS,
         )
         assert resp.status_code == 404
 
     def test_verdict_approve(self, client: TestClient):
         # Sweep to create proposals.
-        client.post("/sweep")
+        client.post("/sweep", headers=AUTH_HEADERS)
         proposals = client.get("/proposals").json()["proposals"]
 
         if not proposals:
@@ -219,16 +284,35 @@ class TestGovernanceEndpoints:
         resp = client.post(
             f"/proposals/{proposal_id}/verdict",
             json={"verdict": "approve", "reason": "Approved in test"},
+            headers=AUTH_HEADERS,
         )
         assert resp.status_code == 200
         body = resp.json()
         assert body["proposal_id"] == proposal_id
         assert body["status"] == "approved"
         assert body["authorized"] is True
+        assert body["auth"] == "bearer-token"
+
+        assert api._conn is not None and api._orch_principal is not None
+        with api.session(
+            api._conn,
+            tenant_id=api._TENANT_ID,
+            actor_id=api._orch_principal,
+            now=api._CLOCK,
+        ) as cur:
+            cur.execute(
+                "SELECT p.kind, p.display_name "
+                "FROM action_verdict v "
+                "JOIN principal p ON p.principal_id = v.human_principal_id "
+                "WHERE v.proposal_id = %s",
+                (proposal_id,),
+            )
+            row = cur.fetchone()
+        assert row == ("human", "Lane A Manager")
 
     def test_verdict_already_decided_409(self, client: TestClient):
         # Sweep to create proposals.
-        client.post("/sweep")
+        client.post("/sweep", headers=AUTH_HEADERS)
         proposals = client.get("/proposals").json()["proposals"]
 
         if not proposals:
@@ -240,6 +324,7 @@ class TestGovernanceEndpoints:
         resp1 = client.post(
             f"/proposals/{proposal_id}/verdict",
             json={"verdict": "deny", "reason": "First verdict"},
+            headers=AUTH_HEADERS,
         )
         assert resp1.status_code == 200
 
@@ -247,6 +332,7 @@ class TestGovernanceEndpoints:
         resp2 = client.post(
             f"/proposals/{proposal_id}/verdict",
             json={"verdict": "approve", "reason": "Second attempt"},
+            headers=AUTH_HEADERS,
         )
         assert resp2.status_code == 409
 
@@ -255,6 +341,7 @@ class TestGovernanceEndpoints:
         resp = client.post(
             "/proposals/00000000-0000-0000-0000-000000000000/verdict",
             json={"verdict": "maybe", "reason": "test"},
+            headers=AUTH_HEADERS,
         )
         assert resp.status_code == 422  # Pydantic validation error
 
@@ -274,3 +361,57 @@ class TestDigestEndpoint:
         assert "pending_proposals" in body
         assert "commitments" in body
         assert "as_of" in body
+        assert "manager_rollup" in body
+        assert "book_health_counts" in body["manager_rollup"]
+
+
+class TestPriorityScoreFailures:
+    def test_poisoned_account_gets_explicit_priority_error(
+        self,
+        client: TestClient,
+        monkeypatch,
+    ):
+        assert api._data_plane is not None
+        account = next(
+            acct
+            for acct in api._data_plane.crm.list_accounts(tenant_id=api.DEFAULT_TENANT)
+            if api._data_plane.cs.get_company(acct.account_id) is not None
+            and api._data_plane.cs.get_health_score(acct.account_id) is not None
+            and api._data_plane.cs.get_adoption_summary(acct.account_id) is not None
+        )
+
+        class PoisonTelemetry:
+            def __init__(self, base):
+                self._base = base
+
+            def list_entitlements(self, account_id):
+                if account_id == account.account_id:
+                    raise RuntimeError("poisoned priority input")
+                return self._base.list_entitlements(account_id)
+
+            def __getattr__(self, name):
+                return getattr(self._base, name)
+
+        class PoisonPlane:
+            def __init__(self, base):
+                self.crm = base.crm
+                self.cs = base.cs
+                self.telemetry = PoisonTelemetry(base.telemetry)
+
+        monkeypatch.setattr(
+            api,
+            "_data_plane_for_day",
+            lambda _day, *, deep=False: (PoisonPlane(api._data_plane), api._AS_OF),
+        )
+
+        accounts = client.get("/accounts").json()["accounts"]
+        poisoned = next(a for a in accounts if a["account_id"] == account.account_id)
+        assert poisoned["priority_score"] is None
+        assert poisoned["priority_score_error"] == "RuntimeError"
+
+        digest = client.get("/digest").json()["prioritized_accounts"]
+        poisoned_digest = next(
+            a for a in digest if a["account_id"] == account.account_id
+        )
+        assert poisoned_digest["priority_score"] is None
+        assert poisoned_digest["priority_score_error"] == "RuntimeError"
