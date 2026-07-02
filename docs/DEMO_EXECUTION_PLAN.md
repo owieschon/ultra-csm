@@ -80,8 +80,12 @@ labels pending human approval → the κs are provisional.
 1. Generate a **disagreement report** (extend `eval/diagnose_judge.py` if it doesn't
    already emit this): for each failing dimension, every item where judge ≠ draft label,
    showing text + both scores + judge rationale. Purpose: make the human label review fast.
+   It also emits a separate blind agreed-cell audit: score those cards before opening the
+   key. If the audit does not match at least 90%, widen review beyond disagreement rows.
 2. **OWNER GATE:** the human reviews/approves the draft labels using the report
-   (`make quality-gold-label-csm` flow). No κ conclusion is valid before this.
+   (`make quality-gold-label-csm` flow). Review protocol: read request/output + rubric,
+   decide the score first, then read the judge reason. No κ conclusion is valid before
+   this.
 3. After approved labels, re-run `make judge-agreement-csm`. For each still-failing
    dimension, classify every disagreement into exactly one bucket:
    - **(a) Label error** — label contradicts the rubric anchor → human fixes label.
@@ -95,6 +99,9 @@ labels pending human approval → the κs are provisional.
    - **(d) Dimension conflation** — two dimensions score near-identically or one has too
      little variance for stable κ → propose merge/redefinition. OWNER GATE (changes the
      quality contract).
+   - **(e) Candidate rendering defect** — the generated text does not visibly exhibit the
+     intended flaw → regenerate the candidate. Do not fix this by changing labels or judge
+     prompt.
 4. **IF** all six dims ≥ 0.6 AND hard-layer false_neg = 0 → capture artifact, update
    `claim_boundary.judge_validated=true`, done.
    **IF** any dim < 0.6 after **3** classify-fix-rerun iterations → STOP; escalate with
@@ -103,11 +110,17 @@ labels pending human approval → the κs are provisional.
 **DoD:** `make judge-agreement-csm` artifact shows all dims ≥ 0.6 (report κ + N per dim),
 hard-layer false_neg 0, `judge_prompt_version` recorded; disagreement report committed;
 misconduct guard test: judge prompt contains no gold-set-item-specific text (add a test
-that greps the judge prompt for gold-set account names → must be absent).
+that greps the judge prompt for gold-set account names → must be absent); blind agreed-cell
+audit committed with a separate key.
 
 **Do NOT:** average κ across dimensions; validate against the held-out key and call it
 human validation; edit gold labels yourself (human-only); tune the judge and the labels in
 the same iteration (change one variable at a time).
+
+**Decision point:** if adjudication shows `priority_fidelity` disagreement is mostly
+mechanical factor/score mismatch, move that dimension to a deterministic scorer and shrink
+the judge's remit to semantic scoring. Do the same for any purely structural slice of
+grounding that can be checked without model judgment.
 
 ---
 
