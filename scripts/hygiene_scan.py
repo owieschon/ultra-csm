@@ -54,9 +54,9 @@ SOURCE_COMPANY_PATTERNS = (
     re.compile("".join(("tr", "uck", "pi", "pes")), re.IGNORECASE),
     re.compile("".join(("gr", "and", r"[ -]?", "ro", "ck")), re.IGNORECASE),
     re.compile("".join(("ra", "ney")), re.IGNORECASE),
-    # Parent project, prior employer, and author PII — split so this file never
-    # matches itself. The two-letter abbreviation is case-sensitive to skip words
-    # like "program"/"grand".
+    # Named entities and author PII — split so this file never matches itself.
+    # The two-letter abbreviation is case-sensitive to skip words like
+    # "program"/"grand".
     re.compile("".join((r"\bre", "ter", r"\b")), re.IGNORECASE),
     re.compile("".join((r"\bve", "lo3d", r"\b")), re.IGNORECASE),
     re.compile("".join((r"\bow", "en", r"\b")), re.IGNORECASE),
