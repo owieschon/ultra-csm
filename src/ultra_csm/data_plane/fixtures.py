@@ -834,3 +834,23 @@ def build_sweep_fixture_data_plane(
         cs=FixtureCSPlatformConnector(data=data),
         telemetry=FixtureProductTelemetryConnector(data=data),
     )
+
+
+def synthetic_book_fixtures(
+    *,
+    tenant: str = DEFAULT_TENANT,
+) -> CustomerDataPlane:
+    """35-account synthetic book of business for demo.
+
+    Returns a ``CustomerDataPlane`` backed by high-fidelity fleet management
+    SaaS data with realistic lifecycle distribution, health signals, and
+    interesting scenarios for all three lenses.
+    """
+    from ultra_csm.data_plane.synthetic_book import build_synthetic_book
+
+    data = build_synthetic_book()
+    return CustomerDataPlane(
+        crm=FixtureCRMDataConnector(tenant=tenant, data=data),
+        cs=FixtureCSPlatformConnector(data=data),
+        telemetry=FixtureProductTelemetryConnector(data=data),
+    )
