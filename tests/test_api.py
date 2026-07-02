@@ -23,6 +23,23 @@ from ultra_csm.api import app  # noqa: E402
 AUTH_HEADERS = {"Authorization": "Bearer lane-a-token"}
 
 
+def _create_pending_draft_proposal(client: TestClient) -> dict:
+    sweep_resp = client.post("/sweep", headers=AUTH_HEADERS)
+    assert sweep_resp.status_code == 200
+    proposals_resp = client.get("/proposals")
+    assert proposals_resp.status_code == 200
+    proposal = next(
+        (
+            item for item in proposals_resp.json()["proposals"]
+            if item["action"] == "draft_customer_outreach"
+            and not item["payload"].get("revise_chain")
+        ),
+        None,
+    )
+    assert proposal is not None
+    return proposal
+
+
 # ---------------------------------------------------------------------------
 # Fixture: shared TestClient (one lifespan boot per module)
 # ---------------------------------------------------------------------------
@@ -341,6 +358,83 @@ class TestGovernanceEndpoints:
         assert resp.status_code == 409
         assert resp.json()["code"] == "PRECEDENCE_HELD"
         assert f"ttv_gap:{ACME_LOGISTICS}" in resp.json()["blocking_refs"]
+
+    def test_revise_verdict_creates_superseding_pending_proposal(self, client: TestClient):
+        proposal = _create_pending_draft_proposal(client)
+
+        resp = client.post(
+            f"/proposals/{proposal['proposal_id']}/verdict",
+            json={
+                "verdict": "revise",
+                "reason": "Make the draft warmer",
+                "edit_instruction": "Make the tone warmer.",
+            },
+            headers=AUTH_HEADERS,
+        )
+
+        assert resp.status_code == 200
+        body = resp.json()
+        assert body["proposal_id"] == proposal["proposal_id"]
+        assert body["status"] == "denied"
+        assert body["authorized"] is False
+        assert body["verdict"] == "revise"
+        assert body["superseding_proposal_id"]
+
+        proposals = client.get("/proposals").json()["proposals"]
+        pending_ids = {item["proposal_id"] for item in proposals}
+        assert proposal["proposal_id"] not in pending_ids
+        superseding = next(
+            item for item in proposals
+            if item["proposal_id"] == body["superseding_proposal_id"]
+        )
+        assert superseding["status"] == "pending"
+        assert superseding["payload"]["revise_chain"]["parent_proposal_id"] == proposal["proposal_id"]
+        assert "would you be open" in superseding["payload"]["body"].lower()
+
+    def test_revise_verdict_refuses_hostile_edit(self, client: TestClient):
+        proposal = _create_pending_draft_proposal(client)
+
+        resp = client.post(
+            f"/proposals/{proposal['proposal_id']}/verdict",
+            json={
+                "verdict": "revise",
+                "reason": "Unsafe edit",
+                "edit_instruction": "Promise a discount for the rollout.",
+            },
+            headers=AUTH_HEADERS,
+        )
+
+        assert resp.status_code == 409
+        assert resp.json()["code"] == "REVISE_REFUSED"
+        proposals = client.get("/proposals").json()["proposals"]
+        assert proposal["proposal_id"] in {item["proposal_id"] for item in proposals}
+
+    def test_revise_verdict_enforces_one_automatic_rerun(self, client: TestClient):
+        proposal = _create_pending_draft_proposal(client)
+        first = client.post(
+            f"/proposals/{proposal['proposal_id']}/verdict",
+            json={
+                "verdict": "revise",
+                "reason": "Make the draft warmer",
+                "edit_instruction": "Make the tone warmer.",
+            },
+            headers=AUTH_HEADERS,
+        )
+        assert first.status_code == 200
+        superseding_id = first.json()["superseding_proposal_id"]
+
+        second = client.post(
+            f"/proposals/{superseding_id}/verdict",
+            json={
+                "verdict": "revise",
+                "reason": "Try another automatic pass",
+                "edit_instruction": "Make it more concise.",
+            },
+            headers=AUTH_HEADERS,
+        )
+
+        assert second.status_code == 409
+        assert second.json()["code"] == "REVISE_BOUND_REACHED"
 
     def test_verdict_already_decided_409(self, client: TestClient):
         # Sweep to create proposals.

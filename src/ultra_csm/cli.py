@@ -827,12 +827,15 @@ def _proposal_show(args: argparse.Namespace) -> int:
 
 def _proposal_verdict(args: argparse.Namespace) -> int:
     reason = args.reason or f"{args.verdict.title()} via ucsm CLI"
+    request_payload = {"verdict": args.verdict, "reason": reason}
+    if args.verdict == "revise":
+        request_payload["edit_instruction"] = args.edit_instruction
     try:
         payload = _api_json(
             args.api_url,
             f"/proposals/{args.proposal_id}/verdict",
             method="POST",
-            payload={"verdict": args.verdict, "reason": reason},
+            payload=request_payload,
             api_token=args.api_token,
         )
     except CliApiError as exc:
@@ -845,6 +848,8 @@ def _proposal_verdict(args: argparse.Namespace) -> int:
             f"{payload['status']} "
             f"(authorized={str(payload['authorized']).lower()})"
         )
+        if payload.get("superseding_proposal_id"):
+            print(f"superseding proposal: {payload['superseding_proposal_id']}")
     return 0
 
 
@@ -1034,6 +1039,13 @@ def build_parser() -> argparse.ArgumentParser:
     reject_cmd.add_argument("--reason", default=None)
     _add_api_args(reject_cmd)
     reject_cmd.set_defaults(func=_proposal_verdict, verdict="deny")
+
+    revise_cmd = proposal_sub.add_parser("revise")
+    revise_cmd.add_argument("proposal_id")
+    revise_cmd.add_argument("--edit-instruction", required=True)
+    revise_cmd.add_argument("--reason", default=None)
+    _add_api_args(revise_cmd)
+    revise_cmd.set_defaults(func=_proposal_verdict, verdict="revise")
     return parser
 
 

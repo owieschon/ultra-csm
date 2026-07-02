@@ -130,6 +130,60 @@ def test_proposals_approve_cli_posts_verdict(monkeypatch, capsys):
     assert "prop-3: approved (authorized=true)" in captured.out
 
 
+def test_proposals_revise_cli_posts_edit_instruction(monkeypatch, capsys):
+    seen = []
+
+    def fake_urlopen(req, timeout):  # noqa: ANN001 - urllib test double
+        seen.append((
+            req.full_url,
+            req.get_method(),
+            json.loads(req.data.decode("utf-8")),
+            req.get_header("Authorization"),
+            timeout,
+        ))
+        return _Response({
+            "proposal_id": "prop-5",
+            "status": "denied",
+            "authorized": False,
+            "verdict": "revise",
+            "payload_sha256": "sha",
+            "superseding_proposal_id": "prop-6",
+        })
+
+    monkeypatch.setattr(cli.request, "urlopen", fake_urlopen)
+
+    code = main([
+        "proposals",
+        "revise",
+        "prop-5",
+        "--edit-instruction",
+        "Make the tone warmer.",
+        "--reason",
+        "Needs softer language",
+        "--api-url",
+        "http://api.test",
+        "--api-token",
+        "lane-a-token",
+    ])
+
+    captured = capsys.readouterr()
+
+    assert code == 0
+    assert seen == [(
+        "http://api.test/proposals/prop-5/verdict",
+        "POST",
+        {
+            "verdict": "revise",
+            "reason": "Needs softer language",
+            "edit_instruction": "Make the tone warmer.",
+        },
+        "Bearer lane-a-token",
+        10,
+    )]
+    assert "prop-5: denied (authorized=false)" in captured.out
+    assert "superseding proposal: prop-6" in captured.out
+
+
 def test_queue_cli_reads_delegation_view(monkeypatch, capsys):
     seen = []
 
