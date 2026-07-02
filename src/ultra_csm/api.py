@@ -12,11 +12,12 @@ import logging
 import time
 from contextlib import asynccontextmanager
 from dataclasses import asdict
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any, Literal
 
 import psycopg
-from fastapi import FastAPI, HTTPException, Request, Response
+from fastapi import FastAPI, HTTPException, Query, Request, Response
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 
@@ -28,6 +29,9 @@ from ultra_csm.platform.seed import det_uuid, seed, SEED_CLOCK
 from ultra_csm.data_plane import (
     CustomerDataPlane,
     DEFAULT_TENANT,
+    FixtureCRMDataConnector,
+    FixtureCSPlatformConnector,
+    FixtureProductTelemetryConnector,
     build_sweep_fixture_data_plane,
 )
 from ultra_csm.governance import (
@@ -345,10 +349,11 @@ def _gate() -> ActionGate:
     )
 
 
-def _require_account(account_id: str):
+def _require_account(account_id: str, dp: CustomerDataPlane | None = None):
     """Look up an account; raise 404 if not found."""
-    assert _data_plane is not None
-    account = _data_plane.crm.get_account(account_id)
+    plane = dp or _data_plane
+    assert plane is not None
+    account = plane.crm.get_account(account_id)
     if account is None:
         raise HTTPException(
             status_code=404,
@@ -358,14 +363,51 @@ def _require_account(account_id: str):
     return account
 
 
-def _score_one_account(account_id: str) -> dict[str, Any]:
-    """Build the value model + projected priority for a single account."""
-    assert _data_plane is not None
+def _data_plane_for_day(day: int | None) -> tuple[CustomerDataPlane, str]:
+    """Return a data plane and as_of date for a given simulation day.
 
-    account = _require_account(account_id)
-    company = _data_plane.cs.get_company(account_id)
-    health = _data_plane.cs.get_health_score(account_id)
-    adoption = _data_plane.cs.get_adoption_summary(account_id)
+    When *day* is ``None``, the default (static) data plane is returned.
+    When *day* >= 0, the 35-account synthetic book is used, optionally
+    evolved to the requested day.
+    """
+    if day is None:
+        assert _data_plane is not None
+        return _data_plane, _AS_OF
+
+    from ultra_csm.data_plane.book_simulator import simulate_book
+    from ultra_csm.data_plane.fixtures import (
+        FixtureCRMDataConnector,
+        FixtureCSPlatformConnector,
+        FixtureProductTelemetryConnector,
+    )
+    from ultra_csm.data_plane.synthetic_book import (
+        SEED_DATE,
+        build_synthetic_book,
+    )
+
+    base = build_synthetic_book()
+    data = simulate_book(base, day_offset=day) if day > 0 else base
+    base_date = datetime.strptime(SEED_DATE, "%Y-%m-%d")
+    as_of = (base_date + timedelta(days=day)).strftime("%Y-%m-%d")
+    dp = CustomerDataPlane(
+        crm=FixtureCRMDataConnector(data=data),
+        cs=FixtureCSPlatformConnector(data=data),
+        telemetry=FixtureProductTelemetryConnector(data=data),
+    )
+    return dp, as_of
+
+
+def _score_one_account(account_id: str, dp: CustomerDataPlane | None = None,
+                       as_of: str | None = None) -> dict[str, Any]:
+    """Build the value model + projected priority for a single account."""
+    plane = dp or _data_plane
+    score_as_of = as_of or _AS_OF
+    assert plane is not None
+
+    account = _require_account(account_id, plane)
+    company = plane.cs.get_company(account_id)
+    health = plane.cs.get_health_score(account_id)
+    adoption = plane.cs.get_adoption_summary(account_id)
 
     if company is None or health is None:
         raise HTTPException(
@@ -374,10 +416,10 @@ def _score_one_account(account_id: str) -> dict[str, Any]:
                     "account_id": account_id},
         )
 
-    entitlements = tuple(_data_plane.telemetry.list_entitlements(account_id))
-    signals = tuple(_data_plane.telemetry.list_usage_signals(account_id))
-    plans = tuple(_data_plane.cs.list_success_plans(account_id))
-    milestones = tuple(_data_plane.telemetry.list_ttv_milestones(account_id))
+    entitlements = tuple(plane.telemetry.list_entitlements(account_id))
+    signals = tuple(plane.telemetry.list_usage_signals(account_id))
+    plans = tuple(plane.cs.list_success_plans(account_id))
+    milestones = tuple(plane.telemetry.list_ttv_milestones(account_id))
 
     model = build_customer_value_model(
         account=account,
@@ -391,7 +433,7 @@ def _score_one_account(account_id: str) -> dict[str, Any]:
 
     open_gaps = tuple(m for m in milestones if m.achieved_at is None)
     overdue_plans = tuple(
-        p for p in plans if p.target_date and p.target_date <= _AS_OF
+        p for p in plans if p.target_date and p.target_date <= score_as_of
     )
 
     projected = project_ttv_lens(
@@ -400,7 +442,7 @@ def _score_one_account(account_id: str) -> dict[str, Any]:
         health=health,
         open_milestone_gaps=open_gaps,
         overdue_success_plans=overdue_plans,
-        as_of=_AS_OF,
+        as_of=score_as_of,
     )
 
     return {
@@ -420,14 +462,17 @@ def _score_one_account(account_id: str) -> dict[str, Any]:
     }
 
 
-def _build_account_brief(account_id: str) -> dict[str, Any]:
+def _build_account_brief(account_id: str, dp: CustomerDataPlane | None = None,
+                         as_of: str | None = None) -> dict[str, Any]:
     """Compose a rich account brief from all data-plane sources."""
-    assert _data_plane is not None
+    plane = dp or _data_plane
+    brief_as_of = as_of or _AS_OF
+    assert plane is not None
 
-    account = _require_account(account_id)
-    company = _data_plane.cs.get_company(account_id)
-    health = _data_plane.cs.get_health_score(account_id)
-    adoption = _data_plane.cs.get_adoption_summary(account_id)
+    account = _require_account(account_id, plane)
+    company = plane.cs.get_company(account_id)
+    health = plane.cs.get_health_score(account_id)
+    adoption = plane.cs.get_adoption_summary(account_id)
 
     if company is None or health is None:
         raise HTTPException(
@@ -436,14 +481,14 @@ def _build_account_brief(account_id: str) -> dict[str, Any]:
                     "account_id": account_id},
         )
 
-    entitlements = tuple(_data_plane.telemetry.list_entitlements(account_id))
-    signals = tuple(_data_plane.telemetry.list_usage_signals(account_id))
-    plans = tuple(_data_plane.cs.list_success_plans(account_id))
-    milestones = tuple(_data_plane.telemetry.list_ttv_milestones(account_id))
-    ctas = _data_plane.cs.list_ctas(account_id)
-    cases = _data_plane.crm.list_cases(account_id)
-    contacts = _data_plane.crm.list_contacts(account_id)
-    opportunities = _data_plane.crm.list_opportunities(account_id)
+    entitlements = tuple(plane.telemetry.list_entitlements(account_id))
+    signals = tuple(plane.telemetry.list_usage_signals(account_id))
+    plans = tuple(plane.cs.list_success_plans(account_id))
+    milestones = tuple(plane.telemetry.list_ttv_milestones(account_id))
+    ctas = plane.cs.list_ctas(account_id)
+    cases = plane.crm.list_cases(account_id)
+    contacts = plane.crm.list_contacts(account_id)
+    opportunities = plane.crm.list_opportunities(account_id)
 
     model = build_customer_value_model(
         account=account,
@@ -457,7 +502,7 @@ def _build_account_brief(account_id: str) -> dict[str, Any]:
 
     open_gaps = tuple(m for m in milestones if m.achieved_at is None)
     overdue_plans = tuple(
-        p for p in plans if p.target_date and p.target_date <= _AS_OF
+        p for p in plans if p.target_date and p.target_date <= brief_as_of
     )
 
     projected = project_ttv_lens(
@@ -466,7 +511,7 @@ def _build_account_brief(account_id: str) -> dict[str, Any]:
         health=health,
         open_milestone_gaps=open_gaps,
         overdue_success_plans=overdue_plans,
-        as_of=_AS_OF,
+        as_of=brief_as_of,
     )
 
     # Derive talking points from evidence and model factors.
@@ -621,17 +666,19 @@ async def health_check():
 
 
 @app.get("/accounts", response_model=AccountListResponse)
-async def list_accounts():
-    """List all accounts with current value model scores."""
-    assert _data_plane is not None
+async def list_accounts(day: int | None = Query(None, ge=0, le=365)):
+    """List all accounts with current value model scores.
 
-    accounts = _data_plane.crm.list_accounts(tenant_id=DEFAULT_TENANT)
+    Pass ``?day=N`` to view the synthetic book at simulation day *N*.
+    """
+    dp, as_of = _data_plane_for_day(day)
+    accounts = dp.crm.list_accounts(tenant_id=DEFAULT_TENANT)
     results: list[dict[str, Any]] = []
 
     for account in accounts:
-        company = _data_plane.cs.get_company(account.account_id)
-        health = _data_plane.cs.get_health_score(account.account_id)
-        adoption = _data_plane.cs.get_adoption_summary(account.account_id)
+        company = dp.cs.get_company(account.account_id)
+        health = dp.cs.get_health_score(account.account_id)
+        adoption = dp.cs.get_adoption_summary(account.account_id)
 
         entry: dict[str, Any] = {
             "account_id": account.account_id,
@@ -651,16 +698,16 @@ async def list_accounts():
         if company and health and adoption:
             try:
                 entitlements = tuple(
-                    _data_plane.telemetry.list_entitlements(account.account_id)
+                    dp.telemetry.list_entitlements(account.account_id)
                 )
                 signals = tuple(
-                    _data_plane.telemetry.list_usage_signals(account.account_id)
+                    dp.telemetry.list_usage_signals(account.account_id)
                 )
                 plans = tuple(
-                    _data_plane.cs.list_success_plans(account.account_id)
+                    dp.cs.list_success_plans(account.account_id)
                 )
                 milestones = tuple(
-                    _data_plane.telemetry.list_ttv_milestones(account.account_id)
+                    dp.telemetry.list_ttv_milestones(account.account_id)
                 )
 
                 model = build_customer_value_model(
@@ -675,7 +722,7 @@ async def list_accounts():
                 open_gaps = tuple(m for m in milestones if m.achieved_at is None)
                 overdue_plans = tuple(
                     p for p in plans
-                    if p.target_date and p.target_date <= _AS_OF
+                    if p.target_date and p.target_date <= as_of
                 )
                 projected = project_ttv_lens(
                     model,
@@ -683,7 +730,7 @@ async def list_accounts():
                     health=health,
                     open_milestone_gaps=open_gaps,
                     overdue_success_plans=overdue_plans,
-                    as_of=_AS_OF,
+                    as_of=as_of,
                 )
                 entry["priority_score"] = projected.score
             except Exception:
@@ -702,37 +749,45 @@ async def list_accounts():
 
 
 @app.get("/accounts/{account_id}")
-async def get_account_detail(account_id: str):
+async def get_account_detail(account_id: str,
+                             day: int | None = Query(None, ge=0, le=365)):
     """Single account detail: value model output, active factors, divergence
     signals, lens projections."""
-    return _score_one_account(account_id)
+    dp, as_of = _data_plane_for_day(day)
+    return _score_one_account(account_id, dp=dp, as_of=as_of)
 
 
 @app.get("/accounts/{account_id}/brief")
-async def get_account_brief(account_id: str):
+async def get_account_brief(account_id: str,
+                            day: int | None = Query(None, ge=0, le=365)):
     """Account brief — the key demo endpoint.
 
     Health snapshot, recent changes, risks, expansion signals, and suggested
     talking points.
     """
-    return _build_account_brief(account_id)
+    dp, as_of = _data_plane_for_day(day)
+    return _build_account_brief(account_id, dp=dp, as_of=as_of)
 
 
 @app.post("/sweep", response_model=SweepResponse)
-async def trigger_sweep():
-    """Trigger a sweep of the book, return the SweepResult."""
-    assert _data_plane is not None and _orch_principal is not None
+async def trigger_sweep(day: int | None = Query(None, ge=0, le=365)):
+    """Trigger a sweep of the book, return the SweepResult.
 
-    log.info("Sweep triggered", extra={"tenant_id": _TENANT_ID})
+    Pass ``?day=N`` to sweep the synthetic book at simulation day *N*.
+    """
+    dp, as_of = _data_plane_for_day(day)
+    assert _orch_principal is not None
+
+    log.info("Sweep triggered", extra={"tenant_id": _TENANT_ID, "day": day})
 
     sweep_start = time.monotonic()
     gate = _gate()
     sweep = run_time_to_value_sweep(
-        _data_plane,
+        dp,
         DEFAULT_TENANT,
         gate,
         sweep_principal_id=_orch_principal,
-        as_of=_AS_OF,
+        as_of=as_of,
         cost_tracker=_cost_tracker,
         cost_budget=_cost_budget,
     )
@@ -870,18 +925,22 @@ async def submit_verdict(proposal_id: str, body: VerdictRequest):
 
 
 @app.get("/digest", response_model=DigestResponse)
-async def get_digest():
-    """Daily digest — prioritized accounts, proposals, commitments."""
-    assert _data_plane is not None and _conn is not None
+async def get_digest(day: int | None = Query(None, ge=0, le=365)):
+    """Daily digest — prioritized accounts, proposals, commitments.
+
+    Pass ``?day=N`` for the synthetic book at simulation day *N*.
+    """
+    dp, as_of = _data_plane_for_day(day)
+    assert _conn is not None
 
     # 1. Prioritized accounts with a quick sweep.
-    accounts = _data_plane.crm.list_accounts(tenant_id=DEFAULT_TENANT)
+    accounts = dp.crm.list_accounts(tenant_id=DEFAULT_TENANT)
     prioritized: list[DigestAccountSchema] = []
 
     for account in accounts:
-        company = _data_plane.cs.get_company(account.account_id)
-        health = _data_plane.cs.get_health_score(account.account_id)
-        adoption = _data_plane.cs.get_adoption_summary(account.account_id)
+        company = dp.cs.get_company(account.account_id)
+        health = dp.cs.get_health_score(account.account_id)
+        adoption = dp.cs.get_adoption_summary(account.account_id)
 
         entry = DigestAccountSchema(
             account_id=account.account_id,
@@ -892,16 +951,16 @@ async def get_digest():
         if company and health and adoption:
             try:
                 entitlements = tuple(
-                    _data_plane.telemetry.list_entitlements(account.account_id)
+                    dp.telemetry.list_entitlements(account.account_id)
                 )
                 signals = tuple(
-                    _data_plane.telemetry.list_usage_signals(account.account_id)
+                    dp.telemetry.list_usage_signals(account.account_id)
                 )
                 plans = tuple(
-                    _data_plane.cs.list_success_plans(account.account_id)
+                    dp.cs.list_success_plans(account.account_id)
                 )
                 milestones = tuple(
-                    _data_plane.telemetry.list_ttv_milestones(account.account_id)
+                    dp.telemetry.list_ttv_milestones(account.account_id)
                 )
                 model = build_customer_value_model(
                     account=account,
@@ -915,7 +974,7 @@ async def get_digest():
                 open_gaps = tuple(m for m in milestones if m.achieved_at is None)
                 overdue_plans = tuple(
                     p for p in plans
-                    if p.target_date and p.target_date <= _AS_OF
+                    if p.target_date and p.target_date <= as_of
                 )
                 projected = project_ttv_lens(
                     model,
@@ -923,7 +982,7 @@ async def get_digest():
                     health=health,
                     open_milestone_gaps=open_gaps,
                     overdue_success_plans=overdue_plans,
-                    as_of=_AS_OF,
+                    as_of=as_of,
                 )
                 entry = DigestAccountSchema(
                     account_id=account.account_id,
@@ -984,7 +1043,7 @@ async def get_digest():
 
     return DigestResponse(
         tenant_id=_TENANT_ID,
-        as_of=_AS_OF,
+        as_of=as_of,
         prioritized_accounts=prioritized,
         pending_proposals=pending_count,
         commitments=commitments,
