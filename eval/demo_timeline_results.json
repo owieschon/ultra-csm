@@ -5,42 +5,140 @@
       "event_date": "2027-06-01",
       "first_detected_day": 30,
       "lead_time_days": 315,
-      "risk_type": "days_overdue, milestones_overdue, success_plan_overdue, usage_outcome_unverified"
+      "risk_type": "days_overdue, health_yellow, milestones_overdue, success_plan_overdue"
     },
     {
       "account": "Pinehill Transport",
       "event_date": "2027-05-17",
       "first_detected_day": 30,
       "lead_time_days": 300,
-      "risk_type": "success_plan_overdue"
-    },
-    {
-      "account": "Clearwater Field Ops",
-      "event_date": "2027-06-01",
-      "first_detected_day": 30,
-      "lead_time_days": 315,
-      "risk_type": "days_overdue, milestones_overdue, success_plan_overdue"
+      "risk_type": "health_yellow, success_plan_overdue"
     },
     {
       "account": "Ridgeline Warehousing",
       "event_date": "2027-06-14",
       "first_detected_day": 30,
       "lead_time_days": 328,
-      "risk_type": "days_overdue, milestones_overdue, success_plan_overdue"
+      "risk_type": "days_overdue, health_usage_divergence, milestones_overdue, single_threaded_risk, success_plan_overdue"
+    },
+    {
+      "account": "Clearwater Field Ops",
+      "event_date": "2027-06-01",
+      "first_detected_day": 30,
+      "lead_time_days": 315,
+      "risk_type": "days_overdue, health_usage_divergence, milestones_overdue, single_threaded_risk, success_plan_overdue"
+    },
+    {
+      "account": "Summit Industrial Supply",
+      "event_date": "2027-06-07",
+      "first_detected_day": 30,
+      "lead_time_days": 321,
+      "risk_type": "days_overdue, health_yellow, milestones_overdue, success_plan_overdue"
+    },
+    {
+      "account": "Northstar Couriers",
+      "event_date": "2027-05-24",
+      "first_detected_day": 30,
+      "lead_time_days": 307,
+      "risk_type": "health_usage_divergence, success_plan_overdue"
+    },
+    {
+      "account": "Falcon Delivery Systems",
+      "event_date": "2026-12-01",
+      "first_detected_day": 30,
+      "lead_time_days": 133,
+      "risk_type": "health_usage_divergence, single_threaded_risk"
+    },
+    {
+      "account": "Stonebridge Fleet",
+      "event_date": "2026-11-01",
+      "first_detected_day": 30,
+      "lead_time_days": 103,
+      "risk_type": "health_usage_divergence, single_threaded_risk"
+    },
+    {
+      "account": "Granite Peak Logistics",
+      "event_date": "2027-01-01",
+      "first_detected_day": 30,
+      "lead_time_days": 164,
+      "risk_type": "health_usage_divergence, single_threaded_risk"
+    },
+    {
+      "account": "Driftwood Warehousing",
+      "event_date": "2026-12-01",
+      "first_detected_day": 30,
+      "lead_time_days": 133,
+      "risk_type": "health_usage_divergence, single_threaded_risk"
     },
     {
       "account": "Cedar Valley Distribution",
       "event_date": "2026-07-21",
       "first_detected_day": 30,
       "lead_time_days": 0,
-      "risk_type": "health_usage_divergence, low_seat_penetration"
+      "risk_type": "health_usage_divergence, single_threaded_risk"
     },
     {
-      "account": "Harborview Fleet",
-      "event_date": "2026-08-05",
+      "account": "Meridian Fleet Group",
+      "event_date": "2027-01-01",
       "first_detected_day": 30,
-      "lead_time_days": 15,
-      "risk_type": "health_red"
+      "lead_time_days": 164,
+      "risk_type": "health_usage_divergence"
+    },
+    {
+      "account": "Redwood Fleet Services",
+      "event_date": "2027-04-01",
+      "first_detected_day": 30,
+      "lead_time_days": 254,
+      "risk_type": "health_usage_divergence"
+    },
+    {
+      "account": "Copperfield Warehousing",
+      "event_date": "2026-08-01",
+      "first_detected_day": 30,
+      "lead_time_days": 11,
+      "risk_type": "health_usage_divergence"
+    },
+    {
+      "account": "Cascade Field Services",
+      "event_date": "2026-10-01",
+      "first_detected_day": 30,
+      "lead_time_days": 72,
+      "risk_type": "health_yellow, single_threaded_risk"
+    },
+    {
+      "account": "Mesa Industrial Corp",
+      "event_date": "2026-07-01",
+      "first_detected_day": 30,
+      "lead_time_days": -20,
+      "risk_type": "health_usage_divergence"
+    },
+    {
+      "account": "Aspenridge Supply Chain",
+      "event_date": "2027-02-01",
+      "first_detected_day": 30,
+      "lead_time_days": 195,
+      "risk_type": "health_usage_divergence"
+    },
+    {
+      "account": "Iron Ridge Fleet Ops",
+      "event_date": "2027-05-01",
+      "first_detected_day": 30,
+      "lead_time_days": 284,
+      "risk_type": "health_usage_divergence"
+    },
+    {
+      "account": "Blue Ridge Transport",
+      "event_date": "2027-06-01",
+      "first_detected_day": 30,
+      "lead_time_days": 315,
+      "risk_type": "health_usage_divergence"
+    },
+    {
+      "account": "Westfield Industrial",
+      "event_date": "2026-10-01",
+      "first_detected_day": 30,
+      "lead_time_days": 72,
+      "risk_type": "health_yellow, single_threaded_risk"
     },
     {
       "account": "Pinnacle Supply Chain",
@@ -50,314 +148,422 @@
       "risk_type": "health_yellow"
     },
     {
-      "account": "Northstar Couriers",
-      "event_date": "2027-05-24",
-      "first_detected_day": 30,
-      "lead_time_days": 307,
-      "risk_type": "success_plan_overdue"
-    },
-    {
-      "account": "Copperfield Warehousing",
+      "account": "Sagebrush Transport",
       "event_date": "2026-08-01",
       "first_detected_day": 30,
       "lead_time_days": 11,
-      "risk_type": "health_yellow, low_seat_penetration"
+      "risk_type": "health_usage_divergence"
     },
     {
-      "account": "Summit Industrial Supply",
-      "event_date": "2027-06-07",
+      "account": "Windmill Transport",
+      "event_date": "2026-08-20",
       "first_detected_day": 30,
-      "lead_time_days": 321,
-      "risk_type": "success_plan_overdue"
+      "lead_time_days": 30,
+      "risk_type": "health_usage_divergence"
+    },
+    {
+      "account": "Crestline Distribution",
+      "event_date": "2027-06-01",
+      "first_detected_day": 30,
+      "lead_time_days": 315,
+      "risk_type": "health_yellow"
     },
     {
       "account": "Bison Transport Group",
       "event_date": "2027-06-01",
-      "first_detected_day": 60,
-      "lead_time_days": 285,
-      "risk_type": "low_seat_penetration"
+      "first_detected_day": 30,
+      "lead_time_days": 315,
+      "risk_type": "health_yellow"
     },
     {
-      "account": "Trailhead Logistics",
-      "event_date": "2027-01-01",
-      "first_detected_day": 90,
-      "lead_time_days": 104,
-      "risk_type": "success_plan_overdue"
-    },
-    {
-      "account": "Stonebridge Fleet",
-      "event_date": "2026-11-01",
-      "first_detected_day": 120,
-      "lead_time_days": 13,
-      "risk_type": "low_seat_penetration"
-    },
-    {
-      "account": "Redwood Fleet Services",
-      "event_date": "2027-04-01",
-      "first_detected_day": 120,
-      "lead_time_days": 164,
+      "account": "Hawkstone Industries",
+      "event_date": "2026-10-01",
+      "first_detected_day": 30,
+      "lead_time_days": 72,
       "risk_type": "health_yellow"
     },
     {
       "account": "Oakmont Logistics",
       "event_date": "2027-04-01",
-      "first_detected_day": 120,
-      "lead_time_days": 164,
-      "risk_type": "arr_tier"
+      "first_detected_day": 30,
+      "lead_time_days": 254,
+      "risk_type": "health_yellow"
     },
     {
-      "account": "Blue Ridge Transport",
-      "event_date": "2027-06-01",
-      "first_detected_day": 180,
-      "lead_time_days": 165,
+      "account": "Harborview Fleet",
+      "event_date": "2026-08-05",
+      "first_detected_day": 30,
+      "lead_time_days": 15,
       "risk_type": "health_yellow"
+    },
+    {
+      "account": "Trailhead Logistics",
+      "event_date": "2027-01-01",
+      "first_detected_day": 60,
+      "lead_time_days": 134,
+      "risk_type": "health_usage_divergence"
+    },
+    {
+      "account": "Quarry Stone Logistics",
+      "event_date": "2027-02-01",
+      "first_detected_day": 270,
+      "lead_time_days": -45,
+      "risk_type": "champion_inactive, feature_depth_gap, health_red, usage_decline"
     }
   ],
   "health_transitions": [
     {
       "account": "Ironhorse Freight Co",
       "first_detected_day": 30,
-      "from_band": "yellow",
+      "from_band": "red",
+      "to_band": "yellow"
+    },
+    {
+      "account": "Pinehill Transport",
+      "first_detected_day": 30,
+      "from_band": "red",
+      "to_band": "yellow"
+    },
+    {
+      "account": "Ridgeline Warehousing",
+      "first_detected_day": 30,
+      "from_band": "red",
+      "to_band": "green"
+    },
+    {
+      "account": "Clearwater Field Ops",
+      "first_detected_day": 30,
+      "from_band": "red",
+      "to_band": "green"
+    },
+    {
+      "account": "Summit Industrial Supply",
+      "first_detected_day": 30,
+      "from_band": "red",
+      "to_band": "yellow"
+    },
+    {
+      "account": "Northstar Couriers",
+      "first_detected_day": 30,
+      "from_band": "red",
+      "to_band": "green"
+    },
+    {
+      "account": "Falcon Delivery Systems",
+      "first_detected_day": 30,
+      "from_band": "red",
+      "to_band": "green"
+    },
+    {
+      "account": "Stonebridge Fleet",
+      "first_detected_day": 30,
+      "from_band": "red",
+      "to_band": "green"
+    },
+    {
+      "account": "Granite Peak Logistics",
+      "first_detected_day": 30,
+      "from_band": "red",
+      "to_band": "green"
+    },
+    {
+      "account": "Driftwood Warehousing",
+      "first_detected_day": 30,
+      "from_band": "red",
       "to_band": "green"
     },
     {
       "account": "Cedar Valley Distribution",
       "first_detected_day": 30,
+      "from_band": "red",
+      "to_band": "green"
+    },
+    {
+      "account": "Meridian Fleet Group",
+      "first_detected_day": 30,
       "from_band": "yellow",
       "to_band": "green"
     },
     {
-      "account": "Harborview Fleet",
+      "account": "Redwood Fleet Services",
       "first_detected_day": 30,
-      "from_band": "yellow",
-      "to_band": "red"
-    },
-    {
-      "account": "Pinnacle Supply Chain",
-      "first_detected_day": 30,
-      "from_band": "green",
-      "to_band": "yellow"
+      "from_band": "red",
+      "to_band": "green"
     },
     {
       "account": "Copperfield Warehousing",
       "first_detected_day": 30,
-      "from_band": "green",
+      "from_band": "red",
+      "to_band": "green"
+    },
+    {
+      "account": "Cascade Field Services",
+      "first_detected_day": 30,
+      "from_band": "red",
       "to_band": "yellow"
     },
     {
-      "account": "Redwood Fleet Services",
-      "first_detected_day": 120,
-      "from_band": "green",
-      "to_band": "yellow"
+      "account": "Mesa Industrial Corp",
+      "first_detected_day": 30,
+      "from_band": "red",
+      "to_band": "green"
+    },
+    {
+      "account": "Aspenridge Supply Chain",
+      "first_detected_day": 30,
+      "from_band": "red",
+      "to_band": "green"
+    },
+    {
+      "account": "Iron Ridge Fleet Ops",
+      "first_detected_day": 30,
+      "from_band": "red",
+      "to_band": "green"
     },
     {
       "account": "Blue Ridge Transport",
-      "first_detected_day": 180,
-      "from_band": "green",
+      "first_detected_day": 30,
+      "from_band": "red",
+      "to_band": "green"
+    },
+    {
+      "account": "Westfield Industrial",
+      "first_detected_day": 30,
+      "from_band": "red",
       "to_band": "yellow"
     },
     {
-      "account": "Cypress Field Ops",
-      "first_detected_day": 180,
-      "from_band": "yellow",
+      "account": "Pinnacle Supply Chain",
+      "first_detected_day": 30,
+      "from_band": "red",
+      "to_band": "yellow"
+    },
+    {
+      "account": "Sagebrush Transport",
+      "first_detected_day": 30,
+      "from_band": "red",
       "to_band": "green"
+    },
+    {
+      "account": "Windmill Transport",
+      "first_detected_day": 30,
+      "from_band": "red",
+      "to_band": "green"
+    },
+    {
+      "account": "Crestline Distribution",
+      "first_detected_day": 30,
+      "from_band": "red",
+      "to_band": "yellow"
     },
     {
       "account": "Bison Transport Group",
+      "first_detected_day": 30,
+      "from_band": "red",
+      "to_band": "yellow"
+    },
+    {
+      "account": "Hawkstone Industries",
+      "first_detected_day": 30,
+      "from_band": "red",
+      "to_band": "yellow"
+    },
+    {
+      "account": "Oakmont Logistics",
+      "first_detected_day": 30,
+      "from_band": "red",
+      "to_band": "yellow"
+    },
+    {
+      "account": "Harborview Fleet",
+      "first_detected_day": 30,
+      "from_band": "red",
+      "to_band": "yellow"
+    },
+    {
+      "account": "Trailhead Logistics",
+      "first_detected_day": 60,
+      "from_band": "yellow",
+      "to_band": "green"
+    },
+    {
+      "account": "Quarry Stone Logistics",
       "first_detected_day": 270,
-      "from_band": "yellow",
-      "to_band": "green"
-    },
-    {
-      "account": "Pinehill Transport",
-      "first_detected_day": 365,
-      "from_band": "yellow",
-      "to_band": "green"
-    },
-    {
-      "account": "Falcon Delivery Systems",
-      "first_detected_day": 365,
-      "from_band": "yellow",
-      "to_band": "green"
-    },
-    {
-      "account": "Prairie Wind Transport",
-      "first_detected_day": 365,
-      "from_band": "yellow",
-      "to_band": "green"
+      "from_band": "green",
+      "to_band": "red"
     }
   ],
   "snapshots": {
     "0": {
-      "green": 17,
-      "red": 5,
+      "green": 2,
+      "red": 29,
       "top_priority": [
+        {
+          "band": "red",
+          "name": "Pinehill Transport",
+          "score": 148
+        },
+        {
+          "band": "red",
+          "name": "Ironhorse Freight Co",
+          "score": 84
+        },
+        {
+          "band": "red",
+          "name": "Ridgeline Warehousing",
+          "score": 84
+        },
+        {
+          "band": "red",
+          "name": "Northstar Couriers",
+          "score": 84
+        },
+        {
+          "band": "red",
+          "name": "Clearwater Field Ops",
+          "score": 84
+        },
+        {
+          "band": "red",
+          "name": "Summit Industrial Supply",
+          "score": 84
+        },
+        {
+          "band": "red",
+          "name": "Pinnacle Supply Chain",
+          "score": 74
+        },
+        {
+          "band": "red",
+          "name": "Crestline Distribution",
+          "score": 69
+        },
+        {
+          "band": "red",
+          "name": "Redwood Fleet Services",
+          "score": 69
+        },
+        {
+          "band": "red",
+          "name": "Bison Transport Group",
+          "score": 69
+        }
+      ],
+      "yellow": 4
+    },
+    "120": {
+      "green": 21,
+      "red": 4,
+      "top_priority": [
+        {
+          "band": "green",
+          "name": "Ironhorse Freight Co",
+          "score": 157
+        },
+        {
+          "band": "green",
+          "name": "Ridgeline Warehousing",
+          "score": 152
+        },
+        {
+          "band": "green",
+          "name": "Clearwater Field Ops",
+          "score": 152
+        },
         {
           "band": "yellow",
           "name": "Pinehill Transport",
-          "score": 106
+          "score": 137
+        },
+        {
+          "band": "yellow",
+          "name": "Summit Industrial Supply",
+          "score": 112
         },
         {
           "band": "red",
           "name": "Sagebrush Transport",
-          "score": 57
+          "score": 84
         },
         {
           "band": "red",
           "name": "Driftwood Warehousing",
-          "score": 57
-        },
-        {
-          "band": "yellow",
-          "name": "Clearwater Field Ops",
-          "score": 42
-        },
-        {
-          "band": "red",
-          "name": "Quarry Stone Logistics",
-          "score": 42
-        },
-        {
-          "band": "yellow",
-          "name": "Ironhorse Freight Co",
-          "score": 30
-        },
-        {
-          "band": "yellow",
-          "name": "Cascade Field Services",
-          "score": 30
-        },
-        {
-          "band": "yellow",
-          "name": "Stonebridge Fleet",
-          "score": 30
-        },
-        {
-          "band": "yellow",
-          "name": "Harborview Fleet",
-          "score": 30
-        },
-        {
-          "band": "yellow",
-          "name": "Cedar Valley Distribution",
-          "score": 30
-        }
-      ],
-      "yellow": 13
-    },
-    "120": {
-      "green": 16,
-      "red": 5,
-      "top_priority": [
-        {
-          "band": "green",
-          "name": "Ironhorse Freight Co",
-          "score": 143
-        },
-        {
-          "band": "yellow",
-          "name": "Pinehill Transport",
-          "score": 62
-        },
-        {
-          "band": "yellow",
-          "name": "Clearwater Field Ops",
-          "score": 62
-        },
-        {
-          "band": "green",
-          "name": "Cedar Valley Distribution",
-          "score": 62
-        },
-        {
-          "band": "yellow",
-          "name": "Ridgeline Warehousing",
-          "score": 47
+          "score": 84
         },
         {
           "band": "green",
           "name": "Trailhead Logistics",
-          "score": 43
+          "score": 72
         },
         {
-          "band": "yellow",
-          "name": "Stonebridge Fleet",
-          "score": 42
-        },
-        {
-          "band": "red",
-          "name": "Quarry Stone Logistics",
-          "score": 42
-        },
-        {
-          "band": "yellow",
-          "name": "Pinnacle Supply Chain",
-          "score": 40
-        },
-        {
-          "band": "yellow",
+          "band": "green",
           "name": "Northstar Couriers",
-          "score": 35
+          "score": 67
+        },
+        {
+          "band": "green",
+          "name": "Cascade Field Services",
+          "score": 67
         }
       ],
-      "yellow": 14
+      "yellow": 10
     },
     "180": {
-      "green": 17,
+      "green": 20,
       "red": 5,
       "top_priority": [
         {
           "band": "green",
           "name": "Ironhorse Freight Co",
-          "score": 143
+          "score": 157
+        },
+        {
+          "band": "green",
+          "name": "Ridgeline Warehousing",
+          "score": 152
+        },
+        {
+          "band": "green",
+          "name": "Clearwater Field Ops",
+          "score": 152
         },
         {
           "band": "yellow",
           "name": "Pinehill Transport",
-          "score": 62
-        },
-        {
-          "band": "yellow",
-          "name": "Clearwater Field Ops",
-          "score": 62
+          "score": 137
         },
         {
           "band": "green",
-          "name": "Cedar Valley Distribution",
-          "score": 62
+          "name": "Summit Industrial Supply",
+          "score": 132
         },
         {
-          "band": "yellow",
-          "name": "Ridgeline Warehousing",
-          "score": 47
+          "band": "red",
+          "name": "Sagebrush Transport",
+          "score": 84
+        },
+        {
+          "band": "red",
+          "name": "Driftwood Warehousing",
+          "score": 84
         },
         {
           "band": "green",
           "name": "Trailhead Logistics",
-          "score": 43
+          "score": 72
         },
         {
-          "band": "yellow",
-          "name": "Stonebridge Fleet",
-          "score": 42
-        },
-        {
-          "band": "red",
-          "name": "Quarry Stone Logistics",
-          "score": 42
-        },
-        {
-          "band": "yellow",
-          "name": "Pinnacle Supply Chain",
-          "score": 40
-        },
-        {
-          "band": "yellow",
+          "band": "green",
           "name": "Northstar Couriers",
-          "score": 35
+          "score": 67
+        },
+        {
+          "band": "green",
+          "name": "Cascade Field Services",
+          "score": 67
         }
       ],
-      "yellow": 13
+      "yellow": 10
     },
     "270": {
       "green": 20,
@@ -366,283 +572,283 @@
         {
           "band": "green",
           "name": "Ironhorse Freight Co",
-          "score": 143
+          "score": 157
+        },
+        {
+          "band": "green",
+          "name": "Ridgeline Warehousing",
+          "score": 152
+        },
+        {
+          "band": "green",
+          "name": "Clearwater Field Ops",
+          "score": 152
         },
         {
           "band": "yellow",
           "name": "Pinehill Transport",
-          "score": 62
-        },
-        {
-          "band": "yellow",
-          "name": "Clearwater Field Ops",
-          "score": 62
+          "score": 137
         },
         {
           "band": "green",
-          "name": "Cedar Valley Distribution",
-          "score": 62
+          "name": "Summit Industrial Supply",
+          "score": 132
         },
         {
-          "band": "yellow",
-          "name": "Ridgeline Warehousing",
-          "score": 47
+          "band": "red",
+          "name": "Sagebrush Transport",
+          "score": 84
         },
         {
-          "band": "green",
-          "name": "Bison Transport Group",
-          "score": 47
+          "band": "red",
+          "name": "Driftwood Warehousing",
+          "score": 84
+        },
+        {
+          "band": "red",
+          "name": "Quarry Stone Logistics",
+          "score": 84
         },
         {
           "band": "green",
           "name": "Trailhead Logistics",
-          "score": 43
+          "score": 72
         },
         {
-          "band": "yellow",
-          "name": "Stonebridge Fleet",
-          "score": 42
-        },
-        {
-          "band": "yellow",
+          "band": "green",
           "name": "Northstar Couriers",
-          "score": 35
-        },
-        {
-          "band": "yellow",
-          "name": "Cascade Field Services",
-          "score": 30
+          "score": 67
         }
       ],
       "yellow": 10
     },
     "30": {
-      "green": 17,
+      "green": 19,
+      "red": 2,
+      "top_priority": [
+        {
+          "band": "yellow",
+          "name": "Ironhorse Freight Co",
+          "score": 152
+        },
+        {
+          "band": "yellow",
+          "name": "Pinehill Transport",
+          "score": 152
+        },
+        {
+          "band": "green",
+          "name": "Ridgeline Warehousing",
+          "score": 152
+        },
+        {
+          "band": "green",
+          "name": "Clearwater Field Ops",
+          "score": 152
+        },
+        {
+          "band": "yellow",
+          "name": "Summit Industrial Supply",
+          "score": 127
+        },
+        {
+          "band": "green",
+          "name": "Northstar Couriers",
+          "score": 67
+        },
+        {
+          "band": "green",
+          "name": "Falcon Delivery Systems",
+          "score": 67
+        },
+        {
+          "band": "green",
+          "name": "Stonebridge Fleet",
+          "score": 67
+        },
+        {
+          "band": "green",
+          "name": "Granite Peak Logistics",
+          "score": 67
+        },
+        {
+          "band": "green",
+          "name": "Driftwood Warehousing",
+          "score": 67
+        }
+      ],
+      "yellow": 14
+    },
+    "365": {
+      "green": 19,
       "red": 6,
       "top_priority": [
         {
           "band": "green",
+          "name": "Ridgeline Warehousing",
+          "score": 152
+        },
+        {
+          "band": "green",
+          "name": "Clearwater Field Ops",
+          "score": 152
+        },
+        {
+          "band": "yellow",
           "name": "Ironhorse Freight Co",
-          "score": 143
+          "score": 137
         },
         {
           "band": "yellow",
           "name": "Pinehill Transport",
-          "score": 127
+          "score": 137
         },
         {
           "band": "yellow",
-          "name": "Clearwater Field Ops",
-          "score": 127
-        },
-        {
-          "band": "yellow",
-          "name": "Ridgeline Warehousing",
+          "name": "Summit Industrial Supply",
           "score": 112
-        },
-        {
-          "band": "green",
-          "name": "Cedar Valley Distribution",
-          "score": 62
         },
         {
           "band": "red",
           "name": "Sagebrush Transport",
-          "score": 57
+          "score": 84
         },
         {
           "band": "red",
           "name": "Driftwood Warehousing",
-          "score": 57
-        },
-        {
-          "band": "red",
-          "name": "Harborview Fleet",
-          "score": 45
+          "score": 84
         },
         {
           "band": "red",
           "name": "Quarry Stone Logistics",
-          "score": 42
+          "score": 84
+        },
+        {
+          "band": "red",
+          "name": "Pinnacle Supply Chain",
+          "score": 74
+        },
+        {
+          "band": "green",
+          "name": "Trailhead Logistics",
+          "score": 72
+        }
+      ],
+      "yellow": 10
+    },
+    "60": {
+      "green": 20,
+      "red": 3,
+      "top_priority": [
+        {
+          "band": "green",
+          "name": "Ironhorse Freight Co",
+          "score": 157
         },
         {
           "band": "yellow",
-          "name": "Pinnacle Supply Chain",
-          "score": 40
+          "name": "Pinehill Transport",
+          "score": 152
+        },
+        {
+          "band": "green",
+          "name": "Ridgeline Warehousing",
+          "score": 152
+        },
+        {
+          "band": "green",
+          "name": "Clearwater Field Ops",
+          "score": 152
+        },
+        {
+          "band": "green",
+          "name": "Summit Industrial Supply",
+          "score": 132
+        },
+        {
+          "band": "red",
+          "name": "Driftwood Warehousing",
+          "score": 92
+        },
+        {
+          "band": "green",
+          "name": "Northstar Couriers",
+          "score": 67
+        },
+        {
+          "band": "green",
+          "name": "Cascade Field Services",
+          "score": 67
+        },
+        {
+          "band": "green",
+          "name": "Falcon Delivery Systems",
+          "score": 67
+        },
+        {
+          "band": "green",
+          "name": "Stonebridge Fleet",
+          "score": 67
         }
       ],
       "yellow": 12
     },
-    "365": {
-      "green": 24,
-      "red": 5,
-      "top_priority": [
-        {
-          "band": "green",
-          "name": "Ironhorse Freight Co",
-          "score": 143
-        },
-        {
-          "band": "green",
-          "name": "Pinehill Transport",
-          "score": 82
-        },
-        {
-          "band": "yellow",
-          "name": "Clearwater Field Ops",
-          "score": 62
-        },
-        {
-          "band": "green",
-          "name": "Cedar Valley Distribution",
-          "score": 62
-        },
-        {
-          "band": "yellow",
-          "name": "Ridgeline Warehousing",
-          "score": 47
-        },
-        {
-          "band": "green",
-          "name": "Trailhead Logistics",
-          "score": 43
-        },
-        {
-          "band": "yellow",
-          "name": "Stonebridge Fleet",
-          "score": 42
-        },
-        {
-          "band": "yellow",
-          "name": "Northstar Couriers",
-          "score": 35
-        },
-        {
-          "band": "yellow",
-          "name": "Cascade Field Services",
-          "score": 30
-        },
-        {
-          "band": "red",
-          "name": "Sagebrush Transport",
-          "score": 30
-        }
-      ],
-      "yellow": 6
-    },
-    "60": {
-      "green": 17,
-      "red": 5,
-      "top_priority": [
-        {
-          "band": "green",
-          "name": "Ironhorse Freight Co",
-          "score": 143
-        },
-        {
-          "band": "yellow",
-          "name": "Ridgeline Warehousing",
-          "score": 112
-        },
-        {
-          "band": "yellow",
-          "name": "Pinehill Transport",
-          "score": 62
-        },
-        {
-          "band": "yellow",
-          "name": "Clearwater Field Ops",
-          "score": 62
-        },
-        {
-          "band": "green",
-          "name": "Cedar Valley Distribution",
-          "score": 62
-        },
-        {
-          "band": "red",
-          "name": "Sagebrush Transport",
-          "score": 57
-        },
-        {
-          "band": "red",
-          "name": "Quarry Stone Logistics",
-          "score": 42
-        },
-        {
-          "band": "yellow",
-          "name": "Pinnacle Supply Chain",
-          "score": 40
-        },
-        {
-          "band": "yellow",
-          "name": "Northstar Couriers",
-          "score": 35
-        },
-        {
-          "band": "yellow",
-          "name": "Cascade Field Services",
-          "score": 30
-        }
-      ],
-      "yellow": 13
-    },
     "90": {
-      "green": 17,
+      "green": 20,
       "red": 5,
       "top_priority": [
         {
           "band": "green",
           "name": "Ironhorse Freight Co",
-          "score": 143
+          "score": 157
+        },
+        {
+          "band": "green",
+          "name": "Ridgeline Warehousing",
+          "score": 152
+        },
+        {
+          "band": "green",
+          "name": "Clearwater Field Ops",
+          "score": 152
         },
         {
           "band": "yellow",
           "name": "Pinehill Transport",
-          "score": 62
-        },
-        {
-          "band": "yellow",
-          "name": "Clearwater Field Ops",
-          "score": 62
+          "score": 137
         },
         {
           "band": "green",
-          "name": "Cedar Valley Distribution",
-          "score": 62
+          "name": "Summit Industrial Supply",
+          "score": 132
         },
         {
-          "band": "yellow",
-          "name": "Ridgeline Warehousing",
-          "score": 47
+          "band": "red",
+          "name": "Sagebrush Transport",
+          "score": 104
+        },
+        {
+          "band": "red",
+          "name": "Driftwood Warehousing",
+          "score": 84
+        },
+        {
+          "band": "red",
+          "name": "Pinnacle Supply Chain",
+          "score": 74
         },
         {
           "band": "green",
           "name": "Trailhead Logistics",
-          "score": 43
+          "score": 72
         },
         {
-          "band": "red",
-          "name": "Quarry Stone Logistics",
-          "score": 42
-        },
-        {
-          "band": "yellow",
-          "name": "Pinnacle Supply Chain",
-          "score": 40
-        },
-        {
-          "band": "yellow",
+          "band": "green",
           "name": "Northstar Couriers",
-          "score": 35
-        },
-        {
-          "band": "yellow",
-          "name": "Cascade Field Services",
-          "score": 30
+          "score": 67
         }
       ],
-      "yellow": 13
+      "yellow": 10
     }
   },
   "timeline_days": [
@@ -654,5 +860,1717 @@
     180,
     270,
     365
-  ]
+  ],
+  "trajectories": {
+    "Aspenridge Supply Chain": {
+      "account_id": "15eb8dd9-b1bc-5093-a208-49526f8d5650",
+      "consecutive_band": "green",
+      "consecutive_count": 7,
+      "points": [
+        {
+          "day": 0,
+          "health_band": "red",
+          "health_score": 32.5,
+          "priority_score": 69
+        },
+        {
+          "day": 30,
+          "health_band": "green",
+          "health_score": 67.5,
+          "priority_score": 47
+        },
+        {
+          "day": 60,
+          "health_band": "green",
+          "health_score": 67.5,
+          "priority_score": 47
+        },
+        {
+          "day": 90,
+          "health_band": "green",
+          "health_score": 67.5,
+          "priority_score": 47
+        },
+        {
+          "day": 120,
+          "health_band": "green",
+          "health_score": 67.5,
+          "priority_score": 47
+        },
+        {
+          "day": 180,
+          "health_band": "green",
+          "health_score": 67.5,
+          "priority_score": 47
+        },
+        {
+          "day": 270,
+          "health_band": "green",
+          "health_score": 67.5,
+          "priority_score": 47
+        },
+        {
+          "day": 365,
+          "health_band": "green",
+          "health_score": 67.5,
+          "priority_score": 47
+        }
+      ],
+      "trend": "improving",
+      "trend_velocity": 0.0959
+    },
+    "Bison Transport Group": {
+      "account_id": "88509055-b664-5e74-b6b3-ba6bd59c89ab",
+      "consecutive_band": "green",
+      "consecutive_count": 2,
+      "points": [
+        {
+          "day": 0,
+          "health_band": "red",
+          "health_score": 32.5,
+          "priority_score": 69
+        },
+        {
+          "day": 30,
+          "health_band": "yellow",
+          "health_score": 58.8,
+          "priority_score": 27
+        },
+        {
+          "day": 60,
+          "health_band": "yellow",
+          "health_score": 58.8,
+          "priority_score": 27
+        },
+        {
+          "day": 90,
+          "health_band": "yellow",
+          "health_score": 60.7,
+          "priority_score": 27
+        },
+        {
+          "day": 120,
+          "health_band": "green",
+          "health_score": 65.7,
+          "priority_score": 47
+        },
+        {
+          "day": 180,
+          "health_band": "yellow",
+          "health_score": 60.7,
+          "priority_score": 27
+        },
+        {
+          "day": 270,
+          "health_band": "green",
+          "health_score": 65.7,
+          "priority_score": 47
+        },
+        {
+          "day": 365,
+          "health_band": "green",
+          "health_score": 65.7,
+          "priority_score": 47
+        }
+      ],
+      "trend": "improving",
+      "trend_velocity": 0.091
+    },
+    "Blue Ridge Transport": {
+      "account_id": "b32e46aa-eaef-52ee-9547-13a564219d91",
+      "consecutive_band": "yellow",
+      "consecutive_count": 1,
+      "points": [
+        {
+          "day": 0,
+          "health_band": "red",
+          "health_score": 32.5,
+          "priority_score": 69
+        },
+        {
+          "day": 30,
+          "health_band": "green",
+          "health_score": 67.5,
+          "priority_score": 47
+        },
+        {
+          "day": 60,
+          "health_band": "green",
+          "health_score": 67.5,
+          "priority_score": 47
+        },
+        {
+          "day": 90,
+          "health_band": "green",
+          "health_score": 67.5,
+          "priority_score": 47
+        },
+        {
+          "day": 120,
+          "health_band": "green",
+          "health_score": 67.5,
+          "priority_score": 47
+        },
+        {
+          "day": 180,
+          "health_band": "green",
+          "health_score": 67.5,
+          "priority_score": 47
+        },
+        {
+          "day": 270,
+          "health_band": "green",
+          "health_score": 70.0,
+          "priority_score": 47
+        },
+        {
+          "day": 365,
+          "health_band": "yellow",
+          "health_score": 50.0,
+          "priority_score": 42
+        }
+      ],
+      "trend": "improving",
+      "trend_velocity": 0.0479
+    },
+    "Cascade Field Services": {
+      "account_id": "5740e7ab-4f6e-5a8d-8996-10ca4dc384ce",
+      "consecutive_band": "green",
+      "consecutive_count": 6,
+      "points": [
+        {
+          "day": 0,
+          "health_band": "red",
+          "health_score": 32.5,
+          "priority_score": 69
+        },
+        {
+          "day": 30,
+          "health_band": "yellow",
+          "health_score": 64.5,
+          "priority_score": 47
+        },
+        {
+          "day": 60,
+          "health_band": "green",
+          "health_score": 70.1,
+          "priority_score": 67
+        },
+        {
+          "day": 90,
+          "health_band": "green",
+          "health_score": 70.1,
+          "priority_score": 67
+        },
+        {
+          "day": 120,
+          "health_band": "green",
+          "health_score": 70.1,
+          "priority_score": 67
+        },
+        {
+          "day": 180,
+          "health_band": "green",
+          "health_score": 70.1,
+          "priority_score": 67
+        },
+        {
+          "day": 270,
+          "health_band": "green",
+          "health_score": 70.1,
+          "priority_score": 67
+        },
+        {
+          "day": 365,
+          "health_band": "green",
+          "health_score": 70.1,
+          "priority_score": 67
+        }
+      ],
+      "trend": "improving",
+      "trend_velocity": 0.103
+    },
+    "Cedar Valley Distribution": {
+      "account_id": "639fb054-d926-5a1e-b2bd-49b75157817d",
+      "consecutive_band": "green",
+      "consecutive_count": 7,
+      "points": [
+        {
+          "day": 0,
+          "health_band": "red",
+          "health_score": 32.5,
+          "priority_score": 69
+        },
+        {
+          "day": 30,
+          "health_band": "green",
+          "health_score": 65.5,
+          "priority_score": 67
+        },
+        {
+          "day": 60,
+          "health_band": "green",
+          "health_score": 65.5,
+          "priority_score": 67
+        },
+        {
+          "day": 90,
+          "health_band": "green",
+          "health_score": 65.5,
+          "priority_score": 67
+        },
+        {
+          "day": 120,
+          "health_band": "green",
+          "health_score": 65.5,
+          "priority_score": 67
+        },
+        {
+          "day": 180,
+          "health_band": "green",
+          "health_score": 65.5,
+          "priority_score": 67
+        },
+        {
+          "day": 270,
+          "health_band": "green",
+          "health_score": 65.5,
+          "priority_score": 67
+        },
+        {
+          "day": 365,
+          "health_band": "green",
+          "health_score": 65.5,
+          "priority_score": 67
+        }
+      ],
+      "trend": "improving",
+      "trend_velocity": 0.0904
+    },
+    "Clearwater Field Ops": {
+      "account_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32",
+      "consecutive_band": "green",
+      "consecutive_count": 7,
+      "points": [
+        {
+          "day": 0,
+          "health_band": "red",
+          "health_score": 7.5,
+          "priority_score": 84
+        },
+        {
+          "day": 30,
+          "health_band": "green",
+          "health_score": 70.6,
+          "priority_score": 152
+        },
+        {
+          "day": 60,
+          "health_band": "green",
+          "health_score": 70.6,
+          "priority_score": 152
+        },
+        {
+          "day": 90,
+          "health_band": "green",
+          "health_score": 70.6,
+          "priority_score": 152
+        },
+        {
+          "day": 120,
+          "health_band": "green",
+          "health_score": 70.6,
+          "priority_score": 152
+        },
+        {
+          "day": 180,
+          "health_band": "green",
+          "health_score": 70.6,
+          "priority_score": 152
+        },
+        {
+          "day": 270,
+          "health_band": "green",
+          "health_score": 70.6,
+          "priority_score": 152
+        },
+        {
+          "day": 365,
+          "health_band": "green",
+          "health_score": 70.6,
+          "priority_score": 152
+        }
+      ],
+      "trend": "improving",
+      "trend_velocity": 0.1729
+    },
+    "Copperfield Warehousing": {
+      "account_id": "c2b4142f-912b-5202-9ad1-f41b36846e38",
+      "consecutive_band": "green",
+      "consecutive_count": 5,
+      "points": [
+        {
+          "day": 0,
+          "health_band": "red",
+          "health_score": 32.5,
+          "priority_score": 69
+        },
+        {
+          "day": 30,
+          "health_band": "green",
+          "health_score": 67.5,
+          "priority_score": 47
+        },
+        {
+          "day": 60,
+          "health_band": "yellow",
+          "health_score": 60.0,
+          "priority_score": 27
+        },
+        {
+          "day": 90,
+          "health_band": "green",
+          "health_score": 67.5,
+          "priority_score": 47
+        },
+        {
+          "day": 120,
+          "health_band": "green",
+          "health_score": 67.5,
+          "priority_score": 47
+        },
+        {
+          "day": 180,
+          "health_band": "green",
+          "health_score": 67.5,
+          "priority_score": 47
+        },
+        {
+          "day": 270,
+          "health_band": "green",
+          "health_score": 67.5,
+          "priority_score": 47
+        },
+        {
+          "day": 365,
+          "health_band": "green",
+          "health_score": 67.5,
+          "priority_score": 47
+        }
+      ],
+      "trend": "improving",
+      "trend_velocity": 0.0959
+    },
+    "Crestline Distribution": {
+      "account_id": "b8dee53f-407c-5552-8e33-1a568eb1ed69",
+      "consecutive_band": "yellow",
+      "consecutive_count": 7,
+      "points": [
+        {
+          "day": 0,
+          "health_band": "red",
+          "health_score": 32.5,
+          "priority_score": 69
+        },
+        {
+          "day": 30,
+          "health_band": "yellow",
+          "health_score": 64.0,
+          "priority_score": 27
+        },
+        {
+          "day": 60,
+          "health_band": "yellow",
+          "health_score": 64.0,
+          "priority_score": 27
+        },
+        {
+          "day": 90,
+          "health_band": "yellow",
+          "health_score": 64.0,
+          "priority_score": 27
+        },
+        {
+          "day": 120,
+          "health_band": "yellow",
+          "health_score": 64.0,
+          "priority_score": 27
+        },
+        {
+          "day": 180,
+          "health_band": "yellow",
+          "health_score": 64.0,
+          "priority_score": 27
+        },
+        {
+          "day": 270,
+          "health_band": "yellow",
+          "health_score": 64.0,
+          "priority_score": 27
+        },
+        {
+          "day": 365,
+          "health_band": "yellow",
+          "health_score": 64.0,
+          "priority_score": 27
+        }
+      ],
+      "trend": "improving",
+      "trend_velocity": 0.0863
+    },
+    "Driftwood Warehousing": {
+      "account_id": "b939ef0b-fed4-5889-96e4-15c0357a8563",
+      "consecutive_band": "red",
+      "consecutive_count": 6,
+      "points": [
+        {
+          "day": 0,
+          "health_band": "red",
+          "health_score": 32.5,
+          "priority_score": 69
+        },
+        {
+          "day": 30,
+          "health_band": "green",
+          "health_score": 65.5,
+          "priority_score": 67
+        },
+        {
+          "day": 60,
+          "health_band": "red",
+          "health_score": 10.5,
+          "priority_score": 92
+        },
+        {
+          "day": 90,
+          "health_band": "red",
+          "health_score": 7.5,
+          "priority_score": 84
+        },
+        {
+          "day": 120,
+          "health_band": "red",
+          "health_score": 7.5,
+          "priority_score": 84
+        },
+        {
+          "day": 180,
+          "health_band": "red",
+          "health_score": 7.5,
+          "priority_score": 84
+        },
+        {
+          "day": 270,
+          "health_band": "red",
+          "health_score": 7.5,
+          "priority_score": 84
+        },
+        {
+          "day": 365,
+          "health_band": "red",
+          "health_score": 7.5,
+          "priority_score": 84
+        }
+      ],
+      "trend": "declining",
+      "trend_velocity": -0.0685
+    },
+    "Falcon Delivery Systems": {
+      "account_id": "c529251c-78a6-5710-88ad-a89710d02bee",
+      "consecutive_band": "green",
+      "consecutive_count": 7,
+      "points": [
+        {
+          "day": 0,
+          "health_band": "red",
+          "health_score": 32.5,
+          "priority_score": 69
+        },
+        {
+          "day": 30,
+          "health_band": "green",
+          "health_score": 65.5,
+          "priority_score": 67
+        },
+        {
+          "day": 60,
+          "health_band": "green",
+          "health_score": 65.5,
+          "priority_score": 67
+        },
+        {
+          "day": 90,
+          "health_band": "green",
+          "health_score": 65.5,
+          "priority_score": 67
+        },
+        {
+          "day": 120,
+          "health_band": "green",
+          "health_score": 65.5,
+          "priority_score": 67
+        },
+        {
+          "day": 180,
+          "health_band": "green",
+          "health_score": 65.5,
+          "priority_score": 67
+        },
+        {
+          "day": 270,
+          "health_band": "green",
+          "health_score": 65.5,
+          "priority_score": 67
+        },
+        {
+          "day": 365,
+          "health_band": "green",
+          "health_score": 65.5,
+          "priority_score": 67
+        }
+      ],
+      "trend": "improving",
+      "trend_velocity": 0.0904
+    },
+    "Granite Peak Logistics": {
+      "account_id": "491b2508-315a-52fc-86f4-195c0efd4a21",
+      "consecutive_band": "green",
+      "consecutive_count": 7,
+      "points": [
+        {
+          "day": 0,
+          "health_band": "red",
+          "health_score": 32.5,
+          "priority_score": 69
+        },
+        {
+          "day": 30,
+          "health_band": "green",
+          "health_score": 67.5,
+          "priority_score": 67
+        },
+        {
+          "day": 60,
+          "health_band": "green",
+          "health_score": 67.5,
+          "priority_score": 67
+        },
+        {
+          "day": 90,
+          "health_band": "green",
+          "health_score": 67.5,
+          "priority_score": 67
+        },
+        {
+          "day": 120,
+          "health_band": "green",
+          "health_score": 67.5,
+          "priority_score": 67
+        },
+        {
+          "day": 180,
+          "health_band": "green",
+          "health_score": 67.5,
+          "priority_score": 67
+        },
+        {
+          "day": 270,
+          "health_band": "green",
+          "health_score": 67.5,
+          "priority_score": 67
+        },
+        {
+          "day": 365,
+          "health_band": "green",
+          "health_score": 67.5,
+          "priority_score": 67
+        }
+      ],
+      "trend": "improving",
+      "trend_velocity": 0.0959
+    },
+    "Harborview Fleet": {
+      "account_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18",
+      "consecutive_band": "yellow",
+      "consecutive_count": 7,
+      "points": [
+        {
+          "day": 0,
+          "health_band": "red",
+          "health_score": 32.5,
+          "priority_score": 69
+        },
+        {
+          "day": 30,
+          "health_band": "yellow",
+          "health_score": 64.8,
+          "priority_score": 27
+        },
+        {
+          "day": 60,
+          "health_band": "yellow",
+          "health_score": 56.9,
+          "priority_score": 27
+        },
+        {
+          "day": 90,
+          "health_band": "yellow",
+          "health_score": 56.9,
+          "priority_score": 27
+        },
+        {
+          "day": 120,
+          "health_band": "yellow",
+          "health_score": 56.9,
+          "priority_score": 27
+        },
+        {
+          "day": 180,
+          "health_band": "yellow",
+          "health_score": 61.9,
+          "priority_score": 27
+        },
+        {
+          "day": 270,
+          "health_band": "yellow",
+          "health_score": 61.9,
+          "priority_score": 27
+        },
+        {
+          "day": 365,
+          "health_band": "yellow",
+          "health_score": 56.9,
+          "priority_score": 27
+        }
+      ],
+      "trend": "improving",
+      "trend_velocity": 0.0668
+    },
+    "Hawkstone Industries": {
+      "account_id": "16c3b718-969e-5835-afbe-a256f7696260",
+      "consecutive_band": "green",
+      "consecutive_count": 1,
+      "points": [
+        {
+          "day": 0,
+          "health_band": "red",
+          "health_score": 32.5,
+          "priority_score": 69
+        },
+        {
+          "day": 30,
+          "health_band": "yellow",
+          "health_score": 64.4,
+          "priority_score": 27
+        },
+        {
+          "day": 60,
+          "health_band": "yellow",
+          "health_score": 64.4,
+          "priority_score": 27
+        },
+        {
+          "day": 90,
+          "health_band": "yellow",
+          "health_score": 59.4,
+          "priority_score": 27
+        },
+        {
+          "day": 120,
+          "health_band": "yellow",
+          "health_score": 64.4,
+          "priority_score": 27
+        },
+        {
+          "day": 180,
+          "health_band": "yellow",
+          "health_score": 64.4,
+          "priority_score": 27
+        },
+        {
+          "day": 270,
+          "health_band": "yellow",
+          "health_score": 60.6,
+          "priority_score": 27
+        },
+        {
+          "day": 365,
+          "health_band": "green",
+          "health_score": 65.6,
+          "priority_score": 47
+        }
+      ],
+      "trend": "improving",
+      "trend_velocity": 0.0907
+    },
+    "Iron Ridge Fleet Ops": {
+      "account_id": "0b479878-c6b3-5e9b-9d4f-01aecf8e0f4c",
+      "consecutive_band": "green",
+      "consecutive_count": 7,
+      "points": [
+        {
+          "day": 0,
+          "health_band": "red",
+          "health_score": 32.5,
+          "priority_score": 69
+        },
+        {
+          "day": 30,
+          "health_band": "green",
+          "health_score": 67.5,
+          "priority_score": 47
+        },
+        {
+          "day": 60,
+          "health_band": "green",
+          "health_score": 67.5,
+          "priority_score": 47
+        },
+        {
+          "day": 90,
+          "health_band": "green",
+          "health_score": 67.5,
+          "priority_score": 47
+        },
+        {
+          "day": 120,
+          "health_band": "green",
+          "health_score": 67.5,
+          "priority_score": 47
+        },
+        {
+          "day": 180,
+          "health_band": "green",
+          "health_score": 67.5,
+          "priority_score": 47
+        },
+        {
+          "day": 270,
+          "health_band": "green",
+          "health_score": 67.5,
+          "priority_score": 47
+        },
+        {
+          "day": 365,
+          "health_band": "green",
+          "health_score": 67.5,
+          "priority_score": 47
+        }
+      ],
+      "trend": "improving",
+      "trend_velocity": 0.0959
+    },
+    "Ironhorse Freight Co": {
+      "account_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+      "consecutive_band": "yellow",
+      "consecutive_count": 1,
+      "points": [
+        {
+          "day": 0,
+          "health_band": "red",
+          "health_score": 7.5,
+          "priority_score": 84
+        },
+        {
+          "day": 30,
+          "health_band": "yellow",
+          "health_score": 54.2,
+          "priority_score": 152
+        },
+        {
+          "day": 60,
+          "health_band": "green",
+          "health_score": 66.7,
+          "priority_score": 157
+        },
+        {
+          "day": 90,
+          "health_band": "green",
+          "health_score": 66.7,
+          "priority_score": 157
+        },
+        {
+          "day": 120,
+          "health_band": "green",
+          "health_score": 66.7,
+          "priority_score": 157
+        },
+        {
+          "day": 180,
+          "health_band": "green",
+          "health_score": 66.7,
+          "priority_score": 157
+        },
+        {
+          "day": 270,
+          "health_band": "green",
+          "health_score": 66.7,
+          "priority_score": 157
+        },
+        {
+          "day": 365,
+          "health_band": "yellow",
+          "health_score": 61.7,
+          "priority_score": 137
+        }
+      ],
+      "trend": "improving",
+      "trend_velocity": 0.1485
+    },
+    "Meridian Fleet Group": {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "consecutive_band": "green",
+      "consecutive_count": 1,
+      "points": [
+        {
+          "day": 0,
+          "health_band": "yellow",
+          "health_score": 63.0,
+          "priority_score": 52
+        },
+        {
+          "day": 30,
+          "health_band": "green",
+          "health_score": 65.2,
+          "priority_score": 52
+        },
+        {
+          "day": 60,
+          "health_band": "green",
+          "health_score": 65.2,
+          "priority_score": 52
+        },
+        {
+          "day": 90,
+          "health_band": "yellow",
+          "health_score": 62.2,
+          "priority_score": 32
+        },
+        {
+          "day": 120,
+          "health_band": "green",
+          "health_score": 65.2,
+          "priority_score": 52
+        },
+        {
+          "day": 180,
+          "health_band": "green",
+          "health_score": 65.2,
+          "priority_score": 52
+        },
+        {
+          "day": 270,
+          "health_band": "yellow",
+          "health_score": 62.2,
+          "priority_score": 32
+        },
+        {
+          "day": 365,
+          "health_band": "green",
+          "health_score": 65.2,
+          "priority_score": 52
+        }
+      ],
+      "trend": "stable",
+      "trend_velocity": 0.006
+    },
+    "Mesa Industrial Corp": {
+      "account_id": "e039b8d0-a02f-58f6-99f4-d079d29577f3",
+      "consecutive_band": "green",
+      "consecutive_count": 7,
+      "points": [
+        {
+          "day": 0,
+          "health_band": "red",
+          "health_score": 32.5,
+          "priority_score": 69
+        },
+        {
+          "day": 30,
+          "health_band": "green",
+          "health_score": 66.2,
+          "priority_score": 47
+        },
+        {
+          "day": 60,
+          "health_band": "green",
+          "health_score": 66.2,
+          "priority_score": 47
+        },
+        {
+          "day": 90,
+          "health_band": "green",
+          "health_score": 66.2,
+          "priority_score": 47
+        },
+        {
+          "day": 120,
+          "health_band": "green",
+          "health_score": 66.2,
+          "priority_score": 47
+        },
+        {
+          "day": 180,
+          "health_band": "green",
+          "health_score": 70.0,
+          "priority_score": 47
+        },
+        {
+          "day": 270,
+          "health_band": "green",
+          "health_score": 70.0,
+          "priority_score": 47
+        },
+        {
+          "day": 365,
+          "health_band": "green",
+          "health_score": 70.0,
+          "priority_score": 47
+        }
+      ],
+      "trend": "improving",
+      "trend_velocity": 0.1027
+    },
+    "Northstar Couriers": {
+      "account_id": "162a9085-8e63-53f0-bb1b-b48426911d34",
+      "consecutive_band": "green",
+      "consecutive_count": 7,
+      "points": [
+        {
+          "day": 0,
+          "health_band": "red",
+          "health_score": 20.0,
+          "priority_score": 84
+        },
+        {
+          "day": 30,
+          "health_band": "green",
+          "health_score": 66.5,
+          "priority_score": 67
+        },
+        {
+          "day": 60,
+          "health_band": "green",
+          "health_score": 66.5,
+          "priority_score": 67
+        },
+        {
+          "day": 90,
+          "health_band": "green",
+          "health_score": 66.5,
+          "priority_score": 67
+        },
+        {
+          "day": 120,
+          "health_band": "green",
+          "health_score": 66.5,
+          "priority_score": 67
+        },
+        {
+          "day": 180,
+          "health_band": "green",
+          "health_score": 66.5,
+          "priority_score": 67
+        },
+        {
+          "day": 270,
+          "health_band": "green",
+          "health_score": 66.5,
+          "priority_score": 67
+        },
+        {
+          "day": 365,
+          "health_band": "green",
+          "health_score": 66.5,
+          "priority_score": 67
+        }
+      ],
+      "trend": "improving",
+      "trend_velocity": 0.1274
+    },
+    "Oakmont Logistics": {
+      "account_id": "2c8f2a9e-eba9-5b4e-ba37-c78dd4ba2aae",
+      "consecutive_band": "yellow",
+      "consecutive_count": 7,
+      "points": [
+        {
+          "day": 0,
+          "health_band": "red",
+          "health_score": 32.5,
+          "priority_score": 69
+        },
+        {
+          "day": 30,
+          "health_band": "yellow",
+          "health_score": 64.0,
+          "priority_score": 27
+        },
+        {
+          "day": 60,
+          "health_band": "yellow",
+          "health_score": 56.5,
+          "priority_score": 27
+        },
+        {
+          "day": 90,
+          "health_band": "yellow",
+          "health_score": 64.8,
+          "priority_score": 27
+        },
+        {
+          "day": 120,
+          "health_band": "yellow",
+          "health_score": 64.8,
+          "priority_score": 27
+        },
+        {
+          "day": 180,
+          "health_band": "yellow",
+          "health_score": 64.8,
+          "priority_score": 27
+        },
+        {
+          "day": 270,
+          "health_band": "yellow",
+          "health_score": 59.8,
+          "priority_score": 27
+        },
+        {
+          "day": 365,
+          "health_band": "yellow",
+          "health_score": 64.8,
+          "priority_score": 27
+        }
+      ],
+      "trend": "improving",
+      "trend_velocity": 0.0885
+    },
+    "Pinehill Transport": {
+      "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
+      "consecutive_band": "yellow",
+      "consecutive_count": 7,
+      "points": [
+        {
+          "day": 0,
+          "health_band": "red",
+          "health_score": 7.5,
+          "priority_score": 148
+        },
+        {
+          "day": 30,
+          "health_band": "yellow",
+          "health_score": 52.4,
+          "priority_score": 152
+        },
+        {
+          "day": 60,
+          "health_band": "yellow",
+          "health_score": 49.6,
+          "priority_score": 152
+        },
+        {
+          "day": 90,
+          "health_band": "yellow",
+          "health_score": 62.1,
+          "priority_score": 137
+        },
+        {
+          "day": 120,
+          "health_band": "yellow",
+          "health_score": 55.5,
+          "priority_score": 137
+        },
+        {
+          "day": 180,
+          "health_band": "yellow",
+          "health_score": 63.0,
+          "priority_score": 137
+        },
+        {
+          "day": 270,
+          "health_band": "yellow",
+          "health_score": 55.5,
+          "priority_score": 137
+        },
+        {
+          "day": 365,
+          "health_band": "yellow",
+          "health_score": 63.0,
+          "priority_score": 137
+        }
+      ],
+      "trend": "improving",
+      "trend_velocity": 0.1521
+    },
+    "Pinnacle Supply Chain": {
+      "account_id": "91330ede-650a-5015-856d-c685a83807b4",
+      "consecutive_band": "red",
+      "consecutive_count": 1,
+      "points": [
+        {
+          "day": 0,
+          "health_band": "red",
+          "health_score": 32.5,
+          "priority_score": 74
+        },
+        {
+          "day": 30,
+          "health_band": "yellow",
+          "health_score": 48.4,
+          "priority_score": 47
+        },
+        {
+          "day": 60,
+          "health_band": "yellow",
+          "health_score": 58.8,
+          "priority_score": 32
+        },
+        {
+          "day": 90,
+          "health_band": "red",
+          "health_score": 33.4,
+          "priority_score": 74
+        },
+        {
+          "day": 120,
+          "health_band": "yellow",
+          "health_score": 40.9,
+          "priority_score": 47
+        },
+        {
+          "day": 180,
+          "health_band": "red",
+          "health_score": 38.8,
+          "priority_score": 62
+        },
+        {
+          "day": 270,
+          "health_band": "yellow",
+          "health_score": 41.7,
+          "priority_score": 47
+        },
+        {
+          "day": 365,
+          "health_band": "red",
+          "health_score": 33.4,
+          "priority_score": 74
+        }
+      ],
+      "trend": "stable",
+      "trend_velocity": 0.0025
+    },
+    "Quarry Stone Logistics": {
+      "account_id": "c79ad97e-e2ad-5b6a-beeb-800e4755adca",
+      "consecutive_band": "red",
+      "consecutive_count": 2,
+      "points": [
+        {
+          "day": 0,
+          "health_band": "green",
+          "health_score": 66.2,
+          "priority_score": 67
+        },
+        {
+          "day": 30,
+          "health_band": "green",
+          "health_score": 66.2,
+          "priority_score": 67
+        },
+        {
+          "day": 60,
+          "health_band": "green",
+          "health_score": 66.2,
+          "priority_score": 67
+        },
+        {
+          "day": 90,
+          "health_band": "green",
+          "health_score": 66.2,
+          "priority_score": 67
+        },
+        {
+          "day": 120,
+          "health_band": "green",
+          "health_score": 66.2,
+          "priority_score": 67
+        },
+        {
+          "day": 180,
+          "health_band": "green",
+          "health_score": 66.2,
+          "priority_score": 67
+        },
+        {
+          "day": 270,
+          "health_band": "red",
+          "health_score": 7.5,
+          "priority_score": 84
+        },
+        {
+          "day": 365,
+          "health_band": "red",
+          "health_score": 7.5,
+          "priority_score": 84
+        }
+      ],
+      "trend": "declining",
+      "trend_velocity": -0.1608
+    },
+    "Redwood Fleet Services": {
+      "account_id": "b571eb36-60fa-5fe1-827a-293e9f150fcf",
+      "consecutive_band": "green",
+      "consecutive_count": 7,
+      "points": [
+        {
+          "day": 0,
+          "health_band": "red",
+          "health_score": 32.5,
+          "priority_score": 69
+        },
+        {
+          "day": 30,
+          "health_band": "green",
+          "health_score": 66.5,
+          "priority_score": 47
+        },
+        {
+          "day": 60,
+          "health_band": "green",
+          "health_score": 66.5,
+          "priority_score": 47
+        },
+        {
+          "day": 90,
+          "health_band": "green",
+          "health_score": 66.5,
+          "priority_score": 47
+        },
+        {
+          "day": 120,
+          "health_band": "green",
+          "health_score": 66.5,
+          "priority_score": 47
+        },
+        {
+          "day": 180,
+          "health_band": "green",
+          "health_score": 66.5,
+          "priority_score": 47
+        },
+        {
+          "day": 270,
+          "health_band": "green",
+          "health_score": 66.5,
+          "priority_score": 47
+        },
+        {
+          "day": 365,
+          "health_band": "green",
+          "health_score": 66.5,
+          "priority_score": 47
+        }
+      ],
+      "trend": "improving",
+      "trend_velocity": 0.0932
+    },
+    "Ridgeline Warehousing": {
+      "account_id": "081b380c-99e7-5073-992a-9e0d8b27d8c0",
+      "consecutive_band": "green",
+      "consecutive_count": 7,
+      "points": [
+        {
+          "day": 0,
+          "health_band": "red",
+          "health_score": 7.5,
+          "priority_score": 84
+        },
+        {
+          "day": 30,
+          "health_band": "green",
+          "health_score": 65.5,
+          "priority_score": 152
+        },
+        {
+          "day": 60,
+          "health_band": "green",
+          "health_score": 65.5,
+          "priority_score": 152
+        },
+        {
+          "day": 90,
+          "health_band": "green",
+          "health_score": 65.5,
+          "priority_score": 152
+        },
+        {
+          "day": 120,
+          "health_band": "green",
+          "health_score": 65.5,
+          "priority_score": 152
+        },
+        {
+          "day": 180,
+          "health_band": "green",
+          "health_score": 65.5,
+          "priority_score": 152
+        },
+        {
+          "day": 270,
+          "health_band": "green",
+          "health_score": 65.5,
+          "priority_score": 152
+        },
+        {
+          "day": 365,
+          "health_band": "green",
+          "health_score": 65.5,
+          "priority_score": 152
+        }
+      ],
+      "trend": "improving",
+      "trend_velocity": 0.1589
+    },
+    "Sagebrush Transport": {
+      "account_id": "f8504037-dc1a-50e4-bdd9-7900b1379444",
+      "consecutive_band": "red",
+      "consecutive_count": 5,
+      "points": [
+        {
+          "day": 0,
+          "health_band": "red",
+          "health_score": 32.5,
+          "priority_score": 69
+        },
+        {
+          "day": 30,
+          "health_band": "green",
+          "health_score": 65.2,
+          "priority_score": 47
+        },
+        {
+          "day": 60,
+          "health_band": "yellow",
+          "health_score": 52.1,
+          "priority_score": 27
+        },
+        {
+          "day": 90,
+          "health_band": "red",
+          "health_score": 3.2,
+          "priority_score": 104
+        },
+        {
+          "day": 120,
+          "health_band": "red",
+          "health_score": 1.9,
+          "priority_score": 84
+        },
+        {
+          "day": 180,
+          "health_band": "red",
+          "health_score": 1.9,
+          "priority_score": 84
+        },
+        {
+          "day": 270,
+          "health_band": "red",
+          "health_score": 1.9,
+          "priority_score": 84
+        },
+        {
+          "day": 365,
+          "health_band": "red",
+          "health_score": 1.9,
+          "priority_score": 84
+        }
+      ],
+      "trend": "declining",
+      "trend_velocity": -0.0838
+    },
+    "Stonebridge Fleet": {
+      "account_id": "320ce2b9-8553-5335-8366-1575565db280",
+      "consecutive_band": "green",
+      "consecutive_count": 7,
+      "points": [
+        {
+          "day": 0,
+          "health_band": "red",
+          "health_score": 32.5,
+          "priority_score": 69
+        },
+        {
+          "day": 30,
+          "health_band": "green",
+          "health_score": 65.0,
+          "priority_score": 67
+        },
+        {
+          "day": 60,
+          "health_band": "green",
+          "health_score": 65.0,
+          "priority_score": 67
+        },
+        {
+          "day": 90,
+          "health_band": "green",
+          "health_score": 68.8,
+          "priority_score": 67
+        },
+        {
+          "day": 120,
+          "health_band": "green",
+          "health_score": 68.8,
+          "priority_score": 67
+        },
+        {
+          "day": 180,
+          "health_band": "green",
+          "health_score": 68.8,
+          "priority_score": 67
+        },
+        {
+          "day": 270,
+          "health_band": "green",
+          "health_score": 68.8,
+          "priority_score": 67
+        },
+        {
+          "day": 365,
+          "health_band": "green",
+          "health_score": 68.8,
+          "priority_score": 67
+        }
+      ],
+      "trend": "improving",
+      "trend_velocity": 0.0995
+    },
+    "Summit Industrial Supply": {
+      "account_id": "390eef5a-4d06-59ae-93cb-2c0a012e7ef8",
+      "consecutive_band": "yellow",
+      "consecutive_count": 1,
+      "points": [
+        {
+          "day": 0,
+          "health_band": "red",
+          "health_score": 7.5,
+          "priority_score": 84
+        },
+        {
+          "day": 30,
+          "health_band": "yellow",
+          "health_score": 53.3,
+          "priority_score": 127
+        },
+        {
+          "day": 60,
+          "health_band": "green",
+          "health_score": 65.8,
+          "priority_score": 132
+        },
+        {
+          "day": 90,
+          "health_band": "green",
+          "health_score": 65.8,
+          "priority_score": 132
+        },
+        {
+          "day": 120,
+          "health_band": "yellow",
+          "health_score": 58.3,
+          "priority_score": 112
+        },
+        {
+          "day": 180,
+          "health_band": "green",
+          "health_score": 65.8,
+          "priority_score": 132
+        },
+        {
+          "day": 270,
+          "health_band": "green",
+          "health_score": 65.8,
+          "priority_score": 132
+        },
+        {
+          "day": 365,
+          "health_band": "yellow",
+          "health_score": 58.3,
+          "priority_score": 112
+        }
+      ],
+      "trend": "improving",
+      "trend_velocity": 0.1392
+    },
+    "Trailhead Logistics": {
+      "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+      "consecutive_band": "green",
+      "consecutive_count": 6,
+      "points": [
+        {
+          "day": 0,
+          "health_band": "yellow",
+          "health_score": 62.8,
+          "priority_score": 52
+        },
+        {
+          "day": 30,
+          "health_band": "yellow",
+          "health_score": 60.1,
+          "priority_score": 32
+        },
+        {
+          "day": 60,
+          "health_band": "green",
+          "health_score": 71.3,
+          "priority_score": 52
+        },
+        {
+          "day": 90,
+          "health_band": "green",
+          "health_score": 71.3,
+          "priority_score": 72
+        },
+        {
+          "day": 120,
+          "health_band": "green",
+          "health_score": 71.3,
+          "priority_score": 72
+        },
+        {
+          "day": 180,
+          "health_band": "green",
+          "health_score": 70.4,
+          "priority_score": 72
+        },
+        {
+          "day": 270,
+          "health_band": "green",
+          "health_score": 70.4,
+          "priority_score": 72
+        },
+        {
+          "day": 365,
+          "health_band": "green",
+          "health_score": 70.4,
+          "priority_score": 72
+        }
+      ],
+      "trend": "improving",
+      "trend_velocity": 0.0208
+    },
+    "Westfield Industrial": {
+      "account_id": "f14e9971-f261-5927-a102-444b5bb92ab3",
+      "consecutive_band": "yellow",
+      "consecutive_count": 7,
+      "points": [
+        {
+          "day": 0,
+          "health_band": "red",
+          "health_score": 32.5,
+          "priority_score": 69
+        },
+        {
+          "day": 30,
+          "health_band": "yellow",
+          "health_score": 64.5,
+          "priority_score": 47
+        },
+        {
+          "day": 60,
+          "health_band": "yellow",
+          "health_score": 64.5,
+          "priority_score": 47
+        },
+        {
+          "day": 90,
+          "health_band": "yellow",
+          "health_score": 64.5,
+          "priority_score": 47
+        },
+        {
+          "day": 120,
+          "health_band": "yellow",
+          "health_score": 64.5,
+          "priority_score": 47
+        },
+        {
+          "day": 180,
+          "health_band": "yellow",
+          "health_score": 64.5,
+          "priority_score": 47
+        },
+        {
+          "day": 270,
+          "health_band": "yellow",
+          "health_score": 64.5,
+          "priority_score": 47
+        },
+        {
+          "day": 365,
+          "health_band": "yellow",
+          "health_score": 64.5,
+          "priority_score": 47
+        }
+      ],
+      "trend": "improving",
+      "trend_velocity": 0.0877
+    },
+    "Windmill Transport": {
+      "account_id": "2991a83a-1499-5bf4-af01-f55678eaade9",
+      "consecutive_band": "green",
+      "consecutive_count": 2,
+      "points": [
+        {
+          "day": 0,
+          "health_band": "red",
+          "health_score": 32.5,
+          "priority_score": 69
+        },
+        {
+          "day": 30,
+          "health_band": "green",
+          "health_score": 68.5,
+          "priority_score": 47
+        },
+        {
+          "day": 60,
+          "health_band": "green",
+          "health_score": 68.5,
+          "priority_score": 47
+        },
+        {
+          "day": 90,
+          "health_band": "green",
+          "health_score": 68.5,
+          "priority_score": 47
+        },
+        {
+          "day": 120,
+          "health_band": "green",
+          "health_score": 68.5,
+          "priority_score": 47
+        },
+        {
+          "day": 180,
+          "health_band": "yellow",
+          "health_score": 61.0,
+          "priority_score": 27
+        },
+        {
+          "day": 270,
+          "health_band": "green",
+          "health_score": 68.5,
+          "priority_score": 47
+        },
+        {
+          "day": 365,
+          "health_band": "green",
+          "health_score": 68.5,
+          "priority_score": 47
+        }
+      ],
+      "trend": "improving",
+      "trend_velocity": 0.0986
+    }
+  }
 }

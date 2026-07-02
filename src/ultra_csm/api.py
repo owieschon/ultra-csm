@@ -158,6 +158,7 @@ class AccountBriefResponse(BaseModel):
     adoption: dict[str, Any] | None = None
     priority: dict[str, Any]
     lifecycle_stage: str
+    trajectory: dict[str, Any] | None = None
     divergences: list[dict[str, Any]]
     open_ctas: list[dict[str, Any]]
     success_plans: list[dict[str, Any]]
@@ -222,6 +223,24 @@ class DigestResponse(BaseModel):
     prioritized_accounts: list[DigestAccountSchema]
     pending_proposals: int
     commitments: list[dict[str, Any]]
+
+
+class TrajectoryPointSchema(BaseModel):
+    day: int
+    health_band: str
+    health_score: float
+    priority_score: int
+    priority_factors: list[str] = Field(default_factory=list)
+
+
+class TrajectoryResponse(BaseModel):
+    account_id: str
+    window_days: int
+    points: list[TrajectoryPointSchema]
+    trend: str
+    trend_velocity: float
+    consecutive_band: str | None = None
+    consecutive_count: int = 0
 
 
 # ---------------------------------------------------------------------------
@@ -788,10 +807,251 @@ async def get_account_brief(
     """Account brief — the key demo endpoint.
 
     Health snapshot, recent changes, risks, expansion signals, and suggested
-    talking points.
+    talking points.  Includes trajectory when simulation day is provided.
     """
     dp, as_of = _data_plane_for_day(day, deep=deep)
-    return _build_account_brief(account_id, dp=dp, as_of=as_of)
+    brief = _build_account_brief(account_id, dp=dp, as_of=as_of)
+
+    # Inject trajectory data when a simulation day is specified.
+    if day is not None:
+        from ultra_csm.data_plane.book_simulator import simulate_book
+        from ultra_csm.data_plane.synthetic_book import SEED_DATE, build_synthetic_book
+        from ultra_csm.snapshot_store import SnapshotStore
+
+        base_date = datetime.strptime(SEED_DATE, "%Y-%m-%d")
+        timeline_days = [d for d in [0, 30, 60, 90, 120, 180, 270, 365] if d <= day]
+        base_book = build_synthetic_book()
+        snap_store = SnapshotStore()
+
+        for td in timeline_days:
+            td_as_of = (base_date + timedelta(days=td)).strftime("%Y-%m-%d")
+            if deep:
+                from ultra_csm.data_plane.data_simulator import simulate_data
+                from ultra_csm.value_model_bridge import build_deep_value_model
+
+                bundle = simulate_data(base_book, day=td)
+                if account_id not in bundle.accounts:
+                    continue
+                companies_by_id = {c.company_id: c for c in base_book.companies}
+                adoption_by_id = {a.account_id: a for a in base_book.adoption_summaries}
+                ents = [e for e in base_book.entitlements if e.account_id == account_id]
+                plans = [p for p in base_book.success_plans if p.account_id == account_id]
+                company = companies_by_id.get(account_id)
+                if company is None:
+                    continue
+                adoption = adoption_by_id.get(account_id)
+                lu = adoption.licensed_users if adoption else 0
+                model, health = build_deep_value_model(
+                    bundle=bundle, account_id=account_id,
+                    account=next(a for a in base_book.accounts if a.account_id == account_id),
+                    company=company, entitlements=tuple(ents),
+                    success_plans=tuple(plans), licensed_users=lu,
+                )
+                priority = project_ttv_lens(
+                    model, company=company, health=health,
+                    open_milestone_gaps=(), overdue_success_plans=(), as_of=td_as_of,
+                )
+            else:
+                td_data = base_book if td == 0 else simulate_book(base_book, day_offset=td)
+                from ultra_csm.data_plane.fixtures import (
+                    FixtureCRMDataConnector, FixtureCSPlatformConnector,
+                    FixtureProductTelemetryConnector,
+                )
+                crm = FixtureCRMDataConnector(data=td_data)
+                cs = FixtureCSPlatformConnector(data=td_data)
+                acct = crm.get_account(account_id)
+                if acct is None:
+                    continue
+                company = cs.get_company(account_id)
+                health = cs.get_health_score(account_id)
+                if company is None or health is None:
+                    continue
+                adoption = cs.get_adoption_summary(account_id)
+                telemetry = FixtureProductTelemetryConnector(data=td_data)
+                model = build_customer_value_model(
+                    account=acct, company=company, health=health,
+                    adoption=adoption, entitlements=tuple(telemetry.list_entitlements(account_id)),
+                    usage_signals=tuple(telemetry.list_usage_signals(account_id)),
+                    success_plans=tuple(cs.list_success_plans(account_id)),
+                )
+                priority = project_ttv_lens(
+                    model, company=company, health=health,
+                    open_milestone_gaps=(), overdue_success_plans=(), as_of=td_as_of,
+                )
+
+            snap_store.store_snapshot(td, account_id, {
+                "health_band": health.band,
+                "health_score": health.score,
+                "priority_score": priority.score,
+                "priority_factors": [f.name for f in priority.factors],
+                "lifecycle_stage": company.lifecycle_stage,
+                "arr_cents": company.arr_cents,
+            })
+
+        traj = snap_store.build_trajectory(account_id, window_days=365)
+        brief["trajectory"] = {
+            "trend": traj.trend,
+            "trend_velocity": traj.trend_velocity,
+            "consecutive_band": traj.consecutive_band,
+            "consecutive_count": traj.consecutive_count,
+            "points": [
+                {
+                    "day": p.day,
+                    "health_band": p.health_band,
+                    "health_score": p.health_score,
+                    "priority_score": p.priority_score,
+                }
+                for p in traj.points
+            ],
+        }
+
+    return brief
+
+
+@app.get("/accounts/{account_id}/trajectory", response_model=TrajectoryResponse)
+async def get_account_trajectory(
+    account_id: str,
+    window: int = Query(30, ge=1, le=365, description="Trajectory window in days"),
+    deep: bool = Query(False, description="Use deep data simulation layer"),
+):
+    """Account health trajectory over a time window (VM-7).
+
+    Scores the account at each timeline checkpoint (0, 30, 60, …, 365),
+    stores snapshots, and returns the trajectory: trend direction, velocity,
+    and the full series of data points within the requested window.
+    """
+    from ultra_csm.data_plane.book_simulator import simulate_book
+    from ultra_csm.data_plane.synthetic_book import SEED_DATE, build_synthetic_book
+    from ultra_csm.snapshot_store import SnapshotStore
+
+    _require_account(account_id)
+
+    base_date = datetime.strptime(SEED_DATE, "%Y-%m-%d")
+    timeline_days = [0, 30, 60, 90, 120, 180, 270, 365]
+    base_book = build_synthetic_book()
+    snap_store = SnapshotStore()
+
+    for day in timeline_days:
+        as_of = (base_date + timedelta(days=day)).strftime("%Y-%m-%d")
+        if deep:
+            from ultra_csm.data_plane.data_simulator import simulate_data
+            from ultra_csm.value_model_bridge import build_deep_value_model
+
+            bundle = simulate_data(base_book, day=day)
+            if account_id not in bundle.accounts:
+                continue
+
+            companies_by_id = {c.company_id: c for c in base_book.companies}
+            adoption_by_id = {a.account_id: a for a in base_book.adoption_summaries}
+            entitlements_by_acct: dict[str, list] = {}
+            for e in base_book.entitlements:
+                entitlements_by_acct.setdefault(e.account_id, []).append(e)
+            plans_by_acct: dict[str, list] = {}
+            for p in base_book.success_plans:
+                plans_by_acct.setdefault(p.account_id, []).append(p)
+
+            company = companies_by_id.get(account_id)
+            if company is None:
+                continue
+            adoption = adoption_by_id.get(account_id)
+            licensed_users = adoption.licensed_users if adoption else 0
+
+            model, health = build_deep_value_model(
+                bundle=bundle,
+                account_id=account_id,
+                account=next(a for a in base_book.accounts if a.account_id == account_id),
+                company=company,
+                entitlements=tuple(entitlements_by_acct.get(account_id, [])),
+                success_plans=tuple(plans_by_acct.get(account_id, [])),
+                licensed_users=licensed_users,
+            )
+            milestones = [m for m in base_book.milestones if m.account_id == account_id]
+            open_milestones = tuple(m for m in milestones if m.achieved_at is None and m.expected_by < as_of)
+            overdue_plans = tuple(
+                p for p in plans_by_acct.get(account_id, [])
+                if p.status in ("active",) and p.target_date < as_of
+            )
+            priority = project_ttv_lens(
+                model, company=company, health=health,
+                open_milestone_gaps=open_milestones,
+                overdue_success_plans=overdue_plans, as_of=as_of,
+            )
+            snap_store.store_snapshot(day, account_id, {
+                "health_band": health.band,
+                "health_score": health.score,
+                "priority_score": priority.score,
+                "priority_factors": [f.name for f in priority.factors],
+                "lifecycle_stage": company.lifecycle_stage,
+                "arr_cents": company.arr_cents,
+            })
+        else:
+            if day == 0:
+                data = base_book
+            else:
+                data = simulate_book(base_book, day_offset=day)
+
+            from ultra_csm.data_plane.fixtures import (
+                FixtureCRMDataConnector,
+                FixtureCSPlatformConnector,
+                FixtureProductTelemetryConnector,
+            )
+            crm = FixtureCRMDataConnector(data=data)
+            cs = FixtureCSPlatformConnector(data=data)
+            telemetry = FixtureProductTelemetryConnector(data=data)
+
+            account = crm.get_account(account_id)
+            if account is None:
+                continue
+            company = cs.get_company(account_id)
+            health = cs.get_health_score(account_id)
+            if company is None or health is None:
+                continue
+            adoption = cs.get_adoption_summary(account_id)
+            entitlements = tuple(telemetry.list_entitlements(account_id))
+            signals = tuple(telemetry.list_usage_signals(account_id))
+            plans = tuple(cs.list_success_plans(account_id))
+            milestones = tuple(telemetry.list_ttv_milestones(account_id))
+
+            model = build_customer_value_model(
+                account=account, company=company, health=health,
+                adoption=adoption, entitlements=entitlements,
+                usage_signals=signals, success_plans=plans,
+            )
+            open_milestones = tuple(m for m in milestones if m.achieved_at is None and m.expected_by < as_of)
+            overdue_plans = tuple(p for p in plans if p.status in ("active",) and p.target_date < as_of)
+            priority = project_ttv_lens(
+                model, company=company, health=health,
+                open_milestone_gaps=open_milestones,
+                overdue_success_plans=overdue_plans, as_of=as_of,
+            )
+            snap_store.store_snapshot(day, account_id, {
+                "health_band": health.band,
+                "health_score": health.score,
+                "priority_score": priority.score,
+                "priority_factors": [f.name for f in priority.factors],
+                "lifecycle_stage": company.lifecycle_stage,
+                "arr_cents": company.arr_cents,
+            })
+
+    traj = snap_store.build_trajectory(account_id, window_days=window)
+    return TrajectoryResponse(
+        account_id=traj.account_id,
+        window_days=traj.window_days,
+        points=[
+            TrajectoryPointSchema(
+                day=p.day,
+                health_band=p.health_band,
+                health_score=p.health_score,
+                priority_score=p.priority_score,
+                priority_factors=list(p.priority_factors),
+            )
+            for p in traj.points
+        ],
+        trend=traj.trend,
+        trend_velocity=traj.trend_velocity,
+        consecutive_band=traj.consecutive_band,
+        consecutive_count=traj.consecutive_count,
+    )
 
 
 @app.post("/sweep", response_model=SweepResponse)

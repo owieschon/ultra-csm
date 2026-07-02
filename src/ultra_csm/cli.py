@@ -530,12 +530,14 @@ def _demo_sweep(args: argparse.Namespace) -> int:
 def _demo_timeline(args: argparse.Namespace) -> int:
     from ultra_csm.data_plane.book_simulator import simulate_book
     from ultra_csm.data_plane.synthetic_book import SEED_DATE
+    from ultra_csm.snapshot_store import SnapshotStore
 
     use_deep = getattr(args, "deep", False)
     base_date = datetime.strptime(SEED_DATE, "%Y-%m-%d")
     timeline_days = [0, 30, 60, 90, 120, 180, 270, 365]
     base_book = build_synthetic_book()
 
+    snap_store = SnapshotStore()
     snapshots: dict[int, dict[str, Any]] = {}
     all_scored: dict[int, list[dict[str, Any]]] = {}
 
@@ -552,6 +554,10 @@ def _demo_timeline(args: argparse.Namespace) -> int:
                 data = simulate_book(base_book, day_offset=day)
             scored = _score_book(data, as_of)
         all_scored[day] = scored
+
+        # Store each account's output in the snapshot store (VM-6)
+        for r in scored:
+            snap_store.store_snapshot(day, r["account_id"], r)
 
         green = sum(1 for r in scored if r["health_band"] == "green")
         yellow = sum(1 for r in scored if r["health_band"] == "yellow")
@@ -630,12 +636,36 @@ def _demo_timeline(args: argparse.Namespace) -> int:
                     except ValueError:
                         pass
 
+    # Compute trajectories for flagged accounts at each checkpoint (VM-7)
+    trajectory_report: dict[str, Any] = {}
+    flagged_aids = set(first_risk_detected.keys()) | seen_transitions
+    for aid in sorted(flagged_aids):
+        traj = snap_store.build_trajectory(aid, window_days=365)
+        name = base_names.get(aid) or aid
+        trajectory_report[name] = {
+            "account_id": aid,
+            "trend": traj.trend,
+            "trend_velocity": traj.trend_velocity,
+            "consecutive_band": traj.consecutive_band,
+            "consecutive_count": traj.consecutive_count,
+            "points": [
+                {
+                    "day": p.day,
+                    "health_band": p.health_band,
+                    "health_score": p.health_score,
+                    "priority_score": p.priority_score,
+                }
+                for p in traj.points
+            ],
+        }
+
     # Build JSON output
     json_payload = {
         "timeline_days": timeline_days,
         "snapshots": {str(d): snapshots[d] for d in timeline_days},
         "health_transitions": transitions,
         "detection_metrics": detection_metrics,
+        "trajectories": trajectory_report,
     }
 
     # Write timeline JSON to eval/
@@ -686,6 +716,17 @@ def _demo_timeline(args: argparse.Namespace) -> int:
                 f" renewal at {m['event_date']}"
             )
             print(f"    -> {m['lead_time_days']} days before renewal")
+    else:
+        print("  (none)")
+    print()
+
+    print("Account Trajectories (flagged accounts):")
+    if trajectory_report:
+        for name, tr in sorted(trajectory_report.items()):
+            band_str = f"{tr['consecutive_band']} x{tr['consecutive_count']}"
+            vel = tr["trend_velocity"]
+            vel_str = f"{vel:+.4f} pts/day" if vel != 0.0 else "flat"
+            print(f"  {name:35s} {tr['trend']:10s}  {vel_str:16s}  ({band_str})")
     else:
         print("  (none)")
 
