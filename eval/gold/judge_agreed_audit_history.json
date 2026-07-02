@@ -1,17 +1,26 @@
 {
   "artifact": "slot_b_judge_agreed_cell_audit_history",
   "burned_audit_ids": [
+    "judge-audit-093f804999c997bd",
     "judge-audit-0b89d747af416fa2",
+    "judge-audit-0fc2ea1ed4ff2002",
+    "judge-audit-216015da6c84c5af",
+    "judge-audit-2269353d0a438e23",
     "judge-audit-240ed922febda102",
+    "judge-audit-256c5302e56088f1",
     "judge-audit-2741c8beb9964a47",
     "judge-audit-3eddc2d4df57655c",
     "judge-audit-45c1fe9406143906",
+    "judge-audit-47faa1aa0edde4e0",
+    "judge-audit-4aa1dff8c477fbbc",
     "judge-audit-5229748795a7fa84",
     "judge-audit-66f5d4d3dbe5bb5d",
     "judge-audit-6f2564ce1364e603",
     "judge-audit-773b1c5ebef80215",
     "judge-audit-77fd5e0d5da1bbbb",
+    "judge-audit-81bee69646a60f1c",
     "judge-audit-82f4688ab1507fa6",
+    "judge-audit-832b1a8ae950f4b9",
     "judge-audit-89cd41cc1510cccc",
     "judge-audit-a57ee99d9f48a115",
     "judge-audit-a6d40703939da4cb",
@@ -23,6 +32,7 @@
     "judge-audit-dc3aa50be9b97dba",
     "judge-audit-e7a55f47d754c9f1",
     "judge-audit-e8c9764c87b0cc5c",
+    "judge-audit-fab69e94e3e98528",
     "judge-audit-fc523a88a04be1b9"
   ]
 }

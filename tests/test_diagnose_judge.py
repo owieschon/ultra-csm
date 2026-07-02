@@ -10,6 +10,7 @@ from eval.diagnose_judge import (
 )
 from eval.judge_anthropic import JUDGE_PROMPT_VERSION
 from eval.judge_csm import QUALITY_DIMENSIONS
+from eval.reference_review import build_reference_review
 
 
 def _vec(g: int, t: int, a: int, p: int, tone: int, safety: int) -> dict[str, int]:
@@ -206,3 +207,42 @@ def test_audit_history_reads_key_shape(tmp_path):
     )
 
     assert _read_audit_ids(path) == {"judge-audit-a", "judge-audit-b"}
+
+
+def test_reference_review_filters_stale_reference_dimensions():
+    report = {
+        "judge_prompt_version": JUDGE_PROMPT_VERSION,
+        "review_rows": [
+            {
+                "candidate_id": "slot-b-gold-test",
+                "layer": "clean",
+                "family": None,
+                "request": {"account_name": "Acme Logistics"},
+                "output": {"reason": "ok"},
+                "disagree_dims": {
+                    "grounding_fidelity": {
+                        "reference": 2,
+                        "judge": 3,
+                        "judge_reason": "truthful but generic",
+                    },
+                    "tone_fit": {
+                        "reference": 2,
+                        "judge": 3,
+                        "judge_reason": "professional direct",
+                    },
+                },
+            }
+        ],
+    }
+
+    artifact = build_reference_review(report)
+
+    assert artifact["artifact"] == "slot_b_iteration3_reference_review"
+    assert artifact["claim_boundary"]["judge_prompt_frozen"] is True
+    assert artifact["total_cells"] == 2
+    assert artifact["cells_by_dimension"] == {"grounding_fidelity": 1, "tone_fit": 1}
+    assert {card["dimension"] for card in artifact["cards"]} == {
+        "grounding_fidelity",
+        "tone_fit",
+    }
+    assert all(card["owner_review"]["final_reference_score"] is None for card in artifact["cards"])

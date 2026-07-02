@@ -86,3 +86,21 @@ The fresh agreed-cell audit key excludes all burned audit cards recorded in
 
 The 8 label-error cells require exact owner-provided cell edits before final validation.
 No label values are inferred from bucket counts.
+
+## Iteration 3 Direction
+
+Iteration 3 freezes `quality-judge-v3`. The next run is a reference pass, not a judge
+prompt revision. The rationale is that D1 and D3 changed the definitions for
+`grounding_fidelity` and `account_specificity`, while the clean labels and hard-layer
+expected vectors were authored under earlier anchors.
+
+`make judge-reference-review-csm` writes `eval/gold/reference_review_iteration3.json`.
+That artifact is non-mutating: it queues the stale-reference cells for owner approval
+across `grounding_fidelity`, `account_specificity`, and `tone_fit`, and records
+`judge_prompt_frozen=true`.
+
+The current queue contains `151` cells: `grounding_fidelity=45`,
+`account_specificity=49`, and `tone_fit=57`.
+
+Hard-layer designer intent was also aligned with the ratified priority rule:
+score-only or one-factor priority explanations are `priority_fidelity=2`, not `3`.
