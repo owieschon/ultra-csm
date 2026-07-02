@@ -5,19 +5,19 @@
   "claim_boundary": {
     "gold_queue_blinded": true,
     "gold_queue_exists": true,
-    "human_labels_complete": false,
+    "human_labels_complete": true,
     "judge_validated": false,
     "live_semantic_quality_proven": false
   },
   "gold_path": "eval/gold/slot_b_quality.jsonl",
-  "human_labeled": 0,
+  "human_labeled": 63,
   "invalid_records": [],
   "key_errors": [],
   "key_path": "eval/gold/slot_b_quality_key.jsonl",
   "key_total": 63,
   "labeled": 63,
-  "next_gate": "Fill human_labels for every record before judge validation.",
-  "ready_for_judge_validation": false,
+  "next_gate": "Validate judge agreement at kappa >= 0.6 per dimension.",
+  "ready_for_judge_validation": true,
   "total": 63,
   "unlabeled": 0,
   "variant_counts": {
