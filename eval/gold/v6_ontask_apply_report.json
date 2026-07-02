@@ -1,0 +1,37 @@
+{
+  "amendment_id": "v6-ontask-boundary-2026-07-02",
+  "approved_labeler": "owner-approved-single-labeler-2026-07-02",
+  "artifact": "slot_b_v6_ontask_apply_report",
+  "changed_cell_count": 1,
+  "changed_cells": [
+    {
+      "candidate_id": "slot-b-gold-e7c82839f9384074",
+      "dimension": "on_task_relevance",
+      "final": 3,
+      "layer": "hard",
+      "previous": 2,
+      "rule": "v6-internal-review-assignment"
+    }
+  ],
+  "claim_boundary": {
+    "intended_traps_preserved": true,
+    "judge_prompt_changed_elsewhere": true,
+    "mechanical_rescore": true,
+    "same_code_as_judge": true,
+    "self_consistency_recheck_needed": false,
+    "single_labeler": true
+  },
+  "clean_path": "/Users/owieschon/dev/ultra-csm/eval/gold/slot_b_quality.jsonl",
+  "conflict_count": 0,
+  "conflicts": [],
+  "date": "2026-07-02",
+  "description": "mechanical re-score of on_task_relevance under ratified v6 boundary (clean + hard)",
+  "hard_key_path": "/Users/owieschon/dev/ultra-csm/eval/gold/slot_b_quality_hard_key.jsonl",
+  "rule_counts": {
+    "hard:v6-internal-review-assignment:2->3": 1
+  },
+  "rules": {
+    "v6-internal-review-assignment": "internal_review + grounded reason + null draft => on_task 3 (citation-verified per cell)",
+    "v6-ontask-deferral-floor": "propose_customer_action + passive deferral, no concrete ask => on_task 1"
+  }
+}

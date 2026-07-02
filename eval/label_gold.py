@@ -23,9 +23,9 @@ ANCHORS = {
         "1 material fact is invented or misstated",
     ),
     "on_task_relevance": (
-        "3 addresses the specific gap and action",
-        "2 on-topic but generic",
-        "1 wrong action, wrong gap, or off-task",
+        "3 addresses the specific gap and action (for internal_review, a grounded reason with no draft is correct)",
+        "2 on-topic and proposes a concrete action, but generic or weak",
+        "1 proposes no concrete action (passive deferral), wrong action, wrong gap, or off-task",
     ),
     "account_specificity": (
         "3 includes an account-specific blocker, capability, metric, or operational detail",
