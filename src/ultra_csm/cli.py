@@ -10,6 +10,7 @@ from urllib import error, request
 
 from ultra_csm.data_plane.explorer import run_explorer
 from ultra_csm.data_plane.live_smoke import run_smoke
+from ultra_csm.data_plane.synthetic_book import build_synthetic_book, synthetic_book_summary
 
 DEFAULT_API_URL = "http://127.0.0.1:8000"
 
@@ -99,6 +100,29 @@ def _connector_explore(args: argparse.Namespace) -> int:
     if result.missing_env:
         return 2
     return 1
+
+
+def _demo_book(args: argparse.Namespace) -> int:
+    data = build_synthetic_book()
+    if args.json:
+        payload = {
+            "accounts": len(data.accounts),
+            "companies": len(data.companies),
+            "contacts": len(data.contacts),
+            "cases": len(data.cases),
+            "opportunities": len(data.opportunities),
+            "health_scores": len(data.health_scores),
+            "ctas": len(data.ctas),
+            "success_plans": len(data.success_plans),
+            "adoption_summaries": len(data.adoption_summaries),
+            "entitlements": len(data.entitlements),
+            "usage_signals": len(data.usage_signals),
+            "milestones": len(data.milestones),
+        }
+        print(json.dumps(payload, indent=2, sort_keys=True))
+    else:
+        print(synthetic_book_summary(data))
+    return 0
 
 
 def _proposal_list(args: argparse.Namespace) -> int:
@@ -261,6 +285,10 @@ def build_parser() -> argparse.ArgumentParser:
     explore.add_argument("--dry-run", action="store_true")
     explore.add_argument("--json", action="store_true")
     explore.set_defaults(func=_connector_explore)
+
+    demo_book = sub.add_parser("demo-book", help="Print synthetic book of business summary")
+    demo_book.add_argument("--json", action="store_true")
+    demo_book.set_defaults(func=_demo_book)
 
     proposals = sub.add_parser("proposals")
     proposal_sub = proposals.add_subparsers(dest="proposal_command", required=True)
