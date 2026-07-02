@@ -16,8 +16,9 @@ make demo
 ```
 
 This runs the deterministic CSM scorecard and offline regression. It proves fixture/sim
-behavior only. It also regenerates the Slot A scorecard, earned-autonomy report, Attio
-simulated onboarding artifact, and read-only MCP transcript.
+behavior only. It also regenerates the Slot A scorecard, earned-autonomy report, the
+Attio/Gainsight/product-telemetry simulated onboarding artifacts, and the read-only MCP
+transcript.
 
 ## Inspect The Synthetic Book
 
@@ -45,15 +46,26 @@ Dry-run connector commands verify configured request shapes only. Replace the du
 vars with real connector credentials and omit `--dry-run` when you are ready to test your
 own tenant; the repository does not claim live-tenant proof.
 
-The local Attio-shaped onboarding path can also be exercised without live credentials
-against the simulated customer book:
+The local Attio-, Gainsight-, and product-telemetry-shaped onboarding paths can also be
+exercised without live credentials against the simulated customer book:
 
 ```sh
 make attio-simulated-onboarding-csm
+make gainsight-simulated-onboarding-csm
+make product-telemetry-simulated-onboarding-csm
 ```
 
-The artifact is written to `eval/attio_simulated_onboarding.json` and freezes the
-confirmed mapping over fixture data while preserving the live-credential boundary.
+Each writes an artifact (`eval/attio_simulated_onboarding.json`,
+`eval/gainsight_simulated_onboarding.json`,
+`eval/product_telemetry_simulated_onboarding.json`) that freezes the confirmed mapping
+over fixture data while preserving the live-credential boundary. The three connectors
+degrade differently and honestly: Attio maps nearly everything with one unknown field;
+Gainsight resolves Company/CTA/SuccessPlan but reports HealthScore and AdoptionSummary as
+unknown because its metadata-describe surface doesn't expose a matching object for either
+without tenant-specific Scorecard/Adoption Explorer configuration; product telemetry
+resolves identity/join fields from OTel resource attributes but reports per-datapoint
+value fields as unknown, since those live in the metric payload itself and need a live
+sample capture, not just attribute introspection.
 
 ## Render Current Status
 

@@ -1,0 +1,49 @@
+{
+  "confirmations": {
+    "CSCompany.current_score": {
+      "contract": "CSCompany",
+      "internal_field": "current_score",
+      "source_object": "Company",
+      "source_field": "Current Score",
+      "source_path": "Current Score",
+      "semantic_role": "health_signal",
+      "value_direction": "higher_is_better"
+    },
+    "CSCompany.status": {
+      "contract": "CSCompany",
+      "internal_field": "status",
+      "source_object": "Company",
+      "source_field": "Status",
+      "source_path": "Status",
+      "semantic_role": "context",
+      "value_direction": "higher_is_better"
+    },
+    "CTA.priority": {
+      "contract": "CTA",
+      "internal_field": "priority",
+      "source_object": "CTA",
+      "source_field": "Priority",
+      "source_path": "Priority",
+      "semantic_role": "context",
+      "value_direction": "higher_is_better"
+    },
+    "CTA.status": {
+      "contract": "CTA",
+      "internal_field": "status",
+      "source_object": "CTA",
+      "source_field": "Status",
+      "source_path": "Status",
+      "semantic_role": "context",
+      "value_direction": "higher_is_better"
+    },
+    "SuccessPlan.status": {
+      "contract": "SuccessPlan",
+      "internal_field": "status",
+      "source_object": "Success Plan",
+      "source_field": "Status",
+      "source_path": "Status",
+      "semantic_role": "outcome_plan",
+      "value_direction": "higher_is_better"
+    }
+  }
+}
