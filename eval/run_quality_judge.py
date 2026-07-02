@@ -13,6 +13,7 @@ import argparse
 import json
 from pathlib import Path
 
+from eval.deterministic_quality import DETERMINISTIC_DIMENSIONS
 from eval.judge_csm import ORDINAL_SCORES, QUALITY_DIMENSIONS, weighted_cohen_kappa
 from eval.judge_anthropic import AnthropicQualityJudge, JUDGE_PROMPT_VERSION, overall_pass
 from eval.gold_slot_b_quality import GOLD_PATH, read_gold_label_candidates, read_gold_label_key
@@ -82,10 +83,24 @@ def score_agreement(items: list[dict]) -> dict:
         if jud_pass and not ref_pass:
             false_neg.append(it["candidate_id"])  # gold says bad, judge passes it (dangerous)
 
+    judge_scored = {
+        dimension: kappa
+        for dimension, kappa in per_dim.items()
+        if dimension not in DETERMINISTIC_DIMENSIONS
+    }
+    deterministic = {
+        dimension: kappa
+        for dimension, kappa in per_dim.items()
+        if dimension in DETERMINISTIC_DIMENSIONS
+    }
+
     return {
         "n": len(items),
         "per_dimension_kappa": per_dim,
+        "judge_scored_per_dimension_kappa": judge_scored,
+        "deterministic_per_dimension_kappa": deterministic,
         "min_dimension_kappa": round(min(per_dim.values()), 3) if per_dim else None,
+        "min_judge_scored_dimension_kappa": round(min(judge_scored.values()), 3) if judge_scored else None,
         "exact_vector_match": exact,
         "overall_pass_false_positive": len(false_pos),
         "overall_pass_false_negative": len(false_neg),
@@ -112,13 +127,14 @@ def build_report(judge) -> dict:
         "artifact": "slot_b_judge_agreement",
         "model_id": judge.model_id,
         "judge_prompt_version": JUDGE_PROMPT_VERSION,
+        "deterministic_dimensions": list(DETERMINISTIC_DIMENSIONS),
         "clean_layer": score_agreement(clean),
         "hard_layer": {**score_agreement(hard), "by_family": by_family(hard)},
         "claim_boundary": {
             "judge_is_independent_of_authoring": True,
             "clean_reference": "human labels (pending approval)",
             "hard_reference": "held-out key expected_vector (designer intent)",
-            "note": "Success = high kappa ON THE HARD LAYER with zero false negatives on H2/H5a. Clean kappa is a floor.",
+            "note": "Model agreement is reported only for judge-scored dimensions. Deterministic dimensions are checked separately.",
         },
     }
 
@@ -135,11 +151,13 @@ def main(argv: list[str] | None = None) -> int:
 
     for layer in ("clean_layer", "hard_layer"):
         s = report[layer]
-        print(f"\n[{layer}]  n={s['n']}  min_dim_kappa={s['min_dimension_kappa']}  "
+        print(f"\n[{layer}]  n={s['n']}  min_judge_dim_kappa={s['min_judge_scored_dimension_kappa']}  "
               f"exact={s['exact_vector_match']}/{s['n']}  "
               f"false_pos={s['overall_pass_false_positive']}  false_neg={s['overall_pass_false_negative']}")
-        for dim, k in s["per_dimension_kappa"].items():
+        for dim, k in s["judge_scored_per_dimension_kappa"].items():
             print(f"    {dim:22} kappa={k}")
+        for dim, k in s["deterministic_per_dimension_kappa"].items():
+            print(f"    {dim:22} deterministic_kappa={k}")
     print(f"\nreport -> {args.output}")
     return 0
 
