@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from eval.diagnose_judge import build_agreed_cell_audit, build_report
+from eval.judge_anthropic import JUDGE_PROMPT_VERSION
 from eval.judge_csm import QUALITY_DIMENSIONS
 
 
@@ -54,6 +55,7 @@ def test_disagreement_report_includes_review_context(monkeypatch):
     report = build_report(_FakeJudge(judge_scores), layer="clean")
 
     assert report["artifact"] == "slot_b_judge_disagreement_report"
+    assert report["judge_prompt_version"] == JUDGE_PROMPT_VERSION
     assert report["summary"]["disagreement_items"] == 1
     row = report["review_rows"][0]
     assert row["candidate_id"] == "slot-b-gold-test"
@@ -146,3 +148,29 @@ def test_agreed_cell_audit_is_blind_and_keyed_separately():
         record["reference_score"] == record["judge_score"]
         for record in key["key_records"]
     )
+
+
+def test_agreed_cell_audit_excludes_previous_cards():
+    item = {
+        "candidate_id": "slot-b-gold-agreed",
+        "layer": "clean",
+        "family": "control_good",
+        "request": {"account_name": "Acme Logistics"},
+        "output": {"reason": "ok", "cited_evidence_ids": []},
+        "reference": _vec(3, 3, 3, 3, 3, 3),
+        "judge": _vec(3, 3, 3, 3, 3, 3),
+        "judge_reasons": {},
+    }
+
+    first_audit, _ = build_agreed_cell_audit([item], sample_size=1)
+    first_id = first_audit["cards"][0]["audit_id"]
+    second_audit, second_key = build_agreed_cell_audit(
+        [item],
+        sample_size=6,
+        exclude_audit_ids={first_id},
+    )
+
+    assert second_audit["excluded_previous_cards"] == 1
+    assert first_id not in {card["audit_id"] for card in second_audit["cards"]}
+    assert second_audit["sample_size"] == 5
+    assert second_key["sample_size"] == 5

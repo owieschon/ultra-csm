@@ -15,7 +15,7 @@ from pathlib import Path
 from typing import Callable, Iterable
 
 from eval.judge_csm import KAPPA_GATE, QUALITY_DIMENSIONS, weighted_cohen_kappa
-from eval.judge_anthropic import AnthropicQualityJudge, overall_pass
+from eval.judge_anthropic import AnthropicQualityJudge, JUDGE_PROMPT_VERSION, overall_pass
 from eval.run_quality_judge import load_clean, load_hard
 
 OUT_PATH = Path(__file__).resolve().parent / "gold" / "judge_disagreement_report.json"
@@ -168,6 +168,7 @@ def build_agreed_cell_audit(
     items: Iterable[dict],
     *,
     sample_size: int = 10,
+    exclude_audit_ids: set[str] | None = None,
 ) -> tuple[dict, dict]:
     """Return a blind agreed-cell audit and a separate key.
 
@@ -176,7 +177,12 @@ def build_agreed_cell_audit(
     second, smaller review path for cells the disagreement report does not show.
     """
 
-    selected = _agreed_cell_candidates(items)[:sample_size]
+    excluded = exclude_audit_ids or set()
+    selected = [
+        (dimension, item)
+        for dimension, item in _agreed_cell_candidates(items)
+        if _audit_id(item, dimension) not in excluded
+    ][:sample_size]
     cards = []
     key = []
     for dimension, item in selected:
@@ -208,6 +214,7 @@ def build_agreed_cell_audit(
             "artifact": "slot_b_judge_agreed_cell_audit",
             "sample_size": len(cards),
             "blind": True,
+            "excluded_previous_cards": len(excluded),
             "cards": cards,
             "claim_boundary": {
                 "agreed_cells_sampled": True,
@@ -246,6 +253,7 @@ def _report_from_scored_items(
     return {
         "artifact": "slot_b_judge_disagreement_report",
         "model_id": judge.model_id,
+        "judge_prompt_version": JUDGE_PROMPT_VERSION,
         "judge_reasoning": judge.reasoning,
         "kappa_gate": KAPPA_GATE,
         "summary": {
@@ -296,6 +304,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--audit-output", default=str(AGREED_AUDIT_PATH))
     parser.add_argument("--audit-key-output", default=str(AGREED_AUDIT_KEY_PATH))
     parser.add_argument("--audit-size", type=int, default=10)
+    parser.add_argument(
+        "--include-existing-audit",
+        action="store_true",
+        help="Allow reusing audit cards from an existing audit key output.",
+    )
     parser.add_argument("--no-audit", action="store_true")
     parser.add_argument("--limit", type=int, default=None)
     parser.add_argument(
@@ -323,15 +336,24 @@ def main(argv: list[str] | None = None) -> int:
     out_path = Path(args.output)
     out_path.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     if not args.no_audit:
+        exclude_audit_ids = set()
+        audit_key_output = Path(args.audit_key_output)
+        if audit_key_output.exists() and not args.include_existing_audit:
+            existing_key = json.loads(audit_key_output.read_text(encoding="utf-8"))
+            exclude_audit_ids = {
+                str(record.get("audit_id"))
+                for record in existing_key.get("key_records", ())
+            }
         audit, audit_key = build_agreed_cell_audit(
             scored_items,
             sample_size=args.audit_size,
+            exclude_audit_ids=exclude_audit_ids,
         )
         Path(args.audit_output).write_text(
             json.dumps(audit, indent=2, sort_keys=True) + "\n",
             encoding="utf-8",
         )
-        Path(args.audit_key_output).write_text(
+        audit_key_output.write_text(
             json.dumps(audit_key, indent=2, sort_keys=True) + "\n",
             encoding="utf-8",
         )

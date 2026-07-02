@@ -14,7 +14,7 @@ import json
 from pathlib import Path
 
 from eval.judge_csm import ORDINAL_SCORES, QUALITY_DIMENSIONS, weighted_cohen_kappa
-from eval.judge_anthropic import AnthropicQualityJudge, overall_pass
+from eval.judge_anthropic import AnthropicQualityJudge, JUDGE_PROMPT_VERSION, overall_pass
 from eval.gold_slot_b_quality import GOLD_PATH, read_gold_label_candidates, read_gold_label_key
 from eval.gold_slot_b_hard import HARD_PATH, HARD_KEY_PATH
 
@@ -52,8 +52,15 @@ def load_hard() -> list[dict]:
     return items
 
 
-def run_judge(judge, items: list[dict]) -> list[dict]:
-    for it in items:
+def run_judge(judge, items: list[dict], *, layer: str) -> list[dict]:
+    total = len(items)
+    for index, it in enumerate(items, start=1):
+        family = it.get("family") or layer
+        print(
+            f"scoring {index}/{total} layer={layer} "
+            f"family={family} id={it['candidate_id']}",
+            flush=True,
+        )
         it["judge"] = judge.score_output(it["request"], it["output"])
     return items
 
@@ -99,11 +106,12 @@ def by_family(items: list[dict]) -> dict:
 
 
 def build_report(judge) -> dict:
-    clean = run_judge(judge, load_clean())
-    hard = run_judge(judge, load_hard())
+    clean = run_judge(judge, load_clean(), layer="clean")
+    hard = run_judge(judge, load_hard(), layer="hard")
     return {
         "artifact": "slot_b_judge_agreement",
         "model_id": judge.model_id,
+        "judge_prompt_version": JUDGE_PROMPT_VERSION,
         "clean_layer": score_agreement(clean),
         "hard_layer": {**score_agreement(hard), "by_family": by_family(hard)},
         "claim_boundary": {

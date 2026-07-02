@@ -76,6 +76,11 @@ hard-layer `overall_pass_false_negative == 0`, without Goodharting the judge.
 grounding 0.185, specificity 0.286, tone 0.386, priority 0.394 FAIL. Reference = draft
 labels pending human approval → the κs are provisional.
 
+**Iteration counter:** the first blind agreed-cell audit returned 8/10. The misses were
+classified as rubric ambiguity, so the grounding-vs-safety and grounding-severity anchors
+were clarified and `judge_prompt_version` was bumped. The next judge agreement run is
+iteration 1 of 3 and must be paired with a fresh agreed-cell audit sample.
+
 **Steps + decision criteria:**
 1. Generate a **disagreement report** (extend `eval/diagnose_judge.py` if it doesn't
    already emit this): for each failing dimension, every item where judge ≠ draft label,
