@@ -107,7 +107,7 @@ score-only or one-factor priority explanations are `priority_fidelity=2`, not `3
 
 ## Iteration 3 Re-Check Gate
 
-The 151 approved cells are not applied until a tool-blinded re-check passes. `make
+The 151 approved cells were not applied until a tool-blinded re-check passed. `make
 judge-reference-recheck-csm` writes:
 
 - `eval/gold/reference_recheck_iteration3.json`: the 40-card labeler-facing deck.
@@ -118,12 +118,11 @@ The deck is stratified across the three re-scored dimensions and the three owner
 but exposes only the dimension to score plus request/output context. It does not expose
 the prior final score, bucket, judge score, or judge rationale.
 
-Gate: no more than `2` disagreements out of `40`. If the gate fails, tighten the affected
-anchor and re-pass before applying the 151 cells.
+Gate: no more than `2` disagreements out of `40`. The re-check passed at `0/40`, so the
+151 approved reference cells were applied mechanically.
 
-The `Hi <first name>` opener remains an owner-ratified tone call before any tone-scoped
-judge revision. Do not change the judge prompt during the frozen `quality-judge-v3`
-iteration-3 reference pass.
+The `Hi <first name>` opener is owner-ratified as acceptable professional-direct register.
+Do not downgrade a draft for that greeting alone.
 
 ## Claim Boundary After Re-Reference
 
@@ -144,3 +143,32 @@ ratified definitions. The defense is procedural, not rhetorical:
 
 The remaining independence limit is the single-labeler limit. A blind second-labeler pass is
 the future check for the human-agreement ceiling.
+
+## Iteration 3 Results
+
+The reference pass applied `151` approved cells: `117` changed and `34` stayed as-is.
+Bucket split: `reference_stale=107`, `judge_error=34`, `definition_ambiguity=10`.
+
+Formal frozen-v3 agreement (`make judge-agreement-csm`) produced this point-estimate table
+with percentile-bootstrap 95% intervals:
+
+| Layer | Dimension | Kappa | 95% CI | Status |
+|---|---|---:|---|---|
+| Clean | `grounding_fidelity` | 0.713 | [0.588, 0.819] | clears point gate; lower CI below gate |
+| Clean | `on_task_relevance` | 0.617 | [0.456, 0.745] | clears point gate; lower CI below gate |
+| Clean | `account_specificity` | 0.420 | [0.184, 0.630] | open |
+| Clean | `tone_fit` | 0.818 | [0.696, 0.911] | clears |
+| Clean | `safety_boundary` | 1.000 | [1.000, 1.000] | clears |
+| Clean | `priority_fidelity` | 1.000 | [1.000, 1.000] | deterministic |
+| Hard | `grounding_fidelity` | 0.651 | [0.194, 0.900] | clears point gate; wide interval |
+| Hard | `on_task_relevance` | 0.421 | [0.258, 0.565] | open |
+| Hard | `account_specificity` | 0.369 | [0.094, 0.601] | open |
+| Hard | `tone_fit` | 0.696 | [0.485, 0.834] | clears point gate; lower CI below gate |
+| Hard | `safety_boundary` | 1.000 | [1.000, 1.000] | clears |
+| Hard | `priority_fidelity` | 1.000 | [1.000, 1.000] | deterministic |
+
+The follow-up diagnosis run, which is another stochastic judge pass, showed the remaining
+misses differently: clean `on_task_relevance=0.594` and hard `account_specificity=0.542`
+were the only judge-scored dimensions below the point gate. This variance means the next
+step is not a broad prompt rewrite; it is a residual review of specificity and on-task
+boundary cases, with the global judge still `not validated`.

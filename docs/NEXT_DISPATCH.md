@@ -25,11 +25,14 @@ detection under catastrophic prompt sabotage; it does **not** yet prove semantic
 quality drift. The remaining proof is the realistic quality-regression lane:
 human-validated judge + plausible degradation + candidate model comparison.
 
-Direction set by the owner: **do all three build tracks** — sequenced below.
+Direction set by the owner: **do all three build tracks, then package the demo** — sequenced below.
 The ruled-out path was shipping with the N=6 soft spot unaddressed; that soft spot is now
 closed for contract/safety drift only. Quality drift stays open until the judge lane lands.
 
-## The roadmap — prove → stabilize → deepen
+## The roadmap — prove → package → deepen → package
+
+Demo packaging is woven in at the two points where each system story becomes complete —
+not deferred to the end.
 
 ### Phase 1 — offline, no credentials (complete)
 - **Slice B machinery** — `regression-csm-live --runs N` + the **paired McNemar**
@@ -39,7 +42,7 @@ closed for contract/safety drift only. Quality drift stays open until the judge 
   hard, no value"). The rail that makes "time-to-*value*" honest. Eval-first, per
   [`CUSTOMER_VALUE_MODEL.md`](CUSTOMER_VALUE_MODEL.md).
 
-### Phase 2 — prove live quality drift
+### Phase 2 — prove live quality drift, then package the eval story
 - **Structural capture:** done at `--runs 30`; `eval/regression_csm_live.json` records
   disjoint Wilson bands, named degraded failure clusters, exact-green deterministic spine,
   and no full generated text. Scope: contract/safety drift, not semantic quality.
@@ -47,19 +50,22 @@ closed for contract/safety drift only. Quality drift stays open until the judge 
   degradation described in [`QUALITY_REGRESSION_EVAL_SPEC.md`](QUALITY_REGRESSION_EVAL_SPEC.md).
 - **Migration capture:** pending; run the paired McNemar artifact with a candidate model id
   before claiming a model-migration result.
-- **Milestone:** non-determinism regression proven on quality — the eval story for live
-  LLM drift detection is complete. Do not wait for Phase 3.
+- **Then package the eval story:** with the non-determinism regression
+  proven on quality, the demo path has its evidence spine.
+  Do not wait for Phase 3.
 
-### Phase 3 — deepen + breadth
+### Phase 3 — deepen + breadth, then package the data-source story
 - **Rocketlane connector** feeding the model (decide the **account-join**), then a **second
   lens** (Risk or Expansion) over the now-deeper model.
   Spec: [`ROCKETLANE_ONBOARDING_CONNECTOR_SPEC.md`](ROCKETLANE_ONBOARDING_CONNECTOR_SPEC.md).
-- **Milestone:** with Rocketlane as a pluggable source + the value model + multiple lenses,
-  the source-pluggability and multi-lens architecture are proven end-to-end.
+- **Then package the data-source story:** with Rocketlane as a pluggable source + the
+  value model + multiple lenses, the source-pluggability story is complete and grounded in
+  a real onboarding-system shape.
 
 **Ordering guard:** keep each step an eval-first slice, and **do not start Phase 3 before
-Phases 1–2 are solid** — breadth must build on the stable model + proven eval coverage,
-not shifting abstractions.
+Phases 1–2 are solid** — breadth must build on the stable model + proven differentiator,
+not shifting abstractions. This is what keeps "do all three" from becoming
+breadth-as-procrastination.
 
 ## Discipline (all phases)
 

@@ -1,15 +1,20 @@
 # Ultra CSM
 
-**What it is.** An eval-first agent system for scaling the traditional SaaS Customer Success function: a
+**What it is.** An eval-first functional prototype for scaling the traditional SaaS Customer Success function with agents: a
 deterministic Customer Value Model (the spine) plus a harness that treats the LLM as a
-*measured instrument*, not an oracle. It tackles the hard parts of putting an
-agent near real customers — eval frameworks for non-deterministic AI, fail-closed safety, and
-honest claim boundaries.
+*measured instrument*, not an oracle. An evolving framework for understanding the hard parts of involving agents
+in customer-facing work (eval frameworks for non-deterministic AI, fail-closed safety, and
+honest claim boundaries), not a finished product.
 
 One spine: `CustomerDataPlane → value_model → ActionGate → Agent 1 (Slot B)`. The current agent
 is a Time-to-Value accelerator: it reads CRM / CS-platform / product-telemetry data, computes a
 customer value model, projects a TTV priority lens, and emits only **gated, proposal-only** CSM
 actions — it never sends or self-authorizes.
+<!-- TRIPWIRE (Demo Slice 3): when the sim closed-loop lands with tier-1 auto-execution, the
+     sentence above must change to the graduated-autonomy framing: "acts autonomously exactly as
+     far as policy allows; customer-facing actions remain human-gated." Do not let it survive
+     Slice 3 as an understatement-turned-inaccuracy. -->
+
 
 ## Architecture: one model, three lenses, one analyst
 
@@ -65,12 +70,12 @@ credentialed lanes are the live quality judge and the live connectors (see below
 
 A non-deterministic instrument must never own a deterministic gate. That boundary is the point.
 
-## Where it stands (honest status)
+## Where it stands
 
 | Area | Status |
 |---|---|
-| Deterministic spine | **Proven** — `23/23` scorecard, 150 tests on real Postgres, hard security gates green |
-| LLM quality judge | **Characterized & stabilized**, not yet human-validated (noise measured, gate N-run-stabilized; human labels are the next gate) |
+| Deterministic spine | **Proven** — `23/23` scorecard, 166 tests on real Postgres, hard security gates green |
+| LLM quality judge | **Partially validated by dimension**, not globally validated. The definitive single-labeler pass is applied; `priority_fidelity` is deterministic, and frozen-v3 judge agreement clears several dimensions by point estimate. `account_specificity` and hard-layer `on_task_relevance` remain open |
 | Connectors (Salesforce/Gainsight/Rocketlane/Attio) | **Built to the credential boundary**, fixture-tested; not yet run against a live tenant |
 | Data | Curated **fixtures**, not production customer data |
 | Outcome rail, Risk & Expansion lenses | **Designed, not built** |
@@ -80,13 +85,17 @@ architecture, and measurement discipline — `docs/DECISION_LOG.md` records what
 
 ## Roadmap (next milestones, in order)
 
-1. **Human-validate the judge** — blind human labels on the hard gold layer plus a second
-   independent labeler to establish the human-agreement ceiling, then report judge-vs-human.
+1. **Finish judge validation** — resolve the residual specificity / on-task boundary cases, then
+   run a blind second independent labeler to establish the human-agreement ceiling
+   (judge-vs-human1-vs-human2).
 2. **Drift-power experiment** — show the judge's residual noise floor is below the generation
    drift it must detect, or scope the "detects quality drift" claim down to what's provable.
-3. **One live vertical, end-to-end** — run a real connector (Attio/Salesforce), close the loop on
-   live data with monitoring and rollback.
-4. **Risk & Expansion lenses** — the two value lenses that move NRR, on the same value model.
+3. **Close the loop in simulation** — stateful sim tenant, graduated autonomy (tier-1 internal
+   actions auto-execute; customer-facing tiers stay human-gated), committers, and outcome
+   re-observation — per `docs/DEMO_EXECUTION_PLAN.md`.
+4. **Live verticals, end-to-end** *(credential-gated, post-demo)* — run real connectors
+   (Rocketlane, Gainsight, OTel, Attio/Salesforce) against a live tenant, with monitoring and rollback.
+5. **Risk & Expansion lenses** — the two value lenses that move NRR, on the same value model.
 
 The working plan lives in `docs/NEXT_DISPATCH.md`.
 
@@ -95,4 +104,4 @@ The working plan lives in `docs/NEXT_DISPATCH.md`.
 - **Architecture & data:** `docs/ARCHITECTURE.md`, `docs/CUSTOMER_VALUE_MODEL.md`, `docs/DATA_PLANE.md`
 - **Eval & judge:** `docs/DECISION_LOG.md`, `docs/QUALITY_REGRESSION_EVAL_SPEC.md`, `docs/NONDETERMINISM_EVAL_HARDENING_SPEC.md`, `docs/QUALITY_LABELING_PROTOCOL.md`
 - **Ops & security:** `docs/OBSERVABILITY.md`, `docs/SECURITY.md`
-- **Connectors & roadmap:** `docs/ROCKETLANE_ONBOARDING_CONNECTOR_SPEC.md`, `docs/NEXT_DISPATCH.md`
+- **Connectors & roadmap:** `docs/ROCKETLANE_ONBOARDING_CONNECTOR_SPEC.md`, `docs/NEXT_DISPATCH.md`, `docs/DEMO_EXECUTION_PLAN.md` (the binding demo plan)

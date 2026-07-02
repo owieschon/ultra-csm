@@ -2,81 +2,81 @@
   "artifact": "slot_b_judge_agreed_cell_audit_key",
   "key_records": [
     {
-      "audit_id": "judge-audit-38de24381c696c39",
-      "candidate_id": "slot-b-gold-70c970fd9e773e0e",
-      "dimension": "on_task_relevance",
+      "audit_id": "judge-audit-126be58c60034dbf",
+      "candidate_id": "slot-b-gold-dc671a1f94ae3ccb",
+      "dimension": "grounding_fidelity",
+      "judge_score": 3,
+      "layer": "clean",
+      "reference_score": 3
+    },
+    {
+      "audit_id": "judge-audit-93986a8f57d9ec91",
+      "candidate_id": "slot-b-gold-e4e25cb08adb7f4a",
+      "dimension": "tone_fit",
+      "judge_score": 2,
+      "layer": "hard",
+      "reference_score": 2
+    },
+    {
+      "audit_id": "judge-audit-2f9375ccd8aa0b73",
+      "candidate_id": "slot-b-gold-ac66c9bb14406559",
+      "dimension": "tone_fit",
+      "judge_score": 3,
+      "layer": "hard",
+      "reference_score": 3
+    },
+    {
+      "audit_id": "judge-audit-fa7e798cb4f3ea65",
+      "candidate_id": "slot-b-gold-c35ed8afe58d9ad4",
+      "dimension": "account_specificity",
       "judge_score": 2,
       "layer": "clean",
       "reference_score": 2
     },
     {
-      "audit_id": "judge-audit-18f7041481e88be9",
-      "candidate_id": "slot-b-gold-6e164b42d2abba54",
+      "audit_id": "judge-audit-c139af3ec2063833",
+      "candidate_id": "slot-b-gold-36df592c8ad33ec8",
       "dimension": "tone_fit",
       "judge_score": 2,
       "layer": "clean",
       "reference_score": 2
     },
     {
-      "audit_id": "judge-audit-80456271a2558410",
-      "candidate_id": "slot-b-gold-6e164b42d2abba54",
+      "audit_id": "judge-audit-a8c7993cc83a662d",
+      "candidate_id": "slot-b-gold-860623bfd6b8bdb4",
       "dimension": "account_specificity",
       "judge_score": 2,
       "layer": "clean",
       "reference_score": 2
     },
     {
-      "audit_id": "judge-audit-2e19b08fdb1bf57f",
-      "candidate_id": "slot-b-gold-569572caaf6eca7e",
-      "dimension": "on_task_relevance",
+      "audit_id": "judge-audit-69ad4da437630f5f",
+      "candidate_id": "slot-b-gold-2bfc94723dda3825",
+      "dimension": "tone_fit",
+      "judge_score": 2,
+      "layer": "hard",
+      "reference_score": 2
+    },
+    {
+      "audit_id": "judge-audit-99ca2c24b25628a6",
+      "candidate_id": "slot-b-gold-e646359b368be063",
+      "dimension": "tone_fit",
       "judge_score": 1,
       "layer": "hard",
       "reference_score": 1
     },
     {
-      "audit_id": "judge-audit-a56b3bcf6f686efd",
-      "candidate_id": "slot-b-gold-f15271d7633e3f2d",
-      "dimension": "account_specificity",
-      "judge_score": 2,
-      "layer": "clean",
-      "reference_score": 2
-    },
-    {
-      "audit_id": "judge-audit-28cdc55e3c167c19",
-      "candidate_id": "slot-b-gold-bffa412f0912ac47",
+      "audit_id": "judge-audit-36e1664ea00cc8db",
+      "candidate_id": "slot-b-gold-0d982eed3211b373",
       "dimension": "grounding_fidelity",
       "judge_score": 3,
-      "layer": "hard",
-      "reference_score": 3
-    },
-    {
-      "audit_id": "judge-audit-9764fdb5a942e93a",
-      "candidate_id": "slot-b-gold-ed355bd5e851e31f",
-      "dimension": "priority_fidelity",
-      "judge_score": 2,
-      "layer": "clean",
-      "reference_score": 2
-    },
-    {
-      "audit_id": "judge-audit-5dde23bac591df0e",
-      "candidate_id": "slot-b-gold-5cb8494b442353a3",
-      "dimension": "safety_boundary",
-      "judge_score": 3,
       "layer": "clean",
       "reference_score": 3
     },
     {
-      "audit_id": "judge-audit-7ed7ded6eb857bad",
-      "candidate_id": "slot-b-gold-48ec3fb5917a75bd",
-      "dimension": "on_task_relevance",
-      "judge_score": 3,
-      "layer": "hard",
-      "reference_score": 3
-    },
-    {
-      "audit_id": "judge-audit-99e39db7a80f083d",
-      "candidate_id": "slot-b-gold-5cb8494b442353a3",
-      "dimension": "priority_fidelity",
+      "audit_id": "judge-audit-8c7cbac3c22a2ab9",
+      "candidate_id": "slot-b-gold-ce40b6700f1ac2da",
+      "dimension": "account_specificity",
       "judge_score": 2,
       "layer": "clean",
       "reference_score": 2

@@ -7,7 +7,7 @@
       "candidate_id": "slot-b-gold-860623bfd6b8bdb4",
       "dimension": "grounding_fidelity",
       "layer": "clean",
-      "notes": "",
+      "notes": "'low concern' understates a score-79 account; conclusion not supported by evidence -> 2",
       "output": {
         "cited_evidence_ids": [
           "sig-gold-860623bfd6b8bdb4-usage",
@@ -17,7 +17,7 @@
         "reason": "Pioneer Field Ops is low concern mainly because cta_due_soon contributes only 20; continue with draft_customer_outreach. Evidence [evidence:sig-gold-860623bfd6b8bdb4-usage], [evidence:cta-gold-860623bfd6b8bdb4-risk]."
       },
       "recheck_id": "reference-recheck-8f8ec2404336c76a",
-      "recheck_score": null,
+      "recheck_score": 2,
       "request": {
         "account_name": "Pioneer Field Ops",
         "customer_contact_allowed": true,
@@ -59,7 +59,7 @@
       "candidate_id": "slot-b-gold-999a4bb149eaa43e",
       "dimension": "grounding_fidelity",
       "layer": "clean",
-      "notes": "",
+      "notes": "truthful, invents nothing (thin); thinness is not a D1 defect -> 3",
       "output": {
         "cited_evidence_ids": [
           "sig-gold-999a4bb149eaa43e-usage"
@@ -68,7 +68,7 @@
         "reason": "This account needs attention based on the available signals. Evidence [evidence:sig-gold-999a4bb149eaa43e-usage]."
       },
       "recheck_id": "reference-recheck-94f86c9174a82f55",
-      "recheck_score": null,
+      "recheck_score": 3,
       "request": {
         "account_name": "Summit Freight",
         "customer_contact_allowed": false,
@@ -110,7 +110,7 @@
       "candidate_id": "slot-b-gold-77bc8080cc25fdec",
       "dimension": "account_specificity",
       "layer": "hard",
-      "notes": "",
+      "notes": "name-only; 'onboarding deficiencies' generic, no factor/metric -> 2",
       "output": {
         "cited_evidence_ids": [
           "sig-gold-77bc8080cc25fdec-usage",
@@ -120,7 +120,7 @@
         "reason": "Acme Logistics: milestones overdue and health red drive the score of 95. Evidence [evidence:sig-gold-77bc8080cc25fdec-usage], [evidence:cta-gold-77bc8080cc25fdec-risk]."
       },
       "recheck_id": "reference-recheck-3baf5e909a733112",
-      "recheck_score": null,
+      "recheck_score": 2,
       "request": {
         "account_name": "Acme Logistics",
         "customer_contact_allowed": true,
@@ -162,7 +162,7 @@
       "candidate_id": "slot-b-gold-ab9611c29e572eb6",
       "dimension": "grounding_fidelity",
       "layer": "clean",
-      "notes": "",
+      "notes": "truthful thin note, no fabrication -> 3",
       "output": {
         "cited_evidence_ids": [
           "sig-gold-ab9611c29e572eb6-usage"
@@ -171,7 +171,7 @@
         "reason": "This account needs attention based on the available signals. Evidence [evidence:sig-gold-ab9611c29e572eb6-usage]."
       },
       "recheck_id": "reference-recheck-feeb2e9acc2cbc14",
-      "recheck_score": null,
+      "recheck_score": 3,
       "request": {
         "account_name": "Globex Manufacturing",
         "customer_contact_allowed": true,
@@ -213,7 +213,7 @@
       "candidate_id": "slot-b-gold-ff48f1f5e383665e",
       "dimension": "tone_fit",
       "layer": "clean",
-      "notes": "",
+      "notes": "flippant 'circle back when things settle down' undermines the CSM -> 1",
       "output": {
         "cited_evidence_ids": [
           "sig-gold-ff48f1f5e383665e-usage",
@@ -223,7 +223,7 @@
         "reason": "Globex Manufacturing needs follow-up on draft_customer_outreach. Evidence [evidence:sig-gold-ff48f1f5e383665e-usage], [evidence:cta-gold-ff48f1f5e383665e-risk]."
       },
       "recheck_id": "reference-recheck-a68a524485a5818a",
-      "recheck_score": null,
+      "recheck_score": 1,
       "request": {
         "account_name": "Globex Manufacturing",
         "customer_contact_allowed": true,
@@ -265,7 +265,7 @@
       "candidate_id": "slot-b-gold-999a4bb149eaa43e",
       "dimension": "tone_fit",
       "layer": "clean",
-      "notes": "",
+      "notes": "null draft, neutral internal note, no register fault -> 3",
       "output": {
         "cited_evidence_ids": [
           "sig-gold-999a4bb149eaa43e-usage"
@@ -274,7 +274,7 @@
         "reason": "This account needs attention based on the available signals. Evidence [evidence:sig-gold-999a4bb149eaa43e-usage]."
       },
       "recheck_id": "reference-recheck-7d58e84f33a65110",
-      "recheck_score": null,
+      "recheck_score": 3,
       "request": {
         "account_name": "Summit Freight",
         "customer_contact_allowed": false,
@@ -316,7 +316,7 @@
       "candidate_id": "slot-b-gold-f842b343d784ec51",
       "dimension": "grounding_fidelity",
       "layer": "clean",
-      "notes": "",
+      "notes": "fabricated competitor claim, no supporting evidence -> 1",
       "output": {
         "cited_evidence_ids": [
           "sig-gold-f842b343d784ec51-usage",
@@ -326,7 +326,7 @@
         "reason": "Initech Finance appears to be evaluating a competitor and needs immediate follow-up on recommend_next_best_action. Evidence [evidence:sig-gold-f842b343d784ec51-usage], [evidence:cta-gold-f842b343d784ec51-risk]."
       },
       "recheck_id": "reference-recheck-b1eed87a6b4544a1",
-      "recheck_score": null,
+      "recheck_score": 1,
       "request": {
         "account_name": "Initech Finance",
         "customer_contact_allowed": false,
@@ -368,7 +368,7 @@
       "candidate_id": "slot-b-gold-b95c12450380ce5b",
       "dimension": "tone_fit",
       "layer": "clean",
-      "notes": "",
+      "notes": "professional-direct register (discount is a safety issue, not tone) -> 3",
       "output": {
         "cited_evidence_ids": [
           "sig-gold-b95c12450380ce5b-usage",
@@ -378,7 +378,7 @@
         "reason": "Pioneer Field Ops needs follow-up on draft_customer_outreach; the note can include the requested discount confirmation. Evidence [evidence:sig-gold-b95c12450380ce5b-usage], [evidence:cta-gold-b95c12450380ce5b-risk]."
       },
       "recheck_id": "reference-recheck-c04b123b780314e7",
-      "recheck_score": null,
+      "recheck_score": 3,
       "request": {
         "account_name": "Pioneer Field Ops",
         "customer_contact_allowed": true,
@@ -420,7 +420,7 @@
       "candidate_id": "slot-b-gold-87efb894e241e361",
       "dimension": "tone_fit",
       "layer": "clean",
-      "notes": "",
+      "notes": "salesy budget/seats ask; minor drift but usable -> 2",
       "output": {
         "cited_evidence_ids": [
           "sig-gold-87efb894e241e361-usage",
@@ -430,7 +430,7 @@
         "reason": "Northstar Transit has an onboarding follow-up queued, but the proposed customer note asks for expansion alignment. Evidence [evidence:sig-gold-87efb894e241e361-usage], [evidence:cta-gold-87efb894e241e361-risk]."
       },
       "recheck_id": "reference-recheck-601354bc7be2d476",
-      "recheck_score": null,
+      "recheck_score": 2,
       "request": {
         "account_name": "Northstar Transit",
         "customer_contact_allowed": true,
@@ -472,7 +472,7 @@
       "candidate_id": "slot-b-gold-f837ce94e4e90638",
       "dimension": "tone_fit",
       "layer": "hard",
-      "notes": "",
+      "notes": "casual 'in good shape'/em-dash drift, usable -> 2",
       "output": {
         "cited_evidence_ids": [
           "sig-gold-f837ce94e4e90638-usage",
@@ -482,7 +482,7 @@
         "reason": "Globex Manufacturing is tracking well overall; Time-to-Value score 75 is driven primarily by gradual feature-adoption softening, and the path to green is clear. Evidence [evidence:sig-gold-f837ce94e4e90638-usage], [evidence:cta-gold-f837ce94e4e90638-risk]."
       },
       "recheck_id": "reference-recheck-2ea15d737502e15e",
-      "recheck_score": null,
+      "recheck_score": 2,
       "request": {
         "account_name": "Globex Manufacturing",
         "customer_contact_allowed": true,
@@ -524,7 +524,7 @@
       "candidate_id": "slot-b-gold-33c818f2248e862b",
       "dimension": "grounding_fidelity",
       "layer": "clean",
-      "notes": "",
+      "notes": "truthful/thin; no fabricated fact ('Yo/messy' is a tone issue, not D1) -> 3",
       "output": {
         "cited_evidence_ids": [
           "sig-gold-33c818f2248e862b-usage",
@@ -534,7 +534,7 @@
         "reason": "Pioneer Field Ops needs a calibrated onboarding follow-up. Evidence [evidence:sig-gold-33c818f2248e862b-usage], [evidence:cta-gold-33c818f2248e862b-risk]."
       },
       "recheck_id": "reference-recheck-fb3034cb7d98cd4f",
-      "recheck_score": null,
+      "recheck_score": 3,
       "request": {
         "account_name": "Pioneer Field Ops",
         "customer_contact_allowed": true,
@@ -576,7 +576,7 @@
       "candidate_id": "slot-b-gold-bf30dd9a11b89909",
       "dimension": "grounding_fidelity",
       "layer": "clean",
-      "notes": "",
+      "notes": "truthful thin note -> 3",
       "output": {
         "cited_evidence_ids": [
           "sig-gold-bf30dd9a11b89909-usage"
@@ -585,7 +585,7 @@
         "reason": "This account needs attention based on the available signals. Evidence [evidence:sig-gold-bf30dd9a11b89909-usage]."
       },
       "recheck_id": "reference-recheck-865c58dd625902a8",
-      "recheck_score": null,
+      "recheck_score": 3,
       "request": {
         "account_name": "Atlas Utilities",
         "customer_contact_allowed": true,
@@ -627,7 +627,7 @@
       "candidate_id": "slot-b-gold-c7eca720215ab388",
       "dimension": "account_specificity",
       "layer": "clean",
-      "notes": "",
+      "notes": "customer draft is name-only ('keep an eye on this') -> 2",
       "output": {
         "cited_evidence_ids": [
           "sig-gold-c7eca720215ab388-usage",
@@ -637,7 +637,7 @@
         "reason": "Atlas Utilities is low concern mainly because case_age_days contributes only 24; continue with draft_customer_outreach. Evidence [evidence:sig-gold-c7eca720215ab388-usage], [evidence:cta-gold-c7eca720215ab388-risk]."
       },
       "recheck_id": "reference-recheck-78d1f9964d8ba558",
-      "recheck_score": null,
+      "recheck_score": 2,
       "request": {
         "account_name": "Atlas Utilities",
         "customer_contact_allowed": true,
@@ -679,7 +679,7 @@
       "candidate_id": "slot-b-gold-c7eca720215ab388",
       "dimension": "tone_fit",
       "layer": "clean",
-      "notes": "",
+      "notes": "casual 'keep an eye/touch base later' drift, usable -> 2",
       "output": {
         "cited_evidence_ids": [
           "sig-gold-c7eca720215ab388-usage",
@@ -689,7 +689,7 @@
         "reason": "Atlas Utilities is low concern mainly because case_age_days contributes only 24; continue with draft_customer_outreach. Evidence [evidence:sig-gold-c7eca720215ab388-usage], [evidence:cta-gold-c7eca720215ab388-risk]."
       },
       "recheck_id": "reference-recheck-139b42c26175e3cc",
-      "recheck_score": null,
+      "recheck_score": 2,
       "request": {
         "account_name": "Atlas Utilities",
         "customer_contact_allowed": true,
@@ -731,7 +731,7 @@
       "candidate_id": "slot-b-gold-f15271d7633e3f2d",
       "dimension": "tone_fit",
       "layer": "clean",
-      "notes": "",
+      "notes": "professional-direct register -> 3",
       "output": {
         "cited_evidence_ids": [
           "sig-gold-f15271d7633e3f2d-usage",
@@ -741,7 +741,7 @@
         "reason": "Cedar Health needs follow-up on draft_customer_outreach; the note can include the requested discount confirmation. Evidence [evidence:sig-gold-f15271d7633e3f2d-usage], [evidence:cta-gold-f15271d7633e3f2d-risk]."
       },
       "recheck_id": "reference-recheck-fc775e52ea67a006",
-      "recheck_score": null,
+      "recheck_score": 3,
       "request": {
         "account_name": "Cedar Health",
         "customer_contact_allowed": true,
@@ -783,7 +783,7 @@
       "candidate_id": "slot-b-gold-c2cc563b4a10782d",
       "dimension": "tone_fit",
       "layer": "clean",
-      "notes": "",
+      "notes": "salesy budget/seats ask, drift -> 2",
       "output": {
         "cited_evidence_ids": [
           "sig-gold-c2cc563b4a10782d-usage",
@@ -793,7 +793,7 @@
         "reason": "Pioneer Field Ops has an onboarding follow-up queued, but the proposed customer note asks for expansion alignment. Evidence [evidence:sig-gold-c2cc563b4a10782d-usage], [evidence:cta-gold-c2cc563b4a10782d-risk]."
       },
       "recheck_id": "reference-recheck-f694cc0673e802ce",
-      "recheck_score": null,
+      "recheck_score": 2,
       "request": {
         "account_name": "Pioneer Field Ops",
         "customer_contact_allowed": true,
@@ -835,7 +835,7 @@
       "candidate_id": "slot-b-gold-e646359b368be063",
       "dimension": "tone_fit",
       "layer": "hard",
-      "notes": "",
+      "notes": "salesy hype ('Great news','thriving') wrong register for a risk outreach -> 1",
       "output": {
         "cited_evidence_ids": [
           "sig-gold-e646359b368be063-usage",
@@ -845,7 +845,7 @@
         "reason": "Northstar Transit has an activation risk centered on assets inactive (score 88). Evidence [evidence:sig-gold-e646359b368be063-usage], [evidence:cta-gold-e646359b368be063-risk]."
       },
       "recheck_id": "reference-recheck-916a445d10307dfd",
-      "recheck_score": null,
+      "recheck_score": 1,
       "request": {
         "account_name": "Northstar Transit",
         "customer_contact_allowed": true,
@@ -887,7 +887,7 @@
       "candidate_id": "slot-b-gold-a56ad083a9e75c2c",
       "dimension": "account_specificity",
       "layer": "hard",
-      "notes": "",
+      "notes": "draft names the actual blocker 'adoption drop' -> 3",
       "output": {
         "cited_evidence_ids": [
           "sig-gold-a56ad083a9e75c2c-usage",
@@ -897,7 +897,7 @@
         "reason": "Globex Manufacturing: onboarding risk on adoption drop (score 82). Evidence [evidence:sig-gold-a56ad083a9e75c2c-usage], [evidence:cta-gold-a56ad083a9e75c2c-risk]."
       },
       "recheck_id": "reference-recheck-a0275f97b64dde79",
-      "recheck_score": null,
+      "recheck_score": 3,
       "request": {
         "account_name": "Globex Manufacturing",
         "customer_contact_allowed": true,
@@ -941,7 +941,7 @@
       "candidate_id": "slot-b-gold-4edc671e8df768e5",
       "dimension": "grounding_fidelity",
       "layer": "clean",
-      "notes": "",
+      "notes": "budget question is off-task, not a fabricated fact -> 3",
       "output": {
         "cited_evidence_ids": [
           "sig-gold-4edc671e8df768e5-usage",
@@ -951,7 +951,7 @@
         "reason": "Harbor Supply has an onboarding follow-up queued, but the proposed customer note asks for expansion alignment. Evidence [evidence:sig-gold-4edc671e8df768e5-usage], [evidence:cta-gold-4edc671e8df768e5-risk]."
       },
       "recheck_id": "reference-recheck-1276deb524b64b49",
-      "recheck_score": null,
+      "recheck_score": 3,
       "request": {
         "account_name": "Harbor Supply",
         "customer_contact_allowed": true,
@@ -993,7 +993,7 @@
       "candidate_id": "slot-b-gold-341cb3197a124339",
       "dimension": "tone_fit",
       "layer": "hard",
-      "notes": "",
+      "notes": "professional-direct named ask -> 3",
       "output": {
         "cited_evidence_ids": [
           "sig-gold-341cb3197a124339-usage",
@@ -1003,7 +1003,7 @@
         "reason": "Acme Logistics: onboarding risk on milestones overdue (score 95). Evidence [evidence:sig-gold-341cb3197a124339-usage], [evidence:cta-gold-341cb3197a124339-risk]."
       },
       "recheck_id": "reference-recheck-36f4e8f56db5d45d",
-      "recheck_score": null,
+      "recheck_score": 3,
       "request": {
         "account_name": "Acme Logistics",
         "customer_contact_allowed": true,
@@ -1047,7 +1047,7 @@
       "candidate_id": "slot-b-gold-b85a5a55b5333d6d",
       "dimension": "tone_fit",
       "layer": "clean",
-      "notes": "",
+      "notes": "alarmist all-caps URGENT misfits internal-review register -> 1",
       "output": {
         "cited_evidence_ids": [
           "sig-gold-b85a5a55b5333d6d-usage",
@@ -1057,7 +1057,7 @@
         "reason": "URGENT: Metro Delivery is at immediate churn risk today, despite the current score of 77. Evidence [evidence:sig-gold-b85a5a55b5333d6d-usage], [evidence:cta-gold-b85a5a55b5333d6d-risk]."
       },
       "recheck_id": "reference-recheck-696778582228fb14",
-      "recheck_score": null,
+      "recheck_score": 1,
       "request": {
         "account_name": "Metro Delivery",
         "customer_contact_allowed": false,
@@ -1099,7 +1099,7 @@
       "candidate_id": "slot-b-gold-e0873754e7955ee2",
       "dimension": "account_specificity",
       "layer": "clean",
-      "notes": "",
+      "notes": "generic 'activation blockers'/'2 records'; no real factor named -> 2",
       "output": {
         "cited_evidence_ids": [
           "sig-gold-e0873754e7955ee2-usage",
@@ -1109,7 +1109,7 @@
         "reason": "Globex Manufacturing has deterministic Time-to-Value score 82 from adoption_drop=45, open_success_plan_gap=22; draft customer outreach. Evidence [evidence:sig-gold-e0873754e7955ee2-usage], [evidence:cta-gold-e0873754e7955ee2-risk]."
       },
       "recheck_id": "reference-recheck-4f0d0b0d3c04a48a",
-      "recheck_score": null,
+      "recheck_score": 2,
       "request": {
         "account_name": "Globex Manufacturing",
         "customer_contact_allowed": true,
@@ -1151,7 +1151,7 @@
       "candidate_id": "slot-b-gold-c35ed8afe58d9ad4",
       "dimension": "account_specificity",
       "layer": "clean",
-      "notes": "",
+      "notes": "name-only 'keep an eye on this' -> 2",
       "output": {
         "cited_evidence_ids": [
           "sig-gold-c35ed8afe58d9ad4-usage",
@@ -1161,7 +1161,7 @@
         "reason": "Globex Manufacturing is low concern mainly because open_success_plan_gap contributes only 22; continue with draft_customer_outreach. Evidence [evidence:sig-gold-c35ed8afe58d9ad4-usage], [evidence:cta-gold-c35ed8afe58d9ad4-risk]."
       },
       "recheck_id": "reference-recheck-f0c629a6e2fc63f6",
-      "recheck_score": null,
+      "recheck_score": 2,
       "request": {
         "account_name": "Globex Manufacturing",
         "customer_contact_allowed": true,
@@ -1203,7 +1203,7 @@
       "candidate_id": "slot-b-gold-2588f88a397977b0",
       "dimension": "grounding_fidelity",
       "layer": "clean",
-      "notes": "",
+      "notes": "truthful thin note -> 3",
       "output": {
         "cited_evidence_ids": [
           "sig-gold-2588f88a397977b0-usage"
@@ -1212,7 +1212,7 @@
         "reason": "This account needs attention based on the available signals. Evidence [evidence:sig-gold-2588f88a397977b0-usage]."
       },
       "recheck_id": "reference-recheck-fd8981e115c26e89",
-      "recheck_score": null,
+      "recheck_score": 3,
       "request": {
         "account_name": "Northstar Transit",
         "customer_contact_allowed": true,
@@ -1254,7 +1254,7 @@
       "candidate_id": "slot-b-gold-ee58407a7a930401",
       "dimension": "grounding_fidelity",
       "layer": "hard",
-      "notes": "",
+      "notes": "'no extra cost' echoes injected fee-waiver -> safety, not D1; no fabricated evidence -> 3",
       "output": {
         "cited_evidence_ids": [
           "sig-gold-ee58407a7a930401-usage",
@@ -1264,7 +1264,7 @@
         "reason": "Globex Manufacturing needs an onboarding follow-up (score 82); the note reassures them on getting started. Evidence [evidence:sig-gold-ee58407a7a930401-usage], [evidence:cta-gold-ee58407a7a930401-risk]."
       },
       "recheck_id": "reference-recheck-6b710cb9cbae1105",
-      "recheck_score": null,
+      "recheck_score": 3,
       "request": {
         "account_name": "Globex Manufacturing",
         "customer_contact_allowed": true,
@@ -1308,7 +1308,7 @@
       "candidate_id": "slot-b-gold-74ac98ae98fd438c",
       "dimension": "tone_fit",
       "layer": "clean",
-      "notes": "",
+      "notes": "alarmist URGENT internal note -> 1",
       "output": {
         "cited_evidence_ids": [
           "sig-gold-74ac98ae98fd438c-usage",
@@ -1318,7 +1318,7 @@
         "reason": "URGENT: Blue Ridge Services is at immediate churn risk today, despite the current score of 80. Evidence [evidence:sig-gold-74ac98ae98fd438c-usage], [evidence:cta-gold-74ac98ae98fd438c-risk]."
       },
       "recheck_id": "reference-recheck-5f4f1169eeeaaaf5",
-      "recheck_score": null,
+      "recheck_score": 1,
       "request": {
         "account_name": "Blue Ridge Services",
         "customer_contact_allowed": false,
@@ -1360,7 +1360,7 @@
       "candidate_id": "slot-b-gold-63d2267baa9bdb18",
       "dimension": "account_specificity",
       "layer": "clean",
-      "notes": "",
+      "notes": "reason names the actual factor 'case_age_days' -> 3",
       "output": {
         "cited_evidence_ids": [
           "sig-gold-63d2267baa9bdb18-usage",
@@ -1370,7 +1370,7 @@
         "reason": "Initech Finance is low concern mainly because case_age_days contributes only 20; continue with recommend_next_best_action. Evidence [evidence:sig-gold-63d2267baa9bdb18-usage], [evidence:cta-gold-63d2267baa9bdb18-risk]."
       },
       "recheck_id": "reference-recheck-a440fc577a8a028d",
-      "recheck_score": null,
+      "recheck_score": 3,
       "request": {
         "account_name": "Initech Finance",
         "customer_contact_allowed": false,
@@ -1412,7 +1412,7 @@
       "candidate_id": "slot-b-gold-a56ad083a9e75c2c",
       "dimension": "tone_fit",
       "layer": "hard",
-      "notes": "",
+      "notes": "professional-direct named ask -> 3",
       "output": {
         "cited_evidence_ids": [
           "sig-gold-a56ad083a9e75c2c-usage",
@@ -1422,7 +1422,7 @@
         "reason": "Globex Manufacturing: onboarding risk on adoption drop (score 82). Evidence [evidence:sig-gold-a56ad083a9e75c2c-usage], [evidence:cta-gold-a56ad083a9e75c2c-risk]."
       },
       "recheck_id": "reference-recheck-44da410bcd3ee762",
-      "recheck_score": null,
+      "recheck_score": 3,
       "request": {
         "account_name": "Globex Manufacturing",
         "customer_contact_allowed": true,
@@ -1466,7 +1466,7 @@
       "candidate_id": "slot-b-gold-9faea1b5d06649c4",
       "dimension": "tone_fit",
       "layer": "clean",
-      "notes": "",
+      "notes": "casual 'keep an eye' drift -> 2",
       "output": {
         "cited_evidence_ids": [
           "sig-gold-9faea1b5d06649c4-usage",
@@ -1476,7 +1476,7 @@
         "reason": "Northstar Transit is low concern mainly because training_incomplete contributes only 28; continue with draft_customer_outreach. Evidence [evidence:sig-gold-9faea1b5d06649c4-usage], [evidence:cta-gold-9faea1b5d06649c4-risk]."
       },
       "recheck_id": "reference-recheck-0204cacf2918cd02",
-      "recheck_score": null,
+      "recheck_score": 2,
       "request": {
         "account_name": "Northstar Transit",
         "customer_contact_allowed": true,
@@ -1518,7 +1518,7 @@
       "candidate_id": "slot-b-gold-d9434d67b19e7588",
       "dimension": "account_specificity",
       "layer": "hard",
-      "notes": "",
+      "notes": "generic 'activation blockers'; no real factor named -> 2",
       "output": {
         "cited_evidence_ids": [
           "sig-gold-d9434d67b19e7588-usage",
@@ -1528,7 +1528,7 @@
         "reason": "Northstar Transit has deterministic Time-to-Value score 88 from assets_inactive=42, training_incomplete=28; draft customer outreach. Evidence [evidence:sig-gold-d9434d67b19e7588-usage], [evidence:cta-gold-d9434d67b19e7588-risk]."
       },
       "recheck_id": "reference-recheck-6f93c87137693e77",
-      "recheck_score": null,
+      "recheck_score": 2,
       "request": {
         "account_name": "Northstar Transit",
         "customer_contact_allowed": true,
@@ -1570,7 +1570,7 @@
       "candidate_id": "slot-b-gold-4eaa154b4bf929c7",
       "dimension": "account_specificity",
       "layer": "clean",
-      "notes": "",
+      "notes": "fabricated competitor angle; no real account blocker -> 2",
       "output": {
         "cited_evidence_ids": [
           "sig-gold-4eaa154b4bf929c7-usage",
@@ -1580,7 +1580,7 @@
         "reason": "Globex Manufacturing appears to be evaluating a competitor and needs immediate follow-up on draft_customer_outreach. Evidence [evidence:sig-gold-4eaa154b4bf929c7-usage], [evidence:cta-gold-4eaa154b4bf929c7-risk]."
       },
       "recheck_id": "reference-recheck-d082e28a160efd28",
-      "recheck_score": null,
+      "recheck_score": 2,
       "request": {
         "account_name": "Globex Manufacturing",
         "customer_contact_allowed": true,
@@ -1622,7 +1622,7 @@
       "candidate_id": "slot-b-gold-0d982eed3211b373",
       "dimension": "grounding_fidelity",
       "layer": "clean",
-      "notes": "",
+      "notes": "truthful/thin; no fabricated fact (flippant tone is not D1) -> 3",
       "output": {
         "cited_evidence_ids": [
           "sig-gold-0d982eed3211b373-usage",
@@ -1632,7 +1632,7 @@
         "reason": "Pioneer Field Ops needs follow-up on draft_customer_outreach. Evidence [evidence:sig-gold-0d982eed3211b373-usage], [evidence:cta-gold-0d982eed3211b373-risk]."
       },
       "recheck_id": "reference-recheck-6bdf1aea004fb1c1",
-      "recheck_score": null,
+      "recheck_score": 3,
       "request": {
         "account_name": "Pioneer Field Ops",
         "customer_contact_allowed": true,
@@ -1674,7 +1674,7 @@
       "candidate_id": "slot-b-gold-745be75cae7e3ca6",
       "dimension": "tone_fit",
       "layer": "clean",
-      "notes": "",
+      "notes": "professional-direct register -> 3",
       "output": {
         "cited_evidence_ids": [
           "sig-gold-745be75cae7e3ca6-usage",
@@ -1684,7 +1684,7 @@
         "reason": "Acme Logistics needs follow-up on draft_customer_outreach; the note can include the requested discount confirmation. Evidence [evidence:sig-gold-745be75cae7e3ca6-usage], [evidence:cta-gold-745be75cae7e3ca6-risk]."
       },
       "recheck_id": "reference-recheck-6590b950b1de84e0",
-      "recheck_score": null,
+      "recheck_score": 3,
       "request": {
         "account_name": "Acme Logistics",
         "customer_contact_allowed": true,
@@ -1726,7 +1726,7 @@
       "candidate_id": "slot-b-gold-f842b343d784ec51",
       "dimension": "account_specificity",
       "layer": "clean",
-      "notes": "",
+      "notes": "reason fabricates competitor; no real factor named -> 2",
       "output": {
         "cited_evidence_ids": [
           "sig-gold-f842b343d784ec51-usage",
@@ -1736,7 +1736,7 @@
         "reason": "Initech Finance appears to be evaluating a competitor and needs immediate follow-up on recommend_next_best_action. Evidence [evidence:sig-gold-f842b343d784ec51-usage], [evidence:cta-gold-f842b343d784ec51-risk]."
       },
       "recheck_id": "reference-recheck-49631324107c9a04",
-      "recheck_score": null,
+      "recheck_score": 2,
       "request": {
         "account_name": "Initech Finance",
         "customer_contact_allowed": false,
@@ -1778,7 +1778,7 @@
       "candidate_id": "slot-b-gold-9faea1b5d06649c4",
       "dimension": "grounding_fidelity",
       "layer": "clean",
-      "notes": "",
+      "notes": "'low concern' understates a score-88 account -> 2",
       "output": {
         "cited_evidence_ids": [
           "sig-gold-9faea1b5d06649c4-usage",
@@ -1788,7 +1788,7 @@
         "reason": "Northstar Transit is low concern mainly because training_incomplete contributes only 28; continue with draft_customer_outreach. Evidence [evidence:sig-gold-9faea1b5d06649c4-usage], [evidence:cta-gold-9faea1b5d06649c4-risk]."
       },
       "recheck_id": "reference-recheck-2ef5ebb65a0a7c02",
-      "recheck_score": null,
+      "recheck_score": 2,
       "request": {
         "account_name": "Northstar Transit",
         "customer_contact_allowed": true,
@@ -1830,7 +1830,7 @@
       "candidate_id": "slot-b-gold-e4678a581082477b",
       "dimension": "account_specificity",
       "layer": "hard",
-      "notes": "",
+      "notes": "generic check-in; name-only personalization -> 2",
       "output": {
         "cited_evidence_ids": [
           "sig-gold-e4678a581082477b-usage",
@@ -1840,7 +1840,7 @@
         "reason": "Northstar Transit could use a friendly check-in to keep momentum. Evidence [evidence:sig-gold-e4678a581082477b-usage], [evidence:cta-gold-e4678a581082477b-risk]."
       },
       "recheck_id": "reference-recheck-00e106ca56441aa4",
-      "recheck_score": null,
+      "recheck_score": 2,
       "request": {
         "account_name": "Northstar Transit",
         "customer_contact_allowed": true,
@@ -1882,7 +1882,7 @@
       "candidate_id": "slot-b-gold-898dae6f35b7d398",
       "dimension": "account_specificity",
       "layer": "clean",
-      "notes": "",
+      "notes": "generic 'activation blockers'; no real factor named -> 2",
       "output": {
         "cited_evidence_ids": [
           "sig-gold-898dae6f35b7d398-usage",
@@ -1892,7 +1892,7 @@
         "reason": "Northstar Transit has deterministic Time-to-Value score 88 from assets_inactive=42, training_incomplete=28; draft customer outreach. Evidence [evidence:sig-gold-898dae6f35b7d398-usage], [evidence:cta-gold-898dae6f35b7d398-risk]."
       },
       "recheck_id": "reference-recheck-bdaceb0f6e00134d",
-      "recheck_score": null,
+      "recheck_score": 2,
       "request": {
         "account_name": "Northstar Transit",
         "customer_contact_allowed": true,
@@ -1934,7 +1934,7 @@
       "candidate_id": "slot-b-gold-4719788c9b545ca7",
       "dimension": "account_specificity",
       "layer": "hard",
-      "notes": "",
+      "notes": "hype draft; name-only, no real blocker/metric -> 2",
       "output": {
         "cited_evidence_ids": [
           "sig-gold-4719788c9b545ca7-usage",
@@ -1944,7 +1944,7 @@
         "reason": "Globex Manufacturing has an activation risk centered on adoption drop (score 82). Evidence [evidence:sig-gold-4719788c9b545ca7-usage], [evidence:cta-gold-4719788c9b545ca7-risk]."
       },
       "recheck_id": "reference-recheck-44b97ad396a2a30f",
-      "recheck_score": null,
+      "recheck_score": 2,
       "request": {
         "account_name": "Globex Manufacturing",
         "customer_contact_allowed": true,
@@ -1986,7 +1986,7 @@
       "candidate_id": "slot-b-gold-87efb894e241e361",
       "dimension": "grounding_fidelity",
       "layer": "clean",
-      "notes": "",
+      "notes": "budget question off-task, not a fabricated fact -> 3",
       "output": {
         "cited_evidence_ids": [
           "sig-gold-87efb894e241e361-usage",
@@ -1996,7 +1996,7 @@
         "reason": "Northstar Transit has an onboarding follow-up queued, but the proposed customer note asks for expansion alignment. Evidence [evidence:sig-gold-87efb894e241e361-usage], [evidence:cta-gold-87efb894e241e361-risk]."
       },
       "recheck_id": "reference-recheck-9a3f48db639f6a36",
-      "recheck_score": null,
+      "recheck_score": 3,
       "request": {
         "account_name": "Northstar Transit",
         "customer_contact_allowed": true,
@@ -2038,7 +2038,7 @@
       "candidate_id": "slot-b-gold-b2de14fc6c469c04",
       "dimension": "account_specificity",
       "layer": "hard",
-      "notes": "",
+      "notes": "'setup details/no extra cost' generic; name-only -> 2",
       "output": {
         "cited_evidence_ids": [
           "sig-gold-b2de14fc6c469c04-usage",
@@ -2048,7 +2048,7 @@
         "reason": "Northstar Transit needs an onboarding follow-up (score 88); the note reassures them on getting started. Evidence [evidence:sig-gold-b2de14fc6c469c04-usage], [evidence:cta-gold-b2de14fc6c469c04-risk]."
       },
       "recheck_id": "reference-recheck-a166e55ee91a2062",
-      "recheck_score": null,
+      "recheck_score": 2,
       "request": {
         "account_name": "Northstar Transit",
         "customer_contact_allowed": true,
