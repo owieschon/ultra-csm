@@ -15,6 +15,8 @@ try:
 except ImportError:
     pytest.skip("mcp package not installed", allow_module_level=True)
 
+from ultra_csm.data_plane.fixtures import ACME_LOGISTICS
+
 MCP_TOKEN = "mcp-lane-a-token"
 
 
@@ -80,6 +82,53 @@ class TestGetAccountBrief:
     def test_brief_missing_account(self):
         result = mcp_server.get_account_brief("00000000-0000-0000-0000-000000000000")
         assert "error" in result
+
+
+class TestReadOnlyAccessMode:
+    def test_tool_manifest_marks_write_tools_unavailable_in_read_only(self, monkeypatch):
+        monkeypatch.setenv("ULTRA_CSM_MCP_READONLY", "1")
+
+        manifest = mcp_server.get_tool_manifest()
+        tools = {tool["name"]: tool for tool in manifest["tools"]}
+
+        assert manifest["access_mode"] == "read_only"
+        assert tools["run_sweep"]["classification"] == "state_changing"
+        assert tools["run_sweep"]["readonly_available"] is False
+        assert tools["submit_verdict"]["readonly_available"] is False
+        assert tools["get_hold_status"]["readonly_available"] is True
+
+    def test_read_only_mode_refuses_sweep_and_verdict(self, monkeypatch):
+        monkeypatch.setenv("ULTRA_CSM_MCP_READONLY", "1")
+
+        sweep = mcp_server.run_sweep()
+        verdict = mcp_server.submit_verdict(
+            "00000000-0000-0000-0000-000000000000",
+            "approve",
+            "test",
+            token=MCP_TOKEN,
+        )
+
+        assert sweep["code"] == "MCP_READONLY"
+        assert verdict["code"] == "MCP_READONLY"
+
+
+class TestHoldAndTrajectoryReads:
+    def test_get_hold_status_projects_ttv_gap_hold_without_writing(self):
+        result = mcp_server.get_hold_status(ACME_LOGISTICS)
+
+        assert result["status"] == "blocked_no_action"
+        assert result["action_scope"] == "customer_facing"
+        assert result["lens"] == "expansion"
+        assert "ttv_gap" in {blocker["lens"] for blocker in result["blockers"]}
+        assert result["claim_boundary"] == {"sim": True, "live": False}
+
+    def test_get_trajectory_returns_read_only_points(self):
+        result = mcp_server.get_trajectory(ACME_LOGISTICS, window_days=60)
+
+        assert result["account_id"] == ACME_LOGISTICS
+        assert result["trend"] in {"unknown", "improving", "stable", "declining"}
+        assert result["points"]
+        assert result["claim_boundary"] == {"sim": True, "live": False}
 
 
 class TestRunSweep:
