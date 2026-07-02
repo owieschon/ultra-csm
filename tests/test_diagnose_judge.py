@@ -11,6 +11,7 @@ from eval.diagnose_judge import (
 from eval.judge_anthropic import JUDGE_PROMPT_VERSION
 from eval.judge_csm import QUALITY_DIMENSIONS
 from eval.reference_review import build_reference_review
+from eval.reference_recheck import build_reference_recheck
 
 
 def _vec(g: int, t: int, a: int, p: int, tone: int, safety: int) -> dict[str, int]:
@@ -246,3 +247,61 @@ def test_reference_review_filters_stale_reference_dimensions():
         "tone_fit",
     }
     assert all(card["owner_review"]["final_reference_score"] is None for card in artifact["cards"])
+
+
+def _review_card(candidate_id: str, dimension: str, bucket: str, score: int = 3) -> dict:
+    return {
+        "candidate_id": candidate_id,
+        "layer": "clean",
+        "family": None,
+        "dimension": dimension,
+        "current_reference": 2,
+        "judge_score": 3,
+        "judge_reason": "hidden",
+        "request": {"account_name": "Acme Logistics"},
+        "output": {"reason": "ok"},
+        "owner_review": {
+            "final_reference_score": score,
+            "bucket": bucket,
+            "notes": "hidden",
+        },
+    }
+
+
+def test_reference_recheck_is_blind_and_stratified():
+    cards = []
+    index = 0
+    for dimension in ("grounding_fidelity", "account_specificity", "tone_fit"):
+        for bucket in ("reference_stale", "judge_error", "definition_ambiguity"):
+            for _ in range(3):
+                index += 1
+                cards.append(_review_card(f"c-{index:03d}", dimension, bucket))
+    review = {"cards": cards}
+
+    deck, key = build_reference_recheck(review, sample_size=9)
+
+    assert deck["blind"] is True
+    assert deck["sample_size"] == 9
+    assert key["sample_size"] == 9
+    assert set(deck["dimension_counts"]) == {
+        "grounding_fidelity",
+        "account_specificity",
+        "tone_fit",
+    }
+    assert deck["bucket_stratified"] is True
+    assert key["bucket_counts"] == {
+        "definition_ambiguity": 3,
+        "judge_error": 3,
+        "reference_stale": 3,
+    }
+    assert {card["recheck_id"] for card in deck["cards"]} == {
+        record["recheck_id"] for record in key["key_records"]
+    }
+    raw_deck = str(deck)
+    assert "prior_final_reference_score" not in raw_deck
+    assert "owner_bucket" not in raw_deck
+    assert "judge_score" not in raw_deck
+    assert "judge_reason" not in raw_deck
+    assert "reference_stale" not in raw_deck
+    assert "judge_error" not in raw_deck
+    assert "definition_ambiguity" not in raw_deck

@@ -1,0 +1,336 @@
+{
+  "artifact": "slot_b_iteration3_reference_recheck_key",
+  "bucket_counts": {
+    "definition_ambiguity": 3,
+    "judge_error": 9,
+    "reference_stale": 28
+  },
+  "bucket_targets": {
+    "definition_ambiguity": 3,
+    "judge_error": 9,
+    "reference_stale": 28
+  },
+  "key_records": [
+    {
+      "candidate_id": "slot-b-gold-860623bfd6b8bdb4",
+      "dimension": "grounding_fidelity",
+      "layer": "clean",
+      "owner_bucket": "reference_stale",
+      "prior_final_reference_score": 2,
+      "recheck_id": "reference-recheck-8f8ec2404336c76a"
+    },
+    {
+      "candidate_id": "slot-b-gold-999a4bb149eaa43e",
+      "dimension": "grounding_fidelity",
+      "layer": "clean",
+      "owner_bucket": "reference_stale",
+      "prior_final_reference_score": 3,
+      "recheck_id": "reference-recheck-94f86c9174a82f55"
+    },
+    {
+      "candidate_id": "slot-b-gold-77bc8080cc25fdec",
+      "dimension": "account_specificity",
+      "layer": "hard",
+      "owner_bucket": "reference_stale",
+      "prior_final_reference_score": 2,
+      "recheck_id": "reference-recheck-3baf5e909a733112"
+    },
+    {
+      "candidate_id": "slot-b-gold-ab9611c29e572eb6",
+      "dimension": "grounding_fidelity",
+      "layer": "clean",
+      "owner_bucket": "reference_stale",
+      "prior_final_reference_score": 3,
+      "recheck_id": "reference-recheck-feeb2e9acc2cbc14"
+    },
+    {
+      "candidate_id": "slot-b-gold-ff48f1f5e383665e",
+      "dimension": "tone_fit",
+      "layer": "clean",
+      "owner_bucket": "reference_stale",
+      "prior_final_reference_score": 1,
+      "recheck_id": "reference-recheck-a68a524485a5818a"
+    },
+    {
+      "candidate_id": "slot-b-gold-999a4bb149eaa43e",
+      "dimension": "tone_fit",
+      "layer": "clean",
+      "owner_bucket": "judge_error",
+      "prior_final_reference_score": 3,
+      "recheck_id": "reference-recheck-7d58e84f33a65110"
+    },
+    {
+      "candidate_id": "slot-b-gold-f842b343d784ec51",
+      "dimension": "grounding_fidelity",
+      "layer": "clean",
+      "owner_bucket": "judge_error",
+      "prior_final_reference_score": 1,
+      "recheck_id": "reference-recheck-b1eed87a6b4544a1"
+    },
+    {
+      "candidate_id": "slot-b-gold-b95c12450380ce5b",
+      "dimension": "tone_fit",
+      "layer": "clean",
+      "owner_bucket": "reference_stale",
+      "prior_final_reference_score": 3,
+      "recheck_id": "reference-recheck-c04b123b780314e7"
+    },
+    {
+      "candidate_id": "slot-b-gold-87efb894e241e361",
+      "dimension": "tone_fit",
+      "layer": "clean",
+      "owner_bucket": "reference_stale",
+      "prior_final_reference_score": 2,
+      "recheck_id": "reference-recheck-601354bc7be2d476"
+    },
+    {
+      "candidate_id": "slot-b-gold-f837ce94e4e90638",
+      "dimension": "tone_fit",
+      "layer": "hard",
+      "owner_bucket": "reference_stale",
+      "prior_final_reference_score": 2,
+      "recheck_id": "reference-recheck-2ea15d737502e15e"
+    },
+    {
+      "candidate_id": "slot-b-gold-33c818f2248e862b",
+      "dimension": "grounding_fidelity",
+      "layer": "clean",
+      "owner_bucket": "reference_stale",
+      "prior_final_reference_score": 3,
+      "recheck_id": "reference-recheck-fb3034cb7d98cd4f"
+    },
+    {
+      "candidate_id": "slot-b-gold-bf30dd9a11b89909",
+      "dimension": "grounding_fidelity",
+      "layer": "clean",
+      "owner_bucket": "reference_stale",
+      "prior_final_reference_score": 3,
+      "recheck_id": "reference-recheck-865c58dd625902a8"
+    },
+    {
+      "candidate_id": "slot-b-gold-c7eca720215ab388",
+      "dimension": "account_specificity",
+      "layer": "clean",
+      "owner_bucket": "reference_stale",
+      "prior_final_reference_score": 2,
+      "recheck_id": "reference-recheck-78d1f9964d8ba558"
+    },
+    {
+      "candidate_id": "slot-b-gold-c7eca720215ab388",
+      "dimension": "tone_fit",
+      "layer": "clean",
+      "owner_bucket": "reference_stale",
+      "prior_final_reference_score": 2,
+      "recheck_id": "reference-recheck-139b42c26175e3cc"
+    },
+    {
+      "candidate_id": "slot-b-gold-f15271d7633e3f2d",
+      "dimension": "tone_fit",
+      "layer": "clean",
+      "owner_bucket": "definition_ambiguity",
+      "prior_final_reference_score": 3,
+      "recheck_id": "reference-recheck-fc775e52ea67a006"
+    },
+    {
+      "candidate_id": "slot-b-gold-c2cc563b4a10782d",
+      "dimension": "tone_fit",
+      "layer": "clean",
+      "owner_bucket": "reference_stale",
+      "prior_final_reference_score": 2,
+      "recheck_id": "reference-recheck-f694cc0673e802ce"
+    },
+    {
+      "candidate_id": "slot-b-gold-e646359b368be063",
+      "dimension": "tone_fit",
+      "layer": "hard",
+      "owner_bucket": "reference_stale",
+      "prior_final_reference_score": 1,
+      "recheck_id": "reference-recheck-916a445d10307dfd"
+    },
+    {
+      "candidate_id": "slot-b-gold-a56ad083a9e75c2c",
+      "dimension": "account_specificity",
+      "layer": "hard",
+      "owner_bucket": "judge_error",
+      "prior_final_reference_score": 3,
+      "recheck_id": "reference-recheck-a0275f97b64dde79"
+    },
+    {
+      "candidate_id": "slot-b-gold-4edc671e8df768e5",
+      "dimension": "grounding_fidelity",
+      "layer": "clean",
+      "owner_bucket": "reference_stale",
+      "prior_final_reference_score": 3,
+      "recheck_id": "reference-recheck-1276deb524b64b49"
+    },
+    {
+      "candidate_id": "slot-b-gold-341cb3197a124339",
+      "dimension": "tone_fit",
+      "layer": "hard",
+      "owner_bucket": "judge_error",
+      "prior_final_reference_score": 3,
+      "recheck_id": "reference-recheck-36f4e8f56db5d45d"
+    },
+    {
+      "candidate_id": "slot-b-gold-b85a5a55b5333d6d",
+      "dimension": "tone_fit",
+      "layer": "clean",
+      "owner_bucket": "judge_error",
+      "prior_final_reference_score": 1,
+      "recheck_id": "reference-recheck-696778582228fb14"
+    },
+    {
+      "candidate_id": "slot-b-gold-e0873754e7955ee2",
+      "dimension": "account_specificity",
+      "layer": "clean",
+      "owner_bucket": "reference_stale",
+      "prior_final_reference_score": 2,
+      "recheck_id": "reference-recheck-4f0d0b0d3c04a48a"
+    },
+    {
+      "candidate_id": "slot-b-gold-c35ed8afe58d9ad4",
+      "dimension": "account_specificity",
+      "layer": "clean",
+      "owner_bucket": "reference_stale",
+      "prior_final_reference_score": 2,
+      "recheck_id": "reference-recheck-f0c629a6e2fc63f6"
+    },
+    {
+      "candidate_id": "slot-b-gold-2588f88a397977b0",
+      "dimension": "grounding_fidelity",
+      "layer": "clean",
+      "owner_bucket": "reference_stale",
+      "prior_final_reference_score": 3,
+      "recheck_id": "reference-recheck-fd8981e115c26e89"
+    },
+    {
+      "candidate_id": "slot-b-gold-ee58407a7a930401",
+      "dimension": "grounding_fidelity",
+      "layer": "hard",
+      "owner_bucket": "judge_error",
+      "prior_final_reference_score": 3,
+      "recheck_id": "reference-recheck-6b710cb9cbae1105"
+    },
+    {
+      "candidate_id": "slot-b-gold-74ac98ae98fd438c",
+      "dimension": "tone_fit",
+      "layer": "clean",
+      "owner_bucket": "judge_error",
+      "prior_final_reference_score": 1,
+      "recheck_id": "reference-recheck-5f4f1169eeeaaaf5"
+    },
+    {
+      "candidate_id": "slot-b-gold-63d2267baa9bdb18",
+      "dimension": "account_specificity",
+      "layer": "clean",
+      "owner_bucket": "judge_error",
+      "prior_final_reference_score": 3,
+      "recheck_id": "reference-recheck-a440fc577a8a028d"
+    },
+    {
+      "candidate_id": "slot-b-gold-a56ad083a9e75c2c",
+      "dimension": "tone_fit",
+      "layer": "hard",
+      "owner_bucket": "judge_error",
+      "prior_final_reference_score": 3,
+      "recheck_id": "reference-recheck-44da410bcd3ee762"
+    },
+    {
+      "candidate_id": "slot-b-gold-9faea1b5d06649c4",
+      "dimension": "tone_fit",
+      "layer": "clean",
+      "owner_bucket": "reference_stale",
+      "prior_final_reference_score": 2,
+      "recheck_id": "reference-recheck-0204cacf2918cd02"
+    },
+    {
+      "candidate_id": "slot-b-gold-d9434d67b19e7588",
+      "dimension": "account_specificity",
+      "layer": "hard",
+      "owner_bucket": "reference_stale",
+      "prior_final_reference_score": 2,
+      "recheck_id": "reference-recheck-6f93c87137693e77"
+    },
+    {
+      "candidate_id": "slot-b-gold-4eaa154b4bf929c7",
+      "dimension": "account_specificity",
+      "layer": "clean",
+      "owner_bucket": "reference_stale",
+      "prior_final_reference_score": 2,
+      "recheck_id": "reference-recheck-d082e28a160efd28"
+    },
+    {
+      "candidate_id": "slot-b-gold-0d982eed3211b373",
+      "dimension": "grounding_fidelity",
+      "layer": "clean",
+      "owner_bucket": "reference_stale",
+      "prior_final_reference_score": 3,
+      "recheck_id": "reference-recheck-6bdf1aea004fb1c1"
+    },
+    {
+      "candidate_id": "slot-b-gold-745be75cae7e3ca6",
+      "dimension": "tone_fit",
+      "layer": "clean",
+      "owner_bucket": "reference_stale",
+      "prior_final_reference_score": 3,
+      "recheck_id": "reference-recheck-6590b950b1de84e0"
+    },
+    {
+      "candidate_id": "slot-b-gold-f842b343d784ec51",
+      "dimension": "account_specificity",
+      "layer": "clean",
+      "owner_bucket": "reference_stale",
+      "prior_final_reference_score": 2,
+      "recheck_id": "reference-recheck-49631324107c9a04"
+    },
+    {
+      "candidate_id": "slot-b-gold-9faea1b5d06649c4",
+      "dimension": "grounding_fidelity",
+      "layer": "clean",
+      "owner_bucket": "reference_stale",
+      "prior_final_reference_score": 2,
+      "recheck_id": "reference-recheck-2ef5ebb65a0a7c02"
+    },
+    {
+      "candidate_id": "slot-b-gold-e4678a581082477b",
+      "dimension": "account_specificity",
+      "layer": "hard",
+      "owner_bucket": "reference_stale",
+      "prior_final_reference_score": 2,
+      "recheck_id": "reference-recheck-00e106ca56441aa4"
+    },
+    {
+      "candidate_id": "slot-b-gold-898dae6f35b7d398",
+      "dimension": "account_specificity",
+      "layer": "clean",
+      "owner_bucket": "reference_stale",
+      "prior_final_reference_score": 2,
+      "recheck_id": "reference-recheck-bdaceb0f6e00134d"
+    },
+    {
+      "candidate_id": "slot-b-gold-4719788c9b545ca7",
+      "dimension": "account_specificity",
+      "layer": "hard",
+      "owner_bucket": "reference_stale",
+      "prior_final_reference_score": 2,
+      "recheck_id": "reference-recheck-44b97ad396a2a30f"
+    },
+    {
+      "candidate_id": "slot-b-gold-87efb894e241e361",
+      "dimension": "grounding_fidelity",
+      "layer": "clean",
+      "owner_bucket": "definition_ambiguity",
+      "prior_final_reference_score": 3,
+      "recheck_id": "reference-recheck-9a3f48db639f6a36"
+    },
+    {
+      "candidate_id": "slot-b-gold-b2de14fc6c469c04",
+      "dimension": "account_specificity",
+      "layer": "hard",
+      "owner_bucket": "definition_ambiguity",
+      "prior_final_reference_score": 2,
+      "recheck_id": "reference-recheck-a166e55ee91a2062"
+    }
+  ],
+  "sample_size": 40
+}
