@@ -2,7 +2,12 @@
 
 from __future__ import annotations
 
-from eval.diagnose_judge import build_agreed_cell_audit, build_report
+from eval.diagnose_judge import (
+    _read_audit_ids,
+    _write_audit_history,
+    build_agreed_cell_audit,
+    build_report,
+)
 from eval.judge_anthropic import JUDGE_PROMPT_VERSION
 from eval.judge_csm import QUALITY_DIMENSIONS
 
@@ -174,3 +179,30 @@ def test_agreed_cell_audit_excludes_previous_cards():
     assert first_id not in {card["audit_id"] for card in second_audit["cards"]}
     assert second_audit["sample_size"] == 5
     assert second_key["sample_size"] == 5
+
+
+def test_audit_history_round_trips_burned_ids(tmp_path):
+    path = tmp_path / "audit_history.json"
+    ids = {"judge-audit-a", "judge-audit-b"}
+
+    _write_audit_history(path, ids)
+
+    assert _read_audit_ids(path) == ids
+
+
+def test_audit_history_reads_key_shape(tmp_path):
+    path = tmp_path / "audit_key.json"
+    path.write_text(
+        """
+{
+  "artifact": "slot_b_judge_agreed_cell_audit_key",
+  "key_records": [
+    {"audit_id": "judge-audit-a"},
+    {"audit_id": "judge-audit-b"}
+  ]
+}
+""",
+        encoding="utf-8",
+    )
+
+    assert _read_audit_ids(path) == {"judge-audit-a", "judge-audit-b"}

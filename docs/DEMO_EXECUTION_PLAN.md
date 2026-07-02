@@ -81,6 +81,12 @@ classified as rubric ambiguity, so the grounding-vs-safety and grounding-severit
 were clarified and `judge_prompt_version` was bumped. The next judge agreement run is
 iteration 1 of 3 and must be paired with a fresh agreed-cell audit sample.
 
+Iteration 1 returned a fresh audit pass (`10/10`) plus a bucket table over 261 disagreeing
+cells. The decisions and implementation response are recorded in
+[`QUALITY_JUDGE_ADJUDICATION.md`](QUALITY_JUDGE_ADJUDICATION.md). Iteration 2 moves
+`priority_fidelity` to deterministic scoring, clarifies grounding/specificity/tone, and
+adds the non-conflation rule.
+
 **Steps + decision criteria:**
 1. Generate a **disagreement report** (extend `eval/diagnose_judge.py` if it doesn't
    already emit this): for each failing dimension, every item where judge ≠ draft label,

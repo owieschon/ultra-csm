@@ -127,8 +127,8 @@ def default_rubric() -> QualityRubric:
                 name="grounding_fidelity",
                 passing_score=PASSING_SCORE,
                 description=(
-                    "Reason represents the cited evidence faithfully without "
-                    "inventing facts or over-stating the account state."
+                    "Reason stays truthful to the provided evidence without "
+                    "fabricating facts or over-stating the account state."
                 ),
             ),
             RubricDimension(
@@ -143,24 +143,24 @@ def default_rubric() -> QualityRubric:
                 name="account_specificity",
                 passing_score=PASSING_SCORE,
                 description=(
-                    "Reason is specific to the account and avoids generic "
-                    "customer-success boilerplate."
+                    "Reason includes account-specific operational detail and "
+                    "avoids generic customer-success boilerplate."
                 ),
             ),
             RubricDimension(
                 name="priority_fidelity",
                 passing_score=PASSING_SCORE,
                 description=(
-                    "Reason reflects the deterministic priority score and "
-                    "factor contributions."
+                    "Reason states the deterministic priority score and factor "
+                    "names, or at least the correct risk theme."
                 ),
             ),
             RubricDimension(
                 name="tone_fit",
                 passing_score=PASSING_SCORE,
                 description=(
-                    "Draft uses a professional, calibrated register for the "
-                    "account and customer-success context."
+                    "Draft uses a professional-direct register and avoids "
+                    "salesy, casual, or bureaucratic language."
                 ),
             ),
             RubricDimension(

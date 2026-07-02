@@ -14,6 +14,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Callable, Iterable
 
+from eval.deterministic_quality import DETERMINISTIC_DIMENSIONS
 from eval.judge_csm import KAPPA_GATE, QUALITY_DIMENSIONS, weighted_cohen_kappa
 from eval.judge_anthropic import AnthropicQualityJudge, JUDGE_PROMPT_VERSION, overall_pass
 from eval.run_quality_judge import load_clean, load_hard
@@ -21,6 +22,7 @@ from eval.run_quality_judge import load_clean, load_hard
 OUT_PATH = Path(__file__).resolve().parent / "gold" / "judge_disagreement_report.json"
 AGREED_AUDIT_PATH = Path(__file__).resolve().parent / "gold" / "judge_agreed_audit.json"
 AGREED_AUDIT_KEY_PATH = Path(__file__).resolve().parent / "gold" / "judge_agreed_audit_key.json"
+AGREED_AUDIT_HISTORY_PATH = Path(__file__).resolve().parent / "gold" / "judge_agreed_audit_history.json"
 
 
 Progress = Callable[[int, int, dict], None]
@@ -231,6 +233,34 @@ def build_agreed_cell_audit(
     )
 
 
+def _read_audit_ids(path: Path) -> set[str]:
+    if not path.exists():
+        return set()
+    data = json.loads(path.read_text(encoding="utf-8"))
+    if "burned_audit_ids" in data:
+        return {str(audit_id) for audit_id in data["burned_audit_ids"]}
+    return {
+        str(record.get("audit_id"))
+        for record in data.get("key_records", ())
+        if record.get("audit_id")
+    }
+
+
+def _write_audit_history(path: Path, audit_ids: set[str]) -> None:
+    path.write_text(
+        json.dumps(
+            {
+                "artifact": "slot_b_judge_agreed_cell_audit_history",
+                "burned_audit_ids": sorted(audit_ids),
+            },
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+
 def _report_from_scored_items(
     judge: AnthropicQualityJudge,
     items: list[dict],
@@ -254,6 +284,7 @@ def _report_from_scored_items(
         "artifact": "slot_b_judge_disagreement_report",
         "model_id": judge.model_id,
         "judge_prompt_version": JUDGE_PROMPT_VERSION,
+        "deterministic_dimensions": list(DETERMINISTIC_DIMENSIONS),
         "judge_reasoning": judge.reasoning,
         "kappa_gate": KAPPA_GATE,
         "summary": {
@@ -272,11 +303,20 @@ def _report_from_scored_items(
                 name: _dimension_kappas(layer_items)
                 for name, layer_items in sorted(by_layer.items())
             },
+            "judge_scored_kappa_by_layer": {
+                name: {
+                    dimension: kappa
+                    for dimension, kappa in _dimension_kappas(layer_items).items()
+                    if dimension not in DETERMINISTIC_DIMENSIONS
+                }
+                for name, layer_items in sorted(by_layer.items())
+            },
         },
         "claim_boundary": {
             "diagnostic_only": True,
             "labels_approved_by_report": False,
             "judge_validated": False,
+            "deterministic_dimensions_are_not_model_scored": True,
         },
         "review_rows": rows,
     }
@@ -303,6 +343,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--output", default=str(OUT_PATH))
     parser.add_argument("--audit-output", default=str(AGREED_AUDIT_PATH))
     parser.add_argument("--audit-key-output", default=str(AGREED_AUDIT_KEY_PATH))
+    parser.add_argument("--audit-history", default=str(AGREED_AUDIT_HISTORY_PATH))
     parser.add_argument("--audit-size", type=int, default=10)
     parser.add_argument(
         "--include-existing-audit",
@@ -336,14 +377,13 @@ def main(argv: list[str] | None = None) -> int:
     out_path = Path(args.output)
     out_path.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     if not args.no_audit:
-        exclude_audit_ids = set()
+        audit_history_path = Path(args.audit_history)
+        exclude_audit_ids = _read_audit_ids(audit_history_path)
         audit_key_output = Path(args.audit_key_output)
         if audit_key_output.exists() and not args.include_existing_audit:
-            existing_key = json.loads(audit_key_output.read_text(encoding="utf-8"))
-            exclude_audit_ids = {
-                str(record.get("audit_id"))
-                for record in existing_key.get("key_records", ())
-            }
+            existing_ids = _read_audit_ids(audit_key_output)
+            exclude_audit_ids |= existing_ids
+            _write_audit_history(audit_history_path, exclude_audit_ids)
         audit, audit_key = build_agreed_cell_audit(
             scored_items,
             sample_size=args.audit_size,
@@ -364,13 +404,13 @@ def main(argv: list[str] | None = None) -> int:
         f"{summary['disagreement_items']}/{summary['total_items_scored']} "
         f"model={report['model_id']} reasoning={report['judge_reasoning']}"
     )
-    for layer_name, kappas in summary["kappa_by_layer"].items():
+    for layer_name, kappas in summary["judge_scored_kappa_by_layer"].items():
         below_gate = {
             dimension: kappa
             for dimension, kappa in kappas.items()
             if kappa is not None and kappa < KAPPA_GATE
         }
-        print(f"[{layer_name}] below_gate={below_gate}")
+        print(f"[{layer_name}] judge_scored_below_gate={below_gate}")
     print(f"report -> {out_path}")
     if not args.no_audit:
         print(f"agreed audit -> {args.audit_output}")
