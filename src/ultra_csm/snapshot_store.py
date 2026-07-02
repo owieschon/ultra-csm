@@ -32,7 +32,7 @@ from typing import Any, Literal
 # Types
 # ---------------------------------------------------------------------------
 
-TrendDirection = Literal["improving", "stable", "declining"]
+TrendDirection = Literal["unknown", "improving", "stable", "declining"]
 
 # Ordered from worst to best for numeric comparison.
 _BAND_RANK: dict[str, int] = {"red": 0, "yellow": 1, "green": 2}
@@ -194,6 +194,7 @@ class SnapshotStore:
 
         Uses a combination of health-score slope and band transitions:
 
+        * If fewer than two snapshots exist: **unknown**.
         * If health score increased by more than 5 points over the window:
           **improving**.
         * If health score decreased by more than 5 points: **declining**.
@@ -204,7 +205,7 @@ class SnapshotStore:
         """
         snapshots = self.get_trajectory(account_id, window_days)
         if len(snapshots) < 2:
-            return "stable"
+            return "unknown"
 
         first = snapshots[0]
         last = snapshots[-1]

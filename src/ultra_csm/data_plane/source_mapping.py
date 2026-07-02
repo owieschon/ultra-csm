@@ -12,7 +12,8 @@ from dataclasses import asdict, dataclass
 import hashlib
 import json
 import re
-from typing import Literal, Mapping
+from pathlib import Path
+from typing import Any, Literal, Mapping
 
 from ultra_csm.data_plane.connector_catalog import CONNECTOR_SPECS
 from ultra_csm.data_plane.explorer import DiscoveredField, DiscoveredObject, SchemaSnapshot
@@ -28,6 +29,13 @@ ValueDirection = Literal[
     "ordered_confirm",
     "direction_confirm",
 ]
+_VALUE_DIRECTIONS = {
+    "not_applicable",
+    "higher_is_better",
+    "lower_is_better",
+    "ordered_confirm",
+    "direction_confirm",
+}
 
 
 @dataclass(frozen=True)
@@ -162,8 +170,8 @@ def freeze_confirmed_source_map(
             raise ValueError(f"{entry.key} requires human confirmation")
         frozen.append(_confirmed(entry, confirmation))
 
-    config_hash = _config_hash(proposal, frozen, unknown)
-    return FrozenSourceMapConfig(
+    config_hash = _frozen_config_hash(proposal.proposal_hash, frozen, unknown)
+    config = FrozenSourceMapConfig(
         connector_id=proposal.connector_id,
         schema_hash=proposal.schema_hash,
         proposal_hash=proposal.proposal_hash,
@@ -171,6 +179,56 @@ def freeze_confirmed_source_map(
         mappings=tuple(frozen),
         unknown_fields=tuple(sorted(unknown)),
     )
+    validate_frozen_source_map_config(config)
+    return config
+
+
+def load_frozen_source_map_config(path: str | Path) -> FrozenSourceMapConfig:
+    payload = json.loads(Path(path).read_text(encoding="utf-8"))
+    if not isinstance(payload, dict):
+        raise ValueError("source-map config must be a JSON object")
+    config = _config_from_payload(payload)
+    validate_frozen_source_map_config(config)
+    return config
+
+
+def load_source_map_proposal(path: str | Path) -> SourceMapProposal:
+    payload = json.loads(Path(path).read_text(encoding="utf-8"))
+    if not isinstance(payload, dict):
+        raise ValueError("source-map proposal must be a JSON object")
+    return _proposal_from_payload(payload)
+
+
+def load_mapping_confirmations(path: str | Path) -> dict[str, MappingConfirmation]:
+    payload = json.loads(Path(path).read_text(encoding="utf-8"))
+    if not isinstance(payload, dict):
+        raise ValueError("mapping confirmations must be a JSON object")
+    confirmations = payload.get("confirmations", payload)
+    if not isinstance(confirmations, dict):
+        raise ValueError("mapping confirmations must be keyed by field")
+    return {
+        str(key): _confirmation_from_payload(value)
+        for key, value in confirmations.items()
+    }
+
+
+def validate_frozen_source_map_config(config: FrozenSourceMapConfig) -> None:
+    if config.connector_id not in CONNECTOR_SPECS:
+        raise ValueError(f"{config.connector_id}: unknown connector_id")
+    for mapping in config.mappings:
+        if mapping.state != "mapped" or mapping.requires_human_confirmation:
+            raise ValueError(f"{mapping.key} is not confirmed for runtime use")
+        if mapping.value_direction in {"ordered_confirm", "direction_confirm"}:
+            raise ValueError(f"{mapping.key} still has unresolved value direction")
+        if not mapping.source_object or not mapping.source_field or not mapping.source_path:
+            raise ValueError(f"{mapping.key} is missing source coordinates")
+    expected = _frozen_config_hash(
+        config.proposal_hash,
+        list(config.mappings),
+        list(config.unknown_fields),
+    )
+    if config.config_hash != expected:
+        raise ValueError("source-map config_hash does not match config contents")
 
 
 def _propose_field(
@@ -182,7 +240,7 @@ def _propose_field(
 ) -> ProposedFieldMapping:
     semantic_role = _semantic_role(contract, internal_field)
     direction = _value_direction(contract, internal_field)
-    needs_direction_confirm = direction in {"ordered_confirm", "direction_confirm"}
+    needs_direction_confirm = direction != "not_applicable"
     if source_object is None:
         return _entry(
             connector_id,
@@ -233,7 +291,7 @@ def _propose_field(
             semantic_role=semantic_role,
             value_direction=direction,
             requires_confirmation=True,
-            confidence=0.72 if not discovered_field.custom else 0.58,
+            confidence=0.91 if source_field.standard and not discovered_field.custom else 0.58,
             reason=reason,
             source=source_field,
         )
@@ -372,6 +430,7 @@ def _confirmed(
     entry: ProposedFieldMapping,
     confirmation: MappingConfirmation,
 ) -> ProposedFieldMapping:
+    value_direction = _confirmed_value_direction(entry, confirmation)
     return ProposedFieldMapping(
         connector_id=entry.connector_id,
         contract=entry.contract,
@@ -381,13 +440,28 @@ def _confirmed(
         source_path=confirmation.source_path,
         state="mapped",
         semantic_role=confirmation.semantic_role,
-        value_direction=confirmation.value_direction,
+        value_direction=value_direction,
         requires_human_confirmation=False,
         confidence=1.0,
         reason="human-confirmed mapping frozen into deterministic config",
         pii=entry.pii,
         llm_allowed=entry.llm_allowed,
     )
+
+
+def _confirmed_value_direction(
+    entry: ProposedFieldMapping,
+    confirmation: MappingConfirmation,
+) -> ValueDirection:
+    if entry.value_direction == "not_applicable":
+        return confirmation.value_direction
+    if confirmation.value_direction in {
+        "not_applicable",
+        "ordered_confirm",
+        "direction_confirm",
+    }:
+        raise ValueError(f"{entry.key} requires explicit value direction confirmation")
+    return confirmation.value_direction
 
 
 def _coverage(entries: list[ProposedFieldMapping]) -> dict[str, int]:
@@ -492,19 +566,118 @@ def _proposal_hash(
     ).hexdigest()
 
 
-def _config_hash(
-    proposal: SourceMapProposal,
+def _frozen_config_hash(
+    proposal_hash: str,
     frozen: list[ProposedFieldMapping],
     unknown: list[str],
 ) -> str:
     payload = {
-        "proposal_hash": proposal.proposal_hash,
+        "proposal_hash": proposal_hash,
         "mappings": [entry.to_dict() for entry in frozen],
         "unknown": sorted(unknown),
     }
     return "sha256:" + hashlib.sha256(
         json.dumps(payload, sort_keys=True).encode("utf-8")
     ).hexdigest()
+
+
+def _config_from_payload(payload: Mapping[str, Any]) -> FrozenSourceMapConfig:
+    mappings = payload.get("mappings")
+    unknown_fields = payload.get("unknown_fields")
+    if not isinstance(mappings, list):
+        raise ValueError("source-map config mappings must be a list")
+    if not isinstance(unknown_fields, list):
+        raise ValueError("source-map config unknown_fields must be a list")
+    return FrozenSourceMapConfig(
+        connector_id=_required_str(payload, "connector_id"),  # type: ignore[arg-type]
+        schema_hash=_required_str(payload, "schema_hash"),
+        proposal_hash=_required_str(payload, "proposal_hash"),
+        config_hash=_required_str(payload, "config_hash"),
+        mappings=tuple(_field_mapping_from_payload(item) for item in mappings),
+        unknown_fields=tuple(str(item) for item in unknown_fields),
+    )
+
+
+def _proposal_from_payload(payload: Mapping[str, Any]) -> SourceMapProposal:
+    entries = payload.get("entries")
+    coverage = payload.get("coverage")
+    actions = payload.get("required_operator_actions")
+    if not isinstance(entries, list):
+        raise ValueError("source-map proposal entries must be a list")
+    if not isinstance(coverage, dict):
+        raise ValueError("source-map proposal coverage must be an object")
+    if not isinstance(actions, list):
+        raise ValueError("source-map proposal required_operator_actions must be a list")
+    return SourceMapProposal(
+        connector_id=_required_str(payload, "connector_id"),  # type: ignore[arg-type]
+        schema_hash=_required_str(payload, "schema_hash"),
+        proposal_hash=_required_str(payload, "proposal_hash"),
+        entries=tuple(_field_mapping_from_payload(item) for item in entries),
+        coverage={str(key): int(value) for key, value in coverage.items()},
+        required_operator_actions=tuple(str(item) for item in actions),
+    )
+
+
+def _field_mapping_from_payload(payload: object) -> ProposedFieldMapping:
+    if not isinstance(payload, dict):
+        raise ValueError("source-map mapping entries must be JSON objects")
+    return ProposedFieldMapping(
+        connector_id=_required_str(payload, "connector_id"),  # type: ignore[arg-type]
+        contract=_required_str(payload, "contract"),
+        internal_field=_required_str(payload, "internal_field"),
+        source_object=_optional_str(payload, "source_object"),
+        source_field=_optional_str(payload, "source_field"),
+        source_path=_optional_str(payload, "source_path"),
+        state=_required_str(payload, "state"),  # type: ignore[arg-type]
+        semantic_role=_required_str(payload, "semantic_role"),
+        value_direction=_value_direction_from_payload(payload),
+        requires_human_confirmation=bool(payload.get("requires_human_confirmation")),
+        confidence=float(payload.get("confidence", 0.0)),
+        reason=_required_str(payload, "reason"),
+        pii=_required_str(payload, "pii"),  # type: ignore[arg-type]
+        llm_allowed=bool(payload.get("llm_allowed")),
+    )
+
+
+def _confirmation_from_payload(payload: object) -> MappingConfirmation:
+    if not isinstance(payload, dict):
+        raise ValueError("mapping confirmations must be JSON objects")
+    return MappingConfirmation(
+        contract=_required_str(payload, "contract"),
+        internal_field=_required_str(payload, "internal_field"),
+        source_object=_required_str(payload, "source_object"),
+        source_field=_required_str(payload, "source_field"),
+        source_path=_required_str(payload, "source_path"),
+        semantic_role=_required_str(payload, "semantic_role"),
+        value_direction=_value_direction_from_payload(payload, default="not_applicable"),
+    )
+
+
+def _value_direction_from_payload(
+    payload: Mapping[str, Any],
+    *,
+    default: str | None = None,
+) -> ValueDirection:
+    value = payload.get("value_direction", default)
+    if not isinstance(value, str) or value not in _VALUE_DIRECTIONS:
+        raise ValueError("source-map value_direction must be a known value")
+    return value  # type: ignore[return-value]
+
+
+def _required_str(payload: Mapping[str, Any], key: str) -> str:
+    value = payload.get(key)
+    if not isinstance(value, str) or not value:
+        raise ValueError(f"source-map config field {key} is required")
+    return value
+
+
+def _optional_str(payload: Mapping[str, Any], key: str) -> str | None:
+    value = payload.get(key)
+    if value is None:
+        return None
+    if not isinstance(value, str):
+        raise ValueError(f"source-map config field {key} must be a string")
+    return value
 
 
 def _norm(value: str) -> str:

@@ -92,6 +92,7 @@ def test_proposals_approve_cli_posts_verdict(monkeypatch, capsys):
             req.full_url,
             req.get_method(),
             json.loads(req.data.decode("utf-8")),
+            req.get_header("Authorization"),
             timeout,
         ))
         return _Response({
@@ -112,6 +113,8 @@ def test_proposals_approve_cli_posts_verdict(monkeypatch, capsys):
         "Looks good",
         "--api-url",
         "http://api.test",
+        "--api-token",
+        "lane-a-token",
     ])
 
     captured = capsys.readouterr()
@@ -121,9 +124,54 @@ def test_proposals_approve_cli_posts_verdict(monkeypatch, capsys):
         "http://api.test/proposals/prop-3/verdict",
         "POST",
         {"verdict": "approve", "reason": "Looks good"},
+        "Bearer lane-a-token",
         10,
     )]
     assert "prop-3: approved (authorized=true)" in captured.out
+
+
+def test_queue_cli_reads_delegation_view(monkeypatch, capsys):
+    seen = []
+
+    def fake_urlopen(req, timeout):  # noqa: ANN001 - urllib test double
+        seen.append((req.full_url, req.get_method(), timeout))
+        return _Response({
+            "pending_count": 1,
+            "groups": {
+                "tier_1_auto_executed_audit_trail": {
+                    "label": "auto-executed tier-1 audit trail",
+                    "pending_count": 0,
+                    "proposals": [],
+                },
+                "tier_2_batch_approvable": {
+                    "label": "batch-approvable tier-2",
+                    "pending_count": 1,
+                    "proposals": [{
+                        "proposal_id": "prop-4",
+                        "action": "draft_customer_outreach",
+                        "status": "pending",
+                        "payload": {"account_name": "Acme Logistics"},
+                    }],
+                },
+                "tier_3_escalation": {
+                    "label": "escalation tier-3",
+                    "pending_count": 0,
+                    "proposals": [],
+                },
+            },
+        })
+
+    monkeypatch.setattr(cli.request, "urlopen", fake_urlopen)
+
+    code = main(["queue", "--api-url", "http://api.test"])
+
+    captured = capsys.readouterr()
+
+    assert code == 0
+    assert seen == [("http://api.test/queue/delegation", "GET", 10)]
+    assert "pending delegated items: 1" in captured.out
+    assert "batch-approvable tier-2: 1" in captured.out
+    assert "prop-4" in captured.out
 
 
 class _Response:

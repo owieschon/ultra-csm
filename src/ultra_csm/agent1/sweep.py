@@ -36,6 +36,7 @@ from ultra_csm.quality_breaker import (
     QualityBreakerDecision,
     evaluate_quality_breaker,
 )
+from ultra_csm.snapshot_store import SnapshotStore
 from ultra_csm.value_model import (
     CustomerValueModel,
     ValueFactor,
@@ -52,6 +53,15 @@ Disposition = Literal["propose_customer_action", "internal_review", "escalate"]
 ProposalStatus = Literal["pending", "approved", "denied"]
 PriorityFactor = ValueFactor
 DraftMode = Literal["fixture", "live", "template_fallback", "none"]
+TrajectoryFactorState = Literal["known", "unknown"]
+
+
+@dataclass(frozen=True)
+class TrajectoryFactorEvaluation:
+    """Result of folding snapshot history into deterministic priority."""
+
+    state: TrajectoryFactorState
+    factor: PriorityFactor | None
 
 
 @dataclass(frozen=True)
@@ -127,6 +137,7 @@ def run_time_to_value_sweep(
     cost_tracker: "CostTracker | None" = None,
     cost_budget: "CostBudget | None" = None,
     org_context: dict | None = None,
+    snapshot_store: SnapshotStore | None = None,
 ) -> SweepResult:
     """Run Agent 1 across a tenant book and emit a deterministic work queue."""
 
@@ -222,6 +233,7 @@ def run_time_to_value_sweep(
             quality_breaker=breaker_decision,
             org_context=slot_b_org_context,
             timing=timing,
+            snapshot_store=snapshot_store,
         )
         if built is not None:
             if budget_exceeded:
@@ -363,6 +375,7 @@ def _work_item_for_account(
     quality_breaker: QualityBreakerDecision | None = None,
     org_context: dict | None = None,
     timing: _SweepTimingAccum | None = None,
+    snapshot_store: SnapshotStore | None = None,
 ) -> CSMWorkItem | None:
     company = data_plane.cs.get_company(account.account_id)
     health = data_plane.cs.get_health_score(account.account_id)
@@ -410,6 +423,11 @@ def _work_item_for_account(
         usage_signals=signals,
         success_plans=plans,
     )
+    trajectory = _trajectory_decline_evaluation(
+        snapshot_store,
+        account_id=account.account_id,
+        model=model,
+    )
     priority = _priority(
         model,
         company=company,
@@ -417,6 +435,7 @@ def _work_item_for_account(
         open_gaps=telemetry_backed_gaps,
         overdue_plans=overdue_plans,
         as_of=as_of,
+        trajectory_factor=trajectory.factor,
     )
     if timing is not None:
         timing.value_model_ms += (time.perf_counter() - value_start) * 1000.0
@@ -663,6 +682,7 @@ def _priority(
     open_gaps: tuple[TimeToValueMilestone, ...],
     overdue_plans: tuple,
     as_of: str,
+    trajectory_factor: PriorityFactor | None = None,
 ) -> Priority:
     projected = project_ttv_lens(
         model,
@@ -672,9 +692,62 @@ def _priority(
         overdue_success_plans=overdue_plans,
         as_of=as_of,
     )
+    factors = tuple(
+        factor for factor in projected.factors
+        if factor.contribution != 0
+    )
+    if trajectory_factor is not None and trajectory_factor.contribution != 0:
+        factors = (*factors, trajectory_factor)
     return Priority(
-        score=projected.score,
-        factors=tuple(factor for factor in projected.factors if factor.contribution != 0),
+        score=sum(factor.contribution for factor in factors),
+        factors=factors,
+    )
+
+
+def _trajectory_decline_evaluation(
+    snapshot_store: SnapshotStore | None,
+    *,
+    account_id: str,
+    model: CustomerValueModel,
+) -> TrajectoryFactorEvaluation:
+    if snapshot_store is None:
+        return TrajectoryFactorEvaluation(state="unknown", factor=None)
+
+    resolved = model.resolved_thresholds
+    window_days = resolved.thresholds.trend_window_days
+    trajectory = snapshot_store.build_trajectory(
+        account_id,
+        window_days=window_days,
+    )
+    if len(trajectory.points) < 2:
+        return TrajectoryFactorEvaluation(state="unknown", factor=None)
+
+    velocity = trajectory.trend_velocity
+    threshold = resolved.thresholds.decline_slope
+    if velocity >= threshold:
+        return TrajectoryFactorEvaluation(state="known", factor=None)
+
+    evidence = tuple(
+        EvidenceRef(
+            "cs_platform",
+            account_id,
+            f"snapshot_day_{point.day}_health_score",
+            f"day:{point.day}",
+        )
+        for point in trajectory.points
+    )
+    return TrajectoryFactorEvaluation(
+        state="known",
+        factor=PriorityFactor(
+            name="trajectory_decline",
+            value=velocity,
+            contribution=12,
+            evidence=evidence,
+            config_version=resolved.config_version,
+            rule_name=resolved.rule_name,
+            threshold_name="decline_slope",
+            threshold_value=threshold,
+        ),
     )
 
 

@@ -11,7 +11,6 @@ import json
 import logging
 import time
 from contextlib import asynccontextmanager
-from dataclasses import asdict
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any, Literal
@@ -40,15 +39,22 @@ from ultra_csm.governance import (
     seed_roster,
     make_principal,
     ROLE_CS_ORCHESTRATOR,
-    ROLE_ORDER_CONFIRM_AUTHORITY,
 )
-from ultra_csm.value_model import (
-    build_customer_value_model,
-    project_ttv_lens,
-)
+from ultra_csm.value_model import build_customer_value_model, project_ttv_lens
 from ultra_csm.agent1 import run_time_to_value_sweep
 from ultra_csm.api_metrics import APIMetrics, SweepTiming
 from ultra_csm.cost_tracker import CostBudget, CostTracker
+from ultra_csm._api_helpers import (
+    AccountDataError,
+    AuthError,
+    _build_account_brief,
+    _score_one_account,
+    auth_marker,
+    demo_noauth_enabled,
+    parse_api_tokens,
+    resolve_write_principal,
+    score_account_priority,
+)
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -72,7 +78,6 @@ _cluster: EphemeralCluster | None = None
 _conn: psycopg.Connection | None = None
 _data_plane: CustomerDataPlane | None = None
 _orch_principal: str | None = None
-_authority_principal: str | None = None
 
 # Cost tracking and API metrics — initialised at import time so the
 # middleware and /metrics endpoint can reference them immediately.
@@ -98,6 +103,7 @@ class HealthResponse(BaseModel):
     config_loaded: bool
     tenant_id: str
     accounts_loaded: int
+    auth: str
 
 
 class ValueFactorSchema(BaseModel):
@@ -125,6 +131,7 @@ class AccountSummarySchema(BaseModel):
     lifecycle_stage: str | None = None
     arr_cents: int | None = None
     priority_score: int | None = None
+    priority_score_error: str | None = None
 
 
 class AccountListResponse(BaseModel):
@@ -174,6 +181,7 @@ class SweepResponse(BaseModel):
     escalations: list[dict[str, Any]]
     swept_accounts: list[str]
     degraded_items: int = 0
+    auth: str | None = None
 
 
 class ProposalSchema(BaseModel):
@@ -203,6 +211,7 @@ class VerdictResponse(BaseModel):
     authorized: bool
     verdict: str
     payload_sha256: str
+    auth: str | None = None
 
 
 class DigestAccountSchema(BaseModel):
@@ -210,6 +219,7 @@ class DigestAccountSchema(BaseModel):
     account_name: str
     health_band: str | None = None
     priority_score: int | None = None
+    priority_score_error: str | None = None
     disposition: str | None = None
     reason: str | None = None
 
@@ -220,6 +230,13 @@ class DigestResponse(BaseModel):
     prioritized_accounts: list[DigestAccountSchema]
     pending_proposals: int
     commitments: list[dict[str, Any]]
+    manager_rollup: dict[str, Any]
+
+
+class DelegationResponse(BaseModel):
+    tenant_id: str
+    pending_count: int
+    groups: dict[str, Any]
 
 
 class TrajectoryPointSchema(BaseModel):
@@ -249,10 +266,16 @@ class TrajectoryResponse(BaseModel):
 async def lifespan(app: FastAPI):
     """Boot ephemeral Postgres, seed, and configure on startup; tear down on
     shutdown."""
-    global _cluster, _conn, _data_plane, _orch_principal, _authority_principal
+    global _cluster, _conn, _data_plane, _orch_principal
 
     setup_logging("INFO")
     log.info("Booting ephemeral Postgres cluster for API")
+    if demo_noauth_enabled():
+        log.warning(
+            "ULTRA_CSM_DEMO_NOAUTH=1 enabled; mutating API routes allow "
+            "tokenless local demo access",
+            extra={"auth": "demo-noauth"},
+        )
 
     _cluster = EphemeralCluster().start()
 
@@ -275,21 +298,18 @@ async def lifespan(app: FastAPI):
         role=ROLE_CS_ORCHESTRATOR,
         now=_CLOCK,
     )
-    _authority_principal = make_principal(
-        _conn,
-        tenant_id=_TENANT_ID,
-        actor_id=_SEED_AGENT,
-        display_name="order-confirm-authority",
-        role=ROLE_ORDER_CONFIRM_AUTHORITY,
-        now=_CLOCK,
-    )
 
     # Build the fixture data plane.
     _data_plane = build_sweep_fixture_data_plane()
 
     log.info(
         "Ultra CSM API ready",
-        extra={"tenant_id": _TENANT_ID, "orch_principal": _orch_principal},
+        extra={
+            "tenant_id": _TENANT_ID,
+            "orch_principal": _orch_principal,
+            "auth": auth_marker(),
+            "configured_api_tokens": len(parse_api_tokens()),
+        },
     )
 
     yield  # ← server runs here
@@ -365,6 +385,34 @@ def _gate() -> ActionGate:
     )
 
 
+def _account_data_http_error(exc: AccountDataError) -> HTTPException:
+    return HTTPException(
+        status_code=404,
+        detail={
+            "error": str(exc),
+            "code": exc.code,
+            "account_id": exc.account_id,
+        },
+    )
+
+
+def _require_write_auth(request: Request):
+    assert _conn is not None and _orch_principal is not None
+    try:
+        return resolve_write_principal(
+            _conn,
+            tenant_id=_TENANT_ID,
+            actor_id=_orch_principal,
+            now=_CLOCK,
+            authorization=request.headers.get("Authorization"),
+        )
+    except AuthError as exc:
+        raise HTTPException(
+            status_code=exc.status_code,
+            detail={"error": str(exc), "code": exc.code},
+        )
+
+
 def _require_account(account_id: str, dp: CustomerDataPlane | None = None):
     """Look up an account; raise 404 if not found."""
     plane = dp or _data_plane
@@ -428,199 +476,6 @@ def _data_plane_for_day(
     return dp, as_of
 
 
-def _score_one_account(account_id: str, dp: CustomerDataPlane | None = None,
-                       as_of: str | None = None) -> dict[str, Any]:
-    """Build the value model + projected priority for a single account."""
-    plane = dp or _data_plane
-    score_as_of = as_of or _AS_OF
-    assert plane is not None
-
-    account = _require_account(account_id, plane)
-    company = plane.cs.get_company(account_id)
-    health = plane.cs.get_health_score(account_id)
-    adoption = plane.cs.get_adoption_summary(account_id)
-
-    if company is None or health is None:
-        raise HTTPException(
-            status_code=404,
-            detail={"error": "Missing CS platform data", "code": "MISSING_CS_DATA",
-                    "account_id": account_id},
-        )
-
-    entitlements = tuple(plane.telemetry.list_entitlements(account_id))
-    signals = tuple(plane.telemetry.list_usage_signals(account_id))
-    plans = tuple(plane.cs.list_success_plans(account_id))
-    milestones = tuple(plane.telemetry.list_ttv_milestones(account_id))
-
-    model = build_customer_value_model(
-        account=account,
-        company=company,
-        health=health,
-        adoption=adoption,
-        entitlements=entitlements,
-        usage_signals=signals,
-        success_plans=plans,
-    )
-
-    open_gaps = tuple(m for m in milestones if m.achieved_at is None)
-    overdue_plans = tuple(
-        p for p in plans if p.target_date and p.target_date <= score_as_of
-    )
-
-    projected = project_ttv_lens(
-        model,
-        company=company,
-        health=health,
-        open_milestone_gaps=open_gaps,
-        overdue_success_plans=overdue_plans,
-        as_of=score_as_of,
-    )
-
-    return {
-        "account_id": account_id,
-        "account_name": account.name,
-        "lifecycle_stage": model.lifecycle_stage,
-        "resolved_thresholds": asdict(model.resolved_thresholds),
-        "usage": asdict(model.usage),
-        "penetration": asdict(model.penetration),
-        "feature_depth": asdict(model.feature_depth),
-        "outcome": asdict(model.outcome),
-        "divergences": [asdict(d) for d in model.divergences],
-        "priority": {
-            "score": projected.score,
-            "factors": [asdict(f) for f in projected.factors],
-        },
-    }
-
-
-def _build_account_brief(account_id: str, dp: CustomerDataPlane | None = None,
-                         as_of: str | None = None) -> dict[str, Any]:
-    """Compose a rich account brief from all data-plane sources."""
-    plane = dp or _data_plane
-    brief_as_of = as_of or _AS_OF
-    assert plane is not None
-
-    account = _require_account(account_id, plane)
-    company = plane.cs.get_company(account_id)
-    health = plane.cs.get_health_score(account_id)
-    adoption = plane.cs.get_adoption_summary(account_id)
-
-    if company is None or health is None:
-        raise HTTPException(
-            status_code=404,
-            detail={"error": "Missing CS platform data", "code": "MISSING_CS_DATA",
-                    "account_id": account_id},
-        )
-
-    entitlements = tuple(plane.telemetry.list_entitlements(account_id))
-    signals = tuple(plane.telemetry.list_usage_signals(account_id))
-    plans = tuple(plane.cs.list_success_plans(account_id))
-    milestones = tuple(plane.telemetry.list_ttv_milestones(account_id))
-    ctas = plane.cs.list_ctas(account_id)
-    cases = plane.crm.list_cases(account_id)
-    contacts = plane.crm.list_contacts(account_id)
-    opportunities = plane.crm.list_opportunities(account_id)
-
-    model = build_customer_value_model(
-        account=account,
-        company=company,
-        health=health,
-        adoption=adoption,
-        entitlements=entitlements,
-        usage_signals=signals,
-        success_plans=plans,
-    )
-
-    open_gaps = tuple(m for m in milestones if m.achieved_at is None)
-    overdue_plans = tuple(
-        p for p in plans if p.target_date and p.target_date <= brief_as_of
-    )
-
-    projected = project_ttv_lens(
-        model,
-        company=company,
-        health=health,
-        open_milestone_gaps=open_gaps,
-        overdue_success_plans=overdue_plans,
-        as_of=brief_as_of,
-    )
-
-    # Derive talking points from evidence and model factors.
-    talking_points: list[str] = []
-    for factor in projected.factors:
-        if factor.contribution > 0:
-            talking_points.append(
-                f"{factor.name}: value={factor.value:.2f}, "
-                f"contribution=+{factor.contribution} "
-                f"(rule: {factor.rule_name})"
-            )
-    for div in model.divergences:
-        talking_points.append(
-            f"Divergence signal: {div.name} "
-            f"(value={div.value:.2f}, contribution={div.contribution:+d})"
-        )
-    if health.band in ("red", "yellow"):
-        talking_points.append(
-            f"Health is {health.band} (score {health.score}) -- "
-            f"drivers: {', '.join(health.drivers) if health.drivers else 'unknown'}"
-        )
-    if adoption and adoption.underused_capabilities:
-        talking_points.append(
-            f"Underused capabilities: {', '.join(adoption.underused_capabilities)}"
-        )
-    for gap in open_gaps:
-        talking_points.append(
-            f"Overdue milestone: {gap.milestone} (expected by {gap.expected_by})"
-        )
-
-    open_ctas = [c for c in ctas if c.status in ("open", "in_progress")]
-    open_cases = [c for c in cases if c.closed_at is None]
-
-    return {
-        "account_id": account_id,
-        "account_name": account.name,
-        "industry": account.industry,
-        "company": {
-            "arr_cents": company.arr_cents,
-            "lifecycle_stage": company.lifecycle_stage,
-            "status": company.status,
-            "renewal_date": company.renewal_date,
-            "csm_owner_id": company.csm_owner_id,
-        },
-        "health_snapshot": {
-            "score": health.score,
-            "band": health.band,
-            "drivers": list(health.drivers) if health.drivers else [],
-            "measured_at": health.measured_at,
-        },
-        "adoption": asdict(adoption) if adoption else None,
-        "priority": {
-            "score": projected.score,
-            "factors": [asdict(f) for f in projected.factors],
-        },
-        "lifecycle_stage": model.lifecycle_stage,
-        "divergences": [asdict(d) for d in model.divergences],
-        "open_ctas": [asdict(c) for c in open_ctas],
-        "success_plans": [asdict(p) for p in plans],
-        "open_cases": [asdict(c) for c in open_cases],
-        "contacts": [
-            {
-                "name": c.name,
-                "email": c.email,
-                "role": c.role,
-                "title": c.title,
-                "consent_to_contact": c.consent_to_contact,
-            }
-            for c in contacts
-        ],
-        "opportunities": [asdict(o) for o in opportunities],
-        "entitlements": [asdict(e) for e in entitlements],
-        "recent_usage_signals": [asdict(s) for s in signals[:20]],
-        "milestones": [asdict(m) for m in milestones],
-        "suggested_talking_points": talking_points,
-    }
-
-
 def _lookup_proposal(proposal_id: str) -> ActionProposal:
     """Fetch a proposal from the DB by ID. Raises 404 if not found."""
     assert _conn is not None
@@ -661,6 +516,103 @@ def _lookup_proposal(proposal_id: str) -> ActionProposal:
     )
 
 
+def _decode_payload(payload_raw: Any) -> dict[str, Any]:
+    payload = json.loads(payload_raw) if isinstance(payload_raw, str) else payload_raw
+    return payload if isinstance(payload, dict) else {}
+
+
+def _pending_proposal_packets() -> list[dict[str, Any]]:
+    assert _conn is not None
+    with session(
+        _conn,
+        tenant_id=_TENANT_ID,
+        actor_id=_orch_principal or _SEED_AGENT,
+        now=_CLOCK,
+    ) as cur:
+        cur.execute(
+            "SELECT proposal_id, intent, action, payload, payload_sha256, "
+            "       autonomy_tier, required_permission, status, created_ts "
+            "FROM action_proposal "
+            "WHERE status = 'pending' "
+            "ORDER BY autonomy_tier ASC, created_ts ASC, proposal_id ASC"
+        )
+        rows = cur.fetchall()
+
+    packets = []
+    for row in rows:
+        packets.append({
+            "proposal_id": str(row[0]),
+            "intent": row[1],
+            "action": row[2],
+            "payload": _decode_payload(row[3]),
+            "payload_sha256": row[4],
+            "autonomy_tier": row[5],
+            "required_permission": row[6],
+            "status": row[7],
+            "created_at": row[8].isoformat() if row[8] else None,
+        })
+    return packets
+
+
+def _delegation_groups() -> dict[str, Any]:
+    groups: dict[str, Any] = {
+        "tier_1_auto_executed_audit_trail": {
+            "tier": 1,
+            "label": "auto-executed tier-1 audit trail",
+            "batch_approvable": False,
+            "proposals": [],
+        },
+        "tier_2_batch_approvable": {
+            "tier": 2,
+            "label": "batch-approvable tier-2",
+            "batch_approvable": True,
+            "proposals": [],
+        },
+        "tier_3_escalation": {
+            "tier": 3,
+            "label": "escalation tier-3",
+            "batch_approvable": False,
+            "proposals": [],
+        },
+    }
+    tier_keys = {
+        1: "tier_1_auto_executed_audit_trail",
+        2: "tier_2_batch_approvable",
+        3: "tier_3_escalation",
+    }
+    for proposal in _pending_proposal_packets():
+        key = tier_keys.get(proposal["autonomy_tier"], "tier_3_escalation")
+        groups[key]["proposals"].append(proposal)
+    for group in groups.values():
+        group["pending_count"] = len(group["proposals"])
+        group["mutation_path"] = "individual_verdict_required"
+    return groups
+
+
+def _action_throughput() -> dict[str, Any]:
+    assert _conn is not None
+    with session(
+        _conn,
+        tenant_id=_TENANT_ID,
+        actor_id=_orch_principal or _SEED_AGENT,
+        now=_CLOCK,
+    ) as cur:
+        cur.execute(
+            "SELECT status, count(*) FROM action_proposal GROUP BY status "
+            "ORDER BY status ASC"
+        )
+        proposal_counts = {row[0]: row[1] for row in cur.fetchall()}
+        cur.execute(
+            "SELECT verdict, count(*) FROM action_verdict GROUP BY verdict "
+            "ORDER BY verdict ASC"
+        )
+        verdict_counts = {row[0]: row[1] for row in cur.fetchall()}
+    return {
+        "proposals_by_status": proposal_counts,
+        "verdicts_by_type": verdict_counts,
+    }
+
+
 # ---------------------------------------------------------------------------
 # Endpoints
 # ---------------------------------------------------------------------------
@@ -693,6 +645,7 @@ async def health_check():
         config_loaded=_data_plane is not None,
         tenant_id=_TENANT_ID,
         accounts_loaded=account_count,
+        auth=auth_marker(),
     )
 
 
@@ -732,49 +685,31 @@ async def list_accounts(
         # Compute priority if we have enough data.
         if company and health and adoption:
             try:
-                entitlements = tuple(
-                    dp.telemetry.list_entitlements(account.account_id)
-                )
-                signals = tuple(
-                    dp.telemetry.list_usage_signals(account.account_id)
-                )
-                plans = tuple(
-                    dp.cs.list_success_plans(account.account_id)
-                )
-                milestones = tuple(
-                    dp.telemetry.list_ttv_milestones(account.account_id)
-                )
-
-                model = build_customer_value_model(
-                    account=account,
-                    company=company,
-                    health=health,
-                    adoption=adoption,
-                    entitlements=entitlements,
-                    usage_signals=signals,
-                    success_plans=plans,
-                )
-                open_gaps = tuple(m for m in milestones if m.achieved_at is None)
-                overdue_plans = tuple(
-                    p for p in plans
-                    if p.target_date and p.target_date <= as_of
-                )
-                projected = project_ttv_lens(
-                    model,
-                    company=company,
-                    health=health,
-                    open_milestone_gaps=open_gaps,
-                    overdue_success_plans=overdue_plans,
+                priority_score, _divergences = score_account_priority(
+                    account.account_id,
+                    data_plane=dp,
                     as_of=as_of,
                 )
-                entry["priority_score"] = projected.score
-            except Exception:
-                pass
+                entry["priority_score"] = priority_score
+            except Exception as exc:
+                log.warning(
+                    "priority_score_failed",
+                    extra={
+                        "surface": "api.list_accounts",
+                        "account_id": account.account_id,
+                        "error_type": exc.__class__.__name__,
+                    },
+                )
+                entry["priority_score"] = None
+                entry["priority_score_error"] = exc.__class__.__name__
 
         results.append(entry)
 
     # Sort by priority score descending.
-    results.sort(key=lambda r: r.get("priority_score", -1), reverse=True)
+    results.sort(
+        key=lambda r: r["priority_score"] if r.get("priority_score") is not None else -1,
+        reverse=True,
+    )
 
     return AccountListResponse(
         tenant_id=DEFAULT_TENANT,
@@ -792,7 +727,10 @@ async def get_account_detail(
     """Single account detail: value model output, active factors, divergence
     signals, lens projections."""
     dp, as_of = _data_plane_for_day(day, deep=deep)
-    return _score_one_account(account_id, dp=dp, as_of=as_of)
+    try:
+        return _score_one_account(account_id, data_plane=dp, as_of=as_of)
+    except AccountDataError as exc:
+        raise _account_data_http_error(exc)
 
 
 @app.get("/accounts/{account_id}/brief")
@@ -807,7 +745,10 @@ async def get_account_brief(
     talking points.  Includes trajectory when simulation day is provided.
     """
     dp, as_of = _data_plane_for_day(day, deep=deep)
-    brief = _build_account_brief(account_id, dp=dp, as_of=as_of)
+    try:
+        brief = _build_account_brief(account_id, data_plane=dp, as_of=as_of)
+    except AccountDataError as exc:
+        raise _account_data_http_error(exc)
 
     # Inject trajectory data when a simulation day is specified.
     if day is not None:
@@ -1053,6 +994,7 @@ async def get_account_trajectory(
 
 @app.post("/sweep", response_model=SweepResponse)
 async def trigger_sweep(
+    request: Request,
     day: int | None = Query(None, ge=0, le=365),
     deep: bool = Query(False, description="Use deep data simulation layer"),
 ):
@@ -1063,8 +1005,17 @@ async def trigger_sweep(
     """
     dp, as_of = _data_plane_for_day(day, deep=deep)
     assert _orch_principal is not None
+    auth_principal = _require_write_auth(request)
 
-    log.info("Sweep triggered", extra={"tenant_id": _TENANT_ID, "day": day})
+    log.info(
+        "Sweep triggered",
+        extra={
+            "tenant_id": _TENANT_ID,
+            "day": day,
+            "auth": auth_principal.auth,
+            "operator_principal": auth_principal.principal_id,
+        },
+    )
 
     sweep_start = time.monotonic()
     gate = _gate()
@@ -1108,6 +1059,7 @@ async def trigger_sweep(
         escalations=list(result.get("escalations", ())),
         swept_accounts=list(result.get("swept_accounts", ())),
         degraded_items=result.get("degraded_items", 0),
+        auth=auth_principal.auth,
     )
 
 
@@ -1153,10 +1105,22 @@ async def list_proposals():
     )
 
 
+@app.get("/queue/delegation", response_model=DelegationResponse)
+async def get_delegation_queue():
+    """Read-only tier grouping for pending delegated work."""
+    groups = _delegation_groups()
+    return DelegationResponse(
+        tenant_id=_TENANT_ID,
+        pending_count=sum(group["pending_count"] for group in groups.values()),
+        groups=groups,
+    )
+
+
 @app.post("/proposals/{proposal_id}/verdict", response_model=VerdictResponse)
-async def submit_verdict(proposal_id: str, body: VerdictRequest):
+async def submit_verdict(proposal_id: str, body: VerdictRequest, request: Request):
     """Submit approve/deny verdict — the live verdict source (G-6)."""
-    assert _conn is not None and _authority_principal is not None
+    assert _conn is not None
+    auth_principal = _require_write_auth(request)
 
     proposal = _lookup_proposal(proposal_id)
 
@@ -1173,7 +1137,7 @@ async def submit_verdict(proposal_id: str, body: VerdictRequest):
     gate = _gate()
     human_verdict = Verdict(
         verdict=body.verdict,
-        human_principal_id=_authority_principal,
+        human_principal_id=auth_principal.principal_id,
         rationale=body.reason,
     )
 
@@ -1197,7 +1161,8 @@ async def submit_verdict(proposal_id: str, body: VerdictRequest):
             "verdict": outcome.verdict,
             "status": outcome.status,
             "authorized": outcome.authorized,
-            "actor": _authority_principal,
+            "actor": auth_principal.principal_id,
+            "auth": auth_principal.auth,
         },
     )
 
@@ -1207,6 +1172,7 @@ async def submit_verdict(proposal_id: str, body: VerdictRequest):
         authorized=outcome.authorized,
         verdict=outcome.verdict,
         payload_sha256=outcome.payload_sha256,
+        auth=auth_principal.auth,
     )
 
 
@@ -1226,62 +1192,57 @@ async def get_digest(
     # 1. Prioritized accounts with a quick sweep.
     accounts = dp.crm.list_accounts(tenant_id=DEFAULT_TENANT)
     prioritized: list[DigestAccountSchema] = []
+    health_counts = {"green": 0, "yellow": 0, "red": 0, "unknown": 0}
+    divergence_counts: dict[str, int] = {}
 
     for account in accounts:
         company = dp.cs.get_company(account.account_id)
         health = dp.cs.get_health_score(account.account_id)
         adoption = dp.cs.get_adoption_summary(account.account_id)
+        band = health.band if health else None
+        if band in health_counts:
+            health_counts[band] += 1
+        else:
+            health_counts["unknown"] += 1
 
         entry = DigestAccountSchema(
             account_id=account.account_id,
             account_name=account.name,
-            health_band=health.band if health else None,
+            health_band=band,
         )
 
         if company and health and adoption:
             try:
-                entitlements = tuple(
-                    dp.telemetry.list_entitlements(account.account_id)
-                )
-                signals = tuple(
-                    dp.telemetry.list_usage_signals(account.account_id)
-                )
-                plans = tuple(
-                    dp.cs.list_success_plans(account.account_id)
-                )
-                milestones = tuple(
-                    dp.telemetry.list_ttv_milestones(account.account_id)
-                )
-                model = build_customer_value_model(
-                    account=account,
-                    company=company,
-                    health=health,
-                    adoption=adoption,
-                    entitlements=entitlements,
-                    usage_signals=signals,
-                    success_plans=plans,
-                )
-                open_gaps = tuple(m for m in milestones if m.achieved_at is None)
-                overdue_plans = tuple(
-                    p for p in plans
-                    if p.target_date and p.target_date <= as_of
-                )
-                projected = project_ttv_lens(
-                    model,
-                    company=company,
-                    health=health,
-                    open_milestone_gaps=open_gaps,
-                    overdue_success_plans=overdue_plans,
+                priority_score, divergences = score_account_priority(
+                    account.account_id,
+                    data_plane=dp,
                     as_of=as_of,
                 )
                 entry = DigestAccountSchema(
                     account_id=account.account_id,
                     account_name=account.name,
                     health_band=health.band,
-                    priority_score=projected.score,
+                    priority_score=priority_score,
                 )
-            except Exception:
-                pass
+                for divergence in divergences:
+                    name = str(divergence.get("name") or "unknown")
+                    divergence_counts[name] = divergence_counts.get(name, 0) + 1
+            except Exception as exc:
+                log.warning(
+                    "priority_score_failed",
+                    extra={
+                        "surface": "api.digest",
+                        "account_id": account.account_id,
+                        "error_type": exc.__class__.__name__,
+                    },
+                )
+                entry = DigestAccountSchema(
+                    account_id=account.account_id,
+                    account_name=account.name,
+                    health_band=health.band,
+                    priority_score=None,
+                    priority_score_error=exc.__class__.__name__,
+                )
 
         prioritized.append(entry)
 
@@ -1337,6 +1298,17 @@ async def get_digest(
         prioritized_accounts=prioritized,
         pending_proposals=pending_count,
         commitments=commitments,
+        manager_rollup={
+            "book_health_counts": health_counts,
+            "divergence_patterns": [
+                {"name": name, "account_count": count}
+                for name, count in sorted(
+                    divergence_counts.items(),
+                    key=lambda item: (-item[1], item[0]),
+                )
+            ],
+            "action_throughput": _action_throughput(),
+        },
     )
 
 

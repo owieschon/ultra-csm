@@ -15,6 +15,8 @@ try:
 except ImportError:
     pytest.skip("mcp package not installed", allow_module_level=True)
 
+MCP_TOKEN = "mcp-lane-a-token"
+
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -104,19 +106,31 @@ class TestListProposals:
 
 
 class TestSubmitVerdict:
-    def test_verdict_invalid_value(self):
-        result = mcp_server.submit_verdict(
-            "00000000-0000-0000-0000-000000000000", "maybe", "test"
-        )
-        assert "error" in result
-
-    def test_verdict_missing_proposal(self):
+    def test_verdict_requires_token(self):
         result = mcp_server.submit_verdict(
             "00000000-0000-0000-0000-000000000000", "approve", "test"
         )
+        assert result["code"] == "AUTH_REQUIRED"
+
+    def test_verdict_invalid_value(self, monkeypatch):
+        monkeypatch.setenv("ULTRA_CSM_API_TOKENS", f"{MCP_TOKEN}:MCP Lane Manager")
+        result = mcp_server.submit_verdict(
+            "00000000-0000-0000-0000-000000000000", "maybe", "test", token=MCP_TOKEN
+        )
         assert "error" in result
 
-    def test_sweep_then_verdict(self):
+    def test_verdict_missing_proposal(self, monkeypatch):
+        monkeypatch.setenv("ULTRA_CSM_API_TOKENS", f"{MCP_TOKEN}:MCP Lane Manager")
+        result = mcp_server.submit_verdict(
+            "00000000-0000-0000-0000-000000000000",
+            "approve",
+            "test",
+            token=MCP_TOKEN,
+        )
+        assert "error" in result
+
+    def test_sweep_then_verdict(self, monkeypatch):
+        monkeypatch.setenv("ULTRA_CSM_API_TOKENS", f"{MCP_TOKEN}:MCP Lane Manager")
         # Run sweep to generate proposals.
         mcp_server.run_sweep()
         proposals = mcp_server.list_proposals()["proposals"]
@@ -125,7 +139,12 @@ class TestSubmitVerdict:
             pytest.skip("No pending proposals from sweep")
 
         proposal_id = proposals[0]["proposal_id"]
-        result = mcp_server.submit_verdict(proposal_id, "approve", "Test approval")
+        result = mcp_server.submit_verdict(
+            proposal_id,
+            "approve",
+            "Test approval",
+            token=MCP_TOKEN,
+        )
         # May succeed or fail depending on cache state — just ensure it's structured.
         assert isinstance(result, dict)
         if "error" not in result:

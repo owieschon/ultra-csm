@@ -12,6 +12,11 @@ from urllib import error, request
 
 from ultra_csm.data_plane.explorer import run_explorer
 from ultra_csm.data_plane.live_smoke import run_smoke
+from ultra_csm.data_plane.source_mapping import (
+    freeze_confirmed_source_map,
+    load_mapping_confirmations,
+    load_source_map_proposal,
+)
 from ultra_csm.data_plane.synthetic_book import build_synthetic_book, synthetic_book_summary
 
 if TYPE_CHECKING:
@@ -106,6 +111,35 @@ def _connector_explore(args: argparse.Namespace) -> int:
     if result.missing_env:
         return 2
     return 1
+
+
+def _connector_confirm(args: argparse.Namespace) -> int:
+    proposal = load_source_map_proposal(args.proposal)
+    confirmations = load_mapping_confirmations(args.confirmations)
+    config = freeze_confirmed_source_map(
+        proposal,
+        confirmations=confirmations,
+    )
+    output = Path(args.output)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(
+        json.dumps(config.to_dict(), indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    payload = {
+        "connector_id": config.connector_id,
+        "config_hash": config.config_hash,
+        "mappings": len(config.mappings),
+        "unknown_fields": len(config.unknown_fields),
+        "output": str(output),
+    }
+    if args.json:
+        print(json.dumps(payload, indent=2, sort_keys=True))
+    else:
+        print(f"{config.connector_id}: frozen source map written")
+        print(f"config_hash: {config.config_hash}")
+        print(f"output: {output}")
+    return 0
 
 
 def _demo_book(args: argparse.Namespace) -> int:
@@ -799,6 +833,7 @@ def _proposal_verdict(args: argparse.Namespace) -> int:
             f"/proposals/{args.proposal_id}/verdict",
             method="POST",
             payload={"verdict": args.verdict, "reason": reason},
+            api_token=args.api_token,
         )
     except CliApiError as exc:
         return _print_api_error(exc, json_output=args.json)
@@ -813,19 +848,54 @@ def _proposal_verdict(args: argparse.Namespace) -> int:
     return 0
 
 
+def _queue_view(args: argparse.Namespace) -> int:
+    try:
+        payload = _api_json(args.api_url, "/queue/delegation")
+    except CliApiError as exc:
+        return _print_api_error(exc, json_output=args.json)
+    if args.json:
+        print(json.dumps(payload, indent=2, sort_keys=True))
+        return 0
+
+    print(f"pending delegated items: {payload.get('pending_count', 0)}")
+    groups = payload.get("groups", {})
+    for key in (
+        "tier_1_auto_executed_audit_trail",
+        "tier_2_batch_approvable",
+        "tier_3_escalation",
+    ):
+        group = groups.get(key, {})
+        proposals = group.get("proposals", [])
+        print(f"{group.get('label', key)}: {group.get('pending_count', len(proposals))}")
+        for proposal in proposals:
+            body = proposal.get("payload", {})
+            account = body.get("account_name") or body.get("account_id") or "unknown-account"
+            print(
+                f"  {proposal['proposal_id']}  "
+                f"{proposal['action']}  "
+                f"{proposal['status']}  "
+                f"{account}"
+            )
+    return 0
+
+
 def _api_json(
     api_url: str,
     path: str,
     *,
     method: str = "GET",
     payload: dict[str, Any] | None = None,
+    api_token: str | None = None,
 ) -> dict[str, Any]:
     body = json.dumps(payload).encode("utf-8") if payload is not None else None
+    headers = {"Content-Type": "application/json"}
+    if api_token:
+        headers["Authorization"] = f"Bearer {api_token}"
     req = request.Request(
         api_url.rstrip("/") + path,
         data=body,
         method=method,
-        headers={"Content-Type": "application/json"},
+        headers=headers,
     )
     try:
         with request.urlopen(req, timeout=10) as response:
@@ -893,6 +963,12 @@ def build_parser() -> argparse.ArgumentParser:
     explore.add_argument("--dry-run", action="store_true")
     explore.add_argument("--json", action="store_true")
     explore.set_defaults(func=_connector_explore)
+    confirm = connector_sub.add_parser("confirm")
+    confirm.add_argument("proposal", help="Path to a source-map proposal JSON")
+    confirm.add_argument("confirmations", help="Path to confirmation decisions JSON")
+    confirm.add_argument("--output", required=True, help="Path for the frozen config JSON")
+    confirm.add_argument("--json", action="store_true")
+    confirm.set_defaults(func=_connector_confirm)
 
     demo_book = sub.add_parser("demo-book", help="Print synthetic book of business summary")
     demo_book.add_argument("--json", action="store_true")
@@ -910,6 +986,10 @@ def build_parser() -> argparse.ArgumentParser:
                                help="Use deep data simulation for all timeline snapshots")
     demo_timeline.add_argument("--json", action="store_true")
     demo_timeline.set_defaults(func=_demo_timeline)
+
+    queue = sub.add_parser("queue", help="Show delegated work queue")
+    _add_api_args(queue)
+    queue.set_defaults(func=_queue_view)
 
     proposals = sub.add_parser("proposals")
     proposal_sub = proposals.add_subparsers(dest="proposal_command", required=True)
@@ -942,6 +1022,11 @@ def _add_api_args(parser: argparse.ArgumentParser) -> None:
         "--api-url",
         default=os.environ.get("ULTRA_CSM_API_URL", DEFAULT_API_URL),
         help="Ultra CSM API base URL",
+    )
+    parser.add_argument(
+        "--api-token",
+        default=os.environ.get("ULTRA_CSM_API_TOKEN"),
+        help="Bearer token for mutating API calls",
     )
     parser.add_argument("--json", action="store_true")
 
