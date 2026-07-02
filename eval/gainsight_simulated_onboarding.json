@@ -1,0 +1,588 @@
+{
+  "artifact": "gainsight_simulated_onboarding",
+  "claim_boundary": {
+    "live": false,
+    "live_tenant_proven": false,
+    "sim": true,
+    "uses_live_credentials": false
+  },
+  "confirmation_fixture": {
+    "confirmed_keys": [
+      "CSCompany.current_score",
+      "CSCompany.status",
+      "CTA.priority",
+      "CTA.status",
+      "SuccessPlan.status"
+    ],
+    "path": "eval/gainsight_simulated_confirmations.json"
+  },
+  "credential_boundary": {
+    "live_credentials_used": false,
+    "live_tenant_proof": false,
+    "missing_credentials_state": "shape_verified_pending_live_creds",
+    "missing_env": [
+      "ULTRA_CSM_GAINSIGHT_DOMAIN",
+      "ULTRA_CSM_GAINSIGHT_TOKEN"
+    ],
+    "requests_without_credentials": 0,
+    "simulated_credentials_used": true,
+    "transport": "FakeGainsightClient"
+  },
+  "discovery": {
+    "explorer_connected_flag_is_not_live_proof": true,
+    "explorer_state_on_fake_transport": "live_schema_verified",
+    "objects": [
+      {
+        "fields": [
+          "Company Id",
+          "Name",
+          "Industry",
+          "ARR",
+          "Stage",
+          "Status",
+          "OriginalContractDate",
+          "RenewalDate",
+          "CSM",
+          "Current Score"
+        ],
+        "name": "Company"
+      },
+      {
+        "fields": [
+          "CTA ID",
+          "Company ID",
+          "CTA Name",
+          "Priority",
+          "Status",
+          "Due Date",
+          "OwnerID"
+        ],
+        "name": "CTA"
+      },
+      {
+        "fields": [
+          "Success Plan ID",
+          "Company ID",
+          "Status",
+          "Objective CTAs",
+          "Due Date"
+        ],
+        "name": "Success Plan"
+      },
+      {
+        "fields": [
+          "Id",
+          "Company Id"
+        ],
+        "name": "Scorecard Fact"
+      },
+      {
+        "fields": [
+          "Id",
+          "Company Id"
+        ],
+        "name": "Unified Scorecard Fact-Company"
+      },
+      {
+        "fields": [
+          "Id",
+          "Measure Name"
+        ],
+        "name": "Scorecard Measures"
+      }
+    ],
+    "ok": true,
+    "request_urls": [
+      "https://ultra-csm-simulated.gainsightcloud.com/v1/meta/services/objects/Company/describe?ic=true&cl=3&idd=true",
+      "https://ultra-csm-simulated.gainsightcloud.com/v1/meta/services/objects/CTA/describe?ic=true&cl=3&idd=true",
+      "https://ultra-csm-simulated.gainsightcloud.com/v1/meta/services/objects/SuccessPlan/describe?ic=true&cl=3&idd=true",
+      "https://ultra-csm-simulated.gainsightcloud.com/v1/meta/services/objects/Scorecard%20Fact/describe?ic=true&cl=3&idd=true",
+      "https://ultra-csm-simulated.gainsightcloud.com/v1/meta/services/objects/Unified%20Scorecard%20Fact-Company/describe?ic=true&cl=3&idd=true",
+      "https://ultra-csm-simulated.gainsightcloud.com/v1/meta/services/objects/Scorecard%20Measures/describe?ic=true&cl=3&idd=true"
+    ],
+    "requests_on_fake_transport": 6,
+    "sample_counts": {
+      "company_metadata": 10,
+      "cta_metadata": 7,
+      "scorecard_fact_metadata": 2,
+      "scorecard_measures_metadata": 2,
+      "successplan_metadata": 5,
+      "unified_scorecard_fact-company_metadata": 2
+    },
+    "schema_hash": "sha256:932eddf02d66b21f7bcbb44ddf9604fbce26e421541937ae17f87af60540ca18",
+    "source_steps": [
+      "company_metadata",
+      "cta_metadata",
+      "successplan_metadata",
+      "scorecard_fact_metadata",
+      "unified_scorecard_fact-company_metadata",
+      "scorecard_measures_metadata"
+    ]
+  },
+  "fixture_payload": {
+    "describe_calls_available": 6,
+    "discovery_objects": [
+      "Company",
+      "CTA",
+      "SuccessPlan",
+      "Scorecard Fact",
+      "Unified Scorecard Fact-Company",
+      "Scorecard Measures"
+    ]
+  },
+  "frozen_source_map": {
+    "config_hash": "sha256:a589554111acb1fb934b8f26ec147e0b1d0be5a8b7af57d62149426f91127c84",
+    "connector_id": "gainsight_cs",
+    "mappings": [
+      {
+        "confidence": 0.95,
+        "connector_id": "gainsight_cs",
+        "contract": "CSCompany",
+        "internal_field": "company_id",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "identity_join",
+        "source_field": "Company Id",
+        "source_object": "Company",
+        "source_path": "Company Id",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "confidence": 0.95,
+        "connector_id": "gainsight_cs",
+        "contract": "CSCompany",
+        "internal_field": "name",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "context",
+        "source_field": "Name",
+        "source_object": "Company",
+        "source_path": "Name",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "confidence": 0.95,
+        "connector_id": "gainsight_cs",
+        "contract": "CSCompany",
+        "internal_field": "industry",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "context",
+        "source_field": "Industry",
+        "source_object": "Company",
+        "source_path": "Industry",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "confidence": 0.95,
+        "connector_id": "gainsight_cs",
+        "contract": "CSCompany",
+        "internal_field": "arr_cents",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "context",
+        "source_field": "ARR",
+        "source_object": "Company",
+        "source_path": "ARR",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "confidence": 0.95,
+        "connector_id": "gainsight_cs",
+        "contract": "CSCompany",
+        "internal_field": "lifecycle_stage",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "context",
+        "source_field": "Stage",
+        "source_object": "Company",
+        "source_path": "Stage",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "confidence": 1.0,
+        "connector_id": "gainsight_cs",
+        "contract": "CSCompany",
+        "internal_field": "status",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "human-confirmed mapping frozen into deterministic config",
+        "requires_human_confirmation": false,
+        "semantic_role": "context",
+        "source_field": "Status",
+        "source_object": "Company",
+        "source_path": "Status",
+        "state": "mapped",
+        "value_direction": "higher_is_better"
+      },
+      {
+        "confidence": 0.95,
+        "connector_id": "gainsight_cs",
+        "contract": "CSCompany",
+        "internal_field": "original_contract_date",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "context",
+        "source_field": "OriginalContractDate",
+        "source_object": "Company",
+        "source_path": "OriginalContractDate",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "confidence": 0.95,
+        "connector_id": "gainsight_cs",
+        "contract": "CSCompany",
+        "internal_field": "renewal_date",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "time_boundary",
+        "source_field": "RenewalDate",
+        "source_object": "Company",
+        "source_path": "RenewalDate",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "confidence": 0.95,
+        "connector_id": "gainsight_cs",
+        "contract": "CSCompany",
+        "internal_field": "csm_owner_id",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "context",
+        "source_field": "CSM",
+        "source_object": "Company",
+        "source_path": "CSM",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "confidence": 1.0,
+        "connector_id": "gainsight_cs",
+        "contract": "CSCompany",
+        "internal_field": "current_score",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "human-confirmed mapping frozen into deterministic config",
+        "requires_human_confirmation": false,
+        "semantic_role": "health_signal",
+        "source_field": "Current Score",
+        "source_object": "Company",
+        "source_path": "Current Score",
+        "state": "mapped",
+        "value_direction": "higher_is_better"
+      },
+      {
+        "confidence": 0.95,
+        "connector_id": "gainsight_cs",
+        "contract": "CTA",
+        "internal_field": "cta_id",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "identity_join",
+        "source_field": "CTA ID",
+        "source_object": "CTA",
+        "source_path": "CTA ID",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "confidence": 0.95,
+        "connector_id": "gainsight_cs",
+        "contract": "CTA",
+        "internal_field": "account_id",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "identity_join",
+        "source_field": "Company ID",
+        "source_object": "CTA",
+        "source_path": "Company ID",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "confidence": 0.95,
+        "connector_id": "gainsight_cs",
+        "contract": "CTA",
+        "internal_field": "reason",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "context",
+        "source_field": "CTA Name",
+        "source_object": "CTA",
+        "source_path": "CTA Name",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "confidence": 1.0,
+        "connector_id": "gainsight_cs",
+        "contract": "CTA",
+        "internal_field": "priority",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "human-confirmed mapping frozen into deterministic config",
+        "requires_human_confirmation": false,
+        "semantic_role": "context",
+        "source_field": "Priority",
+        "source_object": "CTA",
+        "source_path": "Priority",
+        "state": "mapped",
+        "value_direction": "higher_is_better"
+      },
+      {
+        "confidence": 1.0,
+        "connector_id": "gainsight_cs",
+        "contract": "CTA",
+        "internal_field": "status",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "human-confirmed mapping frozen into deterministic config",
+        "requires_human_confirmation": false,
+        "semantic_role": "context",
+        "source_field": "Status",
+        "source_object": "CTA",
+        "source_path": "Status",
+        "state": "mapped",
+        "value_direction": "higher_is_better"
+      },
+      {
+        "confidence": 0.95,
+        "connector_id": "gainsight_cs",
+        "contract": "CTA",
+        "internal_field": "due_date",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "time_boundary",
+        "source_field": "Due Date",
+        "source_object": "CTA",
+        "source_path": "Due Date",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "confidence": 0.95,
+        "connector_id": "gainsight_cs",
+        "contract": "CTA",
+        "internal_field": "owner_id",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "context",
+        "source_field": "OwnerID",
+        "source_object": "CTA",
+        "source_path": "OwnerID",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "confidence": 0.95,
+        "connector_id": "gainsight_cs",
+        "contract": "SuccessPlan",
+        "internal_field": "plan_id",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "identity_join",
+        "source_field": "Success Plan ID",
+        "source_object": "Success Plan",
+        "source_path": "Success Plan ID",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "confidence": 0.95,
+        "connector_id": "gainsight_cs",
+        "contract": "SuccessPlan",
+        "internal_field": "account_id",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "identity_join",
+        "source_field": "Company ID",
+        "source_object": "Success Plan",
+        "source_path": "Company ID",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "confidence": 1.0,
+        "connector_id": "gainsight_cs",
+        "contract": "SuccessPlan",
+        "internal_field": "status",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "human-confirmed mapping frozen into deterministic config",
+        "requires_human_confirmation": false,
+        "semantic_role": "outcome_plan",
+        "source_field": "Status",
+        "source_object": "Success Plan",
+        "source_path": "Status",
+        "state": "mapped",
+        "value_direction": "higher_is_better"
+      },
+      {
+        "confidence": 0.95,
+        "connector_id": "gainsight_cs",
+        "contract": "SuccessPlan",
+        "internal_field": "objectives",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "outcome_plan",
+        "source_field": "Objective CTAs",
+        "source_object": "Success Plan",
+        "source_path": "Objective CTAs",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "confidence": 0.95,
+        "connector_id": "gainsight_cs",
+        "contract": "SuccessPlan",
+        "internal_field": "target_date",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "time_boundary",
+        "source_field": "Due Date",
+        "source_object": "Success Plan",
+        "source_path": "Due Date",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      }
+    ],
+    "proposal_hash": "sha256:08bbce73e56ee5aa3aa5fcbbd4b7c068b972d9c407ec1a3815d3bde12134fff5",
+    "schema_hash": "sha256:932eddf02d66b21f7bcbb44ddf9604fbce26e421541937ae17f87af60540ca18",
+    "unknown_fields": [
+      "AdoptionSummary.account_id",
+      "AdoptionSummary.active_assets",
+      "AdoptionSummary.active_users",
+      "AdoptionSummary.adoption_rate",
+      "AdoptionSummary.entitled_assets",
+      "AdoptionSummary.licensed_users",
+      "AdoptionSummary.measured_at",
+      "AdoptionSummary.underused_capabilities",
+      "HealthScore.account_id",
+      "HealthScore.band",
+      "HealthScore.drivers",
+      "HealthScore.measured_at",
+      "HealthScore.score"
+    ]
+  },
+  "generated_by": "eval.gainsight_simulated_onboarding",
+  "mapping_proposal": {
+    "ambiguous_keys": [
+      "CSCompany.current_score",
+      "CSCompany.status",
+      "CTA.priority",
+      "CTA.status",
+      "SuccessPlan.status"
+    ],
+    "coverage": {
+      "ambiguous_confirm": 5,
+      "mapped": 17,
+      "missing_to_unknown": 13,
+      "total": 35
+    },
+    "missing_to_unknown_keys": [
+      "AdoptionSummary.account_id",
+      "AdoptionSummary.active_assets",
+      "AdoptionSummary.active_users",
+      "AdoptionSummary.adoption_rate",
+      "AdoptionSummary.entitled_assets",
+      "AdoptionSummary.licensed_users",
+      "AdoptionSummary.measured_at",
+      "AdoptionSummary.underused_capabilities",
+      "HealthScore.account_id",
+      "HealthScore.band",
+      "HealthScore.drivers",
+      "HealthScore.measured_at",
+      "HealthScore.score"
+    ],
+    "proposal_hash": "sha256:08bbce73e56ee5aa3aa5fcbbd4b7c068b972d9c407ec1a3815d3bde12134fff5",
+    "required_operator_actions": [
+      "confirm 5 semantic/value mappings",
+      "review 13 missing fields; affected rails remain unknown"
+    ],
+    "schema_hash": "sha256:932eddf02d66b21f7bcbb44ddf9604fbce26e421541937ae17f87af60540ca18"
+  },
+  "measurement_scope": "Gainsight metadata-describe discovery, source-map proposal, deterministic confirmation, freeze, and readiness artifact over synthetic data and fake transport.",
+  "readiness": {
+    "connected": false,
+    "connector_id": "gainsight_cs",
+    "evidence": [
+      "synthetic_customer_book",
+      "fake_gainsight_client",
+      "gainsight_explorer_parser",
+      "frozen_source_map_config"
+    ],
+    "mode": "fixture",
+    "rails_degraded": [
+      "AdoptionSummary",
+      "HealthScore"
+    ],
+    "required_operator_actions": [
+      "connect live Gainsight credentials before any live readiness claim",
+      "confirm the tenant's actual Scorecard/Adoption Explorer object names before treating HealthScore or AdoptionSummary as mapped",
+      "the ordinal status/priority confirmations here (higher_is_better) are placeholders; a real onboarding must confirm the tenant's actual Stage/Status/Priority value ordering, since Gainsight vocabularies are tenant-configurable"
+    ],
+    "state": "fixture_verified"
+  },
+  "readiness_report": {
+    "degraded_rails": [
+      "AdoptionSummary",
+      "HealthScore"
+    ],
+    "required_operator_actions": [
+      "connect live Gainsight credentials before any live readiness claim",
+      "confirm the tenant's actual Scorecard/Adoption Explorer object names before treating HealthScore or AdoptionSummary as mapped",
+      "the ordinal status/priority confirmations here (higher_is_better) are placeholders; a real onboarding must confirm the tenant's actual Stage/Status/Priority value ordering, since Gainsight vocabularies are tenant-configurable"
+    ],
+    "sources": {
+      "gainsight_cs": "fixture_verified"
+    }
+  },
+  "source_book": {
+    "accounts": 35,
+    "companies": 35,
+    "ctas": 6,
+    "source": "src/ultra_csm/data_plane/synthetic_book.py",
+    "success_plans": 7
+  }
+}
