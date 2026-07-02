@@ -43,6 +43,7 @@ from ultra_csm.governance import (
 from ultra_csm.value_model import build_customer_value_model, project_ttv_lens
 from ultra_csm.agent1 import run_time_to_value_sweep
 from ultra_csm.api_metrics import APIMetrics, SweepTiming
+from ultra_csm.cohort_packets import build_cohort_rollup_packets
 from ultra_csm.cost_tracker import CostBudget, CostTracker
 from ultra_csm._api_helpers import (
     AccountDataError,
@@ -237,6 +238,7 @@ class DelegationResponse(BaseModel):
     tenant_id: str
     pending_count: int
     groups: dict[str, Any]
+    held_actions: list[dict[str, Any]] = Field(default_factory=list)
 
 
 class TrajectoryPointSchema(BaseModel):
@@ -474,6 +476,26 @@ def _data_plane_for_day(
         telemetry=FixtureProductTelemetryConnector(data=data),
     )
     return dp, as_of
+
+
+def _fixture_data_for_day(day: int | None, *, deep: bool = False):
+    """Return fixture data aligned with ``_data_plane_for_day`` for reporting."""
+
+    if day is None:
+        from ultra_csm.data_plane.fixtures import default_fixture_data
+
+        return default_fixture_data()
+
+    from ultra_csm.data_plane.book_simulator import simulate_book
+    from ultra_csm.data_plane.synthetic_book import build_synthetic_book
+
+    base = build_synthetic_book()
+    data = simulate_book(base, day_offset=day) if day > 0 else base
+    if deep and day > 0:
+        from ultra_csm.cli import _apply_deep_data_overlay
+
+        data = _apply_deep_data_overlay(data, day)
+    return data
 
 
 def _lookup_proposal(proposal_id: str) -> ActionProposal:
@@ -1113,6 +1135,7 @@ async def get_delegation_queue():
         tenant_id=_TENANT_ID,
         pending_count=sum(group["pending_count"] for group in groups.values()),
         groups=groups,
+        held_actions=[],
     )
 
 
@@ -1308,6 +1331,12 @@ async def get_digest(
                 )
             ],
             "action_throughput": _action_throughput(),
+            "cohort_packets": [
+                packet.to_dict()
+                for packet in build_cohort_rollup_packets(
+                    _fixture_data_for_day(day, deep=deep),
+                )
+            ],
         },
     )
 

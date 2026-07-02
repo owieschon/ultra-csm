@@ -246,6 +246,7 @@ class TestGovernanceEndpoints:
             "tier_3_escalation",
         }
         assert "pending_count" in body
+        assert body["held_actions"] == []
 
     def test_verdict_requires_auth(self, client: TestClient):
         resp = client.post(
@@ -363,6 +364,12 @@ class TestDigestEndpoint:
         assert "as_of" in body
         assert "manager_rollup" in body
         assert "book_health_counts" in body["manager_rollup"]
+        assert "cohort_packets" in body["manager_rollup"]
+        assert body["manager_rollup"]["cohort_packets"]
+        assert all(
+            packet["claim_boundary"] == {"sim": True, "live": False}
+            for packet in body["manager_rollup"]["cohort_packets"]
+        )
 
 
 class TestPriorityScoreFailures:
