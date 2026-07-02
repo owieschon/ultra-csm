@@ -15,8 +15,8 @@ no hand-typed metrics in docs, progress output on long runs, escalate per the ta
 - **Judge lane is separate and protected.** The gold set is owner-approved and the
   semantic-quality judge remains gated. Another agent owns that lane now. Do not edit
   `eval/gold/*`, `eval/judge_*`, rubric anchors, or judge artifacts from this handoff.
-- **New surface from the dispatch session** (large; treat as *built-unverified* until
-  Task 1 passes): REST API (`api.py`), MCP server (`mcp_server.py`), `cost_tracker.py`,
+- **New surface from the dispatch session** is operating in the local simulated lane; see
+  `docs/OPERATING_PROOF.md`: REST API (`api.py`), MCP server (`mcp_server.py`), `cost_tracker.py`,
   `api_metrics.py`, `quality_breaker.py` (+ demo loop), `logging_config.py`,
   `synthetic_book.py` (35 accounts), `book_simulator.py` (365-day mutations),
   `data_simulator.py` (deep per-user/per-case data), `value_model_bridge.py`,
@@ -64,9 +64,8 @@ Then the **skeleton-vs-operating audit** of the new surface, by executing entryp
 - IF any surface is scaffolded-not-operating → record it in the artifact/claim_boundary
   and this doc; do NOT silently fix beyond small wiring; escalate anything structural.
 
-DoD: every command above runs green from this checkout; a short verification note
-(commands + observed results) committed. Infra + unit tests ≠ operating — this task IS
-the operating proof.
+Status: verified in `docs/OPERATING_PROOF.md`. Infra + unit tests were not treated as
+operating proof; the API, MCP tools, CLI commands, and demo loop were executed.
 
 ## D. Task 2 — Doc reconciliation (kill the drift while it's cheap)
 
@@ -88,9 +87,9 @@ nothing; hygiene green.
 
 ## E. Task 3 — Complete the degradation ladder (§4.7)
 
-`quality_breaker.py` + demo loop exist (verify in Task 1: deterministic trip on red
-artifact, operator-event reset, no LLM in the breaker path). Then verify-or-build the
-**slot fallback** half:
+`quality_breaker.py` + demo loop are verified in `docs/OPERATING_PROOF.md`: deterministic
+trip on red artifact, operator-event reset, no LLM in the breaker path, and the slot
+fallback half is covered by tests and the scorecard:
 - Live Slot B error/timeout mid-sweep → falls back to the fixture writer for that item,
   sweep completes; item carries `draft_mode: "template_fallback"`; artifact carries
   `degraded_items` count.
@@ -98,7 +97,7 @@ artifact, operator-event reset, no LLM in the breaker path). Then verify-or-buil
   zero lost, zero fabricated; **an unflagged fallback fails the scorecard** (loudness is
   a hard gate).
 
-DoD: both halves proven by tests; scorecard gains the loudness gate.
+Status: verified. Both halves are proven by tests; the scorecard has the loudness gate.
 
 ## F. Task 4 — The timeline demo artifact (the demo centerpiece)
 
