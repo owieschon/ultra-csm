@@ -9,6 +9,35 @@ execution time; the repo moves fast.**
 
 ---
 
+## START HERE — dispatch state as of 2026-07-02
+
+**Judge status** (artifact: `eval/gold/judge_agreement.json`, judge frozen at
+`quality-judge-v3`, reference = human-approved definitive labels, 40-card blind re-check
+passed 0/40): cleared by point estimate — `grounding_fidelity`, `tone_fit`, clean-layer
+`on_task_relevance`, `safety_boundary`, and deterministic `priority_fidelity`. **Still
+open:** `account_specificity` (clean 0.42 / hard 0.369) and hard-layer `on_task_relevance`
+(0.421). **The Slice-1 iteration budget is exhausted → all further judge/label/rubric
+changes are OWNER-GATED. Do not tune the judge, edit labels, or change anchors. The open
+dimensions wait for the owner's decision.**
+
+**Unblocked work (proceed without the owner):**
+- Slice 2 non-ablation parts: org-knowledge pack + loader + wiring + authority-invariance
+  evals (§3). The judge-scored ablation waits for the judge.
+- Slice 3 in full, including the degradation ladder (§4, esp. §4.7).
+- Slice 4 once Slice 3's sim tenant exists (§5).
+- Slice 5's `render_status.py` may land early (§6).
+
+**Companion docs:** `docs/SYSTEM_ARCHITECTURE.md` is a narrative architecture companion,
+not the binding execution spec. This file remains the execution plan.
+
+**Doc successor map** (four session docs were consolidated and no longer exist; if you hit
+a stale reference, resolve it here): `AGENT1_BUILD_PLAN` → `CUSTOMER_VALUE_MODEL.md`
+(provable-core/slots) + this plan; `AGENT1_PRIORITY_FACTORS` → `value_model.py` +
+`CUSTOMER_VALUE_MODEL.md` (divergence layer); `SIMPLIFICATION_PLAN` → executed (the cut
+landed); `LIVE_REGRESSION_STRENGTHENING_SPEC` → `QUALITY_REGRESSION_EVAL_SPEC.md`.
+
+---
+
 ## §0 — Executor protocol (read first, follow always)
 
 1. **Verify before building.** This repo was cloned from another project and heavily
@@ -260,7 +289,7 @@ breaker trips on a red quality artifact and requires an operator event to clear.
 `blocker | noise | unknown`, feeding the existing case-evidence path.
 
 **Already built / reuse:** the Slot A contract is fully specified in
-`docs/AGENT1_BUILD_PLAN.md` §2 (constrained output, mandatory `unknown`, no tools, one
+the provable-core section of `docs/CUSTOMER_VALUE_MODEL.md` (constrained output, mandatory `unknown`, no tools, one
 account). The sim tenant (Slice 3) supplies the messy free-text notes.
 
 **Build:** `src/ultra_csm/agent1/slot_a.py` mirroring Slot B's architecture exactly:
