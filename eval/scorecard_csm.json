@@ -73,6 +73,12 @@
       "passed": true
     },
     {
+      "case_id": "degradation_fallback_is_loud",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
       "case_id": "H_cross_tenant",
       "detail": "passed",
       "hard_gate": true,
@@ -145,8 +151,8 @@
   "measurement_scope": "Deterministic offline Agent 1 scorecard over CustomerDataPlane, the real ActionGate proposal path, and the book-sweep work queue.",
   "name": "agent1_time_to_value",
   "score": {
-    "passed": 23,
-    "total": 23
+    "passed": 24,
+    "total": 24
   },
   "slot_b": {
     "fixture_model_id": "fixture-agent1-slot-b-v1",

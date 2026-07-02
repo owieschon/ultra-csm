@@ -33,7 +33,8 @@ CustomerDataPlane -> CustomerValueModel -> TTV lens -> ActionGate -> Slot B
 
 ## Verification
 
-- `make scorecard-csm`: deterministic Agent 1 scorecard, currently `23/23`.
+- `make scorecard-csm`: deterministic Agent 1 scorecard; see the generated artifact for
+  the current gate count.
 - `make regression-csm`: exact deterministic spine regression plus seeded
   distributional mechanics.
 - `make eval`: CSM-relevant pytest suite.

@@ -220,7 +220,7 @@ PRODUCT_TELEMETRY_SOURCE_MAPS: dict[str, SourceObjectMap] = {
     "UsageSignal": SourceObjectMap(
         vendor="Product telemetry",
         object_name="Fleet telemetry / IoT usage endpoints",
-        docs_url="",
+        docs_url="https://opentelemetry.io/docs/specs/semconv/",
         fields={
             "signal_id": SourceField("event/stat id", True),
             "account_id": SourceField("external customer/account join key", False),

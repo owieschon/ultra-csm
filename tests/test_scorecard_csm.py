@@ -14,7 +14,7 @@ def test_agent1_csm_scorecard_writes_passing_artifact(tmp_path):
     assert output.exists()
     assert work_queue.exists()
     assert artifact["name"] == "agent1_time_to_value"
-    assert artifact["score"] == {"passed": 23, "total": 23}
+    assert artifact["score"] == {"passed": 24, "total": 24}
     assert artifact["hard_ok"] is True
     assert artifact["hard_failures"] == []
     case_ids = {case["case_id"] for case in artifact["cases"]}
@@ -31,6 +31,7 @@ def test_agent1_csm_scorecard_writes_passing_artifact(tmp_path):
         "slot_b_blocks_no_consent_draft",
         "slot_b_rejects_unsafe_output",
         "slot_b_rejects_unknown_evidence",
+        "degradation_fallback_is_loud",
         "H_cross_tenant",
         "H_ambiguous_no_autopick",
         "H_refusal",
