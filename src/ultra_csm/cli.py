@@ -5,6 +5,8 @@ from __future__ import annotations
 import argparse
 import json
 import os
+from datetime import datetime, timedelta
+from pathlib import Path
 from typing import Any
 from urllib import error, request
 
@@ -122,6 +124,357 @@ def _demo_book(args: argparse.Namespace) -> int:
         print(json.dumps(payload, indent=2, sort_keys=True))
     else:
         print(synthetic_book_summary(data))
+    return 0
+
+
+def _score_book(
+    data: "FixtureCustomerData",
+    as_of: str,
+) -> list[dict[str, Any]]:
+    """Score all accounts in a FixtureCustomerData, return list of dicts."""
+    from ultra_csm.data_plane.contracts import CustomerDataPlane
+    from ultra_csm.data_plane.fixtures import (
+        FixtureCRMDataConnector,
+        FixtureCSPlatformConnector,
+        FixtureProductTelemetryConnector,
+    )
+    from ultra_csm.value_model import (
+        build_customer_value_model,
+        load_value_model_config,
+        project_ttv_lens,
+    )
+
+    crm = FixtureCRMDataConnector(data=data)
+    cs = FixtureCSPlatformConnector(data=data)
+    telemetry = FixtureProductTelemetryConnector(data=data)
+    config = load_value_model_config()
+    results: list[dict[str, Any]] = []
+
+    for account in data.accounts:
+        aid = account.account_id
+        company = cs.get_company(aid)
+        health = cs.get_health_score(aid)
+        adoption = cs.get_adoption_summary(aid)
+        entitlements = tuple(telemetry.list_entitlements(aid))
+        usage_signals = tuple(telemetry.list_usage_signals(aid))
+        success_plans = tuple(cs.list_success_plans(aid))
+        milestones = tuple(telemetry.list_ttv_milestones(aid))
+
+        if company is None or health is None:
+            continue
+
+        model = build_customer_value_model(
+            account=account,
+            company=company,
+            health=health,
+            adoption=adoption,
+            entitlements=entitlements,
+            usage_signals=usage_signals,
+            success_plans=success_plans,
+            config=config,
+        )
+
+        open_milestones = tuple(
+            m for m in milestones
+            if m.achieved_at is None
+            and m.expected_by < as_of
+        )
+        overdue_plans = tuple(
+            p for p in success_plans
+            if p.status in ("active",)
+            and p.target_date < as_of
+        )
+
+        priority = project_ttv_lens(
+            model,
+            company=company,
+            health=health,
+            open_milestone_gaps=open_milestones,
+            overdue_success_plans=overdue_plans,
+            as_of=as_of,
+        )
+
+        results.append({
+            "account_id": aid,
+            "name": account.name,
+            "health_band": health.band,
+            "health_score": health.score,
+            "health_drivers": list(health.drivers),
+            "priority_score": priority.score,
+            "priority_factors": [f.name for f in priority.factors],
+            "arr_cents": company.arr_cents,
+            "lifecycle_stage": company.lifecycle_stage,
+            "renewal_date": company.renewal_date,
+        })
+
+    results.sort(key=lambda r: r["priority_score"], reverse=True)
+    return results
+
+
+def _demo_sweep(args: argparse.Namespace) -> int:
+    from ultra_csm.data_plane.book_simulator import simulate_book
+    from ultra_csm.data_plane.synthetic_book import SEED_DATE
+
+    day = args.day
+    base_date = datetime.strptime(SEED_DATE, "%Y-%m-%d")
+    as_of = (base_date + timedelta(days=day)).strftime("%Y-%m-%d")
+
+    base_book = build_synthetic_book()
+    if day == 0:
+        mutated = base_book
+    else:
+        mutated = simulate_book(base_book, day_offset=day)
+
+    scored = _score_book(mutated, as_of)
+
+    # Health distribution
+    green = sum(1 for r in scored if r["health_band"] == "green")
+    yellow = sum(1 for r in scored if r["health_band"] == "yellow")
+    red = sum(1 for r in scored if r["health_band"] == "red")
+
+    if args.json:
+        payload = {
+            "day": day,
+            "as_of": as_of,
+            "health_distribution": {"green": green, "yellow": yellow, "red": red},
+            "accounts": scored,
+        }
+        if day > 0:
+            base_scored = _score_book(base_book, SEED_DATE)
+            base_bands = {r["account_id"]: r["health_band"] for r in base_scored}
+            changes = []
+            for r in scored:
+                old = base_bands.get(r["account_id"])
+                if old and old != r["health_band"]:
+                    changes.append({
+                        "account": r["name"],
+                        "from_band": old,
+                        "to_band": r["health_band"],
+                    })
+            payload["changes_from_day_0"] = changes
+        print(json.dumps(payload, indent=2, sort_keys=True))
+        return 0
+
+    print("=" * 60)
+    print(f"Day {day} — Book of Business Sweep")
+    print("=" * 60)
+    print()
+    print("Health Distribution:")
+    print(f"  Green:  {green}")
+    print(f"  Yellow: {yellow}")
+    print(f"  Red:    {red}")
+    print()
+
+    print("Top 5 Priority Accounts:")
+    for i, r in enumerate(scored[:5], 1):
+        arr_str = f"${r['arr_cents'] / 100:,.0f}"
+        factors = ", ".join(r["priority_factors"][:4]) if r["priority_factors"] else "none"
+        print(
+            f"  {i}. {r['name']:35s}  score={r['priority_score']:3d}"
+            f"  band={r['health_band']:6s}  ARR={arr_str}"
+        )
+        print(f"     Factors: {factors}")
+    print()
+
+    print("Accounts by Health Band:")
+    for band in ("red", "yellow"):
+        band_accounts = [r for r in scored if r["health_band"] == band]
+        if band_accounts:
+            print(f"  {band.upper()}:")
+            for r in band_accounts:
+                drivers = ", ".join(r["health_drivers"][:3]) if r["health_drivers"] else "none"
+                print(f"    - {r['name']}: score={r['priority_score']}, drivers: {drivers}")
+    print()
+
+    if day > 0:
+        base_scored = _score_book(base_book, SEED_DATE)
+        base_bands = {r["account_id"]: r["health_band"] for r in base_scored}
+        print(f"Changes from Day 0:")
+        print("  Health Band Changes:")
+        any_changes = False
+        for r in scored:
+            old = base_bands.get(r["account_id"])
+            if old and old != r["health_band"]:
+                print(f"    - {r['name']}: {old} -> {r['health_band']}")
+                any_changes = True
+        if not any_changes:
+            print("    (none)")
+
+        print("  New Risks Detected:")
+        base_factors = {}
+        for r in base_scored:
+            base_factors[r["account_id"]] = set(r["priority_factors"])
+        any_risks = False
+        for r in scored:
+            old_f = base_factors.get(r["account_id"], set())
+            new_f = set(r["priority_factors"]) - old_f
+            if new_f:
+                print(f"    - {r['name']}: {', '.join(sorted(new_f))}")
+                any_risks = True
+        if not any_risks:
+            print("    (none)")
+
+    return 0
+
+
+def _demo_timeline(args: argparse.Namespace) -> int:
+    from ultra_csm.data_plane.book_simulator import simulate_book
+    from ultra_csm.data_plane.synthetic_book import SEED_DATE
+
+    base_date = datetime.strptime(SEED_DATE, "%Y-%m-%d")
+    timeline_days = [0, 30, 60, 90, 120, 180, 270, 365]
+    base_book = build_synthetic_book()
+
+    snapshots: dict[int, dict[str, Any]] = {}
+    all_scored: dict[int, list[dict[str, Any]]] = {}
+
+    for day in timeline_days:
+        as_of = (base_date + timedelta(days=day)).strftime("%Y-%m-%d")
+        if day == 0:
+            data = base_book
+        else:
+            data = simulate_book(base_book, day_offset=day)
+        scored = _score_book(data, as_of)
+        all_scored[day] = scored
+
+        green = sum(1 for r in scored if r["health_band"] == "green")
+        yellow = sum(1 for r in scored if r["health_band"] == "yellow")
+        red = sum(1 for r in scored if r["health_band"] == "red")
+        top_priority = [
+            {"name": r["name"], "score": r["priority_score"], "band": r["health_band"]}
+            for r in scored[:10]
+        ]
+        snapshots[day] = {
+            "green": green,
+            "yellow": yellow,
+            "red": red,
+            "top_priority": top_priority,
+        }
+
+    # Compute health transitions (compare each day to day 0)
+    base_bands = {r["account_id"]: r["health_band"] for r in all_scored[0]}
+    base_names = {r["account_id"]: r["name"] for r in all_scored[0]}
+    transitions: list[dict[str, Any]] = []
+    seen_transitions: set[str] = set()
+
+    for day in timeline_days[1:]:
+        for r in all_scored[day]:
+            aid = r["account_id"]
+            old_band = base_bands.get(aid)
+            if old_band and old_band != r["health_band"] and aid not in seen_transitions:
+                transitions.append({
+                    "account": r["name"],
+                    "from_band": old_band,
+                    "to_band": r["health_band"],
+                    "first_detected_day": day,
+                })
+                seen_transitions.add(aid)
+
+    # Detection timeline: new factors appearing at each day vs day 0
+    base_factors_by_account: dict[str, set[str]] = {}
+    for r in all_scored[0]:
+        base_factors_by_account[r["account_id"]] = set(r["priority_factors"])
+
+    day_events: dict[int, list[str]] = {d: [] for d in timeline_days}
+    first_risk_detected: dict[str, int] = {}
+
+    for day in timeline_days[1:]:
+        for r in all_scored[day]:
+            aid = r["account_id"]
+            old_f = base_factors_by_account.get(aid, set())
+            new_f = set(r["priority_factors"]) - old_f
+            if new_f:
+                for f in sorted(new_f):
+                    desc = f"{r['name']}: {f}"
+                    day_events[day].append(desc)
+                if aid not in first_risk_detected:
+                    first_risk_detected[aid] = day
+
+    # Detection metrics: for accounts with detected risks and renewal dates
+    detection_metrics: list[dict[str, Any]] = []
+    for day in timeline_days[1:]:
+        for r in all_scored[day]:
+            aid = r["account_id"]
+            if aid in first_risk_detected and first_risk_detected[aid] == day:
+                renewal = r.get("renewal_date")
+                if renewal:
+                    try:
+                        renewal_dt = datetime.strptime(renewal, "%Y-%m-%d")
+                        detected_dt = base_date + timedelta(days=day)
+                        lead_days = (renewal_dt - detected_dt).days
+                        detection_metrics.append({
+                            "account": r["name"],
+                            "risk_type": ", ".join(
+                                sorted(set(r["priority_factors"]) - base_factors_by_account.get(aid, set()))
+                            ),
+                            "first_detected_day": day,
+                            "event_date": renewal,
+                            "lead_time_days": lead_days,
+                        })
+                    except ValueError:
+                        pass
+
+    # Build JSON output
+    json_payload = {
+        "timeline_days": timeline_days,
+        "snapshots": {str(d): snapshots[d] for d in timeline_days},
+        "health_transitions": transitions,
+        "detection_metrics": detection_metrics,
+    }
+
+    # Write timeline JSON to eval/
+    repo_root = Path(__file__).resolve().parents[2]
+    eval_dir = repo_root / "eval"
+    eval_dir.mkdir(exist_ok=True)
+    out_path = eval_dir / "demo_timeline_results.json"
+    out_path.write_text(json.dumps(json_payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+    if args.json:
+        print(json.dumps(json_payload, indent=2, sort_keys=True))
+        return 0
+
+    print("=" * 60)
+    print("DEMO TIMELINE — System Response Over 365 Days")
+    print("=" * 60)
+    print()
+
+    for day in timeline_days:
+        s = snapshots[day]
+        print(f"Day {day:2d}: {s['green']} green / {s['yellow']} yellow / {s['red']} red")
+    print()
+
+    print("Health Band Transitions:")
+    if transitions:
+        for t in transitions:
+            print(
+                f"  {t['account']:35s} {t['from_band']} -> {t['to_band']}"
+                f"  (day {t['first_detected_day']})"
+            )
+    else:
+        print("  (none)")
+    print()
+
+    print("Detection Timeline:")
+    for day in timeline_days:
+        events = day_events.get(day, [])
+        if events:
+            for event in events:
+                print(f"  Day {day:2d}: {event}")
+    print()
+
+    print("Risk Detection Metrics:")
+    if detection_metrics:
+        for m in detection_metrics:
+            print(
+                f"  {m['account']}: risk first detected at day {m['first_detected_day']},"
+                f" renewal at {m['event_date']}"
+            )
+            print(f"    -> {m['lead_time_days']} days before renewal")
+    else:
+        print("  (none)")
+
+    print()
+    print(f"Timeline results written to {out_path}")
     return 0
 
 
@@ -289,6 +642,15 @@ def build_parser() -> argparse.ArgumentParser:
     demo_book = sub.add_parser("demo-book", help="Print synthetic book of business summary")
     demo_book.add_argument("--json", action="store_true")
     demo_book.set_defaults(func=_demo_book)
+
+    demo_sweep = sub.add_parser("demo-sweep", help="Score book of business at a given simulation day")
+    demo_sweep.add_argument("--day", type=int, default=0, help="Simulation day offset (default 0)")
+    demo_sweep.add_argument("--json", action="store_true")
+    demo_sweep.set_defaults(func=_demo_sweep)
+
+    demo_timeline = sub.add_parser("demo-timeline", help="Run scoring across 365-day timeline")
+    demo_timeline.add_argument("--json", action="store_true")
+    demo_timeline.set_defaults(func=_demo_timeline)
 
     proposals = sub.add_parser("proposals")
     proposal_sub = proposals.add_subparsers(dest="proposal_command", required=True)
