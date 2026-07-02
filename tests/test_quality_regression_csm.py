@@ -15,6 +15,7 @@ from eval.judge_csm import (
     weighted_cohen_kappa,
     write_slot_b_quality_candidates,
 )
+from eval.judge_validation import judge_validation_status
 from eval.gold_slot_b_quality import (
     VARIANTS,
     build_gold_label_candidates,
@@ -104,7 +105,12 @@ def test_quality_regression_ladder_catches_contract_valid_quality_drops():
 
     assert report["hard_ok"] is True
     assert report["claim_boundary"]["offline_quality_mechanics_built"] is True
-    assert report["claim_boundary"]["human_validated_judge"] is False
+    # The judge claim is derived from the evidence artifacts, never hand-set:
+    # this asserts consistency with the derivation, not a frozen value.
+    assert (
+        report["claim_boundary"]["human_validated_judge"]
+        is judge_validation_status()["validated"]
+    )
     assert report["claim_boundary"]["live_semantic_quality_proven"] is False
     assert rungs["moderate_missing_grounding"]["detected"] is True
     assert rungs["moderate_missing_grounding"]["overall"]["structural_failures"] == 0

@@ -23,8 +23,8 @@ def _vec(g, t, a, p, to, s):
     return dict(zip(QUALITY_DIMENSIONS, [g, t, a, p, to, s]))
 
 
-def _llm_vec(g=3, t=3, a=3, tone=3, s=3):
-    return dict(zip(LLM_JUDGE_DIMENSIONS, [g, t, a, tone, s], strict=True))
+def _llm_vec(g=3, t=3, tone=3, s=3):
+    return dict(zip(LLM_JUDGE_DIMENSIONS, [g, t, tone, s], strict=True))
 
 
 def _priority_request():
@@ -70,7 +70,7 @@ def test_parse_scores_accepts_valid_and_rejects_bad():
 
 def test_parse_scores_accepts_cot_reasoning_shape():
     # CoT mode emits {dim: {"reason": ..., "score": N}}; the parser must read `.score`.
-    want = _llm_vec(g=3, t=2, a=3, tone=3, s=3)
+    want = _llm_vec(g=3, t=2, tone=3, s=3)
     cot = {dim: {"reason": "deciding evidence", "score": v} for dim, v in want.items()}
     assert _parse_scores("reasoning... " + json.dumps(cot)) == want
     # an out-of-range nested score is still rejected
@@ -81,7 +81,7 @@ def test_parse_scores_accepts_cot_reasoning_shape():
 
 
 def test_judge_score_output_via_fake_client():
-    scores = _llm_vec(g=1, t=2, a=3, tone=3, s=3)
+    scores = _llm_vec(g=1, t=2, tone=3, s=3)
     judge = AnthropicQualityJudge(client=_FakeClient(scores), model_id="fake")
     assert judge.score_output(_priority_request(), _priority_output()) == _vec(1, 2, 3, 3, 3, 3)
 

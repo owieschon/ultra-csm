@@ -16,6 +16,7 @@ from dataclasses import asdict
 from pathlib import Path
 
 from eval.judge_csm import PASSING_SCORE, QUALITY_DIMENSIONS, ORDINAL_SCORES
+from eval.judge_validation import judge_validation_status
 from ultra_csm.agent1.slot_b import (
     FIXTURE_SLOT_B_MODEL_ID,
     SLOT_B_PROMPT_VERSION,
@@ -182,6 +183,7 @@ def gold_label_status(
     # Readiness is gated on HUMAN labels, not provisional pre-labels: a judge validated
     # against provisional (auto) labels would be circular.
     human_complete = len(records) > 0 and human_labeled == len(records) and not invalid and blind
+    judge_validation = judge_validation_status()
     return {
         "artifact": "slot_b_quality_gold_status",
         "gold_path": _display_path(path),
@@ -198,7 +200,9 @@ def gold_label_status(
         "invalid_records": invalid,
         "ready_for_judge_validation": human_complete,
         "next_gate": (
-            "Validate judge agreement at kappa >= 0.6 per dimension."
+            "Prove live semantic quality on real tenant output."
+            if human_complete and judge_validation["validated"]
+            else "Validate judge agreement at kappa >= 0.6 per dimension."
             if human_complete
             else "Fix gold-set blinding before labeling."
             if not blind
@@ -208,7 +212,10 @@ def gold_label_status(
             "gold_queue_exists": True,
             "gold_queue_blinded": blind,
             "human_labels_complete": human_complete,
-            "judge_validated": False,
+            # Derived from evidence artifacts, never hand-flipped: only claimed when
+            # this gold set's human reference is itself complete and blinded.
+            "judge_validated": human_complete and judge_validation["validated"],
+            "judge_validation": judge_validation,
             "live_semantic_quality_proven": False,
         },
     }

@@ -22,7 +22,8 @@ import json
 from collections import Counter
 from pathlib import Path
 
-from eval.judge_csm import PASSING_SCORE, QUALITY_DIMENSIONS
+from eval.judge_csm import ORDINAL_SCORES, PASSING_SCORE, QUALITY_DIMENSIONS
+from eval.judge_validation import judge_validation_status
 from eval.gold_slot_b_quality import (
     _display_path,
     _evidence_sentence,
@@ -314,11 +315,26 @@ def hard_key_errors(records: tuple[dict, ...], key_records: tuple[dict, ...]) ->
         if fam not in FAMILIES:
             errors.append(f"{k.get('candidate_id')}: unknown family {fam}")
             continue
-        expected = FAMILIES[fam][4]
-        if k.get("expected_vector") != dict(zip(DIMS, expected)):
-            errors.append(f"{k.get('candidate_id')}: expected_vector mismatch")
-        if list(k.get("intended_failing_dimensions", [])) != _intended(expected):
-            errors.append(f"{k.get('candidate_id')}: intended_failing_dimensions mismatch")
+        # The key's expected vectors are the RATIFIED reference: they started as the
+        # FAMILIES design vectors and have since been amended through owner-gated
+        # review passes (reference review, v6 on_task boundary), so per-cell values
+        # may legitimately differ from the original family design. Integrity here
+        # means shape-valid scores and internal consistency with the record's own
+        # vector, not equality with the generation-time table.
+        vector = k.get("expected_vector")
+        if (
+            not isinstance(vector, dict)
+            or set(vector) != set(DIMS)
+            or not all(vector[d] in ORDINAL_SCORES for d in DIMS)
+        ):
+            errors.append(f"{k.get('candidate_id')}: expected_vector malformed")
+        else:
+            intended = [d for d in DIMS if vector[d] < PASSING_SCORE]
+            if list(k.get("intended_failing_dimensions", [])) != intended:
+                errors.append(
+                    f"{k.get('candidate_id')}: intended_failing_dimensions inconsistent "
+                    "with expected_vector"
+                )
         if not str(k.get("trap", "")).strip():
             errors.append(f"{k.get('candidate_id')}: trap is required")
     return errors
@@ -331,6 +347,8 @@ def hard_status(path: Path = HARD_PATH, *, key_path: Path = HARD_KEY_PATH) -> di
     key_err = hard_key_errors(records, key_records)
     labeled = sum(1 for r in records if r.get("human_labels") is not None)
     blind = not blindness and not key_err
+    ready = len(records) > 0 and labeled == len(records) and blind
+    judge_validation = judge_validation_status()
     return {
         "artifact": "slot_b_quality_hard_status",
         "hard_path": _display_path(path),
@@ -341,12 +359,16 @@ def hard_status(path: Path = HARD_PATH, *, key_path: Path = HARD_KEY_PATH) -> di
         "blind": blind,
         "blindness_errors": blindness,
         "key_errors": key_err,
-        "ready_for_judge_validation": len(records) > 0 and labeled == len(records) and blind,
+        "ready_for_judge_validation": ready,
         "claim_boundary": {
             "hard_layer_exists": True,
             "hard_layer_blinded": blind,
             "human_labels_complete": labeled == len(records) and len(records) > 0,
-            "judge_validated": False,
+            # Derived from evidence artifacts, never hand-flipped. The hard layer's
+            # reference is the held-out designer-intent key (not human labels), so
+            # the precondition is key integrity, not human labeling.
+            "judge_validated": blind and len(records) > 0 and judge_validation["validated"],
+            "judge_validation": judge_validation,
             "live_semantic_quality_proven": False,
         },
     }

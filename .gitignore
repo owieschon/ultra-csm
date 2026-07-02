@@ -32,8 +32,9 @@ supabase/.temp/
 
 # Credential-gated live-judge run outputs: regenerated on demand via the quality
 # make targets (need ANTHROPIC_API_KEY), not reproducible in CI. Headline numbers
-# are recorded in docs/DECISION_LOG.md.
-eval/gold/judge_agreement.json
-eval/gold/judge_compare*.json
+# are recorded in docs/DECISION_LOG.md. Exceptions: judge_agreement.json and
+# judge_compare.json are VERSIONED — they are the evidence the judge_validated
+# claim is derived from (eval/judge_validation.py) and must travel with the claim.
 eval/gold/determinism_probe*.json
 eval/gold/judge_diagnosis.json
+eval/gold/judge_compare_sonnet.json
