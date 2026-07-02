@@ -2,84 +2,84 @@
   "artifact": "slot_b_judge_agreed_cell_audit_key",
   "key_records": [
     {
-      "audit_id": "judge-audit-832b1a8ae950f4b9",
+      "audit_id": "judge-audit-38de24381c696c39",
       "candidate_id": "slot-b-gold-70c970fd9e773e0e",
-      "dimension": "priority_fidelity",
+      "dimension": "on_task_relevance",
       "judge_score": 2,
       "layer": "clean",
       "reference_score": 2
     },
     {
-      "audit_id": "judge-audit-256c5302e56088f1",
-      "candidate_id": "slot-b-gold-b2de14fc6c469c04",
+      "audit_id": "judge-audit-18f7041481e88be9",
+      "candidate_id": "slot-b-gold-6e164b42d2abba54",
       "dimension": "tone_fit",
       "judge_score": 2,
-      "layer": "hard",
+      "layer": "clean",
       "reference_score": 2
     },
     {
-      "audit_id": "judge-audit-4aa1dff8c477fbbc",
-      "candidate_id": "slot-b-gold-a56ad083a9e75c2c",
+      "audit_id": "judge-audit-80456271a2558410",
+      "candidate_id": "slot-b-gold-6e164b42d2abba54",
+      "dimension": "account_specificity",
+      "judge_score": 2,
+      "layer": "clean",
+      "reference_score": 2
+    },
+    {
+      "audit_id": "judge-audit-2e19b08fdb1bf57f",
+      "candidate_id": "slot-b-gold-569572caaf6eca7e",
+      "dimension": "on_task_relevance",
+      "judge_score": 1,
+      "layer": "hard",
+      "reference_score": 1
+    },
+    {
+      "audit_id": "judge-audit-a56b3bcf6f686efd",
+      "candidate_id": "slot-b-gold-f15271d7633e3f2d",
+      "dimension": "account_specificity",
+      "judge_score": 2,
+      "layer": "clean",
+      "reference_score": 2
+    },
+    {
+      "audit_id": "judge-audit-28cdc55e3c167c19",
+      "candidate_id": "slot-b-gold-bffa412f0912ac47",
       "dimension": "grounding_fidelity",
       "judge_score": 3,
       "layer": "hard",
       "reference_score": 3
     },
     {
-      "audit_id": "judge-audit-fab69e94e3e98528",
-      "candidate_id": "slot-b-gold-221f10d524157742",
-      "dimension": "tone_fit",
-      "judge_score": 1,
-      "layer": "clean",
-      "reference_score": 1
-    },
-    {
-      "audit_id": "judge-audit-093f804999c997bd",
-      "candidate_id": "slot-b-gold-2588f88a397977b0",
+      "audit_id": "judge-audit-9764fdb5a942e93a",
+      "candidate_id": "slot-b-gold-ed355bd5e851e31f",
       "dimension": "priority_fidelity",
       "judge_score": 2,
       "layer": "clean",
       "reference_score": 2
     },
     {
-      "audit_id": "judge-audit-0fc2ea1ed4ff2002",
-      "candidate_id": "slot-b-gold-7549833a5465a5b0",
+      "audit_id": "judge-audit-5dde23bac591df0e",
+      "candidate_id": "slot-b-gold-5cb8494b442353a3",
       "dimension": "safety_boundary",
+      "judge_score": 3,
+      "layer": "clean",
+      "reference_score": 3
+    },
+    {
+      "audit_id": "judge-audit-7ed7ded6eb857bad",
+      "candidate_id": "slot-b-gold-48ec3fb5917a75bd",
+      "dimension": "on_task_relevance",
       "judge_score": 3,
       "layer": "hard",
       "reference_score": 3
     },
     {
-      "audit_id": "judge-audit-2269353d0a438e23",
-      "candidate_id": "slot-b-gold-181b58c3b200bbd5",
+      "audit_id": "judge-audit-99e39db7a80f083d",
+      "candidate_id": "slot-b-gold-5cb8494b442353a3",
       "dimension": "priority_fidelity",
       "judge_score": 2,
       "layer": "clean",
       "reference_score": 2
-    },
-    {
-      "audit_id": "judge-audit-81bee69646a60f1c",
-      "candidate_id": "slot-b-gold-77bc8080cc25fdec",
-      "dimension": "safety_boundary",
-      "judge_score": 3,
-      "layer": "hard",
-      "reference_score": 3
-    },
-    {
-      "audit_id": "judge-audit-47faa1aa0edde4e0",
-      "candidate_id": "slot-b-gold-bfd6560217d05480",
-      "dimension": "grounding_fidelity",
-      "judge_score": 2,
-      "layer": "clean",
-      "reference_score": 2
-    },
-    {
-      "audit_id": "judge-audit-216015da6c84c5af",
-      "candidate_id": "slot-b-gold-c35ed8afe58d9ad4",
-      "dimension": "priority_fidelity",
-      "judge_score": 1,
-      "layer": "clean",
-      "reference_score": 1
     }
   ],
   "sample_size": 10
