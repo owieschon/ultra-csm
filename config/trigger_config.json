@@ -1,0 +1,14 @@
+{
+  "config_version": "triggers-v1",
+  "triggers": [
+    {
+      "name": "daily_ttv",
+      "kind": "schedule",
+      "every": "1d",
+      "action": {
+        "lens": "ttv",
+        "scope": "book"
+      }
+    }
+  ]
+}

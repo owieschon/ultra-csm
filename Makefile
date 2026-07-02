@@ -2,7 +2,7 @@ PYTHON := .venv/bin/python
 
 # One-time reviewer setup. Requires Python 3.10+ and local PostgreSQL 16 tooling
 # (`initdb`/`pg_ctl`) available on PATH or through the platform package.
-.PHONY: setup eval lint scorecard-csm csm-work-queue demo-loop year-in-life-csm demo clean outcome-simulation-csm stochastic-csm regression-csm regression-csm-live quality-regression-csm quality-gold-csm quality-gold-label-csm quality-gold-status-csm quality-gold-validate-csm quality-gold-hard-csm quality-gold-hard-label-csm quality-gold-hard-status-csm quality-gold-hard-validate-csm judge-agreement-csm judge-diagnosis-csm judge-reference-review-csm judge-reference-recheck-csm judge-reference-apply-csm status hygiene serve mcp
+.PHONY: setup eval lint scorecard-csm csm-work-queue demo-loop year-in-life-csm tick-demo-csm demo clean outcome-simulation-csm stochastic-csm regression-csm regression-csm-live quality-regression-csm quality-gold-csm quality-gold-label-csm quality-gold-status-csm quality-gold-validate-csm quality-gold-hard-csm quality-gold-hard-label-csm quality-gold-hard-status-csm quality-gold-hard-validate-csm judge-agreement-csm judge-diagnosis-csm judge-reference-review-csm judge-reference-recheck-csm judge-reference-apply-csm status hygiene serve mcp
 setup:
 	python3 -m venv .venv
 	$(PYTHON) -m pip install --upgrade pip
@@ -30,6 +30,9 @@ demo-loop:
 
 year-in-life-csm:
 	PYTHONPATH=src:. $(PYTHON) -m eval.year_in_life_digest --live
+
+tick-demo-csm:
+	PYTHONPATH=src:. $(PYTHON) -m ultra_csm.tick --demo
 
 outcome-simulation-csm:
 	PYTHONPATH=src:. $(PYTHON) -m eval.outcome_simulation_csm

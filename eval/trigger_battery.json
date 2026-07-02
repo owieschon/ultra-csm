@@ -1,0 +1,89 @@
+{
+  "artifact": "trigger_battery",
+  "cases": [
+    {
+      "case_id": "fires_schedule_boundary",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "fires_deadline_horizon",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "fires_band_transition",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "not_fire_cooldown",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "not_fire_stable_band",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "not_fire_missing_snapshot",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "not_fire_absent_date_field",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "not_fire_pending_proposal",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "reproducible_fired_tuple_and_ledger_entry",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "fired_provenance_complete",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "unsafe_foil_rejected",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "downstream_action_taxonomy_tier_preserved",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    }
+  ],
+  "claim_boundary": {
+    "fixture": true,
+    "live": false,
+    "sim": true
+  },
+  "hard_failures": [],
+  "hard_ok": true,
+  "measurement_scope": "Pure trigger evaluation over fixture state plus action taxonomy authority guard; no daemon, webhook server, queue, network, or LLM.",
+  "score": {
+    "passed": 12,
+    "total": 12
+  }
+}
