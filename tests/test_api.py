@@ -160,6 +160,25 @@ class TestSweepEndpoint:
 
 
 # ---------------------------------------------------------------------------
+# GET /metrics
+# ---------------------------------------------------------------------------
+
+
+class TestMetricsEndpoint:
+    def test_metrics_reports_requests_sweeps_and_budget(self, client: TestClient):
+        client.post("/sweep")
+        resp = client.get("/metrics")
+
+        assert resp.status_code == 200
+        body = resp.json()
+        assert body["api"]["total_requests"] > 0
+        assert body["sweeps"]["total_sweeps"] > 0
+        assert "last_sweep" in body["sweeps"]
+        assert body["llm_cost"]["total_calls"] >= 0
+        assert body["budget"]["max_cost_per_sweep_usd"] > 0
+
+
+# ---------------------------------------------------------------------------
 # GET /proposals  +  POST /proposals/{id}/verdict
 # ---------------------------------------------------------------------------
 

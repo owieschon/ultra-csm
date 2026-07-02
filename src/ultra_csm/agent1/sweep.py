@@ -2,20 +2,12 @@
 
 from __future__ import annotations
 
+import logging
+import time
 from dataclasses import asdict, dataclass
-from typing import Literal
+from typing import TYPE_CHECKING, Literal
 
 from ultra_csm._util import compact_asdict, iso_date
-from ultra_csm.data_plane import (
-    CRMAccount,
-    CRMContact,
-    CustomerDataPlane,
-    EvidenceRef,
-    TimeToValueMilestone,
-)
-from ultra_csm.data_plane.contracts import ResolutionState
-from ultra_csm.governance import ActionGate, ActionProposal, proposal_fields_for
-from ultra_csm.governance.csm_actions import CSMActionType
 from ultra_csm.agent1.slot_b import (
     FIXTURE_SLOT_B_MODEL_ID,
     FixtureReasonDraftWriter,
@@ -28,12 +20,32 @@ from ultra_csm.agent1.slot_b import (
     SlotBPriorityFactor,
     validate_reason_draft_output,
 )
+from ultra_csm.data_plane import (
+    CRMAccount,
+    CRMContact,
+    CustomerDataPlane,
+    EvidenceRef,
+    TimeToValueMilestone,
+)
+from ultra_csm.data_plane.contracts import ResolutionState
+from ultra_csm.governance import ActionGate, ActionProposal, proposal_fields_for
+from ultra_csm.governance.csm_actions import CSMActionType
+from ultra_csm.quality_breaker import (
+    QualityBreakerConfig,
+    QualityBreakerDecision,
+    evaluate_quality_breaker,
+)
 from ultra_csm.value_model import (
     CustomerValueModel,
     ValueFactor,
     build_customer_value_model,
     project_ttv_lens,
 )
+
+if TYPE_CHECKING:
+    from ultra_csm.cost_tracker import CostBudget, CostTracker
+
+log = logging.getLogger(__name__)
 
 Disposition = Literal["propose_customer_action", "internal_review", "escalate"]
 ProposalStatus = Literal["pending", "approved", "denied"]
@@ -78,6 +90,16 @@ class CSMWorkItem:
     customer_draft: str | None = None
 
 
+@dataclass
+class _SweepTimingAccum:
+    """Mutable accumulator for sweep phase timing (internal)."""
+
+    value_model_ms: float = 0.0
+    slot_b_ms: float = 0.0
+    slot_b_calls: int = 0
+    governance_ms: float = 0.0
+
+
 @dataclass(frozen=True)
 class SweepResult:
     tenant_id: str
@@ -85,6 +107,8 @@ class SweepResult:
     escalations: tuple[CSMWorkItem, ...]
     swept_accounts: tuple[str, ...]
     degraded_items: int = 0
+    budget_skipped: int = 0
+    quality_breaker: dict | None = None
 
     def to_dict(self) -> dict:
         return asdict(self)
@@ -98,16 +122,34 @@ def run_time_to_value_sweep(
     sweep_principal_id: str,
     as_of: str,
     reason_draft_writer: ReasonDraftWriter | None = None,
+    quality_breaker: QualityBreakerConfig | None = None,
+    cost_tracker: "CostTracker | None" = None,
+    cost_budget: "CostBudget | None" = None,
 ) -> SweepResult:
     """Run Agent 1 across a tenant book and emit a deterministic work queue."""
 
+    from ultra_csm.cost_tracker import estimate_call_cost
+
+    sweep_start = time.perf_counter()
     writer = reason_draft_writer or FixtureReasonDraftWriter()
+    breaker_decision = (
+        evaluate_quality_breaker(quality_breaker)
+        if quality_breaker is not None
+        else None
+    )
+
+    if cost_tracker is not None:
+        cost_tracker.reset_sweep()
+
     accounts = tuple(data_plane.crm.list_accounts(tenant_id=tenant_id))
     swept_accounts = tuple(account.account_id for account in accounts)
     items: list[CSMWorkItem] = []
     escalations: list[CSMWorkItem] = []
     degraded_items = 0
+    budget_skipped = 0
+    budget_exceeded = False
     emitted_escalations: set[tuple[str, ...]] = set()
+    timing = _SweepTimingAccum()
 
     for account in accounts:
         contacts = tuple(data_plane.crm.list_contacts(account.account_id))
@@ -125,6 +167,42 @@ def run_time_to_value_sweep(
                 emitted_escalations.add(key)
             continue
 
+        # Budget check before Slot B call.
+        if cost_budget is not None and not budget_exceeded:
+            estimated = estimate_call_cost(writer.model_id)
+            sweep_cost = (
+                cost_tracker.current_sweep_cost if cost_tracker else 0.0
+            )
+            daily_cost = (
+                cost_tracker.today_cost_usd() if cost_tracker else 0.0
+            )
+            if cost_budget.would_exceed_sweep(sweep_cost, estimated):
+                log.warning(
+                    "Sweep cost budget exceeded, skipping Slot B for "
+                    "remaining accounts",
+                    extra={
+                        "sweep_cost_usd": round(sweep_cost, 6),
+                        "estimated_next_usd": round(estimated, 6),
+                        "max_per_sweep_usd": cost_budget.max_cost_per_sweep_usd,
+                    },
+                )
+                budget_exceeded = True
+            elif cost_budget.would_exceed_daily(daily_cost, estimated):
+                log.warning(
+                    "Daily cost budget exceeded, skipping Slot B for "
+                    "remaining accounts",
+                    extra={
+                        "daily_cost_usd": round(daily_cost, 6),
+                        "estimated_next_usd": round(estimated, 6),
+                        "max_per_day_usd": cost_budget.max_cost_per_day_usd,
+                    },
+                )
+                budget_exceeded = True
+
+        current_writer: ReasonDraftWriter = (
+            FixtureReasonDraftWriter() if budget_exceeded else writer
+        )
+
         built = _work_item_for_account(
             data_plane,
             account,
@@ -133,12 +211,37 @@ def run_time_to_value_sweep(
             sweep_principal_id=sweep_principal_id,
             as_of=as_of,
             contacts=contacts,
-            reason_draft_writer=writer,
+            reason_draft_writer=current_writer,
+            quality_breaker=breaker_decision,
+            timing=timing,
         )
         if built is not None:
+            if budget_exceeded:
+                budget_skipped += 1
             if built.draft_mode == "template_fallback":
                 degraded_items += 1
             items.append(built)
+
+    sweep_elapsed_ms = (time.perf_counter() - sweep_start) * 1000.0
+    slot_b_avg = (
+        timing.slot_b_ms / timing.slot_b_calls
+        if timing.slot_b_calls > 0
+        else 0.0
+    )
+
+    log.info(
+        "sweep_timing",
+        extra={
+            "total_sweep_ms": round(sweep_elapsed_ms, 2),
+            "value_model_ms": round(timing.value_model_ms, 2),
+            "slot_b_total_ms": round(timing.slot_b_ms, 2),
+            "slot_b_avg_per_account_ms": round(slot_b_avg, 2),
+            "slot_b_call_count": timing.slot_b_calls,
+            "governance_ms": round(timing.governance_ms, 2),
+            "accounts_swept": len(swept_accounts),
+            "budget_skipped": budget_skipped,
+        },
+    )
 
     ordered = tuple(sorted(
         items,
@@ -158,6 +261,12 @@ def run_time_to_value_sweep(
         )),
         swept_accounts=swept_accounts,
         degraded_items=degraded_items,
+        budget_skipped=budget_skipped,
+        quality_breaker=(
+            breaker_decision.to_dict()
+            if breaker_decision is not None
+            else None
+        ),
     )
 
 
@@ -243,6 +352,8 @@ def _work_item_for_account(
     as_of: str,
     contacts: tuple[CRMContact, ...],
     reason_draft_writer: ReasonDraftWriter,
+    quality_breaker: QualityBreakerDecision | None = None,
+    timing: _SweepTimingAccum | None = None,
 ) -> CSMWorkItem | None:
     company = data_plane.cs.get_company(account.account_id)
     health = data_plane.cs.get_health_score(account.account_id)
@@ -280,6 +391,7 @@ def _work_item_for_account(
     if not evidence:
         return None
 
+    value_start = time.perf_counter()
     model = build_customer_value_model(
         account=account,
         company=company,
@@ -297,32 +409,50 @@ def _work_item_for_account(
         overdue_plans=overdue_plans,
         as_of=as_of,
     )
+    if timing is not None:
+        timing.value_model_ms += (time.perf_counter() - value_start) * 1000.0
     if priority.score <= 0:
         return None
 
     contact = next((contact for contact in contacts if contact.consent_to_contact), None)
     customer_contact_allowed = contact is not None
+    customer_action_blocked = (
+        customer_contact_allowed
+        and quality_breaker is not None
+        and quality_breaker.triggered
+    )
     disposition: Disposition = (
-        "propose_customer_action" if customer_contact_allowed else "internal_review"
+        "propose_customer_action"
+        if customer_contact_allowed and not customer_action_blocked
+        else "internal_review"
     )
     action: CSMActionType = (
-        "draft_customer_outreach" if customer_contact_allowed else "recommend_next_best_action"
+        "draft_customer_outreach"
+        if customer_contact_allowed and not customer_action_blocked
+        else "recommend_next_best_action"
     )
     slot_b_request = _slot_b_request(
         tenant_id=tenant_id,
         account=account,
         disposition=disposition,
         action=action,
-        customer_contact_allowed=customer_contact_allowed,
+        customer_contact_allowed=customer_contact_allowed and not customer_action_blocked,
         priority=priority,
         evidence=evidence,
         as_of=as_of,
-        contact=contact,
+        contact=contact if not customer_action_blocked else None,
         cases=cases,
     )
+    slot_start = time.perf_counter()
     slot_b, draft_mode = _write_slot_b_with_fallback(slot_b_request, reason_draft_writer)
+    if timing is not None:
+        timing.slot_b_ms += (time.perf_counter() - slot_start) * 1000.0
+        timing.slot_b_calls += 1
+    if customer_action_blocked:
+        draft_mode = "template_fallback"
     proposal_ref = None
-    if customer_contact_allowed:
+    if customer_contact_allowed and not customer_action_blocked:
+        governance_start = time.perf_counter()
         proposal = _propose_outreach(
             gate,
             account=account,
@@ -333,6 +463,8 @@ def _work_item_for_account(
             priority=priority,
             draft_body=slot_b.customer_draft,
         )
+        if timing is not None:
+            timing.governance_ms += (time.perf_counter() - governance_start) * 1000.0
         proposal_ref = _proposal_ref(proposal, action=action, principal_id=sweep_principal_id)
 
     return CSMWorkItem(

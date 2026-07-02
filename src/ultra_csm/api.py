@@ -46,6 +46,8 @@ from ultra_csm.value_model import (
     project_ttv_lens,
 )
 from ultra_csm.agent1 import run_time_to_value_sweep
+from ultra_csm.api_metrics import APIMetrics, SweepTiming
+from ultra_csm.cost_tracker import CostBudget, CostTracker
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -70,6 +72,12 @@ _conn: psycopg.Connection | None = None
 _data_plane: CustomerDataPlane | None = None
 _orch_principal: str | None = None
 _authority_principal: str | None = None
+
+# Cost tracking and API metrics — initialised at import time so the
+# middleware and /metrics endpoint can reference them immediately.
+_cost_tracker = CostTracker()
+_api_metrics = APIMetrics()
+_cost_budget = CostBudget(max_cost_per_sweep_usd=1.00, max_cost_per_day_usd=10.00)
 
 
 # ---------------------------------------------------------------------------
@@ -299,6 +307,9 @@ async def request_logging(request: Request, call_next):
     start = time.monotonic()
     response: Response = await call_next(request)
     elapsed_ms = (time.monotonic() - start) * 1000
+
+    # Record in API metrics tracker.
+    _api_metrics.record_request(request.url.path, elapsed_ms)
 
     # Extract account_id from path if present.
     account_id = request.path_params.get("account_id")
@@ -714,6 +725,7 @@ async def trigger_sweep():
 
     log.info("Sweep triggered", extra={"tenant_id": _TENANT_ID})
 
+    sweep_start = time.monotonic()
     gate = _gate()
     sweep = run_time_to_value_sweep(
         _data_plane,
@@ -721,7 +733,17 @@ async def trigger_sweep():
         gate,
         sweep_principal_id=_orch_principal,
         as_of=_AS_OF,
+        cost_tracker=_cost_tracker,
+        cost_budget=_cost_budget,
     )
+    sweep_elapsed_ms = (time.monotonic() - sweep_start) * 1000.0
+
+    # Record sweep timing in API metrics.
+    _api_metrics.record_sweep(SweepTiming(
+        total_ms=sweep_elapsed_ms,
+        accounts_swept=len(sweep.swept_accounts),
+        budget_skipped=sweep.budget_skipped,
+    ))
 
     log.info(
         "Sweep complete",
@@ -733,6 +755,7 @@ async def trigger_sweep():
             "proposals_generated": sum(
                 1 for item in sweep.work_items if item.proposal is not None
             ),
+            "budget_skipped": sweep.budget_skipped,
         },
     )
 
@@ -966,6 +989,26 @@ async def get_digest():
         pending_proposals=pending_count,
         commitments=commitments,
     )
+
+
+@app.get("/metrics")
+async def get_metrics():
+    """Operational metrics — API latency, Slot B cost, sweep timing, budget."""
+    return {
+        "api": _api_metrics.snapshot(),
+        "sweeps": _api_metrics.sweep_snapshot(),
+        "llm_cost": _cost_tracker.stats(),
+        "cost_per_account": _cost_tracker.cost_per_account(),
+        "budget": {
+            **_cost_budget.to_dict(),
+            "current_daily_cost_usd": round(_cost_tracker.today_cost_usd(), 6),
+            "budget_remaining_today_usd": round(
+                _cost_budget.max_cost_per_day_usd
+                - _cost_tracker.today_cost_usd(),
+                6,
+            ),
+        },
+    }
 
 
 # ---------------------------------------------------------------------------

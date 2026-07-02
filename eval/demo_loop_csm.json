@@ -11,9 +11,21 @@
     "degradation_flagged": true,
     "loop_closed_live": false,
     "loop_closed_sim": true,
+    "quality_breaker_exercised": true,
     "writes_external_systems": false
   },
   "commits": {
+    "auto_internal_recommendation": {
+      "account_id": "a317f5e7-575e-5879-8256-9082e40ef19f",
+      "action": "recommend_next_best_action",
+      "committed": true,
+      "dry_run": false,
+      "idempotency_key": "runtime-generated:a317f5e7-575e-5879-8256-9082e40ef19f:recommend_next_best_action:idempotency",
+      "payload_sha256": "40992a395093299ad410d77571d2b03c662a86f675b12393d1a3ce733e48b309",
+      "proposal_id": "runtime-generated:a317f5e7-575e-5879-8256-9082e40ef19f:recommend_next_best_action",
+      "receipt_id": "receipt:a317f5e7-575e-5879-8256-9082e40ef19f:recommend_next_best_action:demo_state/tenant_state.json",
+      "target": "demo_state/tenant_state.json"
+    },
     "crm_activity": {
       "account_id": "a317f5e7-575e-5879-8256-9082e40ef19f",
       "action": "draft_customer_outreach",
@@ -159,6 +171,24 @@
       ]
     }
   ],
+  "quality_breaker": {
+    "after_operator_reset": {
+      "customer_proposals": 4,
+      "degraded_items": 0,
+      "state": "closed",
+      "triggered": false
+    },
+    "operator_reset_event": {
+      "event_id": "c7cd5d9a55e795cf29e3b344",
+      "event_type": "quality_breaker_reset"
+    },
+    "red": {
+      "customer_proposals": 0,
+      "degraded_items": 4,
+      "state": "open",
+      "triggered": true
+    }
+  },
   "second_sweep": {
     "degraded_items": 0,
     "escalations": [
