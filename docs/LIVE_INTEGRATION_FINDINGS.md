@@ -120,3 +120,126 @@ surface, both handled without touching `src/`:
   standing rule is create-only writes against this org (see Defect protocol
   outcome, item 3, for the one save-time override D6 needed and why it
   doesn't depart from this rule).
+
+# Live Integration Findings — Program 4, Rocketlane (corpus C)
+
+Battery matrix for the live Rocketlane onboarding path
+(`derive_ttv_milestones` over `parse_phase`/`parse_task`) against corpus C
+(the Rocketlane trial org; see
+`/Users/owieschon/ultra-csm-corpus-a-PRIVATE.md` for org identity, never
+committed here). All records were seeded by
+this program via the `mcp__rocketlane__*` MCP lane (2026-07-03, tagged
+`UCSM-P4C`, create-only). Assertions are exact numbers against
+`ground_truth.json`'s ground truth — not tolerances. Run artifacts:
+`~/ultra-csm-corpus-runs/rocketlane-seed-20260703/`.
+
+**Scope note (read before the matrix):** the Rocketlane MCP toolset
+available in this environment has no `create_project` tool and no
+template-instantiation tool (verified exhaustively — only `create_phase`,
+`create_task`, `create_time_entry`, and `create_project_template` exist on
+the write surface; the REST lane, which does document `POST /projects`,
+remains 401-blocked, root cause undiagnosed same as R0). Every dataset
+below is therefore a new **phase** (+ nested tasks) inside one of the two
+pre-existing factory projects, not a distinct new project. The plan's
+project-level join-set dataset (new projects with `externalReferenceId` set
+to real Salesforce Account Ids) was not attempted — see the owner ask in
+`docs/PROGRAM_REPORT_4.md`.
+
+## Battery matrix
+
+| Dataset | Host project | Milestone count | Achieved | Open gap | At-risk tasks | Activation-gap flag |
+| --- | --- | --- | --- | --- | --- | --- |
+| D1 healthy | Acme | 1 (exact) | 1 (exact) | 0 (exact) | 0 (exact) | False (exact) |
+| D2 slipping | Modert | 1 (exact) | 0 (exact) | 1 (exact) | 0 (exact) | True (exact) |
+| D3 at-risk cluster | Acme | 1 (exact) | 0 (exact) | 0 (exact) | 2 (exact) | True (exact) |
+| D4 completed | Modert | 1 (exact) | 1 (exact) | 0 (exact) | 0 (exact) | False (exact) |
+| D5 sparse | Acme | 1 (exact) | 0 (exact) | 0 (exact) | 0 (exact) | False (exact) |
+| D6 join-set | — | not attempted | — | — | — | — |
+
+Every number above is the live response (fetched fresh via
+`get_phases`/`get_tasks`, 2026-07-03) parsed through the real R1 adapters
+and compared against `ground_truth.json`, authored before any record was
+created. Zero mismatches on the final run
+(`r4_battery_report.json`: `"problems": []`, `"ok": true`).
+
+## What each dataset proved
+
+- **D1 (healthy):** a phase whose sole task is marked Completed produces an
+  achieved `TimeToValueMilestone` — the outcome/TTV rail's "known" state,
+  proven against a real API response, not a fixture.
+- **D2 (slipping):** a phase past its due date with no actual date produces
+  an open gap under Agent 1's existing, unchanged date-based filter — the
+  same code path that already handled telemetry-sourced gaps now correctly
+  handles Rocketlane-sourced ones.
+- **D3 (at-risk cluster):** 2 of 3 tasks under a not-yet-overdue phase are
+  `atRisk=true`. `has_activation_gap()` correctly returns `True` from the
+  task-risk trigger alone, independent of the date-overdue trigger — proving
+  the spec's three-way OR (`RUNNING_LATE` progress, `atRisk` task, or
+  overdue-with-null-actual) is real, not just documented. This activation
+  gap does not by itself clear Agent 1's sweep score threshold (which keys
+  off the date-based `open_milestone_gaps` filter) — a scope note, not a
+  defect; see `docs/PROGRAM_REPORT_4.md`.
+- **D4 (completed):** all task/phase actuals set — an achieved milestone,
+  the second exact-count confirmation.
+- **D5 (sparse):** a task created with only `taskName`+`project` (no
+  dates), exercising the connector's optional-field handling. The *phase*
+  still carries real dates, so one milestone is correctly emitted — sparse
+  at the task grain, not the phase grain.
+- **D6 (join-set):** not attempted — see the scope note above.
+
+## Live findings
+
+1. **Auto-completion cascade (D1, D4):** completing a phase's only/last open
+   task auto-completes the phase and sets both `startDateActual` and
+   `dueDateActual` to the write date (server "now"), not any
+   caller-supplied value. Not documented in the spec doc; discovered live
+   during seeding. `ground_truth.json` was corrected after observing this
+   (never faked before the write). No product code change — the connector
+   correctly reads whatever the API returns.
+2. **Phase `dueDate` recalculation (D2, D3):** creating a task under a phase
+   recalculates the phase's `dueDate` to the task's `dueDate`, overriding
+   whatever `dueDate` was passed to `create_phase`. Also undocumented in the
+   spec doc; corrected into ground truth after observation. Both datasets'
+   intended semantics (overdue for D2, far-future for D3) survived the
+   recalculation.
+3. **`inferredProgress` absent from live payloads (R1, re-confirmed R3/R4):**
+   even with `includeAllFields=true`, `get-project` responses for both
+   factory projects never include an `inferredProgress` key. The parser's
+   fail-safe default (`"none"`) handled this correctly throughout.
+4. **`get_phases` search vs. detail shape (R1):** the search/list shape
+   returns only `{phaseId, phaseName}` — no `project`, no dates. Only the
+   detail-by-id shape (`get_phases(phaseId=...)`) carries `project.projectId`
+   and dates. `parse_phase` requires the detail shape and raises on the thin
+   search shape; the live seeding/battery code always fetched detail.
+
+## Cross-system beat
+
+One real corpus B (Salesforce) account, read live via a single read-only
+SOQL query (`WHERE Name LIKE 'UCSM-P3E-D1%'`), joined in-memory to D2's live
+Rocketlane evidence and driven through Agent 1's unchanged sweep logic with
+a real `ActionGate`. The proposal's priority factors cite
+`EvidenceRef(source="rocketlane", ...)` entries whose `source_id`s are the
+real live Rocketlane phase/task ids — proving a cross-system TTV proposal
+with per-source claim boundaries intact. Salesforce was never written to.
+Test: `tests/test_rocketlane_cross_system_beat.py` (env-gated; the real
+account id is never committed — see the test's docstring).
+
+## Regression trio (same commit as this battery)
+
+| Command | Result |
+| --- | --- |
+| `make eval` | `450 passed, 1 skipped` (the cross-system-beat test skips without live env vars) |
+| `make relational-battery-csm` | `hard_ok: true`, `seeds: 20` |
+| `make relay-battery-csm` | `passed: 11 / 11` |
+| `make demo` | Passed; `git status --short` clean after run |
+
+## Scope not covered
+
+- **D6 join-set** — not attempted. Requires a new Rocketlane project per
+  Salesforce account with `externalReferenceId` set; no tool to create a
+  new project exists in this environment's MCP surface, and the REST lane
+  is 401-blocked. See the Consolidated Owner Ask in
+  `docs/PROGRAM_REPORT_4.md`.
+- Update/delete paths beyond the two `update_task` status changes on
+  records created this run were not exercised — the program's standing
+  rule is create-only.
