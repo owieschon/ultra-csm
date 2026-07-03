@@ -9,7 +9,9 @@ from eval.judge_validation import (
     AGREEMENT_PATH,
     COMPARE_PATH,
     GATE_KAPPA,
+    LIVE_SEMANTIC_QUALITY_PATH,
     judge_validation_status,
+    live_semantic_quality_status,
 )
 from eval.judge_csm import PASSING_SCORE, QUALITY_DIMENSIONS
 
@@ -88,3 +90,84 @@ def test_aggregated_false_negative_fails_closed(tmp_path):
 
     assert status["validated"] is False
     assert any("false negatives" in f for f in status["failures"])
+
+
+# ---------------------------------------------------------------------------
+# live_semantic_quality_status: same never-hand-flip discipline, applied to
+# the Lane B keystone claim (live drafts, live-judged, N-run aggregated).
+# ---------------------------------------------------------------------------
+
+_VALIDATED_JUDGE = {"validated": True}
+_UNVALIDATED_JUDGE = {"validated": False, "failures": ["stub: judge not validated"]}
+
+
+def _live_artifact(*, runs_per_candidate=5, agg_pass=(True, True)):
+    return {
+        "draft_model_id": "claude-opus-4-8",
+        "judge_model_id": "claude-sonnet-4-6",
+        "judge_prompt_version": "quality-judge-v7",
+        "runs_per_candidate": runs_per_candidate,
+        "book_source": "stub",
+        "candidates": [
+            {"candidate_id": f"stub-{i}", "agg": {"aggregate_pass": passed}}
+            for i, passed in enumerate(agg_pass)
+        ],
+    }
+
+
+def test_live_semantic_quality_proven_from_passing_evidence(tmp_path):
+    path = tmp_path / "live_semantic_quality.json"
+    path.write_text(json.dumps(_live_artifact()), encoding="utf-8")
+
+    status = live_semantic_quality_status(path, judge_status=_VALIDATED_JUDGE)
+
+    assert status["proven"] is True
+    assert status["failures"] == []
+    assert status["candidate_count"] == 2
+
+
+def test_live_semantic_quality_committed_artifact_is_proven():
+    """The evidence artifact actually committed to the repo (a real live run,
+    docs/PROGRAM_REPORT_5.md) derives proven=True."""
+    status = live_semantic_quality_status(LIVE_SEMANTIC_QUALITY_PATH)
+    assert status["proven"] is True
+    assert status["failures"] == []
+
+
+def test_live_semantic_quality_fails_closed_when_judge_not_validated(tmp_path):
+    path = tmp_path / "live_semantic_quality.json"
+    path.write_text(json.dumps(_live_artifact()), encoding="utf-8")
+
+    status = live_semantic_quality_status(path, judge_status=_UNVALIDATED_JUDGE)
+
+    assert status["proven"] is False
+    assert any("judge is not validated" in f for f in status["failures"])
+
+
+def test_live_semantic_quality_fails_closed_on_missing_artifact(tmp_path):
+    status = live_semantic_quality_status(
+        tmp_path / "absent_live_semantic_quality.json", judge_status=_VALIDATED_JUDGE,
+    )
+
+    assert status["proven"] is False
+    assert any("missing evidence artifact" in f for f in status["failures"])
+
+
+def test_live_semantic_quality_reports_failing_candidate_not_hidden(tmp_path):
+    path = tmp_path / "live_semantic_quality.json"
+    path.write_text(json.dumps(_live_artifact(agg_pass=(True, False))), encoding="utf-8")
+
+    status = live_semantic_quality_status(path, judge_status=_VALIDATED_JUDGE)
+
+    assert status["proven"] is False
+    assert any("stub-1" in f for f in status["failures"])
+
+
+def test_live_semantic_quality_requires_at_least_three_runs_per_candidate(tmp_path):
+    path = tmp_path / "live_semantic_quality.json"
+    path.write_text(json.dumps(_live_artifact(runs_per_candidate=1)), encoding="utf-8")
+
+    status = live_semantic_quality_status(path, judge_status=_VALIDATED_JUDGE)
+
+    assert status["proven"] is False
+    assert any("runs_per_candidate" in f for f in status["failures"])
