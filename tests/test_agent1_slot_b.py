@@ -251,7 +251,7 @@ def test_anthropic_slot_b_records_cost_without_meter():
     assert client.messages.last_kwargs is not None
     payload = json.loads(client.messages.last_kwargs["messages"][0]["content"])
     org_context = payload["request"]["org_context"]
-    assert org_context["pack_version"] == "org-pack-ttv-demo-v1"
+    assert org_context["pack_version"] == "org-pack-ttv-demo-v2"
     assert org_context["gap_plays"]
 
 

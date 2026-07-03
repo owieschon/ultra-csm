@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "pack_version": "org-pack-ttv-demo-v1",
+  "pack_version": "org-pack-ttv-demo-v2",
   "fictional": true,
   "product_name": "FleetOps Platform",
   "terminology": {
@@ -62,6 +62,58 @@
       "factor": "health_yellow",
       "play": "verify whether the risk is trending toward a timeline slip",
       "customer_ask": "check whether the current adoption gap is putting launch timing at risk"
+    }
+  ],
+  "constitution": {
+    "values": [
+      "The CSM never claims an outcome the account hasn't achieved yet -- activation, adoption, and expansion are reported, not aspired to.",
+      "A blocked account is a shared operational problem, not a customer failing. Language names the blocker, never the customer's competence.",
+      "Speed of escalation matters more than politeness of escalation -- a real activation gap gets named to the account within one business day of detection, not softened into a future check-in."
+    ],
+    "escalation_norms": [
+      "Any account with an open activation gap past 30 days beyond its expected_by date escalates to a named CSM action, not a queued reminder.",
+      "A champion going silent for more than 14 days on an active integration blocker escalates to a second stakeholder outreach attempt, never a repeated identical follow-up to the same silent contact.",
+      "A red health band with no assigned CSM action within 5 business days is itself an escalation trigger, independent of the original driver."
+    ],
+    "never_promise": [
+      "A specific go-live date the engineering/integration team has not confirmed.",
+      "Discounted pricing, credits, or commercial terms of any kind -- those route to the account's commercial owner, never drafted by the CSM motion.",
+      "That a support ticket is resolved before its actual close event has fired in the system of record."
+    ]
+  },
+  "brand_voice": {
+    "tone_rules": [
+      "State the blocker in the first sentence. Do not bury it after a pleasantry paragraph.",
+      "Use the customer's own vocabulary for their systems (e.g. 'the dispatch connector', not 'your integration layer') when evidence supplies it; otherwise use FleetOps Platform's own terminology.",
+      "Numbers over adjectives: '12 of 50 assets active' beats 'adoption is still ramping.'"
+    ],
+    "banned_phrases": [
+      "just circling back",
+      "per my last email",
+      "at your earliest convenience",
+      "quick question",
+      "touch base",
+      "synergy",
+      "moving the needle"
+    ]
+  },
+  "onboarded_definition": {
+    "statement": "An account is onboarded when every scoped TimeToValueMilestone has achieved_at set AND the account's lifecycle_stage has transitioned to steady_state -- not when the kickoff call happens, and not when the contract is signed.",
+    "non_examples": [
+      "A completed kickoff call with zero milestones achieved is not onboarded.",
+      "An account with 4 of 5 milestones achieved and one still open past its expected_by date is not onboarded, regardless of how long ago the other four completed."
+    ]
+  },
+  "expansion_playbooks": [
+    {
+      "trigger": "a second department's stakeholder begins showing sustained product usage (not a single login) alongside the original champion",
+      "play": "confirm the new stakeholder's use case in writing before proposing a seat/asset expansion, so the ask is grounded in an observed workflow, not an assumed one",
+      "customer_ask": "confirm which team is now actively using the platform and what workflow they've adopted"
+    },
+    {
+      "trigger": "usage growth sustained for 60+ consecutive days without a corresponding entitlement increase",
+      "play": "surface the entitlement ceiling to the account before they hit it themselves, framed as capacity planning, not an upsell",
+      "customer_ask": "review current usage against entitled capacity before the ceiling becomes an operational blocker"
     }
   ]
 }
