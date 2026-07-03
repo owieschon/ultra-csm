@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "pack_version": "escalation-field-notes-v1",
+  "fictional": true,
+  "doc_type": "escalation_field_notes",
+  "summary": "Per-item operational notes on when the constitution's escalation norms actually fire, grounded in the synthetic book's own scripted arcs (docs/SYNTHETIC_UNIVERSE_BIBLE.md) so each note is falsifiable against a real account, not aspirational prose.",
+  "items": [
+    {
+      "id": "activation-gap-30-day-rule",
+      "statement": "An activation gap (a Rocketlane phase overdue with no actual completion date) that has been open for 30+ days past its expected_by is escalated by name to the account, with the specific blocking task cited -- not folded into a generic 'checking in' message.",
+      "counter_example": "Pinehill Transport's Legacy Dispatch Integration phase sat overdue from its recalculated day-90 due date through day 100 before the underlying case resolved -- a 10-day gap, well under the 30-day trigger. The rule did not fire there, and it should not have; this note exists so a reviewer can tell the difference between 'a gap exists' and 'a gap has crossed the escalation threshold.'",
+      "provenance": "authored for Phase U4 against the corrected onboarding-stall arc (see docs/PROGRAM_REPORT_5.md, U1 correction)",
+      "review_status": "draft",
+      "as_of": "2026-07-03"
+    },
+    {
+      "id": "silent-champion-second-contact-rule",
+      "statement": "A champion silent for 14+ days on an open blocker triggers outreach to a *second* stakeholder, not a repeated identical follow-up to the same silent contact -- repetition to a non-responder is not escalation, it's noise.",
+      "counter_example": "Pinnacle Supply Chain's champion (Derek Vaughn) went silent day 3 and never returned; the account did not get a second-contact outreach attempt until day 110, when Monica Reeves happened to be introduced independently (a NewContactAppears event) rather than as a deliberate escalation response. This is a real gap between the stated norm and what the synthetic book's own timeline shows -- flagged here rather than quietly smoothed over.",
+      "provenance": "authored for Phase U4, cross-checked against book_simulator.py's SCENARIO_TIMELINE for pinnacle-supply",
+      "review_status": "needs_review",
+      "as_of": "2026-07-03"
+    },
+    {
+      "id": "red-band-no-action-rule",
+      "statement": "A red health band with no assigned CSM action within 5 business days is itself an escalation trigger, independent of what originally drove the band red.",
+      "counter_example": "Quarrystone Logistics has been red since day 0 (champion_departed is a pre-existing baseline condition, not a scripted event) and never receives an assigned action before its day-220 churn -- 220 days of red with no action is the entire point of the churn-brewing arc: a known, flagged risk that nobody acts on. This rule, applied honestly, would have fired on day 5 and kept firing for over seven months.",
+      "provenance": "authored for Phase U4 after the churn-brewing arc's health-band correction (see docs/PROGRAM_REPORT_5.md)",
+      "review_status": "draft",
+      "as_of": "2026-07-03"
+    }
+  ]
+}

@@ -284,3 +284,184 @@ def default_onboarding_fixture_data() -> FixtureOnboardingData:
         phases=tuple(phases),
         tasks=tuple(tasks),
     )
+
+
+# ---------------------------------------------------------------------------
+# Narrative (bible-driven) fixtures — day-offset aware
+#
+# The adversarial fixtures above are static: no connection to SEED_DATE or
+# day_offset (see module docstring). This section is the bridge that
+# connects Rocketlane's project/phase/task shape to the SCENARIO_TIMELINE
+# clock in book_simulator.py, for the story arcs in
+# docs/SYNTHETIC_UNIVERSE_BIBLE.md. Dates below are absolute (SEED_DATE +
+# day_offset), computed with the same convention book_simulator.py uses.
+# ---------------------------------------------------------------------------
+
+PINEHILL_RL_ACCOUNT = det_rocketlane_id("account", "pinehill-transport")
+
+
+def _rl_day_iso(day_offset: int) -> str:
+    from datetime import date, timedelta
+
+    seed = date(2026, 6, 21)
+    return (seed + timedelta(days=day_offset)).isoformat()
+
+
+def pinehill_onboarding_fixture_data(as_of_day: int) -> FixtureOnboardingData:
+    """Pinehill Transport's onboarding-stall Rocketlane arc, as it would read
+    if queried live on *as_of_day* (days past SEED_DATE).
+
+    Two phases: "Kickoff" (completes on time, day 7 -- matches the
+    ``activate_50pct_assets`` milestone in SCENARIO_TIMELINE) and "Legacy
+    Dispatch Integration" (the stall). The integration phase deliberately
+    exercises both live Rocketlane behaviors documented in
+    docs/LIVE_INTEGRATION_FINDINGS.md:
+
+    1. Creating "Validate dispatch event delivery" under the phase on day 32
+       (in response to the day-30 CRM case) recalculates the phase's
+       ``due_date`` from 35 to 90 -- the task's own due date -- overriding
+       whatever was set at phase creation.
+    2. Completing that task on day 100 (the case resolves ~day 100) is the
+       phase's last open task, so it auto-completes the phase and stamps
+       *both* ``start_date_actual`` and ``due_date_actual`` to day 100 (the
+       write date), not day 1 (the true start) or day 90 (the recalculated
+       due date).
+
+    A caller querying before a date has occurred sees the state as it was
+    on ``as_of_day`` -- e.g. at ``as_of_day=5`` the "Validate dispatch event
+    delivery" task does not exist yet, matching what a live query would
+    have returned that day.
+    """
+
+    project_id = det_rocketlane_id("project", "pinehill-onboarding")
+    kickoff_task_id = det_rocketlane_id("task", "pinehill-kickoff-call")
+    kickoff_phase_id = det_rocketlane_id("phase", "pinehill-kickoff")
+    integration_phase_id = det_rocketlane_id("phase", "pinehill-legacy-integration")
+    connector_task_id = det_rocketlane_id("task", "pinehill-configure-connector")
+    validate_task_id = det_rocketlane_id("task", "pinehill-validate-event-delivery")
+
+    # -- Kickoff phase: created day 1, task completes day 7, on time. --
+    kickoff_done = as_of_day >= 7
+    kickoff_phase = OnboardingPhase(
+        phase_id=kickoff_phase_id,
+        project_id=project_id,
+        name="Kickoff",
+        start_date=_rl_day_iso(1),
+        start_date_actual=_rl_day_iso(1) if kickoff_done else None,
+        due_date=_rl_day_iso(7),
+        due_date_actual=_rl_day_iso(7) if kickoff_done else None,
+        status_label="Completed" if kickoff_done else "In Progress",
+        private=False,
+    )
+    kickoff_task = OnboardingTask(
+        task_id=kickoff_task_id,
+        project_id=project_id,
+        phase_id=kickoff_phase_id,
+        name="Kickoff call",
+        status_label="Completed" if kickoff_done else "In progress",
+        start_date=_rl_day_iso(1),
+        due_date=_rl_day_iso(7),
+        due_date_actual=_rl_day_iso(7) if kickoff_done else None,
+        at_risk=False,
+        assignee_ids=(det_rocketlane_id("user", "csm-102"),),
+    )
+
+    # -- Legacy Dispatch Integration phase. --
+    connector_done = as_of_day >= 35
+    validate_task_exists = as_of_day >= 32  # created in response to day-30 case
+    validate_done = as_of_day >= 100  # day-80 case resolves ~day 100
+
+    # Live behavior 2: the phase's due_date tracks the most-recently-created
+    # task's due_date. Before day 32 only the connector task (due day 35)
+    # exists; from day 32 the validate task (due day 90) exists and wins.
+    if not validate_task_exists:
+        phase_due_date = _rl_day_iso(35)
+    else:
+        phase_due_date = _rl_day_iso(90)
+
+    # Live behavior 1: completing the phase's last open task auto-completes
+    # the phase and stamps both actual dates to the write date (day 100),
+    # not the true start (day 1) or the recalculated due date (day 90).
+    if validate_done:
+        phase_start_actual = _rl_day_iso(100)
+        phase_due_actual = _rl_day_iso(100)
+        phase_status = "Completed"
+    else:
+        phase_start_actual = _rl_day_iso(1) if connector_done else None
+        phase_due_actual = None
+        phase_status = "In Progress"
+
+    integration_phase = OnboardingPhase(
+        phase_id=integration_phase_id,
+        project_id=project_id,
+        name="Legacy Dispatch Integration",
+        start_date=_rl_day_iso(1),
+        start_date_actual=phase_start_actual,
+        due_date=phase_due_date,
+        due_date_actual=phase_due_actual,
+        status_label=phase_status,
+        private=False,
+    )
+
+    connector_task = OnboardingTask(
+        task_id=connector_task_id,
+        project_id=project_id,
+        phase_id=integration_phase_id,
+        name="Configure legacy dispatch connector",
+        status_label="Completed" if connector_done else "In progress",
+        start_date=_rl_day_iso(1),
+        due_date=_rl_day_iso(35),
+        due_date_actual=_rl_day_iso(35) if connector_done else None,
+        at_risk=False,
+        assignee_ids=(det_rocketlane_id("user", "csm-102"),),
+    )
+
+    tasks = [kickoff_task, connector_task]
+    phases = [kickoff_phase]
+    if connector_done or as_of_day >= 1:
+        phases.append(integration_phase)
+    if validate_task_exists:
+        validate_task = OnboardingTask(
+            task_id=validate_task_id,
+            project_id=project_id,
+            phase_id=integration_phase_id,
+            name="Validate dispatch event delivery",
+            status_label="Completed" if validate_done else "In progress",
+            start_date=_rl_day_iso(32),
+            due_date=_rl_day_iso(90),
+            due_date_actual=_rl_day_iso(100) if validate_done else None,
+            # At risk from creation until it finally completes day 100 --
+            # this is the activation-gap signal a day-50 checkpoint reads.
+            at_risk=not validate_done,
+            assignee_ids=(det_rocketlane_id("user", "csm-102"),),
+        )
+        tasks.append(validate_task)
+
+    progress: str
+    if validate_done:
+        progress = "on_track"
+    elif validate_task_exists:
+        progress = "running_late"
+    else:
+        progress = "on_track"
+
+    project = OnboardingProject(
+        project_id=project_id,
+        account_id=PINEHILL_RL_ACCOUNT,
+        name="Pinehill Transport Onboarding",
+        status_value=2,
+        status_label="Completed" if validate_done else "In progress",
+        owner_id=det_rocketlane_id("user", "csm-102"),
+        progress=progress,  # type: ignore[arg-type]
+        start_date=_rl_day_iso(1),
+        start_date_actual=_rl_day_iso(1),
+        due_date=phase_due_date,
+        due_date_actual=_rl_day_iso(100) if validate_done else None,
+        arr_cents=None,
+    )
+
+    return FixtureOnboardingData(
+        projects=(project,),
+        phases=tuple(phases),
+        tasks=tuple(tasks),
+    )

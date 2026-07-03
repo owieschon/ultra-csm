@@ -13,7 +13,7 @@ def test_default_org_pack_loads_slot_b_context():
     context = load_org_pack().slot_b_context()
 
     assert context["schema_version"] == 1
-    assert context["pack_version"] == "org-pack-ttv-demo-v1"
+    assert context["pack_version"] == "org-pack-ttv-demo-v2"
     assert context["fictional"] is True
     assert context["product_name"] == "FleetOps Platform"
     assert context["voice_rules"]

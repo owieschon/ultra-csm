@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "pack_version": "champion-risk-playbook-v1",
+  "fictional": true,
+  "doc_type": "champion_risk_playbook",
+  "summary": "Distinguishes three failure modes that all look like 'the champion is a risk' from a distance, so a play doesn't get applied to the wrong shape of problem. Each item cites the synthetic arc it's grounded in.",
+  "items": [
+    {
+      "id": "single-threaded-risk-play",
+      "failure_mode": "One engaged contact, no relationship depth beyond them. The account is fine today but has no redundancy if that one person leaves or goes quiet.",
+      "play": "Before there's a problem: identify and engage a second stakeholder proactively. After the champion goes quiet: do not wait for the health score to catch up (it lags -- usage/relationship signals move first) -- open a parallel outreach to any other known contact within days, not weeks.",
+      "grounded_in": "pinnacle-supply -- champion quiet day 3, health band doesn't move to yellow until day 14 (an 11-day lag the relationship signal alone would have caught). Recovery only starts once Monica Reeves is engaged day 110.",
+      "provenance": "authored for Phase U4",
+      "review_status": "draft",
+      "as_of": "2026-07-03"
+    },
+    {
+      "id": "known-unaddressed-risk-play",
+      "failure_mode": "The account has been visibly flagged (red, or an unresolved case) for a long time and nobody has taken an action -- not a hidden risk, a neglected one.",
+      "play": "The play here is not 'find the risk,' it's 'assign an owner and a next step to a risk that's already been sitting in plain sight.' Check the account's action history before drafting outreach language, not just its current state -- if a red band has zero prior actions, name that gap explicitly in the internal reason, since the customer-facing draft and the internal record should not silently agree that nothing has been tried.",
+      "grounded_in": "quarrystone-logistics -- red from day 0 through the day-220 churn, zero replacement-contact attempts, an unanswered day-160 renewal case.",
+      "provenance": "authored for Phase U4",
+      "review_status": "draft",
+      "as_of": "2026-07-03"
+    },
+    {
+      "id": "silent-decline-play",
+      "failure_mode": "The relationship and the health score both look fine; usage is genuinely eroding underneath. This is invisible to any play that only reads HealthScore/CTA.",
+      "play": "Do not let a green band suppress a usage-trend check. Any play triggered off health_band alone will miss this shape by construction -- pair it with a usage-signal trend read before concluding an account needs no attention.",
+      "grounded_in": "aspenridge-supply -- adoption_rate declines from 0.89 to 0.78 over 250 days while the health band stays green the entire simulation, by design (the decline is calibrated to stay under the scoring engine's own 20% auto-adjustment threshold).",
+      "provenance": "authored for Phase U4",
+      "review_status": "needs_review",
+      "as_of": "2026-07-03"
+    }
+  ]
+}
