@@ -17,8 +17,8 @@
             "unknown": 2
           },
           "CRMOpportunity": {
-            "mapped": 1,
-            "unknown": 5
+            "mapped": 2,
+            "unknown": 4
           }
         },
         "injection_marker_count": 0,
@@ -34,15 +34,21 @@
             "contract": "CRMContact",
             "reason": "contact_identity_join_failed",
             "row_number": 2
+          },
+          {
+            "contract": "CRMOpportunity",
+            "reason": "opportunity_identity_join_failed",
+            "row_number": 2
           }
         ],
         "records_typed": {
           "CRMAccount": 2,
           "CRMContact": 1,
-          "CRMOpportunity": 0
+          "CRMOpportunity": 1
         },
         "rejection_counts": {
-          "contact_identity_join_failed": 1
+          "contact_identity_join_failed": 1,
+          "opportunity_identity_join_failed": 1
         },
         "truncated": false,
         "unknown_fields": [
@@ -50,7 +56,6 @@
           "CRMContact.title",
           "CRMOpportunity.amount_cents",
           "CRMOpportunity.close_date",
-          "CRMOpportunity.opportunity_id",
           "CRMOpportunity.opportunity_type",
           "CRMOpportunity.stage_name"
         ],
@@ -60,21 +65,232 @@
       "hard_ok": true,
       "name": "truncated_payload",
       "proposal": {
-        "ambiguous_count": 10,
+        "ambiguous_count": 11,
         "coverage": {
-          "ambiguous_confirm": 10,
+          "ambiguous_confirm": 11,
           "mapped": 0,
-          "missing_to_unknown": 7,
+          "missing_to_unknown": 6,
           "total": 17
         },
-        "mapped_count": 0,
-        "missing_count": 7,
-        "proposal_hash": "sha256:f7d4d4478f259152bfb86c28f847b3cb07ceec49e0d66d1fdaff27645419bd7b",
-        "required_operator_actions": [
-          "confirm 10 semantic/value mappings",
-          "review 7 missing fields; affected rails remain unknown"
+        "entries": [
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "contact_id"
+              }
+            ],
+            "key": "CRMAccount.account_id",
+            "source_path": "id",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "name"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "contact_name"
+              }
+            ],
+            "key": "CRMAccount.name",
+            "source_path": "name",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "owner"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "contact_id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "id"
+              }
+            ],
+            "key": "CRMAccount.owner_id",
+            "source_path": "owner",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "industry"
+              }
+            ],
+            "key": "CRMAccount.industry",
+            "source_path": "industry",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "contact_id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "id"
+              }
+            ],
+            "key": "CRMContact.contact_id",
+            "source_path": "contact_id",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "account_ref"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "contact_id"
+              }
+            ],
+            "key": "CRMContact.account_id",
+            "source_path": "id",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "email"
+              }
+            ],
+            "key": "CRMContact.email",
+            "source_path": "email",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "contact_name"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "name"
+              }
+            ],
+            "key": "CRMContact.name",
+            "source_path": "contact_name",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "consent_to_contact"
+              }
+            ],
+            "key": "CRMContact.consent_to_contact",
+            "source_path": "consent_to_contact",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "contact_id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "id"
+              }
+            ],
+            "key": "CRMOpportunity.opportunity_id",
+            "source_path": "contact_id",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "account_ref"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "contact_id"
+              }
+            ],
+            "key": "CRMOpportunity.account_id",
+            "source_path": "id",
+            "state": "ambiguous_confirm"
+          }
         ],
-        "schema_hash": "sha256:b9d96b44140c291ddbaac950d0052e1970d0be957704834ab05ece64b4618c50"
+        "mapped_count": 0,
+        "missing_count": 6,
+        "proposal_hash": "sha256:5d757d49be4962b0fb40d17b772fc1a856470e0e862b34add44dc3fc0a1f1e1e",
+        "required_operator_actions": [
+          "confirm 11 semantic/value mappings",
+          "review 6 missing fields; affected rails remain unknown"
+        ],
+        "schema_hash": "sha256:b1e9869155bd1ec2eaba74a7115d6117ae0895017186f66c8f521addec77ffcb"
       }
     },
     {
@@ -133,14 +349,274 @@
           "missing_to_unknown": 5,
           "total": 17
         },
+        "entries": [
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "account_id"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "deal_id"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "person_id"
+              }
+            ],
+            "key": "CRMAccount.account_id",
+            "source_path": "account_id",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "company_name"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "full_name"
+              }
+            ],
+            "key": "CRMAccount.name",
+            "source_path": "company_name",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "csm_owner"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "account_id"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "deal_id"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "person_id"
+              }
+            ],
+            "key": "CRMAccount.owner_id",
+            "source_path": "csm_owner",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "sector"
+              }
+            ],
+            "key": "CRMAccount.industry",
+            "source_path": "sector",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "person_id"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "account_id"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "deal_id"
+              }
+            ],
+            "key": "CRMContact.contact_id",
+            "source_path": "person_id",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "account_id"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "account_ref"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "deal_id"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "person_id"
+              }
+            ],
+            "key": "CRMContact.account_id",
+            "source_path": "account_id",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "email_address"
+              }
+            ],
+            "key": "CRMContact.email",
+            "source_path": "email_address",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "full_name"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "company_name"
+              }
+            ],
+            "key": "CRMContact.name",
+            "source_path": "full_name",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "deal_id"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "account_id"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "person_id"
+              }
+            ],
+            "key": "CRMOpportunity.opportunity_id",
+            "source_path": "deal_id",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "account_id"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "account_ref"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "deal_id"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "person_id"
+              }
+            ],
+            "key": "CRMOpportunity.account_id",
+            "source_path": "account_id",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "amount"
+              }
+            ],
+            "key": "CRMOpportunity.amount_cents",
+            "source_path": "amount",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "expected_close"
+              }
+            ],
+            "key": "CRMOpportunity.close_date",
+            "source_path": "expected_close",
+            "state": "ambiguous_confirm"
+          }
+        ],
         "mapped_count": 0,
         "missing_count": 5,
-        "proposal_hash": "sha256:c9d713233492a9dff8c47b29e9bb3645e6aff99791580c69ad93fe78550ffba6",
+        "proposal_hash": "sha256:04d57cb4427336c36dc09a30cd6772dc1eb3b7636161680186a7b7523501f784",
         "required_operator_actions": [
           "confirm 12 semantic/value mappings",
           "review 5 missing fields; affected rails remain unknown"
         ],
-        "schema_hash": "sha256:47bce0933fe5ce5ec44be0a1dcc8e698db1550f5702c29e297b6541198669a8e"
+        "schema_hash": "sha256:dfef9dd10b52bf57add7fb75f6fc462cbef3597b0a33049f9b9020f7cfdd4fe5"
       }
     },
     {
@@ -162,8 +638,8 @@
             "unknown": 2
           },
           "CRMOpportunity": {
-            "mapped": 1,
-            "unknown": 5
+            "mapped": 2,
+            "unknown": 4
           }
         },
         "injection_marker_count": 0,
@@ -178,7 +654,7 @@
         "records_typed": {
           "CRMAccount": 1,
           "CRMContact": 1,
-          "CRMOpportunity": 0
+          "CRMOpportunity": 1
         },
         "rejection_counts": {},
         "truncated": false,
@@ -187,7 +663,6 @@
           "CRMContact.title",
           "CRMOpportunity.amount_cents",
           "CRMOpportunity.close_date",
-          "CRMOpportunity.opportunity_id",
           "CRMOpportunity.opportunity_type",
           "CRMOpportunity.stage_name"
         ],
@@ -197,21 +672,232 @@
       "hard_ok": true,
       "name": "duplicated_rows",
       "proposal": {
-        "ambiguous_count": 10,
+        "ambiguous_count": 11,
         "coverage": {
-          "ambiguous_confirm": 10,
+          "ambiguous_confirm": 11,
           "mapped": 0,
-          "missing_to_unknown": 7,
+          "missing_to_unknown": 6,
           "total": 17
         },
-        "mapped_count": 0,
-        "missing_count": 7,
-        "proposal_hash": "sha256:f7d4d4478f259152bfb86c28f847b3cb07ceec49e0d66d1fdaff27645419bd7b",
-        "required_operator_actions": [
-          "confirm 10 semantic/value mappings",
-          "review 7 missing fields; affected rails remain unknown"
+        "entries": [
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "contact_id"
+              }
+            ],
+            "key": "CRMAccount.account_id",
+            "source_path": "id",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "name"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "contact_name"
+              }
+            ],
+            "key": "CRMAccount.name",
+            "source_path": "name",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "owner"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "contact_id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "id"
+              }
+            ],
+            "key": "CRMAccount.owner_id",
+            "source_path": "owner",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "industry"
+              }
+            ],
+            "key": "CRMAccount.industry",
+            "source_path": "industry",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "contact_id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "id"
+              }
+            ],
+            "key": "CRMContact.contact_id",
+            "source_path": "contact_id",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "account_ref"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "contact_id"
+              }
+            ],
+            "key": "CRMContact.account_id",
+            "source_path": "id",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "email"
+              }
+            ],
+            "key": "CRMContact.email",
+            "source_path": "email",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "contact_name"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "name"
+              }
+            ],
+            "key": "CRMContact.name",
+            "source_path": "contact_name",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "consent_to_contact"
+              }
+            ],
+            "key": "CRMContact.consent_to_contact",
+            "source_path": "consent_to_contact",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "contact_id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "id"
+              }
+            ],
+            "key": "CRMOpportunity.opportunity_id",
+            "source_path": "contact_id",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "account_ref"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "contact_id"
+              }
+            ],
+            "key": "CRMOpportunity.account_id",
+            "source_path": "id",
+            "state": "ambiguous_confirm"
+          }
         ],
-        "schema_hash": "sha256:b9d96b44140c291ddbaac950d0052e1970d0be957704834ab05ece64b4618c50"
+        "mapped_count": 0,
+        "missing_count": 6,
+        "proposal_hash": "sha256:5d757d49be4962b0fb40d17b772fc1a856470e0e862b34add44dc3fc0a1f1e1e",
+        "required_operator_actions": [
+          "confirm 11 semantic/value mappings",
+          "review 6 missing fields; affected rails remain unknown"
+        ],
+        "schema_hash": "sha256:b1e9869155bd1ec2eaba74a7115d6117ae0895017186f66c8f521addec77ffcb"
       }
     },
     {
@@ -230,8 +916,8 @@
             "unknown": 2
           },
           "CRMOpportunity": {
-            "mapped": 1,
-            "unknown": 5
+            "mapped": 2,
+            "unknown": 4
           }
         },
         "injection_marker_count": 0,
@@ -247,15 +933,21 @@
             "contract": "CRMContact",
             "reason": "contact_identity_join_failed",
             "row_number": 2
+          },
+          {
+            "contract": "CRMOpportunity",
+            "reason": "opportunity_identity_join_failed",
+            "row_number": 2
           }
         ],
         "records_typed": {
           "CRMAccount": 2,
           "CRMContact": 1,
-          "CRMOpportunity": 0
+          "CRMOpportunity": 1
         },
         "rejection_counts": {
-          "contact_identity_join_failed": 1
+          "contact_identity_join_failed": 1,
+          "opportunity_identity_join_failed": 1
         },
         "truncated": false,
         "unknown_fields": [
@@ -263,7 +955,6 @@
           "CRMContact.title",
           "CRMOpportunity.amount_cents",
           "CRMOpportunity.close_date",
-          "CRMOpportunity.opportunity_id",
           "CRMOpportunity.opportunity_type",
           "CRMOpportunity.stage_name"
         ],
@@ -273,21 +964,232 @@
       "hard_ok": true,
       "name": "partial_identity_join",
       "proposal": {
-        "ambiguous_count": 10,
+        "ambiguous_count": 11,
         "coverage": {
-          "ambiguous_confirm": 10,
+          "ambiguous_confirm": 11,
           "mapped": 0,
-          "missing_to_unknown": 7,
+          "missing_to_unknown": 6,
           "total": 17
         },
-        "mapped_count": 0,
-        "missing_count": 7,
-        "proposal_hash": "sha256:f7d4d4478f259152bfb86c28f847b3cb07ceec49e0d66d1fdaff27645419bd7b",
-        "required_operator_actions": [
-          "confirm 10 semantic/value mappings",
-          "review 7 missing fields; affected rails remain unknown"
+        "entries": [
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "contact_id"
+              }
+            ],
+            "key": "CRMAccount.account_id",
+            "source_path": "id",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "name"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "contact_name"
+              }
+            ],
+            "key": "CRMAccount.name",
+            "source_path": "name",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "owner"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "contact_id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "id"
+              }
+            ],
+            "key": "CRMAccount.owner_id",
+            "source_path": "owner",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "industry"
+              }
+            ],
+            "key": "CRMAccount.industry",
+            "source_path": "industry",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "contact_id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "id"
+              }
+            ],
+            "key": "CRMContact.contact_id",
+            "source_path": "contact_id",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "account_ref"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "contact_id"
+              }
+            ],
+            "key": "CRMContact.account_id",
+            "source_path": "id",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "email"
+              }
+            ],
+            "key": "CRMContact.email",
+            "source_path": "email",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "contact_name"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "name"
+              }
+            ],
+            "key": "CRMContact.name",
+            "source_path": "contact_name",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "consent_to_contact"
+              }
+            ],
+            "key": "CRMContact.consent_to_contact",
+            "source_path": "consent_to_contact",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "contact_id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "id"
+              }
+            ],
+            "key": "CRMOpportunity.opportunity_id",
+            "source_path": "contact_id",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "account_ref"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "contact_id"
+              }
+            ],
+            "key": "CRMOpportunity.account_id",
+            "source_path": "id",
+            "state": "ambiguous_confirm"
+          }
         ],
-        "schema_hash": "sha256:b9d96b44140c291ddbaac950d0052e1970d0be957704834ab05ece64b4618c50"
+        "mapped_count": 0,
+        "missing_count": 6,
+        "proposal_hash": "sha256:5d757d49be4962b0fb40d17b772fc1a856470e0e862b34add44dc3fc0a1f1e1e",
+        "required_operator_actions": [
+          "confirm 11 semantic/value mappings",
+          "review 6 missing fields; affected rails remain unknown"
+        ],
+        "schema_hash": "sha256:b1e9869155bd1ec2eaba74a7115d6117ae0895017186f66c8f521addec77ffcb"
       }
     },
     {
@@ -306,8 +1208,8 @@
             "unknown": 2
           },
           "CRMOpportunity": {
-            "mapped": 1,
-            "unknown": 5
+            "mapped": 2,
+            "unknown": 4
           }
         },
         "injection_marker_count": 1,
@@ -322,7 +1224,7 @@
         "records_typed": {
           "CRMAccount": 1,
           "CRMContact": 1,
-          "CRMOpportunity": 0
+          "CRMOpportunity": 1
         },
         "rejection_counts": {},
         "truncated": false,
@@ -331,7 +1233,6 @@
           "CRMContact.title",
           "CRMOpportunity.amount_cents",
           "CRMOpportunity.close_date",
-          "CRMOpportunity.opportunity_id",
           "CRMOpportunity.opportunity_type",
           "CRMOpportunity.stage_name"
         ],
@@ -341,21 +1242,232 @@
       "hard_ok": true,
       "name": "injected_text",
       "proposal": {
-        "ambiguous_count": 10,
+        "ambiguous_count": 11,
         "coverage": {
-          "ambiguous_confirm": 10,
+          "ambiguous_confirm": 11,
           "mapped": 0,
-          "missing_to_unknown": 7,
+          "missing_to_unknown": 6,
           "total": 17
         },
-        "mapped_count": 0,
-        "missing_count": 7,
-        "proposal_hash": "sha256:e9d54cc7ae58a102758f731b0b799148002d19a7d439b0aaf019d3b45c43c9a8",
-        "required_operator_actions": [
-          "confirm 10 semantic/value mappings",
-          "review 7 missing fields; affected rails remain unknown"
+        "entries": [
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "id"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "contact_id"
+              }
+            ],
+            "key": "CRMAccount.account_id",
+            "source_path": "id",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "name"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "contact_name"
+              }
+            ],
+            "key": "CRMAccount.name",
+            "source_path": "name",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "owner"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "contact_id"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "id"
+              }
+            ],
+            "key": "CRMAccount.owner_id",
+            "source_path": "owner",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "industry"
+              }
+            ],
+            "key": "CRMAccount.industry",
+            "source_path": "industry",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "contact_id"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "id"
+              }
+            ],
+            "key": "CRMContact.contact_id",
+            "source_path": "contact_id",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "id"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "account_ref"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "contact_id"
+              }
+            ],
+            "key": "CRMContact.account_id",
+            "source_path": "id",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "email"
+              }
+            ],
+            "key": "CRMContact.email",
+            "source_path": "email",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "contact_name"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "name"
+              }
+            ],
+            "key": "CRMContact.name",
+            "source_path": "contact_name",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "consent_to_contact"
+              }
+            ],
+            "key": "CRMContact.consent_to_contact",
+            "source_path": "consent_to_contact",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "contact_id"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "id"
+              }
+            ],
+            "key": "CRMOpportunity.opportunity_id",
+            "source_path": "contact_id",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "id"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "account_ref"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "contact_id"
+              }
+            ],
+            "key": "CRMOpportunity.account_id",
+            "source_path": "id",
+            "state": "ambiguous_confirm"
+          }
         ],
-        "schema_hash": "sha256:18bf6cc514b3c237feb2abe1f5a27eea72c072d12b548628802781271f3fd0fb"
+        "mapped_count": 0,
+        "missing_count": 6,
+        "proposal_hash": "sha256:9e0562f6bf361485d3186537c983e701478d6aec26f07d0496407565c506414e",
+        "required_operator_actions": [
+          "confirm 11 semantic/value mappings",
+          "review 6 missing fields; affected rails remain unknown"
+        ],
+        "schema_hash": "sha256:0b0b858052046562257d380047754c668e2f2cc46389bf1047ecc7a072dc06ed"
       }
     },
     {
@@ -367,46 +1479,56 @@
         "expected_count": null,
         "field_coverage": {
           "CRMAccount": {
-            "mapped": 2,
-            "unknown": 2
+            "mapped": 3,
+            "unknown": 1
           },
           "CRMContact": {
-            "mapped": 1,
-            "unknown": 6
+            "mapped": 3,
+            "unknown": 4
           },
           "CRMOpportunity": {
-            "mapped": 1,
-            "unknown": 5
+            "mapped": 2,
+            "unknown": 4
           }
         },
         "injection_marker_count": 0,
         "join_coverage": {
-          "contact_candidates": 0,
+          "contact_candidates": 1,
           "contacts_joined": 0,
-          "ratio": 1.0
+          "ratio": 0.0
         },
         "records_processed": 1,
         "records_received": 1,
-        "records_rejected": [],
+        "records_rejected": [
+          {
+            "contract": "CRMContact",
+            "reason": "contact_identity_join_failed",
+            "row_number": 1
+          },
+          {
+            "contract": "CRMOpportunity",
+            "reason": "opportunity_identity_join_failed",
+            "row_number": 1
+          }
+        ],
         "records_typed": {
           "CRMAccount": 1,
           "CRMContact": 0,
           "CRMOpportunity": 0
         },
-        "rejection_counts": {},
+        "rejection_counts": {
+          "contact_identity_join_failed": 1,
+          "opportunity_identity_join_failed": 1
+        },
         "truncated": false,
         "unknown_fields": [
           "CRMAccount.industry",
-          "CRMAccount.owner_id",
           "CRMContact.consent_to_contact",
-          "CRMContact.contact_id",
           "CRMContact.email",
-          "CRMContact.name",
           "CRMContact.role",
           "CRMContact.title",
           "CRMOpportunity.amount_cents",
           "CRMOpportunity.close_date",
-          "CRMOpportunity.opportunity_id",
           "CRMOpportunity.opportunity_type",
           "CRMOpportunity.stage_name"
         ],
@@ -416,21 +1538,127 @@
       "hard_ok": true,
       "name": "optional_fields_missing",
       "proposal": {
-        "ambiguous_count": 4,
+        "ambiguous_count": 8,
         "coverage": {
-          "ambiguous_confirm": 4,
+          "ambiguous_confirm": 8,
           "mapped": 0,
-          "missing_to_unknown": 13,
+          "missing_to_unknown": 9,
           "total": 17
         },
-        "mapped_count": 0,
-        "missing_count": 13,
-        "proposal_hash": "sha256:bfa8cb504d9d4772ca7dcde51846de31b573138008ce618385ba61c387b8e303",
-        "required_operator_actions": [
-          "confirm 4 semantic/value mappings",
-          "review 13 missing fields; affected rails remain unknown"
+        "entries": [
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "id"
+              }
+            ],
+            "key": "CRMAccount.account_id",
+            "source_path": "id",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "name"
+              }
+            ],
+            "key": "CRMAccount.name",
+            "source_path": "name",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "id"
+              }
+            ],
+            "key": "CRMAccount.owner_id",
+            "source_path": "id",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "id"
+              }
+            ],
+            "key": "CRMContact.contact_id",
+            "source_path": "id",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "id"
+              }
+            ],
+            "key": "CRMContact.account_id",
+            "source_path": "id",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "name"
+              }
+            ],
+            "key": "CRMContact.name",
+            "source_path": "name",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "id"
+              }
+            ],
+            "key": "CRMOpportunity.opportunity_id",
+            "source_path": "id",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "id"
+              }
+            ],
+            "key": "CRMOpportunity.account_id",
+            "source_path": "id",
+            "state": "ambiguous_confirm"
+          }
         ],
-        "schema_hash": "sha256:42b02eea9e2a0d4b1124b79cf381b12935f4113d9740c4ac4118c9ee6e46c802"
+        "mapped_count": 0,
+        "missing_count": 9,
+        "proposal_hash": "sha256:9b19239bc2e0fc75d166ba58c489b799ba03d10601f6d02923470a8797ebfa71",
+        "required_operator_actions": [
+          "confirm 8 semantic/value mappings",
+          "review 9 missing fields; affected rails remain unknown"
+        ],
+        "schema_hash": "sha256:db158d95a377cbac2014e35e0b1251d6eca4cece8398262341692e20985d495c"
       }
     },
     {
@@ -471,9 +1699,10 @@
           "missing_to_unknown": 17,
           "total": 17
         },
+        "entries": [],
         "mapped_count": 0,
         "missing_count": 17,
-        "proposal_hash": "sha256:cbe949271986f93d29d46be30d341bc944248cd9ca69e54086879e325d386dba",
+        "proposal_hash": "sha256:b25027d2b8f69cdc6c00062ad1422e6c87562623be8e2207e6c69e0644814f0e",
         "required_operator_actions": [
           "review 17 missing fields; affected rails remain unknown"
         ],
@@ -489,16 +1718,16 @@
         "expected_count": 5,
         "field_coverage": {
           "CRMAccount": {
-            "mapped": 2,
-            "unknown": 2
+            "mapped": 3,
+            "unknown": 1
           },
           "CRMContact": {
             "mapped": 4,
             "unknown": 3
           },
           "CRMOpportunity": {
-            "mapped": 1,
-            "unknown": 5
+            "mapped": 2,
+            "unknown": 4
           }
         },
         "injection_marker_count": 0,
@@ -513,19 +1742,17 @@
         "records_typed": {
           "CRMAccount": 2,
           "CRMContact": 2,
-          "CRMOpportunity": 0
+          "CRMOpportunity": 2
         },
         "rejection_counts": {},
         "truncated": true,
         "unknown_fields": [
           "CRMAccount.industry",
-          "CRMAccount.owner_id",
           "CRMContact.consent_to_contact",
           "CRMContact.role",
           "CRMContact.title",
           "CRMOpportunity.amount_cents",
           "CRMOpportunity.close_date",
-          "CRMOpportunity.opportunity_id",
           "CRMOpportunity.opportunity_type",
           "CRMOpportunity.stage_name"
         ],
@@ -535,21 +1762,859 @@
       "hard_ok": true,
       "name": "oversized_book",
       "proposal": {
-        "ambiguous_count": 7,
+        "ambiguous_count": 9,
         "coverage": {
-          "ambiguous_confirm": 7,
+          "ambiguous_confirm": 9,
           "mapped": 0,
-          "missing_to_unknown": 10,
+          "missing_to_unknown": 8,
           "total": 17
         },
-        "mapped_count": 0,
-        "missing_count": 10,
-        "proposal_hash": "sha256:6f007a0c23971e3a4f1c08995c69412459a4423a6c809e1a8caf629e92a60f9f",
-        "required_operator_actions": [
-          "confirm 7 semantic/value mappings",
-          "review 10 missing fields; affected rails remain unknown"
+        "entries": [
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "contact_id"
+              }
+            ],
+            "key": "CRMAccount.account_id",
+            "source_path": "id",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "name"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "contact_name"
+              }
+            ],
+            "key": "CRMAccount.name",
+            "source_path": "name",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "contact_id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "id"
+              }
+            ],
+            "key": "CRMAccount.owner_id",
+            "source_path": "contact_id",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "contact_id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "id"
+              }
+            ],
+            "key": "CRMContact.contact_id",
+            "source_path": "contact_id",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "account_ref"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "contact_id"
+              }
+            ],
+            "key": "CRMContact.account_id",
+            "source_path": "id",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "email"
+              }
+            ],
+            "key": "CRMContact.email",
+            "source_path": "email",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "contact_name"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "name"
+              }
+            ],
+            "key": "CRMContact.name",
+            "source_path": "contact_name",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "contact_id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "id"
+              }
+            ],
+            "key": "CRMOpportunity.opportunity_id",
+            "source_path": "contact_id",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "account_ref"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "contact_id"
+              }
+            ],
+            "key": "CRMOpportunity.account_id",
+            "source_path": "id",
+            "state": "ambiguous_confirm"
+          }
         ],
-        "schema_hash": "sha256:7d1a759ddddfff1eee60cd272bf7da6343616a84295021b6f964165ba0de6564"
+        "mapped_count": 0,
+        "missing_count": 8,
+        "proposal_hash": "sha256:659014b4027182bdbb12e53bcff224d4a7830cecedfcff6d3da2c01d43dc7f32",
+        "required_operator_actions": [
+          "confirm 9 semantic/value mappings",
+          "review 8 missing fields; affected rails remain unknown"
+        ],
+        "schema_hash": "sha256:e6ea3248bc93a90a9224ebdb31beda90e624d81f8ed90db7fe5839e9cd710c3a"
+      }
+    },
+    {
+      "briefing_line_count": 2,
+      "coverage": {
+        "count_mismatch": false,
+        "dropped_record_count": 0,
+        "duplicate_identities": [],
+        "expected_count": null,
+        "field_coverage": {},
+        "injection_marker_count": 0,
+        "join_coverage": {
+          "contact_candidates": 0,
+          "contacts_joined": 0,
+          "ratio": 1.0
+        },
+        "records_processed": 8,
+        "records_received": 8,
+        "records_rejected": [],
+        "records_typed": {
+          "CRMAccount": 0,
+          "CRMContact": 0,
+          "CRMOpportunity": 0
+        },
+        "rejection_counts": {},
+        "truncated": false,
+        "unknown_fields": [],
+        "unrepresentable_paths": []
+      },
+      "hard_failures": [],
+      "hard_ok": true,
+      "name": "wrong_key_competing_coverage",
+      "proposal": {
+        "ambiguous_count": 8,
+        "coverage": {
+          "ambiguous_confirm": 8,
+          "mapped": 0,
+          "missing_to_unknown": 9,
+          "total": 17
+        },
+        "entries": [
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 8,
+                "rows_present": 8,
+                "rows_sampled": 8,
+                "source_path": "id"
+              }
+            ],
+            "key": "CRMAccount.account_id",
+            "source_path": "id",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 8,
+                "rows_present": 8,
+                "rows_sampled": 8,
+                "source_path": "title"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 8,
+                "rows_sampled": 8,
+                "source_path": "variant"
+              }
+            ],
+            "key": "CRMAccount.name",
+            "source_path": "title",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 8,
+                "rows_present": 8,
+                "rows_sampled": 8,
+                "source_path": "id"
+              }
+            ],
+            "key": "CRMAccount.owner_id",
+            "source_path": "id",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 8,
+                "rows_present": 8,
+                "rows_sampled": 8,
+                "source_path": "id"
+              }
+            ],
+            "key": "CRMContact.contact_id",
+            "source_path": "id",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 8,
+                "rows_present": 8,
+                "rows_sampled": 8,
+                "source_path": "id"
+              }
+            ],
+            "key": "CRMContact.account_id",
+            "source_path": "id",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 8,
+                "rows_present": 8,
+                "rows_sampled": 8,
+                "source_path": "title"
+              }
+            ],
+            "key": "CRMContact.title",
+            "source_path": "title",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 8,
+                "rows_present": 8,
+                "rows_sampled": 8,
+                "source_path": "id"
+              }
+            ],
+            "key": "CRMOpportunity.opportunity_id",
+            "source_path": "id",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 8,
+                "rows_present": 8,
+                "rows_sampled": 8,
+                "source_path": "id"
+              }
+            ],
+            "key": "CRMOpportunity.account_id",
+            "source_path": "id",
+            "state": "ambiguous_confirm"
+          }
+        ],
+        "mapped_count": 0,
+        "missing_count": 9,
+        "proposal_hash": "sha256:7417752be02132cd81f2b129daa4d8a85078eac9a02a2c0ed46eceac122b2783",
+        "required_operator_actions": [
+          "confirm 8 semantic/value mappings",
+          "review 9 missing fields; affected rails remain unknown"
+        ],
+        "schema_hash": "sha256:e568656cc3a59bf279f3b5ca41fcdeb4d48f66f62ab25eb8aeb1bdf6063fcd61"
+      }
+    },
+    {
+      "briefing_line_count": 2,
+      "coverage": {
+        "count_mismatch": false,
+        "dropped_record_count": 0,
+        "duplicate_identities": [],
+        "expected_count": null,
+        "field_coverage": {
+          "CRMAccount": {
+            "mapped": 4
+          },
+          "CRMContact": {
+            "mapped": 5,
+            "unknown": 2
+          },
+          "CRMOpportunity": {
+            "mapped": 2,
+            "unknown": 4
+          }
+        },
+        "injection_marker_count": 0,
+        "join_coverage": {
+          "contact_candidates": 1,
+          "contacts_joined": 1,
+          "ratio": 1.0
+        },
+        "records_processed": 1,
+        "records_received": 1,
+        "records_rejected": [],
+        "records_typed": {
+          "CRMAccount": 1,
+          "CRMContact": 1,
+          "CRMOpportunity": 1
+        },
+        "rejection_counts": {},
+        "truncated": false,
+        "unknown_fields": [
+          "CRMContact.role",
+          "CRMContact.title",
+          "CRMOpportunity.amount_cents",
+          "CRMOpportunity.close_date",
+          "CRMOpportunity.opportunity_type",
+          "CRMOpportunity.stage_name"
+        ],
+        "unrepresentable_paths": []
+      },
+      "hard_failures": [],
+      "hard_ok": true,
+      "name": "not_mappable_round_trip",
+      "proposal": {
+        "ambiguous_count": 11,
+        "coverage": {
+          "ambiguous_confirm": 11,
+          "mapped": 0,
+          "missing_to_unknown": 6,
+          "total": 17
+        },
+        "entries": [
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "id"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "contact_id"
+              }
+            ],
+            "key": "CRMAccount.account_id",
+            "source_path": "id",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "name"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "contact_name"
+              }
+            ],
+            "key": "CRMAccount.name",
+            "source_path": "name",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "owner"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "contact_id"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "id"
+              }
+            ],
+            "key": "CRMAccount.owner_id",
+            "source_path": "owner",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "industry"
+              }
+            ],
+            "key": "CRMAccount.industry",
+            "source_path": "industry",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "contact_id"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "id"
+              }
+            ],
+            "key": "CRMContact.contact_id",
+            "source_path": "contact_id",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "id"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "account_ref"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "contact_id"
+              }
+            ],
+            "key": "CRMContact.account_id",
+            "source_path": "id",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "email"
+              }
+            ],
+            "key": "CRMContact.email",
+            "source_path": "email",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "contact_name"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "name"
+              }
+            ],
+            "key": "CRMContact.name",
+            "source_path": "contact_name",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "consent_to_contact"
+              }
+            ],
+            "key": "CRMContact.consent_to_contact",
+            "source_path": "consent_to_contact",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "contact_id"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "id"
+              }
+            ],
+            "key": "CRMOpportunity.opportunity_id",
+            "source_path": "contact_id",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "id"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "account_ref"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "contact_id"
+              }
+            ],
+            "key": "CRMOpportunity.account_id",
+            "source_path": "id",
+            "state": "ambiguous_confirm"
+          }
+        ],
+        "mapped_count": 0,
+        "missing_count": 6,
+        "proposal_hash": "sha256:abd069da4e0979adcea5c78e1e3e3184806c6320a4fd92b001cefcba8b4143f6",
+        "required_operator_actions": [
+          "confirm 11 semantic/value mappings",
+          "review 6 missing fields; affected rails remain unknown"
+        ],
+        "schema_hash": "sha256:83f81bbcabbb527589a3dc28fcc3e0cb48fa5c0136d4c4477eaefaad12816faa"
+      }
+    },
+    {
+      "briefing_line_count": 2,
+      "coverage": {
+        "count_mismatch": false,
+        "dropped_record_count": 0,
+        "duplicate_identities": [],
+        "expected_count": null,
+        "field_coverage": {
+          "CRMAccount": {
+            "mapped": 3,
+            "unknown": 1
+          },
+          "CRMContact": {
+            "mapped": 5,
+            "unknown": 2
+          },
+          "CRMOpportunity": {
+            "mapped": 2,
+            "unknown": 4
+          }
+        },
+        "injection_marker_count": 0,
+        "join_coverage": {
+          "contact_candidates": 1,
+          "contacts_joined": 1,
+          "ratio": 1.0
+        },
+        "records_processed": 1,
+        "records_received": 1,
+        "records_rejected": [
+          {
+            "contract": "CRMOpportunity",
+            "reason": "opportunity_identity_join_failed",
+            "row_number": 1
+          }
+        ],
+        "records_typed": {
+          "CRMAccount": 1,
+          "CRMContact": 1,
+          "CRMOpportunity": 0
+        },
+        "rejection_counts": {
+          "opportunity_identity_join_failed": 1
+        },
+        "truncated": false,
+        "unknown_fields": [
+          "CRMAccount.industry",
+          "CRMContact.role",
+          "CRMContact.title",
+          "CRMOpportunity.amount_cents",
+          "CRMOpportunity.close_date",
+          "CRMOpportunity.opportunity_type",
+          "CRMOpportunity.stage_name"
+        ],
+        "unrepresentable_paths": []
+      },
+      "hard_failures": [],
+      "hard_ok": true,
+      "name": "nested_contacts",
+      "proposal": {
+        "ambiguous_count": 10,
+        "coverage": {
+          "ambiguous_confirm": 10,
+          "mapped": 0,
+          "missing_to_unknown": 7,
+          "total": 17
+        },
+        "entries": [
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "id"
+              }
+            ],
+            "key": "CRMAccount.account_id",
+            "source_path": "id",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "name"
+              }
+            ],
+            "key": "CRMAccount.name",
+            "source_path": "name",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "id"
+              }
+            ],
+            "key": "CRMAccount.owner_id",
+            "source_path": "id",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "contacts[].id"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "id"
+              }
+            ],
+            "key": "CRMContact.contact_id",
+            "source_path": "contacts[].id",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "id"
+              }
+            ],
+            "key": "CRMContact.account_id",
+            "source_path": "id",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "contacts[].email"
+              }
+            ],
+            "key": "CRMContact.email",
+            "source_path": "contacts[].email",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "contacts[].name"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "name"
+              }
+            ],
+            "key": "CRMContact.name",
+            "source_path": "contacts[].name",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "contacts[].consent_to_contact"
+              }
+            ],
+            "key": "CRMContact.consent_to_contact",
+            "source_path": "contacts[].consent_to_contact",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "id"
+              }
+            ],
+            "key": "CRMOpportunity.opportunity_id",
+            "source_path": "id",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "id"
+              }
+            ],
+            "key": "CRMOpportunity.account_id",
+            "source_path": "id",
+            "state": "ambiguous_confirm"
+          }
+        ],
+        "mapped_count": 0,
+        "missing_count": 7,
+        "proposal_hash": "sha256:a8c73b741c4160328d5eebed9f02a1aff37df401911ee7e98effc27383b4271f",
+        "required_operator_actions": [
+          "confirm 10 semantic/value mappings",
+          "review 7 missing fields; affected rails remain unknown"
+        ],
+        "schema_hash": "sha256:3b1b8920831897a533a0a326fbe02dba4f9c5ae6aa6c5b36692132427c780a9b"
       }
     }
   ],
@@ -563,7 +2628,7 @@
   "hard_ok": true,
   "measurement_scope": "Synthetic adversarial relay fixtures exercise the external ingest boundary. No live tenant data or private corpus data is used.",
   "score": {
-    "passed": 8,
-    "total": 8
+    "passed": 11,
+    "total": 11
   }
 }
