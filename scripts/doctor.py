@@ -34,12 +34,9 @@ def check_pg_binaries() -> tuple[bool, str]:
     except ImportError as exc:
         return False, f"cannot import platform module: {exc} — run `make setup`"
     try:
-        tier = resolve_postgres_boot_tier()
+        resolve_postgres_boot_tier()
     except Exception as exc:  # noqa: BLE001 - report environment resolver failures
         return False, str(exc)
-    if tier == "pgserver":
-        return True, "pgserver fallback available"
-
     homebrew = Path("/opt/homebrew/opt/postgresql@16/bin")
     missing = []
     versions = []
