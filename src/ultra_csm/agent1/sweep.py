@@ -2,10 +2,24 @@
 
 from __future__ import annotations
 
+import logging
+import time
 from dataclasses import asdict, dataclass
-from typing import Literal
+from typing import TYPE_CHECKING, Literal
 
 from ultra_csm._util import compact_asdict, iso_date
+from ultra_csm.agent1.slot_b import (
+    FIXTURE_SLOT_B_MODEL_ID,
+    FixtureReasonDraftWriter,
+    ReasonDraftOutput,
+    ReasonDraftRequest,
+    ReasonDraftWriter,
+    SlotBContractError,
+    SlotBEvidence,
+    SlotBPriority,
+    SlotBPriorityFactor,
+    validate_reason_draft_output,
+)
 from ultra_csm.data_plane import (
     CRMAccount,
     CRMContact,
@@ -16,15 +30,13 @@ from ultra_csm.data_plane import (
 from ultra_csm.data_plane.contracts import ResolutionState
 from ultra_csm.governance import ActionGate, ActionProposal, proposal_fields_for
 from ultra_csm.governance.csm_actions import CSMActionType
-from ultra_csm.agent1.slot_b import (
-    FixtureReasonDraftWriter,
-    ReasonDraftRequest,
-    ReasonDraftWriter,
-    SlotBEvidence,
-    SlotBPriority,
-    SlotBPriorityFactor,
-    validate_reason_draft_output,
+from ultra_csm.knowledge import load_org_pack
+from ultra_csm.quality_breaker import (
+    QualityBreakerConfig,
+    QualityBreakerDecision,
+    evaluate_quality_breaker,
 )
+from ultra_csm.snapshot_store import SnapshotStore
 from ultra_csm.value_model import (
     CustomerValueModel,
     ValueFactor,
@@ -32,9 +44,24 @@ from ultra_csm.value_model import (
     project_ttv_lens,
 )
 
+if TYPE_CHECKING:
+    from ultra_csm.cost_tracker import CostBudget, CostTracker
+
+log = logging.getLogger(__name__)
+
 Disposition = Literal["propose_customer_action", "internal_review", "escalate"]
 ProposalStatus = Literal["pending", "approved", "denied"]
 PriorityFactor = ValueFactor
+DraftMode = Literal["fixture", "live", "template_fallback", "none"]
+TrajectoryFactorState = Literal["known", "unknown"]
+
+
+@dataclass(frozen=True)
+class TrajectoryFactorEvaluation:
+    """Result of folding snapshot history into deterministic priority."""
+
+    state: TrajectoryFactorState
+    factor: PriorityFactor | None
 
 
 @dataclass(frozen=True)
@@ -70,7 +97,25 @@ class CSMWorkItem:
     customer_contact_allowed: bool
     proposal: ProposalRef | None
     swept_at: str
+    draft_mode: DraftMode = "none"
     customer_draft: str | None = None
+
+
+@dataclass
+class _SweepTimingAccum:
+    """Mutable accumulator for sweep phase timing (internal)."""
+
+    value_model_ms: float = 0.0
+    slot_b_ms: float = 0.0
+    slot_b_calls: int = 0
+    governance_ms: float = 0.0
+
+
+@dataclass(frozen=True)
+class _SlotBInputs:
+    cases: tuple
+    evidence: tuple[EvidenceRef, ...]
+    priority: Priority
 
 
 @dataclass(frozen=True)
@@ -79,6 +124,9 @@ class SweepResult:
     work_items: tuple[CSMWorkItem, ...]
     escalations: tuple[CSMWorkItem, ...]
     swept_accounts: tuple[str, ...]
+    degraded_items: int = 0
+    budget_skipped: int = 0
+    quality_breaker: dict | None = None
 
     def to_dict(self) -> dict:
         return asdict(self)
@@ -92,15 +140,41 @@ def run_time_to_value_sweep(
     sweep_principal_id: str,
     as_of: str,
     reason_draft_writer: ReasonDraftWriter | None = None,
+    quality_breaker: QualityBreakerConfig | None = None,
+    cost_tracker: "CostTracker | None" = None,
+    cost_budget: "CostBudget | None" = None,
+    org_context: dict | None = None,
+    snapshot_store: SnapshotStore | None = None,
 ) -> SweepResult:
     """Run Agent 1 across a tenant book and emit a deterministic work queue."""
 
+    from ultra_csm.cost_tracker import estimate_call_cost
+
+    sweep_start = time.perf_counter()
     writer = reason_draft_writer or FixtureReasonDraftWriter()
+    slot_b_org_context = (
+        org_context
+        if org_context is not None
+        else load_org_pack().slot_b_context()
+    )
+    breaker_decision = (
+        evaluate_quality_breaker(quality_breaker)
+        if quality_breaker is not None
+        else None
+    )
+
+    if cost_tracker is not None:
+        cost_tracker.reset_sweep()
+
     accounts = tuple(data_plane.crm.list_accounts(tenant_id=tenant_id))
     swept_accounts = tuple(account.account_id for account in accounts)
     items: list[CSMWorkItem] = []
     escalations: list[CSMWorkItem] = []
+    degraded_items = 0
+    budget_skipped = 0
+    budget_exceeded = False
     emitted_escalations: set[tuple[str, ...]] = set()
+    timing = _SweepTimingAccum()
 
     for account in accounts:
         contacts = tuple(data_plane.crm.list_contacts(account.account_id))
@@ -118,6 +192,42 @@ def run_time_to_value_sweep(
                 emitted_escalations.add(key)
             continue
 
+        # Budget check before Slot B call.
+        if cost_budget is not None and not budget_exceeded:
+            estimated = estimate_call_cost(writer.model_id)
+            sweep_cost = (
+                cost_tracker.current_sweep_cost if cost_tracker else 0.0
+            )
+            daily_cost = (
+                cost_tracker.today_cost_usd() if cost_tracker else 0.0
+            )
+            if cost_budget.would_exceed_sweep(sweep_cost, estimated):
+                log.warning(
+                    "Sweep cost budget exceeded, skipping Slot B for "
+                    "remaining accounts",
+                    extra={
+                        "sweep_cost_usd": round(sweep_cost, 6),
+                        "estimated_next_usd": round(estimated, 6),
+                        "max_per_sweep_usd": cost_budget.max_cost_per_sweep_usd,
+                    },
+                )
+                budget_exceeded = True
+            elif cost_budget.would_exceed_daily(daily_cost, estimated):
+                log.warning(
+                    "Daily cost budget exceeded, skipping Slot B for "
+                    "remaining accounts",
+                    extra={
+                        "daily_cost_usd": round(daily_cost, 6),
+                        "estimated_next_usd": round(estimated, 6),
+                        "max_per_day_usd": cost_budget.max_cost_per_day_usd,
+                    },
+                )
+                budget_exceeded = True
+
+        current_writer: ReasonDraftWriter = (
+            FixtureReasonDraftWriter() if budget_exceeded else writer
+        )
+
         built = _work_item_for_account(
             data_plane,
             account,
@@ -126,10 +236,39 @@ def run_time_to_value_sweep(
             sweep_principal_id=sweep_principal_id,
             as_of=as_of,
             contacts=contacts,
-            reason_draft_writer=writer,
+            reason_draft_writer=current_writer,
+            quality_breaker=breaker_decision,
+            org_context=slot_b_org_context,
+            timing=timing,
+            snapshot_store=snapshot_store,
         )
         if built is not None:
+            if budget_exceeded:
+                budget_skipped += 1
+            if built.draft_mode == "template_fallback":
+                degraded_items += 1
             items.append(built)
+
+    sweep_elapsed_ms = (time.perf_counter() - sweep_start) * 1000.0
+    slot_b_avg = (
+        timing.slot_b_ms / timing.slot_b_calls
+        if timing.slot_b_calls > 0
+        else 0.0
+    )
+
+    log.info(
+        "sweep_timing",
+        extra={
+            "total_sweep_ms": round(sweep_elapsed_ms, 2),
+            "value_model_ms": round(timing.value_model_ms, 2),
+            "slot_b_total_ms": round(timing.slot_b_ms, 2),
+            "slot_b_avg_per_account_ms": round(slot_b_avg, 2),
+            "slot_b_call_count": timing.slot_b_calls,
+            "governance_ms": round(timing.governance_ms, 2),
+            "accounts_swept": len(swept_accounts),
+            "budget_skipped": budget_skipped,
+        },
+    )
 
     ordered = tuple(sorted(
         items,
@@ -148,7 +287,171 @@ def run_time_to_value_sweep(
             reverse=True,
         )),
         swept_accounts=swept_accounts,
+        degraded_items=degraded_items,
+        budget_skipped=budget_skipped,
+        quality_breaker=(
+            breaker_decision.to_dict()
+            if breaker_decision is not None
+            else None
+        ),
     )
+
+
+def build_reason_draft_request_for_account(
+    data_plane: CustomerDataPlane,
+    tenant_id: str,
+    account_id: str,
+    *,
+    as_of: str,
+    action: CSMActionType = "draft_customer_outreach",
+    evidence_source_ids: tuple[str, ...] | None = None,
+    contact_id: str | None = None,
+    org_context: dict | None = None,
+) -> ReasonDraftRequest | None:
+    """Reconstruct the Slot B request for a current fixture account.
+
+    This is used by the bounded revise path. It reuses the same deterministic
+    evidence and priority helpers as the sweep, then optionally narrows evidence
+    to the ids captured in the original proposal.
+    """
+
+    account = data_plane.crm.get_account(account_id)
+    if account is None:
+        return None
+
+    contacts = tuple(data_plane.crm.list_contacts(account.account_id))
+    inputs = _slot_b_inputs_for_account(
+        data_plane,
+        account,
+        as_of=as_of,
+        evidence_source_ids=evidence_source_ids,
+    )
+    if inputs is None:
+        return None
+
+    contact = _proposal_contact(contacts, contact_id)
+    customer_contact_allowed = action == "draft_customer_outreach" and contact is not None
+    if action == "draft_customer_outreach" and not customer_contact_allowed:
+        return None
+    disposition: Disposition = (
+        "propose_customer_action" if customer_contact_allowed else "internal_review"
+    )
+    return _slot_b_request(
+        tenant_id=tenant_id,
+        account=account,
+        disposition=disposition,
+        action=action,
+        customer_contact_allowed=customer_contact_allowed,
+        priority=inputs.priority,
+        evidence=inputs.evidence,
+        as_of=as_of,
+        contact=contact,
+        cases=inputs.cases,
+        org_context=(
+            org_context if org_context is not None else load_org_pack().slot_b_context()
+        ),
+    )
+
+
+def _slot_b_inputs_for_account(
+    data_plane: CustomerDataPlane,
+    account: CRMAccount,
+    *,
+    as_of: str,
+    evidence_source_ids: tuple[str, ...] | None = None,
+    snapshot_store: SnapshotStore | None = None,
+) -> _SlotBInputs | None:
+    company = data_plane.cs.get_company(account.account_id)
+    health = data_plane.cs.get_health_score(account.account_id)
+    adoption = data_plane.cs.get_adoption_summary(account.account_id)
+    if company is None or health is None or adoption is None:
+        return None
+
+    ctas = tuple(data_plane.cs.list_ctas(account.account_id, status="open"))
+    plans = tuple(data_plane.cs.list_success_plans(account.account_id))
+    cases = tuple(data_plane.crm.list_cases(account.account_id))
+    signals = tuple(data_plane.telemetry.list_usage_signals(account.account_id))
+    entitlements = tuple(data_plane.telemetry.list_entitlements(account.account_id))
+    signal_ids = {signal.signal_id for signal in signals}
+    milestones = tuple(data_plane.telemetry.list_ttv_milestones(account.account_id))
+    open_gaps = tuple(
+        milestone for milestone in milestones
+        if milestone.achieved_at is None and iso_date(milestone.expected_by) <= iso_date(as_of)
+    )
+    telemetry_backed_gaps = tuple(
+        milestone for milestone in open_gaps
+        if any(signal_id in signal_ids for signal_id in milestone.evidence_signal_ids)
+    )
+    overdue_plans = tuple(plan for plan in plans if iso_date(plan.target_date) <= iso_date(as_of))
+
+    evidence = _evidence_refs(
+        account.account_id,
+        as_of=as_of,
+        open_gaps=telemetry_backed_gaps,
+        signals=signals,
+        ctas=ctas,
+        plans=overdue_plans,
+        cases=cases,
+        health_observed_at=health.measured_at,
+    )
+    if evidence_source_ids is not None:
+        evidence = _filter_evidence_refs_by_source_id(evidence, evidence_source_ids)
+    if not evidence:
+        return None
+
+    model = build_customer_value_model(
+        account=account,
+        company=company,
+        health=health,
+        adoption=adoption,
+        entitlements=entitlements,
+        usage_signals=signals,
+        success_plans=plans,
+    )
+    trajectory = _trajectory_decline_evaluation(
+        snapshot_store,
+        account_id=account.account_id,
+        model=model,
+    )
+    priority = _priority(
+        model,
+        company=company,
+        health=health,
+        open_gaps=telemetry_backed_gaps,
+        overdue_plans=overdue_plans,
+        as_of=as_of,
+        trajectory_factor=trajectory.factor,
+    )
+    if priority.score <= 0:
+        return None
+    return _SlotBInputs(cases=cases, evidence=evidence, priority=priority)
+
+
+def _proposal_contact(
+    contacts: tuple[CRMContact, ...],
+    contact_id: str | None,
+) -> CRMContact | None:
+    if contact_id:
+        contact = next((item for item in contacts if item.contact_id == contact_id), None)
+        return contact if contact is not None and contact.consent_to_contact else None
+    return next((item for item in contacts if item.consent_to_contact), None)
+
+
+def _filter_evidence_refs_by_source_id(
+    evidence: tuple[EvidenceRef, ...],
+    source_ids: tuple[str, ...],
+) -> tuple[EvidenceRef, ...]:
+    refs_by_id: dict[str, EvidenceRef] = {}
+    for ref in evidence:
+        refs_by_id.setdefault(ref.source_id, ref)
+
+    filtered: list[EvidenceRef] = []
+    for source_id in source_ids:
+        ref = refs_by_id.get(source_id)
+        if ref is None:
+            return ()
+        filtered.append(ref)
+    return tuple(filtered)
 
 
 def unsafe_placeholder_sweep(
@@ -233,97 +536,75 @@ def _work_item_for_account(
     as_of: str,
     contacts: tuple[CRMContact, ...],
     reason_draft_writer: ReasonDraftWriter,
+    quality_breaker: QualityBreakerDecision | None = None,
+    org_context: dict | None = None,
+    timing: _SweepTimingAccum | None = None,
+    snapshot_store: SnapshotStore | None = None,
 ) -> CSMWorkItem | None:
-    company = data_plane.cs.get_company(account.account_id)
-    health = data_plane.cs.get_health_score(account.account_id)
-    adoption = data_plane.cs.get_adoption_summary(account.account_id)
-    if company is None or health is None or adoption is None:
-        return None
-
-    ctas = tuple(data_plane.cs.list_ctas(account.account_id, status="open"))
-    plans = tuple(data_plane.cs.list_success_plans(account.account_id))
-    cases = tuple(data_plane.crm.list_cases(account.account_id))
-    signals = tuple(data_plane.telemetry.list_usage_signals(account.account_id))
-    entitlements = tuple(data_plane.telemetry.list_entitlements(account.account_id))
-    signal_ids = {signal.signal_id for signal in signals}
-    milestones = tuple(data_plane.telemetry.list_ttv_milestones(account.account_id))
-    open_gaps = tuple(
-        milestone for milestone in milestones
-        if milestone.achieved_at is None and iso_date(milestone.expected_by) <= iso_date(as_of)
-    )
-    telemetry_backed_gaps = tuple(
-        milestone for milestone in open_gaps
-        if any(signal_id in signal_ids for signal_id in milestone.evidence_signal_ids)
-    )
-    overdue_plans = tuple(plan for plan in plans if iso_date(plan.target_date) <= iso_date(as_of))
-
-    evidence = _evidence_refs(
-        account.account_id,
+    value_start = time.perf_counter()
+    inputs = _slot_b_inputs_for_account(
+        data_plane,
+        account,
         as_of=as_of,
-        open_gaps=telemetry_backed_gaps,
-        signals=signals,
-        ctas=ctas,
-        plans=overdue_plans,
-        cases=cases,
-        health_observed_at=health.measured_at,
+        snapshot_store=snapshot_store,
     )
-    if not evidence:
-        return None
-
-    model = build_customer_value_model(
-        account=account,
-        company=company,
-        health=health,
-        adoption=adoption,
-        entitlements=entitlements,
-        usage_signals=signals,
-        success_plans=plans,
-    )
-    priority = _priority(
-        model,
-        company=company,
-        health=health,
-        open_gaps=telemetry_backed_gaps,
-        overdue_plans=overdue_plans,
-        as_of=as_of,
-    )
-    if priority.score <= 0:
+    if timing is not None:
+        timing.value_model_ms += (time.perf_counter() - value_start) * 1000.0
+    if inputs is None:
         return None
 
     contact = next((contact for contact in contacts if contact.consent_to_contact), None)
     customer_contact_allowed = contact is not None
+    customer_action_blocked = (
+        customer_contact_allowed
+        and quality_breaker is not None
+        and quality_breaker.triggered
+    )
     disposition: Disposition = (
-        "propose_customer_action" if customer_contact_allowed else "internal_review"
+        "propose_customer_action"
+        if customer_contact_allowed and not customer_action_blocked
+        else "internal_review"
     )
     action: CSMActionType = (
-        "draft_customer_outreach" if customer_contact_allowed else "recommend_next_best_action"
+        "draft_customer_outreach"
+        if customer_contact_allowed and not customer_action_blocked
+        else "recommend_next_best_action"
     )
     slot_b_request = _slot_b_request(
         tenant_id=tenant_id,
         account=account,
         disposition=disposition,
         action=action,
-        customer_contact_allowed=customer_contact_allowed,
-        priority=priority,
-        evidence=evidence,
+        customer_contact_allowed=customer_contact_allowed and not customer_action_blocked,
+        priority=inputs.priority,
+        evidence=inputs.evidence,
         as_of=as_of,
-        contact=contact,
-        cases=cases,
+        contact=contact if not customer_action_blocked else None,
+        cases=inputs.cases,
+        org_context=org_context,
     )
-    slot_b = reason_draft_writer.write(slot_b_request)
-    validate_reason_draft_output(slot_b_request, slot_b)
+    slot_start = time.perf_counter()
+    slot_b, draft_mode = _write_slot_b_with_fallback(slot_b_request, reason_draft_writer)
+    if timing is not None:
+        timing.slot_b_ms += (time.perf_counter() - slot_start) * 1000.0
+        timing.slot_b_calls += 1
+    if customer_action_blocked:
+        draft_mode = "template_fallback"
     proposal_ref = None
-    if customer_contact_allowed:
+    if customer_contact_allowed and not customer_action_blocked:
+        governance_start = time.perf_counter()
         proposal = _propose_outreach(
             gate,
             account=account,
             contact=contact,
             action=action,
             as_of=as_of,
-            evidence=evidence,
-            priority=priority,
+            evidence=inputs.evidence,
+            priority=inputs.priority,
             draft_body=slot_b.customer_draft,
         )
+        if timing is not None:
+            timing.governance_ms += (time.perf_counter() - governance_start) * 1000.0
         proposal_ref = _proposal_ref(proposal, action=action, principal_id=sweep_principal_id)
 
     return CSMWorkItem(
@@ -334,13 +615,28 @@ def _work_item_for_account(
         disposition=disposition,
         recommended_action=action,
         reason=slot_b.reason,
-        priority=priority,
-        evidence=evidence,
+        priority=inputs.priority,
+        evidence=inputs.evidence,
         customer_contact_allowed=customer_contact_allowed,
         proposal=proposal_ref,
         swept_at=as_of,
+        draft_mode=draft_mode,
         customer_draft=slot_b.customer_draft,
     )
+
+
+def _write_slot_b_with_fallback(
+    request: ReasonDraftRequest,
+    writer: ReasonDraftWriter,
+) -> tuple[ReasonDraftOutput, DraftMode]:
+    try:
+        output = writer.write(request)
+        validate_reason_draft_output(request, output)
+        mode: DraftMode = "fixture" if output.model_id == FIXTURE_SLOT_B_MODEL_ID else "live"
+        return output, mode
+    except (Exception, SlotBContractError):
+        fallback = FixtureReasonDraftWriter().write(request)
+        return fallback, "template_fallback"
 
 
 def _propose_outreach(
@@ -497,6 +793,7 @@ def _priority(
     open_gaps: tuple[TimeToValueMilestone, ...],
     overdue_plans: tuple,
     as_of: str,
+    trajectory_factor: PriorityFactor | None = None,
 ) -> Priority:
     projected = project_ttv_lens(
         model,
@@ -506,9 +803,62 @@ def _priority(
         overdue_success_plans=overdue_plans,
         as_of=as_of,
     )
+    factors = tuple(
+        factor for factor in projected.factors
+        if factor.contribution != 0
+    )
+    if trajectory_factor is not None and trajectory_factor.contribution != 0:
+        factors = (*factors, trajectory_factor)
     return Priority(
-        score=projected.score,
-        factors=tuple(factor for factor in projected.factors if factor.contribution != 0),
+        score=sum(factor.contribution for factor in factors),
+        factors=factors,
+    )
+
+
+def _trajectory_decline_evaluation(
+    snapshot_store: SnapshotStore | None,
+    *,
+    account_id: str,
+    model: CustomerValueModel,
+) -> TrajectoryFactorEvaluation:
+    if snapshot_store is None:
+        return TrajectoryFactorEvaluation(state="unknown", factor=None)
+
+    resolved = model.resolved_thresholds
+    window_days = resolved.thresholds.trend_window_days
+    trajectory = snapshot_store.build_trajectory(
+        account_id,
+        window_days=window_days,
+    )
+    if len(trajectory.points) < 2:
+        return TrajectoryFactorEvaluation(state="unknown", factor=None)
+
+    velocity = trajectory.trend_velocity
+    threshold = resolved.thresholds.decline_slope
+    if velocity >= threshold:
+        return TrajectoryFactorEvaluation(state="known", factor=None)
+
+    evidence = tuple(
+        EvidenceRef(
+            "cs_platform",
+            account_id,
+            f"snapshot_day_{point.day}_health_score",
+            f"day:{point.day}",
+        )
+        for point in trajectory.points
+    )
+    return TrajectoryFactorEvaluation(
+        state="known",
+        factor=PriorityFactor(
+            name="trajectory_decline",
+            value=velocity,
+            contribution=12,
+            evidence=evidence,
+            config_version=resolved.config_version,
+            rule_name=resolved.rule_name,
+            threshold_name="decline_slope",
+            threshold_value=threshold,
+        ),
     )
 
 
@@ -524,6 +874,7 @@ def _slot_b_request(
     as_of: str,
     contact: CRMContact | None,
     cases: tuple,
+    org_context: dict | None = None,
 ) -> ReasonDraftRequest:
     return ReasonDraftRequest(
         tenant_id=tenant_id,
@@ -555,6 +906,7 @@ def _slot_b_request(
             for case in cases
             if getattr(case, "subject", "")
         ),
+        org_context=org_context,
     )
 
 

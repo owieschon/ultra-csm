@@ -1,0 +1,250 @@
+{
+  "artifact": "product_telemetry_simulated_onboarding",
+  "claim_boundary": {
+    "live": false,
+    "live_tenant_proven": false,
+    "sim": true,
+    "uses_live_credentials": false
+  },
+  "confirmation_fixture": {
+    "confirmed_keys": [],
+    "path": "eval/product_telemetry_simulated_confirmations.json"
+  },
+  "credential_boundary": {
+    "live_credentials_used": false,
+    "live_tenant_proof": false,
+    "missing_credentials_state": "shape_verified_pending_live_creds",
+    "missing_env": [
+      "OTEL_EXPORTER_OTLP_ENDPOINT"
+    ],
+    "requests_without_credentials": 0,
+    "simulated_credentials_used": true,
+    "transport": "FakeTelemetryClient"
+  },
+  "discovery": {
+    "explorer_connected_flag_is_not_live_proof": true,
+    "explorer_state_on_fake_transport": "live_schema_verified",
+    "objects": [
+      {
+        "fields": [
+          "service.name",
+          "ultra_csm.tenant.id",
+          "ultra_csm.account.id",
+          "ultra_csm.capability",
+          "ultra_csm.metric.name",
+          "ultra_csm.grain",
+          "ultra_csm.source.ref"
+        ],
+        "name": "OTelRequiredAttributes"
+      },
+      {
+        "fields": [
+          "daily_active_assets",
+          "person_active_days"
+        ],
+        "name": "OTelMetricCatalog"
+      }
+    ],
+    "ok": true,
+    "request_urls": [
+      "https://ultra-csm-simulated-collector.internal/v1/metrics",
+      "https://ultra-csm-simulated-collector.internal/catalog/metrics"
+    ],
+    "requests_on_fake_transport": 2,
+    "sample_counts": {
+      "otlp_endpoint_reachable": 0,
+      "telemetry_catalog": 2
+    },
+    "schema_hash": "sha256:ba1e56505778853d56f897df59f3abde0477c8ad0adda8873777abc78366bf60",
+    "source_steps": [
+      "otlp_endpoint_reachable",
+      "telemetry_catalog"
+    ]
+  },
+  "fixture_payload": {
+    "catalog_metrics_available": 2,
+    "catalog_url": "https://ultra-csm-simulated-collector.internal/catalog/metrics",
+    "otlp_endpoint": "https://ultra-csm-simulated-collector.internal/v1/metrics"
+  },
+  "frozen_source_map": {
+    "config_hash": "sha256:9939906884b38268d08ffaf1acb7433e15db6977a7bc0761275f20360509b666",
+    "connector_id": "product_telemetry",
+    "mappings": [
+      {
+        "confidence": 0.95,
+        "connector_id": "product_telemetry",
+        "contract": "Entitlement",
+        "internal_field": "account_id",
+        "llm_allowed": false,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "identity_join",
+        "source_field": "ultra_csm.account.id",
+        "source_object": "OTelRequiredAttributes",
+        "source_path": "resource_or_datapoint.attributes.ultra_csm.account.id",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "confidence": 0.95,
+        "connector_id": "product_telemetry",
+        "contract": "Entitlement",
+        "internal_field": "capability",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "context",
+        "source_field": "ultra_csm.capability",
+        "source_object": "OTelRequiredAttributes",
+        "source_path": "resource_or_datapoint.attributes.ultra_csm.capability",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "confidence": 0.95,
+        "connector_id": "product_telemetry",
+        "contract": "UsageSignal",
+        "internal_field": "account_id",
+        "llm_allowed": false,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "identity_join",
+        "source_field": "ultra_csm.account.id",
+        "source_object": "OTelRequiredAttributes",
+        "source_path": "resource_or_datapoint.attributes.ultra_csm.account.id",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "confidence": 0.95,
+        "connector_id": "product_telemetry",
+        "contract": "UsageSignal",
+        "internal_field": "grain",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "context",
+        "source_field": "ultra_csm.grain",
+        "source_object": "OTelRequiredAttributes",
+        "source_path": "resource_or_datapoint.attributes.ultra_csm.grain",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "confidence": 0.95,
+        "connector_id": "product_telemetry",
+        "contract": "UsageSignal",
+        "internal_field": "metric_name",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "context",
+        "source_field": "ultra_csm.metric.name",
+        "source_object": "OTelRequiredAttributes",
+        "source_path": "resource_or_datapoint.attributes.ultra_csm.metric.name",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "confidence": 0.95,
+        "connector_id": "product_telemetry",
+        "contract": "UsageSignal",
+        "internal_field": "source_ref",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "context",
+        "source_field": "ultra_csm.source.ref",
+        "source_object": "OTelRequiredAttributes",
+        "source_path": "resource_or_datapoint.attributes.ultra_csm.source.ref",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      }
+    ],
+    "proposal_hash": "sha256:52847d92dc71daa5043424e32bab4b1b355d85f218fe4440a1296dd3a6b39d12",
+    "schema_hash": "sha256:ba1e56505778853d56f897df59f3abde0477c8ad0adda8873777abc78366bf60",
+    "unknown_fields": [
+      "Entitlement.ends_at",
+      "Entitlement.entitled_quantity",
+      "Entitlement.starts_at",
+      "Entitlement.unit",
+      "UsageSignal.observed_at",
+      "UsageSignal.signal_id",
+      "UsageSignal.subject_id",
+      "UsageSignal.unit",
+      "UsageSignal.value"
+    ]
+  },
+  "generated_by": "eval.product_telemetry_simulated_onboarding",
+  "mapping_proposal": {
+    "ambiguous_keys": [],
+    "coverage": {
+      "ambiguous_confirm": 0,
+      "mapped": 6,
+      "missing_to_unknown": 9,
+      "total": 15
+    },
+    "missing_to_unknown_keys": [
+      "Entitlement.ends_at",
+      "Entitlement.entitled_quantity",
+      "Entitlement.starts_at",
+      "Entitlement.unit",
+      "UsageSignal.observed_at",
+      "UsageSignal.signal_id",
+      "UsageSignal.subject_id",
+      "UsageSignal.unit",
+      "UsageSignal.value"
+    ],
+    "proposal_hash": "sha256:52847d92dc71daa5043424e32bab4b1b355d85f218fe4440a1296dd3a6b39d12",
+    "required_operator_actions": [
+      "review 9 missing fields; affected rails remain unknown"
+    ],
+    "schema_hash": "sha256:ba1e56505778853d56f897df59f3abde0477c8ad0adda8873777abc78366bf60"
+  },
+  "measurement_scope": "OTel required-attribute discovery, optional metric-catalog discovery, source-map proposal, deterministic confirmation, freeze, and readiness artifact over synthetic data and fake transport.",
+  "readiness": {
+    "connected": false,
+    "connector_id": "product_telemetry",
+    "evidence": [
+      "synthetic_customer_book",
+      "fake_telemetry_client",
+      "telemetry_explorer_parser",
+      "frozen_source_map_config"
+    ],
+    "mode": "fixture",
+    "rails_degraded": [
+      "Entitlement",
+      "UsageSignal"
+    ],
+    "required_operator_actions": [
+      "connect a live OTLP endpoint before any live readiness claim",
+      "resource-attribute discovery resolves identity/join fields (account, grain, metric name, source ref); per-datapoint value fields (value, unit, observed_at) live in the OTLP metric payload itself and require a live sample capture, not just attribute introspection, to map"
+    ],
+    "state": "fixture_verified"
+  },
+  "readiness_report": {
+    "degraded_rails": [
+      "Entitlement",
+      "UsageSignal"
+    ],
+    "required_operator_actions": [
+      "connect a live OTLP endpoint before any live readiness claim",
+      "resource-attribute discovery resolves identity/join fields (account, grain, metric name, source ref); per-datapoint value fields (value, unit, observed_at) live in the OTLP metric payload itself and require a live sample capture, not just attribute introspection, to map"
+    ],
+    "sources": {
+      "product_telemetry": "fixture_verified"
+    }
+  },
+  "source_book": {
+    "accounts": 35,
+    "entitlements": 86,
+    "source": "src/ultra_csm/data_plane/synthetic_book.py",
+    "usage_signals": 34
+  }
+}

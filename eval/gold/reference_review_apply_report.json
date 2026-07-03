@@ -1,0 +1,28 @@
+{
+  "applied_counts": {
+    "clean:account_specificity": 20,
+    "clean:grounding_fidelity": 41,
+    "clean:tone_fit": 32,
+    "hard:account_specificity": 29,
+    "hard:grounding_fidelity": 4,
+    "hard:tone_fit": 25
+  },
+  "approved_labeler": "owner-approved-single-labeler-2026-07-02",
+  "artifact": "slot_b_iteration3_reference_apply_report",
+  "bucket_counts": {
+    "definition_ambiguity": 10,
+    "judge_error": 34,
+    "reference_stale": 107
+  },
+  "changed_cells": 117,
+  "claim_boundary": {
+    "judge_prompt_changed": false,
+    "mechanical_transfer": true,
+    "single_labeler": true
+  },
+  "clean_path": "/Users/owieschon/dev/ultra-csm/eval/gold/slot_b_quality.jsonl",
+  "hard_key_path": "/Users/owieschon/dev/ultra-csm/eval/gold/slot_b_quality_hard_key.jsonl",
+  "review_path": "/Users/owieschon/dev/ultra-csm/eval/gold/reference_review_iteration3.json",
+  "total_cells": 151,
+  "unchanged_cells": 34
+}

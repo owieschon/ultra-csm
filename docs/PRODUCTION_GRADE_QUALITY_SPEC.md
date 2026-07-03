@@ -1,8 +1,8 @@
 # Production-Grade Agent Quality — Spec + Dispatch
 
-Status: the bar and the path to it. Blinded gold-set candidates and explorer mapping are
-built; human labels, validated judge, org-knowledge, live vertical, and operations gates
-remain open. "Production-grade agent quality, full stop."
+Status: the bar and the path to it. Blinded gold-set candidates, explorer mapping, and the
+demo org-knowledge pack/wiring are built; human labels, validated judge, live vertical,
+and operations gates remain open. "Production-grade agent quality, full stop."
 Date: 2026-06-28.
 
 ## What "production-grade agent quality" actually means
@@ -27,9 +27,10 @@ grounding active** (voice + product value-props + terminology). A stated number,
 **Now:** judge math + ladder mechanics built but **seeded** (`live_semantic_quality_proven:
 false`); the 63-record gold label queue exists and is blinded at
 `eval/gold/slot_b_quality.jsonl`, with the held-out key at
-`eval/gold/slot_b_quality_key.jsonl`; human labels are not filled in; **no org-knowledge
-wired** (Slot B output is boilerplate); live judge never run on real output. -> This is the
-gap that most defines "quality" and it's open.
+`eval/gold/slot_b_quality_key.jsonl`; the clean layer has 63/63 owner-approved
+single-labeler labels; Slot B prompt v2 now receives the demo org-knowledge pack, but judge
+validation, judge-scored ablation, and the live semantic quality run have not been captured.
+-> This is the gap that most defines "quality" and it's open.
 
 ### P2 — Robustness: good under real, messy, adversarial input
 **Gate:** passes the adversarial battery (injection, cross-tenant — already green) **and** a
@@ -100,9 +101,10 @@ config/eval-lane only), and ships with a machine-readable `claim_boundary`.
 2. Validate the judge (weighted Cohen κ >= 0.6/dim, report the 95% CI), + the category
    cross-check (blind labels must separate `control_good` from the intended failure
    categories); gate ships only if both clear.
-3. **Build + wire the org-knowledge pack into Slot B** (`agent_wikis/ttv-accelerator/`:
-   voice, product value-props, terminology, gap→play) so output is *good*, with the
-   authority-invariance + citation evals from the architecture doc.
+3. **Build + wire the org-knowledge pack into Slot B** (`knowledge/org_pack.json`: voice,
+   product value-props, terminology, gap→play) so output is better. Built for the demo pack
+   with authority-invariance and hostile-pack checks; the judge-scored ablation remains
+   open.
 4. Swap the quality-regression's seeded labels for **real judge scores on real Slot B
    output** across the ladder. Report the live quality pass-rate. -> flips
    `live_semantic_quality_proven` to true.
@@ -155,7 +157,8 @@ and has not cleared — the same discipline that has kept every claim in this re
 ## Owner inputs (the only true blockers)
 1. **Gold-set labels** (P1) — the judge cannot validate itself.
 2. **Live credentials + a candidate model id** (P3/P4/P5-migration).
-3. **Config/knowledge content** (P1 org-knowledge, P3 SLO targets, consent/channel policy).
+3. **Config/knowledge content** (P1 org-knowledge voice sign-off, P3 SLO targets,
+   consent/channel policy).
 Everything else is buildable to *ready* now.
 
 Current label commands:

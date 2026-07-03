@@ -430,9 +430,14 @@ def _outcome_rail(
             None,
             None,
         ),)
+    realized_state: OutcomeState = (
+        "known"
+        if any(plan.status in {"realized", "achieved", "complete"} for plan in success_plans)
+        else "not_instrumented"
+    )
     return OutcomeRail(
         stated_objectives=objectives,
-        realized_state="not_instrumented",
+        realized_state=realized_state,
         factors=factors,
     )
 

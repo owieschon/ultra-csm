@@ -23,7 +23,7 @@ def test_regression_baseline_contains_exact_spine_and_seeded_distribution():
     baseline = build_baseline()
 
     assert baseline["artifact"] == "csm_regression_baseline"
-    assert baseline["scorecard_score"] == {"passed": 23, "total": 23}
+    assert baseline["scorecard_score"] == {"passed": 24, "total": 24}
     assert len(baseline["deterministic_spine"]["work_items"]) == 5
     assert len(baseline["deterministic_spine"]["escalations"]) == 1
     assert baseline["distributional_fixture"]["minimum_point_estimate"] == 0.78

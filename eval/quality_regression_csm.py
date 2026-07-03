@@ -23,6 +23,7 @@ from eval.judge_csm import (
     build_slot_b_quality_candidates,
     labels_from_scores,
 )
+from eval.judge_validation import judge_validation_status
 from eval.stochastic_csm import wilson_pass_rate_band
 from ultra_csm.agent1.slot_b import (
     ReasonDraftOutput,
@@ -128,6 +129,7 @@ def build_quality_regression_report(
     ]
 
     hard_failures = _hard_failures(rungs)
+    judge_validation = judge_validation_status()
     artifact = {
         "artifact": "csm_quality_regression_offline",
         "schema_version": SCHEMA_VERSION,
@@ -147,11 +149,14 @@ def build_quality_regression_report(
         ),
         "claim_boundary": {
             "offline_quality_mechanics_built": True,
-            "human_validated_judge": False,
+            "human_validated_judge": judge_validation["validated"],
+            "judge_validation_method": judge_validation["method"],
             "live_semantic_quality_proven": False,
             "runtime_behavior_changed": False,
             "next_gate": (
-                "Label the Slot B gold set, validate judge agreement at kappa >= "
+                "Prove live semantic quality on real tenant output."
+                if judge_validation["validated"]
+                else "Label the Slot B gold set, validate judge agreement at kappa >= "
                 "0.6 per dimension, then run the live quality lane."
             ),
         },

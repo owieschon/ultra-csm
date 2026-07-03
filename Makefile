@@ -2,11 +2,17 @@ PYTHON := .venv/bin/python
 
 # One-time reviewer setup. Requires Python 3.10+ and local PostgreSQL 16 tooling
 # (`initdb`/`pg_ctl`) available on PATH or through the platform package.
-.PHONY: setup eval lint scorecard-csm csm-work-queue demo clean outcome-simulation-csm stochastic-csm regression-csm regression-csm-live quality-regression-csm quality-gold-csm quality-gold-label-csm quality-gold-status-csm quality-gold-validate-csm quality-gold-hard-csm quality-gold-hard-label-csm quality-gold-hard-status-csm quality-gold-hard-validate-csm judge-agreement-csm hygiene
+.PHONY: setup eval lint scorecard-csm csm-work-queue demo-loop year-in-life-csm tick-demo-csm mcp-readonly-demo-csm slot-a-scorecard-csm autonomy-report-csm attio-simulated-onboarding-csm gainsight-simulated-onboarding-csm product-telemetry-simulated-onboarding-csm demo clean outcome-simulation-csm stochastic-csm regression-csm regression-csm-live oversight-report quality-regression-csm quality-gold-csm quality-gold-label-csm quality-gold-status-csm quality-gold-validate-csm quality-gold-hard-csm quality-gold-hard-label-csm quality-gold-hard-status-csm quality-gold-hard-validate-csm judge-agreement-csm judge-diagnosis-csm judge-reference-review-csm judge-reference-recheck-csm judge-reference-apply-csm status hygiene serve mcp
 setup:
 	python3 -m venv .venv
 	$(PYTHON) -m pip install --upgrade pip
-	$(PYTHON) -m pip install -e ".[dev]"
+	$(PYTHON) -m pip install -e ".[dev,api,mcp]"
+
+serve:
+	PYTHONPATH=src:. $(PYTHON) -m uvicorn ultra_csm.api:app --host 0.0.0.0 --port 8000 --reload
+
+mcp:
+	PYTHONPATH=src:. $(PYTHON) -m ultra_csm.mcp_server
 
 eval:
 	$(PYTHON) -m pytest tests/ -q
@@ -18,6 +24,33 @@ scorecard-csm:
 	PYTHONPATH=src:. $(PYTHON) -m eval.scorecard_csm
 
 csm-work-queue: scorecard-csm
+
+demo-loop:
+	PYTHONPATH=src:. $(PYTHON) -m eval.demo_loop_csm
+
+year-in-life-csm:
+	PYTHONPATH=src:. $(PYTHON) -m eval.year_in_life_digest --live
+
+tick-demo-csm:
+	PYTHONPATH=src:. $(PYTHON) -m ultra_csm.tick --demo
+
+mcp-readonly-demo-csm:
+	PYTHONPATH=src:. ULTRA_CSM_MCP_READONLY=1 $(PYTHON) -m eval.mcp_readonly_demo
+
+slot-a-scorecard-csm:
+	PYTHONPATH=src:. $(PYTHON) -m eval.slot_a_scorecard
+
+autonomy-report-csm:
+	PYTHONPATH=src:. $(PYTHON) -m eval.autonomy_report
+
+attio-simulated-onboarding-csm:
+	PYTHONPATH=src:. $(PYTHON) -m eval.attio_simulated_onboarding
+
+gainsight-simulated-onboarding-csm:
+	PYTHONPATH=src:. $(PYTHON) -m eval.gainsight_simulated_onboarding
+
+product-telemetry-simulated-onboarding-csm:
+	PYTHONPATH=src:. $(PYTHON) -m eval.product_telemetry_simulated_onboarding
 
 outcome-simulation-csm:
 	PYTHONPATH=src:. $(PYTHON) -m eval.outcome_simulation_csm
@@ -63,9 +96,28 @@ quality-gold-hard-validate-csm:
 judge-agreement-csm:
 	PYTHONPATH=src:. $(PYTHON) -m eval.run_quality_judge $${MODEL:+--model $${MODEL}}
 
+judge-diagnosis-csm:
+	PYTHONPATH=src:. $(PYTHON) -m eval.diagnose_judge $${MODEL:+--model $${MODEL}}
+
+judge-reference-review-csm:
+	PYTHONPATH=src:. $(PYTHON) -m eval.reference_review
+
+judge-reference-recheck-csm:
+	PYTHONPATH=src:. $(PYTHON) -m eval.reference_recheck
+
+judge-reference-apply-csm:
+	PYTHONPATH=src:. $(PYTHON) -m eval.apply_reference_review
+
 # Credential-gated live regression lane. Not a CI gate.
 regression-csm-live:
 	PYTHONPATH=src:. $(PYTHON) -m eval.regression_csm --live --runs $${RUNS:-30}
+
+status:
+	PYTHONPATH=src:. $(PYTHON) scripts/render_status.py
+	PYTHONPATH=src:. $(PYTHON) scripts/render_status.py --check
+
+oversight-report:
+	PYTHONPATH=src:. $(PYTHON) scripts/oversight_report.py
 
 hygiene:
 	$(PYTHON) scripts/hygiene_scan.py
@@ -76,3 +128,10 @@ clean:
 demo:
 	$(MAKE) scorecard-csm
 	$(MAKE) regression-csm
+	$(MAKE) slot-a-scorecard-csm
+	$(MAKE) autonomy-report-csm
+	$(MAKE) attio-simulated-onboarding-csm
+	$(MAKE) gainsight-simulated-onboarding-csm
+	$(MAKE) product-telemetry-simulated-onboarding-csm
+	$(MAKE) mcp-readonly-demo-csm
+	$(MAKE) oversight-report

@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "pack_version": "org-pack-ttv-demo-v1",
+  "fictional": true,
+  "product_name": "FleetOps Platform",
+  "terminology": {
+    "activation": "the customer reaches the first stable week of data-backed operations",
+    "asset": "a vehicle or tracked field unit",
+    "capability": "a product workflow the customer purchased and can adopt",
+    "play": "a recommended CSM motion, not a commitment or approval"
+  },
+  "voice_rules": [
+    "Professional, direct, and specific.",
+    "Name the operational blocker before asking for time.",
+    "Use plain language; avoid hype, discounts, pressure, or escalation language.",
+    "Ask for a concrete working session with the right customer owner."
+  ],
+  "value_props": [
+    {
+      "id": "activation_visibility",
+      "name": "Operational visibility",
+      "summary": "Bring purchased assets online so the customer can see adoption gaps early."
+    },
+    {
+      "id": "workflow_adoption",
+      "name": "Workflow adoption",
+      "summary": "Move teams from purchased capability to repeatable day-to-day use."
+    },
+    {
+      "id": "owner_alignment",
+      "name": "Owner alignment",
+      "summary": "Make the next operational owner and blocker explicit before the timeline slips."
+    }
+  ],
+  "gap_plays": [
+    {
+      "factor": "milestones_overdue",
+      "play": "review the overdue activation milestones and assign owners",
+      "customer_ask": "review the overdue activation steps and agree on owners"
+    },
+    {
+      "factor": "low_seat_penetration",
+      "play": "identify which buyer, admin, or operator role is missing from the value loop",
+      "customer_ask": "map the missing users needed for a complete rollout"
+    },
+    {
+      "factor": "feature_shallow_depth",
+      "play": "choose one purchased capability and unblock the next adoption step",
+      "customer_ask": "pick the next workflow to activate and remove the blocker"
+    },
+    {
+      "factor": "outcome_unknown",
+      "play": "confirm the stated success objective and how the customer will measure it",
+      "customer_ask": "confirm the success metric we should use for this rollout"
+    },
+    {
+      "factor": "health_red",
+      "play": "separate the operational activation blocker from broader account health",
+      "customer_ask": "review the blocker behind the red health signal"
+    },
+    {
+      "factor": "health_yellow",
+      "play": "verify whether the risk is trending toward a timeline slip",
+      "customer_ask": "check whether the current adoption gap is putting launch timing at risk"
+    }
+  ]
+}

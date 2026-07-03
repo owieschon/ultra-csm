@@ -6,7 +6,7 @@ Per-agent priority factors are **projections** of the model defined here.
 ## Where we are now (built + verified)
 
 - Deterministic sweep spine: identity resolve → evidence → gap detect → **priority** →
-  disposition → gated proposal → `SweepResult`. CSM scorecard **23/23 hard_ok**.
+  disposition → gated proposal → `SweepResult`. CSM scorecard hard gates are green.
 - **Slot B** (reason/draft): fixture-scored + optional live Anthropic adapter; contract
   validator at the boundary; red-path falsifiers.
 - **Two-lane regression (447d7a4 + live capture):** `regression-csm` (offline,

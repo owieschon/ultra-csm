@@ -4,12 +4,21 @@ from __future__ import annotations
 
 import json
 
+import pytest
+
 from ultra_csm.cli import main
-from ultra_csm.data_plane.explorer import run_explorer
+from ultra_csm.data_plane.explorer import (
+    DiscoveredField,
+    DiscoveredObject,
+    SchemaSnapshot,
+    run_explorer,
+)
 from ultra_csm.data_plane.live_smoke import HttpRequest, HttpResponse
 from ultra_csm.data_plane.source_mapping import (
     MappingConfirmation,
     freeze_confirmed_source_map,
+    load_frozen_source_map_config,
+    propose_source_mapping,
 )
 
 
@@ -333,6 +342,61 @@ def test_connector_explore_cli_dry_run_lists_requests(monkeypatch, capsys):
     assert "would request: https://api.attio.com/v2/objects" in captured.out
 
 
+def test_connector_confirm_cli_writes_valid_frozen_config(tmp_path, capsys):
+    result = _gainsight_company_result()
+    proposal_path = tmp_path / "proposal.json"
+    confirmations_path = tmp_path / "confirmations.json"
+    output_path = tmp_path / "gainsight-source-map.json"
+    proposal_path.write_text(
+        json.dumps(result.mapping_proposal.to_dict()),
+        encoding="utf-8",
+    )
+    confirmations_path.write_text(
+        json.dumps({
+            "confirmations": {
+                "CSCompany.current_score": {
+                    "contract": "CSCompany",
+                    "internal_field": "current_score",
+                    "source_object": "Company",
+                    "source_field": "CurrentScore",
+                    "source_path": "CurrentScore",
+                    "semantic_role": "health_signal",
+                    "value_direction": "higher_is_better",
+                },
+                "__tenant_custom__.health_direction": {
+                    "contract": "__tenant_custom__",
+                    "internal_field": "health_direction",
+                    "source_object": "Company",
+                    "source_field": "Health Direction",
+                    "source_path": "Health Direction",
+                    "semantic_role": "health_signal",
+                    "value_direction": "higher_is_better",
+                },
+            }
+        }),
+        encoding="utf-8",
+    )
+
+    code = main([
+        "connectors",
+        "confirm",
+        str(proposal_path),
+        str(confirmations_path),
+        "--output",
+        str(output_path),
+        "--json",
+    ])
+
+    captured = capsys.readouterr()
+    payload = json.loads(captured.out)
+    loaded = load_frozen_source_map_config(output_path)
+
+    assert code == 0
+    assert payload["connector_id"] == "gainsight_cs"
+    assert payload["config_hash"] == loaded.config_hash
+    assert loaded.config_hash.startswith("sha256:")
+
+
 def test_freeze_confirmed_source_map_rejects_unconfirmed_semantic_mapping():
     result = _gainsight_company_result()
     proposal = result.mapping_proposal
@@ -376,8 +440,135 @@ def test_freeze_confirmed_source_map_rejects_unconfirmed_semantic_mapping():
     } == {"CSCompany.current_score"}
 
 
+def test_value_direction_fields_require_explicit_confirmation(tmp_path):
+    proposal = propose_source_mapping(
+        SchemaSnapshot(
+            connector_id="rocketlane_onboarding",
+            schema_hash="sha256:test",
+            objects=(
+                DiscoveredObject(
+                    name="Task",
+                    label="Task",
+                    fields=(
+                        _field("projectId"),
+                        _field("taskName"),
+                        _field("dueDate"),
+                        _field("completedAt"),
+                        _field("taskId"),
+                    ),
+                ),
+            ),
+            sample_counts={},
+            source_steps=("tasks_sample",),
+        )
+    )
+    entries = _entries_by_key(proposal)
+
+    assert entries["TimeToValueMilestone.expected_by"].state == "ambiguous_confirm"
+    assert entries["TimeToValueMilestone.expected_by"].value_direction == "lower_is_better"
+
+    with pytest.raises(ValueError, match="requires explicit value direction"):
+        freeze_confirmed_source_map(
+            proposal,
+            confirmations={
+                "TimeToValueMilestone.expected_by": MappingConfirmation(
+                    contract="TimeToValueMilestone",
+                    internal_field="expected_by",
+                    source_object="Task",
+                    source_field="dueDate",
+                    source_path="dueDate",
+                    semantic_role="time_boundary",
+                ),
+                "TimeToValueMilestone.achieved_at": MappingConfirmation(
+                    contract="TimeToValueMilestone",
+                    internal_field="achieved_at",
+                    source_object="Task",
+                    source_field="completedAt",
+                    source_path="completedAt",
+                    semantic_role="time_boundary",
+                    value_direction="lower_is_better",
+                ),
+            },
+        )
+
+    config = freeze_confirmed_source_map(
+        proposal,
+        confirmations={
+            "TimeToValueMilestone.expected_by": MappingConfirmation(
+                contract="TimeToValueMilestone",
+                internal_field="expected_by",
+                source_object="Task",
+                source_field="dueDate",
+                source_path="dueDate",
+                semantic_role="time_boundary",
+                value_direction="lower_is_better",
+            ),
+            "TimeToValueMilestone.achieved_at": MappingConfirmation(
+                contract="TimeToValueMilestone",
+                internal_field="achieved_at",
+                source_object="Task",
+                source_field="completedAt",
+                source_path="completedAt",
+                semantic_role="time_boundary",
+                value_direction="lower_is_better",
+            ),
+        },
+    )
+    path = tmp_path / "rocketlane-source-map.json"
+    path.write_text(json.dumps(config.to_dict()), encoding="utf-8")
+
+    loaded = load_frozen_source_map_config(path)
+
+    assert loaded.config_hash == config.config_hash
+
+
+def test_frozen_source_map_loader_rejects_unconfirmed_mapping(tmp_path):
+    result = _gainsight_company_result()
+    config = freeze_confirmed_source_map(
+        result.mapping_proposal,
+        confirmations={
+            "CSCompany.current_score": MappingConfirmation(
+                contract="CSCompany",
+                internal_field="current_score",
+                source_object="Company",
+                source_field="CurrentScore",
+                source_path="CurrentScore",
+                semantic_role="health_signal",
+                value_direction="higher_is_better",
+            ),
+            "__tenant_custom__.health_direction": MappingConfirmation(
+                contract="__tenant_custom__",
+                internal_field="health_direction",
+                source_object="Company",
+                source_field="Health Direction",
+                source_path="Health Direction",
+                semantic_role="health_signal",
+                value_direction="higher_is_better",
+            ),
+        },
+    )
+    payload = config.to_dict()
+    payload["mappings"][0]["state"] = "ambiguous_confirm"
+    payload["mappings"][0]["requires_human_confirmation"] = True
+    path = tmp_path / "tampered-source-map.json"
+    path.write_text(json.dumps(payload), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="not confirmed for runtime use"):
+        load_frozen_source_map_config(path)
+
+
 def _entries_by_key(proposal):
     return {entry.key: entry for entry in proposal.entries}
+
+
+def _field(name):
+    return DiscoveredField(
+        name=name,
+        field_type="string",
+        required=False,
+        custom=False,
+        source_path=name,
+    )
 
 
 def _gainsight_company_result():

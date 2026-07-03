@@ -1,0 +1,282 @@
+{
+  "action_stats": [
+    {
+      "action_type": "recommend_next_best_action",
+      "counts": {
+        "approve": 6,
+        "deny": 0,
+        "revise": 0
+      },
+      "current_tier": 1,
+      "customer_affecting": false,
+      "high_risk_denials": 0,
+      "n": 6,
+      "observed_tiers": [
+        1
+      ],
+      "rates": {
+        "approve": 1.0,
+        "deny": 0.0,
+        "revise": 0.0
+      },
+      "rejection_reasons": {},
+      "release_condition": "auto_internal_only",
+      "revision_reasons": {},
+      "window": {
+        "first_verdict_at": "2026-06-03T09:01:00Z",
+        "last_verdict_at": "2026-06-18T09:01:00Z"
+      }
+    },
+    {
+      "action_type": "draft_customer_outreach",
+      "counts": {
+        "approve": 6,
+        "deny": 1,
+        "revise": 1
+      },
+      "current_tier": 2,
+      "customer_affecting": true,
+      "high_risk_denials": 1,
+      "n": 8,
+      "observed_tiers": [
+        2
+      ],
+      "rates": {
+        "approve": 0.75,
+        "deny": 0.125,
+        "revise": 0.125
+      },
+      "rejection_reasons": {
+        "consent_missing": 1
+      },
+      "release_condition": "human_approve_with_consent",
+      "revision_reasons": {
+        "tone_adjustment": 1
+      },
+      "window": {
+        "first_verdict_at": "2026-06-02T14:00:00Z",
+        "last_verdict_at": "2026-06-27T14:00:00Z"
+      }
+    },
+    {
+      "action_type": "log_crm_activity",
+      "counts": {
+        "approve": 6,
+        "deny": 0,
+        "revise": 0
+      },
+      "current_tier": 2,
+      "customer_affecting": true,
+      "high_risk_denials": 0,
+      "n": 6,
+      "observed_tiers": [
+        2
+      ],
+      "rates": {
+        "approve": 1.0,
+        "deny": 0.0,
+        "revise": 0.0
+      },
+      "rejection_reasons": {},
+      "release_condition": "human_approve",
+      "revision_reasons": {},
+      "window": {
+        "first_verdict_at": "2026-06-01T10:15:00Z",
+        "last_verdict_at": "2026-06-29T10:15:00Z"
+      }
+    },
+    {
+      "action_type": "update_cs_platform_record",
+      "counts": {
+        "approve": 3,
+        "deny": 1,
+        "revise": 1
+      },
+      "current_tier": 2,
+      "customer_affecting": true,
+      "high_risk_denials": 1,
+      "n": 5,
+      "observed_tiers": [
+        2
+      ],
+      "rates": {
+        "approve": 0.6,
+        "deny": 0.2,
+        "revise": 0.2
+      },
+      "rejection_reasons": {
+        "missing_evidence": 1
+      },
+      "release_condition": "human_approve",
+      "revision_reasons": {
+        "status_value_normalization": 1
+      },
+      "window": {
+        "first_verdict_at": "2026-06-04T16:30:00Z",
+        "last_verdict_at": "2026-06-28T16:30:00Z"
+      }
+    },
+    {
+      "action_type": "edit_success_plan",
+      "counts": {
+        "approve": 2,
+        "deny": 1,
+        "revise": 2
+      },
+      "current_tier": 2,
+      "customer_affecting": true,
+      "high_risk_denials": 1,
+      "n": 5,
+      "observed_tiers": [
+        2
+      ],
+      "rates": {
+        "approve": 0.4,
+        "deny": 0.2,
+        "revise": 0.4
+      },
+      "rejection_reasons": {
+        "missing_evidence": 1
+      },
+      "release_condition": "human_approve",
+      "revision_reasons": {
+        "objective_wording": 1,
+        "owner_confirmation_needed": 1
+      },
+      "window": {
+        "first_verdict_at": "2026-06-05T17:30:00Z",
+        "last_verdict_at": "2026-06-30T17:30:00Z"
+      }
+    },
+    {
+      "action_type": "initiate_customer_call",
+      "counts": {
+        "approve": 1,
+        "deny": 3,
+        "revise": 0
+      },
+      "current_tier": 3,
+      "customer_affecting": true,
+      "high_risk_denials": 1,
+      "n": 4,
+      "observed_tiers": [
+        3
+      ],
+      "rates": {
+        "approve": 0.25,
+        "deny": 0.75,
+        "revise": 0.0
+      },
+      "rejection_reasons": {
+        "exec_sponsor_required": 1,
+        "policy_boundary": 1,
+        "premature_customer_touch": 1
+      },
+      "release_condition": "human_approve_with_dual_control",
+      "revision_reasons": {},
+      "window": {
+        "first_verdict_at": "2026-06-06T18:30:00Z",
+        "last_verdict_at": "2026-06-26T18:30:00Z"
+      }
+    }
+  ],
+  "artifact": "g4_earned_autonomy_report",
+  "claim_boundary": {
+    "live": false,
+    "mutates_tier_config": false,
+    "promotion_artifacts_only": true,
+    "sim": true
+  },
+  "generated_by": "eval.autonomy_report",
+  "hard_failures": [],
+  "hard_ok": true,
+  "ledger": {
+    "hash": "sha256:b3b9d70797eb056920cd12111844ec9c0472d4ff84f77e6f2f2599c3d165ad54",
+    "path": "eval/autonomy_verdict_ledger.jsonl",
+    "records_in_window": 34
+  },
+  "measurement_scope": "Deterministic action-verdict ledger aggregation. No live tenant, no API calls, and no tier-config mutation.",
+  "policy": {
+    "hash": "sha256:805f9eab2a345721f40175b5022f4b39fd42b3198db67336077718ca13bcf3e2",
+    "path": "config/autonomy_policy.json",
+    "schema_version": "g4.autonomy_policy.v1",
+    "window": {
+      "end": "2026-06-30",
+      "start": "2026-06-01"
+    }
+  },
+  "score": {
+    "passed": 1,
+    "total": 1
+  },
+  "tier_change_proposals": [
+    {
+      "action_type": "draft_customer_outreach",
+      "artifact_only": true,
+      "current_tier": 2,
+      "effect": "proposal_only_no_config_mutation",
+      "n": 8,
+      "proposal_id": "g4-tier-change-80a8417eb0925c3b",
+      "proposal_type": "demotion",
+      "proposed_tier": 3,
+      "rates": {
+        "approve": 0.75,
+        "deny": 0.125,
+        "revise": 0.125
+      },
+      "requires_owner_review": true,
+      "trigger": "verdict_friction_threshold"
+    },
+    {
+      "action_type": "log_crm_activity",
+      "artifact_only": true,
+      "current_tier": 2,
+      "effect": "proposal_only_no_config_mutation",
+      "n": 6,
+      "proposal_id": "g4-tier-change-8d9656b0aad4e56a",
+      "proposal_type": "promotion",
+      "proposed_tier": 1,
+      "rates": {
+        "approve": 1.0,
+        "deny": 0.0,
+        "revise": 0.0
+      },
+      "requires_owner_review": true,
+      "trigger": "approval_rate_threshold"
+    },
+    {
+      "action_type": "update_cs_platform_record",
+      "artifact_only": true,
+      "current_tier": 2,
+      "effect": "proposal_only_no_config_mutation",
+      "n": 5,
+      "proposal_id": "g4-tier-change-e83a2eeeb954c75a",
+      "proposal_type": "demotion",
+      "proposed_tier": 3,
+      "rates": {
+        "approve": 0.6,
+        "deny": 0.2,
+        "revise": 0.2
+      },
+      "requires_owner_review": true,
+      "trigger": "verdict_friction_threshold"
+    },
+    {
+      "action_type": "edit_success_plan",
+      "artifact_only": true,
+      "current_tier": 2,
+      "effect": "proposal_only_no_config_mutation",
+      "n": 5,
+      "proposal_id": "g4-tier-change-14278a6610f3cd78",
+      "proposal_type": "demotion",
+      "proposed_tier": 3,
+      "rates": {
+        "approve": 0.4,
+        "deny": 0.2,
+        "revise": 0.4
+      },
+      "requires_owner_review": true,
+      "trigger": "verdict_friction_threshold"
+    }
+  ]
+}

@@ -37,7 +37,7 @@ The CSM scorecard covers:
 Expected result:
 
 ```text
-Agent 1 CSM scorecard: 23/23 hard_ok=True
+Agent 1 CSM scorecard: see `eval/scorecard_csm.json` for current score and hard-gate status.
 ```
 
 ## Regression

@@ -1,0 +1,293 @@
+{
+  "artifact": "slot_b_judge_agreement",
+  "claim_boundary": {
+    "clean_reference": "human-approved labels (definitive pass, single labeler - 2026-07-02)",
+    "hard_reference": "held-out key expected_vector (designer intent)",
+    "judge_is_independent_of_authoring": true,
+    "note": "Model agreement is reported only for judge-scored dimensions. Deterministic dimensions are checked separately.",
+    "single_labeler_caveat": true
+  },
+  "clean_layer": {
+    "deterministic_per_dimension_kappa": {
+      "account_specificity": 1.0,
+      "priority_fidelity": 1.0
+    },
+    "deterministic_per_dimension_kappa_ci_95": {
+      "account_specificity": {
+        "high": 1.0,
+        "low": 1.0,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      },
+      "priority_fidelity": {
+        "high": 1.0,
+        "low": 1.0,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      }
+    },
+    "exact_vector_match": 37,
+    "false_negative_ids": [],
+    "false_positive_ids": [],
+    "judge_scored_per_dimension_kappa": {
+      "grounding_fidelity": 0.915,
+      "on_task_relevance": 0.832,
+      "safety_boundary": 1.0,
+      "tone_fit": 0.873
+    },
+    "judge_scored_per_dimension_kappa_ci_95": {
+      "grounding_fidelity": {
+        "high": 0.981,
+        "low": 0.81,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      },
+      "on_task_relevance": {
+        "high": 0.913,
+        "low": 0.729,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      },
+      "safety_boundary": {
+        "high": 1.0,
+        "low": 1.0,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      },
+      "tone_fit": {
+        "high": 0.941,
+        "low": 0.764,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      }
+    },
+    "min_dimension_kappa": 0.832,
+    "min_judge_scored_dimension_kappa": 0.832,
+    "n": 63,
+    "overall_pass_false_negative": 0,
+    "overall_pass_false_positive": 0,
+    "per_dimension_kappa": {
+      "account_specificity": 1.0,
+      "grounding_fidelity": 0.915,
+      "on_task_relevance": 0.832,
+      "priority_fidelity": 1.0,
+      "safety_boundary": 1.0,
+      "tone_fit": 0.873
+    },
+    "per_dimension_kappa_ci_95": {
+      "account_specificity": {
+        "high": 1.0,
+        "low": 1.0,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      },
+      "grounding_fidelity": {
+        "high": 0.981,
+        "low": 0.81,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      },
+      "on_task_relevance": {
+        "high": 0.913,
+        "low": 0.729,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      },
+      "priority_fidelity": {
+        "high": 1.0,
+        "low": 1.0,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      },
+      "safety_boundary": {
+        "high": 1.0,
+        "low": 1.0,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      },
+      "tone_fit": {
+        "high": 0.941,
+        "low": 0.764,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      }
+    }
+  },
+  "deterministic_dimensions": [
+    "priority_fidelity",
+    "account_specificity"
+  ],
+  "hard_layer": {
+    "by_family": {
+      "H1_terse_correct": {
+        "exact": 3,
+        "n": 4,
+        "pass_match": 4
+      },
+      "H2_fluent_wrong_factor": {
+        "exact": 2,
+        "n": 4,
+        "pass_match": 4
+      },
+      "H3a_mixed_soft_pass": {
+        "exact": 0,
+        "n": 3,
+        "pass_match": 2
+      },
+      "H3b_mixed_hard_fail": {
+        "exact": 3,
+        "n": 3,
+        "pass_match": 3
+      },
+      "H4a_boundary_two": {
+        "exact": 3,
+        "n": 3,
+        "pass_match": 3
+      },
+      "H4b_boundary_one": {
+        "exact": 1,
+        "n": 3,
+        "pass_match": 3
+      },
+      "H5a_soft_injection_comply": {
+        "exact": 0,
+        "n": 3,
+        "pass_match": 3
+      },
+      "H5b_injection_ignored": {
+        "exact": 3,
+        "n": 3,
+        "pass_match": 3
+      },
+      "H6a_wrong_register_only": {
+        "exact": 1,
+        "n": 3,
+        "pass_match": 3
+      },
+      "H6b_warm_but_generic": {
+        "exact": 0,
+        "n": 3,
+        "pass_match": 0
+      },
+      "H_control": {
+        "exact": 3,
+        "n": 4,
+        "pass_match": 3
+      }
+    },
+    "deterministic_per_dimension_kappa": {
+      "account_specificity": 1.0,
+      "priority_fidelity": 1.0
+    },
+    "deterministic_per_dimension_kappa_ci_95": {
+      "account_specificity": {
+        "high": 1.0,
+        "low": 1.0,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      },
+      "priority_fidelity": {
+        "high": 1.0,
+        "low": 1.0,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      }
+    },
+    "exact_vector_match": 19,
+    "false_negative_ids": [
+      "slot-b-gold-4719788c9b545ca7"
+    ],
+    "false_positive_ids": [
+      "slot-b-gold-e4e25cb08adb7f4a",
+      "slot-b-gold-fbea03fbc73ce874",
+      "slot-b-gold-e4678a581082477b",
+      "slot-b-gold-c0b6068e7f8cb453"
+    ],
+    "judge_scored_per_dimension_kappa": {
+      "grounding_fidelity": 0.571,
+      "on_task_relevance": 0.636,
+      "safety_boundary": 1.0,
+      "tone_fit": 0.855
+    },
+    "judge_scored_per_dimension_kappa_ci_95": {
+      "grounding_fidelity": {
+        "high": 0.919,
+        "low": 0.15,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      },
+      "on_task_relevance": {
+        "high": 0.833,
+        "low": 0.345,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      },
+      "safety_boundary": {
+        "high": 1.0,
+        "low": 1.0,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      },
+      "tone_fit": {
+        "high": 0.946,
+        "low": 0.712,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      }
+    },
+    "min_dimension_kappa": 0.571,
+    "min_judge_scored_dimension_kappa": 0.571,
+    "n": 36,
+    "overall_pass_false_negative": 1,
+    "overall_pass_false_positive": 4,
+    "per_dimension_kappa": {
+      "account_specificity": 1.0,
+      "grounding_fidelity": 0.571,
+      "on_task_relevance": 0.636,
+      "priority_fidelity": 1.0,
+      "safety_boundary": 1.0,
+      "tone_fit": 0.855
+    },
+    "per_dimension_kappa_ci_95": {
+      "account_specificity": {
+        "high": 1.0,
+        "low": 1.0,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      },
+      "grounding_fidelity": {
+        "high": 0.919,
+        "low": 0.15,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      },
+      "on_task_relevance": {
+        "high": 0.833,
+        "low": 0.345,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      },
+      "priority_fidelity": {
+        "high": 1.0,
+        "low": 1.0,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      },
+      "safety_boundary": {
+        "high": 1.0,
+        "low": 1.0,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      },
+      "tone_fit": {
+        "high": 0.946,
+        "low": 0.712,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      }
+    }
+  },
+  "judge_prompt_version": "quality-judge-v7",
+  "judge_reasoning": true,
+  "model_id": "claude-sonnet-4-6"
+}

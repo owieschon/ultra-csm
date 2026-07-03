@@ -68,6 +68,9 @@ class CRMContact:
     role: str | None
     title: str | None
     consent_to_contact: bool
+    # Optional org-chart hierarchy position
+    # (1=C-suite, 2=VP, 3=Director, 4=Manager, 5=IC).
+    org_level: int | None = None
 
 
 @dataclass(frozen=True)
@@ -210,6 +213,97 @@ class TimeToValueMilestone:
     expected_by: str
     achieved_at: str | None
     evidence_signal_ids: tuple[str, ...]
+
+
+# ---------------------------------------------------------------------------
+# Extended contract types — reserved for live connector integration.
+# Simulation deferred; these types define the schema for future data sources
+# that the value model and agent lenses will consume.
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class CommunicationSignal:
+    """A single communication event between CSM and customer contact.
+
+    Reserved for live connector integration — simulation deferred.
+    """
+
+    signal_id: str
+    account_id: str
+    contact_id: str
+    channel: Literal["email", "call", "meeting"]
+    direction: Literal["inbound", "outbound"]
+    timestamp: str
+    response_time_hours: float | None = None  # for email
+    attendees: tuple[str, ...] = ()  # for meetings
+
+
+@dataclass(frozen=True)
+class StakeholderRelationship:
+    """Relationship graph node between account and a contact.
+
+    Reserved for live connector integration — simulation deferred.
+    """
+
+    account_id: str
+    contact_id: str
+    relationship_type: Literal[
+        "champion", "executive_sponsor", "technical_lead", "end_user", "admin"
+    ]
+    strength: Literal["strong", "moderate", "weak"]
+    last_interaction: str
+    multi_thread_depth: int
+    # Optional relationship graph edge: who knows whom, or who introduced whom.
+    related_contact_id: str | None = None
+
+
+@dataclass(frozen=True)
+class SurveyResponse:
+    """A survey response (NPS, CSAT, or custom) from a contact.
+
+    Reserved for live connector integration — simulation deferred.
+    """
+
+    survey_id: str
+    account_id: str
+    contact_id: str
+    survey_type: Literal["NPS", "CSAT", "custom"]
+    score: float
+    comment: str | None
+    timestamp: str
+
+
+@dataclass(frozen=True)
+class BillingEvent:
+    """A billing-related event for an account.
+
+    Reserved for live connector integration — simulation deferred.
+    """
+
+    event_id: str
+    account_id: str
+    event_type: Literal["invoice", "payment", "failure", "consumption_alert"]
+    amount_cents: int
+    timestamp: str
+    details: str | None = None
+
+
+@dataclass(frozen=True)
+class OnboardingTask:
+    """A single onboarding task tracked during implementation.
+
+    Reserved for live connector integration — simulation deferred.
+    """
+
+    task_id: str
+    account_id: str
+    task_name: str
+    owner_type: Literal["vendor", "customer"]
+    status: Literal["pending", "in_progress", "blocked", "completed"]
+    due_date: str
+    completed_date: str | None = None
+    blocker_description: str | None = None
 
 
 def resolve_candidates(account_ids: list[str]) -> AccountResolution:
