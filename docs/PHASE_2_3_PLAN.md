@@ -187,3 +187,27 @@ Any temptation to special-case a source name in core ingest code; any
 auto-confirmation across shape classes; any write touching factory records;
 property battery invariant weakened to pass; transform enum growing past what
 a real corpus demanded.
+
+## Amendment (2026-07-03): friction-first reordering
+
+Decision, applied after 2A-2D landed: the ideal path to user outcomes is
+friction-first — a user should get from "connected" to "briefing on my book"
+with only the questions that are genuinely theirs to answer, no scripts, no
+config authoring. Ordering for the remainder of the program:
+
+1. **Auto-map provenance tiers (DONE with this amendment).** Tier A: a
+   source-declared reference auto-maps a CHILD contract's account_id foreign
+   key (and never the account contract's own identity — a reference field is
+   by definition a child's FK; promoting it would let a child table mint
+   shadow accounts). Tier B: an exact standard-field alias with compatible
+   value shape and ≥80% coverage auto-maps non-identity fields, the same bar
+   the native connectors use for deterministic standard-field matches.
+   Identity picks and value-direction calls always stay human. Measured on
+   the real corpus B book: 29 confirmation questions → 5, all five genuinely
+   human (4 identity picks, 1 value direction).
+2. **MCP exposure of the relational flow** (ingest_table/confirm_book) so
+   onboarding happens conversationally in a Claude session — no driver
+   scripts. Then a committed end-to-end conversational onboarding transcript.
+3. **2E/3 as planned**, run through the same auto-mapped path users will
+   actually hit, so the robustness battery tests the product surface rather
+   than an internal API nobody will call directly.

@@ -184,9 +184,25 @@ def _assert_case(
 ) -> list[str]:
     checks: dict[str, Callable[[], bool]] = {
         "truncated_payload": lambda: result.coverage.count_mismatch,
+        # Auto-map policy (the friction fix): exact standard-alias fields with
+        # compatible value shapes auto-map, so mapped > 0 here is expected. The
+        # invariants that must still hold: IDENTITY fields never auto-map
+        # without a source-declared reference, and every auto-mapped entry
+        # carries the explicit auto-mapped reason (no silent fuzzy matches).
         "paraphrased_keys": lambda: (
-            proposal.coverage["mapped"] == 0
-            and proposal.coverage["ambiguous_confirm"] >= 4
+            all(
+                entry.state == "ambiguous_confirm"
+                for entry in proposal.entries
+                if entry.internal_field.endswith("_id")
+                and entry.contract != "__tenant_custom__"
+                and entry.state != "missing_to_unknown"
+            )
+            and all(
+                entry.reason.startswith("auto-mapped:")
+                for entry in proposal.entries
+                if entry.state == "mapped"
+            )
+            and proposal.coverage["mapped"] >= 1
             and result.coverage.records_typed["CRMAccount"] == 1
         ),
         "duplicated_rows": lambda: bool(result.coverage.duplicate_identities),
