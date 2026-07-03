@@ -25,12 +25,11 @@ docs/LIVE_INTEGRATION_FINDINGS.md-adjacent hygiene conventions.
 
 from __future__ import annotations
 
-from datetime import date, datetime, timedelta, timezone
+from datetime import datetime
 
 from ultra_csm.data_plane.contracts import CommunicationSignal, CRMCase, StakeholderRelationship
-from ultra_csm.data_plane.data_simulator import CaseLifecycle, simulate_data
 from ultra_csm.data_plane.fixtures import account_id_for, det_id
-from ultra_csm.data_plane.synthetic_book import build_synthetic_book
+from ultra_csm.data_plane.narrative_shared import cases_as_of, rfc3339 as _rfc3339
 
 PINEHILL_ACCOUNT_ID = account_id_for("pinehill-transport")
 PINEHILL_CHAMPION_CONTACT_ID = det_id(
@@ -38,19 +37,6 @@ PINEHILL_CHAMPION_CONTACT_ID = det_id(
 )
 _CSM_EMAIL = "csm102@fleetops-platform.example"
 _CHAMPION_EMAIL = "dennis.gruber@pinehill-transport.example"
-
-_SEED = date(2026, 6, 21)
-
-
-def _iso_date(day_offset: int) -> str:
-    return (_SEED + timedelta(days=day_offset)).isoformat()
-
-
-def _rfc3339(day_offset: int, hour: int = 9, minute: int = 0) -> str:
-    dt = datetime(2026, 6, 21, tzinfo=timezone.utc) + timedelta(
-        days=day_offset, hours=hour - 9, minutes=minute
-    )
-    return dt.strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 # ---------------------------------------------------------------------------
@@ -268,54 +254,15 @@ def pinehill_calendar_events(as_of_day: int) -> dict:
 
 
 # ---------------------------------------------------------------------------
-# CRMCase adapter -- the ``_CASE_SCHEDULE`` day-0/30/80 integration cases
-# already exist in data_simulator.py's deep-simulation layer as
-# ``CaseLifecycle`` rows; ``simulate_book()``'s own ``.cases`` field only
-# carries one static baseline case (no day-keyed mutation type for cases).
-# This adapts the existing, already-causal ``CaseLifecycle`` schedule into
-# the ``CRMCase`` contract shape a sweep/briefing actually reads, rather
-# than authoring a second, competing case timeline.
+# CRMCase adapter -- see narrative_shared.cases_as_of for why this reuses
+# the existing ``_CASE_SCHEDULE`` timeline instead of authoring a second,
+# competing case schedule.
 # ---------------------------------------------------------------------------
-
-_BASE_BOOK = None
-
-
-def _base_book():
-    global _BASE_BOOK
-    if _BASE_BOOK is None:
-        _BASE_BOOK = build_synthetic_book()
-    return _BASE_BOOK
-
-
-def _case_lifecycle_to_crmcase(cl: CaseLifecycle) -> CRMCase:
-    created_at = _rfc3339(cl.open_day)
-    closed_at = None
-    if cl.resolution_day is not None:
-        closed_at = _rfc3339(cl.resolution_day)
-    return CRMCase(
-        case_id=cl.case_id,
-        account_id=cl.account_id,
-        status=cl.status,
-        priority=cl.priority,
-        origin="Email",
-        subject=cl.subject,
-        created_at=created_at,
-        closed_at=closed_at,
-    )
 
 
 def pinehill_cases_as_of(as_of_day: int) -> list[CRMCase]:
     """Pinehill's three legacy-dispatch-integration cases (day 0/30/80,
     ``_CASE_SCHEDULE`` in data_simulator.py), as ``CRMCase`` rows visible as
-    of *as_of_day* -- a case not yet opened on that day is not returned; a
-    case opened but not yet resolved has ``closed_at=None``, never a
-    fabricated close date.
-    """
+    of *as_of_day*."""
 
-    bundle = simulate_data(_base_book(), as_of_day)
-    account = bundle.accounts[PINEHILL_ACCOUNT_ID]
-    return [
-        _case_lifecycle_to_crmcase(cl)
-        for cl in account.cases
-        if cl.open_day <= as_of_day
-    ]
+    return cases_as_of(PINEHILL_ACCOUNT_ID, as_of_day)
