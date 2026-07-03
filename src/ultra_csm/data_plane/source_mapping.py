@@ -76,13 +76,21 @@ class ProposedFieldMapping:
     pii: str
     llm_allowed: bool
     candidate_evidence: tuple[MappingCandidateEvidence, ...] = ()
+    # A declared value transform applied at ingest time, from a closed enum
+    # (see VALUE_TRANSFORMS). "none" is the identity; it is omitted from the
+    # serialized form so configs without a transform hash byte-identically to
+    # pre-2C configs.
+    transform: str = "none"
 
     @property
     def key(self) -> str:
         return f"{self.contract}.{self.internal_field}"
 
     def to_dict(self) -> dict:
-        return asdict(self)
+        data = asdict(self)
+        if data.get("transform") == "none":
+            data.pop("transform", None)
+        return data
 
 
 @dataclass(frozen=True)
@@ -115,6 +123,20 @@ class MappingConfirmation:
     semantic_role: str | None = None
     value_direction: ValueDirection = "not_applicable"
     verdict: MappingVerdict = "mapped"
+    # None => inherit the internal field's default transform (see
+    # DEFAULT_FIELD_TRANSFORMS). A string overrides it, from VALUE_TRANSFORMS.
+    transform: str | None = None
+
+
+# The closed set of declared value transforms. Growth requires a design
+# conversation, not a config edit -- an unknown transform fails validation.
+VALUE_TRANSFORMS = ("none", "currency_to_cents")
+
+# Transform a contract's internal field carries by default because the field's
+# semantics require it (an amount stored as integer cents). Declared once, in
+# one place, rather than hardcoded in the ingest path -- so it is visible and
+# auditable in the frozen config.
+DEFAULT_FIELD_TRANSFORMS = {"amount_cents": "currency_to_cents"}
 
 
 @dataclass(frozen=True)
@@ -248,6 +270,8 @@ def validate_frozen_source_map_config(config: FrozenSourceMapConfig) -> None:
             raise ValueError(f"{mapping.key} still has unresolved value direction")
         if not mapping.source_object or not mapping.source_field or not mapping.source_path:
             raise ValueError(f"{mapping.key} is missing source coordinates")
+        if mapping.transform not in VALUE_TRANSFORMS:
+            raise ValueError(f"{mapping.key} has unknown transform {mapping.transform!r}")
     expected = _frozen_config_hash(
         config.proposal_hash,
         list(config.mappings),
@@ -494,7 +518,19 @@ def _confirmed(
         pii=entry.pii,
         llm_allowed=entry.llm_allowed,
         candidate_evidence=entry.candidate_evidence,
+        transform=_resolved_transform(entry.internal_field, confirmation.transform),
     )
+
+
+def _resolved_transform(internal_field: str, override: str | None) -> str:
+    transform = override if override is not None else DEFAULT_FIELD_TRANSFORMS.get(
+        internal_field, "none"
+    )
+    if transform not in VALUE_TRANSFORMS:
+        raise ValueError(
+            f"unknown transform {transform!r}; allowed: {', '.join(VALUE_TRANSFORMS)}"
+        )
+    return transform
 
 
 def _confirmed_value_direction(
@@ -688,6 +724,7 @@ def _field_mapping_from_payload(payload: object) -> ProposedFieldMapping:
         pii=_required_str(payload, "pii"),  # type: ignore[arg-type]
         llm_allowed=bool(payload.get("llm_allowed")),
         candidate_evidence=tuple(_candidate_from_payload(item) for item in candidates),
+        transform=str(payload.get("transform", "none")),
     )
 
 
@@ -713,6 +750,7 @@ def _confirmation_from_payload(payload: object) -> MappingConfirmation:
         semantic_role=semantic_role,
         value_direction=_value_direction_from_payload(payload, default="not_applicable"),
         verdict=verdict,
+        transform=_optional_str(payload, "transform"),
     )
 
 
