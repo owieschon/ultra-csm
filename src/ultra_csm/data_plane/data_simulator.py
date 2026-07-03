@@ -570,6 +570,18 @@ _CASE_SCHEDULE: list[tuple[str, int, str, str, str, int | None, float | None]] =
     # Prairie Wind — expansion signal case
     ("prairie-wind",         340, "New operations team needs onboarding access",
      "Low", "access_request", 10, 4.5),
+
+    # --- Synthetic Universe Bible: red herring A (Cedar Valley) ---
+    # Routine renewal paperwork, not a risk signal, despite landing inside
+    # the account's day 5-30 usage wobble.
+    ("cedar-valley",         8,  "Requesting updated MSA redline for renewal paperwork",
+     "Low", "renewal_admin", 25, 4.5),
+
+    # --- Synthetic Universe Bible: red herring B (Ironridge Fleet) ---
+    # Subject/priority alone pattern-match a real integration failure; it
+    # resolves in two days with no other signal ever moving.
+    ("ironridge-fleet",      40, "Integration webhook returning 500 errors intermittently",
+     "High", "integration", 2, 5.0),
 ]
 
 
