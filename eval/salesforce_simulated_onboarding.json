@@ -346,13 +346,14 @@
     "row_cap": 200
   },
   "frozen_source_map": {
-    "config_hash": "sha256:ffc502ac1af1b4fc3ff995d0cfcc1773de068ddc1412f2ce1ec6a4b957d7261e",
+    "config_hash": "sha256:25ff0d9e0e624d5f81d8e4ef5941138de5816e0bad31074de528a0b7bb36b5fb",
     "connector_id": "salesforce_crm",
     "mappings": [
       {
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -360,7 +361,8 @@
             "rows_sampled": 0,
             "source_field": "Id",
             "source_object": "Account",
-            "source_path": "Id"
+            "source_path": "Id",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -382,6 +384,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -389,7 +392,8 @@
             "rows_sampled": 0,
             "source_field": "Name",
             "source_object": "Account",
-            "source_path": "Name"
+            "source_path": "Name",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -411,6 +415,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -418,7 +423,8 @@
             "rows_sampled": 0,
             "source_field": "OwnerId",
             "source_object": "Account",
-            "source_path": "OwnerId"
+            "source_path": "OwnerId",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -440,6 +446,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -447,7 +454,8 @@
             "rows_sampled": 0,
             "source_field": "Industry",
             "source_object": "Account",
-            "source_path": "Industry"
+            "source_path": "Industry",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -469,6 +477,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -476,7 +485,8 @@
             "rows_sampled": 0,
             "source_field": "Id",
             "source_object": "Contact",
-            "source_path": "Id"
+            "source_path": "Id",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -498,6 +508,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -505,7 +516,8 @@
             "rows_sampled": 0,
             "source_field": "AccountId",
             "source_object": "Contact",
-            "source_path": "AccountId"
+            "source_path": "AccountId",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -527,6 +539,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -534,7 +547,8 @@
             "rows_sampled": 0,
             "source_field": "Email",
             "source_object": "Contact",
-            "source_path": "Email"
+            "source_path": "Email",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -556,6 +570,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -563,7 +578,8 @@
             "rows_sampled": 0,
             "source_field": "Name",
             "source_object": "Contact",
-            "source_path": "Name"
+            "source_path": "Name",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -585,6 +601,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -592,7 +609,8 @@
             "rows_sampled": 0,
             "source_field": "Title",
             "source_object": "Contact",
-            "source_path": "Title"
+            "source_path": "Title",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -614,6 +632,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.58,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "custom or tenant-specific field requires confirmation",
             "rows_nonempty": 0,
@@ -621,7 +640,8 @@
             "rows_sampled": 0,
             "source_field": "Role__c",
             "source_object": "Contact",
-            "source_path": "Role__c"
+            "source_path": "Role__c",
+            "value_shape": ""
           }
         ],
         "confidence": 1.0,
@@ -643,6 +663,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.58,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "custom or tenant-specific field requires confirmation",
             "rows_nonempty": 0,
@@ -650,7 +671,8 @@
             "rows_sampled": 0,
             "source_field": "Consent_To_Contact__c",
             "source_object": "Contact",
-            "source_path": "Consent_To_Contact__c"
+            "source_path": "Consent_To_Contact__c",
+            "value_shape": ""
           }
         ],
         "confidence": 1.0,
@@ -672,6 +694,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.58,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "custom or tenant-specific field requires confirmation",
             "rows_nonempty": 0,
@@ -679,7 +702,8 @@
             "rows_sampled": 0,
             "source_field": "Org_Level__c",
             "source_object": "Contact",
-            "source_path": "Org_Level__c"
+            "source_path": "Org_Level__c",
+            "value_shape": ""
           }
         ],
         "confidence": 1.0,
@@ -701,6 +725,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -708,7 +733,8 @@
             "rows_sampled": 0,
             "source_field": "Id",
             "source_object": "Case",
-            "source_path": "Id"
+            "source_path": "Id",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -730,6 +756,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -737,7 +764,8 @@
             "rows_sampled": 0,
             "source_field": "AccountId",
             "source_object": "Case",
-            "source_path": "AccountId"
+            "source_path": "AccountId",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -759,6 +787,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.91,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "value direction affects scoring and requires confirmation",
             "rows_nonempty": 0,
@@ -766,7 +795,8 @@
             "rows_sampled": 0,
             "source_field": "Status",
             "source_object": "Case",
-            "source_path": "Status"
+            "source_path": "Status",
+            "value_shape": ""
           }
         ],
         "confidence": 1.0,
@@ -788,6 +818,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.91,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "value direction affects scoring and requires confirmation",
             "rows_nonempty": 0,
@@ -795,7 +826,8 @@
             "rows_sampled": 0,
             "source_field": "Priority",
             "source_object": "Case",
-            "source_path": "Priority"
+            "source_path": "Priority",
+            "value_shape": ""
           }
         ],
         "confidence": 1.0,
@@ -817,6 +849,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -824,7 +857,8 @@
             "rows_sampled": 0,
             "source_field": "Origin",
             "source_object": "Case",
-            "source_path": "Origin"
+            "source_path": "Origin",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -846,6 +880,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -853,7 +888,8 @@
             "rows_sampled": 0,
             "source_field": "Subject",
             "source_object": "Case",
-            "source_path": "Subject"
+            "source_path": "Subject",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -875,6 +911,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -882,7 +919,8 @@
             "rows_sampled": 0,
             "source_field": "CreatedDate",
             "source_object": "Case",
-            "source_path": "CreatedDate"
+            "source_path": "CreatedDate",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -904,6 +942,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -911,7 +950,8 @@
             "rows_sampled": 0,
             "source_field": "ClosedDate",
             "source_object": "Case",
-            "source_path": "ClosedDate"
+            "source_path": "ClosedDate",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -933,6 +973,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -940,7 +981,8 @@
             "rows_sampled": 0,
             "source_field": "Id",
             "source_object": "Opportunity",
-            "source_path": "Id"
+            "source_path": "Id",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -962,6 +1004,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -969,7 +1012,8 @@
             "rows_sampled": 0,
             "source_field": "AccountId",
             "source_object": "Opportunity",
-            "source_path": "AccountId"
+            "source_path": "AccountId",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -991,6 +1035,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.91,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "value direction affects scoring and requires confirmation",
             "rows_nonempty": 0,
@@ -998,7 +1043,8 @@
             "rows_sampled": 0,
             "source_field": "StageName",
             "source_object": "Opportunity",
-            "source_path": "StageName"
+            "source_path": "StageName",
+            "value_shape": ""
           }
         ],
         "confidence": 1.0,
@@ -1020,6 +1066,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -1027,7 +1074,8 @@
             "rows_sampled": 0,
             "source_field": "Amount",
             "source_object": "Opportunity",
-            "source_path": "Amount"
+            "source_path": "Amount",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -1049,6 +1097,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -1056,7 +1105,8 @@
             "rows_sampled": 0,
             "source_field": "CloseDate",
             "source_object": "Opportunity",
-            "source_path": "CloseDate"
+            "source_path": "CloseDate",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -1078,6 +1128,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -1085,7 +1136,8 @@
             "rows_sampled": 0,
             "source_field": "Type",
             "source_object": "Opportunity",
-            "source_path": "Type"
+            "source_path": "Type",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -1107,6 +1159,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -1114,7 +1167,8 @@
             "rows_sampled": 0,
             "source_field": "Id",
             "source_object": "Task",
-            "source_path": "Id"
+            "source_path": "Id",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -1136,6 +1190,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -1143,7 +1198,8 @@
             "rows_sampled": 0,
             "source_field": "WhatId",
             "source_object": "Task",
-            "source_path": "WhatId"
+            "source_path": "WhatId",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -1165,6 +1221,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -1172,7 +1229,8 @@
             "rows_sampled": 0,
             "source_field": "Description",
             "source_object": "Task",
-            "source_path": "Description"
+            "source_path": "Description",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -1194,6 +1252,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -1201,7 +1260,8 @@
             "rows_sampled": 0,
             "source_field": "ActivityDate",
             "source_object": "Task",
-            "source_path": "ActivityDate"
+            "source_path": "ActivityDate",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -1220,7 +1280,7 @@
         "value_direction": "not_applicable"
       }
     ],
-    "proposal_hash": "sha256:a55fae8e2f089b294697c17caf76fb51361e5edcda3aff963971e10bfd7767cb",
+    "proposal_hash": "sha256:a7973bb9f4ecaf50bec0a6e2752d09ad15e42e6cc09f65a5d7f570017d7168e0",
     "schema_hash": "sha256:7b486ad29d8257b1daca00253ca3c52ea47080f34e92aae1bef321dc0190180c",
     "unknown_fields": [
       "CRMActivity.channel",
@@ -1249,7 +1309,7 @@
       "CRMActivity.direction",
       "CRMActivity.idempotency_key"
     ],
-    "proposal_hash": "sha256:a55fae8e2f089b294697c17caf76fb51361e5edcda3aff963971e10bfd7767cb",
+    "proposal_hash": "sha256:a7973bb9f4ecaf50bec0a6e2752d09ad15e42e6cc09f65a5d7f570017d7168e0",
     "required_operator_actions": [
       "confirm 6 semantic/value mappings",
       "review 3 missing fields; affected rails remain unknown"

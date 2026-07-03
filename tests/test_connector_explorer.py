@@ -640,3 +640,25 @@ def _gainsight_company_result():
         },
         client=client,
     )
+
+
+def test_salesforce_describe_captures_reference_relationship_metadata():
+    # The describe API declares foreign keys (referenceTo). The parser must keep
+    # them so downstream joins are KNOWN, not re-inferred from value shapes.
+    from ultra_csm.data_plane.explorer import _parse_salesforce_describe
+
+    raw = {
+        "name": "Contact",
+        "label": "Contact",
+        "fields": [
+            {"name": "Id", "type": "id", "nillable": False},
+            {"name": "AccountId", "type": "reference", "nillable": True,
+             "referenceTo": ["Account"], "relationshipName": "Account"},
+            {"name": "Email", "type": "email", "nillable": True},
+        ],
+    }
+    (obj,), _count = _parse_salesforce_describe(raw)
+    by_name = {f.name: f for f in obj.fields}
+    assert by_name["AccountId"].references == ("Account",)
+    assert by_name["AccountId"].relationship_name == "Account"
+    assert by_name["Id"].references == ()  # non-reference fields carry none

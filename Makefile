@@ -2,7 +2,7 @@ PYTHON := .venv/bin/python
 
 # One-time reviewer setup. Requires Python 3.10+ and local PostgreSQL 16 tooling
 # (`initdb`/`pg_ctl`) available on PATH or through the platform package.
-.PHONY: setup eval lint scorecard-csm csm-work-queue demo-loop year-in-life-csm tick-demo-csm mcp-readonly-demo-csm mcp-operator-demo-csm mcp-relay-demo-csm mcp-stdio-replay-csm slot-a-scorecard-csm autonomy-report-csm attio-simulated-onboarding-csm gainsight-simulated-onboarding-csm product-telemetry-simulated-onboarding-csm salesforce-simulated-onboarding-csm relay-battery-csm demo clean outcome-simulation-csm stochastic-csm regression-csm regression-csm-live oversight-report doctor quality-regression-csm quality-gold-csm quality-gold-label-csm quality-gold-status-csm quality-gold-validate-csm quality-gold-hard-csm quality-gold-hard-label-csm quality-gold-hard-status-csm quality-gold-hard-validate-csm judge-agreement-csm judge-diagnosis-csm judge-reference-review-csm judge-reference-recheck-csm judge-reference-apply-csm status hygiene serve mcp
+.PHONY: setup eval lint scorecard-csm csm-work-queue demo-loop year-in-life-csm tick-demo-csm mcp-readonly-demo-csm mcp-operator-demo-csm mcp-relay-demo-csm mcp-relational-demo-csm mcp-stdio-replay-csm slot-a-scorecard-csm autonomy-report-csm attio-simulated-onboarding-csm gainsight-simulated-onboarding-csm product-telemetry-simulated-onboarding-csm salesforce-simulated-onboarding-csm relay-battery-csm relational-battery-csm demo clean outcome-simulation-csm stochastic-csm regression-csm regression-csm-live oversight-report doctor quality-regression-csm quality-gold-csm quality-gold-label-csm quality-gold-status-csm quality-gold-validate-csm quality-gold-hard-csm quality-gold-hard-label-csm quality-gold-hard-status-csm quality-gold-hard-validate-csm judge-agreement-csm judge-diagnosis-csm judge-reference-review-csm judge-reference-recheck-csm judge-reference-apply-csm status hygiene serve mcp
 setup:
 	python3 -m venv .venv
 	$(PYTHON) -m pip install --upgrade pip
@@ -43,6 +43,9 @@ mcp-operator-demo-csm:
 mcp-relay-demo-csm:
 	PYTHONPATH=src:. $(PYTHON) -m eval.mcp_relay_demo
 
+mcp-relational-demo-csm:
+	PYTHONPATH=src:. $(PYTHON) -m eval.mcp_relational_demo
+
 mcp-stdio-replay-csm:
 	PYTHONPATH=src:. $(PYTHON) -m eval.mcp_stdio_replay
 
@@ -66,6 +69,9 @@ salesforce-simulated-onboarding-csm:
 
 relay-battery-csm:
 	PYTHONPATH=src:. $(PYTHON) -m eval.relay_battery
+
+relational-battery-csm:
+	PYTHONPATH=src:. $(PYTHON) -m eval.relational_battery
 
 outcome-simulation-csm:
 	PYTHONPATH=src:. $(PYTHON) -m eval.outcome_simulation_csm
@@ -155,4 +161,5 @@ demo:
 	$(MAKE) mcp-readonly-demo-csm
 	$(MAKE) mcp-operator-demo-csm
 	$(MAKE) mcp-relay-demo-csm
+	$(MAKE) mcp-relational-demo-csm
 	$(MAKE) oversight-report

@@ -13,6 +13,7 @@ verification_output.log
 
 # Python
 .venv/
+.venv
 .venv-sandbox/
 __pycache__/
 *.egg-info/

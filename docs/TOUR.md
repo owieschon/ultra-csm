@@ -106,6 +106,19 @@ Relay tools are labeled `provenance: mcp_relay` and `unverified_mapping: true`.
 Returned drafts are propose-only content for the host to approve and place in the
 user's own tools; `render_email_draft` only emits the approved draft artifact.
 
+For a normalized multi-table CRM (the Salesforce shape), run:
+
+```sh
+make mcp-relational-demo-csm
+```
+
+Open `eval/mcp_relational_transcript.json`. Three tables relay through
+`ingest_table` with source-declared foreign-key metadata, and `confirm_book`
+joins them into one book. Source-declared references and exact standard aliases
+auto-map with their provenance stated; exactly five questions — four identity
+picks and one value direction — reach the user, and every foreign contract's
+field on a table is declared `not_mappable` rather than silently guessed.
+
 ## 7. The audit question
 
 ```sh
