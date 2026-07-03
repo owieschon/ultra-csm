@@ -7,7 +7,13 @@ the repo root. No live tenant credentials are required for this path.
 
 ```sh
 make setup
+make doctor
 ```
+
+`make doctor` is a preflight that verifies Python, the Postgres 16 tooling, and —
+the real proof — that a throwaway UTF-8 cluster boots and tears down on your
+machine. Every FAIL line names its exact fix. If doctor passes, everything below
+will run.
 
 ## Run The Offline Demo Gates
 
@@ -97,6 +103,17 @@ PYTHONPATH=src:. .venv/bin/python -m pytest tests/test_connector_explorer.py -q
 
 Use MCP as a conversational shell over read-only tools. Multi-turn memory and wording live
 in the host; this process only exposes deterministic reads when read-only mode is enabled.
+
+The one-command path — register it with Claude Code from the repo root and start asking
+questions ("Which accounts are most at risk and why?", "What's holding the Sagebrush
+expansion action?"):
+
+```sh
+claude mcp add ultra-csm --env ULTRA_CSM_MCP_READONLY=1 -- \
+  "$(pwd)/.venv/bin/python" -m ultra_csm.mcp_server
+```
+
+Or run the stdio server directly for any other MCP host:
 
 ```sh
 ULTRA_CSM_MCP_READONLY=1 \
