@@ -180,12 +180,20 @@ class RelationalTable:
     records: tuple[dict[str, Any], ...]
     frozen_map: FrozenSourceMapConfig | None = None
     expected_count: int | None = None
+    # Optional source-declared metadata per column, when the source has a schema
+    # API (e.g. Salesforce describe). Maps column name -> {"references": (...),
+    # "field_type": "..."}. When present, a declared foreign key is used
+    # DIRECTLY rather than inferred from value shapes; absent for schemaless
+    # sources, which fall back to shape heuristics.
+    field_metadata: dict[str, dict[str, Any]] | None = None
 
 
 def derive_schema_snapshot(
     records: list[dict[str, Any]] | tuple[dict[str, Any], ...],
     descriptor: ExternalSourceDescriptor,
+    field_metadata: dict[str, dict[str, Any]] | None = None,
 ) -> tuple[SchemaSnapshot, tuple[str, ...]]:
+    field_metadata = field_metadata or {}
     processed = _processed_records(records, descriptor)
     paths: dict[str, dict[str, Any]] = {}
     unrepresentable: set[str] = set()
@@ -218,7 +226,9 @@ def derive_schema_snapshot(
     fields = tuple(
         DiscoveredField(
             name=path.rsplit(".", 1)[-1],
-            field_type=_merged_type(meta["types"]),
+            field_type=str(field_metadata.get(path, {}).get("field_type"))
+            if field_metadata.get(path, {}).get("field_type")
+            else _merged_type(meta["types"]),
             required=meta["rows_present"] == len(processed) if processed else False,
             custom=True,
             source_path=path,
@@ -227,6 +237,8 @@ def derive_schema_snapshot(
             rows_sampled=len(processed),
             value_shape=_classify_value_shape(meta["values"]),
             distinct_count=_distinct_count(meta["values"]),
+            references=tuple(field_metadata.get(path, {}).get("references", ())),
+            relationship_name=str(field_metadata.get(path, {}).get("relationship_name", "")),
         )
         for path, meta in sorted(paths.items())
     )
@@ -258,8 +270,9 @@ def derive_schema_snapshot(
 def propose_external_source_mapping(
     records: list[dict[str, Any]] | tuple[dict[str, Any], ...],
     descriptor: ExternalSourceDescriptor,
+    field_metadata: dict[str, dict[str, Any]] | None = None,
 ) -> tuple[SchemaSnapshot, SourceMapProposal, tuple[str, ...]]:
-    snapshot, unrepresentable = derive_schema_snapshot(records, descriptor)
+    snapshot, unrepresentable = derive_schema_snapshot(records, descriptor, field_metadata)
     proposal = _with_external_aliases(snapshot, propose_source_mapping(snapshot))
     return snapshot, proposal, unrepresentable
 
@@ -317,7 +330,7 @@ def ingest_relational_book(tables: Sequence[RelationalTable]) -> ExternalIngestR
     shell_table = account_table or tables[0]
     shell_descriptor = _table_descriptor(shell_table)
     snapshot, proposal, unrepresentable = propose_external_source_mapping(
-        list(shell_table.records), shell_descriptor
+        list(shell_table.records), shell_descriptor, shell_table.field_metadata
     )
 
     state = _TransformState()
@@ -505,9 +518,14 @@ def _shape_affinity(internal_field: str, value_shape: str) -> int:
     if not value_shape:
         return 0
     if internal_field.endswith("_id"):
-        return {"id_like": 2, "numeric": 1, "low_cardinality_enum": -1, "name_like": -1}.get(
-            value_shape, 0
-        )
+        # A foreign key to a small parent table is naturally low-cardinality
+        # (few distinct parent ids repeated across many children), so
+        # low_cardinality_enum is a valid identity/FK shape -- not penalized, or
+        # foreign-named FK columns would never surface as candidates. Primary
+        # keys (all-distinct) still rank higher via id_like.
+        return {
+            "id_like": 2, "low_cardinality_enum": 1, "numeric": 1, "name_like": -1,
+        }.get(value_shape, 0)
     if internal_field == "name":
         return {"name_like": 2, "text": 1, "low_cardinality_enum": -2, "id_like": -1}.get(
             value_shape, 0
@@ -528,6 +546,14 @@ def _candidate_score(
     contract, internal_field = entry.contract, entry.internal_field
     field_norm = _norm(field.name)
     path_norm = _norm(field.source_path)
+    # Source-declared foreign key: if the source's own schema says this field
+    # references another object, it is the join key -- known, not guessed. This
+    # is the metadata-first path (Salesforce describe etc.); it ranks above every
+    # shape/name heuristic and makes FK identification independent of value
+    # cardinality (an AccountId Lookup is an FK even when it looks like a
+    # low-cardinality enum because the parent table is small).
+    if field.references and internal_field == "account_id":
+        return 6, f"source declares a reference to {', '.join(field.references)}"
     if "[]." in field.source_path:
         collection_root, child_name = field.source_path.split("[].", 1)
         if (
@@ -557,6 +583,14 @@ def _candidate_score(
         return 2, "identity-shaped field is a plausible join candidate"
     if field_norm in aliases or any(alias and alias in path_norm for alias in aliases):
         return 1, "field path partially matches a known alias"
+    # Shape-driven fallback: a field whose VALUE shape fits this internal field
+    # is offered as a (low-confidence) candidate even when its name matches no
+    # alias. Without this, a genuinely foreign schema whose columns happen to be
+    # named unconventionally produces an empty proposal and nothing is
+    # confirmable -- which would be engineering to conventionally-named schemas.
+    # It is still only a candidate: ambiguous, requiring human confirmation.
+    if _shape_affinity(internal_field, field.value_shape) > 0:
+        return 1, f"value shape {field.value_shape!r} fits this field; confirm to map"
     return 0, ""
 
 
