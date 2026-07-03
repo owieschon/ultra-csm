@@ -55,6 +55,8 @@ class MappingCandidateEvidence:
     field_type: str
     confidence: float
     reason: str
+    value_shape: str = ""
+    distinct_count: int = 0
 
 
 @dataclass(frozen=True)

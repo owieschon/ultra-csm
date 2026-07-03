@@ -432,3 +432,47 @@ def test_relational_book_never_fabricates_account_from_child_table():
     assert result.coverage.records_typed["CRMContact"] == 0
     fk = result.coverage.join_coverage["foreign_key_joins"]["CRMContact"]
     assert fk["joined"] == 0 and fk["orphaned"] == 3
+
+
+# --- Value-shape evidence tests (Phase 2B) -----------------------------------
+
+
+def test_value_shape_classifies_enum_vs_name_vs_id():
+    # The exact Phase 1 trap: an Opportunity-shaped table where StageName has
+    # perfect row coverage but is a low-cardinality enum, not an account name.
+    records = [
+        {"Id": f"006x{i:04d}", "AccountId": f"001x{i % 3:04d}",
+         "StageName": ["Closed Won", "Prospecting", "Qualification"][i % 3],
+         "Amount": 1000 * (i + 1), "CloseDate": "2026-05-01", "Name": f"Big Deal {i}"}
+        for i in range(9)
+    ]
+    _s, proposal, _u = propose_external_source_mapping(
+        records, ExternalSourceDescriptor(source_name="Opportunities", object_name="Opportunities")
+    )
+    shapes = {}
+    for entry in proposal.entries:
+        for cand in entry.candidate_evidence:
+            shapes[cand.source_path] = cand.value_shape
+    assert shapes["StageName"] == "low_cardinality_enum"
+    assert shapes["Id"] == "id_like"
+    assert shapes["Amount"] == "numeric"
+    assert shapes["CloseDate"] == "date_like"
+    assert shapes["Name"] == "name_like"
+
+
+def test_shape_affinity_ranks_name_like_above_enum_for_account_name():
+    # A name field must not surface an enum as its top candidate even at equal
+    # coverage -- shape affinity ranks name_like first, so the confirmer sees the
+    # right candidate on top (and the enum, visibly labelled, below).
+    records = [
+        {"Id": f"a{i}", "Name": f"Acme {i} Industries",
+         "Segment": ["Enterprise", "Mid-Market", "SMB"][i % 3]}
+        for i in range(9)
+    ]
+    _s, proposal, _u = propose_external_source_mapping(
+        records, ExternalSourceDescriptor(source_name="Accounts", object_name="Accounts")
+    )
+    name_entry = {e.key: e for e in proposal.entries}["CRMAccount.name"]
+    top = name_entry.candidate_evidence[0]
+    assert top.source_path == "Name"
+    assert top.value_shape == "name_like"

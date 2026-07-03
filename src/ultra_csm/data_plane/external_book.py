@@ -10,6 +10,7 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass, field, replace
 import hashlib
 import json
+import re
 from collections.abc import Sequence
 from typing import Any, Mapping
 
@@ -205,12 +206,14 @@ def derive_schema_snapshot(
                     "rows_present": 0,
                     "rows_nonempty": 0,
                     "types": set(),
+                    "values": [],
                 },
             )
             entry["rows_present"] += 1
             if any(_is_nonempty(value) for value in values):
                 entry["rows_nonempty"] += 1
             entry["types"].update(_field_type(value) for value in values)
+            entry["values"].extend(values)
 
     fields = tuple(
         DiscoveredField(
@@ -222,6 +225,8 @@ def derive_schema_snapshot(
             rows_present=meta["rows_present"],
             rows_nonempty=meta["rows_nonempty"],
             rows_sampled=len(processed),
+            value_shape=_classify_value_shape(meta["values"]),
+            distinct_count=_distinct_count(meta["values"]),
         )
         for path, meta in sorted(paths.items())
     )
@@ -473,6 +478,8 @@ def _candidate_evidence(
                         field_type=field_item.field_type,
                         confidence=round(confidence, 4),
                         reason=reason,
+                        value_shape=field_item.value_shape,
+                        distinct_count=field_item.distinct_count,
                     ),
                 )
             )
@@ -480,12 +487,38 @@ def _candidate_evidence(
         candidates,
         key=lambda item: (
             -item[0],
+            -_shape_affinity(entry.internal_field, item[1].value_shape),
             -item[1].rows_nonempty,
             -item[1].rows_present,
             item[1].source_path,
         ),
     )
     return tuple(candidate for _, candidate in ordered)
+
+
+# Which value-shape a given internal field wants. A positive affinity ranks a
+# shape-appropriate candidate above a coverage-equal wrong-shape one (id_like
+# for identity fields, name_like for the display name); it is a ranking hint
+# only -- ambiguous entries still require explicit human confirmation, and no
+# candidate is auto-confirmed across shape classes.
+def _shape_affinity(internal_field: str, value_shape: str) -> int:
+    if not value_shape:
+        return 0
+    if internal_field.endswith("_id"):
+        return {"id_like": 2, "numeric": 1, "low_cardinality_enum": -1, "name_like": -1}.get(
+            value_shape, 0
+        )
+    if internal_field == "name":
+        return {"name_like": 2, "text": 1, "low_cardinality_enum": -2, "id_like": -1}.get(
+            value_shape, 0
+        )
+    if internal_field == "email":
+        return {"email_like": 2, "name_like": -1}.get(value_shape, 0)
+    if internal_field in {"close_date", "starts_at", "ends_at", "renewal_date"}:
+        return {"date_like": 2}.get(value_shape, 0)
+    if internal_field in {"amount_cents", "value", "entitled_quantity"}:
+        return {"numeric": 2, "low_cardinality_enum": -1}.get(value_shape, 0)
+    return 0
 
 
 def _candidate_score(
@@ -678,6 +711,54 @@ def _is_representable_collection(path: str, value: list[Any]) -> bool:
     if _norm(_last_path_segment(path)) != "contacts":
         return False
     return all(isinstance(item, Mapping) for item in value)
+
+
+_EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+_DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}([T ]\d{2}:\d{2})?")
+_ID_RE = re.compile(r"^[A-Za-z0-9_-]+$")
+_LOW_CARDINALITY_MAX = 10
+
+
+def _distinct_count(values: list[Any]) -> int:
+    return len({v for v in values if _is_nonempty(v)})
+
+
+def _classify_value_shape(values: list[Any]) -> str:
+    """Deterministic value-shape class from sampled values -- no LLM. This is the
+    evidence that distinguishes a coverage-perfect-but-semantically-wrong
+    candidate (e.g. an Opportunity StageName, which is a 10-value enum) from a
+    real identifier or name, which row coverage alone cannot do."""
+    non_empty = [v for v in values if _is_nonempty(v)]
+    if not non_empty:
+        return "empty"
+    total = len(non_empty)
+    distinct = len(set(map(_shape_key, non_empty)))
+
+    if all(isinstance(v, bool) for v in non_empty):
+        return "boolean_like"
+    strs = [v for v in non_empty if isinstance(v, str)]
+    if len(strs) == total:
+        if all(_EMAIL_RE.match(s.strip()) for s in strs):
+            return "email_like"
+        if all(_DATE_RE.match(s.strip()) for s in strs):
+            return "date_like"
+        # Low-cardinality categorical: few distinct values across many rows.
+        if total >= 3 and distinct <= _LOW_CARDINALITY_MAX and distinct < total:
+            return "low_cardinality_enum"
+        # Identifier: high uniqueness, single-token, no spaces.
+        if distinct == total and all(_ID_RE.match(s.strip()) and " " not in s for s in strs):
+            return "id_like"
+        # Name: mixed-case, frequently multi-word, high-ish uniqueness.
+        if any(" " in s.strip() for s in strs) or re.search(r"[a-z][A-Z]|[A-Z][a-z]", " ".join(strs[:5])):
+            return "name_like"
+        return "text"
+    if all(isinstance(v, int | float) and not isinstance(v, bool) for v in non_empty):
+        return "numeric"
+    return "mixed"
+
+
+def _shape_key(value: Any) -> Any:
+    return value.strip() if isinstance(value, str) else value
 
 
 def _is_nonempty(value: Any) -> bool:

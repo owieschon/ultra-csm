@@ -32,6 +32,12 @@ class DiscoveredField:
     rows_present: int = 0
     rows_nonempty: int = 0
     rows_sampled: int = 0
+    # Deterministic value-shape class ("id_like", "name_like",
+    # "low_cardinality_enum", ...) computed from sampled values when the
+    # connector has them (external_book relay). "" when unknown (schema-only
+    # connectors like Salesforce describe).
+    value_shape: str = ""
+    distinct_count: int = 0
 
 
 @dataclass(frozen=True)
