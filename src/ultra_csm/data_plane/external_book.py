@@ -880,10 +880,13 @@ def _coverage_report(
         descriptor.expected_count is not None
         and descriptor.expected_count != records_received
     )
+    # None (not 1.0) when there are zero contact candidates: a vacuous 0/0 must
+    # never render as "100% joined" next to contact_candidates=0 — that reads as
+    # success when it means no contact identity was mapped or found at all.
     join_ratio = (
         round(state.joined_contacts / state.total_contact_candidates, 4)
         if state.total_contact_candidates
-        else 1.0
+        else None
     )
     return ExternalCoverageReport(
         records_received=records_received,
