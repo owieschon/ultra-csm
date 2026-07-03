@@ -33,21 +33,22 @@ the remaining questions (ambiguous entries) with their candidate evidence
 unchanged. Readonly mode refuses; demo-operator conflict refuses (same rules
 as `ingest_book`).
 
-- [ ] Tool registered and callable over stdio.
-      *Verify:* `make mcp-stdio-replay-csm` *(extended by A4)* and unit tests.
-- [ ] Auto-map summary + questions-only response shape.
-      *Verify:* `pytest tests/test_mcp_server.py -k ingest_table -q` *(new
-      tests)* — response contains `auto_mapped` with provenance reasons and
-      `confirmation_questions` containing ONLY still-ambiguous keys; for the
-      SFDC-shaped fixture with metadata, identity questions remain and exact-
-      alias fields do not appear as questions.
-- [ ] Chunked delivery across calls with expected-count enforcement per table.
-      *Verify:* new unit test — two chunks reassemble; count mismatch refuses
-      loudly with the existing `EXPECTED_COUNT` error family.
-- [ ] Refusal modes.
-      *Verify:* existing refusal test pattern extended — readonly session
-      refuses `ingest_table`; demo-operator session returns the
-      `RELAY_DEMO_OPERATOR_CONFLICT` family.
+- [x] Tool registered and callable over stdio.
+      *Verified:* `make mcp-stdio-replay-csm` → `ok: true`, relational session
+      included; also driven live in A4/Phase 3 over a real stdio process.
+- [x] Auto-map summary + questions-only response shape.
+      *Verified:* `pytest tests/test_mcp_server.py -k ingest_table -q` — 4
+      passed; response contains `auto_mapped` with provenance reasons and
+      `confirmation_questions` containing ONLY the declared contract's
+      ambiguous keys.
+- [x] Chunked delivery across calls with expected-count enforcement per table.
+      *Verified:* `test_ingest_table_supports_chunked_reassembly` and
+      `test_ingest_table_refuses_count_mismatch_and_unstable_declarations`,
+      both passing.
+- [x] Refusal modes.
+      *Verified:* `test_read_only_and_demo_operator_refuse_relational_tools`
+      passing — readonly returns `MCP_READONLY`, demo-operator returns
+      `RELAY_DEMO_OPERATOR_CONFLICT`.
 
 ### A2. `confirm_book` tool
 
@@ -68,23 +69,28 @@ table; `ingest_relational_book` assembles the book; response carries
 `typed_counts`, coverage (incl. `foreign_key_joins`), briefing,
 `replay_sha256`, frozen config hashes per table.
 
-- [ ] Happy path: SFDC-shaped 3-table fixture book with metadata onboards with
+- [x] Happy path: SFDC-shaped 3-table fixture book with metadata onboards with
       exactly the identity+direction questions answered, everything else
       auto-mapped/declared.
-      *Verify:* `pytest tests/test_mcp_server.py -k confirm_book -q` *(new)* —
-      typed counts match fixture ground truth; FK join ratios exact; the
-      not-mappable-by-intent list matches expectation.
-- [ ] Determinism: confirming the same book twice yields identical
+      *Verified:* `test_confirm_book_joins_tables_and_replays_deterministically`
+      passing — typed counts match fixture ground truth (3/4/4), FK join
+      ratios 1.0, `declared_not_mappable` matches expectation. Reproduced
+      live in Phase 3 against real corpus B + seeded data (see
+      `LIVE_INTEGRATION_FINDINGS.md`).
+- [x] Determinism: confirming the same book twice yields identical
       `replay_sha256`.
-      *Verify:* new unit test, byte-equality.
-- [ ] Orphan and shadow-account guards hold through the MCP surface.
-      *Verify:* new unit test — child-only book via tools types 0 accounts;
-      orphans rejected `unresolved_parent_identity`; a confirmation attempting
-      CRMAccount.account_id onto a reference-declared FK path is refused by
-      the identity audit.
-- [ ] `report_readiness.routes.next_tool` updated to point multi-table sources
+      *Verified:* byte-equality asserted in the same test, and again live
+      for every Phase 3 dataset.
+- [x] Orphan and shadow-account guards hold through the MCP surface.
+      *Verified:* `test_child_only_book_orphans_instead_of_minting_a_parent`
+      (0 accounts typed, orphans counted) and
+      `test_confirm_book_refuses_cross_contract_confirmations`
+      (`RELAY_CONTRACT_INTENT_CONFLICT` on the CRMAccount.account_id-onto-
+      Contact-table attempt), both passing.
+- [x] `report_readiness.routes.next_tool` updated to point multi-table sources
       at `ingest_table`.
-      *Verify:* existing readiness test updated, green.
+      *Verified:* `test_readiness_routes_multi_table_sources_to_ingest_table`
+      passing.
 
 ### A3. Conversational onboarding transcript (the product proof)
 
@@ -93,17 +99,18 @@ readiness → 3 × `ingest_table` (SFDC-shaped fixture tables + metadata) →
 `confirm_book` (only the human questions) → briefing. Same pattern as
 `eval/mcp_relay_transcript.json`.
 
-- [ ] `eval/mcp_relational_demo.py` + committed transcript + Make target
-      `mcp-relational-demo-csm` *(new)*, wired into `make demo`.
-      *Verify:* `make mcp-relational-demo-csm` prints typed counts and question
-      count (expected: ≤5 questions for the 3-table fixture); transcript
-      regenerates byte-identical twice; `make demo` green end-to-end.
-- [ ] Stdio replay covers the new transcript.
+- [x] `eval/mcp_relational_demo.py` + committed transcript + Make target
+      `mcp-relational-demo-csm`, wired into `make demo`.
+      *Verified:* `make mcp-relational-demo-csm` → 5 questions, typed
+      3/4/4; transcript byte-identical across two consecutive runs;
+      `make demo` green end-to-end.
+- [x] Stdio replay covers the new transcript.
       *Verify:* `make mcp-stdio-replay-csm` → `ok: true` including the
-      relational session.
-- [ ] Docs: QUICKSTART + TOUR gain the conversational onboarding beat with the
+      relational session, question keys, and typed counts.
+- [x] Docs: QUICKSTART + TOUR gain the conversational onboarding beat with the
       real question count.
-      *Verify:* `make hygiene` green; text names only executed-true claims.
+      *Verified:* both docs updated (`## Normalized multi-table CRMs`
+      section, TOUR §6 addendum); `make hygiene` exits 0.
 
 ### A4. Live conversational onboarding (the real thing, this machine)
 
@@ -112,12 +119,13 @@ Claude session (bounded reads, standing residue rules): fetch the 3 tables
 with explicit field lists, pass describe-declared `field_metadata`, answer the
 ~5 real questions conversationally, receive the briefing.
 
-- [ ] Executed once end-to-end; outputs to `~/ultra-csm-corpus-runs/`;
+- [x] Executed once end-to-end; outputs to `~/ultra-csm-corpus-runs/`;
       sanitized summary (counts, question list, join ratios) appended to
       `docs/SALESFORCE_ONESHOT_FINDINGS.md`.
-      *Verify:* typed counts equal the Phase-1-measured truth (13/20/31), FK
-      ratios 1.0, zero fabrication, and the question count ≤5 — the friction
-      claim proven on the product surface, not the internal API.
+      *Verified:* typed 13/20/31 (exact Phase-1-measured truth), FK ratios
+      1.0/1.0, zero fabrication, exactly 5 questions — the friction claim
+      proven live on the product surface. Findings addendum committed
+      (c2e3854).
 
 ---
 
@@ -142,16 +150,27 @@ Datasets: (1) volume — ~120 Accounts / ~240 Contacts / ~180 Opportunities
 datasets' parents and at each other (where the API even permits); (5) unmapped
 shapes — Leads and Cases (no source map: must flow to unknown, zero guesses).
 
-- [ ] Seeds created via `createSobjectRecord`, batched politely inside API
+- [x] Seeds created via `createSobjectRecord`, batched politely inside API
       limits; partial seeds acceptable if measured.
-      *Verify:* per-dataset SOQL `SELECT COUNT()` filtered by the marker tag
-      equals the ledger's per-dataset count.
-- [ ] Factory data untouched.
-      *Verify:* `SELECT COUNT()` per object minus tagged counts equals the
-      Phase-0 baseline exactly; zero factory record has the marker.
-- [ ] Ledger complete and out-of-repo.
-      *Verify:* ledger line count equals total created; repo `git status`
-      clean of any runtime artifact; sentinel grep clean.
+      *Verified:* 97 records created (21 Account / 38 Contact / 27
+      Opportunity / 6 Lead / 5 Case) across 5 datasets. Per-dataset SOQL
+      `SELECT COUNT()` filtered by `Name`/`LastName`/`Subject` LIKE
+      `'UCSM-P3E%'` matched the ledger's per-dataset counts exactly.
+      **Scale deviation from the plan's ~120/240/180:** datasets sized for
+      the MCP per-record `createSobjectRecord` write path (no bulk API
+      creds available), 8/16/12 for D1 — the property under test (relay
+      through the joined-book path at multi-record scale) doesn't require
+      the original row count; a >500-row volume dataset is deferred (see
+      Workstream C scope-not-covered).
+- [x] Factory data untouched.
+      *Verified:* post-seed `SELECT COUNT()` per object minus tagged count
+      equals the Phase-0 baseline exactly (Account 13, Contact 20,
+      Opportunity 31, Lead 22, Case 26); zero factory record carries the
+      marker.
+- [x] Ledger complete and out-of-repo.
+      *Verified:* `~/ultra-csm-corpus-runs/seed-2e-20260703/seed-ledger.jsonl`
+      has 97 lines, 97 unique ids, matching the 97 created records; repo
+      `git status` clean; sentinel grep clean on every commit.
 
 ## Workstream C — Phase 3: the live battery and close-out
 
@@ -160,24 +179,33 @@ the internal API): bounded SOQL fetch with explicit field lists + describe
 metadata → `ingest_table` × N → `confirm_book` → coverage. We authored the
 seeds, so every assertion is an exact number against the seed ledger.
 
-- [ ] Battery matrix, one row per dataset, all exact-number checks:
+- [x] Battery matrix, one row per dataset, all exact-number checks:
       fetched-vs-expected; typed per contract == seeded valid counts; orphans
       == seeded broken-join counts; injection marker count == seeded marker
       count AND markers never in briefing text; truncation loud at the cap;
       Leads/Cases route to unknown with zero silent guesses; per-dataset
       `replay_sha256` stable across two confirms.
-      *Verify:* run log per dataset in the run dir; matrix (sanitized,
-      aggregate) in `docs/LIVE_INTEGRATION_FINDINGS.md` *(new)*.
-- [ ] Defect protocol: any live failure gets a reproducing unit test FIRST,
+      *Verified:* `~/ultra-csm-corpus-runs/phase3-live-battery-20260703/
+      phase3_battery_report.json` — `"problems": []`, `"ok": true`. Matrix
+      in `docs/LIVE_INTEGRATION_FINDINGS.md`. Truncation-at-cap not
+      separately exercised this run (no dataset approached
+      `DEFAULT_MAX_RECORDS`=500) — already covered by the relay battery's
+      dedicated oversized-payload case.
+- [x] Defect protocol: any live failure gets a reproducing unit test FIRST,
       then the fix, then that dataset re-runs (the org is a bench now —
       iterate freely, unlike Phase 1's one-shot).
-      *Verify:* each fix commit contains its reproducing test; full gates per
-      commit.
-- [ ] Regression trio on the final commit: property battery 20/20, corpus A
+      *Verified:* zero product defects surfaced; the two live findings
+      (org duplicate-detection rule at seed time, driver assumption gap at
+      battery time) are recorded in `LIVE_INTEGRATION_FINDINGS.md` with
+      their resolutions — neither touched `src/`, so no reproducing test
+      was created (nothing in the product to reproduce against).
+- [x] Regression trio on the final commit: property battery 20/20, corpus A
       recorded-inputs replay unchanged, `make demo` green, full suite green.
-      *Verify:* `make eval && make relational-battery-csm && make
-      relay-battery-csm && make demo` — all on the same commit.
-- [ ] Close-out: `docs/PROGRAM_REPORT_3.md` (per-phase DoD ledger with
+      *Verified:* `make eval` → 418 passed; `make relational-battery-csm` →
+      `hard_ok: true`, 20 seeds; `make relay-battery-csm` → 11/11;
+      `make demo` → passed, `git status --short` clean after (no artifact
+      drift).
+- [x] Close-out: `docs/PROGRAM_REPORT_3.md` (per-phase DoD ledger with
       command→observation evidence; deviations; created-record inventory as
       counts+tag); README/TOUR truth updates only for executed-true claims;
       `make status` current; single PR opened, gates green, sentinel clean,
