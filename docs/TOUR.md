@@ -54,7 +54,7 @@ Open `eval/mcp_relational_transcript.json`: three tables relay through `ingest_t
 source-declared foreign keys, `confirm_book` joins them, and exactly five questions reach the
 user — four identity picks and one value direction. Every unmapped foreign field is declared
 `not_mappable` rather than silently guessed. This is the same shape a real Salesforce onboarding
-takes, proven live: `docs/LIVE_INTEGRATION_FINDINGS.md` and `docs/PROGRAM_REPORT_5.md` document
+takes, proven live: `docs/LIVE_INTEGRATION_FINDINGS.md` and `docs/PROGRAM_REPORT_6.md` document
 real read-only Salesforce fetch, a real create-only Salesforce write-back, and real Rocketlane
 onboarding-phase evidence lighting up the Time-to-Value rail end-to-end, including a live
 cross-system beat that joins a real Salesforce account to real Rocketlane evidence through the
@@ -80,7 +80,7 @@ NOT instrumented — the report would rather admit a gap than imply coverage.
 
 The other receipts a skeptical reviewer would want:
 
-- `docs/PROGRAM_REPORT_5.md` — the live connector and live-judged-quality run, with claim
+- `docs/PROGRAM_REPORT_6.md` — the live connector and live-judged-quality run, with claim
   boundaries and deviations stated.
 - `docs/LIVE_INTEGRATION_FINDINGS.md` — the full live battery matrix (Salesforce D1-D6,
   Rocketlane D1-D5) with exact-number assertions against a ground truth authored before any

@@ -128,7 +128,7 @@ def test_live_semantic_quality_proven_from_passing_evidence(tmp_path):
 
 def test_live_semantic_quality_committed_artifact_is_proven():
     """The evidence artifact actually committed to the repo (a real live run,
-    docs/PROGRAM_REPORT_5.md) derives proven=True."""
+    docs/PROGRAM_REPORT_6.md) derives proven=True."""
     status = live_semantic_quality_status(LIVE_SEMANTIC_QUALITY_PATH)
     assert status["proven"] is True
     assert status["failures"] == []

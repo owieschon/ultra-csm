@@ -10,10 +10,10 @@ with receipts.
 into the same value model in one conversation, five questions, no custom integration work. The
 resulting drafts are scored by a judge that was itself validated against human-labeled gold data
 before being trusted (`docs/DECISION_LOG.md`), and every draft is propose-only: a human approves
-before anything reaches a customer. `docs/PROGRAM_REPORT_5.md` has the live run and the judge's
+before anything reaches a customer. `docs/PROGRAM_REPORT_6.md` has the live run and the judge's
 actual scores.
 
-**The receipts.** `docs/LIVE_INTEGRATION_FINDINGS.md` and `docs/PROGRAM_REPORT_5.md` are the live
+**The receipts.** `docs/LIVE_INTEGRATION_FINDINGS.md` and `docs/PROGRAM_REPORT_6.md` are the live
 runs against real Salesforce/Rocketlane orgs; `eval/gold/live_semantic_quality.json` is the judged
 output; `eval/scorecard_csm.json` and the regression batteries are the deterministic proof the
 spine holds. Every artifact here carries a `claim_boundary` — what it does and does not prove —
@@ -132,7 +132,7 @@ A non-deterministic instrument must never own a deterministic gate. That boundar
 |---|---|
 | Deterministic spine | **Proven** — scorecard hard gates green on real Postgres |
 | LLM quality judge | **Validated** under N-run modal aggregation (single-labeler gold, prompt v7): clean layer all six dimensions κ ≥ 0.6 with zero gate errors; adversarial hard layer clears all six aggregated with zero false negatives. `priority_fidelity` and `account_specificity` are deterministic. The claim is derived from versioned evidence artifacts (`eval/judge_validation.py`), never hand-set; a second independent labeler remains open |
-| Connectors (Salesforce/Rocketlane live; Gainsight/Attio fixture) | **Salesforce and Rocketlane proven live**: real read-only CRM fetch and a real, create-only write-back against a seeded corpus B account (`docs/PROGRAM_REPORT_5.md`); real onboarding phase/task evidence lights up the TTV rail end-to-end, including a live cross-system beat joining both. Gainsight/Attio remain fixture-tested to the credential boundary — no live org available in this environment |
+| Connectors (Salesforce/Rocketlane live; Gainsight/Attio fixture) | **Salesforce and Rocketlane proven live**: real read-only CRM fetch and a real, create-only write-back against a seeded corpus B account (`docs/PROGRAM_REPORT_6.md`); real onboarding phase/task evidence lights up the TTV rail end-to-end, including a live cross-system beat joining both. Gainsight/Attio remain fixture-tested to the credential boundary — no live org available in this environment |
 | Live semantic quality | **Proven** — real Slot B drafts generated over live corpus B accounts, scored by the validated N-run judge (cot@5, prompt v7); derived (never hand-set) via `eval.judge_validation.live_semantic_quality_status` from `eval/gold/live_semantic_quality.json` |
 | Data | Curated **fixtures** for the simulated book; two real live tenants for the connector/quality proof above, not production customer data |
 | Outcome rail, Risk & Expansion lenses | Outcome rail live-instrumented via the Rocketlane TTV bridge, including a lifecycle-aware fix for onboarding-stage delivery-slippage-only accounts; deterministic Risk and Expansion lenses are built, with draft-quality claims gated on judge validation |

@@ -49,7 +49,7 @@ DEFAULT_RUNS_PER_CANDIDATE = 5
 AS_OF = "2026-07-03"
 
 # Real corpus B (Salesforce) account NAMES fetched live 2026-07-03 (UCSM-P3E
-# seed corpus, see docs/PROGRAM_REPORT_5.md); the real numeric Salesforce ids
+# seed corpus, see docs/PROGRAM_REPORT_6.md); the real numeric Salesforce ids
 # are never used here -- the opaque_id below is the in-memory join key.
 DEFAULT_BOOK = (
     {

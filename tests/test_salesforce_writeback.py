@@ -1,7 +1,7 @@
 """Lane C: live Salesforce write-back committer -- create-only, ledgered,
 idempotent. Exercised here against a fake HTTP transport (no live network);
 the live run against a real seeded corpus B account is a separate,
-env-gated, manually-invoked path documented in docs/PROGRAM_REPORT_5.md.
+env-gated, manually-invoked path documented in docs/PROGRAM_REPORT_6.md.
 """
 
 from __future__ import annotations
