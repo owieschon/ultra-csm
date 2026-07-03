@@ -1,0 +1,12 @@
+[
+  {
+    "id": "acct-001",
+    "name": "Example Fleet",
+    "owner": "csm-001",
+    "industry": "logistics",
+    "contact_id": "contact-001",
+    "contact_name": "Jordan Lee",
+    "email": "jordan@example.test",
+    "consent_to_contact": true
+  }
+]

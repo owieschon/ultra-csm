@@ -18,7 +18,12 @@ from typing import Any, Literal, Mapping
 from ultra_csm.data_plane.connector_catalog import CONNECTOR_SPECS
 from ultra_csm.data_plane.explorer import DiscoveredField, DiscoveredObject, SchemaSnapshot
 from ultra_csm.data_plane.readiness import ConnectorId
-from ultra_csm.data_plane.source_maps import ALL_SOURCE_MAPS, SourceField, SourceObjectMap
+from ultra_csm.data_plane.source_maps import (
+    ALL_SOURCE_MAPS,
+    EXTERNAL_BOOK_SOURCE_MAPS,
+    SourceField,
+    SourceObjectMap,
+)
 
 
 MappingState = Literal["mapped", "ambiguous_confirm", "missing_to_unknown"]
@@ -367,6 +372,8 @@ def _source_map_for(connector_id: ConnectorId, contract: str) -> SourceObjectMap
         return _ATTIO_SOURCE_MAPS.get(contract)
     if connector_id == "rocketlane_onboarding":
         return _ROCKETLANE_SOURCE_MAPS.get(contract)
+    if connector_id == "external_book":
+        return EXTERNAL_BOOK_SOURCE_MAPS.get(contract)
     return None
 
 

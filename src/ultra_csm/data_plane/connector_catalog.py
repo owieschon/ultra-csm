@@ -235,6 +235,36 @@ PRODUCT_TELEMETRY_SPEC = ConnectorSpec(
 )
 
 
+EXTERNAL_BOOK_SPEC = ConnectorSpec(
+    connector_id="external_book",
+    display_name="External book import",
+    mode_env="ULTRA_CSM_EXTERNAL_BOOK_MODE",
+    credential_env=("CORPUS_A_BASE_URL", "CORPUS_A_TABLE", "CORPUS_A_" "API_KEY"),
+    auth_strategies=("api_key",),
+    pagination=("offset",),
+    source_contracts=("CRMAccount", "CRMContact", "CRMOpportunity"),
+    discovery_surfaces=("sample records", "confirmed source map"),
+    recorded_shapes=(
+        RecordedShape(
+            name="raw_record_sample",
+            contract="CRMAccount",
+            fixture_path="tests/fixtures/connectors/external_book/raw_record_sample.json",
+            docs=(
+                doc(
+                    "PostgREST Resource Embedding",
+                    "https://postgrest.org/en/stable/references/api/resource_embedding.html",
+                ),
+            ),
+        ),
+    ),
+    smoke_command="ucsm connectors smoke external_book --read-only",
+    docs=(
+        doc("PostgREST Tables and Views", "https://postgrest.org/en/stable/references/api/tables_views.html"),
+        doc("PostgREST Pagination and Count", "https://postgrest.org/en/stable/references/api/pagination_count.html"),
+    ),
+)
+
+
 CONNECTOR_SPECS: dict[str, ConnectorSpec] = {
     spec.connector_id: spec
     for spec in (
@@ -243,5 +273,6 @@ CONNECTOR_SPECS: dict[str, ConnectorSpec] = {
         GAINSIGHT_CS_SPEC,
         ROCKETLANE_ONBOARDING_SPEC,
         PRODUCT_TELEMETRY_SPEC,
+        EXTERNAL_BOOK_SPEC,
     )
 }

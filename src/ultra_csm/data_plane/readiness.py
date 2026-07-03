@@ -12,6 +12,7 @@ ConnectorId = Literal[
     "gainsight_cs",
     "rocketlane_onboarding",
     "product_telemetry",
+    "external_book",
 ]
 ConnectorMode = Literal["fixture", "live", "disabled"]
 ReadinessState = Literal[
