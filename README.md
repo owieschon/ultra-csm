@@ -51,6 +51,7 @@ lenses are built; the cohort analyst and quality-scored lens drafts stay gated. 
 
 ```sh
 make setup          # venv + editable install
+make doctor         # preflight: proves your environment can boot the test harness
 make scorecard-csm  # offline, no secrets → deterministic CSM scorecard
 make eval           # full pytest suite on an ephemeral, auto-torn-down Postgres
 make lint hygiene   # ruff lint + repo-residue scan
@@ -58,6 +59,20 @@ make lint hygiene   # ruff lint + repo-residue scan
 
 No cloud, no credentials, and no customer data are needed for any of the above. The only
 credentialed lanes are the live quality judge and the live connectors (see below).
+
+**Guided tour:** [`docs/TOUR.md`](docs/TOUR.md) walks the whole system in ten minutes —
+deterministic scorecard, a simulated year of a 35-account book, trigger suppression,
+the oversight evidence pack, and the fastest way to *feel* it:
+
+```sh
+# talk to the simulated book of business from Claude Code, read-only
+claude mcp add ultra-csm --env ULTRA_CSM_MCP_READONLY=1 -- \
+  "$(pwd)/.venv/bin/python" -m ultra_csm.mcp_server
+```
+
+Then ask: *"Which accounts are most at risk, and what evidence says so?"* Answers are
+grounded in the same deterministic tools the agent uses; write tools return a typed
+refusal enforced in the server process, not left to the model's judgment.
 
 ## What's evaluated — and why they're kept apart
 
