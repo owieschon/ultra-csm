@@ -72,9 +72,10 @@ make demo
 ```
 
 Runs the scorecard, spine regression, Slot A classifier scorecard, earned-autonomy
-report, all three simulated connector onboardings (Attio, Gainsight, product
-telemetry — real explorer/mapping code against fake transports, degrading honestly
-to `unknown` rather than guessing), the MCP transcripts, and the oversight report.
+report, all four simulated connector onboardings (Attio, Gainsight, product
+telemetry, Salesforce — real explorer/mapping/fetch code against fake transports,
+degrading honestly to `unknown` rather than guessing), the MCP transcripts, and the
+oversight report.
 
 ## 5. The operator morning
 
@@ -84,9 +85,10 @@ make mcp-operator-demo-csm
 
 Open `eval/mcp_operator_transcript.json`. The transcript runs a simulated
 morning over the real proposal gate: briefing, queue, evidence, a plain-English
-revise, approval with a simulated receipt, then two refusals (no-consent outreach
-and held expansion). The outbox is local simulation state only; the point is to
-show the control loop, not live delivery.
+revise, approval with a simulated receipt, a draft-never-send placement artifact,
+then two refusals (no-consent outreach and held expansion). The outbox is local
+simulation state only; `render_email_draft` creates a placement-ready artifact, not a
+live email.
 
 ## 6. Bring your own book
 
@@ -101,8 +103,8 @@ and replay-deterministic coverage. CRM-only data gets partial credit, while miss
 telemetry and CS-platform rails remain explicit unknowns.
 
 Relay tools are labeled `provenance: mcp_relay` and `unverified_mapping: true`.
-Returned drafts are propose-only content for the host to place in the user's own
-tools; Ultra CSM performs no live sends and writes no relay receipts.
+Returned drafts are propose-only content for the host to approve and place in the
+user's own tools; `render_email_draft` only emits the approved draft artifact.
 
 ## 7. The audit question
 

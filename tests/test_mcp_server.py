@@ -184,10 +184,12 @@ class TestReadOnlyAccessMode:
         readiness = mcp_server.report_readiness(["crm"])
         ingest = mcp_server.ingest_book([], {"source_name": "unit"}, expected_count=0)
         confirm = mcp_server.confirm_book_mappings({}, session_id="missing")
+        draft = mcp_server.render_email_draft(proposal_id="missing")
 
         assert readiness["code"] == "MCP_READONLY"
         assert ingest["code"] == "MCP_READONLY"
         assert confirm["code"] == "MCP_READONLY"
+        assert draft["code"] == "MCP_READONLY"
 
 
 class TestRelayTools:
@@ -287,6 +289,33 @@ class TestRelayTools:
         assert first["score_summary"]["scoreable_accounts"] == 0
         assert first["propose_only_actions"][0]["live_send_performed"] is False
         assert first["replay_sha256"] == second["replay_sha256"]
+
+    def test_relay_approved_draft_can_render_email_artifact(self):
+        ingest = mcp_server.ingest_book(
+            _relay_records(),
+            {"source_name": "unit"},
+            expected_count=2,
+            session_id="relay-draft-render",
+        )
+        confirmations = _confirmations_from_proposal(ingest["mapping_proposal"])
+        confirmed = mcp_server.confirm_book_mappings(
+            {"confirmations": confirmations},
+            session_id=ingest["session_id"],
+        )
+        action = confirmed["propose_only_actions"][0]
+        approved = {
+            "proposal_id": action["proposal_id"],
+            "action": action["action"],
+            "status": "approved",
+            "payload": action["payload"],
+            "payload_sha256": action["payload_sha256"],
+        }
+
+        result = mcp_server.render_email_draft(proposal=approved)
+
+        assert result["claim_boundary"]["draft_never_send"] is True
+        assert result["payload_sha256"] == action["payload_sha256"]
+        assert result["placement"]["gmail_api"]["method"] == "users.drafts.create"
 
     def test_confirm_book_mappings_accepts_not_mappable(self):
         ingest = mcp_server.ingest_book(

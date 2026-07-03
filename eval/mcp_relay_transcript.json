@@ -1,10 +1,11 @@
 {
   "artifact": "mcp_relay_transcript",
-  "artifact_sha256": "bd406086b3eb88d4e28a797491ab69dd51853c5508783868bf078e21180d51b7",
+  "artifact_sha256": "09185a7d50fc5eff62c7122e4c8ddd956cbb19ff44efed3488eb43b0120329f0",
   "beats": [
     "readiness",
     "ingest",
-    "confirm"
+    "confirm",
+    "render_email_draft"
   ],
   "claim_boundary": {
     "live": false,
@@ -12,12 +13,13 @@
     "sim": false,
     "unverified_mapping": true
   },
+  "draft_payload_sha256": "efc2e9bfe8beb2513e964ddb1c018d6df7e5037789abfce5a4ca83a1a9d4ba7e",
   "records_typed": {
     "CRMAccount": 2,
     "CRMContact": 2,
     "CRMOpportunity": 2
   },
-  "replay_sha256": "sha256:7cc005185b98edb80468b941b4d000a09d92bea02efa349a2f609fa99162831d",
+  "replay_sha256": "sha256:d4dee022a8658a0488ab312988635412d66396a28b9e70a50b04b0e8b7875672",
   "session_id": "relay-transcript",
   "tool_calls": [
     {
@@ -953,6 +955,7 @@
             "CRMOpportunity": 2
           },
           "rejection_counts": {},
+          "source_totals": {},
           "truncated": false,
           "unknown_fields": [
             "CRMContact.role",
@@ -967,21 +970,53 @@
         "propose_only_actions": [
           {
             "account_id": "learning-001",
-            "body": "Draft only. Review this in the host email client before sending; ultra-csm has not sent anything.",
+            "action": "draft_customer_outreach",
+            "body": "Draft only. Review this in the host email client before placement; ultra-csm has not delivered anything.",
+            "claim_boundary": {
+              "draft_never_send": true
+            },
+            "contact_email": "avery@example.test",
             "contact_id": "person-001",
             "live_send_performed": false,
+            "payload": {
+              "account_id": "learning-001",
+              "account_name": "Northstar Learning",
+              "body": "Draft only. Review this in the host email client before placement; ultra-csm has not delivered anything.",
+              "contact_email": "avery@example.test",
+              "contact_id": "person-001",
+              "subject": "Customer-success follow-up"
+            },
+            "payload_sha256": "efc2e9bfe8beb2513e964ddb1c018d6df7e5037789abfce5a4ca83a1a9d4ba7e",
             "placement": "host_may_create_draft_in_user_mail_client",
+            "proposal_id": "relay-draft:learning-001",
             "propose_only": true,
+            "status": "needs_host_approval",
             "subject": "Customer-success follow-up",
             "type": "email_draft"
           },
           {
             "account_id": "learning-002",
-            "body": "Draft only. Review this in the host email client before sending; ultra-csm has not sent anything.",
+            "action": "draft_customer_outreach",
+            "body": "Draft only. Review this in the host email client before placement; ultra-csm has not delivered anything.",
+            "claim_boundary": {
+              "draft_never_send": true
+            },
+            "contact_email": "riley@example.test",
             "contact_id": "person-002",
             "live_send_performed": false,
+            "payload": {
+              "account_id": "learning-002",
+              "account_name": "Brightpath Academy",
+              "body": "Draft only. Review this in the host email client before placement; ultra-csm has not delivered anything.",
+              "contact_email": "riley@example.test",
+              "contact_id": "person-002",
+              "subject": "Customer-success follow-up"
+            },
+            "payload_sha256": "12b2901725b93bc5f6eaf7248841eb52a5e63b40e302e78eeb29110c928eaab2",
             "placement": "host_may_create_draft_in_user_mail_client",
+            "proposal_id": "relay-draft:learning-002",
             "propose_only": true,
+            "status": "needs_host_approval",
             "subject": "Customer-success follow-up",
             "type": "email_draft"
           }
@@ -995,7 +1030,7 @@
           "stored_count": 2,
           "truncated": false
         },
-        "replay_sha256": "sha256:7cc005185b98edb80468b941b4d000a09d92bea02efa349a2f609fa99162831d",
+        "replay_sha256": "sha256:d4dee022a8658a0488ab312988635412d66396a28b9e70a50b04b0e8b7875672",
         "score_errors": [
           {
             "account_id": "learning-001",
@@ -1017,8 +1052,33 @@
         "sim": false,
         "unverified_mapping": true
       },
-      "output_sha256": "331a0191ba0e9462290effc705774cf7b7a6dd5eefbedf3726d08501b6a49226",
+      "output_sha256": "a4895c19fc47408e45dd48b41e8e274f9dcaec336fddea306135db86e15e9cd3",
       "tool": "confirm_book_mappings"
+    },
+    {
+      "output": {
+        "body": "Draft only. Review this in the host email client before placement; ultra-csm has not delivered anything.",
+        "claim_boundary": {
+          "approved_proposal_required": true,
+          "draft_never_send": true,
+          "live_send_performed": false
+        },
+        "payload_sha256": "efc2e9bfe8beb2513e964ddb1c018d6df7e5037789abfce5a4ca83a1a9d4ba7e",
+        "placement": {
+          "gmail_api": {
+            "method": "users.drafts.create",
+            "required_scope": "https://www.googleapis.com/auth/gmail.compose"
+          },
+          "host_instruction": "Create a draft in the user's own email tool using exactly this to/subject/body and payload_sha256; do not deliver it.",
+          "kind": "email_draft"
+        },
+        "proposal_id": "relay-draft:learning-001",
+        "subject": "Customer-success follow-up",
+        "to": "avery@example.test",
+        "tool": "render_email_draft"
+      },
+      "output_sha256": "74b5175dfba452aefb0994ae248b6670a392c5a1f4379b63052cd3374234a2e7",
+      "tool": "render_email_draft"
     }
   ]
 }

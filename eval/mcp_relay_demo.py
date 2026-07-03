@@ -42,6 +42,19 @@ def build_mcp_relay_transcript(
             session_id=ingest["session_id"],
         ),
     )
+    draft_action = confirm["propose_only_actions"][0]
+    approved_proposal = {
+        "proposal_id": draft_action["proposal_id"],
+        "action": draft_action["action"],
+        "status": "approved",
+        "payload": draft_action["payload"],
+        "payload_sha256": draft_action["payload_sha256"],
+    }
+    draft = _call(
+        calls,
+        "render_email_draft",
+        mcp_server.render_email_draft(proposal=approved_proposal),
+    )
     artifact = {
         "artifact": "mcp_relay_transcript",
         "claim_boundary": {
@@ -50,9 +63,10 @@ def build_mcp_relay_transcript(
             "sim": False,
             "live": False,
         },
-        "beats": ["readiness", "ingest", "confirm"],
+        "beats": ["readiness", "ingest", "confirm", "render_email_draft"],
         "session_id": ingest["session_id"],
         "records_typed": confirm["coverage"]["records_typed"],
+        "draft_payload_sha256": draft["payload_sha256"],
         "replay_sha256": confirm["replay_sha256"],
         "tool_calls": calls,
     }

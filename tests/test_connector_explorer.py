@@ -187,6 +187,50 @@ def test_salesforce_explorer_uses_oauth_token_and_describes_objects():
     assert custom == []
 
 
+def test_salesforce_explorer_supports_direct_access_token_without_oauth():
+    instance = "https://example.my.salesforce.com"
+    routes = {
+        f"{instance}/services/data/v61.0/sobjects/": {
+            "sobjects": [{"name": "Account", "label": "Account"}]
+        },
+    }
+    for object_name in ("Account", "Contact", "Case", "Opportunity", "Task", "Event"):
+        routes[f"{instance}/services/data/v61.0/sobjects/{object_name}/describe"] = {
+            "name": object_name,
+            "label": object_name,
+            "fields": [
+                {
+                    "name": "Id",
+                    "type": "id",
+                    "nillable": False,
+                    "custom": False,
+                },
+                {
+                    "name": "Name",
+                    "type": "string",
+                    "nillable": False,
+                    "custom": False,
+                },
+            ],
+        }
+    client = RoutedClient(routes)
+
+    result = run_explorer(
+        "salesforce_crm",
+        env={
+            "ULTRA_CSM_SALESFORCE_INSTANCE_URL": instance,
+            "ULTRA_CSM_SALESFORCE_ACCESS_TOKEN": "direct-token",
+            "ULTRA_CSM_SALESFORCE_API_VERSION": "v61.0",
+        },
+        client=client,
+    )
+
+    assert result.ok is True
+    assert "oauth_refresh" not in result.steps
+    assert [req.method for req in client.requests] == ["GET"] * 7
+    assert client.requests[0].headers["authorization"] == "Bearer direct-token"
+
+
 def test_gainsight_explorer_discovers_tenant_metadata_objects():
     base = "https://tenant.gainsightcloud.com"
     client = RoutedClient(

@@ -26,6 +26,7 @@ def test_operator_transcript_is_deterministic(tmp_path):
     assert data["claim_boundary"] == {"sim": True, "live": False}
     assert data["refusal_codes"] == ["CONSENT_MISSING", "PRECEDENCE_HELD"]
     assert "approve_with_receipt" in data["beats"]
+    assert "render_email_draft" in data["beats"]
 
 
 def test_relay_transcript_is_deterministic(tmp_path):
@@ -49,6 +50,8 @@ def test_relay_transcript_is_deterministic(tmp_path):
     }
     assert data["records_typed"]["CRMAccount"] == 2
     assert data["records_typed"]["CRMContact"] == 2
+    assert "render_email_draft" in data["beats"]
+    assert len(data["draft_payload_sha256"]) == 64
 
 
 def test_operator_and_readonly_modes_are_mutually_exclusive():

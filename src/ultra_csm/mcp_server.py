@@ -60,10 +60,16 @@ from ultra_csm.governance import (
     FixtureVerdictSource,
     GateError,
     Verdict,
+    canonical_payload_sha256,
     proposal_fields_for,
     seed_roster,
     make_principal,
     ROLE_CS_ORCHESTRATOR,
+)
+from ultra_csm.email_drafts import (
+    EmailDraftError,
+    render_email_draft_from_payload,
+    render_email_draft_from_proposal,
 )
 from ultra_csm.agent1 import run_time_to_value_sweep, SweepResult
 from ultra_csm.committers import SimCrmActivityCommitter, SimOutboundCommitter
@@ -601,6 +607,11 @@ MCP_TOOL_AUDIT: tuple[dict[str, object], ...] = (
         "readonly_available": False,
     },
     {
+        "name": "render_email_draft",
+        "classification": "state_changing",
+        "readonly_available": False,
+    },
+    {
         "name": "run_sweep",
         "classification": "state_changing",
         "readonly_available": False,
@@ -935,6 +946,7 @@ def get_next_steps() -> dict:
             "Use get_account_brief before approving or revising.",
             "Use submit_verdict with revise plus edit_instruction once.",
             "Approve the superseding draft and inspect get_session_ledger.",
+            "Render the approved email draft artifact; it is placement-ready but never sent.",
             "For a host-relayed book, restart without demo/read-only mode and use "
             "report_readiness, ingest_book, then confirm_book_mappings.",
         ],
@@ -1182,6 +1194,63 @@ def confirm_book_mappings(
 
 
 @mcp.tool()
+def render_email_draft(
+    proposal_id: str | None = None,
+    proposal: dict[str, Any] | None = None,
+    approved_payload_sha256: str | None = None,
+) -> dict:
+    """Render a placement-ready draft artifact from an approved proposal."""
+
+    if mcp_readonly_enabled():
+        return _readonly_refusal("render_email_draft")
+    try:
+        if proposal_id:
+            stored = _lookup_proposal(proposal_id)
+            if stored is None:
+                return _with_demo_context({
+                    "error": f"Proposal {proposal_id} not found",
+                    "code": "PROPOSAL_NOT_FOUND",
+                    "proposal_id": proposal_id,
+                })
+            artifact = render_email_draft_from_proposal(
+                stored,
+                approved_payload_sha256=approved_payload_sha256,
+            )
+        elif proposal is not None:
+            payload = proposal.get("payload")
+            if not isinstance(payload, dict):
+                raise EmailDraftError("proposal payload must be an object")
+            artifact = render_email_draft_from_payload(
+                proposal_id=str(proposal.get("proposal_id") or "host-approved-draft"),
+                action=str(proposal.get("action") or ""),
+                status=str(proposal.get("status") or ""),
+                payload=payload,
+                payload_sha256=str(proposal.get("payload_sha256") or ""),
+                approved_payload_sha256=approved_payload_sha256,
+            )
+        else:
+            raise EmailDraftError("proposal_id or proposal is required")
+    except EmailDraftError as exc:
+        return _with_demo_context({
+            "error": str(exc),
+            "code": "EMAIL_DRAFT_REFUSED",
+            "claim_boundary": {"draft_never_send": True},
+        })
+
+    payload = artifact.to_dict()
+    payload["tool"] = "render_email_draft"
+    _record_session_event("email_draft_rendered", {
+        "proposal_id": artifact.proposal_id,
+        "payload_sha256": artifact.payload_sha256,
+        "draft_never_send": True,
+    })
+    return _with_demo_context(
+        payload,
+        suggested_next=["get_session_ledger", "list_proposals"],
+    )
+
+
+@mcp.tool()
 def run_sweep() -> dict:
     """Run the Agent 1 time-to-value sweep across the entire tenant book.
 
@@ -1416,7 +1485,7 @@ def submit_verdict(
         }
     return _with_demo_context(
         result,
-        suggested_next=["get_session_ledger", "list_proposals"],
+        suggested_next=["render_email_draft", "get_session_ledger", "list_proposals"],
     )
 
 
@@ -1657,17 +1726,33 @@ def _relay_propose_only_actions(data: FixtureCustomerData) -> list[dict[str, Any
         contacts = contacts_by_account.get(account.account_id, [])
         if not contacts:
             continue
+        payload = {
+            "account_id": account.account_id,
+            "account_name": account.name,
+            "contact_id": contacts[0].contact_id,
+            "contact_email": contacts[0].email,
+            "subject": "Customer-success follow-up",
+            "body": (
+                "Draft only. Review this in the host email client before placement; "
+                "ultra-csm has not delivered anything."
+            ),
+        }
+        payload_sha256 = canonical_payload_sha256(payload)
         actions.append({
             "type": "email_draft",
             "propose_only": True,
+            "proposal_id": f"relay-draft:{account.account_id}",
+            "action": "draft_customer_outreach",
+            "status": "needs_host_approval",
+            "payload": payload,
+            "payload_sha256": payload_sha256,
             "account_id": account.account_id,
             "contact_id": contacts[0].contact_id,
-            "subject": "Customer-success follow-up",
-            "body": (
-                "Draft only. Review this in the host email client before sending; "
-                "ultra-csm has not sent anything."
-            ),
+            "contact_email": contacts[0].email,
+            "subject": payload["subject"],
+            "body": payload["body"],
             "placement": "host_may_create_draft_in_user_mail_client",
+            "claim_boundary": {"draft_never_send": True},
             "live_send_performed": False,
         })
     return actions

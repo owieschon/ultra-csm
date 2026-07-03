@@ -67,10 +67,23 @@
     "otlp_endpoint": "https://ultra-csm-simulated-collector.internal/v1/metrics"
   },
   "frozen_source_map": {
-    "config_hash": "sha256:9939906884b38268d08ffaf1acb7433e15db6977a7bc0761275f20360509b666",
+    "config_hash": "sha256:fdc342d344f881eff35b16834f8ef09bda7d36645465d067c373217406998b6b",
     "connector_id": "product_telemetry",
     "mappings": [
       {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "ultra_csm.account.id",
+            "source_object": "OTelRequiredAttributes",
+            "source_path": "resource_or_datapoint.attributes.ultra_csm.account.id"
+          }
+        ],
         "confidence": 0.95,
         "connector_id": "product_telemetry",
         "contract": "Entitlement",
@@ -87,6 +100,19 @@
         "value_direction": "not_applicable"
       },
       {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "ultra_csm.capability",
+            "source_object": "OTelRequiredAttributes",
+            "source_path": "resource_or_datapoint.attributes.ultra_csm.capability"
+          }
+        ],
         "confidence": 0.95,
         "connector_id": "product_telemetry",
         "contract": "Entitlement",
@@ -103,6 +129,19 @@
         "value_direction": "not_applicable"
       },
       {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "ultra_csm.account.id",
+            "source_object": "OTelRequiredAttributes",
+            "source_path": "resource_or_datapoint.attributes.ultra_csm.account.id"
+          }
+        ],
         "confidence": 0.95,
         "connector_id": "product_telemetry",
         "contract": "UsageSignal",
@@ -119,6 +158,19 @@
         "value_direction": "not_applicable"
       },
       {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "ultra_csm.grain",
+            "source_object": "OTelRequiredAttributes",
+            "source_path": "resource_or_datapoint.attributes.ultra_csm.grain"
+          }
+        ],
         "confidence": 0.95,
         "connector_id": "product_telemetry",
         "contract": "UsageSignal",
@@ -135,6 +187,19 @@
         "value_direction": "not_applicable"
       },
       {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "ultra_csm.metric.name",
+            "source_object": "OTelRequiredAttributes",
+            "source_path": "resource_or_datapoint.attributes.ultra_csm.metric.name"
+          }
+        ],
         "confidence": 0.95,
         "connector_id": "product_telemetry",
         "contract": "UsageSignal",
@@ -151,6 +216,19 @@
         "value_direction": "not_applicable"
       },
       {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "ultra_csm.source.ref",
+            "source_object": "OTelRequiredAttributes",
+            "source_path": "resource_or_datapoint.attributes.ultra_csm.source.ref"
+          }
+        ],
         "confidence": 0.95,
         "connector_id": "product_telemetry",
         "contract": "UsageSignal",
@@ -167,7 +245,7 @@
         "value_direction": "not_applicable"
       }
     ],
-    "proposal_hash": "sha256:52847d92dc71daa5043424e32bab4b1b355d85f218fe4440a1296dd3a6b39d12",
+    "proposal_hash": "sha256:9e741c0e10657146a7101707f22e312bf749260312a79f0d7bcfbb5b0e13ddd0",
     "schema_hash": "sha256:ba1e56505778853d56f897df59f3abde0477c8ad0adda8873777abc78366bf60",
     "unknown_fields": [
       "Entitlement.ends_at",
@@ -201,7 +279,7 @@
       "UsageSignal.unit",
       "UsageSignal.value"
     ],
-    "proposal_hash": "sha256:52847d92dc71daa5043424e32bab4b1b355d85f218fe4440a1296dd3a6b39d12",
+    "proposal_hash": "sha256:9e741c0e10657146a7101707f22e312bf749260312a79f0d7bcfbb5b0e13ddd0",
     "required_operator_actions": [
       "review 9 missing fields; affected rails remain unknown"
     ],
