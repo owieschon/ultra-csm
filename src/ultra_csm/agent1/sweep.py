@@ -26,8 +26,10 @@ from ultra_csm.data_plane import (
     CustomerDataPlane,
     EvidenceRef,
     OnboardingPhase,
+    OnboardingProject,
     OnboardingTask,
     TimeToValueMilestone,
+    onboarding_activation_gap_ids,
 )
 from ultra_csm.data_plane.contracts import ResolutionState
 from ultra_csm.governance import ActionGate, ActionProposal, proposal_fields_for
@@ -375,7 +377,9 @@ def _slot_b_inputs_for_account(
     signals = tuple(data_plane.telemetry.list_usage_signals(account.account_id))
     entitlements = tuple(data_plane.telemetry.list_entitlements(account.account_id))
     signal_ids = {signal.signal_id for signal in signals}
-    onboarding_phases, onboarding_tasks = _onboarding_evidence(data_plane, account.account_id)
+    onboarding_projects, onboarding_phases, onboarding_tasks = _onboarding_evidence(
+        data_plane, account.account_id
+    )
     onboarding_ids = {p.phase_id for p in onboarding_phases} | {t.task_id for t in onboarding_tasks}
     milestones = tuple(data_plane.telemetry.list_ttv_milestones(account.account_id))
     onboarding_milestones = _onboarding_milestones(data_plane, account.account_id)
@@ -393,6 +397,22 @@ def _slot_b_inputs_for_account(
     )
     overdue_plans = tuple(plan for plan in plans if iso_date(plan.target_date) <= iso_date(as_of))
 
+    # Lifecycle-aware TTV: an onboarding-stage account whose only signal is
+    # delivery slippage (RUNNING_LATE progress / at-risk task / overdue
+    # phase with no actual) clears no date-based gap above -- surface that
+    # activation-gap evidence directly rather than leave the account
+    # invisible to the sweep. Scored only in the onboarding stage (see
+    # ``_ttv_base_factors``); excludes phases already counted as an open gap.
+    activation_gap_ids: tuple[str, ...] = ()
+    if company.lifecycle_stage == "onboarding":
+        activation_gap_ids = onboarding_activation_gap_ids(
+            projects=onboarding_projects,
+            phases=onboarding_phases,
+            tasks=onboarding_tasks,
+            as_of=as_of,
+            covered_milestone_names=frozenset(m.milestone for m in open_gaps),
+        )
+
     evidence = _evidence_refs(
         account.account_id,
         as_of=as_of,
@@ -405,6 +425,13 @@ def _slot_b_inputs_for_account(
         onboarding_phases=onboarding_phases,
         onboarding_tasks=onboarding_tasks,
     )
+    if activation_gap_ids:
+        evidence = evidence + _onboarding_activation_gap_evidence_refs(
+            activation_gap_ids,
+            onboarding_phases=onboarding_phases,
+            onboarding_tasks=onboarding_tasks,
+            as_of=as_of,
+        )
     if evidence_source_ids is not None:
         evidence = _filter_evidence_refs_by_source_id(evidence, evidence_source_ids)
     if not evidence:
@@ -434,6 +461,7 @@ def _slot_b_inputs_for_account(
         as_of=as_of,
         trajectory_factor=trajectory.factor,
         onboarding_evidence_ids=frozenset(onboarding_ids),
+        onboarding_activation_gap_ids=activation_gap_ids,
     )
     if priority.score <= 0:
         return None
@@ -782,20 +810,21 @@ def _onboarding_milestones(
 def _onboarding_evidence(
     data_plane: CustomerDataPlane,
     account_id: str,
-) -> tuple[tuple[OnboardingPhase, ...], tuple[OnboardingTask, ...]]:
-    """Rocketlane phases/tasks groundable as evidence for this account."""
+) -> tuple[tuple[OnboardingProject, ...], tuple[OnboardingPhase, ...], tuple[OnboardingTask, ...]]:
+    """Rocketlane projects/phases/tasks groundable as evidence for this account."""
 
     if data_plane.onboarding is None:
-        return (), ()
+        return (), (), ()
     try:
+        projects = tuple(data_plane.onboarding.list_projects_for_account(account_id))
         phases: list[OnboardingPhase] = []
         tasks: list[OnboardingTask] = []
-        for project in data_plane.onboarding.list_projects_for_account(account_id):
+        for project in projects:
             phases.extend(data_plane.onboarding.list_phases(project.project_id))
             tasks.extend(data_plane.onboarding.list_tasks(project.project_id))
-        return tuple(phases), tuple(tasks)
+        return projects, tuple(phases), tuple(tasks)
     except Exception:
-        return (), ()
+        return (), (), ()
 
 
 def _evidence_refs(
@@ -848,6 +877,27 @@ def _evidence_refs(
     return tuple(refs)
 
 
+def _onboarding_activation_gap_evidence_refs(
+    activation_gap_ids: tuple[str, ...],
+    *,
+    onboarding_phases: tuple[OnboardingPhase, ...],
+    onboarding_tasks: tuple[OnboardingTask, ...],
+    as_of: str,
+) -> tuple[EvidenceRef, ...]:
+    phase_by_id = {phase.phase_id: phase for phase in onboarding_phases}
+    task_by_id = {task.task_id: task for task in onboarding_tasks}
+    refs: list[EvidenceRef] = []
+    for signal_id in activation_gap_ids:
+        phase = phase_by_id.get(signal_id)
+        if phase is not None:
+            refs.append(EvidenceRef("rocketlane", phase.phase_id, "activation_gap", phase.due_date or as_of))
+            continue
+        task = task_by_id.get(signal_id)
+        if task is not None:
+            refs.append(EvidenceRef("rocketlane", task.task_id, "activation_gap", task.due_date or as_of))
+    return tuple(refs)
+
+
 def _priority(
     model: CustomerValueModel,
     *,
@@ -858,6 +908,7 @@ def _priority(
     as_of: str,
     trajectory_factor: PriorityFactor | None = None,
     onboarding_evidence_ids: frozenset[str] = frozenset(),
+    onboarding_activation_gap_ids: tuple[str, ...] = (),
 ) -> Priority:
     projected = project_ttv_lens(
         model,
@@ -867,6 +918,7 @@ def _priority(
         overdue_success_plans=overdue_plans,
         as_of=as_of,
         onboarding_evidence_ids=onboarding_evidence_ids,
+        onboarding_activation_gap_ids=onboarding_activation_gap_ids,
     )
     factors = tuple(
         factor for factor in projected.factors
