@@ -103,9 +103,9 @@ the two run directories named by the probe summaries.
 | Top display-label candidate coverage | 200/200 non-empty |
 | Next lower display-label alternatives | 6/200 and 1/200 non-empty |
 | Confirmed CRMAccount records | 200/200 |
-| Confirmed CRMContact records | 200/200 |
-| Confirmed CRMOpportunity records | 200/200 |
-| Contact join coverage | 200/200 |
+| Confirmed CRMContact records | 200/200 (see correction below) |
+| Confirmed CRMOpportunity records | 200/200 (see correction below) |
+| Contact join coverage | 200/200 (see correction below) |
 | Unrepresentable shape paths | 8 |
 | Injection markers observed in sample | 0 |
 
@@ -113,6 +113,43 @@ The generated confirmation template selected the full-coverage display-label
 candidate without hand editing. The competing sparse alternatives remain visible
 in the proposal evidence, which is the intended operator-review behavior: a human
 can see why the full-coverage candidate is the obvious mapping before freeze.
+
+## Correction: the CRMContact/CRMOpportunity numbers above were hollow
+
+A later live host-driven run (a person walking the confirmation questions instead
+of a mechanically generated template) caught a real defect in the run above: the
+template had confirmed `CRMContact.contact_id` and `CRMOpportunity.opportunity_id`
+to the SAME source path already used for `CRMAccount.account_id`. Every "contact"
+and "opportunity" record it produced was the account row itself, relabeled under
+a different contract, with the account's own fields substituted for contact
+name/email. `contacts_joined: 200, ratio: 1.0` was therefore a tautology, not a
+join — every account trivially "joins" its own id to itself.
+
+Real per-contact identity in this corpus lives in a nested collection at
+`data.contacts` (listed above under unrepresentable shape paths). Child-record
+extraction is real and unit-tested (a directly-nested `contacts[]` array on the
+record extracts correctly), but it does not recurse through an intermediate
+wrapper object first — this corpus's JSONB `data` envelope sits one level
+between the record and the collection, which the current extraction does not
+reach through. A live host that
+actually reads the proposal's candidate evidence has no reason to pick
+`CRMContact.contact_id <- (same path as CRMAccount.account_id)`: nothing in the
+proposal suggests that mapping is correct, and a careful confirm should mark it
+`not_mappable` instead. Re-running the same bounded fetch with `not_mappable`
+confirmations for every CRMContact/CRMOpportunity field produced the honest
+result: **CRMAccount 60/60 typed, CRMContact 0/60, CRMOpportunity 0/60,
+`join_coverage: {contact_candidates: 0, contacts_joined: 0, ratio: null}`**, and
+60/60 accounts returned a loud `MISSING_CS_DATA` score error rather than a
+silent or fabricated score. That is the correct degraded outcome for a CRM-only
+relay with no reachable contact/opportunity identity, and it is what the
+"hollow briefing is a valid result" design principle exists to produce.
+
+Two fixes landed from this: `join_coverage.ratio` is now `null` (not `1.0`) when
+there are zero contact candidates — a vacuous 0/0 must never render as 100%
+success — and this document's earlier 200/200 CRMContact/CRMOpportunity/join
+numbers are superseded by this correction. The underlying gap (nested
+`data.contacts`-style collections not reaching child-record extraction on this
+corpus's shape) remains open for a future ingest-hardening pass.
 
 Child records were extracted where the existing CRMContact contract could
 represent them and the parent account identity could safely supply the join. The
