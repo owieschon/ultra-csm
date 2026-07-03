@@ -86,8 +86,8 @@ architecture, and measurement discipline — `docs/DECISION_LOG.md` records what
 
 ## Roadmap (next milestones, in order)
 
-1. **Finish judge validation** — resolve the residual specificity / on-task boundary cases, then
-   run a blind second independent labeler to establish the human-agreement ceiling
+1. **A second independent human labeler** — the judge is validated against a single labeler's
+   gold set; a blind second labeler establishes the human-agreement ceiling
    (judge-vs-human1-vs-human2).
 2. **Drift-power experiment** — show the judge's residual noise floor is below the generation
    drift it must detect, or scope the "detects quality drift" claim down to what's provable.
