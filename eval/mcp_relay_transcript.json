@@ -1,0 +1,1024 @@
+{
+  "artifact": "mcp_relay_transcript",
+  "artifact_sha256": "bd406086b3eb88d4e28a797491ab69dd51853c5508783868bf078e21180d51b7",
+  "beats": [
+    "readiness",
+    "ingest",
+    "confirm"
+  ],
+  "claim_boundary": {
+    "live": false,
+    "provenance": "mcp_relay",
+    "sim": false,
+    "unverified_mapping": true
+  },
+  "records_typed": {
+    "CRMAccount": 2,
+    "CRMContact": 2,
+    "CRMOpportunity": 2
+  },
+  "replay_sha256": "sha256:7cc005185b98edb80468b941b4d000a09d92bea02efa349a2f609fa99162831d",
+  "session_id": "relay-transcript",
+  "tool_calls": [
+    {
+      "output": {
+        "checklist": {
+          "crm": {
+            "declared": true,
+            "enables": [
+              "account identity",
+              "contacts",
+              "opportunities",
+              "minimum viable relay book"
+            ],
+            "missing_if_absent": "cannot build the minimum account book"
+          },
+          "email": {
+            "declared": true,
+            "enables": [
+              "host-placed drafts"
+            ],
+            "missing_if_absent": "ultra-csm can return draft content but cannot place it"
+          },
+          "telemetry": {
+            "declared": false,
+            "enables": [
+              "usage and adoption rails"
+            ],
+            "missing_if_absent": "value-model usage rails remain unknown"
+          }
+        },
+        "claim_boundary": {
+          "live": false,
+          "provenance": "mcp_relay",
+          "sim": false,
+          "unverified_mapping": true
+        },
+        "declared_sources": [
+          "crm",
+          "email"
+        ],
+        "degradation": "CRM-only relay can establish account context, but health, adoption, outcome, and telemetry rails remain unknown until those sources are relayed.",
+        "minimum_viable_book": {
+          "ready": true,
+          "requires": [
+            "crm"
+          ]
+        },
+        "missing_sources": [
+          "telemetry"
+        ],
+        "routes": {
+          "next_tool": "ingest_book",
+          "nothing_connected": "Use ULTRA_CSM_DEMO_OPERATOR=1 and get_morning_briefing for the sim morning when no host sources are connected."
+        }
+      },
+      "output_sha256": "f0951765a93f7aea6926eb339a7c8d209d12e6e64983963f634fa1850c07f507",
+      "tool": "report_readiness"
+    },
+    {
+      "output": {
+        "claim_boundary": {
+          "live": false,
+          "provenance": "mcp_relay",
+          "sim": false,
+          "unverified_mapping": true
+        },
+        "confirmation_questions": [
+          {
+            "candidate_keys": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_field": "customer_id",
+                "source_object": "customers",
+                "source_path": "customer_id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_field": "deal_id",
+                "source_object": "customers",
+                "source_path": "deal_id"
+              }
+            ],
+            "key": "CRMAccount.account_id",
+            "question": "Map CRMAccount.account_id to one candidate source path, or mark it not_mappable?",
+            "value_direction": "not_applicable"
+          },
+          {
+            "candidate_keys": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_field": "display_name",
+                "source_object": "customers",
+                "source_path": "display_name"
+              }
+            ],
+            "key": "CRMAccount.name",
+            "question": "Map CRMAccount.name to one candidate source path, or mark it not_mappable?",
+            "value_direction": "not_applicable"
+          },
+          {
+            "candidate_keys": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_field": "customer_id",
+                "source_object": "customers",
+                "source_path": "customer_id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_field": "deal_id",
+                "source_object": "customers",
+                "source_path": "deal_id"
+              }
+            ],
+            "key": "CRMAccount.owner_id",
+            "question": "Map CRMAccount.owner_id to one candidate source path, or mark it not_mappable?",
+            "value_direction": "not_applicable"
+          },
+          {
+            "candidate_keys": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_field": "sector",
+                "source_object": "customers",
+                "source_path": "sector"
+              }
+            ],
+            "key": "CRMAccount.industry",
+            "question": "Map CRMAccount.industry to one candidate source path, or mark it not_mappable?",
+            "value_direction": "not_applicable"
+          },
+          {
+            "candidate_keys": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_field": "id",
+                "source_object": "customers",
+                "source_path": "contacts[].id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_field": "customer_id",
+                "source_object": "customers",
+                "source_path": "customer_id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_field": "deal_id",
+                "source_object": "customers",
+                "source_path": "deal_id"
+              }
+            ],
+            "key": "CRMContact.contact_id",
+            "question": "Map CRMContact.contact_id to one candidate source path, or mark it not_mappable?",
+            "value_direction": "not_applicable"
+          },
+          {
+            "candidate_keys": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_field": "customer_id",
+                "source_object": "customers",
+                "source_path": "customer_id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_field": "deal_id",
+                "source_object": "customers",
+                "source_path": "deal_id"
+              }
+            ],
+            "key": "CRMContact.account_id",
+            "question": "Map CRMContact.account_id to one candidate source path, or mark it not_mappable?",
+            "value_direction": "not_applicable"
+          },
+          {
+            "candidate_keys": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_field": "email",
+                "source_object": "customers",
+                "source_path": "contacts[].email"
+              }
+            ],
+            "key": "CRMContact.email",
+            "question": "Map CRMContact.email to one candidate source path, or mark it not_mappable?",
+            "value_direction": "not_applicable"
+          },
+          {
+            "candidate_keys": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_field": "name",
+                "source_object": "customers",
+                "source_path": "contacts[].name"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_field": "display_name",
+                "source_object": "customers",
+                "source_path": "display_name"
+              }
+            ],
+            "key": "CRMContact.name",
+            "question": "Map CRMContact.name to one candidate source path, or mark it not_mappable?",
+            "value_direction": "not_applicable"
+          },
+          {
+            "candidate_keys": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_field": "consent_to_contact",
+                "source_object": "customers",
+                "source_path": "contacts[].consent_to_contact"
+              }
+            ],
+            "key": "CRMContact.consent_to_contact",
+            "question": "Map CRMContact.consent_to_contact to one candidate source path, or mark it not_mappable?",
+            "value_direction": "not_applicable"
+          },
+          {
+            "candidate_keys": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_field": "deal_id",
+                "source_object": "customers",
+                "source_path": "deal_id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_field": "customer_id",
+                "source_object": "customers",
+                "source_path": "customer_id"
+              }
+            ],
+            "key": "CRMOpportunity.opportunity_id",
+            "question": "Map CRMOpportunity.opportunity_id to one candidate source path, or mark it not_mappable?",
+            "value_direction": "not_applicable"
+          },
+          {
+            "candidate_keys": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_field": "customer_id",
+                "source_object": "customers",
+                "source_path": "customer_id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_field": "deal_id",
+                "source_object": "customers",
+                "source_path": "deal_id"
+              }
+            ],
+            "key": "CRMOpportunity.account_id",
+            "question": "Map CRMOpportunity.account_id to one candidate source path, or mark it not_mappable?",
+            "value_direction": "not_applicable"
+          },
+          {
+            "candidate_keys": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_field": "arr",
+                "source_object": "customers",
+                "source_path": "arr"
+              }
+            ],
+            "key": "CRMOpportunity.amount_cents",
+            "question": "Map CRMOpportunity.amount_cents to one candidate source path, or mark it not_mappable?",
+            "value_direction": "not_applicable"
+          },
+          {
+            "candidate_keys": [
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_field": "expected_close",
+                "source_object": "customers",
+                "source_path": "expected_close"
+              }
+            ],
+            "key": "CRMOpportunity.close_date",
+            "question": "Map CRMOpportunity.close_date to one candidate source path, or mark it not_mappable?",
+            "value_direction": "not_applicable"
+          }
+        ],
+        "dropped_record_count": 0,
+        "expected_count": 2,
+        "mapping_proposal": {
+          "connector_id": "external_book",
+          "coverage": {
+            "ambiguous_confirm": 13,
+            "mapped": 0,
+            "missing_to_unknown": 4,
+            "total": 17
+          },
+          "entries": [
+            {
+              "candidate_evidence": [
+                {
+                  "confidence": 0.95,
+                  "field_type": "string",
+                  "reason": "field name matches a known alias for this contract field",
+                  "rows_nonempty": 2,
+                  "rows_present": 2,
+                  "rows_sampled": 2,
+                  "source_field": "customer_id",
+                  "source_object": "customers",
+                  "source_path": "customer_id"
+                },
+                {
+                  "confidence": 0.68,
+                  "field_type": "string",
+                  "reason": "identity-shaped field is a plausible join candidate",
+                  "rows_nonempty": 2,
+                  "rows_present": 2,
+                  "rows_sampled": 2,
+                  "source_field": "deal_id",
+                  "source_object": "customers",
+                  "source_path": "deal_id"
+                }
+              ],
+              "confidence": 0.95,
+              "connector_id": "external_book",
+              "contract": "CRMAccount",
+              "internal_field": "account_id",
+              "llm_allowed": true,
+              "pii": "none",
+              "reason": "candidate field requires human confirmation with sparsity evidence",
+              "requires_human_confirmation": true,
+              "semantic_role": "identity_join",
+              "source_field": "customer_id",
+              "source_object": "customers",
+              "source_path": "customer_id",
+              "state": "ambiguous_confirm",
+              "value_direction": "not_applicable"
+            },
+            {
+              "candidate_evidence": [
+                {
+                  "confidence": 0.95,
+                  "field_type": "string",
+                  "reason": "field name matches a known alias for this contract field",
+                  "rows_nonempty": 2,
+                  "rows_present": 2,
+                  "rows_sampled": 2,
+                  "source_field": "display_name",
+                  "source_object": "customers",
+                  "source_path": "display_name"
+                }
+              ],
+              "confidence": 0.95,
+              "connector_id": "external_book",
+              "contract": "CRMAccount",
+              "internal_field": "name",
+              "llm_allowed": true,
+              "pii": "none",
+              "reason": "candidate field requires human confirmation with sparsity evidence",
+              "requires_human_confirmation": true,
+              "semantic_role": "context",
+              "source_field": "display_name",
+              "source_object": "customers",
+              "source_path": "display_name",
+              "state": "ambiguous_confirm",
+              "value_direction": "not_applicable"
+            },
+            {
+              "candidate_evidence": [
+                {
+                  "confidence": 0.68,
+                  "field_type": "string",
+                  "reason": "identity-shaped field is a plausible join candidate",
+                  "rows_nonempty": 2,
+                  "rows_present": 2,
+                  "rows_sampled": 2,
+                  "source_field": "customer_id",
+                  "source_object": "customers",
+                  "source_path": "customer_id"
+                },
+                {
+                  "confidence": 0.68,
+                  "field_type": "string",
+                  "reason": "identity-shaped field is a plausible join candidate",
+                  "rows_nonempty": 2,
+                  "rows_present": 2,
+                  "rows_sampled": 2,
+                  "source_field": "deal_id",
+                  "source_object": "customers",
+                  "source_path": "deal_id"
+                }
+              ],
+              "confidence": 0.68,
+              "connector_id": "external_book",
+              "contract": "CRMAccount",
+              "internal_field": "owner_id",
+              "llm_allowed": true,
+              "pii": "none",
+              "reason": "candidate field requires human confirmation with sparsity evidence",
+              "requires_human_confirmation": true,
+              "semantic_role": "context",
+              "source_field": "customer_id",
+              "source_object": "customers",
+              "source_path": "customer_id",
+              "state": "ambiguous_confirm",
+              "value_direction": "not_applicable"
+            },
+            {
+              "candidate_evidence": [
+                {
+                  "confidence": 0.95,
+                  "field_type": "string",
+                  "reason": "field name matches a known alias for this contract field",
+                  "rows_nonempty": 2,
+                  "rows_present": 2,
+                  "rows_sampled": 2,
+                  "source_field": "sector",
+                  "source_object": "customers",
+                  "source_path": "sector"
+                }
+              ],
+              "confidence": 0.95,
+              "connector_id": "external_book",
+              "contract": "CRMAccount",
+              "internal_field": "industry",
+              "llm_allowed": true,
+              "pii": "none",
+              "reason": "candidate field requires human confirmation with sparsity evidence",
+              "requires_human_confirmation": true,
+              "semantic_role": "context",
+              "source_field": "sector",
+              "source_object": "customers",
+              "source_path": "sector",
+              "state": "ambiguous_confirm",
+              "value_direction": "not_applicable"
+            },
+            {
+              "candidate_evidence": [
+                {
+                  "confidence": 0.95,
+                  "field_type": "string",
+                  "reason": "nested contacts child field matches the target contract",
+                  "rows_nonempty": 2,
+                  "rows_present": 2,
+                  "rows_sampled": 2,
+                  "source_field": "id",
+                  "source_object": "customers",
+                  "source_path": "contacts[].id"
+                },
+                {
+                  "confidence": 0.68,
+                  "field_type": "string",
+                  "reason": "identity-shaped field is a plausible join candidate",
+                  "rows_nonempty": 2,
+                  "rows_present": 2,
+                  "rows_sampled": 2,
+                  "source_field": "customer_id",
+                  "source_object": "customers",
+                  "source_path": "customer_id"
+                },
+                {
+                  "confidence": 0.68,
+                  "field_type": "string",
+                  "reason": "identity-shaped field is a plausible join candidate",
+                  "rows_nonempty": 2,
+                  "rows_present": 2,
+                  "rows_sampled": 2,
+                  "source_field": "deal_id",
+                  "source_object": "customers",
+                  "source_path": "deal_id"
+                }
+              ],
+              "confidence": 0.95,
+              "connector_id": "external_book",
+              "contract": "CRMContact",
+              "internal_field": "contact_id",
+              "llm_allowed": true,
+              "pii": "none",
+              "reason": "candidate field requires human confirmation with sparsity evidence",
+              "requires_human_confirmation": true,
+              "semantic_role": "identity_join",
+              "source_field": "id",
+              "source_object": "customers",
+              "source_path": "contacts[].id",
+              "state": "ambiguous_confirm",
+              "value_direction": "not_applicable"
+            },
+            {
+              "candidate_evidence": [
+                {
+                  "confidence": 0.95,
+                  "field_type": "string",
+                  "reason": "field name matches a known alias for this contract field",
+                  "rows_nonempty": 2,
+                  "rows_present": 2,
+                  "rows_sampled": 2,
+                  "source_field": "customer_id",
+                  "source_object": "customers",
+                  "source_path": "customer_id"
+                },
+                {
+                  "confidence": 0.68,
+                  "field_type": "string",
+                  "reason": "identity-shaped field is a plausible join candidate",
+                  "rows_nonempty": 2,
+                  "rows_present": 2,
+                  "rows_sampled": 2,
+                  "source_field": "deal_id",
+                  "source_object": "customers",
+                  "source_path": "deal_id"
+                }
+              ],
+              "confidence": 0.95,
+              "connector_id": "external_book",
+              "contract": "CRMContact",
+              "internal_field": "account_id",
+              "llm_allowed": true,
+              "pii": "none",
+              "reason": "candidate field requires human confirmation with sparsity evidence",
+              "requires_human_confirmation": true,
+              "semantic_role": "identity_join",
+              "source_field": "customer_id",
+              "source_object": "customers",
+              "source_path": "customer_id",
+              "state": "ambiguous_confirm",
+              "value_direction": "not_applicable"
+            },
+            {
+              "candidate_evidence": [
+                {
+                  "confidence": 0.95,
+                  "field_type": "string",
+                  "reason": "nested contacts child field matches the target contract",
+                  "rows_nonempty": 2,
+                  "rows_present": 2,
+                  "rows_sampled": 2,
+                  "source_field": "email",
+                  "source_object": "customers",
+                  "source_path": "contacts[].email"
+                }
+              ],
+              "confidence": 0.95,
+              "connector_id": "external_book",
+              "contract": "CRMContact",
+              "internal_field": "email",
+              "llm_allowed": false,
+              "pii": "contact",
+              "reason": "candidate field requires human confirmation with sparsity evidence",
+              "requires_human_confirmation": true,
+              "semantic_role": "context",
+              "source_field": "email",
+              "source_object": "customers",
+              "source_path": "contacts[].email",
+              "state": "ambiguous_confirm",
+              "value_direction": "not_applicable"
+            },
+            {
+              "candidate_evidence": [
+                {
+                  "confidence": 0.95,
+                  "field_type": "string",
+                  "reason": "nested contacts child field matches the target contract",
+                  "rows_nonempty": 2,
+                  "rows_present": 2,
+                  "rows_sampled": 2,
+                  "source_field": "name",
+                  "source_object": "customers",
+                  "source_path": "contacts[].name"
+                },
+                {
+                  "confidence": 0.56,
+                  "field_type": "string",
+                  "reason": "field path partially matches a known alias",
+                  "rows_nonempty": 2,
+                  "rows_present": 2,
+                  "rows_sampled": 2,
+                  "source_field": "display_name",
+                  "source_object": "customers",
+                  "source_path": "display_name"
+                }
+              ],
+              "confidence": 0.95,
+              "connector_id": "external_book",
+              "contract": "CRMContact",
+              "internal_field": "name",
+              "llm_allowed": true,
+              "pii": "contact",
+              "reason": "candidate field requires human confirmation with sparsity evidence",
+              "requires_human_confirmation": true,
+              "semantic_role": "context",
+              "source_field": "name",
+              "source_object": "customers",
+              "source_path": "contacts[].name",
+              "state": "ambiguous_confirm",
+              "value_direction": "not_applicable"
+            },
+            {
+              "candidate_evidence": [],
+              "confidence": 0.0,
+              "connector_id": "external_book",
+              "contract": "CRMContact",
+              "internal_field": "role",
+              "llm_allowed": true,
+              "pii": "none",
+              "reason": "source object not discovered",
+              "requires_human_confirmation": false,
+              "semantic_role": "context",
+              "source_field": null,
+              "source_object": null,
+              "source_path": null,
+              "state": "missing_to_unknown",
+              "value_direction": "not_applicable"
+            },
+            {
+              "candidate_evidence": [],
+              "confidence": 0.0,
+              "connector_id": "external_book",
+              "contract": "CRMContact",
+              "internal_field": "title",
+              "llm_allowed": true,
+              "pii": "none",
+              "reason": "source object not discovered",
+              "requires_human_confirmation": false,
+              "semantic_role": "context",
+              "source_field": null,
+              "source_object": null,
+              "source_path": null,
+              "state": "missing_to_unknown",
+              "value_direction": "not_applicable"
+            },
+            {
+              "candidate_evidence": [
+                {
+                  "confidence": 0.95,
+                  "field_type": "boolean",
+                  "reason": "nested contacts child field matches the target contract",
+                  "rows_nonempty": 2,
+                  "rows_present": 2,
+                  "rows_sampled": 2,
+                  "source_field": "consent_to_contact",
+                  "source_object": "customers",
+                  "source_path": "contacts[].consent_to_contact"
+                }
+              ],
+              "confidence": 0.95,
+              "connector_id": "external_book",
+              "contract": "CRMContact",
+              "internal_field": "consent_to_contact",
+              "llm_allowed": true,
+              "pii": "none",
+              "reason": "candidate field requires human confirmation with sparsity evidence",
+              "requires_human_confirmation": true,
+              "semantic_role": "context",
+              "source_field": "consent_to_contact",
+              "source_object": "customers",
+              "source_path": "contacts[].consent_to_contact",
+              "state": "ambiguous_confirm",
+              "value_direction": "not_applicable"
+            },
+            {
+              "candidate_evidence": [
+                {
+                  "confidence": 0.95,
+                  "field_type": "string",
+                  "reason": "field name matches a known alias for this contract field",
+                  "rows_nonempty": 2,
+                  "rows_present": 2,
+                  "rows_sampled": 2,
+                  "source_field": "deal_id",
+                  "source_object": "customers",
+                  "source_path": "deal_id"
+                },
+                {
+                  "confidence": 0.68,
+                  "field_type": "string",
+                  "reason": "identity-shaped field is a plausible join candidate",
+                  "rows_nonempty": 2,
+                  "rows_present": 2,
+                  "rows_sampled": 2,
+                  "source_field": "customer_id",
+                  "source_object": "customers",
+                  "source_path": "customer_id"
+                }
+              ],
+              "confidence": 0.95,
+              "connector_id": "external_book",
+              "contract": "CRMOpportunity",
+              "internal_field": "opportunity_id",
+              "llm_allowed": true,
+              "pii": "none",
+              "reason": "candidate field requires human confirmation with sparsity evidence",
+              "requires_human_confirmation": true,
+              "semantic_role": "context",
+              "source_field": "deal_id",
+              "source_object": "customers",
+              "source_path": "deal_id",
+              "state": "ambiguous_confirm",
+              "value_direction": "not_applicable"
+            },
+            {
+              "candidate_evidence": [
+                {
+                  "confidence": 0.95,
+                  "field_type": "string",
+                  "reason": "field name matches a known alias for this contract field",
+                  "rows_nonempty": 2,
+                  "rows_present": 2,
+                  "rows_sampled": 2,
+                  "source_field": "customer_id",
+                  "source_object": "customers",
+                  "source_path": "customer_id"
+                },
+                {
+                  "confidence": 0.68,
+                  "field_type": "string",
+                  "reason": "identity-shaped field is a plausible join candidate",
+                  "rows_nonempty": 2,
+                  "rows_present": 2,
+                  "rows_sampled": 2,
+                  "source_field": "deal_id",
+                  "source_object": "customers",
+                  "source_path": "deal_id"
+                }
+              ],
+              "confidence": 0.95,
+              "connector_id": "external_book",
+              "contract": "CRMOpportunity",
+              "internal_field": "account_id",
+              "llm_allowed": true,
+              "pii": "none",
+              "reason": "candidate field requires human confirmation with sparsity evidence",
+              "requires_human_confirmation": true,
+              "semantic_role": "identity_join",
+              "source_field": "customer_id",
+              "source_object": "customers",
+              "source_path": "customer_id",
+              "state": "ambiguous_confirm",
+              "value_direction": "not_applicable"
+            },
+            {
+              "candidate_evidence": [],
+              "confidence": 0.0,
+              "connector_id": "external_book",
+              "contract": "CRMOpportunity",
+              "internal_field": "stage_name",
+              "llm_allowed": true,
+              "pii": "none",
+              "reason": "source object not discovered",
+              "requires_human_confirmation": false,
+              "semantic_role": "context",
+              "source_field": null,
+              "source_object": null,
+              "source_path": null,
+              "state": "missing_to_unknown",
+              "value_direction": "ordered_confirm"
+            },
+            {
+              "candidate_evidence": [
+                {
+                  "confidence": 0.95,
+                  "field_type": "string",
+                  "reason": "field name matches a known alias for this contract field",
+                  "rows_nonempty": 2,
+                  "rows_present": 2,
+                  "rows_sampled": 2,
+                  "source_field": "arr",
+                  "source_object": "customers",
+                  "source_path": "arr"
+                }
+              ],
+              "confidence": 0.95,
+              "connector_id": "external_book",
+              "contract": "CRMOpportunity",
+              "internal_field": "amount_cents",
+              "llm_allowed": true,
+              "pii": "none",
+              "reason": "candidate field requires human confirmation with sparsity evidence",
+              "requires_human_confirmation": true,
+              "semantic_role": "context",
+              "source_field": "arr",
+              "source_object": "customers",
+              "source_path": "arr",
+              "state": "ambiguous_confirm",
+              "value_direction": "not_applicable"
+            },
+            {
+              "candidate_evidence": [
+                {
+                  "confidence": 0.95,
+                  "field_type": "string",
+                  "reason": "field name matches a known alias for this contract field",
+                  "rows_nonempty": 2,
+                  "rows_present": 2,
+                  "rows_sampled": 2,
+                  "source_field": "expected_close",
+                  "source_object": "customers",
+                  "source_path": "expected_close"
+                }
+              ],
+              "confidence": 0.95,
+              "connector_id": "external_book",
+              "contract": "CRMOpportunity",
+              "internal_field": "close_date",
+              "llm_allowed": true,
+              "pii": "none",
+              "reason": "candidate field requires human confirmation with sparsity evidence",
+              "requires_human_confirmation": true,
+              "semantic_role": "time_boundary",
+              "source_field": "expected_close",
+              "source_object": "customers",
+              "source_path": "expected_close",
+              "state": "ambiguous_confirm",
+              "value_direction": "not_applicable"
+            },
+            {
+              "candidate_evidence": [],
+              "confidence": 0.0,
+              "connector_id": "external_book",
+              "contract": "CRMOpportunity",
+              "internal_field": "opportunity_type",
+              "llm_allowed": true,
+              "pii": "none",
+              "reason": "source object not discovered",
+              "requires_human_confirmation": false,
+              "semantic_role": "context",
+              "source_field": null,
+              "source_object": null,
+              "source_path": null,
+              "state": "missing_to_unknown",
+              "value_direction": "not_applicable"
+            }
+          ],
+          "proposal_hash": "sha256:ae6ea098cd9b69f6c120c0c3959f0b1c88db384fb45fa8ac7f27c4076d2ea368",
+          "required_operator_actions": [
+            "confirm 13 semantic/value mappings",
+            "review 4 missing fields; affected rails remain unknown"
+          ],
+          "schema_hash": "sha256:c56d827d2d378f5e34b1bedaf83ad075b2ce88884b233af92e2993fd4c8e68af"
+        },
+        "next_tool": "confirm_book_mappings",
+        "raw_input_sha256": "sha256:160eeb1e962b81569dd506c005efa252b9e19f4fb5ae261087f7fa8707dd11fa",
+        "received_count": 2,
+        "session_id": "relay-transcript",
+        "stored_count": 2,
+        "truncated": false,
+        "unrepresentable_paths": []
+      },
+      "output_sha256": "8f1021aa66470554789116b9b3817358870aea522b1b54cf2b2624a1b13ec22b",
+      "tool": "ingest_book"
+    },
+    {
+      "output": {
+        "briefing": [
+          "External ingest typed 2 CRM accounts from 2 processed records.",
+          "CRM-only ingest does not provide CS-platform health or product telemetry; value-model rails that require those sources remain unknown."
+        ],
+        "claim_boundary": {
+          "live": false,
+          "provenance": "mcp_relay",
+          "sim": false,
+          "unverified_mapping": true
+        },
+        "coverage": {
+          "count_mismatch": false,
+          "dropped_record_count": 0,
+          "duplicate_identities": [],
+          "expected_count": 2,
+          "field_coverage": {
+            "CRMAccount": {
+              "mapped": 4
+            },
+            "CRMContact": {
+              "mapped": 5,
+              "unknown": 2
+            },
+            "CRMOpportunity": {
+              "mapped": 4,
+              "unknown": 2
+            }
+          },
+          "injection_marker_count": 0,
+          "join_coverage": {
+            "contact_candidates": 2,
+            "contacts_joined": 2,
+            "ratio": 1.0
+          },
+          "records_processed": 2,
+          "records_received": 2,
+          "records_rejected": [],
+          "records_typed": {
+            "CRMAccount": 2,
+            "CRMContact": 2,
+            "CRMOpportunity": 2
+          },
+          "rejection_counts": {},
+          "truncated": false,
+          "unknown_fields": [
+            "CRMContact.role",
+            "CRMContact.title",
+            "CRMOpportunity.opportunity_type",
+            "CRMOpportunity.stage_name"
+          ],
+          "unrepresentable_paths": []
+        },
+        "frozen_config_hash": "sha256:619a384a132436e8884038f0310ac2b29cc50b52bff111b492915d7d078c9221",
+        "live": false,
+        "propose_only_actions": [
+          {
+            "account_id": "learning-001",
+            "body": "Draft only. Review this in the host email client before sending; ultra-csm has not sent anything.",
+            "contact_id": "person-001",
+            "live_send_performed": false,
+            "placement": "host_may_create_draft_in_user_mail_client",
+            "propose_only": true,
+            "subject": "Customer-success follow-up",
+            "type": "email_draft"
+          },
+          {
+            "account_id": "learning-002",
+            "body": "Draft only. Review this in the host email client before sending; ultra-csm has not sent anything.",
+            "contact_id": "person-002",
+            "live_send_performed": false,
+            "placement": "host_may_create_draft_in_user_mail_client",
+            "propose_only": true,
+            "subject": "Customer-success follow-up",
+            "type": "email_draft"
+          }
+        ],
+        "provenance": "mcp_relay",
+        "raw_input_sha256": "sha256:160eeb1e962b81569dd506c005efa252b9e19f4fb5ae261087f7fa8707dd11fa",
+        "records": {
+          "dropped_record_count": 0,
+          "expected_count": 2,
+          "received_count": 2,
+          "stored_count": 2,
+          "truncated": false
+        },
+        "replay_sha256": "sha256:7cc005185b98edb80468b941b4d000a09d92bea02efa349a2f609fa99162831d",
+        "score_errors": [
+          {
+            "account_id": "learning-001",
+            "code": "MISSING_CS_DATA",
+            "message": "Missing CS platform data for account learning-001"
+          },
+          {
+            "account_id": "learning-002",
+            "code": "MISSING_CS_DATA",
+            "message": "Missing CS platform data for account learning-002"
+          }
+        ],
+        "score_summary": {
+          "score_error_count": 2,
+          "scoreable_accounts": 0
+        },
+        "scores": [],
+        "session_id": "relay-transcript",
+        "sim": false,
+        "unverified_mapping": true
+      },
+      "output_sha256": "331a0191ba0e9462290effc705774cf7b7a6dd5eefbedf3726d08501b6a49226",
+      "tool": "confirm_book_mappings"
+    }
+  ]
+}

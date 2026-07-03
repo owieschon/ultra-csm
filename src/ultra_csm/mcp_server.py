@@ -13,10 +13,13 @@ principal rather than a server-held authority.
 from __future__ import annotations
 
 import atexit
+from dataclasses import dataclass, field
+import hashlib
 import json
 import logging
 import os
 from pathlib import Path
+from typing import Any, Mapping
 
 import psycopg
 from mcp.server.fastmcp import FastMCP
@@ -34,8 +37,23 @@ from ultra_csm.data_plane import (
     DEFAULT_TENANT,
     SimTenantStore,
     build_sweep_fixture_data_plane,
+    FixtureCRMDataConnector,
+    FixtureCSPlatformConnector,
+    FixtureCustomerData,
+    FixtureProductTelemetryConnector,
+)
+from ultra_csm.data_plane.external_book import (
+    DEFAULT_MAX_RECORDS,
+    ExternalSourceDescriptor,
+    ingest_external_book,
+    propose_external_source_mapping,
 )
 from ultra_csm.data_plane.synthetic_book import SEED_DATE
+from ultra_csm.data_plane.source_mapping import (
+    MappingConfirmation,
+    SourceMapProposal,
+    freeze_confirmed_source_map,
+)
 from ultra_csm.governance import (
     ActionGate,
     ActionProposal,
@@ -79,6 +97,7 @@ _DEMO_OPERATOR_ENV = "ULTRA_CSM_DEMO_OPERATOR"
 _READONLY_CODE = "MCP_READONLY"
 _DEMO_STATE_DIR = DEFAULT_DEMO_STATE_DIR / "mcp_operator"
 _TIMELINE_DAYS = (0, 30, 60)
+_RELAY_MAX_RECORDS = DEFAULT_MAX_RECORDS
 
 log = logging.getLogger(__name__)
 
@@ -99,6 +118,23 @@ _proposals: dict[str, ActionProposal] = {}
 # Cache the most recent sweep result so list_proposals can pull from it.
 _last_sweep: SweepResult | None = None
 _session_events: list[dict[str, object]] = []
+
+
+@dataclass
+class _RelaySession:
+    session_id: str
+    descriptor: ExternalSourceDescriptor
+    expected_count: int
+    raw_records: list[dict[str, Any]] = field(default_factory=list)
+    received_count: int = 0
+    dropped_record_count: int = 0
+    proposal: SourceMapProposal | None = None
+    frozen_config_hash: str | None = None
+    replay_sha256: str | None = None
+
+
+_relay_sessions: dict[str, _RelaySession] = {}
+_last_relay_session_id: str | None = None
 
 
 def _truthy(value: str | None) -> bool:
@@ -142,6 +178,43 @@ def _readonly_refusal(tool_name: str) -> dict[str, str]:
         "tool": tool_name,
         "access_mode": "read_only",
     }
+
+
+def _relay_claim_boundary(*, unverified_mapping: bool = True) -> dict[str, object]:
+    return {
+        "provenance": "mcp_relay",
+        "unverified_mapping": unverified_mapping,
+        "sim": False,
+        "live": False,
+    }
+
+
+def _relay_refusal(code: str, message: str, tool_name: str, **extra: object) -> dict:
+    payload: dict[str, object] = {
+        "error": message,
+        "code": code,
+        "tool": tool_name,
+        "claim_boundary": _relay_claim_boundary(),
+    }
+    payload.update(extra)
+    return payload
+
+
+def _relay_tool_available(tool_name: str) -> dict | None:
+    if mcp_readonly_enabled():
+        return _readonly_refusal(tool_name)
+    if mcp_demo_operator_enabled():
+        return _relay_refusal(
+            "RELAY_DEMO_OPERATOR_CONFLICT",
+            (
+                f"{tool_name} mutates relay session state and is disabled while "
+                f"{_DEMO_OPERATOR_ENV}=1. Restart MCP without demo-operator mode "
+                "to ingest host-relayed books."
+            ),
+            tool_name,
+            access_mode="demo_operator",
+        )
+    return None
 
 
 def _with_demo_context(payload: dict, *, suggested_next: list[str] | None = None) -> dict:
@@ -513,6 +586,21 @@ MCP_TOOL_AUDIT: tuple[dict[str, object], ...] = (
         "readonly_available": False,
     },
     {
+        "name": "report_readiness",
+        "classification": "state_changing",
+        "readonly_available": False,
+    },
+    {
+        "name": "ingest_book",
+        "classification": "state_changing",
+        "readonly_available": False,
+    },
+    {
+        "name": "confirm_book_mappings",
+        "classification": "state_changing",
+        "readonly_available": False,
+    },
+    {
         "name": "run_sweep",
         "classification": "state_changing",
         "readonly_available": False,
@@ -881,6 +969,212 @@ def get_session_ledger() -> dict:
 
 
 @mcp.tool()
+def report_readiness(sources: list[str] | None = None) -> dict:
+    """Report what a host-declared relay source set can support."""
+
+    refusal = _relay_tool_available("report_readiness")
+    if refusal is not None:
+        return refusal
+
+    source_set = _normalize_sources(sources or [])
+    checklist = {
+        "crm": {
+            "declared": "crm" in source_set,
+            "enables": [
+                "account identity",
+                "contacts",
+                "opportunities",
+                "minimum viable relay book",
+            ],
+            "missing_if_absent": "cannot build the minimum account book",
+        },
+        "email": {
+            "declared": "email" in source_set,
+            "enables": ["host-placed drafts"],
+            "missing_if_absent": "ultra-csm can return draft content but cannot place it",
+        },
+        "telemetry": {
+            "declared": "telemetry" in source_set,
+            "enables": ["usage and adoption rails"],
+            "missing_if_absent": "value-model usage rails remain unknown",
+        },
+    }
+    missing = [name for name, item in checklist.items() if not item["declared"]]
+    minimum_ok = bool(checklist["crm"]["declared"])
+    return {
+        "claim_boundary": _relay_claim_boundary(),
+        "declared_sources": sorted(source_set),
+        "minimum_viable_book": {
+            "requires": ["crm"],
+            "ready": minimum_ok,
+        },
+        "checklist": checklist,
+        "missing_sources": missing,
+        "degradation": (
+            "CRM-only relay can establish account context, but health, adoption, "
+            "outcome, and telemetry rails remain unknown until those sources are relayed."
+        ),
+        "routes": {
+            "nothing_connected": (
+                "Use ULTRA_CSM_DEMO_OPERATOR=1 and get_morning_briefing for the "
+                "sim morning when no host sources are connected."
+            ),
+            "next_tool": "ingest_book" if minimum_ok else None,
+        },
+    }
+
+
+@mcp.tool()
+def ingest_book(
+    records: list[dict[str, Any]],
+    source_descriptor: dict[str, Any] | None,
+    expected_count: int | None,
+    session_id: str | None = None,
+    final_chunk: bool = True,
+) -> dict:
+    """Ingest host-relayed raw records and return a confirmation proposal."""
+
+    refusal = _relay_tool_available("ingest_book")
+    if refusal is not None:
+        return refusal
+    if expected_count is None:
+        return _relay_refusal(
+            "EXPECTED_COUNT_REQUIRED",
+            "ingest_book requires expected_count so truncation and count mismatch are visible.",
+            "ingest_book",
+        )
+    if expected_count < 0:
+        return _relay_refusal(
+            "EXPECTED_COUNT_INVALID",
+            "expected_count must be zero or greater.",
+            "ingest_book",
+            expected_count=expected_count,
+        )
+    if not isinstance(records, list) or any(not isinstance(record, dict) for record in records):
+        return _relay_refusal(
+            "RELAY_RECORDS_INVALID",
+            "records must be a list of JSON objects.",
+            "ingest_book",
+        )
+
+    descriptor = _relay_descriptor(source_descriptor or {}, expected_count=expected_count)
+    session = _relay_session(session_id, descriptor=descriptor, expected_count=expected_count)
+    if session.expected_count != expected_count:
+        return _relay_refusal(
+            "EXPECTED_COUNT_CHANGED",
+            "expected_count must remain stable across chunks for a relay session.",
+            "ingest_book",
+            session_id=session.session_id,
+            existing_expected_count=session.expected_count,
+            supplied_expected_count=expected_count,
+        )
+
+    _append_relay_records(session, records)
+    if not final_chunk:
+        return {
+            "claim_boundary": _relay_claim_boundary(),
+            "session_id": session.session_id,
+            "accepted_chunk": True,
+            "received_count": session.received_count,
+            "stored_count": len(session.raw_records),
+            "expected_count": session.expected_count,
+            "truncated": session.dropped_record_count > 0,
+            "dropped_record_count": session.dropped_record_count,
+            "next": "send the next chunk with the same session_id",
+        }
+
+    if session.received_count != session.expected_count:
+        return _relay_refusal(
+            "RELAY_COUNT_MISMATCH",
+            "received record count does not match expected_count; refusing to freeze a partial book.",
+            "ingest_book",
+            session_id=session.session_id,
+            received_count=session.received_count,
+            expected_count=session.expected_count,
+            stored_count=len(session.raw_records),
+            truncated=session.dropped_record_count > 0,
+            dropped_record_count=session.dropped_record_count,
+        )
+
+    _snapshot, proposal, unrepresentable = propose_external_source_mapping(
+        session.raw_records,
+        session.descriptor,
+    )
+    session.proposal = proposal
+    return {
+        "claim_boundary": _relay_claim_boundary(),
+        "session_id": session.session_id,
+        "received_count": session.received_count,
+        "stored_count": len(session.raw_records),
+        "expected_count": session.expected_count,
+        "truncated": session.dropped_record_count > 0,
+        "dropped_record_count": session.dropped_record_count,
+        "raw_input_sha256": _raw_records_hash(session.raw_records),
+        "unrepresentable_paths": list(unrepresentable),
+        "mapping_proposal": proposal.to_dict(),
+        "confirmation_questions": _confirmation_questions(proposal),
+        "next_tool": "confirm_book_mappings",
+    }
+
+
+@mcp.tool()
+def confirm_book_mappings(
+    confirmations: dict[str, Any],
+    session_id: str | None = None,
+) -> dict:
+    """Freeze relay mappings, transform the relayed book, and return a briefing."""
+
+    refusal = _relay_tool_available("confirm_book_mappings")
+    if refusal is not None:
+        return refusal
+    session = _selected_relay_session(session_id)
+    if session is None:
+        return _relay_refusal(
+            "RELAY_SESSION_NOT_FOUND",
+            "No relay session with a mapping proposal is available.",
+            "confirm_book_mappings",
+            session_id=session_id,
+        )
+    if session.proposal is None:
+        return _relay_refusal(
+            "RELAY_PROPOSAL_REQUIRED",
+            "Run ingest_book through the final chunk before confirming mappings.",
+            "confirm_book_mappings",
+            session_id=session.session_id,
+        )
+
+    try:
+        parsed = _mapping_confirmations_from_tool(confirmations)
+        frozen = freeze_confirmed_source_map(session.proposal, confirmations=parsed)
+    except ValueError as exc:
+        return _relay_refusal(
+            "RELAY_CONFIRMATION_INVALID",
+            str(exc),
+            "confirm_book_mappings",
+            session_id=session.session_id,
+        )
+
+    first = _relay_replay_payload(session, frozen)
+    second = _relay_replay_payload(session, frozen)
+    if first != second:
+        return _relay_refusal(
+            "RELAY_REPLAY_NONDETERMINISTIC",
+            "Recorded raw inputs plus frozen map did not replay deterministically.",
+            "confirm_book_mappings",
+            session_id=session.session_id,
+        )
+    replay_sha = _json_sha256(first)
+    session.frozen_config_hash = frozen.config_hash
+    session.replay_sha256 = replay_sha
+    first.update({
+        "claim_boundary": _relay_claim_boundary(),
+        "session_id": session.session_id,
+        "replay_sha256": replay_sha,
+    })
+    return first
+
+
+@mcp.tool()
 def run_sweep() -> dict:
     """Run the Agent 1 time-to-value sweep across the entire tenant book.
 
@@ -1117,6 +1411,259 @@ def submit_verdict(
         result,
         suggested_next=["get_session_ledger", "list_proposals"],
     )
+
+
+def _normalize_sources(sources: list[str]) -> set[str]:
+    allowed = {"email", "crm", "telemetry", "none"}
+    normalized = {
+        str(source).strip().lower()
+        for source in sources
+        if str(source).strip()
+    }
+    if not normalized:
+        normalized = {"none"}
+    if "none" in normalized:
+        return {"none"}
+    return {source for source in normalized if source in allowed}
+
+
+def _relay_descriptor(
+    payload: Mapping[str, Any],
+    *,
+    expected_count: int,
+) -> ExternalSourceDescriptor:
+    source_name = str(payload.get("source_name") or payload.get("name") or "mcp_relay")
+    object_name = str(payload.get("object_name") or "records")
+    max_records = _bounded_int(payload.get("max_records"), default=_RELAY_MAX_RECORDS)
+    max_schema_depth = _bounded_int(payload.get("max_schema_depth"), default=3)
+    return ExternalSourceDescriptor(
+        source_name=source_name,
+        expected_count=expected_count,
+        object_name=object_name,
+        max_records=max_records,
+        max_schema_depth=max_schema_depth,
+    )
+
+
+def _bounded_int(value: Any, *, default: int) -> int:
+    try:
+        parsed = int(value)
+    except (TypeError, ValueError):
+        parsed = default
+    return max(0, parsed)
+
+
+def _relay_session(
+    session_id: str | None,
+    *,
+    descriptor: ExternalSourceDescriptor,
+    expected_count: int,
+) -> _RelaySession:
+    global _last_relay_session_id
+    if session_id and session_id in _relay_sessions:
+        session = _relay_sessions[session_id]
+    else:
+        session_id = session_id or f"relay-{len(_relay_sessions) + 1:04d}"
+        session = _RelaySession(
+            session_id=session_id,
+            descriptor=descriptor,
+            expected_count=expected_count,
+        )
+        _relay_sessions[session_id] = session
+    _last_relay_session_id = session.session_id
+    return session
+
+
+def _selected_relay_session(session_id: str | None) -> _RelaySession | None:
+    if session_id:
+        return _relay_sessions.get(session_id)
+    if _last_relay_session_id is None:
+        return None
+    return _relay_sessions.get(_last_relay_session_id)
+
+
+def _append_relay_records(session: _RelaySession, records: list[dict[str, Any]]) -> None:
+    session.received_count += len(records)
+    remaining = max(0, session.descriptor.max_records - len(session.raw_records))
+    session.raw_records.extend(records[:remaining])
+    session.dropped_record_count += max(0, len(records) - remaining)
+    session.proposal = None
+    session.frozen_config_hash = None
+    session.replay_sha256 = None
+
+
+def _raw_records_hash(records: list[dict[str, Any]]) -> str:
+    return _json_sha256({"records": records})
+
+
+def _json_sha256(payload: object) -> str:
+    return "sha256:" + hashlib.sha256(
+        json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+
+
+def _confirmation_questions(proposal: SourceMapProposal) -> list[dict[str, Any]]:
+    questions = []
+    for entry in proposal.entries:
+        if entry.state != "ambiguous_confirm":
+            continue
+        questions.append({
+            "key": entry.key,
+            "question": (
+                f"Map {entry.key} to one candidate source path, or mark it not_mappable?"
+            ),
+            "value_direction": entry.value_direction,
+            "candidate_keys": [
+                {
+                    "source_object": candidate.source_object,
+                    "source_field": candidate.source_field,
+                    "source_path": candidate.source_path,
+                    "rows_present": candidate.rows_present,
+                    "rows_nonempty": candidate.rows_nonempty,
+                    "rows_sampled": candidate.rows_sampled,
+                }
+                for candidate in entry.candidate_evidence
+            ],
+        })
+    return questions
+
+
+def _mapping_confirmations_from_tool(
+    payload: dict[str, Any],
+) -> dict[str, MappingConfirmation]:
+    if not isinstance(payload, dict):
+        raise ValueError("confirmations must be keyed by field")
+    raw_confirmations = payload.get("confirmations", payload)
+    if not isinstance(raw_confirmations, dict):
+        raise ValueError("confirmations must be keyed by field")
+    return {
+        str(key): _mapping_confirmation_from_tool(str(key), value)
+        for key, value in raw_confirmations.items()
+    }
+
+
+def _mapping_confirmation_from_tool(key: str, payload: Any) -> MappingConfirmation:
+    if not isinstance(payload, dict):
+        raise ValueError(f"{key} confirmation must be an object")
+    contract, internal_field = _split_mapping_key(key, payload)
+    verdict = str(payload.get("verdict", "mapped"))
+    if verdict == "not_mappable":
+        return MappingConfirmation(
+            contract=contract,
+            internal_field=internal_field,
+            verdict="not_mappable",
+        )
+    if verdict != "mapped":
+        raise ValueError(f"{key} verdict must be mapped or not_mappable")
+    for required in ("source_object", "source_field", "source_path", "semantic_role"):
+        if not isinstance(payload.get(required), str) or not payload[required]:
+            raise ValueError(f"{key} mapped confirmation requires {required}")
+    return MappingConfirmation(
+        contract=contract,
+        internal_field=internal_field,
+        source_object=str(payload["source_object"]),
+        source_field=str(payload["source_field"]),
+        source_path=str(payload["source_path"]),
+        semantic_role=str(payload["semantic_role"]),
+        value_direction=str(payload.get("value_direction") or "not_applicable"),  # type: ignore[arg-type]
+        verdict="mapped",
+    )
+
+
+def _split_mapping_key(key: str, payload: Mapping[str, Any]) -> tuple[str, str]:
+    if "." in key:
+        contract, internal_field = key.split(".", 1)
+        return contract, internal_field
+    contract = payload.get("contract")
+    internal_field = payload.get("internal_field")
+    if not isinstance(contract, str) or not isinstance(internal_field, str):
+        raise ValueError(f"{key} must include contract and internal_field")
+    return contract, internal_field
+
+
+def _relay_replay_payload(session: _RelaySession, frozen) -> dict[str, Any]:  # noqa: ANN001
+    result = ingest_external_book(
+        session.raw_records,
+        session.descriptor,
+        frozen_map=frozen,
+    )
+    scores, score_errors = _score_relay_accounts(result.data)
+    return {
+        "provenance": "mcp_relay",
+        "unverified_mapping": True,
+        "sim": False,
+        "live": False,
+        "raw_input_sha256": _raw_records_hash(session.raw_records),
+        "frozen_config_hash": frozen.config_hash,
+        "records": {
+            "received_count": session.received_count,
+            "stored_count": len(session.raw_records),
+            "expected_count": session.expected_count,
+            "truncated": session.dropped_record_count > 0,
+            "dropped_record_count": session.dropped_record_count,
+        },
+        "coverage": result.coverage.to_dict(),
+        "briefing": list(result.briefing),
+        "score_summary": {
+            "scoreable_accounts": len(scores),
+            "score_error_count": len(score_errors),
+        },
+        "scores": scores,
+        "score_errors": score_errors,
+        "propose_only_actions": _relay_propose_only_actions(result.data),
+    }
+
+
+def _score_relay_accounts(data: FixtureCustomerData) -> tuple[list[dict], list[dict]]:
+    data_plane = CustomerDataPlane(
+        crm=FixtureCRMDataConnector(data=data),
+        cs=FixtureCSPlatformConnector(data=data),
+        telemetry=FixtureProductTelemetryConnector(data=data),
+    )
+    scores = []
+    errors = []
+    for account in data.accounts:
+        try:
+            score = _score_one_account(
+                account.account_id,
+                data_plane=data_plane,
+                as_of=_AS_OF,
+            )
+        except AccountDataError as exc:
+            errors.append({
+                "account_id": account.account_id,
+                "code": exc.code,
+                "message": str(exc),
+            })
+            continue
+        scores.append(score)
+    return scores, errors
+
+
+def _relay_propose_only_actions(data: FixtureCustomerData) -> list[dict[str, Any]]:
+    actions = []
+    contacts_by_account: dict[str, list] = {}
+    for contact in data.contacts:
+        if contact.consent_to_contact:
+            contacts_by_account.setdefault(contact.account_id, []).append(contact)
+    for account in data.accounts[:3]:
+        contacts = contacts_by_account.get(account.account_id, [])
+        if not contacts:
+            continue
+        actions.append({
+            "type": "email_draft",
+            "propose_only": True,
+            "account_id": account.account_id,
+            "contact_id": contacts[0].contact_id,
+            "subject": "Customer-success follow-up",
+            "body": (
+                "Draft only. Review this in the host email client before sending; "
+                "ultra-csm has not sent anything."
+            ),
+            "placement": "host_may_create_draft_in_user_mail_client",
+            "live_send_performed": False,
+        })
+    return actions
 
 
 def _find_account(account_id: str):
