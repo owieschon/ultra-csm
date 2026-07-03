@@ -131,13 +131,14 @@
     ]
   },
   "frozen_source_map": {
-    "config_hash": "sha256:9f30ccb1597ab2d65bb5db7069017b1d5218bc926dd7bb4cf18477863615a7e4",
+    "config_hash": "sha256:ad0f0476879b210a23896b5a54216b8432ba588761b4fc935435f6be6f76ef96",
     "connector_id": "gainsight_cs",
     "mappings": [
       {
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -145,7 +146,8 @@
             "rows_sampled": 0,
             "source_field": "Company Id",
             "source_object": "Company",
-            "source_path": "Company Id"
+            "source_path": "Company Id",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -167,6 +169,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -174,7 +177,8 @@
             "rows_sampled": 0,
             "source_field": "Name",
             "source_object": "Company",
-            "source_path": "Name"
+            "source_path": "Name",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -196,6 +200,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -203,7 +208,8 @@
             "rows_sampled": 0,
             "source_field": "Industry",
             "source_object": "Company",
-            "source_path": "Industry"
+            "source_path": "Industry",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -225,6 +231,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -232,7 +239,8 @@
             "rows_sampled": 0,
             "source_field": "ARR",
             "source_object": "Company",
-            "source_path": "ARR"
+            "source_path": "ARR",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -254,6 +262,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -261,7 +270,8 @@
             "rows_sampled": 0,
             "source_field": "Stage",
             "source_object": "Company",
-            "source_path": "Stage"
+            "source_path": "Stage",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -283,6 +293,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.91,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "value direction affects scoring and requires confirmation",
             "rows_nonempty": 0,
@@ -290,7 +301,8 @@
             "rows_sampled": 0,
             "source_field": "Status",
             "source_object": "Company",
-            "source_path": "Status"
+            "source_path": "Status",
+            "value_shape": ""
           }
         ],
         "confidence": 1.0,
@@ -312,6 +324,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -319,7 +332,8 @@
             "rows_sampled": 0,
             "source_field": "OriginalContractDate",
             "source_object": "Company",
-            "source_path": "OriginalContractDate"
+            "source_path": "OriginalContractDate",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -341,6 +355,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -348,7 +363,8 @@
             "rows_sampled": 0,
             "source_field": "RenewalDate",
             "source_object": "Company",
-            "source_path": "RenewalDate"
+            "source_path": "RenewalDate",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -370,6 +386,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -377,7 +394,8 @@
             "rows_sampled": 0,
             "source_field": "CSM",
             "source_object": "Company",
-            "source_path": "CSM"
+            "source_path": "CSM",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -399,6 +417,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.91,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "value direction affects scoring and requires confirmation",
             "rows_nonempty": 0,
@@ -406,7 +425,8 @@
             "rows_sampled": 0,
             "source_field": "Current Score",
             "source_object": "Company",
-            "source_path": "Current Score"
+            "source_path": "Current Score",
+            "value_shape": ""
           }
         ],
         "confidence": 1.0,
@@ -428,6 +448,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -435,7 +456,8 @@
             "rows_sampled": 0,
             "source_field": "CTA ID",
             "source_object": "CTA",
-            "source_path": "CTA ID"
+            "source_path": "CTA ID",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -457,6 +479,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -464,7 +487,8 @@
             "rows_sampled": 0,
             "source_field": "Company ID",
             "source_object": "CTA",
-            "source_path": "Company ID"
+            "source_path": "Company ID",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -486,6 +510,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -493,7 +518,8 @@
             "rows_sampled": 0,
             "source_field": "CTA Name",
             "source_object": "CTA",
-            "source_path": "CTA Name"
+            "source_path": "CTA Name",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -515,6 +541,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.91,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "value direction affects scoring and requires confirmation",
             "rows_nonempty": 0,
@@ -522,7 +549,8 @@
             "rows_sampled": 0,
             "source_field": "Priority",
             "source_object": "CTA",
-            "source_path": "Priority"
+            "source_path": "Priority",
+            "value_shape": ""
           }
         ],
         "confidence": 1.0,
@@ -544,6 +572,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.91,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "value direction affects scoring and requires confirmation",
             "rows_nonempty": 0,
@@ -551,7 +580,8 @@
             "rows_sampled": 0,
             "source_field": "Status",
             "source_object": "CTA",
-            "source_path": "Status"
+            "source_path": "Status",
+            "value_shape": ""
           }
         ],
         "confidence": 1.0,
@@ -573,6 +603,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -580,7 +611,8 @@
             "rows_sampled": 0,
             "source_field": "Due Date",
             "source_object": "CTA",
-            "source_path": "Due Date"
+            "source_path": "Due Date",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -602,6 +634,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -609,7 +642,8 @@
             "rows_sampled": 0,
             "source_field": "OwnerID",
             "source_object": "CTA",
-            "source_path": "OwnerID"
+            "source_path": "OwnerID",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -631,6 +665,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -638,7 +673,8 @@
             "rows_sampled": 0,
             "source_field": "Success Plan ID",
             "source_object": "Success Plan",
-            "source_path": "Success Plan ID"
+            "source_path": "Success Plan ID",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -660,6 +696,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -667,7 +704,8 @@
             "rows_sampled": 0,
             "source_field": "Company ID",
             "source_object": "Success Plan",
-            "source_path": "Company ID"
+            "source_path": "Company ID",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -689,6 +727,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.91,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "value direction affects scoring and requires confirmation",
             "rows_nonempty": 0,
@@ -696,7 +735,8 @@
             "rows_sampled": 0,
             "source_field": "Status",
             "source_object": "Success Plan",
-            "source_path": "Status"
+            "source_path": "Status",
+            "value_shape": ""
           }
         ],
         "confidence": 1.0,
@@ -718,6 +758,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -725,7 +766,8 @@
             "rows_sampled": 0,
             "source_field": "Objective CTAs",
             "source_object": "Success Plan",
-            "source_path": "Objective CTAs"
+            "source_path": "Objective CTAs",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -747,6 +789,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -754,7 +797,8 @@
             "rows_sampled": 0,
             "source_field": "Due Date",
             "source_object": "Success Plan",
-            "source_path": "Due Date"
+            "source_path": "Due Date",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -773,7 +817,7 @@
         "value_direction": "not_applicable"
       }
     ],
-    "proposal_hash": "sha256:fc49b26cb3993cd7bdff960195695050405f2c6dab87b679173e2858fcd4c6f3",
+    "proposal_hash": "sha256:5aeb9dc79f3e26acf146462888df1f9eedeecfddbe8be8cdd1b37b582d58a741",
     "schema_hash": "sha256:932eddf02d66b21f7bcbb44ddf9604fbce26e421541937ae17f87af60540ca18",
     "unknown_fields": [
       "AdoptionSummary.account_id",
@@ -821,7 +865,7 @@
       "HealthScore.measured_at",
       "HealthScore.score"
     ],
-    "proposal_hash": "sha256:fc49b26cb3993cd7bdff960195695050405f2c6dab87b679173e2858fcd4c6f3",
+    "proposal_hash": "sha256:5aeb9dc79f3e26acf146462888df1f9eedeecfddbe8be8cdd1b37b582d58a741",
     "required_operator_actions": [
       "confirm 5 semantic/value mappings",
       "review 13 missing fields; affected rails remain unknown"

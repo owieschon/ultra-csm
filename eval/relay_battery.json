@@ -50,6 +50,7 @@
           "contact_identity_join_failed": 1,
           "opportunity_identity_join_failed": 1
         },
+        "source_totals": {},
         "truncated": false,
         "unknown_fields": [
           "CRMContact.role",
@@ -65,10 +66,10 @@
       "hard_ok": true,
       "name": "truncated_payload",
       "proposal": {
-        "ambiguous_count": 11,
+        "ambiguous_count": 7,
         "coverage": {
-          "ambiguous_confirm": 11,
-          "mapped": 0,
+          "ambiguous_confirm": 7,
+          "mapped": 4,
           "missing_to_unknown": 6,
           "total": 17
         },
@@ -86,6 +87,24 @@
                 "rows_present": 2,
                 "rows_sampled": 2,
                 "source_path": "contact_id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "account_ref"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "industry"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "owner"
               }
             ],
             "key": "CRMAccount.account_id",
@@ -109,7 +128,7 @@
             ],
             "key": "CRMAccount.name",
             "source_path": "name",
-            "state": "ambiguous_confirm"
+            "state": "mapped"
           },
           {
             "candidate_evidence": [
@@ -130,6 +149,18 @@
                 "rows_present": 2,
                 "rows_sampled": 2,
                 "source_path": "id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "account_ref"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "industry"
               }
             ],
             "key": "CRMAccount.owner_id",
@@ -147,7 +178,7 @@
             ],
             "key": "CRMAccount.industry",
             "source_path": "industry",
-            "state": "ambiguous_confirm"
+            "state": "mapped"
           },
           {
             "candidate_evidence": [
@@ -162,6 +193,24 @@
                 "rows_present": 2,
                 "rows_sampled": 2,
                 "source_path": "id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "account_ref"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "industry"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "owner"
               }
             ],
             "key": "CRMContact.contact_id",
@@ -187,6 +236,18 @@
                 "rows_present": 2,
                 "rows_sampled": 2,
                 "source_path": "contact_id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "industry"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "owner"
               }
             ],
             "key": "CRMContact.account_id",
@@ -204,7 +265,7 @@
             ],
             "key": "CRMContact.email",
             "source_path": "email",
-            "state": "ambiguous_confirm"
+            "state": "mapped"
           },
           {
             "candidate_evidence": [
@@ -236,7 +297,7 @@
             ],
             "key": "CRMContact.consent_to_contact",
             "source_path": "consent_to_contact",
-            "state": "ambiguous_confirm"
+            "state": "mapped"
           },
           {
             "candidate_evidence": [
@@ -251,6 +312,24 @@
                 "rows_present": 2,
                 "rows_sampled": 2,
                 "source_path": "id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "account_ref"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "industry"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "owner"
               }
             ],
             "key": "CRMOpportunity.opportunity_id",
@@ -276,6 +355,18 @@
                 "rows_present": 2,
                 "rows_sampled": 2,
                 "source_path": "contact_id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "industry"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "owner"
               }
             ],
             "key": "CRMOpportunity.account_id",
@@ -283,14 +374,14 @@
             "state": "ambiguous_confirm"
           }
         ],
-        "mapped_count": 0,
+        "mapped_count": 4,
         "missing_count": 6,
-        "proposal_hash": "sha256:5d757d49be4962b0fb40d17b772fc1a856470e0e862b34add44dc3fc0a1f1e1e",
+        "proposal_hash": "sha256:d4a2cba783d66a3ce34d770b3fd37e89954d00dbada1bfa00f3262b9055af84b",
         "required_operator_actions": [
-          "confirm 11 semantic/value mappings",
+          "confirm 7 semantic/value mappings",
           "review 6 missing fields; affected rails remain unknown"
         ],
-        "schema_hash": "sha256:b1e9869155bd1ec2eaba74a7115d6117ae0895017186f66c8f521addec77ffcb"
+        "schema_hash": "sha256:4d5cd4c4547fe8f51dcef7b3a815805ad23ee54dafa12f1aa34f642ff2f7b3a3"
       }
     },
     {
@@ -328,6 +419,7 @@
           "CRMOpportunity": 1
         },
         "rejection_counts": {},
+        "source_totals": {},
         "truncated": false,
         "unknown_fields": [
           "CRMContact.consent_to_contact",
@@ -342,10 +434,10 @@
       "hard_ok": true,
       "name": "paraphrased_keys",
       "proposal": {
-        "ambiguous_count": 12,
+        "ambiguous_count": 6,
         "coverage": {
-          "ambiguous_confirm": 12,
-          "mapped": 0,
+          "ambiguous_confirm": 6,
+          "mapped": 6,
           "missing_to_unknown": 5,
           "total": 17
         },
@@ -369,6 +461,30 @@
                 "rows_present": 1,
                 "rows_sampled": 1,
                 "source_path": "person_id"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "account_ref"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "amount"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "csm_owner"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "sector"
               }
             ],
             "key": "CRMAccount.account_id",
@@ -392,7 +508,7 @@
             ],
             "key": "CRMAccount.name",
             "source_path": "company_name",
-            "state": "ambiguous_confirm"
+            "state": "mapped"
           },
           {
             "candidate_evidence": [
@@ -419,6 +535,24 @@
                 "rows_present": 1,
                 "rows_sampled": 1,
                 "source_path": "person_id"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "account_ref"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "amount"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "sector"
               }
             ],
             "key": "CRMAccount.owner_id",
@@ -436,7 +570,7 @@
             ],
             "key": "CRMAccount.industry",
             "source_path": "sector",
-            "state": "ambiguous_confirm"
+            "state": "mapped"
           },
           {
             "candidate_evidence": [
@@ -457,6 +591,30 @@
                 "rows_present": 1,
                 "rows_sampled": 1,
                 "source_path": "deal_id"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "account_ref"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "amount"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "csm_owner"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "sector"
               }
             ],
             "key": "CRMContact.contact_id",
@@ -488,6 +646,24 @@
                 "rows_present": 1,
                 "rows_sampled": 1,
                 "source_path": "person_id"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "amount"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "csm_owner"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "sector"
               }
             ],
             "key": "CRMContact.account_id",
@@ -505,7 +681,7 @@
             ],
             "key": "CRMContact.email",
             "source_path": "email_address",
-            "state": "ambiguous_confirm"
+            "state": "mapped"
           },
           {
             "candidate_evidence": [
@@ -524,7 +700,7 @@
             ],
             "key": "CRMContact.name",
             "source_path": "full_name",
-            "state": "ambiguous_confirm"
+            "state": "mapped"
           },
           {
             "candidate_evidence": [
@@ -545,6 +721,30 @@
                 "rows_present": 1,
                 "rows_sampled": 1,
                 "source_path": "person_id"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "account_ref"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "amount"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "csm_owner"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "sector"
               }
             ],
             "key": "CRMOpportunity.opportunity_id",
@@ -576,6 +776,24 @@
                 "rows_present": 1,
                 "rows_sampled": 1,
                 "source_path": "person_id"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "amount"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "csm_owner"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "sector"
               }
             ],
             "key": "CRMOpportunity.account_id",
@@ -593,7 +811,7 @@
             ],
             "key": "CRMOpportunity.amount_cents",
             "source_path": "amount",
-            "state": "ambiguous_confirm"
+            "state": "mapped"
           },
           {
             "candidate_evidence": [
@@ -606,17 +824,17 @@
             ],
             "key": "CRMOpportunity.close_date",
             "source_path": "expected_close",
-            "state": "ambiguous_confirm"
+            "state": "mapped"
           }
         ],
-        "mapped_count": 0,
+        "mapped_count": 6,
         "missing_count": 5,
-        "proposal_hash": "sha256:04d57cb4427336c36dc09a30cd6772dc1eb3b7636161680186a7b7523501f784",
+        "proposal_hash": "sha256:dfc0f0e931b5a803833d3394cb3f976e462d6d25732544d14bc3cdf402dc7976",
         "required_operator_actions": [
-          "confirm 12 semantic/value mappings",
+          "confirm 6 semantic/value mappings",
           "review 5 missing fields; affected rails remain unknown"
         ],
-        "schema_hash": "sha256:dfef9dd10b52bf57add7fb75f6fc462cbef3597b0a33049f9b9020f7cfdd4fe5"
+        "schema_hash": "sha256:23d76060f982ad9e35d3e405d2e6b1cc8b6a51f8f52976fc35ae0fdbaa0202f7"
       }
     },
     {
@@ -657,6 +875,7 @@
           "CRMOpportunity": 1
         },
         "rejection_counts": {},
+        "source_totals": {},
         "truncated": false,
         "unknown_fields": [
           "CRMContact.role",
@@ -672,10 +891,10 @@
       "hard_ok": true,
       "name": "duplicated_rows",
       "proposal": {
-        "ambiguous_count": 11,
+        "ambiguous_count": 7,
         "coverage": {
-          "ambiguous_confirm": 11,
-          "mapped": 0,
+          "ambiguous_confirm": 7,
+          "mapped": 4,
           "missing_to_unknown": 6,
           "total": 17
         },
@@ -712,11 +931,41 @@
                 "rows_present": 2,
                 "rows_sampled": 2,
                 "source_path": "contact_name"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "account_ref"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "contact_id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "industry"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "owner"
               }
             ],
             "key": "CRMAccount.name",
             "source_path": "name",
-            "state": "ambiguous_confirm"
+            "state": "mapped"
           },
           {
             "candidate_evidence": [
@@ -754,7 +1003,7 @@
             ],
             "key": "CRMAccount.industry",
             "source_path": "industry",
-            "state": "ambiguous_confirm"
+            "state": "mapped"
           },
           {
             "candidate_evidence": [
@@ -811,7 +1060,7 @@
             ],
             "key": "CRMContact.email",
             "source_path": "email",
-            "state": "ambiguous_confirm"
+            "state": "mapped"
           },
           {
             "candidate_evidence": [
@@ -826,6 +1075,36 @@
                 "rows_present": 2,
                 "rows_sampled": 2,
                 "source_path": "name"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "account_ref"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "contact_id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "industry"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "owner"
               }
             ],
             "key": "CRMContact.name",
@@ -843,7 +1122,7 @@
             ],
             "key": "CRMContact.consent_to_contact",
             "source_path": "consent_to_contact",
-            "state": "ambiguous_confirm"
+            "state": "mapped"
           },
           {
             "candidate_evidence": [
@@ -890,14 +1169,14 @@
             "state": "ambiguous_confirm"
           }
         ],
-        "mapped_count": 0,
+        "mapped_count": 4,
         "missing_count": 6,
-        "proposal_hash": "sha256:5d757d49be4962b0fb40d17b772fc1a856470e0e862b34add44dc3fc0a1f1e1e",
+        "proposal_hash": "sha256:fa1e57b18f8a15b56dd9a2e85add229da6fd1b50633d71d1b09de9640409aadf",
         "required_operator_actions": [
-          "confirm 11 semantic/value mappings",
+          "confirm 7 semantic/value mappings",
           "review 6 missing fields; affected rails remain unknown"
         ],
-        "schema_hash": "sha256:b1e9869155bd1ec2eaba74a7115d6117ae0895017186f66c8f521addec77ffcb"
+        "schema_hash": "sha256:2db6031e6733c2bb484ba48878974bc0dbb730fc9f12e6709f1152bd75c019d2"
       }
     },
     {
@@ -949,6 +1228,7 @@
           "contact_identity_join_failed": 1,
           "opportunity_identity_join_failed": 1
         },
+        "source_totals": {},
         "truncated": false,
         "unknown_fields": [
           "CRMContact.role",
@@ -964,10 +1244,10 @@
       "hard_ok": true,
       "name": "partial_identity_join",
       "proposal": {
-        "ambiguous_count": 11,
+        "ambiguous_count": 7,
         "coverage": {
-          "ambiguous_confirm": 11,
-          "mapped": 0,
+          "ambiguous_confirm": 7,
+          "mapped": 4,
           "missing_to_unknown": 6,
           "total": 17
         },
@@ -985,6 +1265,24 @@
                 "rows_present": 2,
                 "rows_sampled": 2,
                 "source_path": "contact_id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "account_ref"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "industry"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "owner"
               }
             ],
             "key": "CRMAccount.account_id",
@@ -1008,7 +1306,7 @@
             ],
             "key": "CRMAccount.name",
             "source_path": "name",
-            "state": "ambiguous_confirm"
+            "state": "mapped"
           },
           {
             "candidate_evidence": [
@@ -1029,6 +1327,18 @@
                 "rows_present": 2,
                 "rows_sampled": 2,
                 "source_path": "id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "account_ref"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "industry"
               }
             ],
             "key": "CRMAccount.owner_id",
@@ -1046,7 +1356,7 @@
             ],
             "key": "CRMAccount.industry",
             "source_path": "industry",
-            "state": "ambiguous_confirm"
+            "state": "mapped"
           },
           {
             "candidate_evidence": [
@@ -1061,6 +1371,24 @@
                 "rows_present": 2,
                 "rows_sampled": 2,
                 "source_path": "id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "account_ref"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "industry"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "owner"
               }
             ],
             "key": "CRMContact.contact_id",
@@ -1086,6 +1414,18 @@
                 "rows_present": 2,
                 "rows_sampled": 2,
                 "source_path": "contact_id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "industry"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "owner"
               }
             ],
             "key": "CRMContact.account_id",
@@ -1103,7 +1443,7 @@
             ],
             "key": "CRMContact.email",
             "source_path": "email",
-            "state": "ambiguous_confirm"
+            "state": "mapped"
           },
           {
             "candidate_evidence": [
@@ -1135,7 +1475,7 @@
             ],
             "key": "CRMContact.consent_to_contact",
             "source_path": "consent_to_contact",
-            "state": "ambiguous_confirm"
+            "state": "mapped"
           },
           {
             "candidate_evidence": [
@@ -1150,6 +1490,24 @@
                 "rows_present": 2,
                 "rows_sampled": 2,
                 "source_path": "id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "account_ref"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "industry"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "owner"
               }
             ],
             "key": "CRMOpportunity.opportunity_id",
@@ -1175,6 +1533,18 @@
                 "rows_present": 2,
                 "rows_sampled": 2,
                 "source_path": "contact_id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "industry"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "owner"
               }
             ],
             "key": "CRMOpportunity.account_id",
@@ -1182,14 +1552,14 @@
             "state": "ambiguous_confirm"
           }
         ],
-        "mapped_count": 0,
+        "mapped_count": 4,
         "missing_count": 6,
-        "proposal_hash": "sha256:5d757d49be4962b0fb40d17b772fc1a856470e0e862b34add44dc3fc0a1f1e1e",
+        "proposal_hash": "sha256:d4a2cba783d66a3ce34d770b3fd37e89954d00dbada1bfa00f3262b9055af84b",
         "required_operator_actions": [
-          "confirm 11 semantic/value mappings",
+          "confirm 7 semantic/value mappings",
           "review 6 missing fields; affected rails remain unknown"
         ],
-        "schema_hash": "sha256:b1e9869155bd1ec2eaba74a7115d6117ae0895017186f66c8f521addec77ffcb"
+        "schema_hash": "sha256:4d5cd4c4547fe8f51dcef7b3a815805ad23ee54dafa12f1aa34f642ff2f7b3a3"
       }
     },
     {
@@ -1227,6 +1597,7 @@
           "CRMOpportunity": 1
         },
         "rejection_counts": {},
+        "source_totals": {},
         "truncated": false,
         "unknown_fields": [
           "CRMContact.role",
@@ -1242,10 +1613,10 @@
       "hard_ok": true,
       "name": "injected_text",
       "proposal": {
-        "ambiguous_count": 11,
+        "ambiguous_count": 7,
         "coverage": {
-          "ambiguous_confirm": 11,
-          "mapped": 0,
+          "ambiguous_confirm": 7,
+          "mapped": 4,
           "missing_to_unknown": 6,
           "total": 17
         },
@@ -1263,6 +1634,24 @@
                 "rows_present": 1,
                 "rows_sampled": 1,
                 "source_path": "contact_id"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "account_ref"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "industry"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "owner"
               }
             ],
             "key": "CRMAccount.account_id",
@@ -1282,11 +1671,17 @@
                 "rows_present": 1,
                 "rows_sampled": 1,
                 "source_path": "contact_name"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "relay_note"
               }
             ],
             "key": "CRMAccount.name",
             "source_path": "name",
-            "state": "ambiguous_confirm"
+            "state": "mapped"
           },
           {
             "candidate_evidence": [
@@ -1307,6 +1702,18 @@
                 "rows_present": 1,
                 "rows_sampled": 1,
                 "source_path": "id"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "account_ref"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "industry"
               }
             ],
             "key": "CRMAccount.owner_id",
@@ -1324,7 +1731,7 @@
             ],
             "key": "CRMAccount.industry",
             "source_path": "industry",
-            "state": "ambiguous_confirm"
+            "state": "mapped"
           },
           {
             "candidate_evidence": [
@@ -1339,6 +1746,24 @@
                 "rows_present": 1,
                 "rows_sampled": 1,
                 "source_path": "id"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "account_ref"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "industry"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "owner"
               }
             ],
             "key": "CRMContact.contact_id",
@@ -1364,6 +1789,18 @@
                 "rows_present": 1,
                 "rows_sampled": 1,
                 "source_path": "contact_id"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "industry"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "owner"
               }
             ],
             "key": "CRMContact.account_id",
@@ -1381,7 +1818,7 @@
             ],
             "key": "CRMContact.email",
             "source_path": "email",
-            "state": "ambiguous_confirm"
+            "state": "mapped"
           },
           {
             "candidate_evidence": [
@@ -1396,6 +1833,12 @@
                 "rows_present": 1,
                 "rows_sampled": 1,
                 "source_path": "name"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "relay_note"
               }
             ],
             "key": "CRMContact.name",
@@ -1413,7 +1856,7 @@
             ],
             "key": "CRMContact.consent_to_contact",
             "source_path": "consent_to_contact",
-            "state": "ambiguous_confirm"
+            "state": "mapped"
           },
           {
             "candidate_evidence": [
@@ -1428,6 +1871,24 @@
                 "rows_present": 1,
                 "rows_sampled": 1,
                 "source_path": "id"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "account_ref"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "industry"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "owner"
               }
             ],
             "key": "CRMOpportunity.opportunity_id",
@@ -1453,6 +1914,18 @@
                 "rows_present": 1,
                 "rows_sampled": 1,
                 "source_path": "contact_id"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "industry"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "owner"
               }
             ],
             "key": "CRMOpportunity.account_id",
@@ -1460,14 +1933,14 @@
             "state": "ambiguous_confirm"
           }
         ],
-        "mapped_count": 0,
+        "mapped_count": 4,
         "missing_count": 6,
-        "proposal_hash": "sha256:9e0562f6bf361485d3186537c983e701478d6aec26f07d0496407565c506414e",
+        "proposal_hash": "sha256:0c48036ffba296cfe306232809164e7b9e31f0f986c1479c187068176be06fab",
         "required_operator_actions": [
-          "confirm 11 semantic/value mappings",
+          "confirm 7 semantic/value mappings",
           "review 6 missing fields; affected rails remain unknown"
         ],
-        "schema_hash": "sha256:0b0b858052046562257d380047754c668e2f2cc46389bf1047ecc7a072dc06ed"
+        "schema_hash": "sha256:0e45536870bb0fc9f98d04ee782819bd8e268e4fafdb33d83cfcee641015eacc"
       }
     },
     {
@@ -1520,6 +1993,7 @@
           "contact_identity_join_failed": 1,
           "opportunity_identity_join_failed": 1
         },
+        "source_totals": {},
         "truncated": false,
         "unknown_fields": [
           "CRMAccount.industry",
@@ -1538,10 +2012,10 @@
       "hard_ok": true,
       "name": "optional_fields_missing",
       "proposal": {
-        "ambiguous_count": 8,
+        "ambiguous_count": 6,
         "coverage": {
-          "ambiguous_confirm": 8,
-          "mapped": 0,
+          "ambiguous_confirm": 6,
+          "mapped": 2,
           "missing_to_unknown": 9,
           "total": 17
         },
@@ -1570,7 +2044,7 @@
             ],
             "key": "CRMAccount.name",
             "source_path": "name",
-            "state": "ambiguous_confirm"
+            "state": "mapped"
           },
           {
             "candidate_evidence": [
@@ -1622,7 +2096,7 @@
             ],
             "key": "CRMContact.name",
             "source_path": "name",
-            "state": "ambiguous_confirm"
+            "state": "mapped"
           },
           {
             "candidate_evidence": [
@@ -1651,14 +2125,14 @@
             "state": "ambiguous_confirm"
           }
         ],
-        "mapped_count": 0,
+        "mapped_count": 2,
         "missing_count": 9,
-        "proposal_hash": "sha256:9b19239bc2e0fc75d166ba58c489b799ba03d10601f6d02923470a8797ebfa71",
+        "proposal_hash": "sha256:e26da19cfcc05e15251e64441ff348484d94d6d6745e82e24058c0dbca8fcba7",
         "required_operator_actions": [
-          "confirm 8 semantic/value mappings",
+          "confirm 6 semantic/value mappings",
           "review 9 missing fields; affected rails remain unknown"
         ],
-        "schema_hash": "sha256:db158d95a377cbac2014e35e0b1251d6eca4cece8398262341692e20985d495c"
+        "schema_hash": "sha256:d1abd6ccec22f2bbd99c902c674bd09c35a539a50ecd9523076a74b64360a0bb"
       }
     },
     {
@@ -1673,7 +2147,7 @@
         "join_coverage": {
           "contact_candidates": 0,
           "contacts_joined": 0,
-          "ratio": 1.0
+          "ratio": null
         },
         "records_processed": 0,
         "records_received": 0,
@@ -1684,6 +2158,7 @@
           "CRMOpportunity": 0
         },
         "rejection_counts": {},
+        "source_totals": {},
         "truncated": false,
         "unknown_fields": [],
         "unrepresentable_paths": []
@@ -1745,6 +2220,7 @@
           "CRMOpportunity": 2
         },
         "rejection_counts": {},
+        "source_totals": {},
         "truncated": true,
         "unknown_fields": [
           "CRMAccount.industry",
@@ -1762,10 +2238,10 @@
       "hard_ok": true,
       "name": "oversized_book",
       "proposal": {
-        "ambiguous_count": 9,
+        "ambiguous_count": 7,
         "coverage": {
-          "ambiguous_confirm": 9,
-          "mapped": 0,
+          "ambiguous_confirm": 7,
+          "mapped": 2,
           "missing_to_unknown": 8,
           "total": 17
         },
@@ -1783,6 +2259,12 @@
                 "rows_present": 2,
                 "rows_sampled": 2,
                 "source_path": "contact_id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "account_ref"
               }
             ],
             "key": "CRMAccount.account_id",
@@ -1806,7 +2288,7 @@
             ],
             "key": "CRMAccount.name",
             "source_path": "name",
-            "state": "ambiguous_confirm"
+            "state": "mapped"
           },
           {
             "candidate_evidence": [
@@ -1821,6 +2303,12 @@
                 "rows_present": 2,
                 "rows_sampled": 2,
                 "source_path": "id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "account_ref"
               }
             ],
             "key": "CRMAccount.owner_id",
@@ -1840,6 +2328,12 @@
                 "rows_present": 2,
                 "rows_sampled": 2,
                 "source_path": "id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "account_ref"
               }
             ],
             "key": "CRMContact.contact_id",
@@ -1882,7 +2376,7 @@
             ],
             "key": "CRMContact.email",
             "source_path": "email",
-            "state": "ambiguous_confirm"
+            "state": "mapped"
           },
           {
             "candidate_evidence": [
@@ -1916,6 +2410,12 @@
                 "rows_present": 2,
                 "rows_sampled": 2,
                 "source_path": "id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_path": "account_ref"
               }
             ],
             "key": "CRMOpportunity.opportunity_id",
@@ -1948,14 +2448,14 @@
             "state": "ambiguous_confirm"
           }
         ],
-        "mapped_count": 0,
+        "mapped_count": 2,
         "missing_count": 8,
-        "proposal_hash": "sha256:659014b4027182bdbb12e53bcff224d4a7830cecedfcff6d3da2c01d43dc7f32",
+        "proposal_hash": "sha256:f1d4389e48e96cea10a553c6126de750d6fb1ef1978035129ac47d7e4bcf94da",
         "required_operator_actions": [
-          "confirm 9 semantic/value mappings",
+          "confirm 7 semantic/value mappings",
           "review 8 missing fields; affected rails remain unknown"
         ],
-        "schema_hash": "sha256:e6ea3248bc93a90a9224ebdb31beda90e624d81f8ed90db7fe5839e9cd710c3a"
+        "schema_hash": "sha256:de95090429cf9d7e4fa27517251e5ce332d288ed34301e94050724cb834ba576"
       }
     },
     {
@@ -1970,7 +2470,7 @@
         "join_coverage": {
           "contact_candidates": 0,
           "contacts_joined": 0,
-          "ratio": 1.0
+          "ratio": null
         },
         "records_processed": 8,
         "records_received": 8,
@@ -1981,6 +2481,7 @@
           "CRMOpportunity": 0
         },
         "rejection_counts": {},
+        "source_totals": {},
         "truncated": false,
         "unknown_fields": [],
         "unrepresentable_paths": []
@@ -1989,11 +2490,11 @@
       "hard_ok": true,
       "name": "wrong_key_competing_coverage",
       "proposal": {
-        "ambiguous_count": 8,
+        "ambiguous_count": 7,
         "coverage": {
-          "ambiguous_confirm": 8,
-          "mapped": 0,
-          "missing_to_unknown": 9,
+          "ambiguous_confirm": 7,
+          "mapped": 2,
+          "missing_to_unknown": 8,
           "total": 17
         },
         "entries": [
@@ -2027,7 +2528,7 @@
             ],
             "key": "CRMAccount.name",
             "source_path": "title",
-            "state": "ambiguous_confirm"
+            "state": "mapped"
           },
           {
             "candidate_evidence": [
@@ -2075,11 +2576,30 @@
                 "rows_present": 8,
                 "rows_sampled": 8,
                 "source_path": "title"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 8,
+                "rows_sampled": 8,
+                "source_path": "variant"
+              }
+            ],
+            "key": "CRMContact.name",
+            "source_path": "title",
+            "state": "ambiguous_confirm"
+          },
+          {
+            "candidate_evidence": [
+              {
+                "rows_nonempty": 8,
+                "rows_present": 8,
+                "rows_sampled": 8,
+                "source_path": "title"
               }
             ],
             "key": "CRMContact.title",
             "source_path": "title",
-            "state": "ambiguous_confirm"
+            "state": "mapped"
           },
           {
             "candidate_evidence": [
@@ -2108,14 +2628,14 @@
             "state": "ambiguous_confirm"
           }
         ],
-        "mapped_count": 0,
-        "missing_count": 9,
-        "proposal_hash": "sha256:7417752be02132cd81f2b129daa4d8a85078eac9a02a2c0ed46eceac122b2783",
+        "mapped_count": 2,
+        "missing_count": 8,
+        "proposal_hash": "sha256:1814db99df3ac4d3a4392ed82acff8a21e7752f8bc8a492bbbfed7408360b5bf",
         "required_operator_actions": [
-          "confirm 8 semantic/value mappings",
-          "review 9 missing fields; affected rails remain unknown"
+          "confirm 7 semantic/value mappings",
+          "review 8 missing fields; affected rails remain unknown"
         ],
-        "schema_hash": "sha256:e568656cc3a59bf279f3b5ca41fcdeb4d48f66f62ab25eb8aeb1bdf6063fcd61"
+        "schema_hash": "sha256:b31658b820b949e6b2d0124eaad48b6baeaffc36ab65e10a124d2f9cfc7fe062"
       }
     },
     {
@@ -2153,6 +2673,7 @@
           "CRMOpportunity": 1
         },
         "rejection_counts": {},
+        "source_totals": {},
         "truncated": false,
         "unknown_fields": [
           "CRMContact.role",
@@ -2168,10 +2689,10 @@
       "hard_ok": true,
       "name": "not_mappable_round_trip",
       "proposal": {
-        "ambiguous_count": 11,
+        "ambiguous_count": 7,
         "coverage": {
-          "ambiguous_confirm": 11,
-          "mapped": 0,
+          "ambiguous_confirm": 7,
+          "mapped": 4,
           "missing_to_unknown": 6,
           "total": 17
         },
@@ -2189,6 +2710,24 @@
                 "rows_present": 1,
                 "rows_sampled": 1,
                 "source_path": "contact_id"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "account_ref"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "industry"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "owner"
               }
             ],
             "key": "CRMAccount.account_id",
@@ -2212,7 +2751,7 @@
             ],
             "key": "CRMAccount.name",
             "source_path": "name",
-            "state": "ambiguous_confirm"
+            "state": "mapped"
           },
           {
             "candidate_evidence": [
@@ -2233,6 +2772,18 @@
                 "rows_present": 1,
                 "rows_sampled": 1,
                 "source_path": "id"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "account_ref"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "industry"
               }
             ],
             "key": "CRMAccount.owner_id",
@@ -2250,7 +2801,7 @@
             ],
             "key": "CRMAccount.industry",
             "source_path": "industry",
-            "state": "ambiguous_confirm"
+            "state": "mapped"
           },
           {
             "candidate_evidence": [
@@ -2265,6 +2816,24 @@
                 "rows_present": 1,
                 "rows_sampled": 1,
                 "source_path": "id"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "account_ref"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "industry"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "owner"
               }
             ],
             "key": "CRMContact.contact_id",
@@ -2290,6 +2859,18 @@
                 "rows_present": 1,
                 "rows_sampled": 1,
                 "source_path": "contact_id"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "industry"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "owner"
               }
             ],
             "key": "CRMContact.account_id",
@@ -2307,7 +2888,7 @@
             ],
             "key": "CRMContact.email",
             "source_path": "email",
-            "state": "ambiguous_confirm"
+            "state": "mapped"
           },
           {
             "candidate_evidence": [
@@ -2339,7 +2920,7 @@
             ],
             "key": "CRMContact.consent_to_contact",
             "source_path": "consent_to_contact",
-            "state": "ambiguous_confirm"
+            "state": "mapped"
           },
           {
             "candidate_evidence": [
@@ -2354,6 +2935,24 @@
                 "rows_present": 1,
                 "rows_sampled": 1,
                 "source_path": "id"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "account_ref"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "industry"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "owner"
               }
             ],
             "key": "CRMOpportunity.opportunity_id",
@@ -2379,6 +2978,18 @@
                 "rows_present": 1,
                 "rows_sampled": 1,
                 "source_path": "contact_id"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "industry"
+              },
+              {
+                "rows_nonempty": 1,
+                "rows_present": 1,
+                "rows_sampled": 1,
+                "source_path": "owner"
               }
             ],
             "key": "CRMOpportunity.account_id",
@@ -2386,14 +2997,14 @@
             "state": "ambiguous_confirm"
           }
         ],
-        "mapped_count": 0,
+        "mapped_count": 4,
         "missing_count": 6,
-        "proposal_hash": "sha256:abd069da4e0979adcea5c78e1e3e3184806c6320a4fd92b001cefcba8b4143f6",
+        "proposal_hash": "sha256:9c9af667c96bb0bd3c4657a73578daaf1ab0028e830467e21ce33c6ea4e80e2a",
         "required_operator_actions": [
-          "confirm 11 semantic/value mappings",
+          "confirm 7 semantic/value mappings",
           "review 6 missing fields; affected rails remain unknown"
         ],
-        "schema_hash": "sha256:83f81bbcabbb527589a3dc28fcc3e0cb48fa5c0136d4c4477eaefaad12816faa"
+        "schema_hash": "sha256:294f0d36ca10059b69cd4b23bac3f0afe915886c030819ea35a77331c6a646ef"
       }
     },
     {
@@ -2440,6 +3051,7 @@
         "rejection_counts": {
           "opportunity_identity_join_failed": 1
         },
+        "source_totals": {},
         "truncated": false,
         "unknown_fields": [
           "CRMAccount.industry",
@@ -2456,10 +3068,10 @@
       "hard_ok": true,
       "name": "nested_contacts",
       "proposal": {
-        "ambiguous_count": 10,
+        "ambiguous_count": 9,
         "coverage": {
-          "ambiguous_confirm": 10,
-          "mapped": 0,
+          "ambiguous_confirm": 9,
+          "mapped": 1,
           "missing_to_unknown": 7,
           "total": 17
         },
@@ -2488,7 +3100,7 @@
             ],
             "key": "CRMAccount.name",
             "source_path": "name",
-            "state": "ambiguous_confirm"
+            "state": "mapped"
           },
           {
             "candidate_evidence": [
@@ -2607,14 +3219,14 @@
             "state": "ambiguous_confirm"
           }
         ],
-        "mapped_count": 0,
+        "mapped_count": 1,
         "missing_count": 7,
-        "proposal_hash": "sha256:a8c73b741c4160328d5eebed9f02a1aff37df401911ee7e98effc27383b4271f",
+        "proposal_hash": "sha256:1dd3399c3e898dc490584d96e126e6a96bdeb748cb1643d1176a027eeb7ab1d9",
         "required_operator_actions": [
-          "confirm 10 semantic/value mappings",
+          "confirm 9 semantic/value mappings",
           "review 7 missing fields; affected rails remain unknown"
         ],
-        "schema_hash": "sha256:3b1b8920831897a533a0a326fbe02dba4f9c5ae6aa6c5b36692132427c780a9b"
+        "schema_hash": "sha256:b60ac79678e696bbd3562656e337ef086e7c971a87a9085c8e74b3a9774cef46"
       }
     }
   ],

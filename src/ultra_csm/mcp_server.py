@@ -13,7 +13,7 @@ principal rather than a server-held authority.
 from __future__ import annotations
 
 import atexit
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 import hashlib
 import json
 import logging
@@ -43,14 +43,19 @@ from ultra_csm.data_plane import (
     FixtureProductTelemetryConnector,
 )
 from ultra_csm.data_plane.external_book import (
+    CONNECTOR_ID as _EXTERNAL_CONNECTOR_ID,
     DEFAULT_MAX_RECORDS,
     ExternalSourceDescriptor,
+    RelationalTable,
     ingest_external_book,
+    ingest_relational_book,
     propose_external_source_mapping,
 )
+from ultra_csm.data_plane.connector_catalog import CONNECTOR_SPECS
 from ultra_csm.data_plane.synthetic_book import SEED_DATE
 from ultra_csm.data_plane.source_mapping import (
     MappingConfirmation,
+    ProposedFieldMapping,
     SourceMapProposal,
     freeze_confirmed_source_map,
 )
@@ -137,10 +142,21 @@ class _RelaySession:
     proposal: SourceMapProposal | None = None
     frozen_config_hash: str | None = None
     replay_sha256: str | None = None
+    # Relational ingest_table path only; the flat ingest_book path never sets
+    # these. field_metadata is source-declared per-column metadata (e.g. a
+    # Salesforce describe); contract is the host-declared contract this
+    # table's records ARE.
+    field_metadata: dict[str, dict[str, Any]] | None = None
+    contract: str | None = None
 
 
 _relay_sessions: dict[str, _RelaySession] = {}
 _last_relay_session_id: str | None = None
+
+# Relational books: book_id -> {table_name -> per-table relay session}. Kept
+# separate from _relay_sessions so the flat single-table tools can never grab
+# a table of a relational book (and vice versa).
+_relational_books: dict[str, dict[str, _RelaySession]] = {}
 
 
 def _truthy(value: str | None) -> bool:
@@ -607,6 +623,16 @@ MCP_TOOL_AUDIT: tuple[dict[str, object], ...] = (
         "readonly_available": False,
     },
     {
+        "name": "ingest_table",
+        "classification": "state_changing",
+        "readonly_available": False,
+    },
+    {
+        "name": "confirm_book",
+        "classification": "state_changing",
+        "readonly_available": False,
+    },
+    {
         "name": "render_email_draft",
         "classification": "state_changing",
         "readonly_available": False,
@@ -949,6 +975,8 @@ def get_next_steps() -> dict:
             "Render the approved email draft artifact; it is placement-ready but never sent.",
             "For a host-relayed book, restart without demo/read-only mode and use "
             "report_readiness, ingest_book, then confirm_book_mappings.",
+            "For a normalized multi-table CRM, use ingest_table per table, "
+            "then confirm_book.",
         ],
         "credential_boundary": (
             "This demo uses simulated data and local no-auth approval only when "
@@ -957,7 +985,13 @@ def get_next_steps() -> dict:
         "outbox": str(_DEMO_STATE_DIR / "outbox.jsonl"),
         "bring_your_own_book": {
             "docs": "QUICKSTART.md#bring-your-own-book",
-            "tools": ["report_readiness", "ingest_book", "confirm_book_mappings"],
+            "tools": [
+                "report_readiness",
+                "ingest_book",
+                "confirm_book_mappings",
+                "ingest_table",
+                "confirm_book",
+            ],
             "claim_boundary": _relay_claim_boundary(),
         },
     }, suggested_next=["get_morning_briefing", "list_proposals"])
@@ -1039,6 +1073,12 @@ def report_readiness(sources: list[str] | None = None) -> dict:
                 "sim morning when no host sources are connected."
             ),
             "next_tool": "ingest_book" if minimum_ok else None,
+            "multi_table_next_tool": "ingest_table" if minimum_ok else None,
+            "multi_table": (
+                "A normalized CRM (separate Account/Contact/Opportunity tables) "
+                "relays each table with ingest_table, then confirm_book joins "
+                "them by confirmed foreign keys."
+            ),
         },
     }
 
@@ -1188,6 +1228,347 @@ def confirm_book_mappings(
     first.update({
         "claim_boundary": _relay_claim_boundary(),
         "session_id": session.session_id,
+        "replay_sha256": replay_sha,
+    })
+    return first
+
+
+@mcp.tool()
+def ingest_table(
+    book_id: str,
+    table_name: str,
+    contract: str,
+    records: list[dict[str, Any]],
+    expected_count: int | None,
+    field_metadata: dict[str, Any] | None = None,
+    final_chunk: bool = True,
+) -> dict:
+    """Ingest one named table of a relational book and return its open questions.
+
+    A relational book is N tables joined by foreign keys (a normalized CRM);
+    call ingest_table once per table (chunk within a table via final_chunk),
+    then confirm_book to freeze the mappings and assemble the joined book.
+    contract declares what this table's records ARE (CRMAccount, CRMContact,
+    or CRMOpportunity); only that contract's open questions come back — other
+    contracts' fields are never mapped against this table, because that would
+    mint records that do not exist in the source. field_metadata carries
+    source-declared schema facts per column, e.g. from a Salesforce describe:
+    {"AccountId": {"field_type": "reference", "references": ["Account"],
+    "relationship_name": "Account"}}. Declared references drive foreign-key
+    mapping directly; identity and value-direction decisions always remain
+    human.
+    """
+
+    refusal = _relay_tool_available("ingest_table")
+    if refusal is not None:
+        return refusal
+    if not isinstance(book_id, str) or not book_id.strip():
+        return _relay_refusal(
+            "RELAY_BOOK_ID_REQUIRED",
+            "ingest_table requires a non-empty book_id naming the relational book.",
+            "ingest_table",
+        )
+    if not isinstance(table_name, str) or not table_name.strip():
+        return _relay_refusal(
+            "RELAY_TABLE_NAME_REQUIRED",
+            "ingest_table requires a non-empty table_name.",
+            "ingest_table",
+            book_id=book_id,
+        )
+    known_contracts = CONNECTOR_SPECS[_EXTERNAL_CONNECTOR_ID].source_contracts
+    if contract not in known_contracts:
+        return _relay_refusal(
+            "RELAY_CONTRACT_INTENT_INVALID",
+            "contract must declare what this table's records are.",
+            "ingest_table",
+            book_id=book_id,
+            table_name=table_name,
+            supplied_contract=contract,
+            known_contracts=list(known_contracts),
+        )
+    if expected_count is None:
+        return _relay_refusal(
+            "EXPECTED_COUNT_REQUIRED",
+            "ingest_table requires expected_count so truncation and count mismatch are visible.",
+            "ingest_table",
+        )
+    if expected_count < 0:
+        return _relay_refusal(
+            "EXPECTED_COUNT_INVALID",
+            "expected_count must be zero or greater.",
+            "ingest_table",
+            expected_count=expected_count,
+        )
+    if not isinstance(records, list) or any(not isinstance(record, dict) for record in records):
+        return _relay_refusal(
+            "RELAY_RECORDS_INVALID",
+            "records must be a list of JSON objects.",
+            "ingest_table",
+        )
+    if field_metadata is not None and (
+        not isinstance(field_metadata, dict)
+        or any(not isinstance(value, dict) for value in field_metadata.values())
+    ):
+        return _relay_refusal(
+            "RELAY_FIELD_METADATA_INVALID",
+            "field_metadata must map column names to metadata objects.",
+            "ingest_table",
+        )
+
+    book = _relational_books.setdefault(book_id, {})
+    session = book.get(table_name)
+    if session is None:
+        claimed_by = next(
+            (
+                name for name, table in book.items()
+                if table.contract == contract
+            ),
+            None,
+        )
+        if claimed_by is not None:
+            return _relay_refusal(
+                "RELAY_CONTRACT_INTENT_INVALID",
+                f"contract {contract} is already declared by table {claimed_by}; "
+                "each contract may be declared by at most one table per book.",
+                "ingest_table",
+                book_id=book_id,
+                table_name=table_name,
+            )
+        session = _RelaySession(
+            session_id=f"{book_id}:{table_name}",
+            descriptor=ExternalSourceDescriptor(
+                source_name="mcp_relay",
+                expected_count=expected_count,
+                object_name=table_name,
+            ),
+            expected_count=expected_count,
+            field_metadata=field_metadata,
+            contract=contract,
+        )
+        book[table_name] = session
+    if session.contract != contract:
+        return _relay_refusal(
+            "RELAY_CONTRACT_CHANGED",
+            "contract must remain stable across chunks for a table.",
+            "ingest_table",
+            book_id=book_id,
+            table_name=table_name,
+            existing_contract=session.contract,
+            supplied_contract=contract,
+        )
+    if session.expected_count != expected_count:
+        return _relay_refusal(
+            "EXPECTED_COUNT_CHANGED",
+            "expected_count must remain stable across chunks for a table.",
+            "ingest_table",
+            book_id=book_id,
+            table_name=table_name,
+            existing_expected_count=session.expected_count,
+            supplied_expected_count=expected_count,
+        )
+    if field_metadata is not None:
+        if session.field_metadata is not None and session.field_metadata != field_metadata:
+            return _relay_refusal(
+                "RELAY_FIELD_METADATA_CHANGED",
+                "field_metadata must remain stable across chunks for a table.",
+                "ingest_table",
+                book_id=book_id,
+                table_name=table_name,
+            )
+        session.field_metadata = field_metadata
+
+    _append_relay_records(session, records)
+    if not final_chunk:
+        return {
+            "claim_boundary": _relay_claim_boundary(),
+            "book_id": book_id,
+            "table_name": table_name,
+            "accepted_chunk": True,
+            "received_count": session.received_count,
+            "stored_count": len(session.raw_records),
+            "expected_count": session.expected_count,
+            "truncated": session.dropped_record_count > 0,
+            "dropped_record_count": session.dropped_record_count,
+            "next": "send the next chunk with the same book_id and table_name",
+        }
+
+    if session.received_count != session.expected_count:
+        return _relay_refusal(
+            "RELAY_COUNT_MISMATCH",
+            "received record count does not match expected_count; refusing to freeze a partial table.",
+            "ingest_table",
+            book_id=book_id,
+            table_name=table_name,
+            received_count=session.received_count,
+            expected_count=session.expected_count,
+            stored_count=len(session.raw_records),
+            truncated=session.dropped_record_count > 0,
+            dropped_record_count=session.dropped_record_count,
+        )
+
+    _snapshot, proposal, unrepresentable = propose_external_source_mapping(
+        session.raw_records,
+        session.descriptor,
+        session.field_metadata,
+    )
+    session.proposal = proposal
+    prefix = f"{contract}."
+    _intent_proposal, demoted, _synthesized = _apply_contract_intent(proposal, contract)
+    return {
+        "claim_boundary": _relay_claim_boundary(),
+        "book_id": book_id,
+        "table_name": table_name,
+        "contract": contract,
+        "received_count": session.received_count,
+        "stored_count": len(session.raw_records),
+        "expected_count": session.expected_count,
+        "truncated": session.dropped_record_count > 0,
+        "dropped_record_count": session.dropped_record_count,
+        "raw_input_sha256": _raw_records_hash(session.raw_records),
+        "unrepresentable_paths": list(unrepresentable),
+        "auto_mapped": [
+            entry for entry in _auto_map_summary(proposal)
+            if entry["key"].startswith(prefix)
+        ],
+        "confirmation_questions": [
+            question for question in _confirmation_questions(proposal)
+            if question["key"].startswith(prefix)
+        ],
+        "declared_not_mappable": demoted,
+        "book_tables": sorted(book),
+        "next_tool": "confirm_book",
+    }
+
+
+@mcp.tool()
+def confirm_book(
+    book_id: str,
+    confirmations: dict[str, Any] | None = None,
+) -> dict:
+    """Freeze a relational book's mappings, join its tables, and return a briefing.
+
+    Each table holds one contract's records (declared at ingest_table time):
+    any other contract's proposals on a table are recorded as not_mappable and
+    declared in the response. confirmations is keyed by table name, then by
+    question key, in the same shape confirm_book_mappings accepts.
+    """
+
+    refusal = _relay_tool_available("confirm_book")
+    if refusal is not None:
+        return refusal
+    book = _relational_books.get(book_id or "")
+    if book is None:
+        return _relay_refusal(
+            "RELAY_BOOK_NOT_FOUND",
+            "No relational book with this book_id; run ingest_table first.",
+            "confirm_book",
+            book_id=book_id,
+        )
+    pending = sorted(name for name, table in book.items() if table.proposal is None)
+    if pending:
+        return _relay_refusal(
+            "RELAY_PROPOSAL_REQUIRED",
+            "Run ingest_table through the final chunk for every table before confirming.",
+            "confirm_book",
+            book_id=book_id,
+            pending_tables=pending,
+        )
+    confirmations = confirmations or {}
+    if not isinstance(confirmations, dict):
+        return _relay_refusal(
+            "RELAY_CONFIRMATION_INVALID",
+            "confirmations must be keyed by table name.",
+            "confirm_book",
+            book_id=book_id,
+        )
+    unknown_tables = sorted(set(confirmations) - set(book))
+    if unknown_tables:
+        return _relay_refusal(
+            "RELAY_CONFIRMATION_INVALID",
+            "confirmations name tables that are not part of this book.",
+            "confirm_book",
+            book_id=book_id,
+            unknown_tables=unknown_tables,
+        )
+
+    frozen_by_table: dict[str, Any] = {}
+    declared_not_mappable: dict[str, list[str]] = {}
+    for name in sorted(book):
+        contract = book[name].contract
+        assert contract is not None
+        try:
+            parsed = _mapping_confirmations_from_tool(
+                confirmations.get(name, {}) or {}
+            )
+        except ValueError as exc:
+            return _relay_refusal(
+                "RELAY_CONFIRMATION_INVALID",
+                str(exc),
+                "confirm_book",
+                book_id=book_id,
+                table_name=name,
+            )
+        conflicts = sorted(
+            key for key, confirmation in parsed.items()
+            if confirmation.contract != contract
+        )
+        if conflicts:
+            return _relay_refusal(
+                "RELAY_CONTRACT_INTENT_CONFLICT",
+                (
+                    f"table {name} is declared {contract}; confirming another "
+                    "contract's fields against it would mint records that do "
+                    "not exist in the source."
+                ),
+                "confirm_book",
+                book_id=book_id,
+                table_name=name,
+                conflicting_keys=conflicts,
+            )
+        session = book[name]
+        assert session.proposal is not None
+        intent_proposal, not_mappable, synthesized = _apply_contract_intent(
+            session.proposal, contract
+        )
+        declared_not_mappable[name] = not_mappable
+        try:
+            frozen = freeze_confirmed_source_map(
+                intent_proposal,
+                confirmations={**synthesized, **parsed},
+            )
+        except ValueError as exc:
+            return _relay_refusal(
+                "RELAY_CONFIRMATION_INVALID",
+                str(exc),
+                "confirm_book",
+                book_id=book_id,
+                table_name=name,
+            )
+        frozen_by_table[name] = frozen
+
+    first = _relational_replay_payload(book, frozen_by_table)
+    second = _relational_replay_payload(book, frozen_by_table)
+    if first != second:
+        return _relay_refusal(
+            "RELAY_REPLAY_NONDETERMINISTIC",
+            "Recorded raw inputs plus frozen maps did not replay deterministically.",
+            "confirm_book",
+            book_id=book_id,
+        )
+    replay_sha = _json_sha256(first)
+    for name, session in book.items():
+        session.frozen_config_hash = frozen_by_table[name].config_hash
+        session.replay_sha256 = replay_sha
+    first.update({
+        "claim_boundary": _relay_claim_boundary(),
+        "book_id": book_id,
+        "table_contracts": {name: book[name].contract for name in sorted(book)},
+        "declared_not_mappable": declared_not_mappable,
+        "book_has_parent": any(
+            mapping.contract == "CRMAccount" and mapping.internal_field == "account_id"
+            for frozen in frozen_by_table.values()
+            for mapping in frozen.mappings
+        ),
         "replay_sha256": replay_sha,
     })
     return first
@@ -1602,6 +1983,105 @@ def _confirmation_questions(proposal: SourceMapProposal) -> list[dict[str, Any]]
             ],
         })
     return questions
+
+
+def _auto_map_summary(proposal: SourceMapProposal) -> list[dict[str, Any]]:
+    """Auto-mapped entries, so the host can show provenance without re-asking."""
+
+    return [
+        {
+            "key": entry.key,
+            "source_path": entry.source_path,
+            "reason": entry.reason,
+            "transform": entry.transform,
+        }
+        for entry in proposal.entries
+        if entry.state == "mapped" and entry.reason.startswith("auto-mapped:")
+    ]
+
+
+def _apply_contract_intent(
+    proposal: SourceMapProposal,
+    contract: str,
+) -> tuple[SourceMapProposal, list[str], dict[str, MappingConfirmation]]:
+    """Make the declared contract authoritative for one table.
+
+    Every other contract's entry on this table — auto-mapped or ambiguous — is
+    demoted to an explicit not_mappable, because mapping contract X's fields
+    onto a table that holds contract Y's records mints records that do not
+    exist in the source. Returns the adjusted proposal, the demoted keys (so
+    the response can declare them), and the synthesized confirmations.
+    """
+
+    entries: list[ProposedFieldMapping] = []
+    demoted: list[str] = []
+    synthesized: dict[str, MappingConfirmation] = {}
+    for entry in proposal.entries:
+        if entry.contract != contract and entry.state != "missing_to_unknown":
+            if entry.state == "mapped":
+                entry = replace(
+                    entry,
+                    state="ambiguous_confirm",
+                    requires_human_confirmation=True,
+                )
+            demoted.append(entry.key)
+            synthesized[entry.key] = MappingConfirmation(
+                contract=entry.contract,
+                internal_field=entry.internal_field,
+                verdict="not_mappable",
+            )
+        entries.append(entry)
+    return replace(proposal, entries=tuple(entries)), sorted(demoted), synthesized
+
+
+def _relational_replay_payload(
+    book: dict[str, _RelaySession],
+    frozen_by_table: dict[str, Any],
+) -> dict[str, Any]:
+    tables = tuple(
+        RelationalTable(
+            table_name=name,
+            records=tuple(book[name].raw_records),
+            frozen_map=frozen_by_table[name],
+            expected_count=book[name].expected_count,
+            field_metadata=book[name].field_metadata,
+        )
+        for name in sorted(book)
+    )
+    result = ingest_relational_book(tables)
+    scores, score_errors = _score_relay_accounts(result.data)
+    return {
+        "provenance": "mcp_relay",
+        "unverified_mapping": True,
+        "sim": False,
+        "live": False,
+        "typed_counts": {
+            "CRMAccount": len(result.data.accounts),
+            "CRMContact": len(result.data.contacts),
+            "CRMOpportunity": len(result.data.opportunities),
+        },
+        "tables": {
+            name: {
+                "received_count": book[name].received_count,
+                "stored_count": len(book[name].raw_records),
+                "expected_count": book[name].expected_count,
+                "truncated": book[name].dropped_record_count > 0,
+                "dropped_record_count": book[name].dropped_record_count,
+                "raw_input_sha256": _raw_records_hash(book[name].raw_records),
+                "frozen_config_hash": frozen_by_table[name].config_hash,
+            }
+            for name in sorted(book)
+        },
+        "coverage": result.coverage.to_dict(),
+        "briefing": list(result.briefing),
+        "score_summary": {
+            "scoreable_accounts": len(scores),
+            "score_error_count": len(score_errors),
+        },
+        "scores": scores,
+        "score_errors": score_errors,
+        "propose_only_actions": _relay_propose_only_actions(result.data),
+    }
 
 
 def _mapping_confirmations_from_tool(
