@@ -25,6 +25,8 @@ from ultra_csm.data_plane import (
     CRMContact,
     CustomerDataPlane,
     EvidenceRef,
+    OnboardingPhase,
+    OnboardingTask,
     TimeToValueMilestone,
 )
 from ultra_csm.data_plane.contracts import ResolutionState
@@ -373,14 +375,21 @@ def _slot_b_inputs_for_account(
     signals = tuple(data_plane.telemetry.list_usage_signals(account.account_id))
     entitlements = tuple(data_plane.telemetry.list_entitlements(account.account_id))
     signal_ids = {signal.signal_id for signal in signals}
+    onboarding_phases, onboarding_tasks = _onboarding_evidence(data_plane, account.account_id)
+    onboarding_ids = {p.phase_id for p in onboarding_phases} | {t.task_id for t in onboarding_tasks}
     milestones = tuple(data_plane.telemetry.list_ttv_milestones(account.account_id))
+    onboarding_milestones = _onboarding_milestones(data_plane, account.account_id)
+    all_milestones = milestones + tuple(
+        milestone for milestone in onboarding_milestones if milestone not in milestones
+    )
     open_gaps = tuple(
-        milestone for milestone in milestones
+        milestone for milestone in all_milestones
         if milestone.achieved_at is None and iso_date(milestone.expected_by) <= iso_date(as_of)
     )
+    grounded_ids = signal_ids | onboarding_ids
     telemetry_backed_gaps = tuple(
         milestone for milestone in open_gaps
-        if any(signal_id in signal_ids for signal_id in milestone.evidence_signal_ids)
+        if any(signal_id in grounded_ids for signal_id in milestone.evidence_signal_ids)
     )
     overdue_plans = tuple(plan for plan in plans if iso_date(plan.target_date) <= iso_date(as_of))
 
@@ -393,6 +402,8 @@ def _slot_b_inputs_for_account(
         plans=overdue_plans,
         cases=cases,
         health_observed_at=health.measured_at,
+        onboarding_phases=onboarding_phases,
+        onboarding_tasks=onboarding_tasks,
     )
     if evidence_source_ids is not None:
         evidence = _filter_evidence_refs_by_source_id(evidence, evidence_source_ids)
@@ -407,6 +418,7 @@ def _slot_b_inputs_for_account(
         entitlements=entitlements,
         usage_signals=signals,
         success_plans=plans,
+        onboarding_milestones=onboarding_milestones,
     )
     trajectory = _trajectory_decline_evaluation(
         snapshot_store,
@@ -421,6 +433,7 @@ def _slot_b_inputs_for_account(
         overdue_plans=overdue_plans,
         as_of=as_of,
         trajectory_factor=trajectory.factor,
+        onboarding_evidence_ids=frozenset(onboarding_ids),
     )
     if priority.score <= 0:
         return None
@@ -747,6 +760,44 @@ def _candidate_account_ids(
     return tuple(sorted(candidates))
 
 
+def _onboarding_milestones(
+    data_plane: CustomerDataPlane,
+    account_id: str,
+) -> tuple[TimeToValueMilestone, ...]:
+    """Rocketlane-derived milestones, when an onboarding source is mapped.
+
+    Absence of an onboarding connector is the honest degraded state, not an
+    error. Fail-closed on a connector error too (never fabricate evidence
+    from an outage).
+    """
+
+    if data_plane.onboarding is None:
+        return ()
+    try:
+        return tuple(data_plane.onboarding.derive_ttv_milestones(account_id))
+    except Exception:
+        return ()
+
+
+def _onboarding_evidence(
+    data_plane: CustomerDataPlane,
+    account_id: str,
+) -> tuple[tuple[OnboardingPhase, ...], tuple[OnboardingTask, ...]]:
+    """Rocketlane phases/tasks groundable as evidence for this account."""
+
+    if data_plane.onboarding is None:
+        return (), ()
+    try:
+        phases: list[OnboardingPhase] = []
+        tasks: list[OnboardingTask] = []
+        for project in data_plane.onboarding.list_projects_for_account(account_id):
+            phases.extend(data_plane.onboarding.list_phases(project.project_id))
+            tasks.extend(data_plane.onboarding.list_tasks(project.project_id))
+        return tuple(phases), tuple(tasks)
+    except Exception:
+        return (), ()
+
+
 def _evidence_refs(
     account_id: str,
     *,
@@ -757,8 +808,12 @@ def _evidence_refs(
     plans: tuple,
     cases: tuple,
     health_observed_at: str,
+    onboarding_phases: tuple[OnboardingPhase, ...] = (),
+    onboarding_tasks: tuple[OnboardingTask, ...] = (),
 ) -> tuple[EvidenceRef, ...]:
     signal_by_id = {signal.signal_id: signal for signal in signals}
+    phase_by_id = {phase.phase_id: phase for phase in onboarding_phases}
+    task_by_id = {task.task_id: task for task in onboarding_tasks}
     refs: list[EvidenceRef] = []
     seen: set[tuple[str, str, str]] = set()
     def add(ref: EvidenceRef) -> None:
@@ -772,6 +827,14 @@ def _evidence_refs(
             signal = signal_by_id.get(signal_id)
             if signal is not None:
                 add(EvidenceRef("telemetry", signal.signal_id, signal.metric_name, signal.observed_at))
+                continue
+            phase = phase_by_id.get(signal_id)
+            if phase is not None:
+                add(EvidenceRef("rocketlane", phase.phase_id, "due_date", phase.due_date or as_of))
+                continue
+            task = task_by_id.get(signal_id)
+            if task is not None:
+                add(EvidenceRef("rocketlane", task.task_id, "due_date", task.due_date or as_of))
     for cta in ctas:
         add(EvidenceRef("cs_platform", cta.cta_id, "due_date", cta.due_date))
     for plan in plans:
@@ -794,6 +857,7 @@ def _priority(
     overdue_plans: tuple,
     as_of: str,
     trajectory_factor: PriorityFactor | None = None,
+    onboarding_evidence_ids: frozenset[str] = frozenset(),
 ) -> Priority:
     projected = project_ttv_lens(
         model,
@@ -802,6 +866,7 @@ def _priority(
         open_milestone_gaps=open_gaps,
         overdue_success_plans=overdue_plans,
         as_of=as_of,
+        onboarding_evidence_ids=onboarding_evidence_ids,
     )
     factors = tuple(
         factor for factor in projected.factors

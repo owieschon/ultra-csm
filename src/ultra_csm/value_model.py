@@ -239,15 +239,25 @@ def build_customer_value_model(
     entitlements: tuple[Entitlement, ...],
     usage_signals: tuple[UsageSignal, ...],
     success_plans: tuple[SuccessPlan, ...],
+    onboarding_milestones: tuple[TimeToValueMilestone, ...] = (),
     config: ValueModelConfig | None = None,
 ) -> CustomerValueModel:
+    """Build the four-rail value model.
+
+    ``onboarding_milestones`` is optional Rocketlane-derived TTV evidence
+    (see docs/ROCKETLANE_ONBOARDING_CONNECTOR_SPEC.md's TTV bridge). When
+    empty -- no onboarding source mapped for this account, or a connector
+    outage that fails closed upstream -- the outcome rail degrades exactly as
+    it always has (success-plan-only), never fabricating a milestone.
+    """
+
     cfg = config or load_value_model_config()
     resolved = resolve_thresholds(account_attributes(account, company), cfg)
     thresholds = resolved.thresholds
 
     penetration = _penetration_rail(adoption, resolved)
     feature_depth = _feature_depth_rail(adoption, entitlements, resolved)
-    outcome = _outcome_rail(success_plans, resolved)
+    outcome = _outcome_rail(success_plans, resolved, onboarding_milestones=onboarding_milestones)
     usage = UsageRail(
         adoption_rate=adoption.adoption_rate if adoption else None,
         active_users=adoption.active_users if adoption else None,
@@ -300,7 +310,16 @@ def project_ttv_lens(
     open_milestone_gaps: tuple[TimeToValueMilestone, ...] = (),
     overdue_success_plans: tuple[SuccessPlan, ...] = (),
     as_of: str | None = None,
+    onboarding_evidence_ids: frozenset[str] = frozenset(),
 ) -> ProjectedPriority:
+    """``onboarding_evidence_ids`` are Rocketlane phase/task ids among
+    ``open_milestone_gaps``' evidence_signal_ids -- used only to attribute
+    evidence correctly as ``EvidenceSource="rocketlane"`` instead of the
+    default ``"telemetry"``. Passing none is the honest default: an id not
+    listed here is attributed to telemetry, matching pre-Program-4 behavior
+    exactly.
+    """
+
     factors = (
         *_ttv_base_factors(
             model,
@@ -309,6 +328,7 @@ def project_ttv_lens(
             open_milestone_gaps=open_milestone_gaps,
             overdue_success_plans=overdue_success_plans,
             as_of=as_of,
+            onboarding_evidence_ids=onboarding_evidence_ids,
         ),
         *model.ttv_factors,
     )
@@ -409,6 +429,8 @@ def _feature_depth_rail(
 def _outcome_rail(
     success_plans: tuple[SuccessPlan, ...],
     resolved: ResolvedThresholds,
+    *,
+    onboarding_milestones: tuple[TimeToValueMilestone, ...] = (),
 ) -> OutcomeRail:
     objectives = tuple(
         objective
@@ -430,11 +452,34 @@ def _outcome_rail(
             None,
             None,
         ),)
-    realized_state: OutcomeState = (
-        "known"
-        if any(plan.status in {"realized", "achieved", "complete"} for plan in success_plans)
-        else "not_instrumented"
+    plan_realized = any(
+        plan.status in {"realized", "achieved", "complete"} for plan in success_plans
     )
+    # A mapped onboarding source (Rocketlane) is real, cited milestone
+    # evidence -- an achieved milestone is as valid an outcome signal as a
+    # realized success plan. Absence of onboarding_milestones changes
+    # nothing: realized_state degrades exactly as it always has.
+    onboarding_achieved = tuple(
+        m for m in onboarding_milestones if m.achieved_at is not None
+    )
+    if plan_realized or onboarding_achieved:
+        realized_state: OutcomeState = "known"
+    else:
+        realized_state = "not_instrumented"
+    if onboarding_achieved:
+        factors = (*factors, _factor(
+            "onboarding_milestone_achieved",
+            float(len(onboarding_achieved)),
+            0,
+            tuple(
+                EvidenceRef("rocketlane", signal_id, "achieved_at", m.achieved_at or "")
+                for m in onboarding_achieved
+                for signal_id in m.evidence_signal_ids
+            ),
+            resolved,
+            None,
+            None,
+        ),)
     return OutcomeRail(
         stated_objectives=objectives,
         realized_state=realized_state,
@@ -450,6 +495,7 @@ def _ttv_base_factors(
     open_milestone_gaps: tuple[TimeToValueMilestone, ...],
     overdue_success_plans: tuple[SuccessPlan, ...],
     as_of: str | None,
+    onboarding_evidence_ids: frozenset[str] = frozenset(),
 ) -> tuple[ValueFactor, ...]:
     resolved = model.resolved_thresholds
     thresholds = resolved.thresholds
@@ -457,7 +503,12 @@ def _ttv_base_factors(
 
     if open_milestone_gaps:
         evidence = tuple(
-            EvidenceRef("telemetry", signal_id, "ttv_milestone", milestone.expected_by)
+            EvidenceRef(
+                "rocketlane" if signal_id in onboarding_evidence_ids else "telemetry",
+                signal_id,
+                "ttv_milestone",
+                milestone.expected_by,
+            )
             for milestone in open_milestone_gaps
             for signal_id in milestone.evidence_signal_ids
         )

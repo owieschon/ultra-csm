@@ -26,6 +26,7 @@ CTAStatus = Literal["open", "in_progress", "closed"]
 HealthBand = Literal["green", "yellow", "red", "unknown"]
 SignalGrain = Literal["company", "person", "asset"]
 EvidenceSource = Literal["rocketlane", "telemetry", "cs_platform", "crm"]
+ProjectProgress = Literal["on_track", "ahead", "running_late", "none"]
 
 
 @dataclass(frozen=True)
@@ -290,20 +291,57 @@ class BillingEvent:
 
 
 @dataclass(frozen=True)
-class OnboardingTask:
-    """A single onboarding task tracked during implementation.
+class OnboardingProject:
+    """Rocketlane Project — onboarding/PSA engagement for one account.
 
-    Reserved for live connector integration — simulation deferred.
+    ``account_id`` is the join key back to the CRM/CS account (Rocketlane
+    ``customer.companyId``); see the open "Account join" gap in
+    docs/ROCKETLANE_ONBOARDING_CONNECTOR_SPEC.md.
     """
 
-    task_id: str
+    project_id: str
     account_id: str
-    task_name: str
-    owner_type: Literal["vendor", "customer"]
-    status: Literal["pending", "in_progress", "blocked", "completed"]
-    due_date: str
-    completed_date: str | None = None
-    blocker_description: str | None = None
+    name: str
+    status_value: int | None
+    status_label: str | None
+    owner_id: str | None
+    progress: ProjectProgress
+    start_date: str | None
+    start_date_actual: str | None
+    due_date: str | None
+    due_date_actual: str | None
+    arr_cents: int | None
+
+
+@dataclass(frozen=True)
+class OnboardingPhase:
+    """Rocketlane Phase — a milestone stage within an onboarding project."""
+
+    phase_id: str
+    project_id: str
+    name: str
+    start_date: str | None
+    start_date_actual: str | None
+    due_date: str | None
+    due_date_actual: str | None
+    status_label: str | None
+    private: bool
+
+
+@dataclass(frozen=True)
+class OnboardingTask:
+    """Rocketlane Task — a unit of work within an onboarding project/phase."""
+
+    task_id: str
+    project_id: str
+    phase_id: str | None
+    name: str
+    status_label: str
+    start_date: str | None
+    due_date: str | None
+    due_date_actual: str | None  # populated == completed
+    at_risk: bool
+    assignee_ids: tuple[str, ...]
 
 
 def resolve_candidates(account_ids: list[str]) -> AccountResolution:
@@ -372,10 +410,33 @@ class ProductTelemetryConnector(Protocol):
     def list_ttv_milestones(self, account_id: str) -> list[TimeToValueMilestone]: ...
 
 
+class OnboardingConnector(Protocol):
+    """Rocketlane-backed onboarding/PSA seam. Tenant-bound, fail-closed, read-mostly.
+
+    Optional: a tenant with no onboarding source configured has no
+    ``OnboardingConnector`` at all (``CustomerDataPlane.onboarding is None``),
+    and the outcome/TTV rail degrades honestly rather than fabricating
+    milestones. See docs/ROCKETLANE_ONBOARDING_CONNECTOR_SPEC.md.
+    """
+
+    def list_projects_for_account(self, account_id: str) -> list[OnboardingProject]: ...
+
+    def get_project(self, project_id: str) -> OnboardingProject | None: ...
+
+    def list_phases(self, project_id: str) -> list[OnboardingPhase]: ...
+
+    def list_tasks(
+        self, project_id: str, *, at_risk_only: bool = False, phase_id: str | None = None
+    ) -> list[OnboardingTask]: ...
+
+    def derive_ttv_milestones(self, account_id: str) -> list[TimeToValueMilestone]: ...
+
+
 @dataclass(frozen=True)
 class CustomerDataPlane:
-    """The three integration seams an Ultra CSM agent consumes."""
+    """The integration seams an Ultra CSM agent consumes."""
 
     crm: CRMDataConnector
     cs: CSPlatformConnector
     telemetry: ProductTelemetryConnector
+    onboarding: OnboardingConnector | None = None
