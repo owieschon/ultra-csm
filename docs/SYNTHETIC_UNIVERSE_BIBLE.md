@@ -48,9 +48,14 @@ Existing spine beats:
   `HealthBandChange(..., "green", ("onboarding_complete", "stable_adoption"))`.
 
 New artifact layers (U1) hang beats at three checkpoints:
-- **Before (day 5)**: kickoff cadence still weekly, champion responsive
-  (reply latency ~4h), Rocketlane "Kickoff" phase on track, no red flags.
-  Milestone `activate_50pct_assets` not yet due.
+- **Before (day 20)**: kickoff cadence still weekly, champion responsive
+  (reply latency ~5-6h on the two exchanges so far), Rocketlane "Kickoff"
+  phase on track, no red flags, day-0 case still open but unremarkable.
+  Trend-based extractor signals (latency trend, cadence shift) correctly
+  return "insufficient history" here — under two full trailing windows of
+  data have accumulated yet, and returning `None` rather than a
+  single-point trend is the fail-closed behavior being exercised, not a
+  gap.
 - **During (day 50)**: two dispatch-integration cases already fired (day 0,
   day 30), champion reply latency stretching (4h → 30h+), calendar cadence
   weekly → biweekly, Rocketlane "Legacy Integration" phase `due_date` passed
