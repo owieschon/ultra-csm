@@ -46,6 +46,11 @@ Existing spine beats:
   (Medium, resolves ~day 100, csat 3.0).
 - Day 300 — `LifecycleChange(..., "steady_state")` +
   `HealthBandChange(..., "green", ("onboarding_complete", "stable_adoption"))`.
+- Day 10–100 `UsageDecline` / day 100–300 `UsageGrowth` — real adoption drag
+  paired with the case/latency story (added after Phase U1 verification
+  found the seat-penetration/feature-depth pillars were reading a frozen
+  day-0 snapshot with no scripted delta at all -- an authoring gap, not a
+  sweep-scoring one; see docs/PROGRAM_REPORT_3.md).
 
 New artifact layers (U1) hang beats at three checkpoints:
 - **Before (day 20)**: kickoff cadence still weekly, champion responsive
@@ -88,6 +93,10 @@ Existing spine beats: Day 3 `ChampionGoesQuiet`; day 14
 day 110 `NewContactAppears("Monica Reeves", "VP Supply Chain Operations")`;
 day 130 `HealthBandChange(..., "yellow", ("new_champion_engaged", "recovery_in_progress"))`
 + `CSATDecline`; day 240 `HealthBandChange(..., "green", ("new_champion_active", "recovery_complete"))`.
+Extension: day 3–130 `UsageDecline` / day 130–240 `UsageGrowth`, sized to stay
+under the engine's own 20% auto-health-adjustment threshold (the champion-quiet
+score penalty already drives the band; this makes seat-penetration/
+feature-depth move with the story too, which no scripted delta did before).
 
 Checkpoints: day 10 (single point of failure exposed — one contact, gone
 quiet, zero other stakeholder relationships), day 120 (second contact
@@ -105,31 +114,36 @@ rows (multi_thread_depth 1→2), email thread gap for the original champion,
 
 ### 3. Churn-brewing — `quarrystone-logistics`
 
-Persona: `at_risk_champion`. Industry: logistics, CSM `csm-104`. Existing
-spine only has the terminal beat: day 220 `StatusChange(..., "Churned")` +
-`HealthBandChange(..., "red", ("churned", "champion_never_replaced"))`. The
-persona comment (`data_simulator.py`) states the champion departed at day 0
-and was never replaced — that lead-up is currently un-scripted. **Extension**:
-add to `SCENARIO_TIMELINE` (new entries, clearly commented as bible-driven):
-`ChampionGoesQuiet("quarrystone-logistics", 0)`,
-`TicketSpike("quarrystone-logistics", 160, 2)`,
-`HealthBandChange("quarrystone-logistics", 180, "yellow", ("champion_unreplaced", "renewal_conversation_stalled"))`.
-Add to `_CASE_SCHEDULE`: a day-160 case "Renewal terms discussion — no
-response" (Medium, `renewal`, unresolved, csat `None`).
+Persona: `at_risk_champion`. Industry: logistics, CSM `csm-104`. **Correction
+after Phase U1 verification**: `synthetic_book.py`'s base fixture already
+starts this account `red` at day 0 (`champion_departed`/`no_successor` in
+its baseline `_HEALTH` entry) — there is no green-to-red transition to
+script, so an earlier draft of this extension added a day-180
+`HealthBandChange(..., "yellow", ...)` that read as an unearned
+*improvement* right before the day-220 churn. That mutation has been
+removed. The account is `red` for the entire simulation up to the churn;
+"brewing" here is not a health-band arc.
 
-Checkpoints: day 30 (early — champion already quiet since day 0, but nothing
-else has fired yet; this is the account's own version of red herring #1's
-setup, except here it is real), day 190 (yellow band, unresolved renewal
-case, zero calendar activity in 60 days), day 225 (post-churn, for contrast).
+Existing/extension spine beats: day 220 `StatusChange(..., "Churned")` +
+`HealthBandChange(..., "red", ("churned", "champion_never_replaced"))`
+(existing); `ChampionGoesQuiet("quarrystone-logistics", 0)` and
+`TicketSpike("quarrystone-logistics", 160, 2)` (extension, still red
+throughout). Add to `_CASE_SCHEDULE`: a day-160 case "Renewal terms
+discussion — no response" (Medium, `renewal`, unresolved, csat `None`).
 
-Briefing-level truth: the brewing signal is **absence** — no replacement
-contact ever surfaces (compare to Pinnacle, where one does), zero calendar
-events after day 0, and the day-160 renewal case goes unanswered. The
-account was salvageable through day ~180 (single missing action: get a
-replacement contact) but not after. Evidence: zero
-`StakeholderRelationship` rows post day-0, the day-160 case id, the
-absence of calendar `events.list` entries in the extractor's cadence window
-day 130–190.
+Checkpoints: day 30, day 190, day 225 — the health band is identical
+(`red`) at all three; the "brewing" signal is entirely in absence and
+accumulation, not a band transition.
+
+Briefing-level truth: the brewing signal is **absence despite already
+being flagged** — the account has been visibly red since day 0, yet no
+replacement contact ever surfaces (compare to Pinnacle, where one does),
+zero calendar events after day 0, and the day-160 renewal case goes
+unanswered. This is a distinct failure mode from silent-decline (a hidden
+risk) and from single-threaded-risk (a risk that gets remediated): a known,
+flagged risk that nobody acts on. Evidence: zero `StakeholderRelationship`
+rows post day-0, the day-160 case id, the absence of calendar
+`events.list` entries in the extractor's cadence window day 30–190.
 
 ### 4. Silent-decline (green-but-quiet) — `aspenridge-supply`
 
@@ -143,10 +157,11 @@ same account would make the two beats fight instead of telling one story).
 point in the 365 days (this account's band stays at its green baseline for
 the full simulation; that gap is the point of the arc).
 
-Checkpoints: day 90 (pre-decline baseline), day 200 (usage genuinely down
-~35% cumulative from baseline, band still green, zero cases, zero CTAs —
-nothing in the CRM/CS-platform view looks wrong), day 340 (decline
-continued, still green).
+Checkpoints: day 90 (decline just starting, baseline reading), day 200
+(usage genuinely down ~7% cumulative from baseline, band still green, zero
+cases, zero CTAs — nothing in the CRM/CS-platform view looks wrong), day
+340 (decline continued to ~12% cumulative — still safely under the
+engine's 20% auto-adjustment threshold, still green).
 
 Briefing-level truth: this account IS at risk — sustained usage decline with
 no case, no CTA, no health-band change to surface it. A briefing that only
