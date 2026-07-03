@@ -1,0 +1,367 @@
+{
+  "artifact": "relational_property_battery",
+  "cases": [
+    {
+      "ground_truth": {
+        "CRMContact_orphan": 1,
+        "CRMContact_valid": 11,
+        "accounts": 12
+      },
+      "ok": true,
+      "problems": [],
+      "seed": 101,
+      "tables": 2,
+      "typed": {
+        "CRMAccount": 12,
+        "CRMContact": 11,
+        "CRMOpportunity": 0
+      }
+    },
+    {
+      "ground_truth": {
+        "CRMContact_orphan": 2,
+        "CRMContact_valid": 6,
+        "CRMOpportunity_orphan": 2,
+        "CRMOpportunity_valid": 9,
+        "accounts": 5
+      },
+      "ok": true,
+      "problems": [],
+      "seed": 102,
+      "tables": 3,
+      "typed": {
+        "CRMAccount": 5,
+        "CRMContact": 6,
+        "CRMOpportunity": 9
+      }
+    },
+    {
+      "ground_truth": {
+        "CRMContact_orphan": 5,
+        "CRMContact_valid": 7,
+        "accounts": 10
+      },
+      "ok": true,
+      "problems": [],
+      "seed": 103,
+      "tables": 2,
+      "typed": {
+        "CRMAccount": 10,
+        "CRMContact": 7,
+        "CRMOpportunity": 0
+      }
+    },
+    {
+      "ground_truth": {
+        "CRMContact_orphan": 3,
+        "CRMContact_valid": 13,
+        "CRMOpportunity_orphan": 3,
+        "CRMOpportunity_valid": 4,
+        "accounts": 3
+      },
+      "ok": true,
+      "problems": [],
+      "seed": 104,
+      "tables": 3,
+      "typed": {
+        "CRMAccount": 3,
+        "CRMContact": 13,
+        "CRMOpportunity": 4
+      }
+    },
+    {
+      "ground_truth": {
+        "CRMContact_orphan": 3,
+        "CRMContact_valid": 9,
+        "accounts": 12
+      },
+      "ok": true,
+      "problems": [],
+      "seed": 105,
+      "tables": 2,
+      "typed": {
+        "CRMAccount": 12,
+        "CRMContact": 9,
+        "CRMOpportunity": 0
+      }
+    },
+    {
+      "ground_truth": {
+        "CRMContact_orphan": 1,
+        "CRMContact_valid": 6,
+        "CRMOpportunity_orphan": 3,
+        "CRMOpportunity_valid": 14,
+        "accounts": 10
+      },
+      "ok": true,
+      "problems": [],
+      "seed": 106,
+      "tables": 3,
+      "typed": {
+        "CRMAccount": 10,
+        "CRMContact": 6,
+        "CRMOpportunity": 14
+      }
+    },
+    {
+      "ground_truth": {
+        "CRMContact_orphan": 1,
+        "CRMContact_valid": 7,
+        "accounts": 6
+      },
+      "ok": true,
+      "problems": [],
+      "seed": 107,
+      "tables": 2,
+      "typed": {
+        "CRMAccount": 6,
+        "CRMContact": 7,
+        "CRMOpportunity": 0
+      }
+    },
+    {
+      "ground_truth": {
+        "CRMContact_orphan": 0,
+        "CRMContact_valid": 8,
+        "CRMOpportunity_orphan": 3,
+        "CRMOpportunity_valid": 12,
+        "accounts": 5
+      },
+      "ok": true,
+      "problems": [],
+      "seed": 108,
+      "tables": 3,
+      "typed": {
+        "CRMAccount": 5,
+        "CRMContact": 8,
+        "CRMOpportunity": 12
+      }
+    },
+    {
+      "ground_truth": {
+        "CRMContact_orphan": 4,
+        "CRMContact_valid": 12,
+        "CRMOpportunity_orphan": 0,
+        "CRMOpportunity_valid": 8,
+        "accounts": 7
+      },
+      "ok": true,
+      "problems": [],
+      "seed": 109,
+      "tables": 3,
+      "typed": {
+        "CRMAccount": 7,
+        "CRMContact": 12,
+        "CRMOpportunity": 8
+      }
+    },
+    {
+      "ground_truth": {
+        "CRMContact_orphan": 3,
+        "CRMContact_valid": 2,
+        "accounts": 9
+      },
+      "ok": true,
+      "problems": [],
+      "seed": 110,
+      "tables": 2,
+      "typed": {
+        "CRMAccount": 9,
+        "CRMContact": 2,
+        "CRMOpportunity": 0
+      }
+    },
+    {
+      "ground_truth": {
+        "CRMContact_orphan": 0,
+        "CRMContact_valid": 7,
+        "CRMOpportunity_orphan": 2,
+        "CRMOpportunity_valid": 8,
+        "accounts": 6
+      },
+      "ok": true,
+      "problems": [],
+      "seed": 111,
+      "tables": 3,
+      "typed": {
+        "CRMAccount": 6,
+        "CRMContact": 7,
+        "CRMOpportunity": 8
+      }
+    },
+    {
+      "ground_truth": {
+        "CRMContact_orphan": 1,
+        "CRMContact_valid": 7,
+        "accounts": 10
+      },
+      "ok": true,
+      "problems": [],
+      "seed": 112,
+      "tables": 2,
+      "typed": {
+        "CRMAccount": 10,
+        "CRMContact": 7,
+        "CRMOpportunity": 0
+      }
+    },
+    {
+      "ground_truth": {
+        "CRMContact_orphan": 2,
+        "CRMContact_valid": 11,
+        "CRMOpportunity_orphan": 2,
+        "CRMOpportunity_valid": 10,
+        "accounts": 3
+      },
+      "ok": true,
+      "problems": [],
+      "seed": 113,
+      "tables": 3,
+      "typed": {
+        "CRMAccount": 3,
+        "CRMContact": 11,
+        "CRMOpportunity": 10
+      }
+    },
+    {
+      "ground_truth": {
+        "CRMContact_orphan": 5,
+        "CRMContact_valid": 13,
+        "accounts": 6
+      },
+      "ok": true,
+      "problems": [],
+      "seed": 114,
+      "tables": 2,
+      "typed": {
+        "CRMAccount": 6,
+        "CRMContact": 13,
+        "CRMOpportunity": 0
+      }
+    },
+    {
+      "ground_truth": {
+        "CRMContact_orphan": 2,
+        "CRMContact_valid": 17,
+        "accounts": 7
+      },
+      "ok": true,
+      "problems": [],
+      "seed": 115,
+      "tables": 2,
+      "typed": {
+        "CRMAccount": 7,
+        "CRMContact": 17,
+        "CRMOpportunity": 0
+      }
+    },
+    {
+      "ground_truth": {
+        "CRMContact_orphan": 5,
+        "CRMContact_valid": 10,
+        "accounts": 12
+      },
+      "ok": true,
+      "problems": [],
+      "seed": 116,
+      "tables": 2,
+      "typed": {
+        "CRMAccount": 12,
+        "CRMContact": 10,
+        "CRMOpportunity": 0
+      }
+    },
+    {
+      "ground_truth": {
+        "CRMContact_orphan": 5,
+        "CRMContact_valid": 13,
+        "CRMOpportunity_orphan": 1,
+        "CRMOpportunity_valid": 8,
+        "accounts": 6
+      },
+      "ok": true,
+      "problems": [],
+      "seed": 117,
+      "tables": 3,
+      "typed": {
+        "CRMAccount": 6,
+        "CRMContact": 13,
+        "CRMOpportunity": 8
+      }
+    },
+    {
+      "ground_truth": {
+        "CRMContact_orphan": 5,
+        "CRMContact_valid": 11,
+        "accounts": 5
+      },
+      "ok": true,
+      "problems": [],
+      "seed": 118,
+      "tables": 2,
+      "typed": {
+        "CRMAccount": 5,
+        "CRMContact": 11,
+        "CRMOpportunity": 0
+      }
+    },
+    {
+      "ground_truth": {
+        "CRMContact_orphan": 0,
+        "CRMContact_valid": 4,
+        "accounts": 7
+      },
+      "ok": true,
+      "problems": [],
+      "seed": 119,
+      "tables": 2,
+      "typed": {
+        "CRMAccount": 7,
+        "CRMContact": 4,
+        "CRMOpportunity": 0
+      }
+    },
+    {
+      "ground_truth": {
+        "CRMContact_orphan": 1,
+        "CRMContact_valid": 11,
+        "CRMOpportunity_orphan": 1,
+        "CRMOpportunity_valid": 12,
+        "accounts": 11
+      },
+      "ok": true,
+      "problems": [],
+      "seed": 120,
+      "tables": 3,
+      "typed": {
+        "CRMAccount": 11,
+        "CRMContact": 11,
+        "CRMOpportunity": 12
+      }
+    }
+  ],
+  "failed_seeds": [],
+  "hard_ok": true,
+  "seeds": [
+    101,
+    102,
+    103,
+    104,
+    105,
+    106,
+    107,
+    108,
+    109,
+    110,
+    111,
+    112,
+    113,
+    114,
+    115,
+    116,
+    117,
+    118,
+    119,
+    120
+  ]
+}
