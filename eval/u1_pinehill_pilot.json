@@ -1,0 +1,141 @@
+{
+  "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
+  "artifact": "u1_pinehill_pilot",
+  "checkpoints": [
+    {
+      "as_of": "2026-07-11",
+      "briefing": {
+        "disposition": "propose_customer_action",
+        "evidence_count": 4,
+        "priority": "Priority(score=127, factors=(ValueFactor(name='milestones_overdue', value=1.0, contribution=25, evidence=(EvidenceRef(source='telemetry', source_id='666db3dd-2065-5590-9e3f-8ad82db9a9cf', field='ttv_milestone', observed_at='2026-06-17'),), config_version='value-model-config-v1', rule_name='base_default', threshold_name='milestone_overdue_points', threshold_value=25), ValueFactor(name='days_overdue', value=24.0, contribution=40, evidence=(EvidenceRef(source='telemetry', source_id='666db3dd-2065-5590-9e3f-8ad82db9a9cf', field='ttv_milestone', observed_at='2026-06-17'),), config_version='value-model-config-v1', rule_name='base_default', threshold_name='days_overdue_cap', threshold_value=40), ValueFactor(name='success_plan_overdue', value=1.0, contribution=20, evidence=(EvidenceRef(source='cs_platform', source_id='df3f3e70-7ed8-5d10-9b05-395fd3d1a0f1', field='target_date', observed_at='2026-06-21'),), config_version='value-model-config-v1', rule_name='base_default', threshold_name='success_plan_overdue_points', threshold_value=20), ValueFactor(name='health_yellow', value=1.0, contribution=15, evidence=(EvidenceRef(source='cs_platform', source_id='ae0a5970-d69b-5c18-ad60-8015524e565c', field='health_score', observed_at='2026-06-21T00:00:00Z'),), config_version='value-model-config-v1', rule_name='base_default', threshold_name='health_yellow_points', threshold_value=15), ValueFactor(name='low_seat_penetration', value=0.32, contribution=12, evidence=(EvidenceRef(source='cs_platform', source_id='ae0a5970-d69b-5c18-ad60-8015524e565c', field='active_users', observed_at='2026-06-21T00:00:00Z'),), config_version='value-model-config-v1', rule_name='base_default', threshold_name='seat_penetration_floor', threshold_value=0.5), ValueFactor(name='feature_depth_gap', value=0.5, contribution=15, evidence=(EvidenceRef(source='cs_platform', source_id='ae0a5970-d69b-5c18-ad60-8015524e565c', field='underused_capabilities', observed_at='2026-06-21T00:00:00Z'), EvidenceRef(source='telemetry', source_id='ae0a5970-d69b-5c18-ad60-8015524e565c:core_telematics', field='capability', observed_at='2026-05-17'), EvidenceRef(source='telemetry', source_id='ae0a5970-d69b-5c18-ad60-8015524e565c:route_optimization', field='capability', observed_at='2026-05-17')), config_version='value-model-config-v1', rule_name='base_default', threshold_name='depth_floor', threshold_value=0.6)))",
+        "reason": "Pinehill Transport has deterministic Time-to-Value score 127 from milestones_overdue=25, days_overdue=40, success_plan_overdue=20; draft customer outreach. Evidence [evidence:666db3dd-2065-5590-9e3f-8ad82db9a9cf], [evidence:df3f3e70-7ed8-5d10-9b05-395fd3d1a0f1], [evidence:7b7fe426-01f6-529e-a65b-3240e6ddc058].",
+        "recommended_action": "draft_customer_outreach"
+      },
+      "day_offset": 20,
+      "extractor": {
+        "calendar_event_count": 3,
+        "case_count": 1,
+        "email_message_count": 4,
+        "meeting_cadence_shift_days": {
+          "detail": "insufficient confirmed-event history in one or both windows",
+          "value": null
+        },
+        "reply_latency_trend_hours": {
+          "detail": "insufficient reply history in one or both windows",
+          "value": null
+        },
+        "rocketlane_activation_gaps": [
+          {
+            "activation_gap": false,
+            "due_date_actual": "2026-06-28",
+            "phase": "Kickoff"
+          },
+          {
+            "activation_gap": false,
+            "due_date_actual": null,
+            "phase": "Legacy Dispatch Integration"
+          }
+        ],
+        "thread_participation_width": {
+          "detail": "1 active stakeholder relationship(s) as of 2026-07-11",
+          "value": 1.0
+        },
+        "ticket_frequency_window": {
+          "detail": "1 case(s) opened in trailing 90d as of 2026-07-11",
+          "value": 1.0
+        }
+      },
+      "label": "before"
+    },
+    {
+      "as_of": "2026-08-10",
+      "briefing": {
+        "disposition": "propose_customer_action",
+        "evidence_count": 3,
+        "priority": "Priority(score=62, factors=(ValueFactor(name='success_plan_overdue', value=1.0, contribution=20, evidence=(EvidenceRef(source='cs_platform', source_id='df3f3e70-7ed8-5d10-9b05-395fd3d1a0f1', field='target_date', observed_at='2026-06-21'),), config_version='value-model-config-v1', rule_name='base_default', threshold_name='success_plan_overdue_points', threshold_value=20), ValueFactor(name='health_yellow', value=1.0, contribution=15, evidence=(EvidenceRef(source='cs_platform', source_id='ae0a5970-d69b-5c18-ad60-8015524e565c', field='health_score', observed_at='2026-06-21T00:00:00Z'),), config_version='value-model-config-v1', rule_name='base_default', threshold_name='health_yellow_points', threshold_value=15), ValueFactor(name='low_seat_penetration', value=0.32, contribution=12, evidence=(EvidenceRef(source='cs_platform', source_id='ae0a5970-d69b-5c18-ad60-8015524e565c', field='active_users', observed_at='2026-06-21T00:00:00Z'),), config_version='value-model-config-v1', rule_name='base_default', threshold_name='seat_penetration_floor', threshold_value=0.5), ValueFactor(name='feature_depth_gap', value=0.5, contribution=15, evidence=(EvidenceRef(source='cs_platform', source_id='ae0a5970-d69b-5c18-ad60-8015524e565c', field='underused_capabilities', observed_at='2026-06-21T00:00:00Z'), EvidenceRef(source='telemetry', source_id='ae0a5970-d69b-5c18-ad60-8015524e565c:core_telematics', field='capability', observed_at='2026-05-17'), EvidenceRef(source='telemetry', source_id='ae0a5970-d69b-5c18-ad60-8015524e565c:route_optimization', field='capability', observed_at='2026-05-17')), config_version='value-model-config-v1', rule_name='base_default', threshold_name='depth_floor', threshold_value=0.6)))",
+        "reason": "Pinehill Transport has deterministic Time-to-Value score 62 from success_plan_overdue=20, health_yellow=15, low_seat_penetration=12; draft customer outreach. Evidence [evidence:df3f3e70-7ed8-5d10-9b05-395fd3d1a0f1], [evidence:90c96b52-a603-51b0-aa5a-024f9d5d90fc], [evidence:ae0a5970-d69b-5c18-ad60-8015524e565c].",
+        "recommended_action": "draft_customer_outreach"
+      },
+      "day_offset": 50,
+      "extractor": {
+        "calendar_event_count": 7,
+        "case_count": 2,
+        "email_message_count": 8,
+        "meeting_cadence_shift_days": {
+          "detail": "trailing 30d median gap 7.0d vs prior window 7.0d",
+          "value": 0.0
+        },
+        "reply_latency_trend_hours": {
+          "detail": "trailing 21d mean reply latency 50.0h vs prior window 18.0h",
+          "value": 32.0
+        },
+        "rocketlane_activation_gaps": [
+          {
+            "activation_gap": true,
+            "due_date_actual": "2026-06-28",
+            "phase": "Kickoff"
+          },
+          {
+            "activation_gap": true,
+            "due_date_actual": null,
+            "phase": "Legacy Dispatch Integration"
+          }
+        ],
+        "thread_participation_width": {
+          "detail": "1 active stakeholder relationship(s) as of 2026-08-10",
+          "value": 1.0
+        },
+        "ticket_frequency_window": {
+          "detail": "2 case(s) opened in trailing 90d as of 2026-08-10",
+          "value": 2.0
+        }
+      },
+      "label": "during"
+    },
+    {
+      "as_of": "2027-04-27",
+      "briefing": {
+        "disposition": "propose_customer_action",
+        "evidence_count": 2,
+        "priority": "Priority(score=82, factors=(ValueFactor(name='success_plan_overdue', value=1.0, contribution=20, evidence=(EvidenceRef(source='cs_platform', source_id='df3f3e70-7ed8-5d10-9b05-395fd3d1a0f1', field='target_date', observed_at='2026-06-21'),), config_version='value-model-config-v1', rule_name='base_default', threshold_name='success_plan_overdue_points', threshold_value=20), ValueFactor(name='low_seat_penetration', value=0.32, contribution=12, evidence=(EvidenceRef(source='cs_platform', source_id='ae0a5970-d69b-5c18-ad60-8015524e565c', field='active_users', observed_at='2026-06-21T00:00:00Z'),), config_version='value-model-config-v1', rule_name='base_default', threshold_name='seat_penetration_floor', threshold_value=0.5), ValueFactor(name='feature_depth_gap', value=0.5, contribution=15, evidence=(EvidenceRef(source='cs_platform', source_id='ae0a5970-d69b-5c18-ad60-8015524e565c', field='underused_capabilities', observed_at='2026-06-21T00:00:00Z'), EvidenceRef(source='telemetry', source_id='ae0a5970-d69b-5c18-ad60-8015524e565c:core_telematics', field='capability', observed_at='2026-05-17'), EvidenceRef(source='telemetry', source_id='ae0a5970-d69b-5c18-ad60-8015524e565c:route_optimization', field='capability', observed_at='2026-05-17')), config_version='value-model-config-v1', rule_name='base_default', threshold_name='depth_floor', threshold_value=0.6), ValueFactor(name='health_usage_divergence', value=0.32, contribution=35, evidence=(EvidenceRef(source='cs_platform', source_id='ae0a5970-d69b-5c18-ad60-8015524e565c', field='health_score', observed_at='2027-04-17T00:00:00Z'), EvidenceRef(source='cs_platform', source_id='ae0a5970-d69b-5c18-ad60-8015524e565c', field='active_users', observed_at='2026-06-21T00:00:00Z')), config_version='value-model-config-v1', rule_name='base_default', threshold_name='adoption_floor', threshold_value=0.4)))",
+        "reason": "Pinehill Transport has deterministic Time-to-Value score 82 from success_plan_overdue=20, low_seat_penetration=12, feature_depth_gap=15; draft customer outreach. Evidence [evidence:df3f3e70-7ed8-5d10-9b05-395fd3d1a0f1], [evidence:ae0a5970-d69b-5c18-ad60-8015524e565c].",
+        "recommended_action": "draft_customer_outreach"
+      },
+      "day_offset": 310,
+      "extractor": {
+        "calendar_event_count": 21,
+        "case_count": 3,
+        "email_message_count": 18,
+        "meeting_cadence_shift_days": {
+          "detail": "trailing 30d median gap 7.0d vs prior window 20.0d",
+          "value": -13.0
+        },
+        "reply_latency_trend_hours": {
+          "detail": "trailing 21d mean reply latency 16.0h vs prior window 6.0h",
+          "value": 10.0
+        },
+        "rocketlane_activation_gaps": [
+          {
+            "activation_gap": false,
+            "due_date_actual": "2026-06-28",
+            "phase": "Kickoff"
+          },
+          {
+            "activation_gap": false,
+            "due_date_actual": "2026-09-29",
+            "phase": "Legacy Dispatch Integration"
+          }
+        ],
+        "thread_participation_width": {
+          "detail": "1 active stakeholder relationship(s) as of 2027-04-27",
+          "value": 1.0
+        },
+        "ticket_frequency_window": {
+          "detail": "0 case(s) opened in trailing 90d as of 2027-04-27",
+          "value": 0.0
+        }
+      },
+      "label": "after"
+    }
+  ]
+}
