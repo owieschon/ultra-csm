@@ -1,6 +1,6 @@
 {
   "artifact": "mcp_relay_transcript",
-  "artifact_sha256": "09185a7d50fc5eff62c7122e4c8ddd956cbb19ff44efed3488eb43b0120329f0",
+  "artifact_sha256": "1d29ba54d38da35248f5e5b9083d9c1301d8b6825fd265d1b32bd2ec0541af35",
   "beats": [
     "readiness",
     "ingest",
@@ -19,7 +19,7 @@
     "CRMContact": 2,
     "CRMOpportunity": 2
   },
-  "replay_sha256": "sha256:d4dee022a8658a0488ab312988635412d66396a28b9e70a50b04b0e8b7875672",
+  "replay_sha256": "sha256:7dcf08751fe8175f7c8c28b63de9965d1119b3fcf7bd32892d8898b64c370d26",
   "session_id": "relay-transcript",
   "tool_calls": [
     {
@@ -71,11 +71,13 @@
           "telemetry"
         ],
         "routes": {
+          "multi_table": "A normalized CRM (separate Account/Contact/Opportunity tables) relays each table with ingest_table, then confirm_book joins them by confirmed foreign keys.",
+          "multi_table_next_tool": "ingest_table",
           "next_tool": "ingest_book",
           "nothing_connected": "Use ULTRA_CSM_DEMO_OPERATOR=1 and get_morning_briefing for the sim morning when no host sources are connected."
         }
       },
-      "output_sha256": "f0951765a93f7aea6926eb339a7c8d209d12e6e64983963f634fa1850c07f507",
+      "output_sha256": "a24c3f15924f17153aef0c3e9b0700b118b543375f8b9df1adcc06287541439a",
       "tool": "report_readiness"
     },
     {
@@ -104,25 +106,18 @@
                 "source_field": "deal_id",
                 "source_object": "customers",
                 "source_path": "deal_id"
-              }
-            ],
-            "key": "CRMAccount.account_id",
-            "question": "Map CRMAccount.account_id to one candidate source path, or mark it not_mappable?",
-            "value_direction": "not_applicable"
-          },
-          {
-            "candidate_keys": [
+              },
               {
                 "rows_nonempty": 2,
                 "rows_present": 2,
                 "rows_sampled": 2,
-                "source_field": "display_name",
+                "source_field": "arr",
                 "source_object": "customers",
-                "source_path": "display_name"
+                "source_path": "arr"
               }
             ],
-            "key": "CRMAccount.name",
-            "question": "Map CRMAccount.name to one candidate source path, or mark it not_mappable?",
+            "key": "CRMAccount.account_id",
+            "question": "Map CRMAccount.account_id to one candidate source path, or mark it not_mappable?",
             "value_direction": "not_applicable"
           },
           {
@@ -142,25 +137,18 @@
                 "source_field": "deal_id",
                 "source_object": "customers",
                 "source_path": "deal_id"
-              }
-            ],
-            "key": "CRMAccount.owner_id",
-            "question": "Map CRMAccount.owner_id to one candidate source path, or mark it not_mappable?",
-            "value_direction": "not_applicable"
-          },
-          {
-            "candidate_keys": [
+              },
               {
                 "rows_nonempty": 2,
                 "rows_present": 2,
                 "rows_sampled": 2,
-                "source_field": "sector",
+                "source_field": "arr",
                 "source_object": "customers",
-                "source_path": "sector"
+                "source_path": "arr"
               }
             ],
-            "key": "CRMAccount.industry",
-            "question": "Map CRMAccount.industry to one candidate source path, or mark it not_mappable?",
+            "key": "CRMAccount.owner_id",
+            "question": "Map CRMAccount.owner_id to one candidate source path, or mark it not_mappable?",
             "value_direction": "not_applicable"
           },
           {
@@ -188,6 +176,14 @@
                 "source_field": "deal_id",
                 "source_object": "customers",
                 "source_path": "deal_id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_field": "arr",
+                "source_object": "customers",
+                "source_path": "arr"
               }
             ],
             "key": "CRMContact.contact_id",
@@ -211,6 +207,14 @@
                 "source_field": "deal_id",
                 "source_object": "customers",
                 "source_path": "deal_id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_field": "arr",
+                "source_object": "customers",
+                "source_path": "arr"
               }
             ],
             "key": "CRMContact.account_id",
@@ -249,6 +253,14 @@
                 "source_field": "display_name",
                 "source_object": "customers",
                 "source_path": "display_name"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_field": "sector",
+                "source_object": "customers",
+                "source_path": "sector"
               }
             ],
             "key": "CRMContact.name",
@@ -287,6 +299,14 @@
                 "source_field": "customer_id",
                 "source_object": "customers",
                 "source_path": "customer_id"
+              },
+              {
+                "rows_nonempty": 2,
+                "rows_present": 2,
+                "rows_sampled": 2,
+                "source_field": "arr",
+                "source_object": "customers",
+                "source_path": "arr"
               }
             ],
             "key": "CRMOpportunity.opportunity_id",
@@ -310,14 +330,7 @@
                 "source_field": "deal_id",
                 "source_object": "customers",
                 "source_path": "deal_id"
-              }
-            ],
-            "key": "CRMOpportunity.account_id",
-            "question": "Map CRMOpportunity.account_id to one candidate source path, or mark it not_mappable?",
-            "value_direction": "not_applicable"
-          },
-          {
-            "candidate_keys": [
+              },
               {
                 "rows_nonempty": 2,
                 "rows_present": 2,
@@ -327,23 +340,8 @@
                 "source_path": "arr"
               }
             ],
-            "key": "CRMOpportunity.amount_cents",
-            "question": "Map CRMOpportunity.amount_cents to one candidate source path, or mark it not_mappable?",
-            "value_direction": "not_applicable"
-          },
-          {
-            "candidate_keys": [
-              {
-                "rows_nonempty": 2,
-                "rows_present": 2,
-                "rows_sampled": 2,
-                "source_field": "expected_close",
-                "source_object": "customers",
-                "source_path": "expected_close"
-              }
-            ],
-            "key": "CRMOpportunity.close_date",
-            "question": "Map CRMOpportunity.close_date to one candidate source path, or mark it not_mappable?",
+            "key": "CRMOpportunity.account_id",
+            "question": "Map CRMOpportunity.account_id to one candidate source path, or mark it not_mappable?",
             "value_direction": "not_applicable"
           }
         ],
@@ -352,8 +350,8 @@
         "mapping_proposal": {
           "connector_id": "external_book",
           "coverage": {
-            "ambiguous_confirm": 13,
-            "mapped": 0,
+            "ambiguous_confirm": 9,
+            "mapped": 4,
             "missing_to_unknown": 4,
             "total": 17
           },
@@ -362,6 +360,7 @@
               "candidate_evidence": [
                 {
                   "confidence": 0.95,
+                  "distinct_count": 2,
                   "field_type": "string",
                   "reason": "field name matches a known alias for this contract field",
                   "rows_nonempty": 2,
@@ -369,10 +368,12 @@
                   "rows_sampled": 2,
                   "source_field": "customer_id",
                   "source_object": "customers",
-                  "source_path": "customer_id"
+                  "source_path": "customer_id",
+                  "value_shape": "id_like"
                 },
                 {
                   "confidence": 0.68,
+                  "distinct_count": 2,
                   "field_type": "string",
                   "reason": "identity-shaped field is a plausible join candidate",
                   "rows_nonempty": 2,
@@ -380,7 +381,21 @@
                   "rows_sampled": 2,
                   "source_field": "deal_id",
                   "source_object": "customers",
-                  "source_path": "deal_id"
+                  "source_path": "deal_id",
+                  "value_shape": "id_like"
+                },
+                {
+                  "confidence": 0.56,
+                  "distinct_count": 2,
+                  "field_type": "string",
+                  "reason": "value shape 'id_like' fits this field; confirm to map",
+                  "rows_nonempty": 2,
+                  "rows_present": 2,
+                  "rows_sampled": 2,
+                  "source_field": "arr",
+                  "source_object": "customers",
+                  "source_path": "arr",
+                  "value_shape": "id_like"
                 }
               ],
               "confidence": 0.95,
@@ -402,6 +417,7 @@
               "candidate_evidence": [
                 {
                   "confidence": 0.95,
+                  "distinct_count": 2,
                   "field_type": "string",
                   "reason": "field name matches a known alias for this contract field",
                   "rows_nonempty": 2,
@@ -409,7 +425,21 @@
                   "rows_sampled": 2,
                   "source_field": "display_name",
                   "source_object": "customers",
-                  "source_path": "display_name"
+                  "source_path": "display_name",
+                  "value_shape": "name_like"
+                },
+                {
+                  "confidence": 0.56,
+                  "distinct_count": 1,
+                  "field_type": "string",
+                  "reason": "value shape 'text' fits this field; confirm to map",
+                  "rows_nonempty": 2,
+                  "rows_present": 2,
+                  "rows_sampled": 2,
+                  "source_field": "sector",
+                  "source_object": "customers",
+                  "source_path": "sector",
+                  "value_shape": "text"
                 }
               ],
               "confidence": 0.95,
@@ -418,19 +448,20 @@
               "internal_field": "name",
               "llm_allowed": true,
               "pii": "none",
-              "reason": "candidate field requires human confirmation with sparsity evidence",
-              "requires_human_confirmation": true,
+              "reason": "auto-mapped: exact standard-field match (field name matches a known alias for this contract field)",
+              "requires_human_confirmation": false,
               "semantic_role": "context",
               "source_field": "display_name",
               "source_object": "customers",
               "source_path": "display_name",
-              "state": "ambiguous_confirm",
+              "state": "mapped",
               "value_direction": "not_applicable"
             },
             {
               "candidate_evidence": [
                 {
                   "confidence": 0.68,
+                  "distinct_count": 2,
                   "field_type": "string",
                   "reason": "identity-shaped field is a plausible join candidate",
                   "rows_nonempty": 2,
@@ -438,10 +469,12 @@
                   "rows_sampled": 2,
                   "source_field": "customer_id",
                   "source_object": "customers",
-                  "source_path": "customer_id"
+                  "source_path": "customer_id",
+                  "value_shape": "id_like"
                 },
                 {
                   "confidence": 0.68,
+                  "distinct_count": 2,
                   "field_type": "string",
                   "reason": "identity-shaped field is a plausible join candidate",
                   "rows_nonempty": 2,
@@ -449,7 +482,21 @@
                   "rows_sampled": 2,
                   "source_field": "deal_id",
                   "source_object": "customers",
-                  "source_path": "deal_id"
+                  "source_path": "deal_id",
+                  "value_shape": "id_like"
+                },
+                {
+                  "confidence": 0.56,
+                  "distinct_count": 2,
+                  "field_type": "string",
+                  "reason": "value shape 'id_like' fits this field; confirm to map",
+                  "rows_nonempty": 2,
+                  "rows_present": 2,
+                  "rows_sampled": 2,
+                  "source_field": "arr",
+                  "source_object": "customers",
+                  "source_path": "arr",
+                  "value_shape": "id_like"
                 }
               ],
               "confidence": 0.68,
@@ -471,6 +518,7 @@
               "candidate_evidence": [
                 {
                   "confidence": 0.95,
+                  "distinct_count": 1,
                   "field_type": "string",
                   "reason": "field name matches a known alias for this contract field",
                   "rows_nonempty": 2,
@@ -478,7 +526,8 @@
                   "rows_sampled": 2,
                   "source_field": "sector",
                   "source_object": "customers",
-                  "source_path": "sector"
+                  "source_path": "sector",
+                  "value_shape": "text"
                 }
               ],
               "confidence": 0.95,
@@ -487,19 +536,20 @@
               "internal_field": "industry",
               "llm_allowed": true,
               "pii": "none",
-              "reason": "candidate field requires human confirmation with sparsity evidence",
-              "requires_human_confirmation": true,
+              "reason": "auto-mapped: exact standard-field match (field name matches a known alias for this contract field)",
+              "requires_human_confirmation": false,
               "semantic_role": "context",
               "source_field": "sector",
               "source_object": "customers",
               "source_path": "sector",
-              "state": "ambiguous_confirm",
+              "state": "mapped",
               "value_direction": "not_applicable"
             },
             {
               "candidate_evidence": [
                 {
                   "confidence": 0.95,
+                  "distinct_count": 2,
                   "field_type": "string",
                   "reason": "nested contacts child field matches the target contract",
                   "rows_nonempty": 2,
@@ -507,10 +557,12 @@
                   "rows_sampled": 2,
                   "source_field": "id",
                   "source_object": "customers",
-                  "source_path": "contacts[].id"
+                  "source_path": "contacts[].id",
+                  "value_shape": "id_like"
                 },
                 {
                   "confidence": 0.68,
+                  "distinct_count": 2,
                   "field_type": "string",
                   "reason": "identity-shaped field is a plausible join candidate",
                   "rows_nonempty": 2,
@@ -518,10 +570,12 @@
                   "rows_sampled": 2,
                   "source_field": "customer_id",
                   "source_object": "customers",
-                  "source_path": "customer_id"
+                  "source_path": "customer_id",
+                  "value_shape": "id_like"
                 },
                 {
                   "confidence": 0.68,
+                  "distinct_count": 2,
                   "field_type": "string",
                   "reason": "identity-shaped field is a plausible join candidate",
                   "rows_nonempty": 2,
@@ -529,7 +583,21 @@
                   "rows_sampled": 2,
                   "source_field": "deal_id",
                   "source_object": "customers",
-                  "source_path": "deal_id"
+                  "source_path": "deal_id",
+                  "value_shape": "id_like"
+                },
+                {
+                  "confidence": 0.56,
+                  "distinct_count": 2,
+                  "field_type": "string",
+                  "reason": "value shape 'id_like' fits this field; confirm to map",
+                  "rows_nonempty": 2,
+                  "rows_present": 2,
+                  "rows_sampled": 2,
+                  "source_field": "arr",
+                  "source_object": "customers",
+                  "source_path": "arr",
+                  "value_shape": "id_like"
                 }
               ],
               "confidence": 0.95,
@@ -551,6 +619,7 @@
               "candidate_evidence": [
                 {
                   "confidence": 0.95,
+                  "distinct_count": 2,
                   "field_type": "string",
                   "reason": "field name matches a known alias for this contract field",
                   "rows_nonempty": 2,
@@ -558,10 +627,12 @@
                   "rows_sampled": 2,
                   "source_field": "customer_id",
                   "source_object": "customers",
-                  "source_path": "customer_id"
+                  "source_path": "customer_id",
+                  "value_shape": "id_like"
                 },
                 {
                   "confidence": 0.68,
+                  "distinct_count": 2,
                   "field_type": "string",
                   "reason": "identity-shaped field is a plausible join candidate",
                   "rows_nonempty": 2,
@@ -569,7 +640,21 @@
                   "rows_sampled": 2,
                   "source_field": "deal_id",
                   "source_object": "customers",
-                  "source_path": "deal_id"
+                  "source_path": "deal_id",
+                  "value_shape": "id_like"
+                },
+                {
+                  "confidence": 0.56,
+                  "distinct_count": 2,
+                  "field_type": "string",
+                  "reason": "value shape 'id_like' fits this field; confirm to map",
+                  "rows_nonempty": 2,
+                  "rows_present": 2,
+                  "rows_sampled": 2,
+                  "source_field": "arr",
+                  "source_object": "customers",
+                  "source_path": "arr",
+                  "value_shape": "id_like"
                 }
               ],
               "confidence": 0.95,
@@ -591,6 +676,7 @@
               "candidate_evidence": [
                 {
                   "confidence": 0.95,
+                  "distinct_count": 2,
                   "field_type": "string",
                   "reason": "nested contacts child field matches the target contract",
                   "rows_nonempty": 2,
@@ -598,7 +684,8 @@
                   "rows_sampled": 2,
                   "source_field": "email",
                   "source_object": "customers",
-                  "source_path": "contacts[].email"
+                  "source_path": "contacts[].email",
+                  "value_shape": "email_like"
                 }
               ],
               "confidence": 0.95,
@@ -620,6 +707,7 @@
               "candidate_evidence": [
                 {
                   "confidence": 0.95,
+                  "distinct_count": 2,
                   "field_type": "string",
                   "reason": "nested contacts child field matches the target contract",
                   "rows_nonempty": 2,
@@ -627,10 +715,12 @@
                   "rows_sampled": 2,
                   "source_field": "name",
                   "source_object": "customers",
-                  "source_path": "contacts[].name"
+                  "source_path": "contacts[].name",
+                  "value_shape": "name_like"
                 },
                 {
                   "confidence": 0.56,
+                  "distinct_count": 2,
                   "field_type": "string",
                   "reason": "field path partially matches a known alias",
                   "rows_nonempty": 2,
@@ -638,7 +728,21 @@
                   "rows_sampled": 2,
                   "source_field": "display_name",
                   "source_object": "customers",
-                  "source_path": "display_name"
+                  "source_path": "display_name",
+                  "value_shape": "name_like"
+                },
+                {
+                  "confidence": 0.56,
+                  "distinct_count": 1,
+                  "field_type": "string",
+                  "reason": "value shape 'text' fits this field; confirm to map",
+                  "rows_nonempty": 2,
+                  "rows_present": 2,
+                  "rows_sampled": 2,
+                  "source_field": "sector",
+                  "source_object": "customers",
+                  "source_path": "sector",
+                  "value_shape": "text"
                 }
               ],
               "confidence": 0.95,
@@ -694,6 +798,7 @@
               "candidate_evidence": [
                 {
                   "confidence": 0.95,
+                  "distinct_count": 1,
                   "field_type": "boolean",
                   "reason": "nested contacts child field matches the target contract",
                   "rows_nonempty": 2,
@@ -701,7 +806,8 @@
                   "rows_sampled": 2,
                   "source_field": "consent_to_contact",
                   "source_object": "customers",
-                  "source_path": "contacts[].consent_to_contact"
+                  "source_path": "contacts[].consent_to_contact",
+                  "value_shape": "boolean_like"
                 }
               ],
               "confidence": 0.95,
@@ -723,6 +829,7 @@
               "candidate_evidence": [
                 {
                   "confidence": 0.95,
+                  "distinct_count": 2,
                   "field_type": "string",
                   "reason": "field name matches a known alias for this contract field",
                   "rows_nonempty": 2,
@@ -730,10 +837,12 @@
                   "rows_sampled": 2,
                   "source_field": "deal_id",
                   "source_object": "customers",
-                  "source_path": "deal_id"
+                  "source_path": "deal_id",
+                  "value_shape": "id_like"
                 },
                 {
                   "confidence": 0.68,
+                  "distinct_count": 2,
                   "field_type": "string",
                   "reason": "identity-shaped field is a plausible join candidate",
                   "rows_nonempty": 2,
@@ -741,7 +850,21 @@
                   "rows_sampled": 2,
                   "source_field": "customer_id",
                   "source_object": "customers",
-                  "source_path": "customer_id"
+                  "source_path": "customer_id",
+                  "value_shape": "id_like"
+                },
+                {
+                  "confidence": 0.56,
+                  "distinct_count": 2,
+                  "field_type": "string",
+                  "reason": "value shape 'id_like' fits this field; confirm to map",
+                  "rows_nonempty": 2,
+                  "rows_present": 2,
+                  "rows_sampled": 2,
+                  "source_field": "arr",
+                  "source_object": "customers",
+                  "source_path": "arr",
+                  "value_shape": "id_like"
                 }
               ],
               "confidence": 0.95,
@@ -763,6 +886,7 @@
               "candidate_evidence": [
                 {
                   "confidence": 0.95,
+                  "distinct_count": 2,
                   "field_type": "string",
                   "reason": "field name matches a known alias for this contract field",
                   "rows_nonempty": 2,
@@ -770,10 +894,12 @@
                   "rows_sampled": 2,
                   "source_field": "customer_id",
                   "source_object": "customers",
-                  "source_path": "customer_id"
+                  "source_path": "customer_id",
+                  "value_shape": "id_like"
                 },
                 {
                   "confidence": 0.68,
+                  "distinct_count": 2,
                   "field_type": "string",
                   "reason": "identity-shaped field is a plausible join candidate",
                   "rows_nonempty": 2,
@@ -781,7 +907,21 @@
                   "rows_sampled": 2,
                   "source_field": "deal_id",
                   "source_object": "customers",
-                  "source_path": "deal_id"
+                  "source_path": "deal_id",
+                  "value_shape": "id_like"
+                },
+                {
+                  "confidence": 0.56,
+                  "distinct_count": 2,
+                  "field_type": "string",
+                  "reason": "value shape 'id_like' fits this field; confirm to map",
+                  "rows_nonempty": 2,
+                  "rows_present": 2,
+                  "rows_sampled": 2,
+                  "source_field": "arr",
+                  "source_object": "customers",
+                  "source_path": "arr",
+                  "value_shape": "id_like"
                 }
               ],
               "confidence": 0.95,
@@ -820,6 +960,7 @@
               "candidate_evidence": [
                 {
                   "confidence": 0.95,
+                  "distinct_count": 2,
                   "field_type": "string",
                   "reason": "field name matches a known alias for this contract field",
                   "rows_nonempty": 2,
@@ -827,7 +968,8 @@
                   "rows_sampled": 2,
                   "source_field": "arr",
                   "source_object": "customers",
-                  "source_path": "arr"
+                  "source_path": "arr",
+                  "value_shape": "id_like"
                 }
               ],
               "confidence": 0.95,
@@ -836,19 +978,21 @@
               "internal_field": "amount_cents",
               "llm_allowed": true,
               "pii": "none",
-              "reason": "candidate field requires human confirmation with sparsity evidence",
-              "requires_human_confirmation": true,
+              "reason": "auto-mapped: exact standard-field match (field name matches a known alias for this contract field)",
+              "requires_human_confirmation": false,
               "semantic_role": "context",
               "source_field": "arr",
               "source_object": "customers",
               "source_path": "arr",
-              "state": "ambiguous_confirm",
+              "state": "mapped",
+              "transform": "currency_to_cents",
               "value_direction": "not_applicable"
             },
             {
               "candidate_evidence": [
                 {
                   "confidence": 0.95,
+                  "distinct_count": 2,
                   "field_type": "string",
                   "reason": "field name matches a known alias for this contract field",
                   "rows_nonempty": 2,
@@ -856,7 +1000,8 @@
                   "rows_sampled": 2,
                   "source_field": "expected_close",
                   "source_object": "customers",
-                  "source_path": "expected_close"
+                  "source_path": "expected_close",
+                  "value_shape": "date_like"
                 }
               ],
               "confidence": 0.95,
@@ -865,13 +1010,13 @@
               "internal_field": "close_date",
               "llm_allowed": true,
               "pii": "none",
-              "reason": "candidate field requires human confirmation with sparsity evidence",
-              "requires_human_confirmation": true,
+              "reason": "auto-mapped: exact standard-field match (field name matches a known alias for this contract field)",
+              "requires_human_confirmation": false,
               "semantic_role": "time_boundary",
               "source_field": "expected_close",
               "source_object": "customers",
               "source_path": "expected_close",
-              "state": "ambiguous_confirm",
+              "state": "mapped",
               "value_direction": "not_applicable"
             },
             {
@@ -892,12 +1037,12 @@
               "value_direction": "not_applicable"
             }
           ],
-          "proposal_hash": "sha256:ae6ea098cd9b69f6c120c0c3959f0b1c88db384fb45fa8ac7f27c4076d2ea368",
+          "proposal_hash": "sha256:92aa2fa54385f700d3dfb55a8ceb117c1b522bbf10d85134b4818bb6eadf376c",
           "required_operator_actions": [
-            "confirm 13 semantic/value mappings",
+            "confirm 9 semantic/value mappings",
             "review 4 missing fields; affected rails remain unknown"
           ],
-          "schema_hash": "sha256:c56d827d2d378f5e34b1bedaf83ad075b2ce88884b233af92e2993fd4c8e68af"
+          "schema_hash": "sha256:be2113a7673f73aac528b62d985f51646ac249ea1b56f57d279245064e422de3"
         },
         "next_tool": "confirm_book_mappings",
         "raw_input_sha256": "sha256:160eeb1e962b81569dd506c005efa252b9e19f4fb5ae261087f7fa8707dd11fa",
@@ -907,7 +1052,7 @@
         "truncated": false,
         "unrepresentable_paths": []
       },
-      "output_sha256": "8f1021aa66470554789116b9b3817358870aea522b1b54cf2b2624a1b13ec22b",
+      "output_sha256": "a1736dc5ed5027644ede3af30f5fc0e0637ba4989f099c0a3823a43437ca3468",
       "tool": "ingest_book"
     },
     {
@@ -965,7 +1110,7 @@
           ],
           "unrepresentable_paths": []
         },
-        "frozen_config_hash": "sha256:619a384a132436e8884038f0310ac2b29cc50b52bff111b492915d7d078c9221",
+        "frozen_config_hash": "sha256:efdec18fc853ea678e2df6f4713f7a78f8663e2be1df8b79adcee5867aff86f4",
         "live": false,
         "propose_only_actions": [
           {
@@ -1030,7 +1175,7 @@
           "stored_count": 2,
           "truncated": false
         },
-        "replay_sha256": "sha256:d4dee022a8658a0488ab312988635412d66396a28b9e70a50b04b0e8b7875672",
+        "replay_sha256": "sha256:7dcf08751fe8175f7c8c28b63de9965d1119b3fcf7bd32892d8898b64c370d26",
         "score_errors": [
           {
             "account_id": "learning-001",
@@ -1052,7 +1197,7 @@
         "sim": false,
         "unverified_mapping": true
       },
-      "output_sha256": "a4895c19fc47408e45dd48b41e8e274f9dcaec336fddea306135db86e15e9cd3",
+      "output_sha256": "7a95da8f6da7d07adf2255fc3b4e6304f723fdf5b7d1d37d55e09ede5a21f896",
       "tool": "confirm_book_mappings"
     },
     {

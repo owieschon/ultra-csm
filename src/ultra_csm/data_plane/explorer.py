@@ -32,6 +32,19 @@ class DiscoveredField:
     rows_present: int = 0
     rows_nonempty: int = 0
     rows_sampled: int = 0
+    # Deterministic value-shape class ("id_like", "name_like",
+    # "low_cardinality_enum", ...) computed from sampled values when the
+    # connector has them (external_book relay). "" when unknown (schema-only
+    # connectors like Salesforce describe).
+    value_shape: str = ""
+    distinct_count: int = 0
+    # Source-declared relationship metadata, when the source's own schema API
+    # provides it (e.g. Salesforce describe: a Lookup(Account) field carries
+    # references=("Account",)). This is ground truth from the source -- a
+    # foreign key that is KNOWN, not inferred from value shapes. Empty when the
+    # source has no schema (raw JSON / CSV relay), where shape heuristics apply.
+    references: tuple[str, ...] = ()
+    relationship_name: str = ""
 
 
 @dataclass(frozen=True)
@@ -477,6 +490,14 @@ def _parse_salesforce_describe(raw: dict[str, object]) -> tuple[tuple[Discovered
             required=not bool(item.get("nillable", True)),
             custom=bool(item.get("custom", False)),
             source_path=str(item.get("name") or ""),
+            # Capture the foreign-key graph the source declares: a reference
+            # field's referenceTo names the object(s) it points at. Previously
+            # discarded, which forced downstream code to re-infer joins from
+            # value shapes instead of reading them from the source.
+            references=tuple(
+                str(ref) for ref in _list(item.get("referenceTo")) if ref
+            ),
+            relationship_name=str(item.get("relationshipName") or ""),
         )
         for item in _list(raw.get("fields"))
         if isinstance(item, dict)

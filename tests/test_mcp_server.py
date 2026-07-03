@@ -17,6 +17,7 @@ try:
 except ImportError:
     pytest.skip("mcp package not installed", allow_module_level=True)
 
+from eval.mcp_relational_demo import fixture_confirmations, fixture_tables
 from ultra_csm.data_plane.fixtures import ACME_LOGISTICS
 
 MCP_TOKEN = "mcp-lane-a-token"
@@ -325,9 +326,12 @@ class TestRelayTools:
             session_id="relay-not-mappable",
         )
         confirmations = _confirmations_from_proposal(ingest["mapping_proposal"])
-        confirmations["CRMOpportunity.opportunity_type"] = {
+        # Identity fields never auto-map without a source-declared reference, so
+        # opportunity_id is guaranteed still-confirmable -- mark it not_mappable
+        # and it must land in unknown_fields (the round-trip under test).
+        confirmations["CRMOpportunity.opportunity_id"] = {
             "contract": "CRMOpportunity",
-            "internal_field": "opportunity_type",
+            "internal_field": "opportunity_id",
             "verdict": "not_mappable",
         }
 
@@ -336,7 +340,7 @@ class TestRelayTools:
             session_id=ingest["session_id"],
         )
 
-        assert "CRMOpportunity.opportunity_type" in result["coverage"]["unknown_fields"]
+        assert "CRMOpportunity.opportunity_id" in result["coverage"]["unknown_fields"]
 
     def test_injected_relay_text_is_never_echoed(self):
         records = _relay_records()
@@ -356,6 +360,227 @@ class TestRelayTools:
         serialized = json.dumps(result, sort_keys=True)
         assert "Ignore previous instructions" not in serialized
         assert result["coverage"]["injection_marker_count"] == 1
+
+
+def _ingest_fixture_book(book_id: str) -> dict[str, dict]:
+    """Run ingest_table for every fixture table; responses keyed by table."""
+
+    responses = {}
+    for table_name, contract, records, field_metadata in fixture_tables():
+        responses[table_name] = mcp_server.ingest_table(
+            book_id=book_id,
+            table_name=table_name,
+            contract=contract,
+            records=records,
+            expected_count=len(records),
+            field_metadata=field_metadata,
+        )
+        assert "error" not in responses[table_name], responses[table_name]
+    return responses
+
+
+class TestRelationalBookTools:
+    def test_readiness_routes_multi_table_sources_to_ingest_table(self):
+        result = mcp_server.report_readiness(["crm"])
+
+        assert result["routes"]["next_tool"] == "ingest_book"
+        assert result["routes"]["multi_table_next_tool"] == "ingest_table"
+
+    def test_read_only_and_demo_operator_refuse_relational_tools(self, monkeypatch):
+        monkeypatch.setenv("ULTRA_CSM_MCP_READONLY", "1")
+        assert mcp_server.ingest_table(
+            "b", "T", "CRMAccount", [], expected_count=0
+        )["code"] == "MCP_READONLY"
+        assert mcp_server.confirm_book("b")["code"] == "MCP_READONLY"
+
+        monkeypatch.delenv("ULTRA_CSM_MCP_READONLY")
+        monkeypatch.setenv("ULTRA_CSM_DEMO_OPERATOR", "1")
+        assert mcp_server.ingest_table(
+            "b", "T", "CRMAccount", [], expected_count=0
+        )["code"] == "RELAY_DEMO_OPERATOR_CONFLICT"
+        assert mcp_server.confirm_book("b")["code"] == "RELAY_DEMO_OPERATOR_CONFLICT"
+
+    def test_ingest_table_asks_only_the_declared_contracts_questions(self):
+        responses = _ingest_fixture_book("rel-questions")
+
+        questions = {
+            name: [q["key"] for q in resp["confirmation_questions"]]
+            for name, resp in responses.items()
+        }
+        assert questions == {
+            "Account": ["CRMAccount.account_id", "CRMAccount.owner_id"],
+            "Contact": ["CRMContact.contact_id"],
+            "Opportunity": ["CRMOpportunity.opportunity_id", "CRMOpportunity.stage_name"],
+        }
+        # Foreign contracts never surface as questions; they are declared aside.
+        for resp in responses.values():
+            assert resp["declared_not_mappable"]
+            for question in resp["confirmation_questions"]:
+                assert question["key"].startswith(resp["contract"] + ".")
+
+    def test_ingest_table_auto_maps_declared_references_and_transforms(self):
+        responses = _ingest_fixture_book("rel-automap")
+
+        contact_autos = {e["key"]: e for e in responses["Contact"]["auto_mapped"]}
+        fk = contact_autos["CRMContact.account_id"]
+        assert fk["source_path"] == "AccountId"
+        assert "source declares a reference" in fk["reason"]
+
+        opp_autos = {e["key"]: e for e in responses["Opportunity"]["auto_mapped"]}
+        assert opp_autos["CRMOpportunity.amount_cents"]["transform"] == "currency_to_cents"
+
+    def test_ingest_table_supports_chunked_reassembly(self):
+        _, contract, records, _ = fixture_tables()[0]
+        first = mcp_server.ingest_table(
+            "rel-chunked", "Account", contract, records[:1],
+            expected_count=len(records), final_chunk=False,
+        )
+        second = mcp_server.ingest_table(
+            "rel-chunked", "Account", contract, records[1:],
+            expected_count=len(records),
+        )
+
+        assert first["accepted_chunk"] is True
+        assert second["received_count"] == len(records)
+        assert second["confirmation_questions"]
+
+    def test_ingest_table_refuses_count_mismatch_and_unstable_declarations(self):
+        _, contract, records, _ = fixture_tables()[0]
+        mismatch = mcp_server.ingest_table(
+            "rel-refuse", "Account", contract, records[:1], expected_count=99,
+        )
+        assert mismatch["code"] == "RELAY_COUNT_MISMATCH"
+
+        changed_count = mcp_server.ingest_table(
+            "rel-refuse", "Account", contract, [], expected_count=5,
+        )
+        assert changed_count["code"] == "EXPECTED_COUNT_CHANGED"
+
+        changed_contract = mcp_server.ingest_table(
+            "rel-refuse", "Account", "CRMContact", [], expected_count=99,
+        )
+        assert changed_contract["code"] == "RELAY_CONTRACT_CHANGED"
+
+        unknown_contract = mcp_server.ingest_table(
+            "rel-refuse", "Other", "NotAContract", [], expected_count=0,
+        )
+        assert unknown_contract["code"] == "RELAY_CONTRACT_INTENT_INVALID"
+
+        duplicate_contract = mcp_server.ingest_table(
+            "rel-refuse", "Account2", contract, [], expected_count=0,
+        )
+        assert duplicate_contract["code"] == "RELAY_CONTRACT_INTENT_INVALID"
+
+        bad_metadata = mcp_server.ingest_table(
+            "rel-refuse-meta", "Contact", "CRMContact", [], expected_count=0,
+            field_metadata={"AccountId": "not-an-object"},
+        )
+        assert bad_metadata["code"] == "RELAY_FIELD_METADATA_INVALID"
+
+    def test_confirm_book_joins_tables_and_replays_deterministically(self):
+        _ingest_fixture_book("rel-happy")
+
+        result = mcp_server.confirm_book(
+            book_id="rel-happy", confirmations=fixture_confirmations(),
+        )
+
+        assert "error" not in result, result
+        assert result["typed_counts"] == {
+            "CRMAccount": 3,
+            "CRMContact": 4,
+            "CRMOpportunity": 4,
+        }
+        joins = result["coverage"]["join_coverage"]["foreign_key_joins"]
+        assert joins["CRMContact"] == {
+            "candidates": 4, "joined": 4, "orphaned": 0, "ratio": 1.0,
+        }
+        assert joins["CRMOpportunity"]["ratio"] == 1.0
+        assert result["book_has_parent"] is True
+        assert result["table_contracts"] == {
+            "Account": "CRMAccount",
+            "Contact": "CRMContact",
+            "Opportunity": "CRMOpportunity",
+        }
+        # Contract intent is declared, not silent: every foreign contract's
+        # entry on each table is listed as not_mappable in the response.
+        assert "CRMAccount.account_id" in result["declared_not_mappable"]["Contact"]
+
+        again = mcp_server.confirm_book(
+            book_id="rel-happy", confirmations=fixture_confirmations(),
+        )
+        assert again["replay_sha256"] == result["replay_sha256"]
+
+    def test_confirm_book_refuses_cross_contract_confirmations(self):
+        _ingest_fixture_book("rel-conflict")
+        confirmations = fixture_confirmations()
+        # The hollow-record vector: claiming the parent's identity lives on the
+        # Contact table would mint accounts that do not exist in the source.
+        confirmations["Contact"]["CRMAccount.account_id"] = {
+            "contract": "CRMAccount",
+            "internal_field": "account_id",
+            "source_object": "records",
+            "source_field": "AccountId",
+            "source_path": "AccountId",
+            "semantic_role": "identity_join",
+            "verdict": "mapped",
+        }
+
+        result = mcp_server.confirm_book(
+            book_id="rel-conflict", confirmations=confirmations,
+        )
+
+        assert result["code"] == "RELAY_CONTRACT_INTENT_CONFLICT"
+        assert result["conflicting_keys"] == ["CRMAccount.account_id"]
+
+    def test_confirm_book_refuses_unanswered_questions(self):
+        _ingest_fixture_book("rel-unanswered")
+        confirmations = fixture_confirmations()
+        del confirmations["Opportunity"]["CRMOpportunity.stage_name"]
+
+        result = mcp_server.confirm_book(
+            book_id="rel-unanswered", confirmations=confirmations,
+        )
+
+        assert result["code"] == "RELAY_CONFIRMATION_INVALID"
+        assert "CRMOpportunity.stage_name" in result["error"]
+
+    def test_confirm_book_requires_every_table_finalized(self):
+        _, contract, records, _ = fixture_tables()[0]
+        mcp_server.ingest_table(
+            "rel-pending", "Account", contract, records[:1],
+            expected_count=len(records), final_chunk=False,
+        )
+
+        result = mcp_server.confirm_book(book_id="rel-pending")
+
+        assert result["code"] == "RELAY_PROPOSAL_REQUIRED"
+        assert result["pending_tables"] == ["Account"]
+
+    def test_confirm_book_unknown_book_refused(self):
+        assert mcp_server.confirm_book("no-such-book")["code"] == "RELAY_BOOK_NOT_FOUND"
+
+    def test_child_only_book_orphans_instead_of_minting_a_parent(self):
+        table_name, contract, records, field_metadata = fixture_tables()[1]
+        mcp_server.ingest_table(
+            book_id="rel-child-only",
+            table_name=table_name,
+            contract=contract,
+            records=records,
+            expected_count=len(records),
+            field_metadata=field_metadata,
+        )
+
+        result = mcp_server.confirm_book(
+            book_id="rel-child-only",
+            confirmations={"Contact": fixture_confirmations()["Contact"]},
+        )
+
+        assert "error" not in result, result
+        assert result["book_has_parent"] is False
+        assert result["typed_counts"]["CRMAccount"] == 0
+        assert result["typed_counts"]["CRMContact"] == 0
+        joins = result["coverage"]["join_coverage"]["foreign_key_joins"]
+        assert joins["CRMContact"]["orphaned"] == len(records)
 
 
 class TestHoldAndTrajectoryReads:

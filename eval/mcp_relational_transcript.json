@@ -1,0 +1,589 @@
+{
+  "artifact": "mcp_relational_transcript",
+  "artifact_sha256": "46091290df12ac04f805d977dec397968dfd60f514e0da6e1904cd500b646317",
+  "beats": [
+    "readiness",
+    "ingest_table:Account",
+    "ingest_table:Contact",
+    "ingest_table:Opportunity",
+    "confirm_book"
+  ],
+  "book_id": "relational-transcript",
+  "claim_boundary": {
+    "live": false,
+    "provenance": "mcp_relay",
+    "sim": false,
+    "unverified_mapping": true
+  },
+  "foreign_key_joins": {
+    "CRMContact": {
+      "candidates": 4,
+      "joined": 4,
+      "orphaned": 0,
+      "ratio": 1.0
+    },
+    "CRMOpportunity": {
+      "candidates": 4,
+      "joined": 4,
+      "orphaned": 0,
+      "ratio": 1.0
+    }
+  },
+  "question_count": 5,
+  "question_keys": [
+    "CRMAccount.account_id",
+    "CRMAccount.owner_id",
+    "CRMContact.contact_id",
+    "CRMOpportunity.opportunity_id",
+    "CRMOpportunity.stage_name"
+  ],
+  "replay_sha256": "sha256:dcf41441e5d4a43eb1b991aa50ea65e5de29f6c68fed5a8868d4d80d9d835729",
+  "tool_calls": [
+    {
+      "output": {
+        "checklist": {
+          "crm": {
+            "declared": true,
+            "enables": [
+              "account identity",
+              "contacts",
+              "opportunities",
+              "minimum viable relay book"
+            ],
+            "missing_if_absent": "cannot build the minimum account book"
+          },
+          "email": {
+            "declared": false,
+            "enables": [
+              "host-placed drafts"
+            ],
+            "missing_if_absent": "ultra-csm can return draft content but cannot place it"
+          },
+          "telemetry": {
+            "declared": false,
+            "enables": [
+              "usage and adoption rails"
+            ],
+            "missing_if_absent": "value-model usage rails remain unknown"
+          }
+        },
+        "claim_boundary": {
+          "live": false,
+          "provenance": "mcp_relay",
+          "sim": false,
+          "unverified_mapping": true
+        },
+        "declared_sources": [
+          "crm"
+        ],
+        "degradation": "CRM-only relay can establish account context, but health, adoption, outcome, and telemetry rails remain unknown until those sources are relayed.",
+        "minimum_viable_book": {
+          "ready": true,
+          "requires": [
+            "crm"
+          ]
+        },
+        "missing_sources": [
+          "email",
+          "telemetry"
+        ],
+        "routes": {
+          "multi_table": "A normalized CRM (separate Account/Contact/Opportunity tables) relays each table with ingest_table, then confirm_book joins them by confirmed foreign keys.",
+          "multi_table_next_tool": "ingest_table",
+          "next_tool": "ingest_book",
+          "nothing_connected": "Use ULTRA_CSM_DEMO_OPERATOR=1 and get_morning_briefing for the sim morning when no host sources are connected."
+        }
+      },
+      "output_sha256": "ec2f7f0a2f2f67706e19d264c3e4a299a4a092086ba297b8be894bd42c10c34a",
+      "tool": "report_readiness"
+    },
+    {
+      "output": {
+        "auto_mapped": [
+          {
+            "key": "CRMAccount.name",
+            "reason": "auto-mapped: exact standard-field match (field name matches a known alias for this contract field)",
+            "source_path": "Name",
+            "transform": "none"
+          },
+          {
+            "key": "CRMAccount.industry",
+            "reason": "auto-mapped: exact standard-field match (field name matches a known alias for this contract field)",
+            "source_path": "Industry",
+            "transform": "none"
+          }
+        ],
+        "book_id": "relational-transcript",
+        "book_tables": [
+          "Account"
+        ],
+        "claim_boundary": {
+          "live": false,
+          "provenance": "mcp_relay",
+          "sim": false,
+          "unverified_mapping": true
+        },
+        "confirmation_questions": [
+          {
+            "candidate_keys": [
+              {
+                "rows_nonempty": 3,
+                "rows_present": 3,
+                "rows_sampled": 3,
+                "source_field": "Id",
+                "source_object": "Account",
+                "source_path": "Id"
+              },
+              {
+                "rows_nonempty": 3,
+                "rows_present": 3,
+                "rows_sampled": 3,
+                "source_field": "OwnerId",
+                "source_object": "Account",
+                "source_path": "OwnerId"
+              },
+              {
+                "rows_nonempty": 3,
+                "rows_present": 3,
+                "rows_sampled": 3,
+                "source_field": "Industry",
+                "source_object": "Account",
+                "source_path": "Industry"
+              }
+            ],
+            "key": "CRMAccount.account_id",
+            "question": "Map CRMAccount.account_id to one candidate source path, or mark it not_mappable?",
+            "value_direction": "not_applicable"
+          },
+          {
+            "candidate_keys": [
+              {
+                "rows_nonempty": 3,
+                "rows_present": 3,
+                "rows_sampled": 3,
+                "source_field": "OwnerId",
+                "source_object": "Account",
+                "source_path": "OwnerId"
+              },
+              {
+                "rows_nonempty": 3,
+                "rows_present": 3,
+                "rows_sampled": 3,
+                "source_field": "Id",
+                "source_object": "Account",
+                "source_path": "Id"
+              },
+              {
+                "rows_nonempty": 3,
+                "rows_present": 3,
+                "rows_sampled": 3,
+                "source_field": "Industry",
+                "source_object": "Account",
+                "source_path": "Industry"
+              }
+            ],
+            "key": "CRMAccount.owner_id",
+            "question": "Map CRMAccount.owner_id to one candidate source path, or mark it not_mappable?",
+            "value_direction": "not_applicable"
+          }
+        ],
+        "contract": "CRMAccount",
+        "declared_not_mappable": [
+          "CRMContact.account_id",
+          "CRMContact.contact_id",
+          "CRMContact.name",
+          "CRMOpportunity.account_id",
+          "CRMOpportunity.opportunity_id"
+        ],
+        "dropped_record_count": 0,
+        "expected_count": 3,
+        "next_tool": "confirm_book",
+        "raw_input_sha256": "sha256:1958dedaa8dcffa0babd8ada0e1af9924b9ceebc2f7d8fcbf504a2593e434b9a",
+        "received_count": 3,
+        "stored_count": 3,
+        "table_name": "Account",
+        "truncated": false,
+        "unrepresentable_paths": []
+      },
+      "output_sha256": "8556bdcc89ac27770bb9a6c95d736f8df8012db14f46dd6be24063fccace9dc6",
+      "tool": "ingest_table"
+    },
+    {
+      "output": {
+        "auto_mapped": [
+          {
+            "key": "CRMContact.account_id",
+            "reason": "auto-mapped: source-declared reference (source declares a reference to Account)",
+            "source_path": "AccountId",
+            "transform": "none"
+          },
+          {
+            "key": "CRMContact.email",
+            "reason": "auto-mapped: exact standard-field match (field name matches a known alias for this contract field)",
+            "source_path": "Email",
+            "transform": "none"
+          },
+          {
+            "key": "CRMContact.name",
+            "reason": "auto-mapped: exact standard-field match (field name matches a known alias for this contract field)",
+            "source_path": "Name",
+            "transform": "none"
+          },
+          {
+            "key": "CRMContact.title",
+            "reason": "auto-mapped: exact standard-field match (field name matches a known alias for this contract field)",
+            "source_path": "Title",
+            "transform": "none"
+          }
+        ],
+        "book_id": "relational-transcript",
+        "book_tables": [
+          "Account",
+          "Contact"
+        ],
+        "claim_boundary": {
+          "live": false,
+          "provenance": "mcp_relay",
+          "sim": false,
+          "unverified_mapping": true
+        },
+        "confirmation_questions": [
+          {
+            "candidate_keys": [
+              {
+                "rows_nonempty": 4,
+                "rows_present": 4,
+                "rows_sampled": 4,
+                "source_field": "Id",
+                "source_object": "Contact",
+                "source_path": "Id"
+              },
+              {
+                "rows_nonempty": 4,
+                "rows_present": 4,
+                "rows_sampled": 4,
+                "source_field": "AccountId",
+                "source_object": "Contact",
+                "source_path": "AccountId"
+              }
+            ],
+            "key": "CRMContact.contact_id",
+            "question": "Map CRMContact.contact_id to one candidate source path, or mark it not_mappable?",
+            "value_direction": "not_applicable"
+          }
+        ],
+        "contract": "CRMContact",
+        "declared_not_mappable": [
+          "CRMAccount.account_id",
+          "CRMAccount.name",
+          "CRMAccount.owner_id",
+          "CRMOpportunity.account_id",
+          "CRMOpportunity.opportunity_id"
+        ],
+        "dropped_record_count": 0,
+        "expected_count": 4,
+        "next_tool": "confirm_book",
+        "raw_input_sha256": "sha256:ac84db48e006c434d4567e19488083340d726ac529efb5dd38384cfb1b33b9b7",
+        "received_count": 4,
+        "stored_count": 4,
+        "table_name": "Contact",
+        "truncated": false,
+        "unrepresentable_paths": []
+      },
+      "output_sha256": "1de8a4035a34d9f998e551cd34f8680d316a7339cb7e6be082461fd7706d0196",
+      "tool": "ingest_table"
+    },
+    {
+      "output": {
+        "auto_mapped": [
+          {
+            "key": "CRMOpportunity.account_id",
+            "reason": "auto-mapped: source-declared reference (source declares a reference to Account)",
+            "source_path": "AccountId",
+            "transform": "none"
+          },
+          {
+            "key": "CRMOpportunity.amount_cents",
+            "reason": "auto-mapped: exact standard-field match (field name matches a known alias for this contract field)",
+            "source_path": "Amount",
+            "transform": "currency_to_cents"
+          },
+          {
+            "key": "CRMOpportunity.close_date",
+            "reason": "auto-mapped: exact standard-field match (field name matches a known alias for this contract field)",
+            "source_path": "CloseDate",
+            "transform": "none"
+          }
+        ],
+        "book_id": "relational-transcript",
+        "book_tables": [
+          "Account",
+          "Contact",
+          "Opportunity"
+        ],
+        "claim_boundary": {
+          "live": false,
+          "provenance": "mcp_relay",
+          "sim": false,
+          "unverified_mapping": true
+        },
+        "confirmation_questions": [
+          {
+            "candidate_keys": [
+              {
+                "rows_nonempty": 4,
+                "rows_present": 4,
+                "rows_sampled": 4,
+                "source_field": "Id",
+                "source_object": "Opportunity",
+                "source_path": "Id"
+              },
+              {
+                "rows_nonempty": 4,
+                "rows_present": 4,
+                "rows_sampled": 4,
+                "source_field": "AccountId",
+                "source_object": "Opportunity",
+                "source_path": "AccountId"
+              },
+              {
+                "rows_nonempty": 4,
+                "rows_present": 4,
+                "rows_sampled": 4,
+                "source_field": "Amount",
+                "source_object": "Opportunity",
+                "source_path": "Amount"
+              },
+              {
+                "rows_nonempty": 4,
+                "rows_present": 4,
+                "rows_sampled": 4,
+                "source_field": "Type",
+                "source_object": "Opportunity",
+                "source_path": "Type"
+              }
+            ],
+            "key": "CRMOpportunity.opportunity_id",
+            "question": "Map CRMOpportunity.opportunity_id to one candidate source path, or mark it not_mappable?",
+            "value_direction": "not_applicable"
+          },
+          {
+            "candidate_keys": [
+              {
+                "rows_nonempty": 4,
+                "rows_present": 4,
+                "rows_sampled": 4,
+                "source_field": "StageName",
+                "source_object": "Opportunity",
+                "source_path": "StageName"
+              }
+            ],
+            "key": "CRMOpportunity.stage_name",
+            "question": "Map CRMOpportunity.stage_name to one candidate source path, or mark it not_mappable?",
+            "value_direction": "ordered_confirm"
+          }
+        ],
+        "contract": "CRMOpportunity",
+        "declared_not_mappable": [
+          "CRMAccount.account_id",
+          "CRMAccount.name",
+          "CRMAccount.owner_id",
+          "CRMContact.account_id",
+          "CRMContact.contact_id",
+          "CRMContact.name"
+        ],
+        "dropped_record_count": 0,
+        "expected_count": 4,
+        "next_tool": "confirm_book",
+        "raw_input_sha256": "sha256:3cb9548162cd97e77b2f69716c81e5a5c3d8b83325a486949352c31e3ade3889",
+        "received_count": 4,
+        "stored_count": 4,
+        "table_name": "Opportunity",
+        "truncated": false,
+        "unrepresentable_paths": []
+      },
+      "output_sha256": "b36433dc0eb21819b8a0ff3dab747d21b08fbb9e5b4ef750375a699b8e23761f",
+      "tool": "ingest_table"
+    },
+    {
+      "output": {
+        "book_has_parent": true,
+        "book_id": "relational-transcript",
+        "briefing": [
+          "External ingest typed 3 CRM accounts from 3 processed records.",
+          "CRM-only ingest does not provide CS-platform health or product telemetry; value-model rails that require those sources remain unknown."
+        ],
+        "claim_boundary": {
+          "live": false,
+          "provenance": "mcp_relay",
+          "sim": false,
+          "unverified_mapping": true
+        },
+        "coverage": {
+          "count_mismatch": false,
+          "dropped_record_count": 0,
+          "duplicate_identities": [],
+          "expected_count": 3,
+          "field_coverage": {
+            "CRMAccount": {
+              "mapped": 4
+            },
+            "CRMContact": {
+              "mapped": 0,
+              "unknown": 7
+            },
+            "CRMOpportunity": {
+              "mapped": 0,
+              "unknown": 6
+            }
+          },
+          "injection_marker_count": 0,
+          "join_coverage": {
+            "contact_candidates": 0,
+            "contacts_joined": 0,
+            "foreign_key_joins": {
+              "CRMContact": {
+                "candidates": 4,
+                "joined": 4,
+                "orphaned": 0,
+                "ratio": 1.0
+              },
+              "CRMOpportunity": {
+                "candidates": 4,
+                "joined": 4,
+                "orphaned": 0,
+                "ratio": 1.0
+              }
+            },
+            "ratio": null
+          },
+          "records_processed": 3,
+          "records_received": 3,
+          "records_rejected": [],
+          "records_typed": {
+            "CRMAccount": 3,
+            "CRMContact": 4,
+            "CRMOpportunity": 4
+          },
+          "rejection_counts": {},
+          "source_totals": {},
+          "truncated": false,
+          "unknown_fields": [
+            "CRMContact.account_id",
+            "CRMContact.consent_to_contact",
+            "CRMContact.contact_id",
+            "CRMContact.email",
+            "CRMContact.name",
+            "CRMContact.role",
+            "CRMContact.title",
+            "CRMOpportunity.account_id",
+            "CRMOpportunity.amount_cents",
+            "CRMOpportunity.close_date",
+            "CRMOpportunity.opportunity_id",
+            "CRMOpportunity.opportunity_type",
+            "CRMOpportunity.stage_name"
+          ],
+          "unrepresentable_paths": []
+        },
+        "declared_not_mappable": {
+          "Account": [
+            "CRMContact.account_id",
+            "CRMContact.contact_id",
+            "CRMContact.name",
+            "CRMOpportunity.account_id",
+            "CRMOpportunity.opportunity_id"
+          ],
+          "Contact": [
+            "CRMAccount.account_id",
+            "CRMAccount.name",
+            "CRMAccount.owner_id",
+            "CRMOpportunity.account_id",
+            "CRMOpportunity.opportunity_id"
+          ],
+          "Opportunity": [
+            "CRMAccount.account_id",
+            "CRMAccount.name",
+            "CRMAccount.owner_id",
+            "CRMContact.account_id",
+            "CRMContact.contact_id",
+            "CRMContact.name"
+          ]
+        },
+        "live": false,
+        "propose_only_actions": [],
+        "provenance": "mcp_relay",
+        "replay_sha256": "sha256:dcf41441e5d4a43eb1b991aa50ea65e5de29f6c68fed5a8868d4d80d9d835729",
+        "score_errors": [
+          {
+            "account_id": "001SYN0000000001AAA",
+            "code": "MISSING_CS_DATA",
+            "message": "Missing CS platform data for account 001SYN0000000001AAA"
+          },
+          {
+            "account_id": "001SYN0000000002AAA",
+            "code": "MISSING_CS_DATA",
+            "message": "Missing CS platform data for account 001SYN0000000002AAA"
+          },
+          {
+            "account_id": "001SYN0000000003AAA",
+            "code": "MISSING_CS_DATA",
+            "message": "Missing CS platform data for account 001SYN0000000003AAA"
+          }
+        ],
+        "score_summary": {
+          "score_error_count": 3,
+          "scoreable_accounts": 0
+        },
+        "scores": [],
+        "sim": false,
+        "table_contracts": {
+          "Account": "CRMAccount",
+          "Contact": "CRMContact",
+          "Opportunity": "CRMOpportunity"
+        },
+        "tables": {
+          "Account": {
+            "dropped_record_count": 0,
+            "expected_count": 3,
+            "frozen_config_hash": "sha256:fc380d51b83d749d8a3b77cc2b32f493277dff4c61e273a0716c18ab29b6a3a1",
+            "raw_input_sha256": "sha256:1958dedaa8dcffa0babd8ada0e1af9924b9ceebc2f7d8fcbf504a2593e434b9a",
+            "received_count": 3,
+            "stored_count": 3,
+            "truncated": false
+          },
+          "Contact": {
+            "dropped_record_count": 0,
+            "expected_count": 4,
+            "frozen_config_hash": "sha256:d6b198774e8ac7308affaa61b24fb42a73347cdd9abaffa05e420e3af16db40e",
+            "raw_input_sha256": "sha256:ac84db48e006c434d4567e19488083340d726ac529efb5dd38384cfb1b33b9b7",
+            "received_count": 4,
+            "stored_count": 4,
+            "truncated": false
+          },
+          "Opportunity": {
+            "dropped_record_count": 0,
+            "expected_count": 4,
+            "frozen_config_hash": "sha256:730264f639fcb59d78fb4e892ea00bfad6e430274684fa724457bfc696aef509",
+            "raw_input_sha256": "sha256:3cb9548162cd97e77b2f69716c81e5a5c3d8b83325a486949352c31e3ade3889",
+            "received_count": 4,
+            "stored_count": 4,
+            "truncated": false
+          }
+        },
+        "typed_counts": {
+          "CRMAccount": 3,
+          "CRMContact": 4,
+          "CRMOpportunity": 4
+        },
+        "unverified_mapping": true
+      },
+      "output_sha256": "d96154c594e058d610aae53b906d065fdc3da57a3d5d1f88909466c65e82560e",
+      "tool": "confirm_book"
+    }
+  ],
+  "typed_counts": {
+    "CRMAccount": 3,
+    "CRMContact": 4,
+    "CRMOpportunity": 4
+  }
+}

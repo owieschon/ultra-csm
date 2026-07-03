@@ -10,6 +10,8 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass, field, replace
 import hashlib
 import json
+import re
+from collections.abc import Sequence
 from typing import Any, Mapping
 
 from ultra_csm.data_plane.contracts import (
@@ -24,6 +26,7 @@ from ultra_csm.data_plane.source_mapping import (
     MappingCandidateEvidence,
     ProposedFieldMapping,
     SourceMapProposal,
+    _resolved_transform,
     propose_source_mapping,
 )
 
@@ -156,12 +159,42 @@ class _TransformState:
     joined_contacts: int = 0
     total_contact_candidates: int = 0
     injection_marker_count: int = 0
+    # Populated only when child contracts are ingested from SEPARATE tables
+    # (the relational multi-table shape). Left at defaults for the single-table
+    # / nested-children shape so single-table coverage is byte-identical.
+    child_join: dict[str, dict[str, int]] = field(default_factory=dict)
+
+
+@dataclass(frozen=True)
+class RelationalTable:
+    """One named record-set in a relational book.
+
+    A "book" is N of these. The single-table / nested-children shape (corpus A)
+    is the N=1 degenerate case; a normalized CRM (Salesforce) is N>1 joined by
+    foreign keys. There is one transform: the table carrying a mapped CRMAccount
+    identity is the parent (processed with the existing account+nested-child
+    logic, unchanged), and every other table's child records join to it by a
+    confirmed foreign key. No table-name is ever special-cased.
+    """
+
+    table_name: str
+    records: tuple[dict[str, Any], ...]
+    frozen_map: FrozenSourceMapConfig | None = None
+    expected_count: int | None = None
+    # Optional source-declared metadata per column, when the source has a schema
+    # API (e.g. Salesforce describe). Maps column name -> {"references": (...),
+    # "field_type": "..."}. When present, a declared foreign key is used
+    # DIRECTLY rather than inferred from value shapes; absent for schemaless
+    # sources, which fall back to shape heuristics.
+    field_metadata: dict[str, dict[str, Any]] | None = None
 
 
 def derive_schema_snapshot(
     records: list[dict[str, Any]] | tuple[dict[str, Any], ...],
     descriptor: ExternalSourceDescriptor,
+    field_metadata: dict[str, dict[str, Any]] | None = None,
 ) -> tuple[SchemaSnapshot, tuple[str, ...]]:
+    field_metadata = field_metadata or {}
     processed = _processed_records(records, descriptor)
     paths: dict[str, dict[str, Any]] = {}
     unrepresentable: set[str] = set()
@@ -182,23 +215,31 @@ def derive_schema_snapshot(
                     "rows_present": 0,
                     "rows_nonempty": 0,
                     "types": set(),
+                    "values": [],
                 },
             )
             entry["rows_present"] += 1
             if any(_is_nonempty(value) for value in values):
                 entry["rows_nonempty"] += 1
             entry["types"].update(_field_type(value) for value in values)
+            entry["values"].extend(values)
 
     fields = tuple(
         DiscoveredField(
             name=path.rsplit(".", 1)[-1],
-            field_type=_merged_type(meta["types"]),
+            field_type=str(field_metadata.get(path, {}).get("field_type"))
+            if field_metadata.get(path, {}).get("field_type")
+            else _merged_type(meta["types"]),
             required=meta["rows_present"] == len(processed) if processed else False,
             custom=True,
             source_path=path,
             rows_present=meta["rows_present"],
             rows_nonempty=meta["rows_nonempty"],
             rows_sampled=len(processed),
+            value_shape=_classify_value_shape(meta["values"]),
+            distinct_count=_distinct_count(meta["values"]),
+            references=tuple(field_metadata.get(path, {}).get("references", ())),
+            relationship_name=str(field_metadata.get(path, {}).get("relationship_name", "")),
         )
         for path, meta in sorted(paths.items())
     )
@@ -230,8 +271,9 @@ def derive_schema_snapshot(
 def propose_external_source_mapping(
     records: list[dict[str, Any]] | tuple[dict[str, Any], ...],
     descriptor: ExternalSourceDescriptor,
+    field_metadata: dict[str, dict[str, Any]] | None = None,
 ) -> tuple[SchemaSnapshot, SourceMapProposal, tuple[str, ...]]:
-    snapshot, unrepresentable = derive_schema_snapshot(records, descriptor)
+    snapshot, unrepresentable = derive_schema_snapshot(records, descriptor, field_metadata)
     proposal = _with_external_aliases(snapshot, propose_source_mapping(snapshot))
     return snapshot, proposal, unrepresentable
 
@@ -258,6 +300,101 @@ def ingest_external_book(
         state=state,
         unrepresentable=unrepresentable,
     )
+    return _assemble_result(
+        descriptor=descriptor,
+        snapshot=snapshot,
+        proposal=proposal,
+        frozen_map=frozen_map,
+        state=state,
+        coverage=coverage,
+    )
+
+
+def ingest_relational_book(tables: Sequence[RelationalTable]) -> ExternalIngestResult:
+    """Ingest a relational book: one parent (CRMAccount) table plus zero or more
+    child tables joined to it by a confirmed foreign key.
+
+    The single-table shape (``len(tables) == 1``) resolves through the exact same
+    account+nested-child transform as ``ingest_external_book`` — verified by test
+    to produce an identical result — so corpus A's proven path is unchanged.
+    Multi-table books add only a foreign-key join pass over the child tables; the
+    parent transform is untouched.
+    """
+    if not tables:
+        raise ValueError("a relational book needs at least one table")
+
+    account_table = _account_table(tables)
+    # The result's snapshot/proposal describe the parent (account) table when
+    # there is one; otherwise the first table, purely for the result shell. A
+    # book with no confirmed account has no parent: every table is a child and
+    # every child orphans, rather than one being silently promoted to "account".
+    shell_table = account_table or tables[0]
+    shell_descriptor = _table_descriptor(shell_table)
+    snapshot, proposal, unrepresentable = propose_external_source_mapping(
+        list(shell_table.records), shell_descriptor, shell_table.field_metadata
+    )
+
+    state = _TransformState()
+    acct_processed: tuple[dict[str, Any], ...] = ()
+    if account_table is not None:
+        acct_descriptor = _table_descriptor(account_table)
+        acct_processed = _processed_records(account_table.records, acct_descriptor)
+        if account_table.frozen_map is not None:
+            _transform_records(acct_processed, account_table.frozen_map, state)
+
+    for table in tables:
+        if table is account_table:
+            continue
+        _transform_child_table(table, state)
+
+    coverage = _coverage_report(
+        records=list(account_table.records) if account_table else [],
+        processed=acct_processed,
+        descriptor=shell_descriptor,
+        frozen_map=account_table.frozen_map if account_table else None,
+        state=state,
+        unrepresentable=unrepresentable,
+    )
+    return _assemble_result(
+        descriptor=shell_descriptor,
+        snapshot=snapshot,
+        proposal=proposal,
+        frozen_map=account_table.frozen_map if account_table else None,
+        state=state,
+        coverage=coverage,
+    )
+
+
+def _account_table(tables: Sequence[RelationalTable]) -> RelationalTable | None:
+    """The table whose frozen map carries a mapped CRMAccount identity is the
+    parent. None if no table confirmed an account identity — then there is no
+    parent and all tables are treated as (orphan-prone) children."""
+    for table in tables:
+        if table.frozen_map is None:
+            continue
+        for mapping in table.frozen_map.mappings:
+            if mapping.contract == "CRMAccount" and mapping.internal_field == "account_id":
+                return table
+    return None
+
+
+def _table_descriptor(table: RelationalTable) -> ExternalSourceDescriptor:
+    return ExternalSourceDescriptor(
+        source_name=table.table_name,
+        expected_count=table.expected_count,
+        object_name=table.table_name or DEFAULT_OBJECT_NAME,
+    )
+
+
+def _assemble_result(
+    *,
+    descriptor: ExternalSourceDescriptor,
+    snapshot: SchemaSnapshot,
+    proposal: SourceMapProposal,
+    frozen_map: FrozenSourceMapConfig | None,
+    state: _TransformState,
+    coverage: ExternalCoverageReport,
+) -> ExternalIngestResult:
     data = FixtureCustomerData(
         accounts=tuple(state.accounts.values()),
         companies=(),
@@ -315,7 +452,7 @@ def _with_external_aliases(
             continue
         top = candidates[0]
         updated.append(_entry_from_candidate(entry, top, candidates))
-    entries = tuple(updated)
+    entries = tuple(_auto_map_entry(entry) for entry in updated)
     return SourceMapProposal(
         connector_id=proposal.connector_id,
         schema_hash=proposal.schema_hash,
@@ -323,6 +460,93 @@ def _with_external_aliases(
         entries=entries,
         coverage=_coverage(entries),
         required_operator_actions=_operator_actions(entries),
+    )
+
+
+_SOURCE_DECLARED_REASON = "source declares a reference"
+_EXACT_ALIAS_REASON = "field name matches a known alias for this contract field"
+
+
+def _auto_map_entry(entry: ProposedFieldMapping) -> ProposedFieldMapping:
+    """Upgrade an ambiguous entry to auto-mapped when the evidence already proves
+    the mapping -- so a user onboarding a schema'd source is only asked the
+    questions that are genuinely theirs to answer.
+
+    Two provenance tiers auto-map; everything else stays human-confirmed:
+      A. source-declared: the source's own schema names this field as the
+         foreign key (e.g. a Lookup(Account)). The system would be asking the
+         user to confirm what the source already declared.
+      B. exact standard-field match: the field name is an exact alias for the
+         internal field AND the sampled value shape is compatible AND the field
+         is populated on (nearly) every row. Same bar the native connectors use
+         for deterministic standard-field matches.
+
+    Deliberately never auto-mapped, regardless of evidence: primary identity
+    fields (only tier A's source-declared FK covers identity -- the hollow-
+    contacts defect class means identity picks stay human otherwise), any field
+    whose value direction still needs confirmation (direction is a human call),
+    and any field with competing same-strength candidates.
+    """
+    if entry.state != "ambiguous_confirm":
+        return entry
+    if entry.value_direction in {"ordered_confirm", "direction_confirm"}:
+        return entry
+    evidence = entry.candidate_evidence
+    if not evidence:
+        return entry
+    top = evidence[0]
+
+    is_identity = entry.internal_field.endswith("_id")
+
+    # Tier A: the source itself declares this foreign key. Applies ONLY to a
+    # child contract's account_id -- a field that REFERENCES the account object
+    # is by definition a foreign key on a child record; it can never be the
+    # account contract's own identity. Auto-mapping CRMAccount.account_id from
+    # a reference field would let a child table masquerade as the parent and
+    # mint shadow accounts from child rows (the hollow-contacts defect class).
+    if (
+        is_identity
+        and entry.internal_field == "account_id"
+        and entry.contract != "CRMAccount"
+        and top.reason.startswith(_SOURCE_DECLARED_REASON)
+    ):
+        return _auto_mapped(entry, top, "auto-mapped: source-declared reference")
+
+    if is_identity:
+        return entry  # identity stays human without a source declaration
+
+    # Tier B: exact standard-name match + compatible shape + near-full coverage.
+    if top.reason != _EXACT_ALIAS_REASON:
+        return entry
+    if top.value_shape and _shape_affinity(entry.internal_field, top.value_shape) < 0:
+        return entry
+    if top.rows_sampled and top.rows_nonempty < top.rows_sampled * 0.8:
+        return entry
+    # Competing same-reason candidate at equal coverage => genuinely ambiguous.
+    for other in evidence[1:]:
+        if other.reason == _EXACT_ALIAS_REASON and other.rows_nonempty >= top.rows_nonempty:
+            return entry
+    return _auto_mapped(entry, top, "auto-mapped: exact standard-field match")
+
+
+def _auto_mapped(
+    entry: ProposedFieldMapping,
+    top: MappingCandidateEvidence,
+    reason: str,
+) -> ProposedFieldMapping:
+    return replace(
+        entry,
+        source_object=top.source_object,
+        source_field=top.source_field,
+        source_path=top.source_path,
+        state="mapped",
+        requires_human_confirmation=False,
+        confidence=0.95,
+        reason=f"{reason} ({top.reason})",
+        # An auto-mapped field must still carry its contract's default declared
+        # transform (amount_cents => currency_to_cents) -- the human-confirmed
+        # path resolves this in _confirmed(); this is the same resolution.
+        transform=_resolved_transform(entry.internal_field, None),
     )
 
 
@@ -355,6 +579,8 @@ def _candidate_evidence(
                         field_type=field_item.field_type,
                         confidence=round(confidence, 4),
                         reason=reason,
+                        value_shape=field_item.value_shape,
+                        distinct_count=field_item.distinct_count,
                     ),
                 )
             )
@@ -362,12 +588,43 @@ def _candidate_evidence(
         candidates,
         key=lambda item: (
             -item[0],
+            -_shape_affinity(entry.internal_field, item[1].value_shape),
             -item[1].rows_nonempty,
             -item[1].rows_present,
             item[1].source_path,
         ),
     )
     return tuple(candidate for _, candidate in ordered)
+
+
+# Which value-shape a given internal field wants. A positive affinity ranks a
+# shape-appropriate candidate above a coverage-equal wrong-shape one (id_like
+# for identity fields, name_like for the display name); it is a ranking hint
+# only -- ambiguous entries still require explicit human confirmation, and no
+# candidate is auto-confirmed across shape classes.
+def _shape_affinity(internal_field: str, value_shape: str) -> int:
+    if not value_shape:
+        return 0
+    if internal_field.endswith("_id"):
+        # A foreign key to a small parent table is naturally low-cardinality
+        # (few distinct parent ids repeated across many children), so
+        # low_cardinality_enum is a valid identity/FK shape -- not penalized, or
+        # foreign-named FK columns would never surface as candidates. Primary
+        # keys (all-distinct) still rank higher via id_like.
+        return {
+            "id_like": 2, "low_cardinality_enum": 1, "numeric": 1, "name_like": -1,
+        }.get(value_shape, 0)
+    if internal_field == "name":
+        return {"name_like": 2, "text": 1, "low_cardinality_enum": -2, "id_like": -1}.get(
+            value_shape, 0
+        )
+    if internal_field == "email":
+        return {"email_like": 2, "name_like": -1}.get(value_shape, 0)
+    if internal_field in {"close_date", "starts_at", "ends_at", "renewal_date"}:
+        return {"date_like": 2}.get(value_shape, 0)
+    if internal_field in {"amount_cents", "value", "entitled_quantity"}:
+        return {"numeric": 2, "low_cardinality_enum": -1}.get(value_shape, 0)
+    return 0
 
 
 def _candidate_score(
@@ -377,6 +634,14 @@ def _candidate_score(
     contract, internal_field = entry.contract, entry.internal_field
     field_norm = _norm(field.name)
     path_norm = _norm(field.source_path)
+    # Source-declared foreign key: if the source's own schema says this field
+    # references another object, it is the join key -- known, not guessed. This
+    # is the metadata-first path (Salesforce describe etc.); it ranks above every
+    # shape/name heuristic and makes FK identification independent of value
+    # cardinality (an AccountId Lookup is an FK even when it looks like a
+    # low-cardinality enum because the parent table is small).
+    if field.references and internal_field == "account_id":
+        return 6, f"source declares a reference to {', '.join(field.references)}"
     if "[]." in field.source_path:
         collection_root, child_name = field.source_path.split("[].", 1)
         if (
@@ -406,6 +671,14 @@ def _candidate_score(
         return 2, "identity-shaped field is a plausible join candidate"
     if field_norm in aliases or any(alias and alias in path_norm for alias in aliases):
         return 1, "field path partially matches a known alias"
+    # Shape-driven fallback: a field whose VALUE shape fits this internal field
+    # is offered as a (low-confidence) candidate even when its name matches no
+    # alias. Without this, a genuinely foreign schema whose columns happen to be
+    # named unconventionally produces an empty proposal and nothing is
+    # confirmable -- which would be engineering to conventionally-named schemas.
+    # It is still only a candidate: ambiguous, requiring human confirmation.
+    if _shape_affinity(internal_field, field.value_shape) > 0:
+        return 1, f"value shape {field.value_shape!r} fits this field; confirm to map"
     return 0, ""
 
 
@@ -560,6 +833,54 @@ def _is_representable_collection(path: str, value: list[Any]) -> bool:
     if _norm(_last_path_segment(path)) != "contacts":
         return False
     return all(isinstance(item, Mapping) for item in value)
+
+
+_EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+_DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}([T ]\d{2}:\d{2})?")
+_ID_RE = re.compile(r"^[A-Za-z0-9_-]+$")
+_LOW_CARDINALITY_MAX = 10
+
+
+def _distinct_count(values: list[Any]) -> int:
+    return len({v for v in values if _is_nonempty(v)})
+
+
+def _classify_value_shape(values: list[Any]) -> str:
+    """Deterministic value-shape class from sampled values -- no LLM. This is the
+    evidence that distinguishes a coverage-perfect-but-semantically-wrong
+    candidate (e.g. an Opportunity StageName, which is a 10-value enum) from a
+    real identifier or name, which row coverage alone cannot do."""
+    non_empty = [v for v in values if _is_nonempty(v)]
+    if not non_empty:
+        return "empty"
+    total = len(non_empty)
+    distinct = len(set(map(_shape_key, non_empty)))
+
+    if all(isinstance(v, bool) for v in non_empty):
+        return "boolean_like"
+    strs = [v for v in non_empty if isinstance(v, str)]
+    if len(strs) == total:
+        if all(_EMAIL_RE.match(s.strip()) for s in strs):
+            return "email_like"
+        if all(_DATE_RE.match(s.strip()) for s in strs):
+            return "date_like"
+        # Low-cardinality categorical: few distinct values across many rows.
+        if total >= 3 and distinct <= _LOW_CARDINALITY_MAX and distinct < total:
+            return "low_cardinality_enum"
+        # Identifier: high uniqueness, single-token, no spaces.
+        if distinct == total and all(_ID_RE.match(s.strip()) and " " not in s for s in strs):
+            return "id_like"
+        # Name: mixed-case, frequently multi-word, high-ish uniqueness.
+        if any(" " in s.strip() for s in strs) or re.search(r"[a-z][A-Z]|[A-Z][a-z]", " ".join(strs[:5])):
+            return "name_like"
+        return "text"
+    if all(isinstance(v, int | float) and not isinstance(v, bool) for v in non_empty):
+        return "numeric"
+    return "mixed"
+
+
+def _shape_key(value: Any) -> Any:
+    return value.strip() if isinstance(value, str) else value
 
 
 def _is_nonempty(value: Any) -> bool:
@@ -762,6 +1083,100 @@ def _transform_opportunity(
     )
 
 
+def _transform_child_table(table: RelationalTable, state: _TransformState) -> None:
+    """Join a separate child table's records to the already-built accounts by a
+    confirmed foreign key. Orphans (no matching parent) are rejected loudly and
+    counted; identity is never fabricated. This is the only code the multi-table
+    shape adds over the single-table transform."""
+    if table.frozen_map is None:
+        return
+    mappings = _mapping_index(table.frozen_map.mappings)
+    descriptor = _table_descriptor(table)
+    processed = _processed_records(table.records, descriptor)
+    contact_fields = mappings.get("CRMContact", {})
+    opportunity_fields = mappings.get("CRMOpportunity", {})
+    for index, record in enumerate(processed, start=1):
+        if _record_has_injection_marker(record):
+            state.injection_marker_count += 1
+        if contact_fields.get("contact_id"):
+            _join_child_contact(index, record, contact_fields, state)
+        if opportunity_fields.get("opportunity_id"):
+            _join_child_opportunity(index, record, opportunity_fields, state)
+
+
+def _join_stats(state: _TransformState, contract: str) -> dict[str, int]:
+    return state.child_join.setdefault(
+        contract, {"candidates": 0, "joined": 0, "orphaned": 0}
+    )
+
+
+def _join_child_contact(
+    index: int,
+    record: Mapping[str, Any],
+    fields: dict[str, ProposedFieldMapping],
+    state: _TransformState,
+) -> None:
+    stats = _join_stats(state, "CRMContact")
+    stats["candidates"] += 1
+    contact_id = _mapped_str(record, fields.get("contact_id"))
+    if not contact_id:
+        state.rejected.append(RejectedRecord(index, "missing_contact_identity", "CRMContact"))
+        return
+    account_id = _mapped_str(record, fields.get("account_id"))
+    if not account_id or account_id not in state.accounts:
+        stats["orphaned"] += 1
+        state.rejected.append(RejectedRecord(index, "unresolved_parent_identity", "CRMContact"))
+        return
+    if contact_id in state.contacts:
+        state.duplicate_identities.add(_fingerprint_identity(contact_id))
+        return
+    stats["joined"] += 1
+    state.contacts[contact_id] = CRMContact(
+        contact_id=contact_id,
+        account_id=account_id,
+        email=_mapped_str(record, fields.get("email")) or "",
+        name=_mapped_str(record, fields.get("name")) or "",
+        role=_mapped_str(record, fields.get("role")) or None,
+        title=_mapped_str(record, fields.get("title")) or None,
+        consent_to_contact=_mapped_bool(record, fields.get("consent_to_contact")),
+    )
+
+
+def _join_child_opportunity(
+    index: int,
+    record: Mapping[str, Any],
+    fields: dict[str, ProposedFieldMapping],
+    state: _TransformState,
+) -> None:
+    stats = _join_stats(state, "CRMOpportunity")
+    stats["candidates"] += 1
+    opportunity_id = _mapped_str(record, fields.get("opportunity_id"))
+    if not opportunity_id:
+        state.rejected.append(
+            RejectedRecord(index, "missing_opportunity_identity", "CRMOpportunity")
+        )
+        return
+    account_id = _mapped_str(record, fields.get("account_id"))
+    if not account_id or account_id not in state.accounts:
+        stats["orphaned"] += 1
+        state.rejected.append(
+            RejectedRecord(index, "unresolved_parent_identity", "CRMOpportunity")
+        )
+        return
+    if opportunity_id in state.opportunities:
+        state.duplicate_identities.add(_fingerprint_identity(opportunity_id))
+        return
+    stats["joined"] += 1
+    state.opportunities[opportunity_id] = CRMOpportunity(
+        opportunity_id=opportunity_id,
+        account_id=account_id,
+        stage_name=_mapped_str(record, fields.get("stage_name")) or "unknown",
+        amount_cents=_mapped_cents(record, fields.get("amount_cents")),
+        close_date=_mapped_str(record, fields.get("close_date")) or "",
+        opportunity_type=_mapped_str(record, fields.get("opportunity_type")) or "",
+    )
+
+
 def _mapping_index(
     mappings: tuple[ProposedFieldMapping, ...],
 ) -> dict[str, dict[str, ProposedFieldMapping]]:
@@ -862,15 +1277,38 @@ def _mapped_bool(
 
 
 def _mapped_cents(record: Mapping[str, Any], mapping: ProposedFieldMapping | None) -> int:
+    """Extract an integer-cents amount, applying the mapping's declared transform.
+
+    A mapping whose transform is ``currency_to_cents`` scales a currency value
+    (dollars) up by 100; ``none`` takes the value as already-integer cents. The
+    conversion is thus explicit in the frozen config rather than hardcoded --
+    the same numeric result as before for the amount_cents field, which carries
+    ``currency_to_cents`` by default, but now visible and auditable."""
     value = _mapped_value(record, mapping)
+    transform = mapping.transform if mapping is not None else "none"
+    if transform == "currency_to_cents":
+        if isinstance(value, bool):
+            return 0
+        if isinstance(value, int | float):
+            return int(round(value * 100))
+        if isinstance(value, str):
+            cleaned = value.replace("$", "").replace(",", "").strip()
+            try:
+                return int(round(float(cleaned) * 100))
+            except ValueError:
+                return 0
+        return 0
+    # transform == "none": value is already integer cents.
+    if isinstance(value, bool):
+        return 0
     if isinstance(value, int):
-        return value * 100
+        return value
     if isinstance(value, float):
-        return int(round(value * 100))
+        return int(round(value))
     if isinstance(value, str):
         cleaned = value.replace("$", "").replace(",", "").strip()
         try:
-            return int(round(float(cleaned) * 100))
+            return int(round(float(cleaned)))
         except ValueError:
             return 0
     return 0
@@ -914,11 +1352,7 @@ def _coverage_report(
         records_rejected=tuple(state.rejected),
         rejection_counts=dict(sorted(rejection_counts.items())),
         field_coverage=field_coverage,
-        join_coverage={
-            "contact_candidates": state.total_contact_candidates,
-            "contacts_joined": state.joined_contacts,
-            "ratio": join_ratio,
-        },
+        join_coverage=_join_coverage(state, join_ratio),
         unknown_fields=tuple(sorted(frozen_map.unknown_fields if frozen_map else ())),
         unrepresentable_paths=unrepresentable,
         duplicate_identities=tuple(sorted(state.duplicate_identities)),
@@ -928,6 +1362,29 @@ def _coverage_report(
         dropped_record_count=dropped,
         injection_marker_count=state.injection_marker_count,
     )
+
+
+def _join_coverage(state: _TransformState, join_ratio: float | None) -> dict[str, Any]:
+    # The nested/flat single-table join stats stay exactly where they were so
+    # single-table coverage is unchanged. Separate-table foreign-key joins add a
+    # per-contract block only when such tables were actually ingested.
+    coverage: dict[str, Any] = {
+        "contact_candidates": state.total_contact_candidates,
+        "contacts_joined": state.joined_contacts,
+        "ratio": join_ratio,
+    }
+    if state.child_join:
+        by_contract: dict[str, dict[str, Any]] = {}
+        for contract, stats in sorted(state.child_join.items()):
+            candidates = stats["candidates"]
+            by_contract[contract] = {
+                "candidates": candidates,
+                "joined": stats["joined"],
+                "orphaned": stats["orphaned"],
+                "ratio": round(stats["joined"] / candidates, 4) if candidates else None,
+            }
+        coverage["foreign_key_joins"] = by_contract
+    return coverage
 
 
 def _field_coverage(
