@@ -18,6 +18,7 @@ truth — not tolerances. Run artifacts:
 | D4 broken joins | `ingest_table`×3 + `confirm_book` | 4 / 4 / 3 (exact) | 4 / 3 (exact) | 0 (exact) | Yes |
 | D5 unmapped (Lead) | `ingest_book` | 0 accounts typed (exact) | n/a | n/a | n/a |
 | D5 unmapped (Case) | `ingest_book` | 0 accounts typed (exact) | n/a | n/a | n/a |
+| D6 volume-at-scale | `ingest_table`×3 + `confirm_book` | 20 / 500 / 60 (Contact truncated from 520) | 0 / 0 (exact) | 0 (exact) | Yes |
 
 Every number above is the live response compared against
 `ground_truth.json`, authored before any record was created. Zero
@@ -57,6 +58,16 @@ mismatches on the final run (`phase3_battery_report.json`: `"problems": []`,
   identity field ever auto-mapped (`auto_mapped_identity_count: 0` on both),
   confirming the system does not guess an account out of Lead/Case shapes
   it has no contract for.
+- **D6 (volume-at-scale):** 20 accounts, 520 contacts (round-robin linked,
+  the one table sized to exceed the relay), 60 opportunities. `ingest_table`
+  on Contact reports `truncated: true`, `dropped_record_count: 20` (520 sent
+  − 500 cap); `confirm_book` types `CRMContact` at exactly 500, never 520 —
+  the first live exercise of `DEFAULT_MAX_RECORDS` against a real fetched
+  dataset rather than a synthetic oversized payload. Account and Opportunity,
+  both under the cap, type at their full seeded counts with zero truncation.
+  Replay deterministic (`replay_sha256` identical across two `confirm_book`
+  calls). Seed additive to Phase 2E — a new run directory and ledger, D1-D5's
+  ledger/ground truth untouched (see `~/ultra-csm-corpus-runs/seed-2e-d6-20260703/`).
 
 ## Defect protocol outcome
 
@@ -77,6 +88,18 @@ surface, both handled without touching `src/`:
    (Tier B requires ≥80% non-empty rows) doing its job. The driver was
    fixed to answer any unforeseen question `not_mappable` rather than
    assume; no test, no src file, and no confirmation logic changed.
+3. **Org-native duplicate-detection rule, again, on D6:** despite every D6
+   Contact having a globally-unique `FirstName` in this run, the org's fuzzy
+   Contact-matching rule still blocked the second create batch — the
+   matcher's `LastName` similarity check appears insensitive to the numeric
+   suffix on the shared `UCSM-P3E-D6-C####` tag. Because D6 drives the REST
+   API directly (unlike D1-D5's per-record MCP-tool creates, which expose no
+   header control), the fix available here was Salesforce's own documented
+   override, `Sforce-Duplicate-Rule-Header: allowSave=true`, applied only to
+   the remaining D6 batches — a save-time override of a single write call,
+   not an update/delete and not an org configuration change, so it does not
+   depart from the program's create-only rule. A seeding-time workaround,
+   not a product change.
 
 ## Regression trio (same commit as this battery)
 
@@ -89,10 +112,11 @@ surface, both handled without touching `src/`:
 
 ## Scope not covered
 
-- **D6 volume-at-scale** (>500-row books, exercising the relay
-  `max_records` cap and pagination under real API limits) was deferred —
-  it requires populated `~/ultra-csm-live-creds.env` for REST-composite
-  batch creation; the file is currently an empty template. Flagged as an
-  open owner ask, not silently dropped.
+- **D6 volume-at-scale** — done; see the D6 row above and the "What each
+  dataset proved" note. Was deferred pending populated
+  `~/ultra-csm-live-creds.env` for REST-composite batch creation; that
+  credential is now populated and the `>500`-row cap has been exercised live.
 - Update/delete paths were not exercised against corpus B; the program's
-  standing rule is create-only writes against this org.
+  standing rule is create-only writes against this org (see Defect protocol
+  outcome, item 3, for the one save-time override D6 needed and why it
+  doesn't depart from this rule).
