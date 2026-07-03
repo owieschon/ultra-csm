@@ -196,6 +196,16 @@ SCENARIO_TIMELINE: list[Mutation] = [
     # Day 3 — Pinnacle's sole champion goes quiet; Sagebrush bleeds
     ChampionGoesQuiet("pinnacle-supply", 3),
     UsageDecline("sagebrush-transport", 3, 0.4, 0.6, end_day=70),
+    # --- Synthetic Universe Bible: single-threaded-risk extension
+    # (Pinnacle) --- The champion-quiet health penalty above moves the
+    # band, but adoption/seat-penetration never moved without this: no
+    # UsageDecline existed for this account, so a seat-penetration/
+    # feature-depth-reading pillar saw a frozen day-0 snapshot for the
+    # entire arc. Sized to stay under the ~9.5% mark -- real and visible
+    # in raw usage/adoption data, but not large enough to trip the
+    # engine's own >20% auto health-adjustment on top of the explicit
+    # champion-quiet penalty already driving the band.
+    UsageDecline("pinnacle-supply", 3, 0.05, 0.15, end_day=130),
 
     # Day 5 — Harborview CSAT drops toward renewal; Cedar Valley wobbles
     CSATDecline("harborview-fleet", 5, 1.0, end_day=45),
@@ -204,6 +214,17 @@ SCENARIO_TIMELINE: list[Mutation] = [
     # Day 7 — Pinehill milestone; Ironhorse momentum; Cypress escalates
     MilestoneCompleted("pinehill-transport", "activate_50pct_assets", 7),
     UsageGrowth("ironhorse-freight", 7, 1.5, 2.0, end_day=35),
+    # --- Synthetic Universe Bible: onboarding-stall extension (Pinehill) ---
+    # Real adoption drag paired with the legacy-dispatch-integration cases
+    # (day 0/30/80, _CASE_SCHEDULE) -- previously the stall was visible
+    # only in cases/champion-latency/Rocketlane, leaving the seat-
+    # penetration/feature-depth pillars reading a frozen day-0 snapshot
+    # through the whole arc. -20%+ of the tiny 12-asset baseline, large
+    # enough to also trip the engine's own usage-derived health penalty
+    # (Pinehill carries no other score-affecting mutation), so the
+    # briefing's own score finally tracks the stall too.
+    UsageDecline("pinehill-transport", 10, 0.03, 0.04, end_day=100),
+    UsageGrowth("pinehill-transport", 100, 0.025, 0.035, end_day=300),
     TicketSpike("cypress-field", 7, 3),
 
     # Day 10 — Harborview goes red; Meridian expansion contact appears
@@ -292,6 +313,17 @@ SCENARIO_TIMELINE: list[Mutation] = [
     # Summer dip, expansion close, Pinnacle save play
     # =====================================================================
 
+    # --- Synthetic Universe Bible: silent-decline extension (Aspenridge) ---
+    # Slow continuous decline, day 90 onward. Deliberately calibrated to
+    # stay under the engine's own automatic usage-derived health adjustment
+    # (book_simulator.py's ">20% change from active_assets baseline"
+    # penalty, applied to any account not already carrying an explicit
+    # score delta) -- that threshold is exactly what this arc is testing:
+    # a real, sustained decline too small for the existing scoring engine
+    # to catch on its own, so the band never moves and no HealthBandChange
+    # ever fires for this account across the full 365 days.
+    UsageDecline("aspenridge-supply", 90, 0.006, 0.008, end_day=340),
+
     # Day 100 — Summer usage dip across fleet accounts
     UsageDecline("trailhead-logistics", 100, 0.3, 0.5, end_day=150),
     UsageDecline("bison-transport", 100, 0.3, 0.5, end_day=150),
@@ -312,6 +344,8 @@ SCENARIO_TIMELINE: list[Mutation] = [
     HealthBandChange("pinnacle-supply", 130, "yellow",
                      ("new_champion_engaged", "recovery_in_progress")),
     CSATDecline("pinnacle-supply", 130, -0.2, end_day=240),
+    # Adoption recovery paired with the new champion, not just a band flip.
+    UsageGrowth("pinnacle-supply", 130, 0.06, 0.2, end_day=240),
 
     # Day 140 — Cypress fully recovered
     HealthBandChange("cypress-field", 140, "green",
@@ -357,6 +391,22 @@ SCENARIO_TIMELINE: list[Mutation] = [
 
     # Day 205 — Hawkstone ticket spike
     TicketSpike("hawkstone-industries", 205, 3),
+
+    # --- Synthetic Universe Bible: churn-brewing extension (Quarrystone) ---
+    # Base fixture data already starts this account red at day 0
+    # (champion_departed/no_successor -- see synthetic_book.py's _HEALTH
+    # dict), so the "brewing" here is NOT a health-band transition (there
+    # is no green-to-red arc to script; a HealthBandChange to "yellow"
+    # here would read as an unearned improvement right before churn, which
+    # was an authoring mistake in an earlier draft of this extension).
+    # The actual brewing signal is the ABSENCE of remediation despite the
+    # account being visibly flagged the entire time: no replacement
+    # contact ever appears (contrast Pinnacle's day-110 NewContactAppears),
+    # a rising ticket count, and a renewal conversation that goes
+    # unanswered -- all still red/at-risk the whole way to the day-220
+    # churn below.
+    ChampionGoesQuiet("quarrystone-logistics", 0),
+    TicketSpike("quarrystone-logistics", 160, 2),
 
     # Day 220 — Quarrystone churns (champion departed at day 0, never replaced)
     StatusChange("quarrystone-logistics", 220, "Churned"),
