@@ -377,10 +377,13 @@ def _candidate_score(
     field_norm = _norm(field.name)
     path_norm = _norm(field.source_path)
     if "[]." in field.source_path:
-        if contract == "CRMContact" and field.source_path.startswith("contacts[]."):
-            child_name = field.source_path.split("[].", 1)[1]
-            if _norm(child_name) in _child_aliases(internal_field):
-                return 5, "nested contacts child field matches the target contract"
+        collection_root, child_name = field.source_path.split("[].", 1)
+        if (
+            contract == "CRMContact"
+            and _norm(_last_path_segment(collection_root)) == "contacts"
+            and _norm(child_name) in _child_aliases(internal_field)
+        ):
+            return 5, "nested contacts child field matches the target contract"
         return 0, ""
     aliases = {
         _norm(value)
@@ -549,7 +552,11 @@ def _flatten_record(
 
 
 def _is_representable_collection(path: str, value: list[Any]) -> bool:
-    if _norm(path) != "contacts":
+    # Match on the trailing field name, not the full dotted path: a collection
+    # nested behind an intermediate wrapper object (e.g. a JSONB "data" envelope
+    # such as "data.contacts") must be recognized the same as a collection
+    # nested directly on the record ("contacts").
+    if _norm(_last_path_segment(path)) != "contacts":
         return False
     return all(isinstance(item, Mapping) for item in value)
 
@@ -773,7 +780,14 @@ def _child_collection_prefix(fields: dict[str, ProposedFieldMapping]) -> str | N
 
 
 def _child_records(record: Mapping[str, Any], child_prefix: str) -> tuple[Mapping[str, Any], ...]:
-    value = record.get(child_prefix)
+    # child_prefix is the collection's dotted source path (e.g. "contacts" or,
+    # nested behind a wrapper object, "data.contacts") -- resolve it through
+    # each intermediate dict rather than a single flat lookup.
+    value: Any = record
+    for key in child_prefix.split("."):
+        if not isinstance(value, Mapping):
+            return ()
+        value = value.get(key)
     if not isinstance(value, list):
         return ()
     return tuple(item for item in value if isinstance(item, Mapping))
@@ -958,3 +972,9 @@ def _fingerprint_identity(value: str) -> str:
 
 def _norm(value: str) -> str:
     return "".join(ch for ch in value.lower() if ch.isalnum())
+
+
+def _last_path_segment(path: str) -> str:
+    """The trailing field name of a dotted source path, regardless of how many
+    wrapper objects it is nested behind ("data.contacts" -> "contacts")."""
+    return path.rsplit(".", 1)[-1] if path else path
