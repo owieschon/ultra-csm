@@ -113,13 +113,14 @@
     }
   },
   "frozen_source_map": {
-    "config_hash": "sha256:c4d20e537479a6c7f62bbaa494241da4f8846106274d5db55e4acc1d185f38af",
+    "config_hash": "sha256:36e0564d0d6831efb10bbc09d26045a280310060f2aac8525a337584405de14f",
     "connector_id": "attio_crm",
     "mappings": [
       {
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -127,7 +128,8 @@
             "rows_sampled": 0,
             "source_field": "id",
             "source_object": "companies",
-            "source_path": "values.id"
+            "source_path": "values.id",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -149,6 +151,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -156,7 +159,8 @@
             "rows_sampled": 0,
             "source_field": "name",
             "source_object": "companies",
-            "source_path": "values.name"
+            "source_path": "values.name",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -178,6 +182,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.58,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "custom or tenant-specific field requires confirmation",
             "rows_nonempty": 0,
@@ -185,7 +190,8 @@
             "rows_sampled": 0,
             "source_field": "owner",
             "source_object": "companies",
-            "source_path": "values.owner"
+            "source_path": "values.owner",
+            "value_shape": ""
           }
         ],
         "confidence": 1.0,
@@ -207,6 +213,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -214,7 +221,8 @@
             "rows_sampled": 0,
             "source_field": "id",
             "source_object": "people",
-            "source_path": "values.id"
+            "source_path": "values.id",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -236,6 +244,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.58,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "custom or tenant-specific field requires confirmation",
             "rows_nonempty": 0,
@@ -243,7 +252,8 @@
             "rows_sampled": 0,
             "source_field": "associated_company",
             "source_object": "people",
-            "source_path": "values.associated_company"
+            "source_path": "values.associated_company",
+            "value_shape": ""
           }
         ],
         "confidence": 1.0,
@@ -265,6 +275,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -272,7 +283,8 @@
             "rows_sampled": 0,
             "source_field": "email_addresses",
             "source_object": "people",
-            "source_path": "values.email_addresses"
+            "source_path": "values.email_addresses",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -294,6 +306,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.95,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "deterministic standard-field match",
             "rows_nonempty": 0,
@@ -301,7 +314,8 @@
             "rows_sampled": 0,
             "source_field": "name",
             "source_object": "people",
-            "source_path": "values.name"
+            "source_path": "values.name",
+            "value_shape": ""
           }
         ],
         "confidence": 0.95,
@@ -323,6 +337,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.58,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "custom or tenant-specific field requires confirmation",
             "rows_nonempty": 0,
@@ -330,7 +345,8 @@
             "rows_sampled": 0,
             "source_field": "role",
             "source_object": "people",
-            "source_path": "values.role"
+            "source_path": "values.role",
+            "value_shape": ""
           }
         ],
         "confidence": 1.0,
@@ -352,6 +368,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.58,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "custom or tenant-specific field requires confirmation",
             "rows_nonempty": 0,
@@ -359,7 +376,8 @@
             "rows_sampled": 0,
             "source_field": "job_title",
             "source_object": "people",
-            "source_path": "values.job_title"
+            "source_path": "values.job_title",
+            "value_shape": ""
           }
         ],
         "confidence": 1.0,
@@ -381,6 +399,7 @@
         "candidate_evidence": [
           {
             "confidence": 0.58,
+            "distinct_count": 0,
             "field_type": "unknown",
             "reason": "custom or tenant-specific field requires confirmation",
             "rows_nonempty": 0,
@@ -388,7 +407,8 @@
             "rows_sampled": 0,
             "source_field": "consent_to_contact",
             "source_object": "people",
-            "source_path": "values.consent_to_contact"
+            "source_path": "values.consent_to_contact",
+            "value_shape": ""
           }
         ],
         "confidence": 1.0,
@@ -407,7 +427,7 @@
         "value_direction": "not_applicable"
       }
     ],
-    "proposal_hash": "sha256:e1d72f54ae4e406a745109c472fac104acc24e493c40cd2534a88c7fa71e0958",
+    "proposal_hash": "sha256:9d525497e3033cb588d9e8d1eb1ce918797d1181d9c5b166c3eed27af288d676",
     "schema_hash": "sha256:f98bd8194d914f8f3aebe08f5fe8ff1274ed8773b34c8a6c4a189fa092ba7ac1",
     "unknown_fields": [
       "CRMAccount.industry"
@@ -431,7 +451,7 @@
     "missing_to_unknown_keys": [
       "CRMAccount.industry"
     ],
-    "proposal_hash": "sha256:e1d72f54ae4e406a745109c472fac104acc24e493c40cd2534a88c7fa71e0958",
+    "proposal_hash": "sha256:9d525497e3033cb588d9e8d1eb1ce918797d1181d9c5b166c3eed27af288d676",
     "required_operator_actions": [
       "confirm 5 semantic/value mappings",
       "review 1 missing fields; affected rails remain unknown"

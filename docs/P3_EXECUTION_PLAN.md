@@ -51,14 +51,22 @@ as `ingest_book`).
 
 ### A2. `confirm_book` tool
 
-Accepts `book_id` plus per-table contract intent (`{table_name: contract}`)
-and the human answers for remaining questions. Behavior: for each table,
-entries of OTHER contracts that remain ambiguous are recorded as
-`not_mappable` — and the response **declares this list explicitly** (nothing
-silently dropped); freeze runs per table (identity-audit: no two identity
-fields on one source coordinate, cross-table); `ingest_relational_book`
-assembles the book; response carries coverage (incl. `foreign_key_joins`),
-briefing, `replay_sha256`, frozen config hashes per table.
+**Amended during build:** contract intent moved from `confirm_book` to a
+required `contract` parameter on `ingest_table`. Declaring intent only at
+confirm time would have returned every contract's questions on every table at
+ingest time — per-table question noise that defeats the friction win the tools
+exist to deliver. With intent declared at ingest, each table's response
+carries ONLY its own contract's questions.
+
+`confirm_book` accepts `book_id` and the human answers for remaining
+questions, keyed by table. Behavior: for each table, entries of OTHER
+contracts — auto-mapped or ambiguous — are recorded as `not_mappable` and the
+response **declares this list explicitly** (nothing silently dropped); a
+confirmation naming a foreign contract on a table is refused
+(`RELAY_CONTRACT_INTENT_CONFLICT` — the hollow-records guard); freeze runs per
+table; `ingest_relational_book` assembles the book; response carries
+`typed_counts`, coverage (incl. `foreign_key_joins`), briefing,
+`replay_sha256`, frozen config hashes per table.
 
 - [ ] Happy path: SFDC-shaped 3-table fixture book with metadata onboards with
       exactly the identity+direction questions answered, everything else

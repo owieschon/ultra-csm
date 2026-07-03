@@ -1,7 +1,7 @@
 {
   "access_mode": "demo_operator",
   "artifact": "mcp_operator_transcript",
-  "artifact_sha256": "7610511823d0ffae3034dad604efb8d5afccd0e925909d6325e1e496d80dac3e",
+  "artifact_sha256": "6e408889d8bc48f3abd0042d5bfecbb563c753c0effc69583023a411596ab031",
   "beats": [
     "briefing",
     "queue",
@@ -104,6 +104,16 @@
           },
           {
             "classification": "state_changing",
+            "name": "ingest_table",
+            "readonly_available": false
+          },
+          {
+            "classification": "state_changing",
+            "name": "confirm_book",
+            "readonly_available": false
+          },
+          {
+            "classification": "state_changing",
             "name": "render_email_draft",
             "readonly_available": false
           },
@@ -119,7 +129,7 @@
           }
         ]
       },
-      "output_sha256": "43c5a6723380a29d2f7f9a34564c530839bdbcf64b75b3cef514f77aa4c0d169",
+      "output_sha256": "e46f99379c8ef88255119bf5bfd077637aff66424d08e80aaf4d4002a2ca33d1",
       "tool": "get_tool_manifest"
     },
     {
@@ -2515,7 +2525,9 @@
           "tools": [
             "report_readiness",
             "ingest_book",
-            "confirm_book_mappings"
+            "confirm_book_mappings",
+            "ingest_table",
+            "confirm_book"
           ]
         },
         "claim_boundary": {
@@ -2532,14 +2544,15 @@
           "Use submit_verdict with revise plus edit_instruction once.",
           "Approve the superseding draft and inspect get_session_ledger.",
           "Render the approved email draft artifact; it is placement-ready but never sent.",
-          "For a host-relayed book, restart without demo/read-only mode and use report_readiness, ingest_book, then confirm_book_mappings."
+          "For a host-relayed book, restart without demo/read-only mode and use report_readiness, ingest_book, then confirm_book_mappings.",
+          "For a normalized multi-table CRM, use ingest_table per table, then confirm_book."
         ],
         "suggested_next": [
           "get_morning_briefing",
           "list_proposals"
         ]
       },
-      "output_sha256": "7a83b90799dce639a8ec46b4a5ef08f7c1bc87ca061cd974a76d74d7417aeac7",
+      "output_sha256": "03e61a3ab3b1edbf052c67c1914a82039a82477fcf9ad68bfa44e1b48150da6f",
       "tool": "get_next_steps"
     }
   ]

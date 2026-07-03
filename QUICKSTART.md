@@ -195,6 +195,27 @@ make mcp-relay-demo-csm
 
 The committed transcript is written to `eval/mcp_relay_transcript.json`.
 
+### Normalized multi-table CRMs
+
+A normalized CRM (separate Account/Contact/Opportunity tables, like a Salesforce
+org) relays each table with `ingest_table(book_id, table_name, contract, records,
+expected_count, field_metadata)` and then joins them with `confirm_book(book_id,
+confirmations)`. Declare what each table's records ARE via `contract`; pass the
+source's declared schema (e.g. a Salesforce describe's `referenceTo`) as
+`field_metadata` so foreign keys map from source-declared facts instead of
+guesses. Auto-mapping handles source-declared references and exact standard
+aliases; only identity picks and value-direction questions come back to the
+user — five questions for a fully-described three-table book. Orphaned child
+records are rejected and counted, never attached to a fabricated parent.
+
+Capture the deterministic relational onboarding transcript with:
+
+```sh
+make mcp-relational-demo-csm
+```
+
+The committed transcript is written to `eval/mcp_relational_transcript.json`.
+
 ## Oversight evidence pack
 
 Render the oversight ledgers (verdicts, receipts, suppressions, breaker events,

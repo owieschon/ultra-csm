@@ -11,14 +11,21 @@ from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
 from eval.mcp_relay_demo import _confirmations_from_proposal, _synthetic_foreign_book
+from eval.mcp_relational_demo import (
+    EXPECTED_QUESTION_KEYS,
+    fixture_confirmations,
+    fixture_tables,
+)
 
 
 async def replay_mcp_stdio() -> dict[str, Any]:
     operator = await _operator_replay()
     relay = await _relay_replay()
+    relational = await _relational_replay()
     return {
         "operator": operator,
         "relay": relay,
+        "relational": relational,
         "ok": (
             operator["access_mode"] == "demo_operator"
             and operator["refusal_codes"] == ["CONSENT_MISSING", "PRECEDENCE_HELD"]
@@ -26,6 +33,12 @@ async def replay_mcp_stdio() -> dict[str, Any]:
                 "CRMAccount": 2,
                 "CRMContact": 2,
                 "CRMOpportunity": 2,
+            }
+            and relational["question_keys"] == sorted(EXPECTED_QUESTION_KEYS)
+            and relational["typed_counts"] == {
+                "CRMAccount": 3,
+                "CRMContact": 4,
+                "CRMOpportunity": 4,
             }
         ),
     }
@@ -126,6 +139,43 @@ async def _relay_replay() -> dict[str, Any]:
     return {
         "ready": readiness["minimum_viable_book"]["ready"],
         "records_typed": confirm["coverage"]["records_typed"],
+        "replay_sha256": confirm["replay_sha256"],
+    }
+
+
+async def _relational_replay() -> dict[str, Any]:
+    env = _server_env()
+    env.pop("ULTRA_CSM_DEMO_OPERATOR", None)
+    env.pop("ULTRA_CSM_MCP_READONLY", None)
+    async with _session(env) as session:
+        question_keys: list[str] = []
+        for table_name, contract, records, field_metadata in fixture_tables():
+            ingest = await _call(
+                session,
+                "ingest_table",
+                {
+                    "book_id": "relational-stdio",
+                    "table_name": table_name,
+                    "contract": contract,
+                    "records": records,
+                    "expected_count": len(records),
+                    "field_metadata": field_metadata,
+                },
+            )
+            question_keys.extend(
+                question["key"] for question in ingest["confirmation_questions"]
+            )
+        confirm = await _call(
+            session,
+            "confirm_book",
+            {
+                "book_id": "relational-stdio",
+                "confirmations": fixture_confirmations(),
+            },
+        )
+    return {
+        "question_keys": sorted(question_keys),
+        "typed_counts": confirm["typed_counts"],
         "replay_sha256": confirm["replay_sha256"],
     }
 
