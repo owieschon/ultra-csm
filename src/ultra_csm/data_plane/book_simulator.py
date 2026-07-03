@@ -292,6 +292,12 @@ SCENARIO_TIMELINE: list[Mutation] = [
     # Summer dip, expansion close, Pinnacle save play
     # =====================================================================
 
+    # --- Synthetic Universe Bible: silent-decline extension (Aspenridge) ---
+    # Slow continuous decline, day 90 onward, with no HealthBandChange at
+    # any point in the simulation -- the band stays at its green baseline
+    # for the full 365 days while usage quietly erodes underneath it.
+    UsageDecline("aspenridge-supply", 90, 0.12, 0.15, end_day=300),
+
     # Day 100 — Summer usage dip across fleet accounts
     UsageDecline("trailhead-logistics", 100, 0.3, 0.5, end_day=150),
     UsageDecline("bison-transport", 100, 0.3, 0.5, end_day=150),
@@ -357,6 +363,16 @@ SCENARIO_TIMELINE: list[Mutation] = [
 
     # Day 205 — Hawkstone ticket spike
     TicketSpike("hawkstone-industries", 205, 3),
+
+    # --- Synthetic Universe Bible: churn-brewing extension (Quarrystone) ---
+    # Champion quiet from day 0 (never replaced); a stalled renewal
+    # conversation and a rising ticket count are the brewing signal the
+    # spine previously jumped straight past on the way to the day-220
+    # churn below.
+    ChampionGoesQuiet("quarrystone-logistics", 0),
+    TicketSpike("quarrystone-logistics", 160, 2),
+    HealthBandChange("quarrystone-logistics", 180, "yellow",
+                     ("champion_unreplaced", "renewal_conversation_stalled")),
 
     # Day 220 — Quarrystone churns (champion departed at day 0, never replaced)
     StatusChange("quarrystone-logistics", 220, "Churned"),
