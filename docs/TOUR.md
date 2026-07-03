@@ -1,11 +1,36 @@
 # A ten-minute tour
 
 Everything below runs locally with **no credentials, no cloud, and no customer data**.
-Each beat is one command plus what to look at and what it demonstrates. Total wall
-time is a few minutes; reading the artifacts is the rest.
+Each beat is one command plus what to look at and what it demonstrates.
 
-Prerequisite: `make setup && make doctor` (doctor boots and tears down a real
-throwaway Postgres cluster — if it passes, everything below will run).
+## 0. Talk to the book — zero setup
+
+This is the only beat that needs no Postgres, no `make setup`, nothing but Python:
+
+```sh
+git clone https://github.com/owieschon/ultra-csm.git && cd ultra-csm
+python3 -m venv .venv && .venv/bin/pip install -q -e ".[mcp]"
+claude mcp add ultra-csm --env ULTRA_CSM_MCP_READONLY=1 -- \
+  "$(pwd)/.venv/bin/python" -m ultra_csm.mcp_server
+```
+
+Then, in Claude Code, ask things like:
+
+- *"Which accounts are most at risk right now, and what evidence says so?"*
+- *"Give me the brief for Harborview Fleet — what changed in the last 60 days?"*
+- *"Are any expansion actions currently held, and what's blocking them?"*
+- *"Approve the pending proposal for Sagebrush Transport."* — it will refuse:
+  write tools return a typed `MCP_READONLY` error enforced in the server process,
+  not left to the model's judgment.
+
+Every answer is grounded in the same deterministic value-model tools the agent uses
+over a simulated 35-account book; the model narrates, it never computes health. A
+captured transcript of exactly this session shape lives at
+`demo_state/mcp_readonly_transcript.json`.
+
+Everything past this point needs the fuller install (`make setup && make doctor` —
+doctor boots and tears down a real throwaway Postgres cluster; if it passes,
+everything below will run).
 
 ## 1. The deterministic spine holds
 
@@ -40,29 +65,7 @@ day, then open `demo_state/tick_demo/tick_ledger.jsonl`. The interesting rows ar
 the `suppressions`: every trigger that did NOT fire records why (cooldown, already
 fired), with the evidence predicate inline. Silence is logged, not assumed.
 
-## 4. Talk to the book (MCP, read-only)
-
-From the repo root:
-
-```sh
-claude mcp add ultra-csm --env ULTRA_CSM_MCP_READONLY=1 -- \
-  "$(pwd)/.venv/bin/python" -m ultra_csm.mcp_server
-```
-
-Then, in Claude Code, ask things like:
-
-- *"Which accounts are most at risk right now, and what evidence says so?"*
-- *"Give me the brief for Harborview Fleet — what changed in the last 60 days?"*
-- *"Are any expansion actions currently held, and what's blocking them?"*
-- *"Approve the pending proposal for Sagebrush Transport."* — it will refuse:
-  write tools return a typed `MCP_READONLY` error enforced in the server process,
-  not left to the model's judgment.
-
-Every answer is grounded in the same deterministic tools the agent uses; the model
-narrates, it never computes health. A captured transcript of exactly this session
-shape lives at `demo_state/mcp_readonly_transcript.json` (`make mcp-readonly-demo-csm`).
-
-## 5. The full artifact bundle
+## 4. The full artifact bundle
 
 ```sh
 make demo
@@ -73,7 +76,7 @@ report, all three simulated connector onboardings (Attio, Gainsight, product
 telemetry — real explorer/mapping code against fake transports, degrading honestly
 to `unknown` rather than guessing), the MCP transcript, and the oversight report.
 
-## 6. The audit question
+## 5. The audit question
 
 ```sh
 make oversight-report
