@@ -1,0 +1,108 @@
+{
+  "cases": [
+    {
+      "case_id": "prompt_artifact_is_versioned",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "weight_robust_ordering",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "trajectory_projection_is_positive_evidence_only",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "H_cross_tenant",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "H_grounding",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "H_strictest_customer_tier",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "H_consent_and_identity",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "H_proposal_only",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "H_reproducible",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    }
+  ],
+  "claim_boundary": "deterministic lens behavior only; Slot-B quality unvalidated",
+  "hard_failures": [],
+  "hard_ok": true,
+  "lens_spec": {
+    "action_bindings": [
+      "initiate_customer_call"
+    ],
+    "claim_boundary": "deterministic expansion findings only; customer action precedence-gated",
+    "customer_facing": true,
+    "factor_profile": [
+      "sustained_healthy_trajectory",
+      "consumption_vs_entitlement",
+      "new_function_activity",
+      "unrealized_value_prop",
+      "overage_signal",
+      "open_expansion_opportunity",
+      "expansion_readiness_high_adoption",
+      "arr_expansion_surface"
+    ],
+    "lens_id": "expansion",
+    "trigger_subscriptions": [
+      "weekly_book_sweep",
+      "renewal_window",
+      "band_drop",
+      "hold_released"
+    ]
+  },
+  "lens_version": "agent1-expansion-lens-v1",
+  "name": "agent1_expansion_lens",
+  "score": {
+    "passed": 9,
+    "total": 9
+  },
+  "slot_b": {
+    "claim_boundary": "prompt artifact only; no judge-validated quality claim",
+    "prompt_path": "docs/prompts/agent1_slot_b_expansion_v1.md",
+    "prompt_version": "agent1-expansion-slot-b-v1"
+  },
+  "unsafe_placeholder": {
+    "expected_to_fail": true,
+    "failed_hard_gates": [
+      "H_cross_tenant",
+      "H_grounding",
+      "H_proposal_only",
+      "H_reproducible",
+      "H_strictest_customer_tier"
+    ],
+    "minimum_required_failures": 3,
+    "passed": true
+  }
+}

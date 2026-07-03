@@ -1,0 +1,849 @@
+{
+  "artifact": "cohort_packets",
+  "as_of": "2026-06-21",
+  "claim_boundary": {
+    "live": false,
+    "sim": true
+  },
+  "packet_count": 14,
+  "packets": [
+    {
+      "associated_account_count": 3,
+      "associated_account_ids": [
+        "21830db9-7182-5d97-b22e-d57c4e28f696",
+        "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+        "91330ede-650a-5015-856d-c685a83807b4"
+      ],
+      "claim_boundary": {
+        "live": false,
+        "sim": true
+      },
+      "observed_action_throughput": {
+        "pending": 2
+      },
+      "observed_divergence_patterns": [
+        {
+          "associated_account_count": 1,
+          "associated_account_ids": [
+            "91330ede-650a-5015-856d-c685a83807b4"
+          ],
+          "pattern": "observed_underused_entitlement"
+        }
+      ],
+      "observed_health_band_distribution": {
+        "green": 3,
+        "red": 0,
+        "unknown": 0,
+        "yellow": 0
+      },
+      "observed_hold_release_counts": {
+        "held": 0,
+        "released": 0
+      },
+      "observed_summary": "Observed 3 simulated accounts for size_band=enterprise; health bands green:3; trajectory directions improving:1, stable:2; associated divergence patterns observed_underused_entitlement:1; observed action statuses pending:2.",
+      "observed_trajectory_direction_counts": {
+        "declining": 0,
+        "improving": 1,
+        "stable": 2,
+        "unknown": 0
+      },
+      "observed_trigger_firing_counts": {},
+      "packet_id": "cohort:size_band:enterprise",
+      "segment_axis": "size_band",
+      "segment_value": "enterprise"
+    },
+    {
+      "associated_account_count": 11,
+      "associated_account_ids": [
+        "16c3b718-969e-5835-afbe-a256f7696260",
+        "2c8f2a9e-eba9-5b4e-ba37-c78dd4ba2aae",
+        "88509055-b664-5e74-b6b3-ba6bd59c89ab",
+        "a821ec8e-21a3-5f16-bd37-57947d324d62",
+        "ae0a5970-d69b-5c18-ad60-8015524e565c",
+        "b8275b07-a825-5c1b-86d3-5b8063dcaf18",
+        "b8dee53f-407c-5552-8e33-1a568eb1ed69",
+        "c76ffbde-05d3-5fc0-aab3-17c085cbcbbf",
+        "e886cb4f-d6c9-5f5d-ae22-73e80acff2cd",
+        "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+        "f8504037-dc1a-50e4-bdd9-7900b1379444"
+      ],
+      "claim_boundary": {
+        "live": false,
+        "sim": true
+      },
+      "observed_action_throughput": {
+        "approved": 1,
+        "pending": 1
+      },
+      "observed_divergence_patterns": [
+        {
+          "associated_account_count": 1,
+          "associated_account_ids": [
+            "16c3b718-969e-5835-afbe-a256f7696260"
+          ],
+          "pattern": "observed_green_band_declining_trajectory"
+        },
+        {
+          "associated_account_count": 5,
+          "associated_account_ids": [
+            "ae0a5970-d69b-5c18-ad60-8015524e565c",
+            "b8275b07-a825-5c1b-86d3-5b8063dcaf18",
+            "c76ffbde-05d3-5fc0-aab3-17c085cbcbbf",
+            "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+            "f8504037-dc1a-50e4-bdd9-7900b1379444"
+          ],
+          "pattern": "observed_open_support_pressure"
+        },
+        {
+          "associated_account_count": 6,
+          "associated_account_ids": [
+            "88509055-b664-5e74-b6b3-ba6bd59c89ab",
+            "ae0a5970-d69b-5c18-ad60-8015524e565c",
+            "b8275b07-a825-5c1b-86d3-5b8063dcaf18",
+            "c76ffbde-05d3-5fc0-aab3-17c085cbcbbf",
+            "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+            "f8504037-dc1a-50e4-bdd9-7900b1379444"
+          ],
+          "pattern": "observed_underused_entitlement"
+        }
+      ],
+      "observed_health_band_distribution": {
+        "green": 4,
+        "red": 2,
+        "unknown": 0,
+        "yellow": 5
+      },
+      "observed_hold_release_counts": {
+        "held": 3,
+        "released": 0
+      },
+      "observed_summary": "Observed 11 simulated accounts for size_band=mid_market; health bands green:4, yellow:5, red:2; trajectory directions improving:1, stable:8, declining:2; associated divergence patterns observed_green_band_declining_trajectory:1, observed_open_support_pressure:5, observed_underused_entitlement:6; associated trigger firings band_drop:2, renewal_window:1; observed action statuses approved:1, pending:1.",
+      "observed_trajectory_direction_counts": {
+        "declining": 2,
+        "improving": 1,
+        "stable": 8,
+        "unknown": 0
+      },
+      "observed_trigger_firing_counts": {
+        "band_drop": 2,
+        "renewal_window": 1
+      },
+      "packet_id": "cohort:size_band:mid_market",
+      "segment_axis": "size_band",
+      "segment_value": "mid_market"
+    },
+    {
+      "associated_account_count": 21,
+      "associated_account_ids": [
+        "081b380c-99e7-5073-992a-9e0d8b27d8c0",
+        "086db38c-e660-5a00-b5e5-c1c22bed80c9",
+        "0b479878-c6b3-5e9b-9d4f-01aecf8e0f4c",
+        "15eb8dd9-b1bc-5093-a208-49526f8d5650",
+        "162a9085-8e63-53f0-bb1b-b48426911d34",
+        "2432d0ad-26ce-5a91-a68e-e36bc1651780",
+        "2991a83a-1499-5bf4-af01-f55678eaade9",
+        "320ce2b9-8553-5335-8366-1575565db280",
+        "390eef5a-4d06-59ae-93cb-2c0a012e7ef8",
+        "491b2508-315a-52fc-86f4-195c0efd4a21",
+        "5740e7ab-4f6e-5a8d-8996-10ca4dc384ce",
+        "639fb054-d926-5a1e-b2bd-49b75157817d",
+        "865e1e03-cb2f-524d-b572-1eeabebb8d32",
+        "b32e46aa-eaef-52ee-9547-13a564219d91",
+        "b571eb36-60fa-5fe1-827a-293e9f150fcf",
+        "b939ef0b-fed4-5889-96e4-15c0357a8563",
+        "c2b4142f-912b-5202-9ad1-f41b36846e38",
+        "c529251c-78a6-5710-88ad-a89710d02bee",
+        "c79ad97e-e2ad-5b6a-beeb-800e4755adca",
+        "e039b8d0-a02f-58f6-99f4-d079d29577f3",
+        "f14e9971-f261-5927-a102-444b5bb92ab3"
+      ],
+      "claim_boundary": {
+        "live": false,
+        "sim": true
+      },
+      "observed_action_throughput": {
+        "approved": 2
+      },
+      "observed_divergence_patterns": [
+        {
+          "associated_account_count": 1,
+          "associated_account_ids": [
+            "e039b8d0-a02f-58f6-99f4-d079d29577f3"
+          ],
+          "pattern": "observed_green_band_declining_trajectory"
+        },
+        {
+          "associated_account_count": 2,
+          "associated_account_ids": [
+            "865e1e03-cb2f-524d-b572-1eeabebb8d32",
+            "c79ad97e-e2ad-5b6a-beeb-800e4755adca"
+          ],
+          "pattern": "observed_open_support_pressure"
+        },
+        {
+          "associated_account_count": 6,
+          "associated_account_ids": [
+            "320ce2b9-8553-5335-8366-1575565db280",
+            "5740e7ab-4f6e-5a8d-8996-10ca4dc384ce",
+            "639fb054-d926-5a1e-b2bd-49b75157817d",
+            "865e1e03-cb2f-524d-b572-1eeabebb8d32",
+            "b571eb36-60fa-5fe1-827a-293e9f150fcf",
+            "b939ef0b-fed4-5889-96e4-15c0357a8563"
+          ],
+          "pattern": "observed_underused_entitlement"
+        }
+      ],
+      "observed_health_band_distribution": {
+        "green": 10,
+        "red": 3,
+        "unknown": 0,
+        "yellow": 8
+      },
+      "observed_hold_release_counts": {
+        "held": 3,
+        "released": 2
+      },
+      "observed_summary": "Observed 21 simulated accounts for size_band=small_business; health bands green:10, yellow:8, red:3; trajectory directions improving:5, stable:11, declining:5; associated divergence patterns observed_green_band_declining_trajectory:1, observed_open_support_pressure:2, observed_underused_entitlement:6; associated trigger firings band_drop:3, renewal_window:2; observed action statuses approved:2.",
+      "observed_trajectory_direction_counts": {
+        "declining": 5,
+        "improving": 5,
+        "stable": 11,
+        "unknown": 0
+      },
+      "observed_trigger_firing_counts": {
+        "band_drop": 3,
+        "renewal_window": 2
+      },
+      "packet_id": "cohort:size_band:small_business",
+      "segment_axis": "size_band",
+      "segment_value": "small_business"
+    },
+    {
+      "associated_account_count": 3,
+      "associated_account_ids": [
+        "491b2508-315a-52fc-86f4-195c0efd4a21",
+        "5740e7ab-4f6e-5a8d-8996-10ca4dc384ce",
+        "c529251c-78a6-5710-88ad-a89710d02bee"
+      ],
+      "claim_boundary": {
+        "live": false,
+        "sim": true
+      },
+      "observed_action_throughput": {},
+      "observed_divergence_patterns": [
+        {
+          "associated_account_count": 1,
+          "associated_account_ids": [
+            "5740e7ab-4f6e-5a8d-8996-10ca4dc384ce"
+          ],
+          "pattern": "observed_underused_entitlement"
+        }
+      ],
+      "observed_health_band_distribution": {
+        "green": 1,
+        "red": 0,
+        "unknown": 0,
+        "yellow": 2
+      },
+      "observed_hold_release_counts": {
+        "held": 0,
+        "released": 0
+      },
+      "observed_summary": "Observed 3 simulated accounts for lifecycle_stage=adopting; health bands green:1, yellow:2; trajectory directions stable:3; associated divergence patterns observed_underused_entitlement:1.",
+      "observed_trajectory_direction_counts": {
+        "declining": 0,
+        "improving": 0,
+        "stable": 3,
+        "unknown": 0
+      },
+      "observed_trigger_firing_counts": {},
+      "packet_id": "cohort:lifecycle_stage:adopting",
+      "segment_axis": "lifecycle_stage",
+      "segment_value": "adopting"
+    },
+    {
+      "associated_account_count": 6,
+      "associated_account_ids": [
+        "2432d0ad-26ce-5a91-a68e-e36bc1651780",
+        "a821ec8e-21a3-5f16-bd37-57947d324d62",
+        "b939ef0b-fed4-5889-96e4-15c0357a8563",
+        "c76ffbde-05d3-5fc0-aab3-17c085cbcbbf",
+        "c79ad97e-e2ad-5b6a-beeb-800e4755adca",
+        "f8504037-dc1a-50e4-bdd9-7900b1379444"
+      ],
+      "claim_boundary": {
+        "live": false,
+        "sim": true
+      },
+      "observed_action_throughput": {},
+      "observed_divergence_patterns": [
+        {
+          "associated_account_count": 3,
+          "associated_account_ids": [
+            "c76ffbde-05d3-5fc0-aab3-17c085cbcbbf",
+            "c79ad97e-e2ad-5b6a-beeb-800e4755adca",
+            "f8504037-dc1a-50e4-bdd9-7900b1379444"
+          ],
+          "pattern": "observed_open_support_pressure"
+        },
+        {
+          "associated_account_count": 3,
+          "associated_account_ids": [
+            "b939ef0b-fed4-5889-96e4-15c0357a8563",
+            "c76ffbde-05d3-5fc0-aab3-17c085cbcbbf",
+            "f8504037-dc1a-50e4-bdd9-7900b1379444"
+          ],
+          "pattern": "observed_underused_entitlement"
+        }
+      ],
+      "observed_health_band_distribution": {
+        "green": 0,
+        "red": 5,
+        "unknown": 0,
+        "yellow": 1
+      },
+      "observed_hold_release_counts": {
+        "held": 6,
+        "released": 0
+      },
+      "observed_summary": "Observed 6 simulated accounts for lifecycle_stage=at_risk; health bands yellow:1, red:5; trajectory directions stable:5, declining:1; associated divergence patterns observed_open_support_pressure:3, observed_underused_entitlement:3; associated trigger firings band_drop:5.",
+      "observed_trajectory_direction_counts": {
+        "declining": 1,
+        "improving": 0,
+        "stable": 5,
+        "unknown": 0
+      },
+      "observed_trigger_firing_counts": {
+        "band_drop": 5
+      },
+      "packet_id": "cohort:lifecycle_stage:at_risk",
+      "segment_axis": "lifecycle_stage",
+      "segment_value": "at_risk"
+    },
+    {
+      "associated_account_count": 6,
+      "associated_account_ids": [
+        "081b380c-99e7-5073-992a-9e0d8b27d8c0",
+        "162a9085-8e63-53f0-bb1b-b48426911d34",
+        "390eef5a-4d06-59ae-93cb-2c0a012e7ef8",
+        "865e1e03-cb2f-524d-b572-1eeabebb8d32",
+        "ae0a5970-d69b-5c18-ad60-8015524e565c",
+        "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43"
+      ],
+      "claim_boundary": {
+        "live": false,
+        "sim": true
+      },
+      "observed_action_throughput": {},
+      "observed_divergence_patterns": [
+        {
+          "associated_account_count": 3,
+          "associated_account_ids": [
+            "865e1e03-cb2f-524d-b572-1eeabebb8d32",
+            "ae0a5970-d69b-5c18-ad60-8015524e565c",
+            "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43"
+          ],
+          "pattern": "observed_open_support_pressure"
+        },
+        {
+          "associated_account_count": 3,
+          "associated_account_ids": [
+            "865e1e03-cb2f-524d-b572-1eeabebb8d32",
+            "ae0a5970-d69b-5c18-ad60-8015524e565c",
+            "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43"
+          ],
+          "pattern": "observed_underused_entitlement"
+        }
+      ],
+      "observed_health_band_distribution": {
+        "green": 1,
+        "red": 0,
+        "unknown": 0,
+        "yellow": 5
+      },
+      "observed_hold_release_counts": {
+        "held": 0,
+        "released": 1
+      },
+      "observed_summary": "Observed 6 simulated accounts for lifecycle_stage=onboarding; health bands green:1, yellow:5; trajectory directions improving:2, stable:2, declining:2; associated divergence patterns observed_open_support_pressure:3, observed_underused_entitlement:3.",
+      "observed_trajectory_direction_counts": {
+        "declining": 2,
+        "improving": 2,
+        "stable": 2,
+        "unknown": 0
+      },
+      "observed_trigger_firing_counts": {},
+      "packet_id": "cohort:lifecycle_stage:onboarding",
+      "segment_axis": "lifecycle_stage",
+      "segment_value": "onboarding"
+    },
+    {
+      "associated_account_count": 3,
+      "associated_account_ids": [
+        "2991a83a-1499-5bf4-af01-f55678eaade9",
+        "639fb054-d926-5a1e-b2bd-49b75157817d",
+        "b8275b07-a825-5c1b-86d3-5b8063dcaf18"
+      ],
+      "claim_boundary": {
+        "live": false,
+        "sim": true
+      },
+      "observed_action_throughput": {
+        "approved": 3
+      },
+      "observed_divergence_patterns": [
+        {
+          "associated_account_count": 1,
+          "associated_account_ids": [
+            "b8275b07-a825-5c1b-86d3-5b8063dcaf18"
+          ],
+          "pattern": "observed_open_support_pressure"
+        },
+        {
+          "associated_account_count": 2,
+          "associated_account_ids": [
+            "639fb054-d926-5a1e-b2bd-49b75157817d",
+            "b8275b07-a825-5c1b-86d3-5b8063dcaf18"
+          ],
+          "pattern": "observed_underused_entitlement"
+        }
+      ],
+      "observed_health_band_distribution": {
+        "green": 1,
+        "red": 0,
+        "unknown": 0,
+        "yellow": 2
+      },
+      "observed_hold_release_counts": {
+        "held": 0,
+        "released": 0
+      },
+      "observed_summary": "Observed 3 simulated accounts for lifecycle_stage=renewal; health bands green:1, yellow:2; trajectory directions stable:2, declining:1; associated divergence patterns observed_open_support_pressure:1, observed_underused_entitlement:2; associated trigger firings renewal_window:3; observed action statuses approved:3.",
+      "observed_trajectory_direction_counts": {
+        "declining": 1,
+        "improving": 0,
+        "stable": 2,
+        "unknown": 0
+      },
+      "observed_trigger_firing_counts": {
+        "renewal_window": 3
+      },
+      "packet_id": "cohort:lifecycle_stage:renewal",
+      "segment_axis": "lifecycle_stage",
+      "segment_value": "renewal"
+    },
+    {
+      "associated_account_count": 17,
+      "associated_account_ids": [
+        "086db38c-e660-5a00-b5e5-c1c22bed80c9",
+        "0b479878-c6b3-5e9b-9d4f-01aecf8e0f4c",
+        "15eb8dd9-b1bc-5093-a208-49526f8d5650",
+        "16c3b718-969e-5835-afbe-a256f7696260",
+        "21830db9-7182-5d97-b22e-d57c4e28f696",
+        "2c8f2a9e-eba9-5b4e-ba37-c78dd4ba2aae",
+        "320ce2b9-8553-5335-8366-1575565db280",
+        "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+        "88509055-b664-5e74-b6b3-ba6bd59c89ab",
+        "91330ede-650a-5015-856d-c685a83807b4",
+        "b32e46aa-eaef-52ee-9547-13a564219d91",
+        "b571eb36-60fa-5fe1-827a-293e9f150fcf",
+        "b8dee53f-407c-5552-8e33-1a568eb1ed69",
+        "c2b4142f-912b-5202-9ad1-f41b36846e38",
+        "e039b8d0-a02f-58f6-99f4-d079d29577f3",
+        "e886cb4f-d6c9-5f5d-ae22-73e80acff2cd",
+        "f14e9971-f261-5927-a102-444b5bb92ab3"
+      ],
+      "claim_boundary": {
+        "live": false,
+        "sim": true
+      },
+      "observed_action_throughput": {
+        "pending": 3
+      },
+      "observed_divergence_patterns": [
+        {
+          "associated_account_count": 2,
+          "associated_account_ids": [
+            "16c3b718-969e-5835-afbe-a256f7696260",
+            "e039b8d0-a02f-58f6-99f4-d079d29577f3"
+          ],
+          "pattern": "observed_green_band_declining_trajectory"
+        },
+        {
+          "associated_account_count": 4,
+          "associated_account_ids": [
+            "320ce2b9-8553-5335-8366-1575565db280",
+            "88509055-b664-5e74-b6b3-ba6bd59c89ab",
+            "91330ede-650a-5015-856d-c685a83807b4",
+            "b571eb36-60fa-5fe1-827a-293e9f150fcf"
+          ],
+          "pattern": "observed_underused_entitlement"
+        }
+      ],
+      "observed_health_band_distribution": {
+        "green": 14,
+        "red": 0,
+        "unknown": 0,
+        "yellow": 3
+      },
+      "observed_hold_release_counts": {
+        "held": 0,
+        "released": 1
+      },
+      "observed_summary": "Observed 17 simulated accounts for lifecycle_stage=steady_state; health bands green:14, yellow:3; trajectory directions improving:5, stable:9, declining:3; associated divergence patterns observed_green_band_declining_trajectory:2, observed_underused_entitlement:4; observed action statuses pending:3.",
+      "observed_trajectory_direction_counts": {
+        "declining": 3,
+        "improving": 5,
+        "stable": 9,
+        "unknown": 0
+      },
+      "observed_trigger_firing_counts": {},
+      "packet_id": "cohort:lifecycle_stage:steady_state",
+      "segment_axis": "lifecycle_stage",
+      "segment_value": "steady_state"
+    },
+    {
+      "associated_account_count": 3,
+      "associated_account_ids": [
+        "5740e7ab-4f6e-5a8d-8996-10ca4dc384ce",
+        "865e1e03-cb2f-524d-b572-1eeabebb8d32",
+        "c76ffbde-05d3-5fc0-aab3-17c085cbcbbf"
+      ],
+      "claim_boundary": {
+        "live": false,
+        "sim": true
+      },
+      "observed_action_throughput": {},
+      "observed_divergence_patterns": [
+        {
+          "associated_account_count": 2,
+          "associated_account_ids": [
+            "865e1e03-cb2f-524d-b572-1eeabebb8d32",
+            "c76ffbde-05d3-5fc0-aab3-17c085cbcbbf"
+          ],
+          "pattern": "observed_open_support_pressure"
+        },
+        {
+          "associated_account_count": 3,
+          "associated_account_ids": [
+            "5740e7ab-4f6e-5a8d-8996-10ca4dc384ce",
+            "865e1e03-cb2f-524d-b572-1eeabebb8d32",
+            "c76ffbde-05d3-5fc0-aab3-17c085cbcbbf"
+          ],
+          "pattern": "observed_underused_entitlement"
+        }
+      ],
+      "observed_health_band_distribution": {
+        "green": 0,
+        "red": 0,
+        "unknown": 0,
+        "yellow": 3
+      },
+      "observed_hold_release_counts": {
+        "held": 1,
+        "released": 0
+      },
+      "observed_summary": "Observed 3 simulated accounts for industry=field_services; health bands yellow:3; trajectory directions improving:1, stable:2; associated divergence patterns observed_open_support_pressure:2, observed_underused_entitlement:3.",
+      "observed_trajectory_direction_counts": {
+        "declining": 0,
+        "improving": 1,
+        "stable": 2,
+        "unknown": 0
+      },
+      "observed_trigger_firing_counts": {},
+      "packet_id": "cohort:industry:field_services",
+      "segment_axis": "industry",
+      "segment_value": "field_services"
+    },
+    {
+      "associated_account_count": 6,
+      "associated_account_ids": [
+        "0b479878-c6b3-5e9b-9d4f-01aecf8e0f4c",
+        "320ce2b9-8553-5335-8366-1575565db280",
+        "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+        "b571eb36-60fa-5fe1-827a-293e9f150fcf",
+        "b8275b07-a825-5c1b-86d3-5b8063dcaf18",
+        "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43"
+      ],
+      "claim_boundary": {
+        "live": false,
+        "sim": true
+      },
+      "observed_action_throughput": {
+        "approved": 1,
+        "pending": 1
+      },
+      "observed_divergence_patterns": [
+        {
+          "associated_account_count": 2,
+          "associated_account_ids": [
+            "b8275b07-a825-5c1b-86d3-5b8063dcaf18",
+            "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43"
+          ],
+          "pattern": "observed_open_support_pressure"
+        },
+        {
+          "associated_account_count": 4,
+          "associated_account_ids": [
+            "320ce2b9-8553-5335-8366-1575565db280",
+            "b571eb36-60fa-5fe1-827a-293e9f150fcf",
+            "b8275b07-a825-5c1b-86d3-5b8063dcaf18",
+            "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43"
+          ],
+          "pattern": "observed_underused_entitlement"
+        }
+      ],
+      "observed_health_band_distribution": {
+        "green": 3,
+        "red": 0,
+        "unknown": 0,
+        "yellow": 3
+      },
+      "observed_hold_release_counts": {
+        "held": 0,
+        "released": 0
+      },
+      "observed_summary": "Observed 6 simulated accounts for industry=fleet_management; health bands green:3, yellow:3; trajectory directions stable:5, declining:1; associated divergence patterns observed_open_support_pressure:2, observed_underused_entitlement:4; associated trigger firings renewal_window:1; observed action statuses approved:1, pending:1.",
+      "observed_trajectory_direction_counts": {
+        "declining": 1,
+        "improving": 0,
+        "stable": 5,
+        "unknown": 0
+      },
+      "observed_trigger_firing_counts": {
+        "renewal_window": 1
+      },
+      "packet_id": "cohort:industry:fleet_management",
+      "segment_axis": "industry",
+      "segment_value": "fleet_management"
+    },
+    {
+      "associated_account_count": 13,
+      "associated_account_ids": [
+        "15eb8dd9-b1bc-5093-a208-49526f8d5650",
+        "162a9085-8e63-53f0-bb1b-b48426911d34",
+        "21830db9-7182-5d97-b22e-d57c4e28f696",
+        "2c8f2a9e-eba9-5b4e-ba37-c78dd4ba2aae",
+        "491b2508-315a-52fc-86f4-195c0efd4a21",
+        "639fb054-d926-5a1e-b2bd-49b75157817d",
+        "91330ede-650a-5015-856d-c685a83807b4",
+        "a821ec8e-21a3-5f16-bd37-57947d324d62",
+        "ae0a5970-d69b-5c18-ad60-8015524e565c",
+        "b8dee53f-407c-5552-8e33-1a568eb1ed69",
+        "c529251c-78a6-5710-88ad-a89710d02bee",
+        "c79ad97e-e2ad-5b6a-beeb-800e4755adca",
+        "e886cb4f-d6c9-5f5d-ae22-73e80acff2cd"
+      ],
+      "claim_boundary": {
+        "live": false,
+        "sim": true
+      },
+      "observed_action_throughput": {
+        "approved": 1,
+        "pending": 2
+      },
+      "observed_divergence_patterns": [
+        {
+          "associated_account_count": 2,
+          "associated_account_ids": [
+            "ae0a5970-d69b-5c18-ad60-8015524e565c",
+            "c79ad97e-e2ad-5b6a-beeb-800e4755adca"
+          ],
+          "pattern": "observed_open_support_pressure"
+        },
+        {
+          "associated_account_count": 3,
+          "associated_account_ids": [
+            "639fb054-d926-5a1e-b2bd-49b75157817d",
+            "91330ede-650a-5015-856d-c685a83807b4",
+            "ae0a5970-d69b-5c18-ad60-8015524e565c"
+          ],
+          "pattern": "observed_underused_entitlement"
+        }
+      ],
+      "observed_health_band_distribution": {
+        "green": 7,
+        "red": 2,
+        "unknown": 0,
+        "yellow": 4
+      },
+      "observed_hold_release_counts": {
+        "held": 2,
+        "released": 0
+      },
+      "observed_summary": "Observed 13 simulated accounts for industry=logistics; health bands green:7, yellow:4, red:2; trajectory directions improving:2, stable:9, declining:2; associated divergence patterns observed_open_support_pressure:2, observed_underused_entitlement:3; associated trigger firings band_drop:2, renewal_window:1; observed action statuses approved:1, pending:2.",
+      "observed_trajectory_direction_counts": {
+        "declining": 2,
+        "improving": 2,
+        "stable": 9,
+        "unknown": 0
+      },
+      "observed_trigger_firing_counts": {
+        "band_drop": 2,
+        "renewal_window": 1
+      },
+      "packet_id": "cohort:industry:logistics",
+      "segment_axis": "industry",
+      "segment_value": "logistics"
+    },
+    {
+      "associated_account_count": 4,
+      "associated_account_ids": [
+        "16c3b718-969e-5835-afbe-a256f7696260",
+        "390eef5a-4d06-59ae-93cb-2c0a012e7ef8",
+        "e039b8d0-a02f-58f6-99f4-d079d29577f3",
+        "f14e9971-f261-5927-a102-444b5bb92ab3"
+      ],
+      "claim_boundary": {
+        "live": false,
+        "sim": true
+      },
+      "observed_action_throughput": {},
+      "observed_divergence_patterns": [
+        {
+          "associated_account_count": 2,
+          "associated_account_ids": [
+            "16c3b718-969e-5835-afbe-a256f7696260",
+            "e039b8d0-a02f-58f6-99f4-d079d29577f3"
+          ],
+          "pattern": "observed_green_band_declining_trajectory"
+        }
+      ],
+      "observed_health_band_distribution": {
+        "green": 4,
+        "red": 0,
+        "unknown": 0,
+        "yellow": 0
+      },
+      "observed_hold_release_counts": {
+        "held": 0,
+        "released": 0
+      },
+      "observed_summary": "Observed 4 simulated accounts for industry=manufacturing; health bands green:4; trajectory directions improving:1, stable:1, declining:2; associated divergence patterns observed_green_band_declining_trajectory:2.",
+      "observed_trajectory_direction_counts": {
+        "declining": 2,
+        "improving": 1,
+        "stable": 1,
+        "unknown": 0
+      },
+      "observed_trigger_firing_counts": {},
+      "packet_id": "cohort:industry:manufacturing",
+      "segment_axis": "industry",
+      "segment_value": "manufacturing"
+    },
+    {
+      "associated_account_count": 6,
+      "associated_account_ids": [
+        "086db38c-e660-5a00-b5e5-c1c22bed80c9",
+        "2432d0ad-26ce-5a91-a68e-e36bc1651780",
+        "2991a83a-1499-5bf4-af01-f55678eaade9",
+        "88509055-b664-5e74-b6b3-ba6bd59c89ab",
+        "b32e46aa-eaef-52ee-9547-13a564219d91",
+        "f8504037-dc1a-50e4-bdd9-7900b1379444"
+      ],
+      "claim_boundary": {
+        "live": false,
+        "sim": true
+      },
+      "observed_action_throughput": {
+        "approved": 1
+      },
+      "observed_divergence_patterns": [
+        {
+          "associated_account_count": 1,
+          "associated_account_ids": [
+            "f8504037-dc1a-50e4-bdd9-7900b1379444"
+          ],
+          "pattern": "observed_open_support_pressure"
+        },
+        {
+          "associated_account_count": 2,
+          "associated_account_ids": [
+            "88509055-b664-5e74-b6b3-ba6bd59c89ab",
+            "f8504037-dc1a-50e4-bdd9-7900b1379444"
+          ],
+          "pattern": "observed_underused_entitlement"
+        }
+      ],
+      "observed_health_band_distribution": {
+        "green": 2,
+        "red": 2,
+        "unknown": 0,
+        "yellow": 2
+      },
+      "observed_hold_release_counts": {
+        "held": 2,
+        "released": 1
+      },
+      "observed_summary": "Observed 6 simulated accounts for industry=transportation; health bands green:2, yellow:2, red:2; trajectory directions improving:2, stable:4; associated divergence patterns observed_open_support_pressure:1, observed_underused_entitlement:2; associated trigger firings band_drop:2, renewal_window:1; observed action statuses approved:1.",
+      "observed_trajectory_direction_counts": {
+        "declining": 0,
+        "improving": 2,
+        "stable": 4,
+        "unknown": 0
+      },
+      "observed_trigger_firing_counts": {
+        "band_drop": 2,
+        "renewal_window": 1
+      },
+      "packet_id": "cohort:industry:transportation",
+      "segment_axis": "industry",
+      "segment_value": "transportation"
+    },
+    {
+      "associated_account_count": 3,
+      "associated_account_ids": [
+        "081b380c-99e7-5073-992a-9e0d8b27d8c0",
+        "b939ef0b-fed4-5889-96e4-15c0357a8563",
+        "c2b4142f-912b-5202-9ad1-f41b36846e38"
+      ],
+      "claim_boundary": {
+        "live": false,
+        "sim": true
+      },
+      "observed_action_throughput": {},
+      "observed_divergence_patterns": [
+        {
+          "associated_account_count": 1,
+          "associated_account_ids": [
+            "b939ef0b-fed4-5889-96e4-15c0357a8563"
+          ],
+          "pattern": "observed_underused_entitlement"
+        }
+      ],
+      "observed_health_band_distribution": {
+        "green": 1,
+        "red": 1,
+        "unknown": 0,
+        "yellow": 1
+      },
+      "observed_hold_release_counts": {
+        "held": 1,
+        "released": 1
+      },
+      "observed_summary": "Observed 3 simulated accounts for industry=warehousing; health bands green:1, yellow:1, red:1; trajectory directions improving:1, declining:2; associated divergence patterns observed_underused_entitlement:1; associated trigger firings band_drop:1.",
+      "observed_trajectory_direction_counts": {
+        "declining": 2,
+        "improving": 1,
+        "stable": 0,
+        "unknown": 0
+      },
+      "observed_trigger_firing_counts": {
+        "band_drop": 1
+      },
+      "packet_id": "cohort:industry:warehousing",
+      "segment_axis": "industry",
+      "segment_value": "warehousing"
+    }
+  ],
+  "repeatability": {
+    "first_sha256": "566b7a16699281ad58f876d1dfee5071a2349df25c5b907ff8f44abb3cb8a4d9",
+    "matched": true,
+    "second_sha256": "566b7a16699281ad58f876d1dfee5071a2349df25c5b907ff8f44abb3cb8a4d9"
+  },
+  "segment_axes": [
+    "size_band",
+    "lifecycle_stage",
+    "industry"
+  ]
+}

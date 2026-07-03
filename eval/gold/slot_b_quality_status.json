@@ -5,19 +5,69 @@
   "claim_boundary": {
     "gold_queue_blinded": true,
     "gold_queue_exists": true,
-    "human_labels_complete": false,
-    "judge_validated": false,
+    "human_labels_complete": true,
+    "judge_validated": true,
+    "judge_validation": {
+      "clean": {
+        "false_neg": 0,
+        "false_pos": 0,
+        "n": 63,
+        "per_dimension_kappa": {
+          "account_specificity": 1.0,
+          "grounding_fidelity": 0.915,
+          "on_task_relevance": 0.832,
+          "priority_fidelity": 1.0,
+          "safety_boundary": 1.0,
+          "tone_fit": 0.873
+        }
+      },
+      "evidence": {
+        "agreement": "eval/gold/judge_agreement.json",
+        "compare": "eval/gold/judge_compare.json"
+      },
+      "failures": [],
+      "hard": {
+        "false_neg_aggregated": 0,
+        "false_pos_aggregated": 4,
+        "gate_repeatability": 0.917,
+        "indeterminate_ids": [
+          "slot-b-gold-4719788c9b545ca7",
+          "slot-b-gold-e646359b368be063",
+          "slot-b-gold-c0b6068e7f8cb453"
+        ],
+        "n": 36,
+        "per_dimension_kappa_aggregated": {
+          "account_specificity": 1.0,
+          "grounding_fidelity": 0.682,
+          "on_task_relevance": 0.661,
+          "priority_fidelity": 1.0,
+          "safety_boundary": 1.0,
+          "tone_fit": 0.877
+        }
+      },
+      "method": {
+        "clean_gate": "single-run per-dimension kappa vs approved human labels",
+        "gate_kappa": 0.6,
+        "hard_arm": "cot@N",
+        "hard_gate": "per-dimension kappa of cot@N N-run modal-aggregated vectors vs held-out key, recomputed from per-case vectors",
+        "judge_prompt_version": "quality-judge-v7",
+        "model_id": "claude-sonnet-4-6",
+        "runs_per_case": 5,
+        "single_labeler": true
+      },
+      "validated": true
+    },
     "live_semantic_quality_proven": false
   },
   "gold_path": "eval/gold/slot_b_quality.jsonl",
-  "human_labeled": 0,
+  "human_labeled": 63,
   "invalid_records": [],
   "key_errors": [],
   "key_path": "eval/gold/slot_b_quality_key.jsonl",
   "key_total": 63,
   "labeled": 63,
-  "next_gate": "Fill human_labels for every record before judge validation.",
-  "ready_for_judge_validation": false,
+  "next_gate": "Prove live semantic quality on real tenant output.",
+  "ready_for_judge_validation": true,
   "total": 63,
   "unlabeled": 0,
   "variant_counts": {

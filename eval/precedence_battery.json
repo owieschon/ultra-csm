@@ -1,0 +1,119 @@
+{
+  "artifact": "precedence_battery",
+  "cases": [
+    {
+      "case_id": "creation_into_held",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "approve_refused_while_held",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "commit_blocked_post_approval",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "organic_release_rederives_fresh_item",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "synchronous_dismissal_release",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "sticky_dismissal_no_rehold",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "new_instance_rehold",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "release_with_new_blocker_without_active_flash",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "release_with_stale_evidence_supersedes_old_payload",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "opportunity_gone_expires_loudly",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "multi_blocker_partial_clear_stays_held",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "override_with_justification_and_wrong_tier_refused",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "flap_notification_dedupe",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "held_item_visible_hard_gate",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "replay_falsification_rejects_t0_payload_after_evidence_moves",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "config_unsafe_foils_rejected",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "cross_lens_fixture",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    }
+  ],
+  "claim_boundary": {
+    "fixture": true,
+    "live": false,
+    "sim": true
+  },
+  "hard_failures": [],
+  "hard_ok": true,
+  "measurement_scope": "Pure precedence packet evaluation and release re-derivation. No database, live claims, connector calls, queue renderer, or LLM.",
+  "score": {
+    "passed": 17,
+    "total": 17
+  }
+}

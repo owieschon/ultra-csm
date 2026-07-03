@@ -1,0 +1,432 @@
+{
+  "comparison_metadata": {
+    "deep_source": "ucsm demo-timeline --deep --json",
+    "generated_by": "deep_vs_shallow_detection analysis",
+    "shallow_source": "ucsm demo-timeline --json",
+    "timeline_days": [
+      0,
+      30,
+      60,
+      90,
+      120,
+      180,
+      270,
+      365
+    ]
+  },
+  "conclusions": {
+    "copperfield_usage_cliff": "Both detect at day 30 with 11 days lead. Shallow detects health_yellow + low_seat_penetration; deep detects health_usage_divergence (computed from actual login data showing the cliff in user activity). Deep computes the divergence from real data rather than pre-set fixtures.",
+    "harborview_renewal_risk": "Both detect at day 30 with 15 days lead time before renewal. Shallow path sees health_red (from book simulator direct band change), deep path sees health_yellow (computed from underlying data streams). Both provide adequate early warning.",
+    "overall": "Deep path detects 30 accounts with risks vs 16 in shallow (87.5% more). Deep finds risks an average of 38.5 days earlier. Blue Ridge Transport improves by 150 days (shallow: day 180, deep: day 30). 14 accounts are only detected by the deep path. The deep path excels at health_usage_divergence and single_threaded_risk because it computes from actual per-user login histories rather than aggregate fixtures.",
+    "pinnacle_champion_risk": "Both paths detect at day 30. Deep path computes health from actual login data (red->yellow transition) vs shallow which uses pre-set fixture (green->yellow). Deep path detects the same day but with richer signal: health is computed from login histories showing champion inactivity directly."
+  },
+  "deep_only_accounts": [
+    "Falcon Delivery Systems",
+    "Granite Peak Logistics",
+    "Driftwood Warehousing",
+    "Meridian Fleet Group",
+    "Cascade Field Services",
+    "Mesa Industrial Corp",
+    "Aspenridge Supply Chain",
+    "Iron Ridge Fleet Ops",
+    "Westfield Industrial",
+    "Sagebrush Transport",
+    "Windmill Transport",
+    "Crestline Distribution",
+    "Hawkstone Industries",
+    "Quarry Stone Logistics"
+  ],
+  "earlier_detections_by_deep": [
+    {
+      "account": "Driftwood Warehousing",
+      "deep_day": 30,
+      "deep_risk_types": [
+        "health_usage_divergence",
+        "single_threaded_risk"
+      ],
+      "improvement_days": "not_detected_in_shallow",
+      "shallow_day": null
+    },
+    {
+      "account": "Westfield Industrial",
+      "deep_day": 30,
+      "deep_risk_types": [
+        "health_yellow",
+        "single_threaded_risk"
+      ],
+      "improvement_days": "not_detected_in_shallow",
+      "shallow_day": null
+    },
+    {
+      "account": "Hawkstone Industries",
+      "deep_day": 30,
+      "deep_risk_types": [
+        "health_yellow"
+      ],
+      "improvement_days": "not_detected_in_shallow",
+      "shallow_day": null
+    },
+    {
+      "account": "Crestline Distribution",
+      "deep_day": 30,
+      "deep_risk_types": [
+        "health_yellow"
+      ],
+      "improvement_days": "not_detected_in_shallow",
+      "shallow_day": null
+    },
+    {
+      "account": "Meridian Fleet Group",
+      "deep_day": 30,
+      "deep_risk_types": [
+        "health_usage_divergence"
+      ],
+      "improvement_days": "not_detected_in_shallow",
+      "shallow_day": null
+    },
+    {
+      "account": "Iron Ridge Fleet Ops",
+      "deep_day": 30,
+      "deep_risk_types": [
+        "health_usage_divergence"
+      ],
+      "improvement_days": "not_detected_in_shallow",
+      "shallow_day": null
+    },
+    {
+      "account": "Sagebrush Transport",
+      "deep_day": 30,
+      "deep_risk_types": [
+        "health_usage_divergence"
+      ],
+      "improvement_days": "not_detected_in_shallow",
+      "shallow_day": null
+    },
+    {
+      "account": "Mesa Industrial Corp",
+      "deep_day": 30,
+      "deep_risk_types": [
+        "health_usage_divergence"
+      ],
+      "improvement_days": "not_detected_in_shallow",
+      "shallow_day": null
+    },
+    {
+      "account": "Falcon Delivery Systems",
+      "deep_day": 30,
+      "deep_risk_types": [
+        "health_usage_divergence",
+        "single_threaded_risk"
+      ],
+      "improvement_days": "not_detected_in_shallow",
+      "shallow_day": null
+    },
+    {
+      "account": "Cascade Field Services",
+      "deep_day": 30,
+      "deep_risk_types": [
+        "health_yellow",
+        "single_threaded_risk"
+      ],
+      "improvement_days": "not_detected_in_shallow",
+      "shallow_day": null
+    },
+    {
+      "account": "Granite Peak Logistics",
+      "deep_day": 30,
+      "deep_risk_types": [
+        "health_usage_divergence",
+        "single_threaded_risk"
+      ],
+      "improvement_days": "not_detected_in_shallow",
+      "shallow_day": null
+    },
+    {
+      "account": "Quarry Stone Logistics",
+      "deep_day": 270,
+      "deep_risk_types": [
+        "champion_inactive",
+        "feature_depth_gap",
+        "health_red",
+        "usage_decline"
+      ],
+      "improvement_days": "not_detected_in_shallow",
+      "shallow_day": null
+    },
+    {
+      "account": "Aspenridge Supply Chain",
+      "deep_day": 30,
+      "deep_risk_types": [
+        "health_usage_divergence"
+      ],
+      "improvement_days": "not_detected_in_shallow",
+      "shallow_day": null
+    },
+    {
+      "account": "Windmill Transport",
+      "deep_day": 30,
+      "deep_risk_types": [
+        "health_usage_divergence"
+      ],
+      "improvement_days": "not_detected_in_shallow",
+      "shallow_day": null
+    },
+    {
+      "account": "Blue Ridge Transport",
+      "deep_day": 30,
+      "deep_risk_types": [
+        "health_usage_divergence"
+      ],
+      "improvement_days": 150,
+      "shallow_day": 180
+    },
+    {
+      "account": "Redwood Fleet Services",
+      "deep_day": 30,
+      "deep_risk_types": [
+        "health_usage_divergence"
+      ],
+      "improvement_days": 90,
+      "shallow_day": 120
+    },
+    {
+      "account": "Stonebridge Fleet",
+      "deep_day": 30,
+      "deep_risk_types": [
+        "health_usage_divergence",
+        "single_threaded_risk"
+      ],
+      "improvement_days": 90,
+      "shallow_day": 120
+    },
+    {
+      "account": "Oakmont Logistics",
+      "deep_day": 30,
+      "deep_risk_types": [
+        "health_yellow"
+      ],
+      "improvement_days": 90,
+      "shallow_day": 120
+    },
+    {
+      "account": "Bison Transport Group",
+      "deep_day": 30,
+      "deep_risk_types": [
+        "health_yellow"
+      ],
+      "improvement_days": 30,
+      "shallow_day": 60
+    },
+    {
+      "account": "Trailhead Logistics",
+      "deep_day": 60,
+      "deep_risk_types": [
+        "health_usage_divergence"
+      ],
+      "improvement_days": 30,
+      "shallow_day": 90
+    }
+  ],
+  "health_distribution_over_time": {
+    "0": {
+      "deep": {
+        "green": 2,
+        "red": 29,
+        "yellow": 4
+      },
+      "shallow": {
+        "green": 17,
+        "red": 5,
+        "yellow": 13
+      }
+    },
+    "120": {
+      "deep": {
+        "green": 21,
+        "red": 4,
+        "yellow": 10
+      },
+      "shallow": {
+        "green": 16,
+        "red": 5,
+        "yellow": 14
+      }
+    },
+    "180": {
+      "deep": {
+        "green": 20,
+        "red": 5,
+        "yellow": 10
+      },
+      "shallow": {
+        "green": 17,
+        "red": 5,
+        "yellow": 13
+      }
+    },
+    "270": {
+      "deep": {
+        "green": 20,
+        "red": 5,
+        "yellow": 10
+      },
+      "shallow": {
+        "green": 20,
+        "red": 5,
+        "yellow": 10
+      }
+    },
+    "30": {
+      "deep": {
+        "green": 19,
+        "red": 2,
+        "yellow": 14
+      },
+      "shallow": {
+        "green": 17,
+        "red": 6,
+        "yellow": 12
+      }
+    },
+    "365": {
+      "deep": {
+        "green": 19,
+        "red": 6,
+        "yellow": 10
+      },
+      "shallow": {
+        "green": 24,
+        "red": 5,
+        "yellow": 6
+      }
+    },
+    "60": {
+      "deep": {
+        "green": 20,
+        "red": 3,
+        "yellow": 12
+      },
+      "shallow": {
+        "green": 17,
+        "red": 5,
+        "yellow": 13
+      }
+    },
+    "90": {
+      "deep": {
+        "green": 20,
+        "red": 5,
+        "yellow": 10
+      },
+      "shallow": {
+        "green": 17,
+        "red": 5,
+        "yellow": 13
+      }
+    }
+  },
+  "key_account_analysis": [
+    {
+      "account": "Pinnacle Supply Chain",
+      "deep": {
+        "first_detected_day": 30,
+        "health_transition": {
+          "day": 30,
+          "from": "red",
+          "to": "yellow"
+        },
+        "lead_time_days": 315,
+        "risk_types": [
+          "health_yellow"
+        ]
+      },
+      "deep_finds_more_risk_types": false,
+      "detection_improvement_days": 0,
+      "risk_category": "champion_risk",
+      "shallow": {
+        "first_detected_day": 30,
+        "health_transition": {
+          "day": 30,
+          "from": "green",
+          "to": "yellow"
+        },
+        "lead_time_days": 315,
+        "risk_types": [
+          "health_yellow"
+        ]
+      }
+    },
+    {
+      "account": "Harborview Fleet",
+      "deep": {
+        "first_detected_day": 30,
+        "health_transition": {
+          "day": 30,
+          "from": "red",
+          "to": "yellow"
+        },
+        "lead_time_days": 15,
+        "risk_types": [
+          "health_yellow"
+        ]
+      },
+      "deep_finds_more_risk_types": false,
+      "detection_improvement_days": 0,
+      "risk_category": "renewal_risk",
+      "shallow": {
+        "first_detected_day": 30,
+        "health_transition": {
+          "day": 30,
+          "from": "yellow",
+          "to": "red"
+        },
+        "lead_time_days": 15,
+        "risk_types": [
+          "health_red"
+        ]
+      }
+    },
+    {
+      "account": "Copperfield Warehousing",
+      "deep": {
+        "first_detected_day": 30,
+        "health_transition": {
+          "day": 30,
+          "from": "red",
+          "to": "green"
+        },
+        "lead_time_days": 11,
+        "risk_types": [
+          "health_usage_divergence"
+        ]
+      },
+      "deep_finds_more_risk_types": false,
+      "detection_improvement_days": 0,
+      "risk_category": "usage_cliff",
+      "shallow": {
+        "first_detected_day": 30,
+        "health_transition": {
+          "day": 30,
+          "from": "green",
+          "to": "yellow"
+        },
+        "lead_time_days": 11,
+        "risk_types": [
+          "health_yellow",
+          "low_seat_penetration"
+        ]
+      }
+    }
+  ],
+  "shallow_only_accounts": [],
+  "summary": {
+    "accounts_detected_earlier_by_deep": 6,
+    "avg_deep_first_detection_day": 39.0,
+    "avg_shallow_first_detection_day": 61.9,
+    "deep_additional_detections": 14,
+    "max_improvement_days": 150,
+    "shallow_only_detections": 0,
+    "total_accounts_with_risk_deep": 30,
+    "total_accounts_with_risk_shallow": 16
+  }
+}

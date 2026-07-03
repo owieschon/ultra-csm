@@ -10,6 +10,11 @@ One spine: `CustomerDataPlane → value_model → ActionGate → Agent 1 (Slot B
 is a Time-to-Value accelerator: it reads CRM / CS-platform / product-telemetry data, computes a
 customer value model, projects a TTV priority lens, and emits only **gated, proposal-only** CSM
 actions — it never sends or self-authorizes.
+<!-- TRIPWIRE (Demo Slice 3): when the sim closed-loop lands with tier-1 auto-execution, the
+     sentence above must change to the graduated-autonomy framing: "acts autonomously exactly as
+     far as policy allows; customer-facing actions remain human-gated." Do not let it survive
+     Slice 3 as an understatement-turned-inaccuracy. -->
+
 
 ## Architecture: one model, three lenses, one analyst
 
@@ -24,8 +29,8 @@ Instead:
   states, each with its own action and gate. Priority is the model viewed through a lens, not a
   re-derivation.
   - **Agent 1 — Time-to-Value** *(built)*: onboarding/activation stalls → next-best action to first value.
-  - **Agent 2 — Risk / Retention** *(roadmap)*: steady-state fragility (single-threaded champion, missing sponsor), renewal proximity.
-  - **Agent 3 — Expansion** *(roadmap)*: unrealized value in healthy accounts — low penetration, unused entitlements.
+  - **Agent 2 — Risk / Retention** *(deterministic lens built)*: steady-state fragility (single-threaded champion, missing sponsor), renewal proximity.
+  - **Agent 3 — Expansion** *(deterministic lens built)*: unrealized value in healthy accounts — low penetration, unused entitlements.
 - **Agent 4 — Cohort / Program analyst** *(roadmap)*: population-level, not per-account. Finds
   segment patterns (e.g. "onboarding path Y predicts churn"), feeds the CS manager and Product, and
   *reduces the symptom load* lenses 1–3 chase — Agent 1's outcomes become Agent 4's labels. A flywheel.
@@ -34,8 +39,8 @@ Because they're lenses over *one* model, a single account can be in view of seve
 conflict (a single-threaded account is simultaneously Agent 2's risk and Agent 3's expansion target —
 same model fact, two actions). Every customer-facing action from any lens routes through the same
 gate: **proposal → human verdict → committer.** The CSM is the actor; the agents triage and draft,
-the human decides. Today the shared model, the gate, and Agent 1 are built; 2–4 are specced behind an
-ordering guard (don't build breadth until the model and the differentiator are proven). Full spec:
+the human decides. Today the shared model, the gate, Agent 1, and the deterministic Risk/Expansion
+lenses are built; the cohort analyst and quality-scored lens drafts stay gated. Full spec:
 `docs/CUSTOMER_VALUE_MODEL.md`.
 
 ## Quickstart
@@ -46,7 +51,7 @@ ordering guard (don't build breadth until the model and the differentiator are p
 
 ```sh
 make setup          # venv + editable install
-make scorecard-csm  # offline, no secrets → the 23/23 deterministic CSM scorecard
+make scorecard-csm  # offline, no secrets → deterministic CSM scorecard
 make eval           # full pytest suite on an ephemeral, auto-torn-down Postgres
 make lint hygiene   # ruff lint + repo-residue scan
 ```
@@ -69,24 +74,29 @@ A non-deterministic instrument must never own a deterministic gate. That boundar
 
 | Area | Status |
 |---|---|
-| Deterministic spine | **Proven** — `23/23` scorecard, 150 tests on real Postgres, hard security gates green |
-| LLM quality judge | **Characterized & stabilized**, not yet human-validated (noise measured, gate N-run-stabilized; human labels are the next gate) |
+| Deterministic spine | **Proven** — scorecard hard gates green on real Postgres |
+| LLM quality judge | **Validated** under N-run modal aggregation (single-labeler gold, prompt v7): clean layer all six dimensions κ ≥ 0.6 with zero gate errors; adversarial hard layer clears all six aggregated with zero false negatives. `priority_fidelity` and `account_specificity` are deterministic. The claim is derived from versioned evidence artifacts (`eval/judge_validation.py`), never hand-set; a second independent labeler remains open |
 | Connectors (Salesforce/Gainsight/Rocketlane/Attio) | **Built to the credential boundary**, fixture-tested; not yet run against a live tenant |
 | Data | Curated **fixtures**, not production customer data |
-| Outcome rail, Risk & Expansion lenses | **Designed, not built** |
+| Outcome rail, Risk & Expansion lenses | Outcome rail partially instrumented; deterministic Risk and Expansion lenses are built, with draft-quality claims gated on judge validation |
+| Oversight evidence | **Rendered from ledgers** — `make oversight-report` writes `demo_state/oversight_report.{json,md}`: verdicts, payload-hash-bound receipts, suppressions, breaker events, quality state, and autonomy provenance, with an explicit "not instrumented" section. An evidence record, not a compliance certification |
 
 Nothing here claims production retention or expansion lift. It demonstrates judgment,
 architecture, and measurement discipline — `docs/DECISION_LOG.md` records what is and is not claimed.
 
 ## Roadmap (next milestones, in order)
 
-1. **Validate the judge** — blind second
-   independent labeler to establish the human-agreement ceiling, then report judge-vs-human1-vs-human2.
+1. **A second independent human labeler** — the judge is validated against a single labeler's
+   gold set; a blind second labeler establishes the human-agreement ceiling
+   (judge-vs-human1-vs-human2).
 2. **Drift-power experiment** — show the judge's residual noise floor is below the generation
    drift it must detect, or scope the "detects quality drift" claim down to what's provable.
-3. **Live verticals, end-to-end** — run real connectors (RocketLane, Gainsight, OTel, Attio/Salesforce), close the loop on
-   live data with monitoring and rollback.
-4. **Risk & Expansion lenses** — the two value lenses that move NRR, on the same value model.
+3. **Close the loop in simulation** — stateful sim tenant, graduated autonomy (tier-1 internal
+   actions auto-execute; customer-facing tiers stay human-gated), committers, and outcome
+   re-observation — per `docs/DEMO_EXECUTION_PLAN.md`.
+4. **Live verticals, end-to-end** *(credential-gated, post-demo)* — run real connectors
+   (Rocketlane, Gainsight, OTel, Attio/Salesforce) against a live tenant, with monitoring and rollback.
+5. **Risk & Expansion depth** — expand the built deterministic lenses only where the shared value model and evals support it.
 
 The working plan lives in `docs/NEXT_DISPATCH.md`.
 
@@ -95,4 +105,4 @@ The working plan lives in `docs/NEXT_DISPATCH.md`.
 - **Architecture & data:** `docs/ARCHITECTURE.md`, `docs/CUSTOMER_VALUE_MODEL.md`, `docs/DATA_PLANE.md`
 - **Eval & judge:** `docs/DECISION_LOG.md`, `docs/QUALITY_REGRESSION_EVAL_SPEC.md`, `docs/NONDETERMINISM_EVAL_HARDENING_SPEC.md`, `docs/QUALITY_LABELING_PROTOCOL.md`
 - **Ops & security:** `docs/OBSERVABILITY.md`, `docs/SECURITY.md`
-- **Connectors & roadmap:** `docs/ROCKETLANE_ONBOARDING_CONNECTOR_SPEC.md`, `docs/NEXT_DISPATCH.md`
+- **Connectors & roadmap:** `docs/ROCKETLANE_ONBOARDING_CONNECTOR_SPEC.md`, `docs/NEXT_DISPATCH.md`, `docs/DEMO_EXECUTION_PLAN.md` (the binding demo plan)

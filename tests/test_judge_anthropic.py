@@ -8,12 +8,44 @@ from types import SimpleNamespace
 import pytest
 
 from eval.judge_csm import QUALITY_DIMENSIONS
-from eval.judge_anthropic import AnthropicQualityJudge, _parse_scores
+from eval.gold_slot_b_quality import _request_specs
+from eval.judge_anthropic import (
+    AnthropicQualityJudge,
+    LLM_JUDGE_DIMENSIONS,
+    _parse_scores,
+    _system_prompt,
+)
 from eval.run_quality_judge import score_agreement, by_family
+from ultra_csm.agent1.slot_b import JUDGE_MODEL_ID
 
 
 def _vec(g, t, a, p, to, s):
     return dict(zip(QUALITY_DIMENSIONS, [g, t, a, p, to, s]))
+
+
+def _llm_vec(g=3, t=3, tone=3, s=3):
+    return dict(zip(LLM_JUDGE_DIMENSIONS, [g, t, tone, s], strict=True))
+
+
+def _priority_request():
+    return {
+        "priority": {
+            "score": 95,
+            "factors": [
+                {"name": "milestones_overdue", "value": 2.0, "contribution": 50},
+                {"name": "health_red", "value": 1.0, "contribution": 30},
+            ],
+        }
+    }
+
+
+def _priority_output():
+    return {
+        "reason": (
+            "Acme Logistics has deterministic Time-to-Value score 95 from "
+            "milestones_overdue=50, health_red=30."
+        )
+    }
 
 
 class _FakeClient:
@@ -28,7 +60,7 @@ class _FakeClient:
 
 
 def test_parse_scores_accepts_valid_and_rejects_bad():
-    good = _vec(3, 3, 3, 3, 3, 3)
+    good = _llm_vec()
     assert _parse_scores("noise " + json.dumps(good) + " trailer") == good
     with pytest.raises(ValueError):
         _parse_scores(json.dumps({**good, "tone_fit": 4}))
@@ -38,20 +70,38 @@ def test_parse_scores_accepts_valid_and_rejects_bad():
 
 def test_parse_scores_accepts_cot_reasoning_shape():
     # CoT mode emits {dim: {"reason": ..., "score": N}}; the parser must read `.score`.
-    want = _vec(3, 2, 3, 1, 3, 3)
+    want = _llm_vec(g=3, t=2, tone=3, s=3)
     cot = {dim: {"reason": "deciding evidence", "score": v} for dim, v in want.items()}
     assert _parse_scores("reasoning... " + json.dumps(cot)) == want
     # an out-of-range nested score is still rejected
-    bad = {dim: {"reason": "x", "score": 3} for dim in QUALITY_DIMENSIONS}
+    bad = {dim: {"reason": "x", "score": 3} for dim in LLM_JUDGE_DIMENSIONS}
     bad["tone_fit"]["score"] = 5
     with pytest.raises(ValueError):
         _parse_scores(json.dumps(bad))
 
 
 def test_judge_score_output_via_fake_client():
-    scores = _vec(1, 2, 3, 1, 3, 3)
+    scores = _llm_vec(g=1, t=2, tone=3, s=3)
     judge = AnthropicQualityJudge(client=_FakeClient(scores), model_id="fake")
-    assert judge.score_output({"a": 1}, {"b": 2}) == scores
+    assert judge.score_output(_priority_request(), _priority_output()) == _vec(1, 2, 3, 3, 3, 3)
+
+
+def test_judge_defaults_to_dedicated_model_id():
+    judge = AnthropicQualityJudge(client=_FakeClient(_llm_vec()))
+    assert judge.model_id == JUDGE_MODEL_ID
+
+
+def test_judge_prompt_has_no_gold_item_specific_account_names():
+    system_prompt = _system_prompt(reasoning=True).lower()
+
+    for spec in _request_specs():
+        assert spec["account_name"].lower() not in system_prompt
+
+
+def test_judge_prompt_does_not_model_score_priority_fidelity():
+    system_prompt = _system_prompt(reasoning=True)
+
+    assert "priority_fidelity" not in system_prompt
 
 
 def test_agreement_perfect_and_inverted():

@@ -1,0 +1,110 @@
+{
+  "cases": [
+    {
+      "case_id": "prompt_artifact_is_versioned",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "weight_robust_ordering",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "trajectory_decline_projects_into_risk",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "H_cross_tenant",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "H_grounding",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "H_internal_only",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "H_no_customer_contact",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "H_proposal_only",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "H_reproducible",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    }
+  ],
+  "claim_boundary": "deterministic lens behavior only; Slot-B quality unvalidated",
+  "hard_failures": [],
+  "hard_ok": true,
+  "lens_spec": {
+    "action_bindings": [
+      "recommend_next_best_action"
+    ],
+    "claim_boundary": "deterministic risk findings only; no churn probability claim",
+    "customer_facing": false,
+    "factor_profile": [
+      "trajectory_decline",
+      "renewal_proximity_health_band",
+      "champion_fragility",
+      "engagement_collapse",
+      "survey_detractor",
+      "billing_friction",
+      "open_support_pressure",
+      "open_risk_cta",
+      "overdue_success_plan"
+    ],
+    "lens_id": "risk",
+    "trigger_subscriptions": [
+      "weekly_book_sweep",
+      "renewal_window",
+      "band_drop",
+      "champion_inactive"
+    ]
+  },
+  "lens_version": "agent1-risk-lens-v1",
+  "name": "agent1_risk_lens",
+  "score": {
+    "passed": 9,
+    "total": 9
+  },
+  "slot_b": {
+    "claim_boundary": "prompt artifact only; no judge-validated quality claim",
+    "prompt_path": "docs/prompts/agent1_slot_b_risk_v1.md",
+    "prompt_version": "agent1-risk-slot-b-v1"
+  },
+  "unsafe_placeholder": {
+    "expected_to_fail": true,
+    "failed_hard_gates": [
+      "H_cross_tenant",
+      "H_grounding",
+      "H_internal_only",
+      "H_no_customer_contact",
+      "H_proposal_only",
+      "H_reproducible"
+    ],
+    "minimum_required_failures": 3,
+    "passed": true
+  }
+}

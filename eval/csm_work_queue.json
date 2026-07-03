@@ -11,6 +11,7 @@
       "customer_contact_allowed": false,
       "customer_draft": null,
       "disposition": "escalate",
+      "draft_mode": "none",
       "evidence": [
         {
           "field": "email",
@@ -48,8 +49,9 @@
       "account_resolution": "exactly_one",
       "candidate_account_ids": [],
       "customer_contact_allowed": true,
-      "customer_draft": "Hi Jordan Lee, I found an onboarding risk for Acme Logistics grounded in 5 account records. Can we review the activation blockers and next steps?",
+      "customer_draft": "Hi Jordan Lee, Acme Logistics is showing an onboarding risk tied to milestones_overdue, days_overdue. Can we review the overdue activation steps and agree on owners?",
       "disposition": "propose_customer_action",
+      "draft_mode": "fixture",
       "evidence": [
         {
           "field": "daily_active_assets",
@@ -243,6 +245,7 @@
       "customer_contact_allowed": false,
       "customer_draft": null,
       "disposition": "internal_review",
+      "draft_mode": "fixture",
       "evidence": [
         {
           "field": "daily_active_assets",
@@ -393,8 +396,9 @@
       "account_resolution": "exactly_one",
       "candidate_account_ids": [],
       "customer_contact_allowed": true,
-      "customer_draft": "Hi Avery Kim, I found an onboarding risk for Soylent Distribution grounded in 5 account records. Can we review the activation blockers and next steps?",
+      "customer_draft": "Hi Avery Kim, Soylent Distribution is showing an onboarding risk tied to milestones_overdue, days_overdue. Can we review the overdue activation steps and agree on owners?",
       "disposition": "propose_customer_action",
+      "draft_mode": "fixture",
       "evidence": [
         {
           "field": "daily_active_assets",
@@ -557,8 +561,9 @@
       "account_resolution": "exactly_one",
       "candidate_account_ids": [],
       "customer_contact_allowed": true,
-      "customer_draft": "Hi Alex Rivers, I found an onboarding risk for Globex Fleet grounded in 3 account records. Can we review the activation blockers and next steps?",
+      "customer_draft": "Hi Alex Rivers, Globex Fleet is showing an onboarding risk tied to milestones_overdue, days_overdue. Can we review the overdue activation steps and agree on owners?",
       "disposition": "propose_customer_action",
+      "draft_mode": "fixture",
       "evidence": [
         {
           "field": "daily_active_assets",
@@ -692,8 +697,9 @@
       "account_resolution": "exactly_one",
       "candidate_account_ids": [],
       "customer_contact_allowed": true,
-      "customer_draft": "Hi Samir Rao, I found an onboarding risk for Initech Services grounded in 2 account records. Can we review the activation blockers and next steps?",
+      "customer_draft": "Hi Samir Rao, Initech Services is showing an onboarding risk tied to success_plan_overdue, health_yellow. Can we map the missing users needed for a complete rollout?",
       "disposition": "propose_customer_action",
+      "draft_mode": "fixture",
       "evidence": [
         {
           "field": "target_date",

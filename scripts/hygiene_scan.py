@@ -54,14 +54,18 @@ SOURCE_COMPANY_PATTERNS = (
     re.compile("".join(("tr", "uck", "pi", "pes")), re.IGNORECASE),
     re.compile("".join(("gr", "and", r"[ -]?", "ro", "ck")), re.IGNORECASE),
     re.compile("".join(("ra", "ney")), re.IGNORECASE),
-    # Parent project, prior employer, and author PII — split so this file never
-    # matches itself. The two-letter abbreviation is case-sensitive to skip words
-    # like "program"/"grand".
+    # Named entities and author PII — split so this file never matches itself.
+    # The two-letter abbreviation is case-sensitive to skip words like
+    # "program"/"grand".
     re.compile("".join((r"\bre", "ter", r"\b")), re.IGNORECASE),
     re.compile("".join((r"\bve", "lo3d", r"\b")), re.IGNORECASE),
     re.compile("".join((r"\bow", "en", r"\b")), re.IGNORECASE),
     re.compile("".join(("osch", "oeniger")), re.IGNORECASE),
     re.compile("".join((r"\bG", r"R\b"))),
+    # Split so this file never matches itself; case-sensitive so the lowercase verb
+    # form does not false-positive.
+    re.compile("".join((r"\bCe", "ntralize", r"\b"))),
+    re.compile("".join((r"\bSa", "msara", r"\b")), re.IGNORECASE),
 )
 
 WRONG_DOMAIN_PATTERNS = (
@@ -85,6 +89,9 @@ META_RESIDUE_PATTERNS = (
     re.compile(r"\bjob description\b", re.IGNORECASE),
     re.compile(r"\bCentralize screening\b", re.IGNORECASE),
     re.compile(r"\brole-relevant\b", re.IGNORECASE),
+    re.compile(r"\bproof-of-craft\b", re.IGNORECASE),
+    re.compile(r"\bapply for the\b", re.IGNORECASE),
+    re.compile(r"\bresume bullet\b", re.IGNORECASE),
     re.compile(r"\bkiller scenario\b", re.IGNORECASE),
     re.compile(r"\bdo this next\b", re.IGNORECASE),
     re.compile(r"\bthe trap\b", re.IGNORECASE),

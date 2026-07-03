@@ -9,24 +9,32 @@ or other accounts.
 from __future__ import annotations
 
 import json
+import logging
 import time
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Protocol
+from typing import TYPE_CHECKING, Protocol
 
 from ultra_csm._util import evidence_ids
+from ultra_csm.knowledge import is_safe_customer_ask
 from ultra_csm.observability import Meter, NoOpMeter, NoOpTracer, Tracer
 
-SLOT_B_PROMPT_VERSION = "agent1-slot-b-reason-draft-v1"
+if TYPE_CHECKING:
+    from ultra_csm.cost_tracker import CostTracker
+
+log = logging.getLogger(__name__)
+
+SLOT_B_PROMPT_VERSION = "agent1-slot-b-reason-draft-v2"
 SLOT_B_PROMPT_PATH = (
     Path(__file__).resolve().parents[3]
     / "docs"
     / "prompts"
-    / "agent1_slot_b_reason_draft_v1.md"
+    / "agent1_slot_b_reason_draft_v2.md"
 )
 
 FIXTURE_SLOT_B_MODEL_ID = "fixture-agent1-slot-b-v1"
 LIVE_SLOT_B_MODEL_ID = "claude-opus-4-8"
+JUDGE_MODEL_ID = "claude-sonnet-4-6"
 LIVE_TIMEOUT_S = 30.0
 LIVE_MAX_RETRIES = 2
 LIVE_USD_PER_MTOK_INPUT = 5.00
@@ -68,6 +76,7 @@ class ReasonDraftRequest:
     contact_name: str | None = None
     contact_email: str | None = None
     untrusted_text_fragments: tuple[str, ...] = ()
+    org_context: dict | None = None
 
     def evidence_ids(self) -> tuple[str, ...]:
         return evidence_ids(self.evidence)
@@ -118,10 +127,13 @@ class FixtureReasonDraftWriter:
         draft = None
         if request.customer_contact_allowed:
             contact = request.contact_name or "there"
+            ask = _play_ask(request) or "review the activation blockers and next steps"
+            factor_names = ", ".join(
+                factor.name for factor in request.priority.factors[:2]
+            )
             draft = (
-                f"Hi {contact}, I found an onboarding risk for {request.account_name} "
-                f"grounded in {len(request.evidence)} account records. Can we review "
-                "the activation blockers and next steps?"
+                f"Hi {contact}, {request.account_name} is showing an onboarding "
+                f"risk tied to {factor_names}. Can we {ask}?"
             )
         output = ReasonDraftOutput(
             reason=reason,
@@ -167,6 +179,7 @@ class AnthropicReasonDraftWriter:
         prompt_text: str | None = None,
         tracer: Tracer | None = None,
         meter: Meter | None = None,
+        cost_tracker: "CostTracker | None" = None,
     ) -> None:
         if client is None:  # pragma: no cover - live lane
             from anthropic import Anthropic
@@ -177,6 +190,7 @@ class AnthropicReasonDraftWriter:
         self._prompt_text = prompt_text
         self._tracer: Tracer = tracer or NoOpTracer()
         self._meter: Meter = meter or NoOpMeter()
+        self._cost_tracker = cost_tracker
         self._tokens = self._meter.counter(
             "pcs.llm.tokens",
             description="live LLM token usage (in+out)",
@@ -210,7 +224,8 @@ class AnthropicReasonDraftWriter:
                 "prompt_version": self.prompt_version,
             },
         ) as span:
-            start = time.perf_counter() if self._meter.enabled else 0.0
+            should_time = self._meter.enabled or self._cost_tracker is not None
+            start = time.perf_counter() if should_time else 0.0
             msg = self._client.messages.create(
                 model=self.model_id,
                 max_tokens=700,
@@ -224,8 +239,8 @@ class AnthropicReasonDraftWriter:
                 span.set_attribute("usage.input_tokens", in_tok)
             if out_tok is not None:
                 span.set_attribute("usage.output_tokens", out_tok)
+            latency_ms = (time.perf_counter() - start) * 1000.0 if should_time else 0.0
             if self._meter.enabled:
-                latency_ms = (time.perf_counter() - start) * 1000.0
                 span.set_attribute("latency_ms", latency_ms)
                 self._latency.record(latency_ms, {"slot": "agent1_reason_draft", "model_id": self.model_id})
                 attrs = {"slot": "agent1_reason_draft", "model_id": self.model_id}
@@ -237,6 +252,16 @@ class AnthropicReasonDraftWriter:
                          + (out_tok or 0) * LIVE_USD_PER_MTOK_OUTPUT) / 1_000_000.0)
                 span.set_attribute("usage.cost_usd", cost)
                 self._cost.record(cost, attrs)
+
+            # Record in cumulative cost tracker for API /metrics and demo artifacts.
+            if self._cost_tracker is not None and in_tok is not None:
+                self._cost_tracker.record(
+                    model_id=self.model_id,
+                    input_tokens=in_tok,
+                    output_tokens=out_tok or 0,
+                    latency_ms=latency_ms,
+                    account_id=request.account_id,
+                )
 
         output = _parse_live_output(
             _text_from_message(msg),
@@ -333,6 +358,25 @@ def _jsonable_request(request: ReasonDraftRequest) -> dict:
     data = asdict(request)
     data["prompt_version"] = SLOT_B_PROMPT_VERSION
     return data
+
+
+def _play_ask(request: ReasonDraftRequest) -> str | None:
+    context = request.org_context or {}
+    plays = context.get("gap_plays")
+    if not isinstance(plays, list):
+        return None
+    factor_names = {factor.name for factor in request.priority.factors}
+    for play in plays:
+        if not isinstance(play, dict):
+            continue
+        customer_ask = play.get("customer_ask")
+        if (
+            play.get("factor") in factor_names
+            and isinstance(customer_ask, str)
+            and is_safe_customer_ask(customer_ask)
+        ):
+            return customer_ask
+    return None
 
 
 def _citation_text(evidence_ids: tuple[str, ...]) -> str:

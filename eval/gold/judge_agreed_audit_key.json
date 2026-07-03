@@ -1,0 +1,86 @@
+{
+  "artifact": "slot_b_judge_agreed_cell_audit_key",
+  "key_records": [
+    {
+      "audit_id": "judge-audit-366708a03f86975b",
+      "candidate_id": "slot-b-gold-60a58b360dfa1888",
+      "dimension": "on_task_relevance",
+      "judge_score": 2,
+      "layer": "clean",
+      "reference_score": 2
+    },
+    {
+      "audit_id": "judge-audit-629eebbedb194bbf",
+      "candidate_id": "slot-b-gold-55d90fd2a6afc3c6",
+      "dimension": "account_specificity",
+      "judge_score": 3,
+      "layer": "hard",
+      "reference_score": 3
+    },
+    {
+      "audit_id": "judge-audit-8c7113e66e708e67",
+      "candidate_id": "slot-b-gold-221f10d524157742",
+      "dimension": "priority_fidelity",
+      "judge_score": 2,
+      "layer": "clean",
+      "reference_score": 2
+    },
+    {
+      "audit_id": "judge-audit-8a301d0709ac5ed1",
+      "candidate_id": "slot-b-gold-2bfc94723dda3825",
+      "dimension": "account_specificity",
+      "judge_score": 2,
+      "layer": "hard",
+      "reference_score": 2
+    },
+    {
+      "audit_id": "judge-audit-b256eee7779e4f86",
+      "candidate_id": "slot-b-gold-bf30dd9a11b89909",
+      "dimension": "account_specificity",
+      "judge_score": 1,
+      "layer": "clean",
+      "reference_score": 1
+    },
+    {
+      "audit_id": "judge-audit-7cc6886f3c5b3fa0",
+      "candidate_id": "slot-b-gold-0d16f77346392f98",
+      "dimension": "grounding_fidelity",
+      "judge_score": 3,
+      "layer": "hard",
+      "reference_score": 3
+    },
+    {
+      "audit_id": "judge-audit-26705f2ffc96ebb8",
+      "candidate_id": "slot-b-gold-e7c82839f9384074",
+      "dimension": "on_task_relevance",
+      "judge_score": 2,
+      "layer": "hard",
+      "reference_score": 2
+    },
+    {
+      "audit_id": "judge-audit-1ab245bf58c9034e",
+      "candidate_id": "slot-b-gold-6e164b42d2abba54",
+      "dimension": "priority_fidelity",
+      "judge_score": 2,
+      "layer": "clean",
+      "reference_score": 2
+    },
+    {
+      "audit_id": "judge-audit-039437996af36777",
+      "candidate_id": "slot-b-gold-33c818f2248e862b",
+      "dimension": "tone_fit",
+      "judge_score": 1,
+      "layer": "clean",
+      "reference_score": 1
+    },
+    {
+      "audit_id": "judge-audit-51799e6c854fcf50",
+      "candidate_id": "slot-b-gold-bf30dd9a11b89909",
+      "dimension": "priority_fidelity",
+      "judge_score": 2,
+      "layer": "clean",
+      "reference_score": 2
+    }
+  ],
+  "sample_size": 10
+}

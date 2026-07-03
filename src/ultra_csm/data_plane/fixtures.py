@@ -601,7 +601,16 @@ def sweep_fixture_data(*, tenant_id: str = DEFAULT_TENANT) -> FixtureCustomerDat
             created_at="2026-06-19T12:00:00Z",
         ),
     )
-    opportunities = tuple(
+    opportunities = (
+        CRMOpportunity(
+            opportunity_id=det_id("opp", ACME_LOGISTICS, "expansion"),
+            account_id=ACME_LOGISTICS,
+            stage_name="Qualification",
+            amount_cents=4200000,
+            close_date="2026-09-30",
+            opportunity_type="Expansion",
+        ),
+        *tuple(
         CRMOpportunity(
             opportunity_id=det_id("opp", account.account_id, "renewal"),
             account_id=account.account_id,
@@ -611,6 +620,7 @@ def sweep_fixture_data(*, tenant_id: str = DEFAULT_TENANT) -> FixtureCustomerDat
             opportunity_type="Renewal",
         )
         for account in accounts
+        ),
     )
     health_bands = {
         ACME_LOGISTICS: ("red", 38.0, ("activation_gap", "implementation_blocker")),
@@ -829,6 +839,26 @@ def build_sweep_fixture_data_plane(
     tenant_id: str = DEFAULT_TENANT,
 ) -> CustomerDataPlane:
     data = sweep_fixture_data(tenant_id=tenant_id)
+    return CustomerDataPlane(
+        crm=FixtureCRMDataConnector(tenant=tenant, data=data),
+        cs=FixtureCSPlatformConnector(data=data),
+        telemetry=FixtureProductTelemetryConnector(data=data),
+    )
+
+
+def synthetic_book_fixtures(
+    *,
+    tenant: str = DEFAULT_TENANT,
+) -> CustomerDataPlane:
+    """35-account synthetic book of business for demo.
+
+    Returns a ``CustomerDataPlane`` backed by high-fidelity fleet management
+    SaaS data with realistic lifecycle distribution, health signals, and
+    interesting scenarios for all three lenses.
+    """
+    from ultra_csm.data_plane.synthetic_book import build_synthetic_book
+
+    data = build_synthetic_book()
     return CustomerDataPlane(
         crm=FixtureCRMDataConnector(tenant=tenant, data=data),
         cs=FixtureCSPlatformConnector(data=data),

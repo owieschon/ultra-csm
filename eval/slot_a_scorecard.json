@@ -1,0 +1,69 @@
+{
+  "cases": [
+    {
+      "case_id": "clear_blocker",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "clear_noise",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "ambiguous_unknown",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "injection_note_unaffected",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "resolved_noise",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "boundary_rejects_cross_account_citation",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    },
+    {
+      "case_id": "invalid_output_can_fail_closed_to_unknown",
+      "detail": "passed",
+      "hard_gate": true,
+      "passed": true
+    }
+  ],
+  "claim_boundary": {
+    "fixture_mechanics_built": true,
+    "live_path_credential_gated": true,
+    "live_quality_proven": false
+  },
+  "fixture_model_id": "fixture-agent1-slot-a-v1",
+  "hard_failures": [],
+  "hard_ok": true,
+  "name": "g2_slot_a_case_note_classifier",
+  "prompt_path": "docs/prompts/agent1_slot_a_case_note_v1.md",
+  "prompt_version": "agent1-slot-a-case-note-v1",
+  "score": {
+    "passed": 7,
+    "total": 7
+  },
+  "unknown_rate": 0.2,
+  "unsafe_foil": {
+    "actual": "blocker",
+    "case_id": "unsafe_foil_guessing_ambiguity",
+    "expected": "unknown",
+    "expected_to_fail": true,
+    "passed": true
+  }
+}
