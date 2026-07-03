@@ -60,11 +60,36 @@ account context and no CS-platform, onboarding, outcome, or product-telemetry
 rails, running the scorer would produce a hollow queue rather than grounded CSM
 work.
 
+## Review Verification (corrected pass)
+
+A review re-run resolved the 6/194 split. The corpus is NOT sparse on the display
+name: a universally-present title-like key exists on 200/200 sampled rows. The
+mechanically generated confirmation had instead selected a rare variant key present
+on only 6/200 rows. Re-running the same bounded probe with one corrected
+confirmation typed **200/200 CRM accounts** (was 6/200), zero silent guesses,
+wall time 2.6 s.
+
+Two conclusions, both decisive for the product design:
+
+- The refusal behavior worked exactly as intended: a wrong confirmation produced
+  loud mass rejection, not silently wrong accounts. The freeze layer also refused
+  a template that omitted one required confirmation.
+- A mechanical confirmation is a simulated careless user, and it silently costs
+  97% of the book. The field-sparsity review surface (show per-key row coverage
+  before freezing) is therefore not an enhancement — it is the difference between
+  3% and 100% ingest coverage. A conversational confirm ("variant key on 6 of 200
+  rows vs a title key on all 200 — which is the name?") makes the right choice
+  trivial for a human.
+- Gap found during review: there is no way to demote an ambiguous proposed field
+  to `unknown` at confirmation time — every ambiguous field demands a positive
+  confirmation to freeze. Confirmations need an explicit "not mappable / unknown"
+  verdict.
+
 ## Structural Findings
 
-- The sample is heterogeneous or sparse for the field confirmed as the account
-  display name. A single generated confirmation can be valid for some rows and
-  still fail most of a real book.
+- (Superseded by the review verification above.) The initial pass read as
+  "heterogeneous or sparse" for the display-name field; the corrected pass showed
+  the sparsity belonged to the generated confirmation's chosen key, not the corpus.
 - Nested or collection-shaped source data exists in the sample and is not fully
   representable in the current flat CRMAccount/CRMContact/CRMOpportunity
   contracts.
