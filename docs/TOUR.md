@@ -74,9 +74,21 @@ make demo
 Runs the scorecard, spine regression, Slot A classifier scorecard, earned-autonomy
 report, all three simulated connector onboardings (Attio, Gainsight, product
 telemetry — real explorer/mapping code against fake transports, degrading honestly
-to `unknown` rather than guessing), the MCP transcript, and the oversight report.
+to `unknown` rather than guessing), the MCP transcripts, and the oversight report.
 
-## 5. The audit question
+## 5. The operator morning
+
+```sh
+make mcp-operator-demo-csm
+```
+
+Open `eval/mcp_operator_transcript.json`. The transcript runs a simulated
+morning over the real proposal gate: briefing, queue, evidence, a plain-English
+revise, approval with a simulated receipt, then two refusals (no-consent outreach
+and held expansion). The outbox is local simulation state only; the point is to
+show the control loop, not live delivery.
+
+## 6. The audit question
 
 ```sh
 make oversight-report

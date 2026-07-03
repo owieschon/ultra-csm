@@ -1,0 +1,2467 @@
+{
+  "access_mode": "demo_operator",
+  "artifact": "mcp_operator_transcript",
+  "artifact_sha256": "e659b560bba9e44ab17dcc6606d05b6724f9a360216f81e2bde8d4e35ee18432",
+  "beats": [
+    "briefing",
+    "queue",
+    "evidence",
+    "revise",
+    "approve_with_receipt",
+    "refusal",
+    "session_receipts"
+  ],
+  "claim_boundary": {
+    "live": false,
+    "sim": true
+  },
+  "headline": {
+    "accounts_need_you_today": 5,
+    "drafts_awaiting_verdict": 5,
+    "held_customer_facing_expansions": 7,
+    "identity_escalations": 1,
+    "stalled_arr_cents": 54800000
+  },
+  "refusal_codes": [
+    "CONSENT_MISSING",
+    "PRECEDENCE_HELD"
+  ],
+  "tool_calls": [
+    {
+      "output": {
+        "access_mode": "demo_operator",
+        "claim_boundary": {
+          "live": false,
+          "sim": true
+        },
+        "demo_operator_env": "ULTRA_CSM_DEMO_OPERATOR",
+        "read_only_env": "ULTRA_CSM_MCP_READONLY",
+        "suggested_next": [
+          "get_morning_briefing",
+          "get_next_steps"
+        ],
+        "tools": [
+          {
+            "classification": "read",
+            "name": "score_account",
+            "readonly_available": true
+          },
+          {
+            "classification": "read",
+            "name": "list_accounts",
+            "readonly_available": true
+          },
+          {
+            "classification": "read",
+            "name": "get_account_brief",
+            "readonly_available": true
+          },
+          {
+            "classification": "read",
+            "name": "get_hold_status",
+            "readonly_available": true
+          },
+          {
+            "classification": "read",
+            "name": "get_trajectory",
+            "readonly_available": true
+          },
+          {
+            "classification": "read",
+            "name": "list_proposals",
+            "readonly_available": true
+          },
+          {
+            "classification": "read",
+            "name": "get_morning_briefing",
+            "readonly_available": false
+          },
+          {
+            "classification": "read",
+            "name": "get_next_steps",
+            "readonly_available": true
+          },
+          {
+            "classification": "read",
+            "name": "get_session_ledger",
+            "readonly_available": false
+          },
+          {
+            "classification": "state_changing",
+            "name": "run_sweep",
+            "readonly_available": false
+          },
+          {
+            "classification": "state_changing",
+            "name": "submit_verdict",
+            "readonly_available": false
+          }
+        ]
+      },
+      "output_sha256": "92378f48c20cba9dfe0df8664d7f59c166c41eb5ef7662c593aa36208eb40d15",
+      "tool": "get_tool_manifest"
+    },
+    {
+      "output": {
+        "as_of": "2026-06-27",
+        "claim_boundary": {
+          "live": false,
+          "sim": true
+        },
+        "headline": {
+          "accounts_need_you_today": 5,
+          "drafts_awaiting_verdict": 5,
+          "held_customer_facing_expansions": 7,
+          "identity_escalations": 1,
+          "stalled_arr_cents": 54800000
+        },
+        "operator_script": [
+          "Inspect a proposed draft with list_proposals and get_account_brief.",
+          "Use submit_verdict with verdict='revise' for one bounded edit.",
+          "Approve the revised draft to write a simulation receipt.",
+          "Try approving a held or no-consent action to see the refusal.",
+          "End with get_session_ledger."
+        ],
+        "pending_proposals": [
+          {
+            "account_id": "<uuid:f924336b2db5>",
+            "account_name": "Acme Logistics",
+            "action": "draft_customer_outreach",
+            "autonomy_tier": 2,
+            "intent": "agent1_time_to_value_sweep",
+            "proposal_id": "<proposal:agent1_time_to_value_sweep:draft_customer_outreach:unknown>"
+          },
+          {
+            "account_id": "<uuid:a6f8626603b0>",
+            "account_name": "Globex Fleet",
+            "action": "draft_customer_outreach",
+            "autonomy_tier": 2,
+            "intent": "agent1_time_to_value_sweep",
+            "proposal_id": "<proposal:agent1_time_to_value_sweep:draft_customer_outreach:unknown>"
+          },
+          {
+            "account_id": "<uuid:0a23d4ee0b68>",
+            "account_name": "Initech Services",
+            "action": "draft_customer_outreach",
+            "autonomy_tier": 2,
+            "intent": "agent1_time_to_value_sweep",
+            "proposal_id": "<proposal:agent1_time_to_value_sweep:draft_customer_outreach:unknown>"
+          },
+          {
+            "account_id": "<uuid:c0a0446a9311>",
+            "account_name": "Soylent Distribution",
+            "action": "draft_customer_outreach",
+            "autonomy_tier": 2,
+            "intent": "agent1_time_to_value_sweep",
+            "proposal_id": "<proposal:agent1_time_to_value_sweep:draft_customer_outreach:unknown>"
+          },
+          {
+            "account_id": "<uuid:f924336b2db5>",
+            "account_name": "Acme Logistics",
+            "action": "initiate_customer_call",
+            "autonomy_tier": 3,
+            "intent": "mcp_demo_held_expansion_refusal",
+            "proposal_id": "<proposal:mcp_demo_held_expansion_refusal:initiate_customer_call:unknown>"
+          }
+        ],
+        "suggested_next": [
+          "list_proposals",
+          "get_account_brief",
+          "submit_verdict"
+        ],
+        "tenant_id": "ultra-demo",
+        "top_work_items": [
+          {
+            "account_id": "<uuid:f924336b2db5>",
+            "account_resolution": "exactly_one",
+            "candidate_account_ids": [],
+            "customer_contact_allowed": true,
+            "customer_draft": "Hi Jordan Lee, Acme Logistics is showing an onboarding risk tied to milestones_overdue, days_overdue. Can we review the overdue activation steps and agree on owners?",
+            "disposition": "propose_customer_action",
+            "draft_mode": "fixture",
+            "evidence": [
+              {
+                "field": "daily_active_assets",
+                "observed_at": "2026-06-20T00:00:00Z",
+                "source": "telemetry",
+                "source_id": "6dcc1c92-e0fd-5d6f-808f-d2e747f04415"
+              },
+              {
+                "field": "due_date",
+                "observed_at": "2026-06-28",
+                "source": "cs_platform",
+                "source_id": "d2212e35-9ab1-52ff-af61-7ed49fe36086"
+              },
+              {
+                "field": "target_date",
+                "observed_at": "2026-06-12",
+                "source": "cs_platform",
+                "source_id": "e8171967-d726-5c85-814a-73aaa19dc2cf"
+              },
+              {
+                "field": "status",
+                "observed_at": "2026-06-18T14:00:00Z",
+                "source": "crm",
+                "source_id": "4ddf4d0e-2600-56f7-9edc-a5a0071d8186"
+              },
+              {
+                "field": "health_score",
+                "observed_at": "2026-06-21T00:00:00Z",
+                "source": "cs_platform",
+                "source_id": "a317f5e7-575e-5879-8256-9082e40ef19f"
+              }
+            ],
+            "priority": {
+              "factors": [
+                {
+                  "config_version": "value-model-config-v1",
+                  "contribution": 50,
+                  "evidence": [
+                    {
+                      "field": "ttv_milestone",
+                      "observed_at": "2026-06-12",
+                      "source": "telemetry",
+                      "source_id": "6dcc1c92-e0fd-5d6f-808f-d2e747f04415"
+                    },
+                    {
+                      "field": "ttv_milestone",
+                      "observed_at": "2026-06-22",
+                      "source": "telemetry",
+                      "source_id": "6dcc1c92-e0fd-5d6f-808f-d2e747f04415"
+                    }
+                  ],
+                  "name": "milestones_overdue",
+                  "rule_name": "high_arr_review_default",
+                  "threshold_name": "milestone_overdue_points",
+                  "threshold_value": 25,
+                  "value": 2.0
+                },
+                {
+                  "config_version": "value-model-config-v1",
+                  "contribution": 30,
+                  "evidence": [
+                    {
+                      "field": "ttv_milestone",
+                      "observed_at": "2026-06-12",
+                      "source": "telemetry",
+                      "source_id": "6dcc1c92-e0fd-5d6f-808f-d2e747f04415"
+                    },
+                    {
+                      "field": "ttv_milestone",
+                      "observed_at": "2026-06-22",
+                      "source": "telemetry",
+                      "source_id": "6dcc1c92-e0fd-5d6f-808f-d2e747f04415"
+                    }
+                  ],
+                  "name": "days_overdue",
+                  "rule_name": "high_arr_review_default",
+                  "threshold_name": "days_overdue_cap",
+                  "threshold_value": 40,
+                  "value": 15.0
+                },
+                {
+                  "config_version": "value-model-config-v1",
+                  "contribution": 20,
+                  "evidence": [
+                    {
+                      "field": "target_date",
+                      "observed_at": "2026-06-12",
+                      "source": "cs_platform",
+                      "source_id": "e8171967-d726-5c85-814a-73aaa19dc2cf"
+                    }
+                  ],
+                  "name": "success_plan_overdue",
+                  "rule_name": "high_arr_review_default",
+                  "threshold_name": "success_plan_overdue_points",
+                  "threshold_value": 20,
+                  "value": 1.0
+                },
+                {
+                  "config_version": "value-model-config-v1",
+                  "contribution": 30,
+                  "evidence": [
+                    {
+                      "field": "health_score",
+                      "observed_at": "2026-06-21T00:00:00Z",
+                      "source": "cs_platform",
+                      "source_id": "a317f5e7-575e-5879-8256-9082e40ef19f"
+                    }
+                  ],
+                  "name": "health_red",
+                  "rule_name": "high_arr_review_default",
+                  "threshold_name": "health_red_points",
+                  "threshold_value": 30,
+                  "value": 1.0
+                },
+                {
+                  "config_version": "value-model-config-v1",
+                  "contribution": 5,
+                  "evidence": [
+                    {
+                      "field": "arr_cents",
+                      "observed_at": "2026-05-01",
+                      "source": "cs_platform",
+                      "source_id": "a317f5e7-575e-5879-8256-9082e40ef19f"
+                    }
+                  ],
+                  "name": "arr_tier",
+                  "rule_name": "high_arr_review_default",
+                  "threshold_name": "arr_review_floor_cents",
+                  "threshold_value": 15000000,
+                  "value": 18400000.0
+                },
+                {
+                  "config_version": "value-model-config-v1",
+                  "contribution": 12,
+                  "evidence": [
+                    {
+                      "field": "active_users",
+                      "observed_at": "2026-06-21T00:00:00Z",
+                      "source": "cs_platform",
+                      "source_id": "a317f5e7-575e-5879-8256-9082e40ef19f"
+                    }
+                  ],
+                  "name": "low_seat_penetration",
+                  "rule_name": "high_arr_review_default",
+                  "threshold_name": "seat_penetration_floor",
+                  "threshold_value": 0.55,
+                  "value": 0.11428571428571428
+                },
+                {
+                  "config_version": "value-model-config-v1",
+                  "contribution": 15,
+                  "evidence": [
+                    {
+                      "field": "underused_capabilities",
+                      "observed_at": "2026-06-21T00:00:00Z",
+                      "source": "cs_platform",
+                      "source_id": "a317f5e7-575e-5879-8256-9082e40ef19f"
+                    },
+                    {
+                      "field": "capability",
+                      "observed_at": "2026-05-01",
+                      "source": "telemetry",
+                      "source_id": "a317f5e7-575e-5879-8256-9082e40ef19f:core_telematics"
+                    }
+                  ],
+                  "name": "feature_depth_gap",
+                  "rule_name": "high_arr_review_default",
+                  "threshold_name": "depth_floor",
+                  "threshold_value": 0.7,
+                  "value": 0.0
+                }
+              ],
+              "score": 162
+            },
+            "proposal": {
+              "action_type": "draft_customer_outreach",
+              "channel": "email",
+              "created_by_principal": "<uuid:ee1589e35049>",
+              "proposal_id": "<proposal:verdict:unknown>",
+              "status": "pending"
+            },
+            "reason": "Acme Logistics has deterministic Time-to-Value score 162 from milestones_overdue=50, days_overdue=30, success_plan_overdue=20; draft customer outreach. Evidence [evidence:<uuid:62178814388a>], [evidence:<uuid:ae159c35aabe>], [evidence:<uuid:0089d3c5a0bd>].",
+            "recommended_action": "draft_customer_outreach",
+            "swept_at": "2026-06-27",
+            "tenant_id": "ultra-demo"
+          },
+          {
+            "account_id": "<uuid:0a0e8e0a5cdf>",
+            "account_resolution": "exactly_one",
+            "candidate_account_ids": [],
+            "customer_contact_allowed": false,
+            "customer_draft": null,
+            "disposition": "internal_review",
+            "draft_mode": "fixture",
+            "evidence": [
+              {
+                "field": "daily_active_assets",
+                "observed_at": "2026-06-20T00:00:00Z",
+                "source": "telemetry",
+                "source_id": "947b1c03-4cfd-57d1-8734-96a9a1d0580a"
+              },
+              {
+                "field": "due_date",
+                "observed_at": "2026-06-28",
+                "source": "cs_platform",
+                "source_id": "094d20f6-589f-523d-8c1a-57ee263b4b15"
+              },
+              {
+                "field": "target_date",
+                "observed_at": "2026-06-18",
+                "source": "cs_platform",
+                "source_id": "7c951754-708e-54c9-a308-927f4898a051"
+              },
+              {
+                "field": "health_score",
+                "observed_at": "2026-06-21T00:00:00Z",
+                "source": "cs_platform",
+                "source_id": "9bbdd7b2-55b0-5257-acf8-808ad224e276"
+              }
+            ],
+            "priority": {
+              "factors": [
+                {
+                  "config_version": "value-model-config-v1",
+                  "contribution": 25,
+                  "evidence": [
+                    {
+                      "field": "ttv_milestone",
+                      "observed_at": "2026-06-16",
+                      "source": "telemetry",
+                      "source_id": "947b1c03-4cfd-57d1-8734-96a9a1d0580a"
+                    }
+                  ],
+                  "name": "milestones_overdue",
+                  "rule_name": "base_default",
+                  "threshold_name": "milestone_overdue_points",
+                  "threshold_value": 25,
+                  "value": 1.0
+                },
+                {
+                  "config_version": "value-model-config-v1",
+                  "contribution": 22,
+                  "evidence": [
+                    {
+                      "field": "ttv_milestone",
+                      "observed_at": "2026-06-16",
+                      "source": "telemetry",
+                      "source_id": "947b1c03-4cfd-57d1-8734-96a9a1d0580a"
+                    }
+                  ],
+                  "name": "days_overdue",
+                  "rule_name": "base_default",
+                  "threshold_name": "days_overdue_cap",
+                  "threshold_value": 40,
+                  "value": 11.0
+                },
+                {
+                  "config_version": "value-model-config-v1",
+                  "contribution": 20,
+                  "evidence": [
+                    {
+                      "field": "target_date",
+                      "observed_at": "2026-06-18",
+                      "source": "cs_platform",
+                      "source_id": "7c951754-708e-54c9-a308-927f4898a051"
+                    }
+                  ],
+                  "name": "success_plan_overdue",
+                  "rule_name": "base_default",
+                  "threshold_name": "success_plan_overdue_points",
+                  "threshold_value": 20,
+                  "value": 1.0
+                },
+                {
+                  "config_version": "value-model-config-v1",
+                  "contribution": 15,
+                  "evidence": [
+                    {
+                      "field": "health_score",
+                      "observed_at": "2026-06-21T00:00:00Z",
+                      "source": "cs_platform",
+                      "source_id": "9bbdd7b2-55b0-5257-acf8-808ad224e276"
+                    }
+                  ],
+                  "name": "health_yellow",
+                  "rule_name": "base_default",
+                  "threshold_name": "health_yellow_points",
+                  "threshold_value": 15,
+                  "value": 1.0
+                },
+                {
+                  "config_version": "value-model-config-v1",
+                  "contribution": 12,
+                  "evidence": [
+                    {
+                      "field": "active_users",
+                      "observed_at": "2026-06-21T00:00:00Z",
+                      "source": "cs_platform",
+                      "source_id": "9bbdd7b2-55b0-5257-acf8-808ad224e276"
+                    }
+                  ],
+                  "name": "low_seat_penetration",
+                  "rule_name": "base_default",
+                  "threshold_name": "seat_penetration_floor",
+                  "threshold_value": 0.5,
+                  "value": 0.11428571428571428
+                },
+                {
+                  "config_version": "value-model-config-v1",
+                  "contribution": 15,
+                  "evidence": [
+                    {
+                      "field": "underused_capabilities",
+                      "observed_at": "2026-06-21T00:00:00Z",
+                      "source": "cs_platform",
+                      "source_id": "9bbdd7b2-55b0-5257-acf8-808ad224e276"
+                    },
+                    {
+                      "field": "capability",
+                      "observed_at": "2026-05-01",
+                      "source": "telemetry",
+                      "source_id": "9bbdd7b2-55b0-5257-acf8-808ad224e276:core_telematics"
+                    }
+                  ],
+                  "name": "feature_depth_gap",
+                  "rule_name": "base_default",
+                  "threshold_name": "depth_floor",
+                  "threshold_value": 0.6,
+                  "value": 0.0
+                }
+              ],
+              "score": 109
+            },
+            "proposal": null,
+            "reason": "Cyberdyne Transport has deterministic Time-to-Value score 109 from milestones_overdue=25, days_overdue=22, success_plan_overdue=20; route for internal review. Evidence [evidence:<uuid:640ecfe1d199>], [evidence:<uuid:7a0c9bc8fed0>], [evidence:<uuid:2e6685ab1c12>].",
+            "recommended_action": "recommend_next_best_action",
+            "swept_at": "2026-06-27",
+            "tenant_id": "ultra-demo"
+          },
+          {
+            "account_id": "<uuid:c0a0446a9311>",
+            "account_resolution": "exactly_one",
+            "candidate_account_ids": [],
+            "customer_contact_allowed": true,
+            "customer_draft": "Hi Avery Kim, Soylent Distribution is showing an onboarding risk tied to milestones_overdue, days_overdue. Can we review the overdue activation steps and agree on owners?",
+            "disposition": "propose_customer_action",
+            "draft_mode": "fixture",
+            "evidence": [
+              {
+                "field": "daily_active_assets",
+                "observed_at": "2026-06-20T00:00:00Z",
+                "source": "telemetry",
+                "source_id": "a6a68e4b-b7af-5b71-8e33-8964271ee848"
+              },
+              {
+                "field": "due_date",
+                "observed_at": "2026-06-28",
+                "source": "cs_platform",
+                "source_id": "de370721-fcfe-5b52-9682-fa7b8e79a07a"
+              },
+              {
+                "field": "target_date",
+                "observed_at": "2026-06-19",
+                "source": "cs_platform",
+                "source_id": "ef71210b-a3d3-5953-ad04-71bc869c6789"
+              },
+              {
+                "field": "status",
+                "observed_at": "2026-06-19T12:00:00Z",
+                "source": "crm",
+                "source_id": "fefff49b-e3f3-5127-86dd-970eedbf8ce1"
+              },
+              {
+                "field": "health_score",
+                "observed_at": "2026-06-21T00:00:00Z",
+                "source": "cs_platform",
+                "source_id": "ac5ddaea-764f-57ef-866d-593d57a20a00"
+              }
+            ],
+            "priority": {
+              "factors": [
+                {
+                  "config_version": "value-model-config-v1",
+                  "contribution": 25,
+                  "evidence": [
+                    {
+                      "field": "ttv_milestone",
+                      "observed_at": "2026-06-18",
+                      "source": "telemetry",
+                      "source_id": "a6a68e4b-b7af-5b71-8e33-8964271ee848"
+                    }
+                  ],
+                  "name": "milestones_overdue",
+                  "rule_name": "base_default",
+                  "threshold_name": "milestone_overdue_points",
+                  "threshold_value": 25,
+                  "value": 1.0
+                },
+                {
+                  "config_version": "value-model-config-v1",
+                  "contribution": 18,
+                  "evidence": [
+                    {
+                      "field": "ttv_milestone",
+                      "observed_at": "2026-06-18",
+                      "source": "telemetry",
+                      "source_id": "a6a68e4b-b7af-5b71-8e33-8964271ee848"
+                    }
+                  ],
+                  "name": "days_overdue",
+                  "rule_name": "base_default",
+                  "threshold_name": "days_overdue_cap",
+                  "threshold_value": 40,
+                  "value": 9.0
+                },
+                {
+                  "config_version": "value-model-config-v1",
+                  "contribution": 20,
+                  "evidence": [
+                    {
+                      "field": "target_date",
+                      "observed_at": "2026-06-19",
+                      "source": "cs_platform",
+                      "source_id": "ef71210b-a3d3-5953-ad04-71bc869c6789"
+                    }
+                  ],
+                  "name": "success_plan_overdue",
+                  "rule_name": "base_default",
+                  "threshold_name": "success_plan_overdue_points",
+                  "threshold_value": 20,
+                  "value": 1.0
+                },
+                {
+                  "config_version": "value-model-config-v1",
+                  "contribution": 15,
+                  "evidence": [
+                    {
+                      "field": "health_score",
+                      "observed_at": "2026-06-21T00:00:00Z",
+                      "source": "cs_platform",
+                      "source_id": "ac5ddaea-764f-57ef-866d-593d57a20a00"
+                    }
+                  ],
+                  "name": "health_yellow",
+                  "rule_name": "base_default",
+                  "threshold_name": "health_yellow_points",
+                  "threshold_value": 15,
+                  "value": 1.0
+                },
+                {
+                  "config_version": "value-model-config-v1",
+                  "contribution": 12,
+                  "evidence": [
+                    {
+                      "field": "active_users",
+                      "observed_at": "2026-06-21T00:00:00Z",
+                      "source": "cs_platform",
+                      "source_id": "ac5ddaea-764f-57ef-866d-593d57a20a00"
+                    }
+                  ],
+                  "name": "low_seat_penetration",
+                  "rule_name": "base_default",
+                  "threshold_name": "seat_penetration_floor",
+                  "threshold_value": 0.5,
+                  "value": 0.11428571428571428
+                },
+                {
+                  "config_version": "value-model-config-v1",
+                  "contribution": 15,
+                  "evidence": [
+                    {
+                      "field": "underused_capabilities",
+                      "observed_at": "2026-06-21T00:00:00Z",
+                      "source": "cs_platform",
+                      "source_id": "ac5ddaea-764f-57ef-866d-593d57a20a00"
+                    },
+                    {
+                      "field": "capability",
+                      "observed_at": "2026-05-01",
+                      "source": "telemetry",
+                      "source_id": "ac5ddaea-764f-57ef-866d-593d57a20a00:core_telematics"
+                    }
+                  ],
+                  "name": "feature_depth_gap",
+                  "rule_name": "base_default",
+                  "threshold_name": "depth_floor",
+                  "threshold_value": 0.6,
+                  "value": 0.0
+                }
+              ],
+              "score": 105
+            },
+            "proposal": {
+              "action_type": "draft_customer_outreach",
+              "channel": "email",
+              "created_by_principal": "<uuid:ee1589e35049>",
+              "proposal_id": "<proposal:verdict:unknown>",
+              "status": "pending"
+            },
+            "reason": "Soylent Distribution has deterministic Time-to-Value score 105 from milestones_overdue=25, days_overdue=18, success_plan_overdue=20; draft customer outreach. Evidence [evidence:<uuid:ae6f47477ef5>], [evidence:<uuid:58d94b1d7301>], [evidence:<uuid:b750bb15c8d1>].",
+            "recommended_action": "draft_customer_outreach",
+            "swept_at": "2026-06-27",
+            "tenant_id": "ultra-demo"
+          },
+          {
+            "account_id": "<uuid:a6f8626603b0>",
+            "account_resolution": "exactly_one",
+            "candidate_account_ids": [],
+            "customer_contact_allowed": true,
+            "customer_draft": "Hi Alex Rivers, Globex Fleet is showing an onboarding risk tied to milestones_overdue, days_overdue. Can we review the overdue activation steps and agree on owners?",
+            "disposition": "propose_customer_action",
+            "draft_mode": "fixture",
+            "evidence": [
+              {
+                "field": "daily_active_assets",
+                "observed_at": "2026-06-20T00:00:00Z",
+                "source": "telemetry",
+                "source_id": "85b3431d-1fe0-5c97-86da-c33dbc2d01c8"
+              },
+              {
+                "field": "due_date",
+                "observed_at": "2026-06-28",
+                "source": "cs_platform",
+                "source_id": "0f5ea32b-c798-5a0d-b21b-28f3eb5f85ee"
+              },
+              {
+                "field": "health_score",
+                "observed_at": "2026-06-21T00:00:00Z",
+                "source": "cs_platform",
+                "source_id": "b2178254-7d72-55e3-84af-27846a0cb7d5"
+              }
+            ],
+            "priority": {
+              "factors": [
+                {
+                  "config_version": "value-model-config-v1",
+                  "contribution": 25,
+                  "evidence": [
+                    {
+                      "field": "ttv_milestone",
+                      "observed_at": "2026-06-15",
+                      "source": "telemetry",
+                      "source_id": "85b3431d-1fe0-5c97-86da-c33dbc2d01c8"
+                    }
+                  ],
+                  "name": "milestones_overdue",
+                  "rule_name": "base_default",
+                  "threshold_name": "milestone_overdue_points",
+                  "threshold_value": 25,
+                  "value": 1.0
+                },
+                {
+                  "config_version": "value-model-config-v1",
+                  "contribution": 24,
+                  "evidence": [
+                    {
+                      "field": "ttv_milestone",
+                      "observed_at": "2026-06-15",
+                      "source": "telemetry",
+                      "source_id": "85b3431d-1fe0-5c97-86da-c33dbc2d01c8"
+                    }
+                  ],
+                  "name": "days_overdue",
+                  "rule_name": "base_default",
+                  "threshold_name": "days_overdue_cap",
+                  "threshold_value": 40,
+                  "value": 12.0
+                },
+                {
+                  "config_version": "value-model-config-v1",
+                  "contribution": 15,
+                  "evidence": [
+                    {
+                      "field": "health_score",
+                      "observed_at": "2026-06-21T00:00:00Z",
+                      "source": "cs_platform",
+                      "source_id": "b2178254-7d72-55e3-84af-27846a0cb7d5"
+                    }
+                  ],
+                  "name": "health_yellow",
+                  "rule_name": "base_default",
+                  "threshold_name": "health_yellow_points",
+                  "threshold_value": 15,
+                  "value": 1.0
+                },
+                {
+                  "config_version": "value-model-config-v1",
+                  "contribution": 12,
+                  "evidence": [
+                    {
+                      "field": "active_users",
+                      "observed_at": "2026-06-21T00:00:00Z",
+                      "source": "cs_platform",
+                      "source_id": "b2178254-7d72-55e3-84af-27846a0cb7d5"
+                    }
+                  ],
+                  "name": "low_seat_penetration",
+                  "rule_name": "base_default",
+                  "threshold_name": "seat_penetration_floor",
+                  "threshold_value": 0.5,
+                  "value": 0.11428571428571428
+                },
+                {
+                  "config_version": "value-model-config-v1",
+                  "contribution": 15,
+                  "evidence": [
+                    {
+                      "field": "underused_capabilities",
+                      "observed_at": "2026-06-21T00:00:00Z",
+                      "source": "cs_platform",
+                      "source_id": "b2178254-7d72-55e3-84af-27846a0cb7d5"
+                    },
+                    {
+                      "field": "capability",
+                      "observed_at": "2026-05-01",
+                      "source": "telemetry",
+                      "source_id": "b2178254-7d72-55e3-84af-27846a0cb7d5:core_telematics"
+                    }
+                  ],
+                  "name": "feature_depth_gap",
+                  "rule_name": "base_default",
+                  "threshold_name": "depth_floor",
+                  "threshold_value": 0.6,
+                  "value": 0.0
+                }
+              ],
+              "score": 91
+            },
+            "proposal": {
+              "action_type": "draft_customer_outreach",
+              "channel": "email",
+              "created_by_principal": "<uuid:ee1589e35049>",
+              "proposal_id": "<proposal:verdict:unknown>",
+              "status": "pending"
+            },
+            "reason": "Globex Fleet has deterministic Time-to-Value score 91 from milestones_overdue=25, days_overdue=24, health_yellow=15; draft customer outreach. Evidence [evidence:<uuid:74f750862834>], [evidence:<uuid:3f7c5138347a>], [evidence:<uuid:a6f8626603b0>].",
+            "recommended_action": "draft_customer_outreach",
+            "swept_at": "2026-06-27",
+            "tenant_id": "ultra-demo"
+          },
+          {
+            "account_id": "<uuid:0a23d4ee0b68>",
+            "account_resolution": "exactly_one",
+            "candidate_account_ids": [],
+            "customer_contact_allowed": true,
+            "customer_draft": "Hi Samir Rao, Initech Services is showing an onboarding risk tied to success_plan_overdue, health_yellow. Can we map the missing users needed for a complete rollout?",
+            "disposition": "propose_customer_action",
+            "draft_mode": "fixture",
+            "evidence": [
+              {
+                "field": "target_date",
+                "observed_at": "2026-06-17",
+                "source": "cs_platform",
+                "source_id": "7dd6a2dc-67d4-5087-9708-7d3c5a83df44"
+              },
+              {
+                "field": "health_score",
+                "observed_at": "2026-06-21T00:00:00Z",
+                "source": "cs_platform",
+                "source_id": "efe1d86f-af21-5ca6-8719-3ba8b4429292"
+              }
+            ],
+            "priority": {
+              "factors": [
+                {
+                  "config_version": "value-model-config-v1",
+                  "contribution": 20,
+                  "evidence": [
+                    {
+                      "field": "target_date",
+                      "observed_at": "2026-06-17",
+                      "source": "cs_platform",
+                      "source_id": "7dd6a2dc-67d4-5087-9708-7d3c5a83df44"
+                    }
+                  ],
+                  "name": "success_plan_overdue",
+                  "rule_name": "base_default",
+                  "threshold_name": "success_plan_overdue_points",
+                  "threshold_value": 20,
+                  "value": 1.0
+                },
+                {
+                  "config_version": "value-model-config-v1",
+                  "contribution": 15,
+                  "evidence": [
+                    {
+                      "field": "health_score",
+                      "observed_at": "2026-06-21T00:00:00Z",
+                      "source": "cs_platform",
+                      "source_id": "efe1d86f-af21-5ca6-8719-3ba8b4429292"
+                    }
+                  ],
+                  "name": "health_yellow",
+                  "rule_name": "base_default",
+                  "threshold_name": "health_yellow_points",
+                  "threshold_value": 15,
+                  "value": 1.0
+                },
+                {
+                  "config_version": "value-model-config-v1",
+                  "contribution": 12,
+                  "evidence": [
+                    {
+                      "field": "active_users",
+                      "observed_at": "2026-06-21T00:00:00Z",
+                      "source": "cs_platform",
+                      "source_id": "efe1d86f-af21-5ca6-8719-3ba8b4429292"
+                    }
+                  ],
+                  "name": "low_seat_penetration",
+                  "rule_name": "base_default",
+                  "threshold_name": "seat_penetration_floor",
+                  "threshold_value": 0.5,
+                  "value": 0.11428571428571428
+                },
+                {
+                  "config_version": "value-model-config-v1",
+                  "contribution": 15,
+                  "evidence": [
+                    {
+                      "field": "underused_capabilities",
+                      "observed_at": "2026-06-21T00:00:00Z",
+                      "source": "cs_platform",
+                      "source_id": "efe1d86f-af21-5ca6-8719-3ba8b4429292"
+                    },
+                    {
+                      "field": "capability",
+                      "observed_at": "2026-05-01",
+                      "source": "telemetry",
+                      "source_id": "efe1d86f-af21-5ca6-8719-3ba8b4429292:core_telematics"
+                    }
+                  ],
+                  "name": "feature_depth_gap",
+                  "rule_name": "base_default",
+                  "threshold_name": "depth_floor",
+                  "threshold_value": 0.6,
+                  "value": 0.0
+                }
+              ],
+              "score": 62
+            },
+            "proposal": {
+              "action_type": "draft_customer_outreach",
+              "channel": "email",
+              "created_by_principal": "<uuid:ee1589e35049>",
+              "proposal_id": "<proposal:verdict:unknown>",
+              "status": "pending"
+            },
+            "reason": "Initech Services has deterministic Time-to-Value score 62 from success_plan_overdue=20, health_yellow=15, low_seat_penetration=12; draft customer outreach. Evidence [evidence:<uuid:bee041bb3f66>], [evidence:<uuid:0a23d4ee0b68>].",
+            "recommended_action": "draft_customer_outreach",
+            "swept_at": "2026-06-27",
+            "tenant_id": "ultra-demo"
+          }
+        ]
+      },
+      "output_sha256": "18188192201e75bc711ea9b41dfcb7a142ef75d16ae6cd6cab778a6122cba04a",
+      "tool": "get_morning_briefing"
+    },
+    {
+      "output": {
+        "claim_boundary": {
+          "live": false,
+          "sim": true
+        },
+        "pending_count": 6,
+        "proposals": [
+          {
+            "action": "draft_customer_outreach",
+            "autonomy_tier": 2,
+            "intent": "agent1_time_to_value_sweep",
+            "payload": {
+              "account_id": "<uuid:f924336b2db5>",
+              "account_name": "Acme Logistics",
+              "as_of": "2026-06-27",
+              "body": "Hi Jordan Lee, Acme Logistics is showing an onboarding risk tied to milestones_overdue, days_overdue. Can we review the overdue activation steps and agree on owners?",
+              "contact_email": "ops@acme-logistics.example",
+              "contact_id": "<uuid:933db59555d8>",
+              "draft_channel": "email",
+              "evidence_ids": [
+                "<uuid:62178814388a>",
+                "<uuid:ae159c35aabe>",
+                "<uuid:0089d3c5a0bd>",
+                "<uuid:af8d5c08212b>",
+                "<uuid:f924336b2db5>"
+              ],
+              "priority": {
+                "factors": [
+                  {
+                    "config_version": "value-model-config-v1",
+                    "contribution": 50,
+                    "evidence": [
+                      {
+                        "field": "ttv_milestone",
+                        "observed_at": "2026-06-12",
+                        "source": "telemetry",
+                        "source_id": "<uuid:62178814388a>"
+                      },
+                      {
+                        "field": "ttv_milestone",
+                        "observed_at": "2026-06-22",
+                        "source": "telemetry",
+                        "source_id": "<uuid:62178814388a>"
+                      }
+                    ],
+                    "name": "milestones_overdue",
+                    "rule_name": "high_arr_review_default",
+                    "threshold_name": "milestone_overdue_points",
+                    "threshold_value": 25,
+                    "value": 2.0
+                  },
+                  {
+                    "config_version": "value-model-config-v1",
+                    "contribution": 30,
+                    "evidence": [
+                      {
+                        "field": "ttv_milestone",
+                        "observed_at": "2026-06-12",
+                        "source": "telemetry",
+                        "source_id": "<uuid:62178814388a>"
+                      },
+                      {
+                        "field": "ttv_milestone",
+                        "observed_at": "2026-06-22",
+                        "source": "telemetry",
+                        "source_id": "<uuid:62178814388a>"
+                      }
+                    ],
+                    "name": "days_overdue",
+                    "rule_name": "high_arr_review_default",
+                    "threshold_name": "days_overdue_cap",
+                    "threshold_value": 40,
+                    "value": 15.0
+                  },
+                  {
+                    "config_version": "value-model-config-v1",
+                    "contribution": 20,
+                    "evidence": [
+                      {
+                        "field": "target_date",
+                        "observed_at": "2026-06-12",
+                        "source": "cs_platform",
+                        "source_id": "<uuid:0089d3c5a0bd>"
+                      }
+                    ],
+                    "name": "success_plan_overdue",
+                    "rule_name": "high_arr_review_default",
+                    "threshold_name": "success_plan_overdue_points",
+                    "threshold_value": 20,
+                    "value": 1.0
+                  },
+                  {
+                    "config_version": "value-model-config-v1",
+                    "contribution": 30,
+                    "evidence": [
+                      {
+                        "field": "health_score",
+                        "observed_at": "2026-06-21T00:00:00Z",
+                        "source": "cs_platform",
+                        "source_id": "<uuid:f924336b2db5>"
+                      }
+                    ],
+                    "name": "health_red",
+                    "rule_name": "high_arr_review_default",
+                    "threshold_name": "health_red_points",
+                    "threshold_value": 30,
+                    "value": 1.0
+                  },
+                  {
+                    "config_version": "value-model-config-v1",
+                    "contribution": 5,
+                    "evidence": [
+                      {
+                        "field": "arr_cents",
+                        "observed_at": "2026-05-01",
+                        "source": "cs_platform",
+                        "source_id": "<uuid:f924336b2db5>"
+                      }
+                    ],
+                    "name": "arr_tier",
+                    "rule_name": "high_arr_review_default",
+                    "threshold_name": "arr_review_floor_cents",
+                    "threshold_value": 15000000,
+                    "value": 18400000.0
+                  },
+                  {
+                    "config_version": "value-model-config-v1",
+                    "contribution": 12,
+                    "evidence": [
+                      {
+                        "field": "active_users",
+                        "observed_at": "2026-06-21T00:00:00Z",
+                        "source": "cs_platform",
+                        "source_id": "<uuid:f924336b2db5>"
+                      }
+                    ],
+                    "name": "low_seat_penetration",
+                    "rule_name": "high_arr_review_default",
+                    "threshold_name": "seat_penetration_floor",
+                    "threshold_value": 0.55,
+                    "value": 0.11428571428571428
+                  },
+                  {
+                    "config_version": "value-model-config-v1",
+                    "contribution": 15,
+                    "evidence": [
+                      {
+                        "field": "underused_capabilities",
+                        "observed_at": "2026-06-21T00:00:00Z",
+                        "source": "cs_platform",
+                        "source_id": "<uuid:f924336b2db5>"
+                      },
+                      {
+                        "field": "capability",
+                        "observed_at": "2026-05-01",
+                        "source": "telemetry",
+                        "source_id": "<uuid:f924336b2db5>:core_telematics"
+                      }
+                    ],
+                    "name": "feature_depth_gap",
+                    "rule_name": "high_arr_review_default",
+                    "threshold_name": "depth_floor",
+                    "threshold_value": 0.7,
+                    "value": 0.0
+                  }
+                ],
+                "score": 162
+              },
+              "subject": "Time-to-Value follow-up for Acme Logistics"
+            },
+            "proposal_id": "<proposal:agent1_time_to_value_sweep:draft_customer_outreach:acme-logistics>",
+            "required_permission": "customer.outreach.draft",
+            "status": "pending"
+          },
+          {
+            "action": "draft_customer_outreach",
+            "autonomy_tier": 2,
+            "intent": "agent1_time_to_value_sweep",
+            "payload": {
+              "account_id": "<uuid:a6f8626603b0>",
+              "account_name": "Globex Fleet",
+              "as_of": "2026-06-27",
+              "body": "Hi Alex Rivers, Globex Fleet is showing an onboarding risk tied to milestones_overdue, days_overdue. Can we review the overdue activation steps and agree on owners?",
+              "contact_email": "ops@globex.example",
+              "contact_id": "<uuid:a8e03f7a46e5>",
+              "draft_channel": "email",
+              "evidence_ids": [
+                "<uuid:74f750862834>",
+                "<uuid:3f7c5138347a>",
+                "<uuid:a6f8626603b0>"
+              ],
+              "priority": {
+                "factors": [
+                  {
+                    "config_version": "value-model-config-v1",
+                    "contribution": 25,
+                    "evidence": [
+                      {
+                        "field": "ttv_milestone",
+                        "observed_at": "2026-06-15",
+                        "source": "telemetry",
+                        "source_id": "<uuid:74f750862834>"
+                      }
+                    ],
+                    "name": "milestones_overdue",
+                    "rule_name": "base_default",
+                    "threshold_name": "milestone_overdue_points",
+                    "threshold_value": 25,
+                    "value": 1.0
+                  },
+                  {
+                    "config_version": "value-model-config-v1",
+                    "contribution": 24,
+                    "evidence": [
+                      {
+                        "field": "ttv_milestone",
+                        "observed_at": "2026-06-15",
+                        "source": "telemetry",
+                        "source_id": "<uuid:74f750862834>"
+                      }
+                    ],
+                    "name": "days_overdue",
+                    "rule_name": "base_default",
+                    "threshold_name": "days_overdue_cap",
+                    "threshold_value": 40,
+                    "value": 12.0
+                  },
+                  {
+                    "config_version": "value-model-config-v1",
+                    "contribution": 15,
+                    "evidence": [
+                      {
+                        "field": "health_score",
+                        "observed_at": "2026-06-21T00:00:00Z",
+                        "source": "cs_platform",
+                        "source_id": "<uuid:a6f8626603b0>"
+                      }
+                    ],
+                    "name": "health_yellow",
+                    "rule_name": "base_default",
+                    "threshold_name": "health_yellow_points",
+                    "threshold_value": 15,
+                    "value": 1.0
+                  },
+                  {
+                    "config_version": "value-model-config-v1",
+                    "contribution": 12,
+                    "evidence": [
+                      {
+                        "field": "active_users",
+                        "observed_at": "2026-06-21T00:00:00Z",
+                        "source": "cs_platform",
+                        "source_id": "<uuid:a6f8626603b0>"
+                      }
+                    ],
+                    "name": "low_seat_penetration",
+                    "rule_name": "base_default",
+                    "threshold_name": "seat_penetration_floor",
+                    "threshold_value": 0.5,
+                    "value": 0.11428571428571428
+                  },
+                  {
+                    "config_version": "value-model-config-v1",
+                    "contribution": 15,
+                    "evidence": [
+                      {
+                        "field": "underused_capabilities",
+                        "observed_at": "2026-06-21T00:00:00Z",
+                        "source": "cs_platform",
+                        "source_id": "<uuid:a6f8626603b0>"
+                      },
+                      {
+                        "field": "capability",
+                        "observed_at": "2026-05-01",
+                        "source": "telemetry",
+                        "source_id": "<uuid:a6f8626603b0>:core_telematics"
+                      }
+                    ],
+                    "name": "feature_depth_gap",
+                    "rule_name": "base_default",
+                    "threshold_name": "depth_floor",
+                    "threshold_value": 0.6,
+                    "value": 0.0
+                  }
+                ],
+                "score": 91
+              },
+              "subject": "Time-to-Value follow-up for Globex Fleet"
+            },
+            "proposal_id": "<proposal:agent1_time_to_value_sweep:draft_customer_outreach:globex-fleet>",
+            "required_permission": "customer.outreach.draft",
+            "status": "pending"
+          },
+          {
+            "action": "draft_customer_outreach",
+            "autonomy_tier": 2,
+            "intent": "agent1_time_to_value_sweep",
+            "payload": {
+              "account_id": "<uuid:0a23d4ee0b68>",
+              "account_name": "Initech Services",
+              "as_of": "2026-06-27",
+              "body": "Hi Samir Rao, Initech Services is showing an onboarding risk tied to success_plan_overdue, health_yellow. Can we map the missing users needed for a complete rollout?",
+              "contact_email": "ops@initech.example",
+              "contact_id": "<uuid:9bb43be2f45e>",
+              "draft_channel": "email",
+              "evidence_ids": [
+                "<uuid:bee041bb3f66>",
+                "<uuid:0a23d4ee0b68>"
+              ],
+              "priority": {
+                "factors": [
+                  {
+                    "config_version": "value-model-config-v1",
+                    "contribution": 20,
+                    "evidence": [
+                      {
+                        "field": "target_date",
+                        "observed_at": "2026-06-17",
+                        "source": "cs_platform",
+                        "source_id": "<uuid:bee041bb3f66>"
+                      }
+                    ],
+                    "name": "success_plan_overdue",
+                    "rule_name": "base_default",
+                    "threshold_name": "success_plan_overdue_points",
+                    "threshold_value": 20,
+                    "value": 1.0
+                  },
+                  {
+                    "config_version": "value-model-config-v1",
+                    "contribution": 15,
+                    "evidence": [
+                      {
+                        "field": "health_score",
+                        "observed_at": "2026-06-21T00:00:00Z",
+                        "source": "cs_platform",
+                        "source_id": "<uuid:0a23d4ee0b68>"
+                      }
+                    ],
+                    "name": "health_yellow",
+                    "rule_name": "base_default",
+                    "threshold_name": "health_yellow_points",
+                    "threshold_value": 15,
+                    "value": 1.0
+                  },
+                  {
+                    "config_version": "value-model-config-v1",
+                    "contribution": 12,
+                    "evidence": [
+                      {
+                        "field": "active_users",
+                        "observed_at": "2026-06-21T00:00:00Z",
+                        "source": "cs_platform",
+                        "source_id": "<uuid:0a23d4ee0b68>"
+                      }
+                    ],
+                    "name": "low_seat_penetration",
+                    "rule_name": "base_default",
+                    "threshold_name": "seat_penetration_floor",
+                    "threshold_value": 0.5,
+                    "value": 0.11428571428571428
+                  },
+                  {
+                    "config_version": "value-model-config-v1",
+                    "contribution": 15,
+                    "evidence": [
+                      {
+                        "field": "underused_capabilities",
+                        "observed_at": "2026-06-21T00:00:00Z",
+                        "source": "cs_platform",
+                        "source_id": "<uuid:0a23d4ee0b68>"
+                      },
+                      {
+                        "field": "capability",
+                        "observed_at": "2026-05-01",
+                        "source": "telemetry",
+                        "source_id": "<uuid:0a23d4ee0b68>:core_telematics"
+                      }
+                    ],
+                    "name": "feature_depth_gap",
+                    "rule_name": "base_default",
+                    "threshold_name": "depth_floor",
+                    "threshold_value": 0.6,
+                    "value": 0.0
+                  }
+                ],
+                "score": 62
+              },
+              "subject": "Time-to-Value follow-up for Initech Services"
+            },
+            "proposal_id": "<proposal:agent1_time_to_value_sweep:draft_customer_outreach:initech-services>",
+            "required_permission": "customer.outreach.draft",
+            "status": "pending"
+          },
+          {
+            "action": "draft_customer_outreach",
+            "autonomy_tier": 2,
+            "intent": "agent1_time_to_value_sweep",
+            "payload": {
+              "account_id": "<uuid:c0a0446a9311>",
+              "account_name": "Soylent Distribution",
+              "as_of": "2026-06-27",
+              "body": "Hi Avery Kim, Soylent Distribution is showing an onboarding risk tied to milestones_overdue, days_overdue. Can we review the overdue activation steps and agree on owners?",
+              "contact_email": "ops@soylent.example",
+              "contact_id": "<uuid:831870098d72>",
+              "draft_channel": "email",
+              "evidence_ids": [
+                "<uuid:ae6f47477ef5>",
+                "<uuid:58d94b1d7301>",
+                "<uuid:b750bb15c8d1>",
+                "<uuid:41bfc3b56638>",
+                "<uuid:c0a0446a9311>"
+              ],
+              "priority": {
+                "factors": [
+                  {
+                    "config_version": "value-model-config-v1",
+                    "contribution": 25,
+                    "evidence": [
+                      {
+                        "field": "ttv_milestone",
+                        "observed_at": "2026-06-18",
+                        "source": "telemetry",
+                        "source_id": "<uuid:ae6f47477ef5>"
+                      }
+                    ],
+                    "name": "milestones_overdue",
+                    "rule_name": "base_default",
+                    "threshold_name": "milestone_overdue_points",
+                    "threshold_value": 25,
+                    "value": 1.0
+                  },
+                  {
+                    "config_version": "value-model-config-v1",
+                    "contribution": 18,
+                    "evidence": [
+                      {
+                        "field": "ttv_milestone",
+                        "observed_at": "2026-06-18",
+                        "source": "telemetry",
+                        "source_id": "<uuid:ae6f47477ef5>"
+                      }
+                    ],
+                    "name": "days_overdue",
+                    "rule_name": "base_default",
+                    "threshold_name": "days_overdue_cap",
+                    "threshold_value": 40,
+                    "value": 9.0
+                  },
+                  {
+                    "config_version": "value-model-config-v1",
+                    "contribution": 20,
+                    "evidence": [
+                      {
+                        "field": "target_date",
+                        "observed_at": "2026-06-19",
+                        "source": "cs_platform",
+                        "source_id": "<uuid:b750bb15c8d1>"
+                      }
+                    ],
+                    "name": "success_plan_overdue",
+                    "rule_name": "base_default",
+                    "threshold_name": "success_plan_overdue_points",
+                    "threshold_value": 20,
+                    "value": 1.0
+                  },
+                  {
+                    "config_version": "value-model-config-v1",
+                    "contribution": 15,
+                    "evidence": [
+                      {
+                        "field": "health_score",
+                        "observed_at": "2026-06-21T00:00:00Z",
+                        "source": "cs_platform",
+                        "source_id": "<uuid:c0a0446a9311>"
+                      }
+                    ],
+                    "name": "health_yellow",
+                    "rule_name": "base_default",
+                    "threshold_name": "health_yellow_points",
+                    "threshold_value": 15,
+                    "value": 1.0
+                  },
+                  {
+                    "config_version": "value-model-config-v1",
+                    "contribution": 12,
+                    "evidence": [
+                      {
+                        "field": "active_users",
+                        "observed_at": "2026-06-21T00:00:00Z",
+                        "source": "cs_platform",
+                        "source_id": "<uuid:c0a0446a9311>"
+                      }
+                    ],
+                    "name": "low_seat_penetration",
+                    "rule_name": "base_default",
+                    "threshold_name": "seat_penetration_floor",
+                    "threshold_value": 0.5,
+                    "value": 0.11428571428571428
+                  },
+                  {
+                    "config_version": "value-model-config-v1",
+                    "contribution": 15,
+                    "evidence": [
+                      {
+                        "field": "underused_capabilities",
+                        "observed_at": "2026-06-21T00:00:00Z",
+                        "source": "cs_platform",
+                        "source_id": "<uuid:c0a0446a9311>"
+                      },
+                      {
+                        "field": "capability",
+                        "observed_at": "2026-05-01",
+                        "source": "telemetry",
+                        "source_id": "<uuid:c0a0446a9311>:core_telematics"
+                      }
+                    ],
+                    "name": "feature_depth_gap",
+                    "rule_name": "base_default",
+                    "threshold_name": "depth_floor",
+                    "threshold_value": 0.6,
+                    "value": 0.0
+                  }
+                ],
+                "score": 105
+              },
+              "subject": "Time-to-Value follow-up for Soylent Distribution"
+            },
+            "proposal_id": "<proposal:agent1_time_to_value_sweep:draft_customer_outreach:soylent-distribution>",
+            "required_permission": "customer.outreach.draft",
+            "status": "pending"
+          },
+          {
+            "action": "initiate_customer_call",
+            "autonomy_tier": 3,
+            "intent": "mcp_demo_held_expansion_refusal",
+            "payload": {
+              "account_id": "<uuid:f924336b2db5>",
+              "account_name": "Acme Logistics",
+              "as_of": "2026-06-27",
+              "opportunity_id": "<uuid:0e5b66a14627>",
+              "opportunity_stage": "Qualification",
+              "source": "sim"
+            },
+            "proposal_id": "<proposal:mcp_demo_held_expansion_refusal:initiate_customer_call:acme-logistics>",
+            "required_permission": "customer.call.initiate",
+            "status": "pending"
+          },
+          {
+            "action": "draft_customer_outreach",
+            "autonomy_tier": 2,
+            "intent": "mcp_demo_no_consent_refusal",
+            "payload": {
+              "account_id": "<uuid:0a0e8e0a5cdf>",
+              "account_name": "Cyberdyne Transport",
+              "as_of": "2026-06-27",
+              "body": "Simulation-only draft that must not be approved without consent.",
+              "contact_email": "ops@cyberdyne.example",
+              "contact_id": "<uuid:fed68a72e016>",
+              "evidence_ids": [
+                "health:<uuid:0a0e8e0a5cdf>"
+              ],
+              "source": "sim",
+              "subject": "Onboarding activation follow-up"
+            },
+            "proposal_id": "<proposal:mcp_demo_no_consent_refusal:draft_customer_outreach:cyberdyne-transport>",
+            "required_permission": "customer.outreach.draft",
+            "status": "pending"
+          }
+        ],
+        "suggested_next": [
+          "get_account_brief",
+          "submit_verdict"
+        ],
+        "tenant_id": "<uuid:151b277a52bd>"
+      },
+      "output_sha256": "710b0f66f96aa6292059d551c1ee1dc0e56c35356739334dc7703836e613fe02",
+      "tool": "list_proposals"
+    },
+    {
+      "output": {
+        "account_id": "<uuid:f924336b2db5>",
+        "account_name": "Acme Logistics",
+        "adoption": {
+          "account_id": "<uuid:f924336b2db5>",
+          "active_assets": 10,
+          "active_users": 4,
+          "adoption_rate": 0.25,
+          "entitled_assets": 80,
+          "licensed_users": 35,
+          "measured_at": "2026-06-21T00:00:00Z",
+          "underused_capabilities": [
+            "core_telematics"
+          ]
+        },
+        "claim_boundary": {
+          "live": false,
+          "sim": true
+        },
+        "company": {
+          "arr_cents": 18400000,
+          "csm_owner_id": "csm-001",
+          "lifecycle_stage": "onboarding",
+          "renewal_date": "2027-05-01",
+          "status": "Active"
+        },
+        "contacts": [
+          {
+            "consent_to_contact": true,
+            "email": "ops@acme-logistics.example",
+            "name": "Jordan Lee",
+            "role": "operations",
+            "title": "Operations Lead"
+          }
+        ],
+        "divergences": [],
+        "entitlements": [
+          {
+            "account_id": "<uuid:f924336b2db5>",
+            "capability": "core_telematics",
+            "ends_at": null,
+            "entitled_quantity": 80,
+            "starts_at": "2026-05-01",
+            "unit": "assets"
+          }
+        ],
+        "health_snapshot": {
+          "band": "red",
+          "drivers": [
+            "activation_gap",
+            "implementation_blocker"
+          ],
+          "measured_at": "2026-06-21T00:00:00Z",
+          "score": 38.0
+        },
+        "industry": "transportation",
+        "lifecycle_stage": "onboarding",
+        "milestones": [
+          {
+            "account_id": "<uuid:f924336b2db5>",
+            "achieved_at": null,
+            "evidence_signal_ids": [
+              "6dcc1c92-e0fd-5d6f-808f-d2e747f04415"
+            ],
+            "expected_by": "2026-06-12",
+            "milestone": "activate_50_percent_of_assets"
+          },
+          {
+            "account_id": "<uuid:f924336b2db5>",
+            "achieved_at": null,
+            "evidence_signal_ids": [
+              "6dcc1c92-e0fd-5d6f-808f-d2e747f04415"
+            ],
+            "expected_by": "2026-06-22",
+            "milestone": "first_driver_workflow"
+          }
+        ],
+        "open_cases": [
+          {
+            "account_id": "<uuid:f924336b2db5>",
+            "case_id": "<uuid:af8d5c08212b>",
+            "closed_at": null,
+            "created_at": "2026-06-18T14:00:00Z",
+            "origin": "Email",
+            "priority": "High",
+            "status": "Open",
+            "subject": "Implementation blocker on remaining fleet rollout"
+          }
+        ],
+        "open_ctas": [
+          {
+            "account_id": "<uuid:f924336b2db5>",
+            "cta_id": "<uuid:ae159c35aabe>",
+            "due_date": "2026-06-28",
+            "owner_id": "csm-sweep",
+            "priority": "High",
+            "reason": "Activation milestone at risk",
+            "status": "open"
+          }
+        ],
+        "opportunities": [
+          {
+            "account_id": "<uuid:f924336b2db5>",
+            "amount_cents": 4200000,
+            "close_date": "2026-09-30",
+            "opportunity_id": "<uuid:0e5b66a14627>",
+            "opportunity_type": "Expansion",
+            "stage_name": "Qualification"
+          },
+          {
+            "account_id": "<uuid:f924336b2db5>",
+            "amount_cents": 18400000,
+            "close_date": "2027-05-01",
+            "opportunity_id": "<uuid:5f220ea31786>",
+            "opportunity_type": "Renewal",
+            "stage_name": "Qualification"
+          }
+        ],
+        "priority": {
+          "factors": [
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 50,
+              "evidence": [
+                {
+                  "field": "ttv_milestone",
+                  "observed_at": "2026-06-12",
+                  "source": "telemetry",
+                  "source_id": "6dcc1c92-e0fd-5d6f-808f-d2e747f04415"
+                },
+                {
+                  "field": "ttv_milestone",
+                  "observed_at": "2026-06-22",
+                  "source": "telemetry",
+                  "source_id": "6dcc1c92-e0fd-5d6f-808f-d2e747f04415"
+                }
+              ],
+              "name": "milestones_overdue",
+              "rule_name": "high_arr_review_default",
+              "threshold_name": "milestone_overdue_points",
+              "threshold_value": 25,
+              "value": 2.0
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 30,
+              "evidence": [
+                {
+                  "field": "ttv_milestone",
+                  "observed_at": "2026-06-12",
+                  "source": "telemetry",
+                  "source_id": "6dcc1c92-e0fd-5d6f-808f-d2e747f04415"
+                },
+                {
+                  "field": "ttv_milestone",
+                  "observed_at": "2026-06-22",
+                  "source": "telemetry",
+                  "source_id": "6dcc1c92-e0fd-5d6f-808f-d2e747f04415"
+                }
+              ],
+              "name": "days_overdue",
+              "rule_name": "high_arr_review_default",
+              "threshold_name": "days_overdue_cap",
+              "threshold_value": 40,
+              "value": 15.0
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 20,
+              "evidence": [
+                {
+                  "field": "target_date",
+                  "observed_at": "2026-06-12",
+                  "source": "cs_platform",
+                  "source_id": "e8171967-d726-5c85-814a-73aaa19dc2cf"
+                }
+              ],
+              "name": "success_plan_overdue",
+              "rule_name": "high_arr_review_default",
+              "threshold_name": "success_plan_overdue_points",
+              "threshold_value": 20,
+              "value": 1.0
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 30,
+              "evidence": [
+                {
+                  "field": "health_score",
+                  "observed_at": "2026-06-21T00:00:00Z",
+                  "source": "cs_platform",
+                  "source_id": "a317f5e7-575e-5879-8256-9082e40ef19f"
+                }
+              ],
+              "name": "health_red",
+              "rule_name": "high_arr_review_default",
+              "threshold_name": "health_red_points",
+              "threshold_value": 30,
+              "value": 1.0
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 5,
+              "evidence": [
+                {
+                  "field": "arr_cents",
+                  "observed_at": "2026-05-01",
+                  "source": "cs_platform",
+                  "source_id": "a317f5e7-575e-5879-8256-9082e40ef19f"
+                }
+              ],
+              "name": "arr_tier",
+              "rule_name": "high_arr_review_default",
+              "threshold_name": "arr_review_floor_cents",
+              "threshold_value": 15000000,
+              "value": 18400000.0
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 12,
+              "evidence": [
+                {
+                  "field": "active_users",
+                  "observed_at": "2026-06-21T00:00:00Z",
+                  "source": "cs_platform",
+                  "source_id": "a317f5e7-575e-5879-8256-9082e40ef19f"
+                }
+              ],
+              "name": "low_seat_penetration",
+              "rule_name": "high_arr_review_default",
+              "threshold_name": "seat_penetration_floor",
+              "threshold_value": 0.55,
+              "value": 0.11428571428571428
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 15,
+              "evidence": [
+                {
+                  "field": "underused_capabilities",
+                  "observed_at": "2026-06-21T00:00:00Z",
+                  "source": "cs_platform",
+                  "source_id": "a317f5e7-575e-5879-8256-9082e40ef19f"
+                },
+                {
+                  "field": "capability",
+                  "observed_at": "2026-05-01",
+                  "source": "telemetry",
+                  "source_id": "a317f5e7-575e-5879-8256-9082e40ef19f:core_telematics"
+                }
+              ],
+              "name": "feature_depth_gap",
+              "rule_name": "high_arr_review_default",
+              "threshold_name": "depth_floor",
+              "threshold_value": 0.7,
+              "value": 0.0
+            }
+          ],
+          "score": 162
+        },
+        "recent_usage_signals": [
+          {
+            "account_id": "<uuid:f924336b2db5>",
+            "grain": "company",
+            "metric_name": "daily_active_assets",
+            "observed_at": "2026-06-20T00:00:00Z",
+            "signal_id": "<uuid:62178814388a>",
+            "source_ref": "product-telemetry:daily_active_assets",
+            "subject_id": null,
+            "unit": "assets",
+            "value": 10.0
+          }
+        ],
+        "success_plans": [
+          {
+            "account_id": "<uuid:f924336b2db5>",
+            "objectives": [
+              "activate_core_fleet",
+              "complete_driver_rollout"
+            ],
+            "plan_id": "<uuid:0089d3c5a0bd>",
+            "status": "active",
+            "target_date": "2026-06-12"
+          }
+        ],
+        "suggested_next": [
+          "list_proposals",
+          "submit_verdict"
+        ],
+        "suggested_talking_points": [
+          "milestones_overdue: value=2.00, contribution=+50 (rule: high_arr_review_default)",
+          "days_overdue: value=15.00, contribution=+30 (rule: high_arr_review_default)",
+          "success_plan_overdue: value=1.00, contribution=+20 (rule: high_arr_review_default)",
+          "health_red: value=1.00, contribution=+30 (rule: high_arr_review_default)",
+          "arr_tier: value=18400000.00, contribution=+5 (rule: high_arr_review_default)",
+          "low_seat_penetration: value=0.11, contribution=+12 (rule: high_arr_review_default)",
+          "feature_depth_gap: value=0.00, contribution=+15 (rule: high_arr_review_default)",
+          "Health is red (score 38.0) -- drivers: activation_gap, implementation_blocker",
+          "Underused capabilities: core_telematics",
+          "Overdue milestone: activate_50_percent_of_assets (expected by 2026-06-12)",
+          "Overdue milestone: first_driver_workflow (expected by 2026-06-22)"
+        ]
+      },
+      "output_sha256": "674d72376c56708c7ff3c54340c8f69fee39950f3fa0eab6c6152634ab8ac652",
+      "tool": "get_account_brief"
+    },
+    {
+      "output": {
+        "auth": "demo-noauth",
+        "authorized": false,
+        "claim_boundary": {
+          "live": false,
+          "sim": true
+        },
+        "payload_sha256": "<payload-sha256>",
+        "proposal_id": "<proposal:verdict:unknown>",
+        "status": "denied",
+        "suggested_next": [
+          "list_proposals",
+          "submit_verdict",
+          "get_session_ledger"
+        ],
+        "superseding_proposal_id": "<proposal:superseding-draft>",
+        "verdict": "revise"
+      },
+      "output_sha256": "2769d31717b26bfe6600744106ca46dfb3437862bfb4267be790db41ef3c238e",
+      "tool": "submit_verdict(revise)"
+    },
+    {
+      "output": {
+        "auth": "demo-noauth",
+        "authorized": true,
+        "claim_boundary": {
+          "live": false,
+          "sim": true
+        },
+        "crm_receipt": {
+          "committed": true,
+          "dry_run": false,
+          "receipt_id": "<receipt_id:proposal:unknown>",
+          "target": "demo_state/mcp_operator/tenant_state.json"
+        },
+        "payload_sha256": "<payload-sha256>",
+        "proposal_id": "<proposal:verdict:unknown>",
+        "receipt": {
+          "committed": true,
+          "dry_run": false,
+          "receipt_id": "<receipt_id:proposal:unknown>",
+          "target": "demo_state/mcp_operator/outbox.jsonl"
+        },
+        "status": "approved",
+        "suggested_next": [
+          "get_session_ledger",
+          "list_proposals"
+        ],
+        "verdict": "approve"
+      },
+      "output_sha256": "15057a19199425e53cc37983495bb176fcd984fbbb1bb5db05a470f2e6448e91",
+      "tool": "submit_verdict(approve)"
+    },
+    {
+      "output": {
+        "claim_boundary": {
+          "live": false,
+          "sim": true
+        },
+        "pending_count": 5,
+        "proposals": [
+          {
+            "action": "draft_customer_outreach",
+            "autonomy_tier": 2,
+            "intent": "agent1_time_to_value_sweep",
+            "payload": {
+              "account_id": "<uuid:a6f8626603b0>",
+              "account_name": "Globex Fleet",
+              "as_of": "2026-06-27",
+              "body": "Hi Alex Rivers, Globex Fleet is showing an onboarding risk tied to milestones_overdue, days_overdue. Can we review the overdue activation steps and agree on owners?",
+              "contact_email": "ops@globex.example",
+              "contact_id": "<uuid:a8e03f7a46e5>",
+              "draft_channel": "email",
+              "evidence_ids": [
+                "<uuid:74f750862834>",
+                "<uuid:3f7c5138347a>",
+                "<uuid:a6f8626603b0>"
+              ],
+              "priority": {
+                "factors": [
+                  {
+                    "config_version": "value-model-config-v1",
+                    "contribution": 25,
+                    "evidence": [
+                      {
+                        "field": "ttv_milestone",
+                        "observed_at": "2026-06-15",
+                        "source": "telemetry",
+                        "source_id": "<uuid:74f750862834>"
+                      }
+                    ],
+                    "name": "milestones_overdue",
+                    "rule_name": "base_default",
+                    "threshold_name": "milestone_overdue_points",
+                    "threshold_value": 25,
+                    "value": 1.0
+                  },
+                  {
+                    "config_version": "value-model-config-v1",
+                    "contribution": 24,
+                    "evidence": [
+                      {
+                        "field": "ttv_milestone",
+                        "observed_at": "2026-06-15",
+                        "source": "telemetry",
+                        "source_id": "<uuid:74f750862834>"
+                      }
+                    ],
+                    "name": "days_overdue",
+                    "rule_name": "base_default",
+                    "threshold_name": "days_overdue_cap",
+                    "threshold_value": 40,
+                    "value": 12.0
+                  },
+                  {
+                    "config_version": "value-model-config-v1",
+                    "contribution": 15,
+                    "evidence": [
+                      {
+                        "field": "health_score",
+                        "observed_at": "2026-06-21T00:00:00Z",
+                        "source": "cs_platform",
+                        "source_id": "<uuid:a6f8626603b0>"
+                      }
+                    ],
+                    "name": "health_yellow",
+                    "rule_name": "base_default",
+                    "threshold_name": "health_yellow_points",
+                    "threshold_value": 15,
+                    "value": 1.0
+                  },
+                  {
+                    "config_version": "value-model-config-v1",
+                    "contribution": 12,
+                    "evidence": [
+                      {
+                        "field": "active_users",
+                        "observed_at": "2026-06-21T00:00:00Z",
+                        "source": "cs_platform",
+                        "source_id": "<uuid:a6f8626603b0>"
+                      }
+                    ],
+                    "name": "low_seat_penetration",
+                    "rule_name": "base_default",
+                    "threshold_name": "seat_penetration_floor",
+                    "threshold_value": 0.5,
+                    "value": 0.11428571428571428
+                  },
+                  {
+                    "config_version": "value-model-config-v1",
+                    "contribution": 15,
+                    "evidence": [
+                      {
+                        "field": "underused_capabilities",
+                        "observed_at": "2026-06-21T00:00:00Z",
+                        "source": "cs_platform",
+                        "source_id": "<uuid:a6f8626603b0>"
+                      },
+                      {
+                        "field": "capability",
+                        "observed_at": "2026-05-01",
+                        "source": "telemetry",
+                        "source_id": "<uuid:a6f8626603b0>:core_telematics"
+                      }
+                    ],
+                    "name": "feature_depth_gap",
+                    "rule_name": "base_default",
+                    "threshold_name": "depth_floor",
+                    "threshold_value": 0.6,
+                    "value": 0.0
+                  }
+                ],
+                "score": 91
+              },
+              "subject": "Time-to-Value follow-up for Globex Fleet"
+            },
+            "proposal_id": "<proposal:agent1_time_to_value_sweep:draft_customer_outreach:globex-fleet>",
+            "required_permission": "customer.outreach.draft",
+            "status": "pending"
+          },
+          {
+            "action": "draft_customer_outreach",
+            "autonomy_tier": 2,
+            "intent": "agent1_time_to_value_sweep",
+            "payload": {
+              "account_id": "<uuid:0a23d4ee0b68>",
+              "account_name": "Initech Services",
+              "as_of": "2026-06-27",
+              "body": "Hi Samir Rao, Initech Services is showing an onboarding risk tied to success_plan_overdue, health_yellow. Can we map the missing users needed for a complete rollout?",
+              "contact_email": "ops@initech.example",
+              "contact_id": "<uuid:9bb43be2f45e>",
+              "draft_channel": "email",
+              "evidence_ids": [
+                "<uuid:bee041bb3f66>",
+                "<uuid:0a23d4ee0b68>"
+              ],
+              "priority": {
+                "factors": [
+                  {
+                    "config_version": "value-model-config-v1",
+                    "contribution": 20,
+                    "evidence": [
+                      {
+                        "field": "target_date",
+                        "observed_at": "2026-06-17",
+                        "source": "cs_platform",
+                        "source_id": "<uuid:bee041bb3f66>"
+                      }
+                    ],
+                    "name": "success_plan_overdue",
+                    "rule_name": "base_default",
+                    "threshold_name": "success_plan_overdue_points",
+                    "threshold_value": 20,
+                    "value": 1.0
+                  },
+                  {
+                    "config_version": "value-model-config-v1",
+                    "contribution": 15,
+                    "evidence": [
+                      {
+                        "field": "health_score",
+                        "observed_at": "2026-06-21T00:00:00Z",
+                        "source": "cs_platform",
+                        "source_id": "<uuid:0a23d4ee0b68>"
+                      }
+                    ],
+                    "name": "health_yellow",
+                    "rule_name": "base_default",
+                    "threshold_name": "health_yellow_points",
+                    "threshold_value": 15,
+                    "value": 1.0
+                  },
+                  {
+                    "config_version": "value-model-config-v1",
+                    "contribution": 12,
+                    "evidence": [
+                      {
+                        "field": "active_users",
+                        "observed_at": "2026-06-21T00:00:00Z",
+                        "source": "cs_platform",
+                        "source_id": "<uuid:0a23d4ee0b68>"
+                      }
+                    ],
+                    "name": "low_seat_penetration",
+                    "rule_name": "base_default",
+                    "threshold_name": "seat_penetration_floor",
+                    "threshold_value": 0.5,
+                    "value": 0.11428571428571428
+                  },
+                  {
+                    "config_version": "value-model-config-v1",
+                    "contribution": 15,
+                    "evidence": [
+                      {
+                        "field": "underused_capabilities",
+                        "observed_at": "2026-06-21T00:00:00Z",
+                        "source": "cs_platform",
+                        "source_id": "<uuid:0a23d4ee0b68>"
+                      },
+                      {
+                        "field": "capability",
+                        "observed_at": "2026-05-01",
+                        "source": "telemetry",
+                        "source_id": "<uuid:0a23d4ee0b68>:core_telematics"
+                      }
+                    ],
+                    "name": "feature_depth_gap",
+                    "rule_name": "base_default",
+                    "threshold_name": "depth_floor",
+                    "threshold_value": 0.6,
+                    "value": 0.0
+                  }
+                ],
+                "score": 62
+              },
+              "subject": "Time-to-Value follow-up for Initech Services"
+            },
+            "proposal_id": "<proposal:agent1_time_to_value_sweep:draft_customer_outreach:initech-services>",
+            "required_permission": "customer.outreach.draft",
+            "status": "pending"
+          },
+          {
+            "action": "draft_customer_outreach",
+            "autonomy_tier": 2,
+            "intent": "agent1_time_to_value_sweep",
+            "payload": {
+              "account_id": "<uuid:c0a0446a9311>",
+              "account_name": "Soylent Distribution",
+              "as_of": "2026-06-27",
+              "body": "Hi Avery Kim, Soylent Distribution is showing an onboarding risk tied to milestones_overdue, days_overdue. Can we review the overdue activation steps and agree on owners?",
+              "contact_email": "ops@soylent.example",
+              "contact_id": "<uuid:831870098d72>",
+              "draft_channel": "email",
+              "evidence_ids": [
+                "<uuid:ae6f47477ef5>",
+                "<uuid:58d94b1d7301>",
+                "<uuid:b750bb15c8d1>",
+                "<uuid:41bfc3b56638>",
+                "<uuid:c0a0446a9311>"
+              ],
+              "priority": {
+                "factors": [
+                  {
+                    "config_version": "value-model-config-v1",
+                    "contribution": 25,
+                    "evidence": [
+                      {
+                        "field": "ttv_milestone",
+                        "observed_at": "2026-06-18",
+                        "source": "telemetry",
+                        "source_id": "<uuid:ae6f47477ef5>"
+                      }
+                    ],
+                    "name": "milestones_overdue",
+                    "rule_name": "base_default",
+                    "threshold_name": "milestone_overdue_points",
+                    "threshold_value": 25,
+                    "value": 1.0
+                  },
+                  {
+                    "config_version": "value-model-config-v1",
+                    "contribution": 18,
+                    "evidence": [
+                      {
+                        "field": "ttv_milestone",
+                        "observed_at": "2026-06-18",
+                        "source": "telemetry",
+                        "source_id": "<uuid:ae6f47477ef5>"
+                      }
+                    ],
+                    "name": "days_overdue",
+                    "rule_name": "base_default",
+                    "threshold_name": "days_overdue_cap",
+                    "threshold_value": 40,
+                    "value": 9.0
+                  },
+                  {
+                    "config_version": "value-model-config-v1",
+                    "contribution": 20,
+                    "evidence": [
+                      {
+                        "field": "target_date",
+                        "observed_at": "2026-06-19",
+                        "source": "cs_platform",
+                        "source_id": "<uuid:b750bb15c8d1>"
+                      }
+                    ],
+                    "name": "success_plan_overdue",
+                    "rule_name": "base_default",
+                    "threshold_name": "success_plan_overdue_points",
+                    "threshold_value": 20,
+                    "value": 1.0
+                  },
+                  {
+                    "config_version": "value-model-config-v1",
+                    "contribution": 15,
+                    "evidence": [
+                      {
+                        "field": "health_score",
+                        "observed_at": "2026-06-21T00:00:00Z",
+                        "source": "cs_platform",
+                        "source_id": "<uuid:c0a0446a9311>"
+                      }
+                    ],
+                    "name": "health_yellow",
+                    "rule_name": "base_default",
+                    "threshold_name": "health_yellow_points",
+                    "threshold_value": 15,
+                    "value": 1.0
+                  },
+                  {
+                    "config_version": "value-model-config-v1",
+                    "contribution": 12,
+                    "evidence": [
+                      {
+                        "field": "active_users",
+                        "observed_at": "2026-06-21T00:00:00Z",
+                        "source": "cs_platform",
+                        "source_id": "<uuid:c0a0446a9311>"
+                      }
+                    ],
+                    "name": "low_seat_penetration",
+                    "rule_name": "base_default",
+                    "threshold_name": "seat_penetration_floor",
+                    "threshold_value": 0.5,
+                    "value": 0.11428571428571428
+                  },
+                  {
+                    "config_version": "value-model-config-v1",
+                    "contribution": 15,
+                    "evidence": [
+                      {
+                        "field": "underused_capabilities",
+                        "observed_at": "2026-06-21T00:00:00Z",
+                        "source": "cs_platform",
+                        "source_id": "<uuid:c0a0446a9311>"
+                      },
+                      {
+                        "field": "capability",
+                        "observed_at": "2026-05-01",
+                        "source": "telemetry",
+                        "source_id": "<uuid:c0a0446a9311>:core_telematics"
+                      }
+                    ],
+                    "name": "feature_depth_gap",
+                    "rule_name": "base_default",
+                    "threshold_name": "depth_floor",
+                    "threshold_value": 0.6,
+                    "value": 0.0
+                  }
+                ],
+                "score": 105
+              },
+              "subject": "Time-to-Value follow-up for Soylent Distribution"
+            },
+            "proposal_id": "<proposal:agent1_time_to_value_sweep:draft_customer_outreach:soylent-distribution>",
+            "required_permission": "customer.outreach.draft",
+            "status": "pending"
+          },
+          {
+            "action": "initiate_customer_call",
+            "autonomy_tier": 3,
+            "intent": "mcp_demo_held_expansion_refusal",
+            "payload": {
+              "account_id": "<uuid:f924336b2db5>",
+              "account_name": "Acme Logistics",
+              "as_of": "2026-06-27",
+              "opportunity_id": "<uuid:0e5b66a14627>",
+              "opportunity_stage": "Qualification",
+              "source": "sim"
+            },
+            "proposal_id": "<proposal:mcp_demo_held_expansion_refusal:initiate_customer_call:acme-logistics>",
+            "required_permission": "customer.call.initiate",
+            "status": "pending"
+          },
+          {
+            "action": "draft_customer_outreach",
+            "autonomy_tier": 2,
+            "intent": "mcp_demo_no_consent_refusal",
+            "payload": {
+              "account_id": "<uuid:0a0e8e0a5cdf>",
+              "account_name": "Cyberdyne Transport",
+              "as_of": "2026-06-27",
+              "body": "Simulation-only draft that must not be approved without consent.",
+              "contact_email": "ops@cyberdyne.example",
+              "contact_id": "<uuid:fed68a72e016>",
+              "evidence_ids": [
+                "health:<uuid:0a0e8e0a5cdf>"
+              ],
+              "source": "sim",
+              "subject": "Onboarding activation follow-up"
+            },
+            "proposal_id": "<proposal:mcp_demo_no_consent_refusal:draft_customer_outreach:cyberdyne-transport>",
+            "required_permission": "customer.outreach.draft",
+            "status": "pending"
+          }
+        ],
+        "suggested_next": [
+          "get_account_brief",
+          "submit_verdict"
+        ],
+        "tenant_id": "<uuid:151b277a52bd>"
+      },
+      "output_sha256": "4e4920d5a6a4935089f56f8a13ca86f0485c98688b0508195f549715f39af671",
+      "tool": "list_proposals(after_revision)"
+    },
+    {
+      "output": {
+        "action": "draft_customer_outreach",
+        "claim_boundary": {
+          "live": false,
+          "sim": true
+        },
+        "code": "CONSENT_MISSING",
+        "error": "Customer-facing outreach is blocked because contact consent is missing",
+        "proposal_id": "<proposal:verdict:draft_customer_outreach:unknown>",
+        "refused": true,
+        "suggested_next": [
+          "get_session_ledger",
+          "list_proposals"
+        ]
+      },
+      "output_sha256": "bdd55372797e1a67bcf000a846b85db63724868e500bbb62f82b392b74aa3fdb",
+      "tool": "submit_verdict(no_consent_refusal)"
+    },
+    {
+      "output": {
+        "action": "initiate_customer_call",
+        "blocking_refs": [
+          "ttv_gap:<uuid:f924336b2db5>",
+          "risk:<uuid:f924336b2db5>"
+        ],
+        "claim_boundary": {
+          "live": false,
+          "sim": true
+        },
+        "code": "PRECEDENCE_HELD",
+        "error": "Proposal is held by current precedence blockers",
+        "proposal_id": "<proposal:verdict:initiate_customer_call:unknown>",
+        "refused": true,
+        "suggested_next": [
+          "get_session_ledger",
+          "list_proposals"
+        ]
+      },
+      "output_sha256": "c2b82b734ee3047a0e7a8ff29470a588dbd018d04957191a179957c7f86bd081",
+      "tool": "submit_verdict(held_expansion_refusal)"
+    },
+    {
+      "output": {
+        "claim_boundary": {
+          "live": false,
+          "sim": true
+        },
+        "event_count": 5,
+        "events": [
+          {
+            "claim_boundary": {
+              "live": false,
+              "sim": true
+            },
+            "event_type": "verdict_recorded",
+            "payload": {
+              "proposal_id": "<proposal:verdict:unknown>",
+              "superseding_proposal_id": "<proposal:superseding-draft>",
+              "verdict": "revise"
+            }
+          },
+          {
+            "claim_boundary": {
+              "live": false,
+              "sim": true
+            },
+            "event_type": "verdict_recorded",
+            "payload": {
+              "authorized": true,
+              "proposal_id": "<proposal:verdict:unknown>",
+              "status": "approved",
+              "verdict": "approve"
+            }
+          },
+          {
+            "claim_boundary": {
+              "live": false,
+              "sim": true
+            },
+            "event_type": "sim_commit_receipt",
+            "payload": {
+              "committed": true,
+              "proposal_id": "<proposal:verdict:unknown>",
+              "receipt_id": "<receipt_id:proposal:unknown>",
+              "target": "demo_state/mcp_operator/outbox.jsonl"
+            }
+          },
+          {
+            "claim_boundary": {
+              "live": false,
+              "sim": true
+            },
+            "event_type": "refusal",
+            "payload": {
+              "action": "draft_customer_outreach",
+              "code": "CONSENT_MISSING",
+              "error": "Customer-facing outreach is blocked because contact consent is missing",
+              "proposal_id": "<proposal:verdict:draft_customer_outreach:unknown>",
+              "refused": true
+            }
+          },
+          {
+            "claim_boundary": {
+              "live": false,
+              "sim": true
+            },
+            "event_type": "refusal",
+            "payload": {
+              "action": "initiate_customer_call",
+              "blocking_refs": [
+                "ttv_gap:<uuid:f924336b2db5>",
+                "risk:<uuid:f924336b2db5>"
+              ],
+              "code": "PRECEDENCE_HELD",
+              "error": "Proposal is held by current precedence blockers",
+              "proposal_id": "<proposal:verdict:initiate_customer_call:unknown>",
+              "refused": true
+            }
+          }
+        ],
+        "not_a_compliance_assessment": true,
+        "receipt_count": 1,
+        "receipts": [
+          {
+            "event_type": "outbound_committed",
+            "receipt": {
+              "account_id": "<uuid:f924336b2db5>",
+              "action": "draft_customer_outreach",
+              "committed": true,
+              "dry_run": false,
+              "idempotency_key": "<idempotency_key:proposal:unknown>",
+              "payload_sha256": "<payload-sha256>",
+              "proposal_id": "<proposal:verdict:draft_customer_outreach:unknown>",
+              "receipt_id": "<receipt_id:proposal:unknown>",
+              "target": "demo_state/mcp_operator/outbox.jsonl"
+            },
+            "source": "sim"
+          }
+        ],
+        "suggested_next": [
+          "get_next_steps"
+        ],
+        "tenant_id": "ultra-demo"
+      },
+      "output_sha256": "bd6c643a1f4074931c6f88dc1b86240aa63125221e91a1eb5a3ba7f10818c626",
+      "tool": "get_session_ledger"
+    },
+    {
+      "output": {
+        "claim_boundary": {
+          "live": false,
+          "sim": true
+        },
+        "credential_boundary": "This demo uses simulated data and local no-auth approval only when ULTRA_CSM_DEMO_OPERATOR=1. Live tenants must use mapped API tokens.",
+        "mode": "demo_operator",
+        "outbox": "demo_state/mcp_operator/outbox.jsonl",
+        "steps": [
+          "Run get_morning_briefing for the current simulated book.",
+          "Use list_proposals to choose a pending draft.",
+          "Use get_account_brief before approving or revising.",
+          "Use submit_verdict with revise plus edit_instruction once.",
+          "Approve the superseding draft and inspect get_session_ledger."
+        ],
+        "suggested_next": [
+          "get_morning_briefing",
+          "list_proposals"
+        ]
+      },
+      "output_sha256": "36085c9bbde47c27e169ce0342d78aa87d0521ff3dae768d73d358c63b42a219",
+      "tool": "get_next_steps"
+    }
+  ]
+}

@@ -199,3 +199,27 @@ class TestSubmitVerdict:
         if "error" not in result:
             assert result["proposal_id"] == proposal_id
             assert result["status"] in ("approved", "denied")
+
+    def test_revise_uses_bounded_loop(self, monkeypatch):
+        monkeypatch.setenv("ULTRA_CSM_API_TOKENS", f"{MCP_TOKEN}:MCP Lane Manager")
+        mcp_server.run_sweep()
+        proposals = [
+            proposal for proposal in mcp_server.list_proposals()["proposals"]
+            if proposal["action"] == "draft_customer_outreach"
+        ]
+
+        if not proposals:
+            pytest.skip("No pending draft proposals from sweep")
+
+        proposal_id = proposals[0]["proposal_id"]
+        result = mcp_server.submit_verdict(
+            proposal_id,
+            "revise",
+            "Tighten before approval",
+            token=MCP_TOKEN,
+            edit_instruction="Make this more concise.",
+        )
+
+        assert result["status"] == "denied"
+        assert result["verdict"] == "revise"
+        assert result["superseding_proposal_id"]
