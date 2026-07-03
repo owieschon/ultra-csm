@@ -73,16 +73,17 @@ to show candidate field labels/types (Salesforce's own field metadata already
 carries a `type` and `label`) alongside coverage, since "StageName: picklist"
 next to "Name: string" would make the wrong choice visibly wrong.
 
-**Also found, not yet verified against real typed records** (verification
-blocked by the structural gap above, since no Opportunity ever typed): the
-existing `SALESFORCE_SOURCE_MAPS` for `CRMOpportunity.amount_cents` documents
-that Salesforce's `Amount` field is a raw currency value, "stored internally
-as cents" — implying a unit conversion is expected somewhere in the pipeline.
-The generic `external_book` relay path does a raw passthrough with no unit
-conversion step. If a future fix resolves the structural gap above and
-Opportunity records begin typing, `amount_cents` values relayed this way will
-be off by a factor of 100 (dollars stored where cents are expected) until this
-is addressed. Recorded as a known, unverified-in-practice risk.
+**Correction on the amount/cents note** (corrected while implementing Phase
+2A): an earlier draft of this finding claimed the relay path does raw
+passthrough with no unit conversion. Reading the code proved that wrong —
+`_mapped_cents` in `external_book.py` already multiplies by 100 (and parses
+`$`/`,`-formatted strings). So Opportunity `Amount` IS converted to cents.
+The real, narrower issue is that this conversion is hardcoded always-on for
+the `amount_cents` field rather than a *declared* transform the confirmer
+opts into — fine for the current single amount field, but the general model
+(Phase 2C) makes it an explicit `currency_to_cents` transform in a closed
+enum so it is visible and auditable rather than implicit. No factor-of-100
+bug exists; the note was a reading error, corrected here for the record.
 
 ## Design implications
 

@@ -6,8 +6,10 @@ import pytest
 
 from ultra_csm.data_plane.external_book import (
     ExternalSourceDescriptor,
+    RelationalTable,
     derive_schema_snapshot,
     ingest_external_book,
+    ingest_relational_book,
     propose_external_source_mapping,
 )
 from ultra_csm.data_plane.source_mapping import (
@@ -309,3 +311,124 @@ def test_external_book_without_confirmed_map_produces_discovery_only():
     }
     assert result.frozen_map is None
     assert result.mapping_proposal.coverage["ambiguous_confirm"] > 0
+
+
+# --- Relational (multi-table) book tests (Phase 2A) ---------------------------
+
+
+def _freeze_table_for(records, table_name, contract, field_map):
+    """Freeze a per-table map that confirms exactly one contract's fields from
+    this table and marks every other ambiguous field not_mappable. `field_map`
+    is {internal_field: source_field}."""
+    descriptor = ExternalSourceDescriptor(source_name=table_name, object_name=table_name)
+    _snapshot, proposal, _unrep = propose_external_source_mapping(records, descriptor)
+    confirmations = {}
+    for entry in proposal.entries:
+        if entry.state != "ambiguous_confirm":
+            continue
+        if entry.contract == contract and entry.internal_field in field_map:
+            src = field_map[entry.internal_field]
+            value_direction = (
+                "higher_is_better"
+                if entry.value_direction in {"ordered_confirm", "direction_confirm"}
+                else "not_applicable"
+            )
+            confirmations[entry.key] = MappingConfirmation(
+                contract=entry.contract,
+                internal_field=entry.internal_field,
+                source_object=table_name,
+                source_field=src,
+                source_path=src,
+                semantic_role=entry.semantic_role,
+                value_direction=value_direction,
+            )
+        else:
+            confirmations[entry.key] = MappingConfirmation(
+                contract=entry.contract,
+                internal_field=entry.internal_field,
+                verdict="not_mappable",
+            )
+    return freeze_confirmed_source_map(proposal, confirmations=confirmations)
+
+
+def _sfdc_shaped_book():
+    accounts = [
+        {"Id": "a1", "Name": "Edge", "OwnerId": "u1", "Industry": "Electronics"},
+        {"Id": "a2", "Name": "Nova", "OwnerId": "u1", "Industry": "Energy"},
+    ]
+    contacts = [
+        {"Id": "c1", "AccountId": "a1", "Email": "rose@edge.test", "Name": "Rose"},
+        {"Id": "c2", "AccountId": "a2", "Email": "sam@nova.test", "Name": "Sam"},
+        {"Id": "c3", "AccountId": "MISSING", "Email": "orphan@x.test", "Name": "Orphan"},
+    ]
+    acct_map = _freeze_table_for(
+        accounts, "Accounts", "CRMAccount",
+        {"account_id": "Id", "name": "Name", "owner_id": "OwnerId", "industry": "Industry"},
+    )
+    contact_map = _freeze_table_for(
+        contacts, "Contacts", "CRMContact",
+        {"contact_id": "Id", "account_id": "AccountId", "email": "Email", "name": "Name"},
+    )
+    return accounts, contacts, acct_map, contact_map
+
+
+def test_single_table_relational_book_matches_ingest_external_book():
+    # One code path: a single-table relational book must produce an identical
+    # result to ingest_external_book on the same records + frozen map (corpus A).
+    records = _book_records()
+    descriptor = ExternalSourceDescriptor(source_name="unit", expected_count=len(records))
+    _snapshot, proposal, _unrep = propose_external_source_mapping(records, descriptor)
+    frozen = _confirm_all(proposal)
+
+    baseline = ingest_external_book(records, descriptor, frozen_map=frozen)
+    relational = ingest_relational_book(
+        [RelationalTable(table_name="unit", records=tuple(records),
+                         frozen_map=frozen, expected_count=len(records))]
+    )
+
+    assert relational.coverage.records_typed == baseline.coverage.records_typed
+    assert relational.coverage.join_coverage == baseline.coverage.join_coverage
+    assert [a.account_id for a in relational.data.accounts] == [
+        a.account_id for a in baseline.data.accounts
+    ]
+
+
+def test_relational_book_joins_child_table_by_foreign_key():
+    accounts, contacts, acct_map, contact_map = _sfdc_shaped_book()
+    result = ingest_relational_book([
+        RelationalTable("Accounts", tuple(accounts), acct_map, len(accounts)),
+        RelationalTable("Contacts", tuple(contacts), contact_map, len(contacts)),
+    ])
+
+    assert result.coverage.records_typed["CRMAccount"] == 2
+    assert result.coverage.records_typed["CRMContact"] == 2  # c1, c2 joined; c3 orphan
+    by_id = {c.contact_id: c.account_id for c in result.data.contacts}
+    assert by_id == {"c1": "a1", "c2": "a2"}  # real FK joins, not fabricated
+
+
+def test_relational_book_rejects_orphan_children_loudly():
+    accounts, contacts, acct_map, contact_map = _sfdc_shaped_book()
+    result = ingest_relational_book([
+        RelationalTable("Accounts", tuple(accounts), acct_map, len(accounts)),
+        RelationalTable("Contacts", tuple(contacts), contact_map, len(contacts)),
+    ])
+
+    reasons = [r.reason for r in result.coverage.records_rejected]
+    assert reasons.count("unresolved_parent_identity") == 1
+    fk = result.coverage.join_coverage["foreign_key_joins"]["CRMContact"]
+    assert fk == {"candidates": 3, "joined": 2, "orphaned": 1, "ratio": round(2 / 3, 4)}
+
+
+def test_relational_book_never_fabricates_account_from_child_table():
+    # A child-only book with no account table must type zero accounts and zero
+    # children (children cannot join a parent that was never provided) -- it must
+    # not invent shadow accounts, the defect class this whole model prevents.
+    _accounts, contacts, _acct_map, contact_map = _sfdc_shaped_book()
+    result = ingest_relational_book([
+        RelationalTable("Contacts", tuple(contacts), contact_map, len(contacts)),
+    ])
+
+    assert result.coverage.records_typed["CRMAccount"] == 0
+    assert result.coverage.records_typed["CRMContact"] == 0
+    fk = result.coverage.join_coverage["foreign_key_joins"]["CRMContact"]
+    assert fk["joined"] == 0 and fk["orphaned"] == 3

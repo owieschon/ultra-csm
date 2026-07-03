@@ -10,6 +10,7 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass, field, replace
 import hashlib
 import json
+from collections.abc import Sequence
 from typing import Any, Mapping
 
 from ultra_csm.data_plane.contracts import (
@@ -156,6 +157,28 @@ class _TransformState:
     joined_contacts: int = 0
     total_contact_candidates: int = 0
     injection_marker_count: int = 0
+    # Populated only when child contracts are ingested from SEPARATE tables
+    # (the relational multi-table shape). Left at defaults for the single-table
+    # / nested-children shape so single-table coverage is byte-identical.
+    child_join: dict[str, dict[str, int]] = field(default_factory=dict)
+
+
+@dataclass(frozen=True)
+class RelationalTable:
+    """One named record-set in a relational book.
+
+    A "book" is N of these. The single-table / nested-children shape (corpus A)
+    is the N=1 degenerate case; a normalized CRM (Salesforce) is N>1 joined by
+    foreign keys. There is one transform: the table carrying a mapped CRMAccount
+    identity is the parent (processed with the existing account+nested-child
+    logic, unchanged), and every other table's child records join to it by a
+    confirmed foreign key. No table-name is ever special-cased.
+    """
+
+    table_name: str
+    records: tuple[dict[str, Any], ...]
+    frozen_map: FrozenSourceMapConfig | None = None
+    expected_count: int | None = None
 
 
 def derive_schema_snapshot(
@@ -258,6 +281,101 @@ def ingest_external_book(
         state=state,
         unrepresentable=unrepresentable,
     )
+    return _assemble_result(
+        descriptor=descriptor,
+        snapshot=snapshot,
+        proposal=proposal,
+        frozen_map=frozen_map,
+        state=state,
+        coverage=coverage,
+    )
+
+
+def ingest_relational_book(tables: Sequence[RelationalTable]) -> ExternalIngestResult:
+    """Ingest a relational book: one parent (CRMAccount) table plus zero or more
+    child tables joined to it by a confirmed foreign key.
+
+    The single-table shape (``len(tables) == 1``) resolves through the exact same
+    account+nested-child transform as ``ingest_external_book`` — verified by test
+    to produce an identical result — so corpus A's proven path is unchanged.
+    Multi-table books add only a foreign-key join pass over the child tables; the
+    parent transform is untouched.
+    """
+    if not tables:
+        raise ValueError("a relational book needs at least one table")
+
+    account_table = _account_table(tables)
+    # The result's snapshot/proposal describe the parent (account) table when
+    # there is one; otherwise the first table, purely for the result shell. A
+    # book with no confirmed account has no parent: every table is a child and
+    # every child orphans, rather than one being silently promoted to "account".
+    shell_table = account_table or tables[0]
+    shell_descriptor = _table_descriptor(shell_table)
+    snapshot, proposal, unrepresentable = propose_external_source_mapping(
+        list(shell_table.records), shell_descriptor
+    )
+
+    state = _TransformState()
+    acct_processed: tuple[dict[str, Any], ...] = ()
+    if account_table is not None:
+        acct_descriptor = _table_descriptor(account_table)
+        acct_processed = _processed_records(account_table.records, acct_descriptor)
+        if account_table.frozen_map is not None:
+            _transform_records(acct_processed, account_table.frozen_map, state)
+
+    for table in tables:
+        if table is account_table:
+            continue
+        _transform_child_table(table, state)
+
+    coverage = _coverage_report(
+        records=list(account_table.records) if account_table else [],
+        processed=acct_processed,
+        descriptor=shell_descriptor,
+        frozen_map=account_table.frozen_map if account_table else None,
+        state=state,
+        unrepresentable=unrepresentable,
+    )
+    return _assemble_result(
+        descriptor=shell_descriptor,
+        snapshot=snapshot,
+        proposal=proposal,
+        frozen_map=account_table.frozen_map if account_table else None,
+        state=state,
+        coverage=coverage,
+    )
+
+
+def _account_table(tables: Sequence[RelationalTable]) -> RelationalTable | None:
+    """The table whose frozen map carries a mapped CRMAccount identity is the
+    parent. None if no table confirmed an account identity — then there is no
+    parent and all tables are treated as (orphan-prone) children."""
+    for table in tables:
+        if table.frozen_map is None:
+            continue
+        for mapping in table.frozen_map.mappings:
+            if mapping.contract == "CRMAccount" and mapping.internal_field == "account_id":
+                return table
+    return None
+
+
+def _table_descriptor(table: RelationalTable) -> ExternalSourceDescriptor:
+    return ExternalSourceDescriptor(
+        source_name=table.table_name,
+        expected_count=table.expected_count,
+        object_name=table.table_name or DEFAULT_OBJECT_NAME,
+    )
+
+
+def _assemble_result(
+    *,
+    descriptor: ExternalSourceDescriptor,
+    snapshot: SchemaSnapshot,
+    proposal: SourceMapProposal,
+    frozen_map: FrozenSourceMapConfig | None,
+    state: _TransformState,
+    coverage: ExternalCoverageReport,
+) -> ExternalIngestResult:
     data = FixtureCustomerData(
         accounts=tuple(state.accounts.values()),
         companies=(),
@@ -762,6 +880,100 @@ def _transform_opportunity(
     )
 
 
+def _transform_child_table(table: RelationalTable, state: _TransformState) -> None:
+    """Join a separate child table's records to the already-built accounts by a
+    confirmed foreign key. Orphans (no matching parent) are rejected loudly and
+    counted; identity is never fabricated. This is the only code the multi-table
+    shape adds over the single-table transform."""
+    if table.frozen_map is None:
+        return
+    mappings = _mapping_index(table.frozen_map.mappings)
+    descriptor = _table_descriptor(table)
+    processed = _processed_records(table.records, descriptor)
+    contact_fields = mappings.get("CRMContact", {})
+    opportunity_fields = mappings.get("CRMOpportunity", {})
+    for index, record in enumerate(processed, start=1):
+        if _record_has_injection_marker(record):
+            state.injection_marker_count += 1
+        if contact_fields.get("contact_id"):
+            _join_child_contact(index, record, contact_fields, state)
+        if opportunity_fields.get("opportunity_id"):
+            _join_child_opportunity(index, record, opportunity_fields, state)
+
+
+def _join_stats(state: _TransformState, contract: str) -> dict[str, int]:
+    return state.child_join.setdefault(
+        contract, {"candidates": 0, "joined": 0, "orphaned": 0}
+    )
+
+
+def _join_child_contact(
+    index: int,
+    record: Mapping[str, Any],
+    fields: dict[str, ProposedFieldMapping],
+    state: _TransformState,
+) -> None:
+    stats = _join_stats(state, "CRMContact")
+    stats["candidates"] += 1
+    contact_id = _mapped_str(record, fields.get("contact_id"))
+    if not contact_id:
+        state.rejected.append(RejectedRecord(index, "missing_contact_identity", "CRMContact"))
+        return
+    account_id = _mapped_str(record, fields.get("account_id"))
+    if not account_id or account_id not in state.accounts:
+        stats["orphaned"] += 1
+        state.rejected.append(RejectedRecord(index, "unresolved_parent_identity", "CRMContact"))
+        return
+    if contact_id in state.contacts:
+        state.duplicate_identities.add(_fingerprint_identity(contact_id))
+        return
+    stats["joined"] += 1
+    state.contacts[contact_id] = CRMContact(
+        contact_id=contact_id,
+        account_id=account_id,
+        email=_mapped_str(record, fields.get("email")) or "",
+        name=_mapped_str(record, fields.get("name")) or "",
+        role=_mapped_str(record, fields.get("role")) or None,
+        title=_mapped_str(record, fields.get("title")) or None,
+        consent_to_contact=_mapped_bool(record, fields.get("consent_to_contact")),
+    )
+
+
+def _join_child_opportunity(
+    index: int,
+    record: Mapping[str, Any],
+    fields: dict[str, ProposedFieldMapping],
+    state: _TransformState,
+) -> None:
+    stats = _join_stats(state, "CRMOpportunity")
+    stats["candidates"] += 1
+    opportunity_id = _mapped_str(record, fields.get("opportunity_id"))
+    if not opportunity_id:
+        state.rejected.append(
+            RejectedRecord(index, "missing_opportunity_identity", "CRMOpportunity")
+        )
+        return
+    account_id = _mapped_str(record, fields.get("account_id"))
+    if not account_id or account_id not in state.accounts:
+        stats["orphaned"] += 1
+        state.rejected.append(
+            RejectedRecord(index, "unresolved_parent_identity", "CRMOpportunity")
+        )
+        return
+    if opportunity_id in state.opportunities:
+        state.duplicate_identities.add(_fingerprint_identity(opportunity_id))
+        return
+    stats["joined"] += 1
+    state.opportunities[opportunity_id] = CRMOpportunity(
+        opportunity_id=opportunity_id,
+        account_id=account_id,
+        stage_name=_mapped_str(record, fields.get("stage_name")) or "unknown",
+        amount_cents=_mapped_cents(record, fields.get("amount_cents")),
+        close_date=_mapped_str(record, fields.get("close_date")) or "",
+        opportunity_type=_mapped_str(record, fields.get("opportunity_type")) or "",
+    )
+
+
 def _mapping_index(
     mappings: tuple[ProposedFieldMapping, ...],
 ) -> dict[str, dict[str, ProposedFieldMapping]]:
@@ -914,11 +1126,7 @@ def _coverage_report(
         records_rejected=tuple(state.rejected),
         rejection_counts=dict(sorted(rejection_counts.items())),
         field_coverage=field_coverage,
-        join_coverage={
-            "contact_candidates": state.total_contact_candidates,
-            "contacts_joined": state.joined_contacts,
-            "ratio": join_ratio,
-        },
+        join_coverage=_join_coverage(state, join_ratio),
         unknown_fields=tuple(sorted(frozen_map.unknown_fields if frozen_map else ())),
         unrepresentable_paths=unrepresentable,
         duplicate_identities=tuple(sorted(state.duplicate_identities)),
@@ -928,6 +1136,29 @@ def _coverage_report(
         dropped_record_count=dropped,
         injection_marker_count=state.injection_marker_count,
     )
+
+
+def _join_coverage(state: _TransformState, join_ratio: float | None) -> dict[str, Any]:
+    # The nested/flat single-table join stats stay exactly where they were so
+    # single-table coverage is unchanged. Separate-table foreign-key joins add a
+    # per-contract block only when such tables were actually ingested.
+    coverage: dict[str, Any] = {
+        "contact_candidates": state.total_contact_candidates,
+        "contacts_joined": state.joined_contacts,
+        "ratio": join_ratio,
+    }
+    if state.child_join:
+        by_contract: dict[str, dict[str, Any]] = {}
+        for contract, stats in sorted(state.child_join.items()):
+            candidates = stats["candidates"]
+            by_contract[contract] = {
+                "candidates": candidates,
+                "joined": stats["joined"],
+                "orphaned": stats["orphaned"],
+                "ratio": round(stats["joined"] / candidates, 4) if candidates else None,
+            }
+        coverage["foreign_key_joins"] = by_contract
+    return coverage
 
 
 def _field_coverage(
