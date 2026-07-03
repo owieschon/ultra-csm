@@ -1,7 +1,7 @@
 {
   "access_mode": "demo_operator",
   "artifact": "mcp_operator_transcript",
-  "artifact_sha256": "4cf650bc190769beed4e7debdb50095168ee5a32bdaa428d669470b05ff04c6a",
+  "artifact_sha256": "be4c19fa555ef8a36268573246ff99ee19324d114c40fec39e1920b4cddb28d8",
   "beats": [
     "briefing",
     "queue",
@@ -2456,6 +2456,20 @@
     },
     {
       "output": {
+        "bring_your_own_book": {
+          "claim_boundary": {
+            "live": false,
+            "provenance": "mcp_relay",
+            "sim": false,
+            "unverified_mapping": true
+          },
+          "docs": "QUICKSTART.md#bring-your-own-book",
+          "tools": [
+            "report_readiness",
+            "ingest_book",
+            "confirm_book_mappings"
+          ]
+        },
         "claim_boundary": {
           "live": false,
           "sim": true
@@ -2468,14 +2482,15 @@
           "Use list_proposals to choose a pending draft.",
           "Use get_account_brief before approving or revising.",
           "Use submit_verdict with revise plus edit_instruction once.",
-          "Approve the superseding draft and inspect get_session_ledger."
+          "Approve the superseding draft and inspect get_session_ledger.",
+          "For a host-relayed book, restart without demo/read-only mode and use report_readiness, ingest_book, then confirm_book_mappings."
         ],
         "suggested_next": [
           "get_morning_briefing",
           "list_proposals"
         ]
       },
-      "output_sha256": "36085c9bbde47c27e169ce0342d78aa87d0521ff3dae768d73d358c63b42a219",
+      "output_sha256": "c06e463a1ad22c9230c20528e8871145e6fe90e32d3a4ad1544caadf7b9453ef",
       "tool": "get_next_steps"
     }
   ]

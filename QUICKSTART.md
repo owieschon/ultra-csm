@@ -156,6 +156,35 @@ make mcp-operator-demo-csm
 
 The committed transcript is written to `eval/mcp_operator_transcript.json`.
 
+## Bring Your Own Book
+
+When your MCP host already has CRM, email, or telemetry tools connected, run the relay
+path without `ULTRA_CSM_MCP_READONLY` and without `ULTRA_CSM_DEMO_OPERATOR`.
+
+1. Call `report_readiness(["crm", "email", "telemetry"])`. The server cannot inspect
+   host tools, so this is a host declaration. CRM is the minimum viable book; email
+   enables host-placed drafts; telemetry fills usage/adoption rails. If nothing is
+   connected, the response routes back to the sim morning.
+2. Call `ingest_book(records, source_descriptor, expected_count)`. `expected_count` is
+   required. Large books can be chunked with the same `session_id`; count mismatch is a
+   refusal, and oversized payloads report truncation loudly.
+3. Ask the user the returned confirmation questions, then call
+   `confirm_book_mappings({"confirmations": ...})` with `verdict: "mapped"` or
+   `verdict: "not_mappable"` per field.
+
+Every relay response is labeled `provenance: mcp_relay`, `unverified_mapping: true`,
+`sim: false`, and `live: false`. Relay actions are propose-only: the server may return
+draft content for the host to place in the user's own email client, but Ultra CSM sends
+nothing and has no commit/receipt path for relay books.
+
+Capture the deterministic synthetic relay transcript with:
+
+```sh
+make mcp-relay-demo-csm
+```
+
+The committed transcript is written to `eval/mcp_relay_transcript.json`.
+
 ## Oversight evidence pack
 
 Render the oversight ledgers (verdicts, receipts, suppressions, breaker events,
