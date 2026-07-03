@@ -93,7 +93,10 @@ def parse_api_tokens(raw: str | None = None) -> dict[str, str]:
 
 
 def demo_noauth_enabled() -> bool:
-    return os.environ.get("ULTRA_CSM_DEMO_NOAUTH") == "1"
+    return (
+        os.environ.get("ULTRA_CSM_DEMO_NOAUTH") == "1"
+        or os.environ.get("ULTRA_CSM_DEMO_OPERATOR") == "1"
+    )
 
 
 def auth_marker() -> str:

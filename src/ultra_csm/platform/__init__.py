@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import contextlib
+from dataclasses import dataclass
 import os
 import shutil
 import subprocess
@@ -25,11 +26,85 @@ _REPO = Path(__file__).resolve().parents[3]
 _HOMEBREW_PG = Path("/opt/homebrew/opt/postgresql@16/bin")
 
 
+@dataclass(frozen=True)
+class _Toolchain:
+    tier: str
+    initdb: str
+    pg_ctl: str
+
+
 def _tool(name: str) -> str:
-    found = shutil.which(name) or (_HOMEBREW_PG / name)
-    if not Path(found).exists():
+    return _resolve_toolchain().__dict__[name]
+
+
+def resolve_postgres_boot_tier() -> str:
+    """Return the local Postgres boot tier that would be used now."""
+
+    return _resolve_toolchain().tier
+
+
+def _system_tool(name: str) -> str | None:
+    found = shutil.which(name)
+    if found:
+        return found
+    homebrew = _HOMEBREW_PG / name
+    if homebrew.exists():
+        return str(homebrew)
+    return None
+
+
+def _resolve_toolchain() -> _Toolchain:
+    initdb = _system_tool("initdb")
+    pg_ctl = _system_tool("pg_ctl")
+    if initdb and pg_ctl:
+        return _Toolchain("system", initdb, pg_ctl)
+
+    pgserver = _pgserver_toolchain()
+    if pgserver is not None:
+        return pgserver
+
+    missing = ", ".join(
+        name for name, path in (("initdb", initdb), ("pg_ctl", pg_ctl)) if path is None
+    )
+    raise FileNotFoundError(
+        f"{missing} not found (need Postgres 16: `make setup`, or install .[demo] "
+        "on Python <=3.12 for the pgserver fallback)"
+    )
+
+
+def _pgserver_toolchain() -> _Toolchain | None:
+    try:
+        import pgserver  # type: ignore[import-not-found]
+    except ImportError:
+        return None
+
+    root = Path(pgserver.__file__).resolve().parent
+    initdb = _find_pgserver_binary(root, "initdb")
+    pg_ctl = _find_pgserver_binary(root, "pg_ctl")
+    if initdb and pg_ctl:
+        return _Toolchain("pgserver", str(initdb), str(pg_ctl))
+    return None
+
+
+def _find_pgserver_binary(root: Path, name: str) -> Path | None:
+    candidates = (
+        root / name,
+        root / "bin" / name,
+        root / "postgres" / "bin" / name,
+        root / "postgresql" / "bin" / name,
+    )
+    for candidate in candidates:
+        if candidate.exists():
+            return candidate
+    for candidate in root.rglob(name):
+        if candidate.is_file():
+            return candidate
+    return None
+
+
+def _assert_tool_exists(path: str, name: str) -> None:
+    if not Path(path).exists():
         raise FileNotFoundError(f"{name} not found (need Postgres 16: `make setup`)")
-    return str(found)
 
 
 def _pg_env() -> dict[str, str]:
@@ -60,8 +135,16 @@ class EphemeralCluster:
         self._datadir: Path | None = None
         self._sockdir: str | None = None
         self._started = False
+        self._toolchain: _Toolchain | None = None
+
+    @property
+    def boot_tier(self) -> str:
+        return self._toolchain.tier if self._toolchain is not None else "not_started"
 
     def start(self) -> "EphemeralCluster":
+        self._toolchain = _resolve_toolchain()
+        _assert_tool_exists(self._toolchain.initdb, "initdb")
+        _assert_tool_exists(self._toolchain.pg_ctl, "pg_ctl")
         base = _REPO / "build" / "tmp"
         base.mkdir(parents=True, exist_ok=True)
         self._dd = tempfile.TemporaryDirectory(
@@ -76,7 +159,7 @@ class EphemeralCluster:
         env = _pg_env()
         subprocess.run(
             [
-                _tool("initdb"),
+                self._toolchain.initdb,
                 "-D",
                 str(self._datadir),
                 "-U",
@@ -91,7 +174,7 @@ class EphemeralCluster:
         )
         subprocess.run(
             [
-                _tool("pg_ctl"),
+                self._toolchain.pg_ctl,
                 "-D",
                 str(self._datadir),
                 "-w",
@@ -111,8 +194,9 @@ class EphemeralCluster:
 
     def stop(self) -> None:
         if self._started:
+            pg_ctl = self._toolchain.pg_ctl if self._toolchain is not None else _tool("pg_ctl")
             subprocess.run(
-                [_tool("pg_ctl"), "-D", str(self._datadir), "-m", "immediate", "stop"],
+                [pg_ctl, "-D", str(self._datadir), "-m", "immediate", "stop"],
                 check=False,
                 capture_output=True,
             )
@@ -151,5 +235,6 @@ def boot_seeded_cluster(
 
 __all__ = [
     "EphemeralCluster", "UnsafeDbRole", "apply_migrations", "assert_rls_safe_role",
-    "boot_seeded_cluster", "engine_data_dir", "seed", "session",
+    "boot_seeded_cluster", "engine_data_dir", "resolve_postgres_boot_tier",
+    "seed", "session",
 ]
