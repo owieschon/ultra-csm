@@ -147,14 +147,46 @@ relay with no reachable contact/opportunity identity, and it is what the
 Two fixes landed from this: `join_coverage.ratio` is now `null` (not `1.0`) when
 there are zero contact candidates — a vacuous 0/0 must never render as 100%
 success — and this document's earlier 200/200 CRMContact/CRMOpportunity/join
-numbers are superseded by this correction. The underlying gap (nested
-`data.contacts`-style collections not reaching child-record extraction on this
-corpus's shape) remains open for a future ingest-hardening pass.
+numbers are superseded by this correction.
 
-Child records were extracted where the existing CRMContact contract could
-represent them and the parent account identity could safely supply the join. The
-remaining unrepresentable paths stayed declared as shape limits rather than being
-guessed into new contracts.
+## K4 wrapper-recursion fix (closes the gap above)
+
+The root cause was two bugs, both in the extraction path, not the proposal
+mapping: (1) schema derivation matched a nested collection by its full dotted
+path (`"data.contacts" != "contacts"`), so any collection sitting behind an
+intermediate wrapper object was marked unrepresentable regardless of depth
+budget; (2) even where a mapping existed, runtime child-record extraction did a
+flat single-level dict lookup (`record.get("data.contacts")`), which can never
+resolve a dotted path through a nested dict. Both now match/resolve on path
+structure rather than a literal string.
+
+Proven two ways:
+
+- **Synthetic unit test** (`tests/test_external_book.py`, no corpus data): a
+  collection nested behind a wrapper object extracts identically to one nested
+  directly on the record.
+- **Live re-run against corpus A**, bounded read-only fetch of 200 rows (the
+  original probe's bound; the first 60-row slice sampled here happened to
+  contain zero non-empty contact arrays, so a larger bounded fetch was needed to
+  exercise the fix against real data): `data.contacts` no longer appears in
+  `unrepresentable_paths`; the confirmation proposal now offers real
+  `data.contacts[].id` / `.email` / `.name` / `.title` candidates with their
+  true low-but-nonzero coverage (3–4 of 200) visible alongside the
+  high-coverage account-level fields, exactly the K1 sparsity contrast the
+  design exists to surface. Confirming those fields (and deliberately marking
+  `CRMContact.account_id` `not_mappable` to exercise the parent-identity
+  fallback) produced: **CRMAccount 200/200, CRMContact 4/200 real extracted
+  records** (from 3 records carrying non-empty contact arrays),
+  `join_coverage: {contact_candidates: 4, contacts_joined: 4, ratio: 1.0}` —
+  a genuine, nonzero, verified ratio this time, not the earlier vacuous one.
+  Zero fabricated contacts, zero silent guesses.
+
+This corpus genuinely has very little embedded contact data (4 real contacts
+across a 200-row sample) — that sparsity is now visible and honest rather than
+either hidden (the original unrepresentable-path bug) or faked (the original
+same-id-as-account bug). The remaining unrepresentable paths
+(`data.locations`, `data.strategies`, etc.) stay declared as shape limits
+rather than being guessed into new contracts.
 
 ## Structural Findings
 
