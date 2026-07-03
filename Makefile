@@ -2,7 +2,7 @@ PYTHON := .venv/bin/python
 
 # One-time reviewer setup. Requires Python 3.10+ and local PostgreSQL 16 tooling
 # (`initdb`/`pg_ctl`) available on PATH or through the platform package.
-.PHONY: setup eval lint scorecard-csm csm-work-queue demo-loop year-in-life-csm tick-demo-csm mcp-readonly-demo-csm mcp-operator-demo-csm slot-a-scorecard-csm autonomy-report-csm attio-simulated-onboarding-csm gainsight-simulated-onboarding-csm product-telemetry-simulated-onboarding-csm relay-battery-csm demo clean outcome-simulation-csm stochastic-csm regression-csm regression-csm-live oversight-report doctor quality-regression-csm quality-gold-csm quality-gold-label-csm quality-gold-status-csm quality-gold-validate-csm quality-gold-hard-csm quality-gold-hard-label-csm quality-gold-hard-status-csm quality-gold-hard-validate-csm judge-agreement-csm judge-diagnosis-csm judge-reference-review-csm judge-reference-recheck-csm judge-reference-apply-csm status hygiene serve mcp
+.PHONY: setup eval lint scorecard-csm csm-work-queue demo-loop year-in-life-csm tick-demo-csm mcp-readonly-demo-csm mcp-operator-demo-csm mcp-relay-demo-csm slot-a-scorecard-csm autonomy-report-csm attio-simulated-onboarding-csm gainsight-simulated-onboarding-csm product-telemetry-simulated-onboarding-csm relay-battery-csm demo clean outcome-simulation-csm stochastic-csm regression-csm regression-csm-live oversight-report doctor quality-regression-csm quality-gold-csm quality-gold-label-csm quality-gold-status-csm quality-gold-validate-csm quality-gold-hard-csm quality-gold-hard-label-csm quality-gold-hard-status-csm quality-gold-hard-validate-csm judge-agreement-csm judge-diagnosis-csm judge-reference-review-csm judge-reference-recheck-csm judge-reference-apply-csm status hygiene serve mcp
 setup:
 	python3 -m venv .venv
 	$(PYTHON) -m pip install --upgrade pip
@@ -39,6 +39,9 @@ mcp-readonly-demo-csm:
 
 mcp-operator-demo-csm:
 	PYTHONPATH=src:. ULTRA_CSM_DEMO_OPERATOR=1 $(PYTHON) -m eval.mcp_operator_demo
+
+mcp-relay-demo-csm:
+	PYTHONPATH=src:. $(PYTHON) -m eval.mcp_relay_demo
 
 slot-a-scorecard-csm:
 	PYTHONPATH=src:. $(PYTHON) -m eval.slot_a_scorecard
@@ -144,4 +147,5 @@ demo:
 	$(MAKE) product-telemetry-simulated-onboarding-csm
 	$(MAKE) mcp-readonly-demo-csm
 	$(MAKE) mcp-operator-demo-csm
+	$(MAKE) mcp-relay-demo-csm
 	$(MAKE) oversight-report

@@ -1,7 +1,7 @@
 {
   "access_mode": "demo_operator",
   "artifact": "mcp_operator_transcript",
-  "artifact_sha256": "e659b560bba9e44ab17dcc6606d05b6724f9a360216f81e2bde8d4e35ee18432",
+  "artifact_sha256": "4cf650bc190769beed4e7debdb50095168ee5a32bdaa428d669470b05ff04c6a",
   "beats": [
     "briefing",
     "queue",
@@ -88,6 +88,21 @@
           },
           {
             "classification": "state_changing",
+            "name": "report_readiness",
+            "readonly_available": false
+          },
+          {
+            "classification": "state_changing",
+            "name": "ingest_book",
+            "readonly_available": false
+          },
+          {
+            "classification": "state_changing",
+            "name": "confirm_book_mappings",
+            "readonly_available": false
+          },
+          {
+            "classification": "state_changing",
             "name": "run_sweep",
             "readonly_available": false
           },
@@ -98,7 +113,7 @@
           }
         ]
       },
-      "output_sha256": "92378f48c20cba9dfe0df8664d7f59c166c41eb5ef7662c593aa36208eb40d15",
+      "output_sha256": "bff4fa9e6b9905db036ce796906cb4a5b72a313287cb394dcbb4ad33fd266fe9",
       "tool": "get_tool_manifest"
     },
     {
