@@ -1155,15 +1155,38 @@ def _mapped_bool(
 
 
 def _mapped_cents(record: Mapping[str, Any], mapping: ProposedFieldMapping | None) -> int:
+    """Extract an integer-cents amount, applying the mapping's declared transform.
+
+    A mapping whose transform is ``currency_to_cents`` scales a currency value
+    (dollars) up by 100; ``none`` takes the value as already-integer cents. The
+    conversion is thus explicit in the frozen config rather than hardcoded --
+    the same numeric result as before for the amount_cents field, which carries
+    ``currency_to_cents`` by default, but now visible and auditable."""
     value = _mapped_value(record, mapping)
+    transform = mapping.transform if mapping is not None else "none"
+    if transform == "currency_to_cents":
+        if isinstance(value, bool):
+            return 0
+        if isinstance(value, int | float):
+            return int(round(value * 100))
+        if isinstance(value, str):
+            cleaned = value.replace("$", "").replace(",", "").strip()
+            try:
+                return int(round(float(cleaned) * 100))
+            except ValueError:
+                return 0
+        return 0
+    # transform == "none": value is already integer cents.
+    if isinstance(value, bool):
+        return 0
     if isinstance(value, int):
-        return value * 100
+        return value
     if isinstance(value, float):
-        return int(round(value * 100))
+        return int(round(value))
     if isinstance(value, str):
         cleaned = value.replace("$", "").replace(",", "").strip()
         try:
-            return int(round(float(cleaned) * 100))
+            return int(round(float(cleaned)))
         except ValueError:
             return 0
     return 0

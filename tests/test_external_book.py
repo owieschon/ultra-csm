@@ -476,3 +476,58 @@ def test_shape_affinity_ranks_name_like_above_enum_for_account_name():
     top = name_entry.candidate_evidence[0]
     assert top.source_path == "Name"
     assert top.value_shape == "name_like"
+
+
+# --- Declared transform tests (Phase 2C) -------------------------------------
+
+
+def test_amount_cents_carries_declared_currency_transform_in_frozen_config():
+    records = [
+        {"Id": f"o{i}", "AccountId": "a1", "StageName": "Closed Won",
+         "Amount": 1500.50, "CloseDate": "2026-05-01"}
+        for i in range(3)
+    ]
+    frozen = _freeze_table_for(
+        records, "Opportunities", "CRMOpportunity",
+        {"opportunity_id": "Id", "account_id": "AccountId", "stage_name": "StageName",
+         "amount_cents": "Amount", "close_date": "CloseDate"},
+    )
+    amount = {m.key: m for m in frozen.mappings}["CRMOpportunity.amount_cents"]
+    assert amount.transform == "currency_to_cents"
+    # transform is present in the serialized config (auditable) and covered by hash
+    assert any(m.get("transform") == "currency_to_cents" for m in frozen.to_dict()["mappings"])
+
+
+def test_currency_transform_converts_dollars_to_cents_end_to_end():
+    accounts = [{"Id": "a1", "Name": "Acme", "OwnerId": "u1", "Industry": "Tech"}]
+    opps = [{"Id": "o1", "AccountId": "a1", "StageName": "Closed Won",
+             "Amount": 1500.50, "CloseDate": "2026-05-01"}]
+    acct_map = _freeze_table_for(accounts, "Accounts", "CRMAccount",
+        {"account_id": "Id", "name": "Name", "owner_id": "OwnerId", "industry": "Industry"})
+    opp_map = _freeze_table_for(opps, "Opportunities", "CRMOpportunity",
+        {"opportunity_id": "Id", "account_id": "AccountId", "stage_name": "StageName",
+         "amount_cents": "Amount", "close_date": "CloseDate"})
+    result = ingest_relational_book([
+        RelationalTable("Accounts", tuple(accounts), acct_map, 1),
+        RelationalTable("Opportunities", tuple(opps), opp_map, 1),
+    ])
+    assert result.data.opportunities[0].amount_cents == 150050  # 1500.50 dollars -> cents
+
+
+def test_unknown_transform_is_rejected():
+    records = [{"Id": "o1", "AccountId": "a1", "StageName": "X", "Amount": 10, "CloseDate": "2026-01-01"}]
+    descriptor = ExternalSourceDescriptor(source_name="Opportunities", object_name="Opportunities")
+    _s, proposal, _u = propose_external_source_mapping(records, descriptor)
+    confs = {}
+    for e in proposal.entries:
+        if e.state != "ambiguous_confirm":
+            continue
+        if e.key == "CRMOpportunity.amount_cents":
+            confs[e.key] = MappingConfirmation(
+                e.contract, e.internal_field, "Opportunities", "Amount", "Amount",
+                e.semantic_role, transform="scale_by_1000",
+            )
+        else:
+            confs[e.key] = MappingConfirmation(e.contract, e.internal_field, verdict="not_mappable")
+    with pytest.raises(ValueError, match="unknown transform"):
+        freeze_confirmed_source_map(proposal, confirmations=confs)
