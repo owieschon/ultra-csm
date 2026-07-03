@@ -1,0 +1,64 @@
+{
+  "confirmations": {
+    "CRMCase.priority": {
+      "contract": "CRMCase",
+      "internal_field": "priority",
+      "semantic_role": "context",
+      "source_field": "Priority",
+      "source_object": "Case",
+      "source_path": "Priority",
+      "value_direction": "higher_is_better",
+      "verdict": "mapped"
+    },
+    "CRMCase.status": {
+      "contract": "CRMCase",
+      "internal_field": "status",
+      "semantic_role": "context",
+      "source_field": "Status",
+      "source_object": "Case",
+      "source_path": "Status",
+      "value_direction": "higher_is_better",
+      "verdict": "mapped"
+    },
+    "CRMContact.consent_to_contact": {
+      "contract": "CRMContact",
+      "internal_field": "consent_to_contact",
+      "semantic_role": "context",
+      "source_field": "Consent_To_Contact__c",
+      "source_object": "Contact",
+      "source_path": "Consent_To_Contact__c",
+      "value_direction": "not_applicable",
+      "verdict": "mapped"
+    },
+    "CRMContact.org_level": {
+      "contract": "CRMContact",
+      "internal_field": "org_level",
+      "semantic_role": "context",
+      "source_field": "Org_Level__c",
+      "source_object": "Contact",
+      "source_path": "Org_Level__c",
+      "value_direction": "not_applicable",
+      "verdict": "mapped"
+    },
+    "CRMContact.role": {
+      "contract": "CRMContact",
+      "internal_field": "role",
+      "semantic_role": "context",
+      "source_field": "Role__c",
+      "source_object": "Contact",
+      "source_path": "Role__c",
+      "value_direction": "not_applicable",
+      "verdict": "mapped"
+    },
+    "CRMOpportunity.stage_name": {
+      "contract": "CRMOpportunity",
+      "internal_field": "stage_name",
+      "semantic_role": "context",
+      "source_field": "StageName",
+      "source_object": "Opportunity",
+      "source_path": "StageName",
+      "value_direction": "higher_is_better",
+      "verdict": "mapped"
+    }
+  }
+}

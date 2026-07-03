@@ -59,11 +59,13 @@ exercised without live credentials against the simulated customer book:
 make attio-simulated-onboarding-csm
 make gainsight-simulated-onboarding-csm
 make product-telemetry-simulated-onboarding-csm
+make salesforce-simulated-onboarding-csm
 ```
 
 Each writes an artifact (`eval/attio_simulated_onboarding.json`,
 `eval/gainsight_simulated_onboarding.json`,
-`eval/product_telemetry_simulated_onboarding.json`) that freezes the confirmed mapping
+`eval/product_telemetry_simulated_onboarding.json`, and
+`eval/salesforce_simulated_onboarding.json`) that freezes the confirmed mapping
 over fixture data while preserving the live-credential boundary. The three connectors
 degrade differently and honestly: Attio maps nearly everything with one unknown field;
 Gainsight resolves Company/CTA/SuccessPlan but reports HealthScore and AdoptionSummary as
@@ -71,7 +73,10 @@ unknown because its metadata-describe surface doesn't expose a matching object f
 without tenant-specific Scorecard/Adoption Explorer configuration; product telemetry
 resolves identity/join fields from OTel resource attributes but reports per-datapoint
 value fields as unknown, since those live in the metric payload itself and need a live
-sample capture, not just attribute introspection.
+sample capture, not just attribute introspection. Salesforce proves the read-only
+Describe -> source-map proposal -> confirmation -> freeze -> bounded SOQL pagination ->
+typed CRM contract path over a fake transport; live tenant proof still requires
+Salesforce credentials.
 
 ## Render Current Status
 
@@ -147,6 +152,9 @@ with `submit_verdict(..., verdict="revise", edit_instruction="Make this more con
 then approve the superseding proposal. Approved customer outreach writes only to
 `demo_state/mcp_operator/outbox.jsonl`; no live email is sent. The mode also refuses
 no-consent outreach and held expansion actions with typed errors.
+After approval, `render_email_draft` returns a placement-ready artifact with
+`draft_never_send: true`, the approved `payload_sha256`, and explicit host placement
+instructions. It creates no live email by itself.
 
 Capture the deterministic transcript with:
 
@@ -176,6 +184,8 @@ Every relay response is labeled `provenance: mcp_relay`, `unverified_mapping: tr
 `sim: false`, and `live: false`. Relay actions are propose-only: the server may return
 draft content for the host to place in the user's own email client, but Ultra CSM sends
 nothing and has no commit/receipt path for relay books.
+When the host marks a relay draft proposal as approved, `render_email_draft` can turn
+that approved payload into the same draft-never-send placement artifact.
 
 Capture the deterministic synthetic relay transcript with:
 

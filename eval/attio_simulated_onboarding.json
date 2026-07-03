@@ -113,10 +113,23 @@
     }
   },
   "frozen_source_map": {
-    "config_hash": "sha256:0237d65ee2c61d282abe42b03b648d7af82cc3f6e2ec812d9ce8d849304a7edf",
+    "config_hash": "sha256:c4d20e537479a6c7f62bbaa494241da4f8846106274d5db55e4acc1d185f38af",
     "connector_id": "attio_crm",
     "mappings": [
       {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "id",
+            "source_object": "companies",
+            "source_path": "values.id"
+          }
+        ],
         "confidence": 0.95,
         "connector_id": "attio_crm",
         "contract": "CRMAccount",
@@ -133,6 +146,19 @@
         "value_direction": "not_applicable"
       },
       {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "name",
+            "source_object": "companies",
+            "source_path": "values.name"
+          }
+        ],
         "confidence": 0.95,
         "connector_id": "attio_crm",
         "contract": "CRMAccount",
@@ -149,6 +175,19 @@
         "value_direction": "not_applicable"
       },
       {
+        "candidate_evidence": [
+          {
+            "confidence": 0.58,
+            "field_type": "unknown",
+            "reason": "custom or tenant-specific field requires confirmation",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "owner",
+            "source_object": "companies",
+            "source_path": "values.owner"
+          }
+        ],
         "confidence": 1.0,
         "connector_id": "attio_crm",
         "contract": "CRMAccount",
@@ -165,6 +204,19 @@
         "value_direction": "not_applicable"
       },
       {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "id",
+            "source_object": "people",
+            "source_path": "values.id"
+          }
+        ],
         "confidence": 0.95,
         "connector_id": "attio_crm",
         "contract": "CRMContact",
@@ -181,6 +233,19 @@
         "value_direction": "not_applicable"
       },
       {
+        "candidate_evidence": [
+          {
+            "confidence": 0.58,
+            "field_type": "unknown",
+            "reason": "custom or tenant-specific field requires confirmation",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "associated_company",
+            "source_object": "people",
+            "source_path": "values.associated_company"
+          }
+        ],
         "confidence": 1.0,
         "connector_id": "attio_crm",
         "contract": "CRMContact",
@@ -197,6 +262,19 @@
         "value_direction": "not_applicable"
       },
       {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "email_addresses",
+            "source_object": "people",
+            "source_path": "values.email_addresses"
+          }
+        ],
         "confidence": 0.95,
         "connector_id": "attio_crm",
         "contract": "CRMContact",
@@ -213,6 +291,19 @@
         "value_direction": "not_applicable"
       },
       {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "name",
+            "source_object": "people",
+            "source_path": "values.name"
+          }
+        ],
         "confidence": 0.95,
         "connector_id": "attio_crm",
         "contract": "CRMContact",
@@ -229,6 +320,19 @@
         "value_direction": "not_applicable"
       },
       {
+        "candidate_evidence": [
+          {
+            "confidence": 0.58,
+            "field_type": "unknown",
+            "reason": "custom or tenant-specific field requires confirmation",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "role",
+            "source_object": "people",
+            "source_path": "values.role"
+          }
+        ],
         "confidence": 1.0,
         "connector_id": "attio_crm",
         "contract": "CRMContact",
@@ -245,6 +349,19 @@
         "value_direction": "not_applicable"
       },
       {
+        "candidate_evidence": [
+          {
+            "confidence": 0.58,
+            "field_type": "unknown",
+            "reason": "custom or tenant-specific field requires confirmation",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "job_title",
+            "source_object": "people",
+            "source_path": "values.job_title"
+          }
+        ],
         "confidence": 1.0,
         "connector_id": "attio_crm",
         "contract": "CRMContact",
@@ -261,6 +378,19 @@
         "value_direction": "not_applicable"
       },
       {
+        "candidate_evidence": [
+          {
+            "confidence": 0.58,
+            "field_type": "unknown",
+            "reason": "custom or tenant-specific field requires confirmation",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "consent_to_contact",
+            "source_object": "people",
+            "source_path": "values.consent_to_contact"
+          }
+        ],
         "confidence": 1.0,
         "connector_id": "attio_crm",
         "contract": "CRMContact",
@@ -277,7 +407,7 @@
         "value_direction": "not_applicable"
       }
     ],
-    "proposal_hash": "sha256:a083d15be1efc5a1611508a6ef5b0a5e65a8287f7f8c3f2919e9901597dbd6c3",
+    "proposal_hash": "sha256:e1d72f54ae4e406a745109c472fac104acc24e493c40cd2534a88c7fa71e0958",
     "schema_hash": "sha256:f98bd8194d914f8f3aebe08f5fe8ff1274ed8773b34c8a6c4a189fa092ba7ac1",
     "unknown_fields": [
       "CRMAccount.industry"
@@ -301,7 +431,7 @@
     "missing_to_unknown_keys": [
       "CRMAccount.industry"
     ],
-    "proposal_hash": "sha256:a083d15be1efc5a1611508a6ef5b0a5e65a8287f7f8c3f2919e9901597dbd6c3",
+    "proposal_hash": "sha256:e1d72f54ae4e406a745109c472fac104acc24e493c40cd2534a88c7fa71e0958",
     "required_operator_actions": [
       "confirm 5 semantic/value mappings",
       "review 1 missing fields; affected rails remain unknown"

@@ -103,6 +103,25 @@ def test_salesforce_smoke_builds_oauth_describe_requests():
     assert client.requests[2].headers["authorization"] == "Bearer access-token"
 
 
+def test_salesforce_smoke_supports_short_lived_access_token_without_oauth():
+    client = SalesforceRecordingClient()
+
+    result = run_smoke(
+        "salesforce_crm",
+        env={
+            "ULTRA_CSM_SALESFORCE_INSTANCE_URL": "https://example.my.salesforce.com",
+            "ULTRA_CSM_SALESFORCE_ACCESS_TOKEN": "direct-token",
+            "ULTRA_CSM_SALESFORCE_API_VERSION": "v61.0",
+        },
+        client=client,
+    )
+
+    assert result.ok is True
+    assert [req.method for req in client.requests] == ["GET", "GET"]
+    assert client.requests[0].headers["authorization"] == "Bearer direct-token"
+    assert client.requests[0].url == "https://example.my.salesforce.com/services/data/v61.0/sobjects/"
+
+
 def test_salesforce_smoke_fails_when_oauth_response_has_no_token():
     client = RecordingClient()
 
