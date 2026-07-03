@@ -529,9 +529,12 @@ _CASE_SCHEDULE: list[tuple[str, int, str, str, str, int | None, float | None]] =
     ("cypress-field",        14, "GPS accuracy in Zone 4 still problematic",
      "High", "gps_accuracy", 35, 2.5),
 
-    # Quarrystone — admin access transfer
+    # Quarrystone — admin access transfer, then a renewal conversation
+    # nobody answers (bible's churn-brewing arc: known risk, no remediation)
     ("quarrystone-logistics", 0, "Need to transfer admin access to new contact",
      "Medium", "admin_transfer", None, None),
+    ("quarrystone-logistics", 160, "Renewal terms discussion — no response",
+     "Medium", "renewal", None, None),
 
     # Harborview — integration and billing issues
     ("harborview-fleet",     0,  "Integration with new ERP system not working as expected",
