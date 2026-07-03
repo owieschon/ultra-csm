@@ -21,6 +21,7 @@ def test_every_connector_spec_meets_the_shared_real_ready_bar():
         "gainsight_cs",
         "rocketlane_onboarding",
         "product_telemetry",
+        "external_book",
     }
     for spec in CONNECTOR_SPECS.values():
         validate_connector_spec(spec)
@@ -44,6 +45,24 @@ def test_attio_is_held_to_the_same_connector_standard():
         "CRMContact",
     }
     assert all("attio" in doc.url for doc in spec.docs)
+
+
+def test_external_book_is_held_to_the_same_connector_standard():
+    spec = CONNECTOR_SPECS["external_book"]
+
+    assert spec.credential_env == (
+        "CORPUS_A_BASE_URL",
+        "CORPUS_A_TABLE",
+        "CORPUS_A_" "API_KEY",
+    )
+    assert spec.auth_strategies == ("api_key",)
+    assert spec.pagination == ("offset",)
+    assert spec.source_contracts == ("CRMAccount", "CRMContact", "CRMOpportunity")
+    assert spec.discovery_surfaces == ("sample records", "confirmed source map")
+    assert spec.recorded_shapes[0].fixture_path == (
+        "tests/fixtures/connectors/external_book/raw_record_sample.json"
+    )
+    assert all("postgrest.org" in doc.url for doc in spec.docs)
 
 
 def test_connector_spec_requires_official_docs_and_recorded_shapes():

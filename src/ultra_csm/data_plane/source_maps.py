@@ -259,6 +259,52 @@ PRODUCT_TELEMETRY_SOURCE_MAPS: dict[str, SourceObjectMap] = {
 }
 
 
+EXTERNAL_BOOK_SOURCE_MAPS: dict[str, SourceObjectMap] = {
+    "CRMAccount": SourceObjectMap(
+        vendor="External book",
+        object_name="records",
+        docs_url="https://postgrest.org/en/stable/references/api/tables_views.html",
+        fields={
+            "account_id": SourceField("id", False, "identity must be confirmed"),
+            "name": SourceField("name", False, "customer/account display label"),
+            "owner_id": SourceField("owner", False, "owner-like field, if present"),
+            "industry": SourceField("industry", False, "sector/category field, if present"),
+        },
+    ),
+    "CRMContact": SourceObjectMap(
+        vendor="External book",
+        object_name="records",
+        docs_url="https://postgrest.org/en/stable/references/api/tables_views.html",
+        fields={
+            "contact_id": SourceField("contact_id", False, "identity must be confirmed"),
+            "account_id": SourceField("id", False, "account join must be confirmed"),
+            "email": SourceField("email", False, pii="contact", llm_allowed=False),
+            "name": SourceField("contact_name", False, pii="contact"),
+            "role": SourceField("role", False),
+            "title": SourceField("title", False),
+            "consent_to_contact": SourceField(
+                "consent_to_contact",
+                False,
+                "missing consent is treated as false",
+            ),
+        },
+    ),
+    "CRMOpportunity": SourceObjectMap(
+        vendor="External book",
+        object_name="records",
+        docs_url="https://postgrest.org/en/stable/references/api/tables_views.html",
+        fields={
+            "opportunity_id": SourceField("opportunity_id", False),
+            "account_id": SourceField("id", False, "account join must be confirmed"),
+            "stage_name": SourceField("stage", False),
+            "amount_cents": SourceField("revenue", False, "normalized to cents"),
+            "close_date": SourceField("close_date", False),
+            "opportunity_type": SourceField("opportunity_type", False),
+        },
+    ),
+}
+
+
 ALL_SOURCE_MAPS: dict[str, SourceObjectMap] = {
     **SALESFORCE_SOURCE_MAPS,
     **GAINSIGHT_SOURCE_MAPS,
