@@ -210,6 +210,44 @@ def test_external_book_extracts_nested_contacts_with_parent_account_id():
     assert contact_id_entry.source_path == "contacts[].id"
 
 
+def test_external_book_extracts_nested_contacts_behind_a_wrapper_object():
+    # Real-world shape found via a live corpus: the collection sits one level
+    # behind an intermediate wrapper object (a JSONB "data" envelope), not
+    # directly on the record like the sibling test above. Synthetic fixture --
+    # not derived from or resembling any real corpus's field names or values.
+    records = [
+        {
+            "id": "acct-wrapped",
+            "data": {
+                "title": "Wrapped Account",
+                "contacts": [
+                    {
+                        "id": "contact-wrapped",
+                        "title": "Wrapped Contact",
+                        "email": "wrapped@example.test",
+                        "consent_to_contact": True,
+                    }
+                ],
+            },
+        }
+    ]
+    descriptor = ExternalSourceDescriptor(source_name="unit")
+    _, proposal, unrepresentable = propose_external_source_mapping(records, descriptor)
+    frozen = _confirm_all(proposal)
+
+    result = ingest_external_book(records, descriptor, frozen_map=frozen)
+
+    assert "data.contacts" not in unrepresentable
+    assert result.coverage.records_typed["CRMAccount"] == 1
+    assert result.coverage.records_typed["CRMContact"] == 1
+    assert result.data.contacts[0].account_id == "acct-wrapped"
+    assert result.data.contacts[0].contact_id == "contact-wrapped"
+    contact_id_entry = {
+        entry.key: entry for entry in proposal.entries
+    }["CRMContact.contact_id"]
+    assert contact_id_entry.source_path == "data.contacts[].id"
+
+
 def test_external_book_ingest_transforms_confirmed_map_without_echoing_raw_values():
     descriptor = ExternalSourceDescriptor(source_name="unit", expected_count=3)
     _, proposal, _ = propose_external_source_mapping(_book_records(), descriptor)
