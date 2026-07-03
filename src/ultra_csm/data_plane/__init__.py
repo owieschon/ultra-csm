@@ -126,6 +126,7 @@ from ultra_csm.data_plane.rocketlane_fixtures import (
     derive_ttv_milestones,
     det_rocketlane_id,
     has_activation_gap,
+    onboarding_activation_gap_ids,
 )
 
 __all__ = [
@@ -236,4 +237,5 @@ __all__ = [
     "derive_ttv_milestones",
     "det_rocketlane_id",
     "has_activation_gap",
+    "onboarding_activation_gap_ids",
 ]
