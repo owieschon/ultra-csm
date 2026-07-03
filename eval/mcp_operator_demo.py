@@ -48,13 +48,22 @@ def build_mcp_operator_transcript(
         ),
         stable_ids,
     )
-    _call(
+    approved = _call(
         calls,
         "submit_verdict(approve)",
         mcp_server.submit_verdict(
             revise["superseding_proposal_id"],
             "approve",
             "Approved revised simulation draft.",
+        ),
+        stable_ids,
+    )
+    _call(
+        calls,
+        "render_email_draft",
+        mcp_server.render_email_draft(
+            proposal_id=approved["proposal_id"],
+            approved_payload_sha256=approved["payload_sha256"],
         ),
         stable_ids,
     )
@@ -107,6 +116,7 @@ def build_mcp_operator_transcript(
             "evidence",
             "revise",
             "approve_with_receipt",
+            "render_email_draft",
             "refusal",
             "session_receipts",
         ],

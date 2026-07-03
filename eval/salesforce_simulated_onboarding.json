@@ -1,0 +1,1300 @@
+{
+  "artifact": "salesforce_simulated_onboarding",
+  "briefing": [
+    "Salesforce fetch typed 35 CRM accounts from 119 fetched records.",
+    "Salesforce CRM alone does not provide CS-platform health or product telemetry; value-model rails that require those sources remain unknown."
+  ],
+  "claim_boundary": {
+    "live": false,
+    "live_tenant_proven": false,
+    "read_only": true,
+    "sim": true,
+    "uses_live_credentials": false
+  },
+  "confirmation_fixture": {
+    "confirmed_keys": [
+      "CRMCase.priority",
+      "CRMCase.status",
+      "CRMContact.consent_to_contact",
+      "CRMContact.org_level",
+      "CRMContact.role",
+      "CRMOpportunity.stage_name"
+    ],
+    "path": "eval/salesforce_simulated_confirmations.json"
+  },
+  "coverage": {
+    "count_mismatch": false,
+    "dropped_record_count": 0,
+    "duplicate_identities": [],
+    "expected_count": null,
+    "field_coverage": {
+      "CRMAccount": {
+        "mapped": 4
+      },
+      "CRMActivity": {
+        "mapped": 4,
+        "unknown": 3
+      },
+      "CRMCase": {
+        "mapped": 8
+      },
+      "CRMContact": {
+        "mapped": 8
+      },
+      "CRMOpportunity": {
+        "mapped": 6
+      }
+    },
+    "injection_marker_count": 0,
+    "join_coverage": {
+      "contact_candidates": 67,
+      "contacts_joined": 67,
+      "ratio": 1.0
+    },
+    "records_processed": 119,
+    "records_received": 119,
+    "records_rejected": [],
+    "records_typed": {
+      "CRMAccount": 35,
+      "CRMCase": 11,
+      "CRMContact": 67,
+      "CRMOpportunity": 6
+    },
+    "rejection_counts": {},
+    "source_totals": {
+      "CRMAccount": {
+        "fetched_count": 35,
+        "query": "SELECT Id, Industry, Name, OwnerId FROM Account LIMIT 200",
+        "row_cap": 200,
+        "source_object": "Account",
+        "totalSize": 35,
+        "truncated": false
+      },
+      "CRMCase": {
+        "fetched_count": 11,
+        "query": "SELECT AccountId, ClosedDate, CreatedDate, Id, Origin, Priority, Status, Subject FROM Case LIMIT 200",
+        "row_cap": 200,
+        "source_object": "Case",
+        "totalSize": 11,
+        "truncated": false
+      },
+      "CRMContact": {
+        "fetched_count": 67,
+        "query": "SELECT AccountId, Consent_To_Contact__c, Email, Id, Name, Org_Level__c, Role__c, Title FROM Contact LIMIT 200",
+        "row_cap": 200,
+        "source_object": "Contact",
+        "totalSize": 67,
+        "truncated": false
+      },
+      "CRMOpportunity": {
+        "fetched_count": 6,
+        "query": "SELECT AccountId, Amount, CloseDate, Id, StageName, Type FROM Opportunity LIMIT 200",
+        "row_cap": 200,
+        "source_object": "Opportunity",
+        "totalSize": 6,
+        "truncated": false
+      }
+    },
+    "truncated": false,
+    "unknown_fields": [
+      "CRMActivity.channel",
+      "CRMActivity.direction",
+      "CRMActivity.idempotency_key"
+    ],
+    "unrepresentable_paths": []
+  },
+  "credential_boundary": {
+    "live_credentials_used": false,
+    "live_tenant_proof": false,
+    "missing_credentials_state": "shape_verified_pending_live_creds",
+    "missing_env": [
+      "ULTRA_CSM_SALESFORCE_INSTANCE_URL",
+      "ULTRA_CSM_SALESFORCE_CLIENT_ID",
+      "ULTRA_CSM_SALESFORCE_CLIENT_SECRET",
+      "ULTRA_CSM_SALESFORCE_REFRESH_TOKEN"
+    ],
+    "requests_without_credentials": 0,
+    "simulated_credentials_used": true,
+    "transport": "FakeSalesforceClient"
+  },
+  "discovery": {
+    "explorer_connected_flag_is_not_live_proof": true,
+    "explorer_state_on_fake_transport": "live_schema_verified",
+    "objects": [
+      {
+        "fields": [
+          "Id",
+          "Name",
+          "OwnerId",
+          "Industry"
+        ],
+        "name": "Account"
+      },
+      {
+        "fields": [
+          "Id",
+          "AccountId",
+          "Email",
+          "Name",
+          "Role__c",
+          "Title",
+          "Consent_To_Contact__c",
+          "Org_Level__c"
+        ],
+        "name": "Contact"
+      },
+      {
+        "fields": [
+          "Id",
+          "AccountId",
+          "Status",
+          "Priority",
+          "Origin",
+          "Subject",
+          "CreatedDate",
+          "ClosedDate"
+        ],
+        "name": "Case"
+      },
+      {
+        "fields": [
+          "Id",
+          "AccountId",
+          "StageName",
+          "Amount",
+          "CloseDate",
+          "Type"
+        ],
+        "name": "Opportunity"
+      },
+      {
+        "fields": [
+          "Id",
+          "WhatId",
+          "Description",
+          "ActivityDate"
+        ],
+        "name": "Task"
+      },
+      {
+        "fields": [
+          "Id",
+          "WhatId",
+          "Description",
+          "ActivityDate"
+        ],
+        "name": "Event"
+      }
+    ],
+    "ok": true,
+    "request_methods": [
+      "POST",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET"
+    ],
+    "requests_on_fake_transport": 8,
+    "sample_counts": {
+      "account_describe": 4,
+      "case_describe": 8,
+      "contact_describe": 8,
+      "describe_global": 6,
+      "event_describe": 4,
+      "opportunity_describe": 6,
+      "task_describe": 4
+    },
+    "schema_hash": "sha256:7b486ad29d8257b1daca00253ca3c52ea47080f34e92aae1bef321dc0190180c",
+    "source_steps": [
+      "oauth_refresh",
+      "describe_global",
+      "account_describe",
+      "contact_describe",
+      "case_describe",
+      "opportunity_describe",
+      "task_describe",
+      "event_describe"
+    ]
+  },
+  "fetch": {
+    "auth_source": "oauth_refresh",
+    "fetches": [
+      {
+        "contract": "CRMAccount",
+        "fetched_count": 35,
+        "query": "SELECT Id, Industry, Name, OwnerId FROM Account LIMIT 200",
+        "request_count": 18,
+        "row_cap": 200,
+        "source_object": "Account",
+        "total_size": 35,
+        "truncated": false
+      },
+      {
+        "contract": "CRMContact",
+        "fetched_count": 67,
+        "query": "SELECT AccountId, Consent_To_Contact__c, Email, Id, Name, Org_Level__c, Role__c, Title FROM Contact LIMIT 200",
+        "request_count": 34,
+        "row_cap": 200,
+        "source_object": "Contact",
+        "total_size": 67,
+        "truncated": false
+      },
+      {
+        "contract": "CRMCase",
+        "fetched_count": 11,
+        "query": "SELECT AccountId, ClosedDate, CreatedDate, Id, Origin, Priority, Status, Subject FROM Case LIMIT 200",
+        "request_count": 6,
+        "row_cap": 200,
+        "source_object": "Case",
+        "total_size": 11,
+        "truncated": false
+      },
+      {
+        "contract": "CRMOpportunity",
+        "fetched_count": 6,
+        "query": "SELECT AccountId, Amount, CloseDate, Id, StageName, Type FROM Opportunity LIMIT 200",
+        "request_count": 3,
+        "row_cap": 200,
+        "source_object": "Opportunity",
+        "total_size": 6,
+        "truncated": false
+      }
+    ],
+    "request_methods": [
+      "POST",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET"
+    ],
+    "requests_on_fake_transport": 62
+  },
+  "fixture_payload": {
+    "objects": [
+      "Account",
+      "Contact",
+      "Case",
+      "Opportunity"
+    ],
+    "page_size": 2,
+    "records_available": {
+      "Account": 35,
+      "Case": 11,
+      "Contact": 67,
+      "Opportunity": 6
+    },
+    "row_cap": 200
+  },
+  "frozen_source_map": {
+    "config_hash": "sha256:ffc502ac1af1b4fc3ff995d0cfcc1773de068ddc1412f2ce1ec6a4b957d7261e",
+    "connector_id": "salesforce_crm",
+    "mappings": [
+      {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "Id",
+            "source_object": "Account",
+            "source_path": "Id"
+          }
+        ],
+        "confidence": 0.95,
+        "connector_id": "salesforce_crm",
+        "contract": "CRMAccount",
+        "internal_field": "account_id",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "identity_join",
+        "source_field": "Id",
+        "source_object": "Account",
+        "source_path": "Id",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "Name",
+            "source_object": "Account",
+            "source_path": "Name"
+          }
+        ],
+        "confidence": 0.95,
+        "connector_id": "salesforce_crm",
+        "contract": "CRMAccount",
+        "internal_field": "name",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "context",
+        "source_field": "Name",
+        "source_object": "Account",
+        "source_path": "Name",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "OwnerId",
+            "source_object": "Account",
+            "source_path": "OwnerId"
+          }
+        ],
+        "confidence": 0.95,
+        "connector_id": "salesforce_crm",
+        "contract": "CRMAccount",
+        "internal_field": "owner_id",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "context",
+        "source_field": "OwnerId",
+        "source_object": "Account",
+        "source_path": "OwnerId",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "Industry",
+            "source_object": "Account",
+            "source_path": "Industry"
+          }
+        ],
+        "confidence": 0.95,
+        "connector_id": "salesforce_crm",
+        "contract": "CRMAccount",
+        "internal_field": "industry",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "context",
+        "source_field": "Industry",
+        "source_object": "Account",
+        "source_path": "Industry",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "Id",
+            "source_object": "Contact",
+            "source_path": "Id"
+          }
+        ],
+        "confidence": 0.95,
+        "connector_id": "salesforce_crm",
+        "contract": "CRMContact",
+        "internal_field": "contact_id",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "identity_join",
+        "source_field": "Id",
+        "source_object": "Contact",
+        "source_path": "Id",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "AccountId",
+            "source_object": "Contact",
+            "source_path": "AccountId"
+          }
+        ],
+        "confidence": 0.95,
+        "connector_id": "salesforce_crm",
+        "contract": "CRMContact",
+        "internal_field": "account_id",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "identity_join",
+        "source_field": "AccountId",
+        "source_object": "Contact",
+        "source_path": "AccountId",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "Email",
+            "source_object": "Contact",
+            "source_path": "Email"
+          }
+        ],
+        "confidence": 0.95,
+        "connector_id": "salesforce_crm",
+        "contract": "CRMContact",
+        "internal_field": "email",
+        "llm_allowed": false,
+        "pii": "contact",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "context",
+        "source_field": "Email",
+        "source_object": "Contact",
+        "source_path": "Email",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "Name",
+            "source_object": "Contact",
+            "source_path": "Name"
+          }
+        ],
+        "confidence": 0.95,
+        "connector_id": "salesforce_crm",
+        "contract": "CRMContact",
+        "internal_field": "name",
+        "llm_allowed": true,
+        "pii": "contact",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "context",
+        "source_field": "Name",
+        "source_object": "Contact",
+        "source_path": "Name",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "Title",
+            "source_object": "Contact",
+            "source_path": "Title"
+          }
+        ],
+        "confidence": 0.95,
+        "connector_id": "salesforce_crm",
+        "contract": "CRMContact",
+        "internal_field": "title",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "context",
+        "source_field": "Title",
+        "source_object": "Contact",
+        "source_path": "Title",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "candidate_evidence": [
+          {
+            "confidence": 0.58,
+            "field_type": "unknown",
+            "reason": "custom or tenant-specific field requires confirmation",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "Role__c",
+            "source_object": "Contact",
+            "source_path": "Role__c"
+          }
+        ],
+        "confidence": 1.0,
+        "connector_id": "salesforce_crm",
+        "contract": "CRMContact",
+        "internal_field": "role",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "human-confirmed mapping frozen into deterministic config",
+        "requires_human_confirmation": false,
+        "semantic_role": "context",
+        "source_field": "Role__c",
+        "source_object": "Contact",
+        "source_path": "Role__c",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "candidate_evidence": [
+          {
+            "confidence": 0.58,
+            "field_type": "unknown",
+            "reason": "custom or tenant-specific field requires confirmation",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "Consent_To_Contact__c",
+            "source_object": "Contact",
+            "source_path": "Consent_To_Contact__c"
+          }
+        ],
+        "confidence": 1.0,
+        "connector_id": "salesforce_crm",
+        "contract": "CRMContact",
+        "internal_field": "consent_to_contact",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "human-confirmed mapping frozen into deterministic config",
+        "requires_human_confirmation": false,
+        "semantic_role": "context",
+        "source_field": "Consent_To_Contact__c",
+        "source_object": "Contact",
+        "source_path": "Consent_To_Contact__c",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "candidate_evidence": [
+          {
+            "confidence": 0.58,
+            "field_type": "unknown",
+            "reason": "custom or tenant-specific field requires confirmation",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "Org_Level__c",
+            "source_object": "Contact",
+            "source_path": "Org_Level__c"
+          }
+        ],
+        "confidence": 1.0,
+        "connector_id": "salesforce_crm",
+        "contract": "CRMContact",
+        "internal_field": "org_level",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "human-confirmed mapping frozen into deterministic config",
+        "requires_human_confirmation": false,
+        "semantic_role": "context",
+        "source_field": "Org_Level__c",
+        "source_object": "Contact",
+        "source_path": "Org_Level__c",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "Id",
+            "source_object": "Case",
+            "source_path": "Id"
+          }
+        ],
+        "confidence": 0.95,
+        "connector_id": "salesforce_crm",
+        "contract": "CRMCase",
+        "internal_field": "case_id",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "context",
+        "source_field": "Id",
+        "source_object": "Case",
+        "source_path": "Id",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "AccountId",
+            "source_object": "Case",
+            "source_path": "AccountId"
+          }
+        ],
+        "confidence": 0.95,
+        "connector_id": "salesforce_crm",
+        "contract": "CRMCase",
+        "internal_field": "account_id",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "identity_join",
+        "source_field": "AccountId",
+        "source_object": "Case",
+        "source_path": "AccountId",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "candidate_evidence": [
+          {
+            "confidence": 0.91,
+            "field_type": "unknown",
+            "reason": "value direction affects scoring and requires confirmation",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "Status",
+            "source_object": "Case",
+            "source_path": "Status"
+          }
+        ],
+        "confidence": 1.0,
+        "connector_id": "salesforce_crm",
+        "contract": "CRMCase",
+        "internal_field": "status",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "human-confirmed mapping frozen into deterministic config",
+        "requires_human_confirmation": false,
+        "semantic_role": "context",
+        "source_field": "Status",
+        "source_object": "Case",
+        "source_path": "Status",
+        "state": "mapped",
+        "value_direction": "higher_is_better"
+      },
+      {
+        "candidate_evidence": [
+          {
+            "confidence": 0.91,
+            "field_type": "unknown",
+            "reason": "value direction affects scoring and requires confirmation",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "Priority",
+            "source_object": "Case",
+            "source_path": "Priority"
+          }
+        ],
+        "confidence": 1.0,
+        "connector_id": "salesforce_crm",
+        "contract": "CRMCase",
+        "internal_field": "priority",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "human-confirmed mapping frozen into deterministic config",
+        "requires_human_confirmation": false,
+        "semantic_role": "context",
+        "source_field": "Priority",
+        "source_object": "Case",
+        "source_path": "Priority",
+        "state": "mapped",
+        "value_direction": "higher_is_better"
+      },
+      {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "Origin",
+            "source_object": "Case",
+            "source_path": "Origin"
+          }
+        ],
+        "confidence": 0.95,
+        "connector_id": "salesforce_crm",
+        "contract": "CRMCase",
+        "internal_field": "origin",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "context",
+        "source_field": "Origin",
+        "source_object": "Case",
+        "source_path": "Origin",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "Subject",
+            "source_object": "Case",
+            "source_path": "Subject"
+          }
+        ],
+        "confidence": 0.95,
+        "connector_id": "salesforce_crm",
+        "contract": "CRMCase",
+        "internal_field": "subject",
+        "llm_allowed": true,
+        "pii": "customer_content",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "customer_content",
+        "source_field": "Subject",
+        "source_object": "Case",
+        "source_path": "Subject",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "CreatedDate",
+            "source_object": "Case",
+            "source_path": "CreatedDate"
+          }
+        ],
+        "confidence": 0.95,
+        "connector_id": "salesforce_crm",
+        "contract": "CRMCase",
+        "internal_field": "created_at",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "context",
+        "source_field": "CreatedDate",
+        "source_object": "Case",
+        "source_path": "CreatedDate",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "ClosedDate",
+            "source_object": "Case",
+            "source_path": "ClosedDate"
+          }
+        ],
+        "confidence": 0.95,
+        "connector_id": "salesforce_crm",
+        "contract": "CRMCase",
+        "internal_field": "closed_at",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "context",
+        "source_field": "ClosedDate",
+        "source_object": "Case",
+        "source_path": "ClosedDate",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "Id",
+            "source_object": "Opportunity",
+            "source_path": "Id"
+          }
+        ],
+        "confidence": 0.95,
+        "connector_id": "salesforce_crm",
+        "contract": "CRMOpportunity",
+        "internal_field": "opportunity_id",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "context",
+        "source_field": "Id",
+        "source_object": "Opportunity",
+        "source_path": "Id",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "AccountId",
+            "source_object": "Opportunity",
+            "source_path": "AccountId"
+          }
+        ],
+        "confidence": 0.95,
+        "connector_id": "salesforce_crm",
+        "contract": "CRMOpportunity",
+        "internal_field": "account_id",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "identity_join",
+        "source_field": "AccountId",
+        "source_object": "Opportunity",
+        "source_path": "AccountId",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "candidate_evidence": [
+          {
+            "confidence": 0.91,
+            "field_type": "unknown",
+            "reason": "value direction affects scoring and requires confirmation",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "StageName",
+            "source_object": "Opportunity",
+            "source_path": "StageName"
+          }
+        ],
+        "confidence": 1.0,
+        "connector_id": "salesforce_crm",
+        "contract": "CRMOpportunity",
+        "internal_field": "stage_name",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "human-confirmed mapping frozen into deterministic config",
+        "requires_human_confirmation": false,
+        "semantic_role": "context",
+        "source_field": "StageName",
+        "source_object": "Opportunity",
+        "source_path": "StageName",
+        "state": "mapped",
+        "value_direction": "higher_is_better"
+      },
+      {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "Amount",
+            "source_object": "Opportunity",
+            "source_path": "Amount"
+          }
+        ],
+        "confidence": 0.95,
+        "connector_id": "salesforce_crm",
+        "contract": "CRMOpportunity",
+        "internal_field": "amount_cents",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "context",
+        "source_field": "Amount",
+        "source_object": "Opportunity",
+        "source_path": "Amount",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "CloseDate",
+            "source_object": "Opportunity",
+            "source_path": "CloseDate"
+          }
+        ],
+        "confidence": 0.95,
+        "connector_id": "salesforce_crm",
+        "contract": "CRMOpportunity",
+        "internal_field": "close_date",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "time_boundary",
+        "source_field": "CloseDate",
+        "source_object": "Opportunity",
+        "source_path": "CloseDate",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "Type",
+            "source_object": "Opportunity",
+            "source_path": "Type"
+          }
+        ],
+        "confidence": 0.95,
+        "connector_id": "salesforce_crm",
+        "contract": "CRMOpportunity",
+        "internal_field": "opportunity_type",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "context",
+        "source_field": "Type",
+        "source_object": "Opportunity",
+        "source_path": "Type",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "Id",
+            "source_object": "Task",
+            "source_path": "Id"
+          }
+        ],
+        "confidence": 0.95,
+        "connector_id": "salesforce_crm",
+        "contract": "CRMActivity",
+        "internal_field": "activity_id",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "context",
+        "source_field": "Id",
+        "source_object": "Task",
+        "source_path": "Id",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "WhatId",
+            "source_object": "Task",
+            "source_path": "WhatId"
+          }
+        ],
+        "confidence": 0.95,
+        "connector_id": "salesforce_crm",
+        "contract": "CRMActivity",
+        "internal_field": "account_id",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "identity_join",
+        "source_field": "WhatId",
+        "source_object": "Task",
+        "source_path": "WhatId",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "Description",
+            "source_object": "Task",
+            "source_path": "Description"
+          }
+        ],
+        "confidence": 0.95,
+        "connector_id": "salesforce_crm",
+        "contract": "CRMActivity",
+        "internal_field": "summary",
+        "llm_allowed": true,
+        "pii": "customer_content",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "customer_content",
+        "source_field": "Description",
+        "source_object": "Task",
+        "source_path": "Description",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "ActivityDate",
+            "source_object": "Task",
+            "source_path": "ActivityDate"
+          }
+        ],
+        "confidence": 0.95,
+        "connector_id": "salesforce_crm",
+        "contract": "CRMActivity",
+        "internal_field": "occurred_at",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "context",
+        "source_field": "ActivityDate",
+        "source_object": "Task",
+        "source_path": "ActivityDate",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      }
+    ],
+    "proposal_hash": "sha256:a55fae8e2f089b294697c17caf76fb51361e5edcda3aff963971e10bfd7767cb",
+    "schema_hash": "sha256:7b486ad29d8257b1daca00253ca3c52ea47080f34e92aae1bef321dc0190180c",
+    "unknown_fields": [
+      "CRMActivity.channel",
+      "CRMActivity.direction",
+      "CRMActivity.idempotency_key"
+    ]
+  },
+  "generated_by": "eval.salesforce_simulated_onboarding",
+  "mapping_proposal": {
+    "ambiguous_keys": [
+      "CRMCase.priority",
+      "CRMCase.status",
+      "CRMContact.consent_to_contact",
+      "CRMContact.org_level",
+      "CRMContact.role",
+      "CRMOpportunity.stage_name"
+    ],
+    "coverage": {
+      "ambiguous_confirm": 6,
+      "mapped": 24,
+      "missing_to_unknown": 3,
+      "total": 33
+    },
+    "missing_to_unknown_keys": [
+      "CRMActivity.channel",
+      "CRMActivity.direction",
+      "CRMActivity.idempotency_key"
+    ],
+    "proposal_hash": "sha256:a55fae8e2f089b294697c17caf76fb51361e5edcda3aff963971e10bfd7767cb",
+    "required_operator_actions": [
+      "confirm 6 semantic/value mappings",
+      "review 3 missing fields; affected rails remain unknown"
+    ],
+    "schema_hash": "sha256:7b486ad29d8257b1daca00253ca3c52ea47080f34e92aae1bef321dc0190180c"
+  },
+  "measurement_scope": "Salesforce describe discovery, source-map proposal, deterministic confirmation, freeze, bounded SOQL query pagination, typed CRM contracts, coverage report, and briefing over synthetic data and fake transport.",
+  "readiness": {
+    "connected": false,
+    "connector_id": "salesforce_crm",
+    "evidence": [
+      "synthetic_customer_book",
+      "fake_salesforce_client",
+      "salesforce_explorer_parser",
+      "frozen_source_map_config",
+      "bounded_soql_fetch",
+      "typed_crm_contracts"
+    ],
+    "mode": "fixture",
+    "rails_degraded": [
+      "CRMActivity"
+    ],
+    "required_operator_actions": [
+      "connect live Salesforce credentials before any live readiness claim",
+      "review custom Contact fields and ordered categorical fields with the owner before live use"
+    ],
+    "state": "fixture_verified"
+  },
+  "readiness_report": {
+    "degraded_rails": [
+      "CRMActivity"
+    ],
+    "required_operator_actions": [
+      "connect live Salesforce credentials before any live readiness claim",
+      "review custom Contact fields and ordered categorical fields with the owner before live use"
+    ],
+    "sources": {
+      "salesforce_crm": "fixture_verified"
+    }
+  },
+  "source_book": {
+    "accounts": 35,
+    "cases": 11,
+    "contacts": 67,
+    "opportunities": 6,
+    "source": "src/ultra_csm/data_plane/synthetic_book.py"
+  }
+}

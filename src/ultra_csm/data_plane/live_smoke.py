@@ -132,26 +132,14 @@ def _attio_steps(env: Mapping[str, str]) -> tuple[SmokeStep, ...]:
 def _salesforce_steps(env: Mapping[str, str]) -> tuple[SmokeStep, ...]:
     login_url = env.get("ULTRA_CSM_SALESFORCE_LOGIN_URL", "https://login.salesforce.com").rstrip("/")
     api_version = env.get("ULTRA_CSM_SALESFORCE_API_VERSION", "v61.0")
-    token_body = parse.urlencode(
-        {
-            "grant_type": "refresh_token",
-            "client_id": _env(env, "ULTRA_CSM_SALESFORCE_CLIENT_ID"),
-            "client_secret": _env(env, "ULTRA_CSM_SALESFORCE_CLIENT_SECRET"),
-            "refresh_token": _env(env, "ULTRA_CSM_SALESFORCE_REFRESH_TOKEN"),
-        }
-    ).encode("utf-8")
     instance = _env(env, "ULTRA_CSM_SALESFORCE_INSTANCE_URL").rstrip("/")
-    headers = _json_headers({"authorization": "Bearer ${access_token}"})
-    return (
-        SmokeStep(
-            "oauth_refresh",
-            HttpRequest(
-                "POST",
-                f"{login_url}/services/oauth2/token",
-                {"content-type": "application/x-www-form-urlencoded"},
-                body=token_body,
-            ),
-        ),
+    direct_token = env.get("ULTRA_CSM_SALESFORCE_ACCESS_TOKEN")
+    headers = _json_headers({
+        "authorization": (
+            f"Bearer {direct_token}" if direct_token else "Bearer ${access_token}"
+        )
+    })
+    describe_steps = (
         SmokeStep(
             "describe_global",
             HttpRequest("GET", f"{instance}/services/data/{api_version}/sobjects/", headers),
@@ -164,6 +152,28 @@ def _salesforce_steps(env: Mapping[str, str]) -> tuple[SmokeStep, ...]:
                 headers,
             ),
         ),
+    )
+    if direct_token:
+        return describe_steps
+    token_body = parse.urlencode(
+        {
+            "grant_type": "refresh_token",
+            "client_id": _env(env, "ULTRA_CSM_SALESFORCE_CLIENT_ID"),
+            "client_secret": _env(env, "ULTRA_CSM_SALESFORCE_CLIENT_SECRET"),
+            "refresh_token": _env(env, "ULTRA_CSM_SALESFORCE_REFRESH_TOKEN"),
+        }
+    ).encode("utf-8")
+    return (
+        SmokeStep(
+            "oauth_refresh",
+            HttpRequest(
+                "POST",
+                f"{login_url}/services/oauth2/token",
+                {"content-type": "application/x-www-form-urlencoded"},
+                body=token_body,
+            ),
+        ),
+        *describe_steps,
     )
 
 
@@ -219,6 +229,22 @@ STEP_BUILDERS = {
 
 
 def _missing_env(connector_id: ConnectorId, env: Mapping[str, str]) -> tuple[str, ...]:
+    if connector_id == "salesforce_crm":
+        instance_missing = () if env.get("ULTRA_CSM_SALESFORCE_INSTANCE_URL") else (
+            "ULTRA_CSM_SALESFORCE_INSTANCE_URL",
+        )
+        if env.get("ULTRA_CSM_SALESFORCE_ACCESS_TOKEN"):
+            return instance_missing
+        oauth_missing = tuple(
+            key
+            for key in (
+                "ULTRA_CSM_SALESFORCE_CLIENT_ID",
+                "ULTRA_CSM_SALESFORCE_CLIENT_SECRET",
+                "ULTRA_CSM_SALESFORCE_REFRESH_TOKEN",
+            )
+            if not env.get(key)
+        )
+        return (*instance_missing, *oauth_missing)
     return tuple(key for key in CONNECTOR_SPECS[connector_id].credential_env if not env.get(key))
 
 

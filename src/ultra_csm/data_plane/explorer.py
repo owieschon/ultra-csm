@@ -281,12 +281,20 @@ def _salesforce_explorer_steps(env: Mapping[str, str]):
     smoke_steps = _salesforce_steps(env)
     instance = _env(env, "ULTRA_CSM_SALESFORCE_INSTANCE_URL").rstrip("/")
     api_version = env.get("ULTRA_CSM_SALESFORCE_API_VERSION", "v61.0")
-    headers = _json_headers({"authorization": "Bearer ${access_token}"})
+    direct_token = env.get("ULTRA_CSM_SALESFORCE_ACCESS_TOKEN")
+    headers = _json_headers({
+        "authorization": (
+            f"Bearer {direct_token}" if direct_token else "Bearer ${access_token}"
+        )
+    })
     object_names = ("Contact", "Case", "Opportunity", "Task", "Event")
+    prefix = () if direct_token else (("oauth_refresh", smoke_steps[0], _parse_empty),)
+    describe_global = smoke_steps[0 if direct_token else 1]
+    account_describe = smoke_steps[1 if direct_token else 2]
     return (
-        ("oauth_refresh", smoke_steps[0], _parse_empty),
-        ("describe_global", smoke_steps[1], _parse_salesforce_global),
-        ("account_describe", smoke_steps[2], _parse_salesforce_describe),
+        *prefix,
+        ("describe_global", describe_global, _parse_salesforce_global),
+        ("account_describe", account_describe, _parse_salesforce_describe),
         *tuple(
             (
                 f"{object_name.lower()}_describe",

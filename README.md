@@ -118,7 +118,7 @@ A non-deterministic instrument must never own a deterministic gate. That boundar
 |---|---|
 | Deterministic spine | **Proven** — scorecard hard gates green on real Postgres |
 | LLM quality judge | **Validated** under N-run modal aggregation (single-labeler gold, prompt v7): clean layer all six dimensions κ ≥ 0.6 with zero gate errors; adversarial hard layer clears all six aggregated with zero false negatives. `priority_fidelity` and `account_specificity` are deterministic. The claim is derived from versioned evidence artifacts (`eval/judge_validation.py`), never hand-set; a second independent labeler remains open |
-| Connectors (Salesforce/Gainsight/Rocketlane/Attio) | **Built to the credential boundary**, fixture-tested; not yet run against a live tenant |
+| Connectors (Salesforce/Gainsight/Rocketlane/Attio) | **Built to the credential boundary**, fixture-tested; Salesforce additionally has a simulated read-only SOQL fetch/onboarding vertical with typed CRM contracts. No connector is claimed as proven against a live tenant in this checkout |
 | Data | Curated **fixtures**, not production customer data |
 | Outcome rail, Risk & Expansion lenses | Outcome rail partially instrumented; deterministic Risk and Expansion lenses are built, with draft-quality claims gated on judge validation |
 | Oversight evidence | **Rendered from ledgers** — `make oversight-report` writes `demo_state/oversight_report.{json,md}`: verdicts, payload-hash-bound receipts, suppressions, breaker events, quality state, and autonomy provenance, with an explicit "not instrumented" section. An evidence record, not a compliance certification |
@@ -138,6 +138,7 @@ architecture, and measurement discipline — `docs/DECISION_LOG.md` records what
    re-observation — per `docs/DEMO_EXECUTION_PLAN.md`.
 4. **Live verticals, end-to-end** *(credential-gated, post-demo)* — run real connectors
    (Rocketlane, Gainsight, OTel, Attio/Salesforce) against a live tenant, with monitoring and rollback.
+   Salesforce now has the frozen read-only fetch path ready for that one-shot run.
 5. **Risk & Expansion depth** — expand the built deterministic lenses only where the shared value model and evals support it.
 
 The working plan lives in `docs/NEXT_DISPATCH.md`.

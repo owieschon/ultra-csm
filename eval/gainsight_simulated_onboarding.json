@@ -131,10 +131,23 @@
     ]
   },
   "frozen_source_map": {
-    "config_hash": "sha256:a589554111acb1fb934b8f26ec147e0b1d0be5a8b7af57d62149426f91127c84",
+    "config_hash": "sha256:9f30ccb1597ab2d65bb5db7069017b1d5218bc926dd7bb4cf18477863615a7e4",
     "connector_id": "gainsight_cs",
     "mappings": [
       {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "Company Id",
+            "source_object": "Company",
+            "source_path": "Company Id"
+          }
+        ],
         "confidence": 0.95,
         "connector_id": "gainsight_cs",
         "contract": "CSCompany",
@@ -151,6 +164,19 @@
         "value_direction": "not_applicable"
       },
       {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "Name",
+            "source_object": "Company",
+            "source_path": "Name"
+          }
+        ],
         "confidence": 0.95,
         "connector_id": "gainsight_cs",
         "contract": "CSCompany",
@@ -167,6 +193,19 @@
         "value_direction": "not_applicable"
       },
       {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "Industry",
+            "source_object": "Company",
+            "source_path": "Industry"
+          }
+        ],
         "confidence": 0.95,
         "connector_id": "gainsight_cs",
         "contract": "CSCompany",
@@ -183,6 +222,19 @@
         "value_direction": "not_applicable"
       },
       {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "ARR",
+            "source_object": "Company",
+            "source_path": "ARR"
+          }
+        ],
         "confidence": 0.95,
         "connector_id": "gainsight_cs",
         "contract": "CSCompany",
@@ -199,6 +251,19 @@
         "value_direction": "not_applicable"
       },
       {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "Stage",
+            "source_object": "Company",
+            "source_path": "Stage"
+          }
+        ],
         "confidence": 0.95,
         "connector_id": "gainsight_cs",
         "contract": "CSCompany",
@@ -215,6 +280,19 @@
         "value_direction": "not_applicable"
       },
       {
+        "candidate_evidence": [
+          {
+            "confidence": 0.91,
+            "field_type": "unknown",
+            "reason": "value direction affects scoring and requires confirmation",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "Status",
+            "source_object": "Company",
+            "source_path": "Status"
+          }
+        ],
         "confidence": 1.0,
         "connector_id": "gainsight_cs",
         "contract": "CSCompany",
@@ -231,6 +309,19 @@
         "value_direction": "higher_is_better"
       },
       {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "OriginalContractDate",
+            "source_object": "Company",
+            "source_path": "OriginalContractDate"
+          }
+        ],
         "confidence": 0.95,
         "connector_id": "gainsight_cs",
         "contract": "CSCompany",
@@ -247,6 +338,19 @@
         "value_direction": "not_applicable"
       },
       {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "RenewalDate",
+            "source_object": "Company",
+            "source_path": "RenewalDate"
+          }
+        ],
         "confidence": 0.95,
         "connector_id": "gainsight_cs",
         "contract": "CSCompany",
@@ -263,6 +367,19 @@
         "value_direction": "not_applicable"
       },
       {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "CSM",
+            "source_object": "Company",
+            "source_path": "CSM"
+          }
+        ],
         "confidence": 0.95,
         "connector_id": "gainsight_cs",
         "contract": "CSCompany",
@@ -279,6 +396,19 @@
         "value_direction": "not_applicable"
       },
       {
+        "candidate_evidence": [
+          {
+            "confidence": 0.91,
+            "field_type": "unknown",
+            "reason": "value direction affects scoring and requires confirmation",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "Current Score",
+            "source_object": "Company",
+            "source_path": "Current Score"
+          }
+        ],
         "confidence": 1.0,
         "connector_id": "gainsight_cs",
         "contract": "CSCompany",
@@ -295,6 +425,19 @@
         "value_direction": "higher_is_better"
       },
       {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "CTA ID",
+            "source_object": "CTA",
+            "source_path": "CTA ID"
+          }
+        ],
         "confidence": 0.95,
         "connector_id": "gainsight_cs",
         "contract": "CTA",
@@ -311,6 +454,19 @@
         "value_direction": "not_applicable"
       },
       {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "Company ID",
+            "source_object": "CTA",
+            "source_path": "Company ID"
+          }
+        ],
         "confidence": 0.95,
         "connector_id": "gainsight_cs",
         "contract": "CTA",
@@ -327,6 +483,19 @@
         "value_direction": "not_applicable"
       },
       {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "CTA Name",
+            "source_object": "CTA",
+            "source_path": "CTA Name"
+          }
+        ],
         "confidence": 0.95,
         "connector_id": "gainsight_cs",
         "contract": "CTA",
@@ -343,6 +512,19 @@
         "value_direction": "not_applicable"
       },
       {
+        "candidate_evidence": [
+          {
+            "confidence": 0.91,
+            "field_type": "unknown",
+            "reason": "value direction affects scoring and requires confirmation",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "Priority",
+            "source_object": "CTA",
+            "source_path": "Priority"
+          }
+        ],
         "confidence": 1.0,
         "connector_id": "gainsight_cs",
         "contract": "CTA",
@@ -359,6 +541,19 @@
         "value_direction": "higher_is_better"
       },
       {
+        "candidate_evidence": [
+          {
+            "confidence": 0.91,
+            "field_type": "unknown",
+            "reason": "value direction affects scoring and requires confirmation",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "Status",
+            "source_object": "CTA",
+            "source_path": "Status"
+          }
+        ],
         "confidence": 1.0,
         "connector_id": "gainsight_cs",
         "contract": "CTA",
@@ -375,6 +570,19 @@
         "value_direction": "higher_is_better"
       },
       {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "Due Date",
+            "source_object": "CTA",
+            "source_path": "Due Date"
+          }
+        ],
         "confidence": 0.95,
         "connector_id": "gainsight_cs",
         "contract": "CTA",
@@ -391,6 +599,19 @@
         "value_direction": "not_applicable"
       },
       {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "OwnerID",
+            "source_object": "CTA",
+            "source_path": "OwnerID"
+          }
+        ],
         "confidence": 0.95,
         "connector_id": "gainsight_cs",
         "contract": "CTA",
@@ -407,6 +628,19 @@
         "value_direction": "not_applicable"
       },
       {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "Success Plan ID",
+            "source_object": "Success Plan",
+            "source_path": "Success Plan ID"
+          }
+        ],
         "confidence": 0.95,
         "connector_id": "gainsight_cs",
         "contract": "SuccessPlan",
@@ -423,6 +657,19 @@
         "value_direction": "not_applicable"
       },
       {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "Company ID",
+            "source_object": "Success Plan",
+            "source_path": "Company ID"
+          }
+        ],
         "confidence": 0.95,
         "connector_id": "gainsight_cs",
         "contract": "SuccessPlan",
@@ -439,6 +686,19 @@
         "value_direction": "not_applicable"
       },
       {
+        "candidate_evidence": [
+          {
+            "confidence": 0.91,
+            "field_type": "unknown",
+            "reason": "value direction affects scoring and requires confirmation",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "Status",
+            "source_object": "Success Plan",
+            "source_path": "Status"
+          }
+        ],
         "confidence": 1.0,
         "connector_id": "gainsight_cs",
         "contract": "SuccessPlan",
@@ -455,6 +715,19 @@
         "value_direction": "higher_is_better"
       },
       {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "Objective CTAs",
+            "source_object": "Success Plan",
+            "source_path": "Objective CTAs"
+          }
+        ],
         "confidence": 0.95,
         "connector_id": "gainsight_cs",
         "contract": "SuccessPlan",
@@ -471,6 +744,19 @@
         "value_direction": "not_applicable"
       },
       {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "Due Date",
+            "source_object": "Success Plan",
+            "source_path": "Due Date"
+          }
+        ],
         "confidence": 0.95,
         "connector_id": "gainsight_cs",
         "contract": "SuccessPlan",
@@ -487,7 +773,7 @@
         "value_direction": "not_applicable"
       }
     ],
-    "proposal_hash": "sha256:08bbce73e56ee5aa3aa5fcbbd4b7c068b972d9c407ec1a3815d3bde12134fff5",
+    "proposal_hash": "sha256:fc49b26cb3993cd7bdff960195695050405f2c6dab87b679173e2858fcd4c6f3",
     "schema_hash": "sha256:932eddf02d66b21f7bcbb44ddf9604fbce26e421541937ae17f87af60540ca18",
     "unknown_fields": [
       "AdoptionSummary.account_id",
@@ -535,7 +821,7 @@
       "HealthScore.measured_at",
       "HealthScore.score"
     ],
-    "proposal_hash": "sha256:08bbce73e56ee5aa3aa5fcbbd4b7c068b972d9c407ec1a3815d3bde12134fff5",
+    "proposal_hash": "sha256:fc49b26cb3993cd7bdff960195695050405f2c6dab87b679173e2858fcd4c6f3",
     "required_operator_actions": [
       "confirm 5 semantic/value mappings",
       "review 13 missing fields; affected rails remain unknown"
