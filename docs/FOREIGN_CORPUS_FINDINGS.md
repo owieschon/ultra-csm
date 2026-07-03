@@ -1,0 +1,88 @@
+# Foreign-Corpus Ingest Findings
+
+Run date: 2026-07-03 UTC.
+
+This is a sanitized evidence record for a read-only runtime probe against a
+private external customer book. Raw records, field names, source-map proposals,
+confirmations, and briefing text remain outside the repository under
+`~/ultra-csm-corpus-runs/`. This document contains aggregates only.
+
+## Claim Boundary
+
+- The probe used a private runtime source and read-only requests.
+- The probe did not use live customer-success, product-telemetry, or email
+  credentials.
+- The probe was bounded to 200 fetched rows; the source reported 11,160 rows.
+- The confirmed pass used an out-of-repo confirmation template generated from the
+  discovery pass. The result is evidence about ingest behavior, not proof of a
+  production-ready connector.
+
+## Measurements
+
+| Measurement | Result |
+| --- | --- |
+| Rows fetched | 200 |
+| Source-reported rows | 11,160 |
+| Pages fetched | 2 |
+| Full source fetched | No, intentionally bounded |
+| Runtime wall time | 1.1 seconds on the confirmed pass |
+| Silent guesses | 0 |
+| Fields requiring confirmation | 9 |
+| Fields degraded to unknown | 8 |
+| Unrepresentable shape paths | 11 |
+| Injection markers observed in sample | 0 |
+| Scoreable CSM work items | 0 |
+
+## Discovery-Only Pass
+
+The first pass fetched the bounded sample and refused to type records because no
+frozen source map had been supplied. That is the intended behavior: external
+fields may be suggested for confirmation, but the runtime does not treat a
+suggestion as a mapping.
+
+## Confirmed Pass
+
+After loading the out-of-repo confirmation template, the transform produced:
+
+| Contract | Typed records |
+| --- | ---: |
+| CRMAccount | 6 |
+| CRMContact | 0 |
+| CRMOpportunity | 0 |
+
+The transform rejected 194 records with `missing_account_name`. Contact join
+coverage was not exercised in this sample because no contact candidates were
+typed after account gating. The briefing stayed in the CRM-only lane and stated
+that CS-platform health and product-telemetry rails remain unknown.
+
+The work-item scorer was not run on the confirmed pass. With only sparse CRM
+account context and no CS-platform, onboarding, outcome, or product-telemetry
+rails, running the scorer would produce a hollow queue rather than grounded CSM
+work.
+
+## Structural Findings
+
+- The sample is heterogeneous or sparse for the field confirmed as the account
+  display name. A single generated confirmation can be valid for some rows and
+  still fail most of a real book.
+- Nested or collection-shaped source data exists in the sample and is not fully
+  representable in the current flat CRMAccount/CRMContact/CRMOpportunity
+  contracts.
+- The mapper correctly avoided silent matching: no field entered runtime as
+  mapped without confirmation.
+- The bounded fetch creates an intentional count mismatch. The coverage report
+  records that mismatch loudly instead of implying full-book coverage.
+
+## Design Implications
+
+- The explorer needs a review surface that shows field sparsity before the user
+  freezes a mapping.
+- The source-map confirmation flow should support sampling across the book, not
+  only the first discovered shape.
+- Parent-child and collection fields need an explicit representation strategy
+  before they can drive CSM work items.
+- CRM-only ingest should remain a degraded-but-usable state: it can establish
+  account context, but health, adoption, and outcome rails must remain unknown
+  until CS-platform and telemetry sources are connected.
+- A hollow or sparse briefing is a valid result. It should block overconfident
+  claims and drive onboarding guidance rather than being papered over.

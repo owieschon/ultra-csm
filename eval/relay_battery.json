@@ -1,0 +1,569 @@
+{
+  "artifact": "relay_battery_csm",
+  "cases": [
+    {
+      "briefing_line_count": 2,
+      "coverage": {
+        "count_mismatch": true,
+        "dropped_record_count": 0,
+        "duplicate_identities": [],
+        "expected_count": 4,
+        "field_coverage": {
+          "CRMAccount": {
+            "mapped": 4
+          },
+          "CRMContact": {
+            "mapped": 5,
+            "unknown": 2
+          },
+          "CRMOpportunity": {
+            "mapped": 1,
+            "unknown": 5
+          }
+        },
+        "injection_marker_count": 0,
+        "join_coverage": {
+          "contact_candidates": 2,
+          "contacts_joined": 1,
+          "ratio": 0.5
+        },
+        "records_processed": 2,
+        "records_received": 2,
+        "records_rejected": [
+          {
+            "contract": "CRMContact",
+            "reason": "contact_identity_join_failed",
+            "row_number": 2
+          }
+        ],
+        "records_typed": {
+          "CRMAccount": 2,
+          "CRMContact": 1,
+          "CRMOpportunity": 0
+        },
+        "rejection_counts": {
+          "contact_identity_join_failed": 1
+        },
+        "truncated": false,
+        "unknown_fields": [
+          "CRMContact.role",
+          "CRMContact.title",
+          "CRMOpportunity.amount_cents",
+          "CRMOpportunity.close_date",
+          "CRMOpportunity.opportunity_id",
+          "CRMOpportunity.opportunity_type",
+          "CRMOpportunity.stage_name"
+        ],
+        "unrepresentable_paths": []
+      },
+      "hard_failures": [],
+      "hard_ok": true,
+      "name": "truncated_payload",
+      "proposal": {
+        "ambiguous_count": 10,
+        "coverage": {
+          "ambiguous_confirm": 10,
+          "mapped": 0,
+          "missing_to_unknown": 7,
+          "total": 17
+        },
+        "mapped_count": 0,
+        "missing_count": 7,
+        "proposal_hash": "sha256:f7d4d4478f259152bfb86c28f847b3cb07ceec49e0d66d1fdaff27645419bd7b",
+        "required_operator_actions": [
+          "confirm 10 semantic/value mappings",
+          "review 7 missing fields; affected rails remain unknown"
+        ],
+        "schema_hash": "sha256:b9d96b44140c291ddbaac950d0052e1970d0be957704834ab05ece64b4618c50"
+      }
+    },
+    {
+      "briefing_line_count": 2,
+      "coverage": {
+        "count_mismatch": false,
+        "dropped_record_count": 0,
+        "duplicate_identities": [],
+        "expected_count": null,
+        "field_coverage": {
+          "CRMAccount": {
+            "mapped": 4
+          },
+          "CRMContact": {
+            "mapped": 4,
+            "unknown": 3
+          },
+          "CRMOpportunity": {
+            "mapped": 4,
+            "unknown": 2
+          }
+        },
+        "injection_marker_count": 0,
+        "join_coverage": {
+          "contact_candidates": 1,
+          "contacts_joined": 1,
+          "ratio": 1.0
+        },
+        "records_processed": 1,
+        "records_received": 1,
+        "records_rejected": [],
+        "records_typed": {
+          "CRMAccount": 1,
+          "CRMContact": 1,
+          "CRMOpportunity": 1
+        },
+        "rejection_counts": {},
+        "truncated": false,
+        "unknown_fields": [
+          "CRMContact.consent_to_contact",
+          "CRMContact.role",
+          "CRMContact.title",
+          "CRMOpportunity.opportunity_type",
+          "CRMOpportunity.stage_name"
+        ],
+        "unrepresentable_paths": []
+      },
+      "hard_failures": [],
+      "hard_ok": true,
+      "name": "paraphrased_keys",
+      "proposal": {
+        "ambiguous_count": 12,
+        "coverage": {
+          "ambiguous_confirm": 12,
+          "mapped": 0,
+          "missing_to_unknown": 5,
+          "total": 17
+        },
+        "mapped_count": 0,
+        "missing_count": 5,
+        "proposal_hash": "sha256:c9d713233492a9dff8c47b29e9bb3645e6aff99791580c69ad93fe78550ffba6",
+        "required_operator_actions": [
+          "confirm 12 semantic/value mappings",
+          "review 5 missing fields; affected rails remain unknown"
+        ],
+        "schema_hash": "sha256:47bce0933fe5ce5ec44be0a1dcc8e698db1550f5702c29e297b6541198669a8e"
+      }
+    },
+    {
+      "briefing_line_count": 2,
+      "coverage": {
+        "count_mismatch": false,
+        "dropped_record_count": 0,
+        "duplicate_identities": [
+          "sha256:f2dc238414494ea2",
+          "sha256:f834c59a312004d9"
+        ],
+        "expected_count": null,
+        "field_coverage": {
+          "CRMAccount": {
+            "mapped": 4
+          },
+          "CRMContact": {
+            "mapped": 5,
+            "unknown": 2
+          },
+          "CRMOpportunity": {
+            "mapped": 1,
+            "unknown": 5
+          }
+        },
+        "injection_marker_count": 0,
+        "join_coverage": {
+          "contact_candidates": 2,
+          "contacts_joined": 2,
+          "ratio": 1.0
+        },
+        "records_processed": 2,
+        "records_received": 2,
+        "records_rejected": [],
+        "records_typed": {
+          "CRMAccount": 1,
+          "CRMContact": 1,
+          "CRMOpportunity": 0
+        },
+        "rejection_counts": {},
+        "truncated": false,
+        "unknown_fields": [
+          "CRMContact.role",
+          "CRMContact.title",
+          "CRMOpportunity.amount_cents",
+          "CRMOpportunity.close_date",
+          "CRMOpportunity.opportunity_id",
+          "CRMOpportunity.opportunity_type",
+          "CRMOpportunity.stage_name"
+        ],
+        "unrepresentable_paths": []
+      },
+      "hard_failures": [],
+      "hard_ok": true,
+      "name": "duplicated_rows",
+      "proposal": {
+        "ambiguous_count": 10,
+        "coverage": {
+          "ambiguous_confirm": 10,
+          "mapped": 0,
+          "missing_to_unknown": 7,
+          "total": 17
+        },
+        "mapped_count": 0,
+        "missing_count": 7,
+        "proposal_hash": "sha256:f7d4d4478f259152bfb86c28f847b3cb07ceec49e0d66d1fdaff27645419bd7b",
+        "required_operator_actions": [
+          "confirm 10 semantic/value mappings",
+          "review 7 missing fields; affected rails remain unknown"
+        ],
+        "schema_hash": "sha256:b9d96b44140c291ddbaac950d0052e1970d0be957704834ab05ece64b4618c50"
+      }
+    },
+    {
+      "briefing_line_count": 2,
+      "coverage": {
+        "count_mismatch": false,
+        "dropped_record_count": 0,
+        "duplicate_identities": [],
+        "expected_count": null,
+        "field_coverage": {
+          "CRMAccount": {
+            "mapped": 4
+          },
+          "CRMContact": {
+            "mapped": 5,
+            "unknown": 2
+          },
+          "CRMOpportunity": {
+            "mapped": 1,
+            "unknown": 5
+          }
+        },
+        "injection_marker_count": 0,
+        "join_coverage": {
+          "contact_candidates": 2,
+          "contacts_joined": 1,
+          "ratio": 0.5
+        },
+        "records_processed": 2,
+        "records_received": 2,
+        "records_rejected": [
+          {
+            "contract": "CRMContact",
+            "reason": "contact_identity_join_failed",
+            "row_number": 2
+          }
+        ],
+        "records_typed": {
+          "CRMAccount": 2,
+          "CRMContact": 1,
+          "CRMOpportunity": 0
+        },
+        "rejection_counts": {
+          "contact_identity_join_failed": 1
+        },
+        "truncated": false,
+        "unknown_fields": [
+          "CRMContact.role",
+          "CRMContact.title",
+          "CRMOpportunity.amount_cents",
+          "CRMOpportunity.close_date",
+          "CRMOpportunity.opportunity_id",
+          "CRMOpportunity.opportunity_type",
+          "CRMOpportunity.stage_name"
+        ],
+        "unrepresentable_paths": []
+      },
+      "hard_failures": [],
+      "hard_ok": true,
+      "name": "partial_identity_join",
+      "proposal": {
+        "ambiguous_count": 10,
+        "coverage": {
+          "ambiguous_confirm": 10,
+          "mapped": 0,
+          "missing_to_unknown": 7,
+          "total": 17
+        },
+        "mapped_count": 0,
+        "missing_count": 7,
+        "proposal_hash": "sha256:f7d4d4478f259152bfb86c28f847b3cb07ceec49e0d66d1fdaff27645419bd7b",
+        "required_operator_actions": [
+          "confirm 10 semantic/value mappings",
+          "review 7 missing fields; affected rails remain unknown"
+        ],
+        "schema_hash": "sha256:b9d96b44140c291ddbaac950d0052e1970d0be957704834ab05ece64b4618c50"
+      }
+    },
+    {
+      "briefing_line_count": 2,
+      "coverage": {
+        "count_mismatch": false,
+        "dropped_record_count": 0,
+        "duplicate_identities": [],
+        "expected_count": null,
+        "field_coverage": {
+          "CRMAccount": {
+            "mapped": 4
+          },
+          "CRMContact": {
+            "mapped": 5,
+            "unknown": 2
+          },
+          "CRMOpportunity": {
+            "mapped": 1,
+            "unknown": 5
+          }
+        },
+        "injection_marker_count": 1,
+        "join_coverage": {
+          "contact_candidates": 1,
+          "contacts_joined": 1,
+          "ratio": 1.0
+        },
+        "records_processed": 1,
+        "records_received": 1,
+        "records_rejected": [],
+        "records_typed": {
+          "CRMAccount": 1,
+          "CRMContact": 1,
+          "CRMOpportunity": 0
+        },
+        "rejection_counts": {},
+        "truncated": false,
+        "unknown_fields": [
+          "CRMContact.role",
+          "CRMContact.title",
+          "CRMOpportunity.amount_cents",
+          "CRMOpportunity.close_date",
+          "CRMOpportunity.opportunity_id",
+          "CRMOpportunity.opportunity_type",
+          "CRMOpportunity.stage_name"
+        ],
+        "unrepresentable_paths": []
+      },
+      "hard_failures": [],
+      "hard_ok": true,
+      "name": "injected_text",
+      "proposal": {
+        "ambiguous_count": 10,
+        "coverage": {
+          "ambiguous_confirm": 10,
+          "mapped": 0,
+          "missing_to_unknown": 7,
+          "total": 17
+        },
+        "mapped_count": 0,
+        "missing_count": 7,
+        "proposal_hash": "sha256:e9d54cc7ae58a102758f731b0b799148002d19a7d439b0aaf019d3b45c43c9a8",
+        "required_operator_actions": [
+          "confirm 10 semantic/value mappings",
+          "review 7 missing fields; affected rails remain unknown"
+        ],
+        "schema_hash": "sha256:18bf6cc514b3c237feb2abe1f5a27eea72c072d12b548628802781271f3fd0fb"
+      }
+    },
+    {
+      "briefing_line_count": 2,
+      "coverage": {
+        "count_mismatch": false,
+        "dropped_record_count": 0,
+        "duplicate_identities": [],
+        "expected_count": null,
+        "field_coverage": {
+          "CRMAccount": {
+            "mapped": 2,
+            "unknown": 2
+          },
+          "CRMContact": {
+            "mapped": 1,
+            "unknown": 6
+          },
+          "CRMOpportunity": {
+            "mapped": 1,
+            "unknown": 5
+          }
+        },
+        "injection_marker_count": 0,
+        "join_coverage": {
+          "contact_candidates": 0,
+          "contacts_joined": 0,
+          "ratio": 1.0
+        },
+        "records_processed": 1,
+        "records_received": 1,
+        "records_rejected": [],
+        "records_typed": {
+          "CRMAccount": 1,
+          "CRMContact": 0,
+          "CRMOpportunity": 0
+        },
+        "rejection_counts": {},
+        "truncated": false,
+        "unknown_fields": [
+          "CRMAccount.industry",
+          "CRMAccount.owner_id",
+          "CRMContact.consent_to_contact",
+          "CRMContact.contact_id",
+          "CRMContact.email",
+          "CRMContact.name",
+          "CRMContact.role",
+          "CRMContact.title",
+          "CRMOpportunity.amount_cents",
+          "CRMOpportunity.close_date",
+          "CRMOpportunity.opportunity_id",
+          "CRMOpportunity.opportunity_type",
+          "CRMOpportunity.stage_name"
+        ],
+        "unrepresentable_paths": []
+      },
+      "hard_failures": [],
+      "hard_ok": true,
+      "name": "optional_fields_missing",
+      "proposal": {
+        "ambiguous_count": 4,
+        "coverage": {
+          "ambiguous_confirm": 4,
+          "mapped": 0,
+          "missing_to_unknown": 13,
+          "total": 17
+        },
+        "mapped_count": 0,
+        "missing_count": 13,
+        "proposal_hash": "sha256:bfa8cb504d9d4772ca7dcde51846de31b573138008ce618385ba61c387b8e303",
+        "required_operator_actions": [
+          "confirm 4 semantic/value mappings",
+          "review 13 missing fields; affected rails remain unknown"
+        ],
+        "schema_hash": "sha256:42b02eea9e2a0d4b1124b79cf381b12935f4113d9740c4ac4118c9ee6e46c802"
+      }
+    },
+    {
+      "briefing_line_count": 1,
+      "coverage": {
+        "count_mismatch": false,
+        "dropped_record_count": 0,
+        "duplicate_identities": [],
+        "expected_count": 0,
+        "field_coverage": {},
+        "injection_marker_count": 0,
+        "join_coverage": {
+          "contact_candidates": 0,
+          "contacts_joined": 0,
+          "ratio": 1.0
+        },
+        "records_processed": 0,
+        "records_received": 0,
+        "records_rejected": [],
+        "records_typed": {
+          "CRMAccount": 0,
+          "CRMContact": 0,
+          "CRMOpportunity": 0
+        },
+        "rejection_counts": {},
+        "truncated": false,
+        "unknown_fields": [],
+        "unrepresentable_paths": []
+      },
+      "hard_failures": [],
+      "hard_ok": true,
+      "name": "empty_book",
+      "proposal": {
+        "ambiguous_count": 0,
+        "coverage": {
+          "ambiguous_confirm": 0,
+          "mapped": 0,
+          "missing_to_unknown": 17,
+          "total": 17
+        },
+        "mapped_count": 0,
+        "missing_count": 17,
+        "proposal_hash": "sha256:cbe949271986f93d29d46be30d341bc944248cd9ca69e54086879e325d386dba",
+        "required_operator_actions": [
+          "review 17 missing fields; affected rails remain unknown"
+        ],
+        "schema_hash": "sha256:973183136eb33d7b2dc8eb698b632f250df69f2c6996658225f1066ceeb1d2bc"
+      }
+    },
+    {
+      "briefing_line_count": 2,
+      "coverage": {
+        "count_mismatch": false,
+        "dropped_record_count": 3,
+        "duplicate_identities": [],
+        "expected_count": 5,
+        "field_coverage": {
+          "CRMAccount": {
+            "mapped": 2,
+            "unknown": 2
+          },
+          "CRMContact": {
+            "mapped": 4,
+            "unknown": 3
+          },
+          "CRMOpportunity": {
+            "mapped": 1,
+            "unknown": 5
+          }
+        },
+        "injection_marker_count": 0,
+        "join_coverage": {
+          "contact_candidates": 2,
+          "contacts_joined": 2,
+          "ratio": 1.0
+        },
+        "records_processed": 2,
+        "records_received": 5,
+        "records_rejected": [],
+        "records_typed": {
+          "CRMAccount": 2,
+          "CRMContact": 2,
+          "CRMOpportunity": 0
+        },
+        "rejection_counts": {},
+        "truncated": true,
+        "unknown_fields": [
+          "CRMAccount.industry",
+          "CRMAccount.owner_id",
+          "CRMContact.consent_to_contact",
+          "CRMContact.role",
+          "CRMContact.title",
+          "CRMOpportunity.amount_cents",
+          "CRMOpportunity.close_date",
+          "CRMOpportunity.opportunity_id",
+          "CRMOpportunity.opportunity_type",
+          "CRMOpportunity.stage_name"
+        ],
+        "unrepresentable_paths": []
+      },
+      "hard_failures": [],
+      "hard_ok": true,
+      "name": "oversized_book",
+      "proposal": {
+        "ambiguous_count": 7,
+        "coverage": {
+          "ambiguous_confirm": 7,
+          "mapped": 0,
+          "missing_to_unknown": 10,
+          "total": 17
+        },
+        "mapped_count": 0,
+        "missing_count": 10,
+        "proposal_hash": "sha256:6f007a0c23971e3a4f1c08995c69412459a4423a6c809e1a8caf629e92a60f9f",
+        "required_operator_actions": [
+          "confirm 7 semantic/value mappings",
+          "review 10 missing fields; affected rails remain unknown"
+        ],
+        "schema_hash": "sha256:7d1a759ddddfff1eee60cd272bf7da6343616a84295021b6f964165ba0de6564"
+      }
+    }
+  ],
+  "claim_boundary": {
+    "live": false,
+    "sim": true,
+    "uses_private_corpus": false
+  },
+  "generated_by": "eval.relay_battery",
+  "hard_failures": [],
+  "hard_ok": true,
+  "measurement_scope": "Synthetic adversarial relay fixtures exercise the external ingest boundary. No live tenant data or private corpus data is used.",
+  "score": {
+    "passed": 8,
+    "total": 8
+  }
+}

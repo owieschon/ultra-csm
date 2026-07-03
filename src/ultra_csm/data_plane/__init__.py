@@ -57,6 +57,7 @@ from ultra_csm.data_plane.sim_tenant import (
 from ultra_csm.data_plane.connector_catalog import (
     ATTIO_CRM_SPEC,
     CONNECTOR_SPECS,
+    EXTERNAL_BOOK_SPEC,
     GAINSIGHT_CS_SPEC,
     PRODUCT_TELEMETRY_SPEC,
     ROCKETLANE_ONBOARDING_SPEC,
@@ -88,6 +89,7 @@ from ultra_csm.data_plane.source_mapping import (
 )
 from ultra_csm.data_plane.source_maps import (
     ALL_SOURCE_MAPS,
+    EXTERNAL_BOOK_SOURCE_MAPS,
     GAINSIGHT_SOURCE_MAPS,
     PRODUCT_TELEMETRY_SOURCE_MAPS,
     SALESFORCE_SOURCE_MAPS,
@@ -134,6 +136,7 @@ __all__ = [
     "FixtureProductTelemetryConnector",
     "ATTIO_CRM_SPEC",
     "CONNECTOR_SPECS",
+    "EXTERNAL_BOOK_SPEC",
     "GAINSIGHT_CS_SPEC",
     "PRODUCT_TELEMETRY_SPEC",
     "ROCKETLANE_ONBOARDING_SPEC",
@@ -169,6 +172,7 @@ __all__ = [
     "SimTenantState",
     "SimTenantStore",
     "ALL_SOURCE_MAPS",
+    "EXTERNAL_BOOK_SOURCE_MAPS",
     "GAINSIGHT_SOURCE_MAPS",
     "PRODUCT_TELEMETRY_SOURCE_MAPS",
     "SALESFORCE_SOURCE_MAPS",
