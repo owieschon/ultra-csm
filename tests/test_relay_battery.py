@@ -30,8 +30,10 @@ def test_relay_battery_reports_specific_failure_modes(tmp_path):
     cases = {case["name"]: case for case in artifact["cases"]}
 
     assert cases["truncated_payload"]["coverage"]["count_mismatch"] is True
-    assert cases["paraphrased_keys"]["proposal"]["mapped_count"] == 0
-    assert cases["paraphrased_keys"]["proposal"]["ambiguous_count"] >= 4
+    # Auto-map policy: exact standard aliases auto-map (mapped_count > 0);
+    # identity fields remain ambiguous and human-confirmed.
+    assert cases["paraphrased_keys"]["proposal"]["mapped_count"] >= 1
+    assert cases["paraphrased_keys"]["proposal"]["ambiguous_count"] >= 3
     assert cases["duplicated_rows"]["coverage"]["duplicate_identities"]
     assert cases["partial_identity_join"]["coverage"]["join_coverage"]["ratio"] == 0.5
     assert cases["injected_text"]["coverage"]["injection_marker_count"] == 1

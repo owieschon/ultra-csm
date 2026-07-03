@@ -26,6 +26,7 @@ from ultra_csm.data_plane.source_mapping import (
     MappingCandidateEvidence,
     ProposedFieldMapping,
     SourceMapProposal,
+    _resolved_transform,
     propose_source_mapping,
 )
 
@@ -451,7 +452,7 @@ def _with_external_aliases(
             continue
         top = candidates[0]
         updated.append(_entry_from_candidate(entry, top, candidates))
-    entries = tuple(updated)
+    entries = tuple(_auto_map_entry(entry) for entry in updated)
     return SourceMapProposal(
         connector_id=proposal.connector_id,
         schema_hash=proposal.schema_hash,
@@ -459,6 +460,93 @@ def _with_external_aliases(
         entries=entries,
         coverage=_coverage(entries),
         required_operator_actions=_operator_actions(entries),
+    )
+
+
+_SOURCE_DECLARED_REASON = "source declares a reference"
+_EXACT_ALIAS_REASON = "field name matches a known alias for this contract field"
+
+
+def _auto_map_entry(entry: ProposedFieldMapping) -> ProposedFieldMapping:
+    """Upgrade an ambiguous entry to auto-mapped when the evidence already proves
+    the mapping -- so a user onboarding a schema'd source is only asked the
+    questions that are genuinely theirs to answer.
+
+    Two provenance tiers auto-map; everything else stays human-confirmed:
+      A. source-declared: the source's own schema names this field as the
+         foreign key (e.g. a Lookup(Account)). The system would be asking the
+         user to confirm what the source already declared.
+      B. exact standard-field match: the field name is an exact alias for the
+         internal field AND the sampled value shape is compatible AND the field
+         is populated on (nearly) every row. Same bar the native connectors use
+         for deterministic standard-field matches.
+
+    Deliberately never auto-mapped, regardless of evidence: primary identity
+    fields (only tier A's source-declared FK covers identity -- the hollow-
+    contacts defect class means identity picks stay human otherwise), any field
+    whose value direction still needs confirmation (direction is a human call),
+    and any field with competing same-strength candidates.
+    """
+    if entry.state != "ambiguous_confirm":
+        return entry
+    if entry.value_direction in {"ordered_confirm", "direction_confirm"}:
+        return entry
+    evidence = entry.candidate_evidence
+    if not evidence:
+        return entry
+    top = evidence[0]
+
+    is_identity = entry.internal_field.endswith("_id")
+
+    # Tier A: the source itself declares this foreign key. Applies ONLY to a
+    # child contract's account_id -- a field that REFERENCES the account object
+    # is by definition a foreign key on a child record; it can never be the
+    # account contract's own identity. Auto-mapping CRMAccount.account_id from
+    # a reference field would let a child table masquerade as the parent and
+    # mint shadow accounts from child rows (the hollow-contacts defect class).
+    if (
+        is_identity
+        and entry.internal_field == "account_id"
+        and entry.contract != "CRMAccount"
+        and top.reason.startswith(_SOURCE_DECLARED_REASON)
+    ):
+        return _auto_mapped(entry, top, "auto-mapped: source-declared reference")
+
+    if is_identity:
+        return entry  # identity stays human without a source declaration
+
+    # Tier B: exact standard-name match + compatible shape + near-full coverage.
+    if top.reason != _EXACT_ALIAS_REASON:
+        return entry
+    if top.value_shape and _shape_affinity(entry.internal_field, top.value_shape) < 0:
+        return entry
+    if top.rows_sampled and top.rows_nonempty < top.rows_sampled * 0.8:
+        return entry
+    # Competing same-reason candidate at equal coverage => genuinely ambiguous.
+    for other in evidence[1:]:
+        if other.reason == _EXACT_ALIAS_REASON and other.rows_nonempty >= top.rows_nonempty:
+            return entry
+    return _auto_mapped(entry, top, "auto-mapped: exact standard-field match")
+
+
+def _auto_mapped(
+    entry: ProposedFieldMapping,
+    top: MappingCandidateEvidence,
+    reason: str,
+) -> ProposedFieldMapping:
+    return replace(
+        entry,
+        source_object=top.source_object,
+        source_field=top.source_field,
+        source_path=top.source_path,
+        state="mapped",
+        requires_human_confirmation=False,
+        confidence=0.95,
+        reason=f"{reason} ({top.reason})",
+        # An auto-mapped field must still carry its contract's default declared
+        # transform (amount_cents => currency_to_cents) -- the human-confirmed
+        # path resolves this in _confirmed(); this is the same resolution.
+        transform=_resolved_transform(entry.internal_field, None),
     )
 
 

@@ -515,7 +515,10 @@ def test_currency_transform_converts_dollars_to_cents_end_to_end():
 
 
 def test_unknown_transform_is_rejected():
-    records = [{"Id": "o1", "AccountId": "a1", "StageName": "X", "Amount": 10, "CloseDate": "2026-01-01"}]
+    # "Amt" is deliberately NOT an exact alias for amount_cents, so the field
+    # stays ambiguous_confirm and the (bogus) transform in its confirmation is
+    # actually exercised at freeze time.
+    records = [{"Id": "o1", "AccountId": "a1", "StageName": "X", "Amt": 10, "CloseDate": "2026-01-01"}]
     descriptor = ExternalSourceDescriptor(source_name="Opportunities", object_name="Opportunities")
     _s, proposal, _u = propose_external_source_mapping(records, descriptor)
     confs = {}
@@ -524,10 +527,50 @@ def test_unknown_transform_is_rejected():
             continue
         if e.key == "CRMOpportunity.amount_cents":
             confs[e.key] = MappingConfirmation(
-                e.contract, e.internal_field, "Opportunities", "Amount", "Amount",
+                e.contract, e.internal_field, "Opportunities", "Amt", "Amt",
                 e.semantic_role, transform="scale_by_1000",
             )
         else:
             confs[e.key] = MappingConfirmation(e.contract, e.internal_field, verdict="not_mappable")
     with pytest.raises(ValueError, match="unknown transform"):
         freeze_confirmed_source_map(proposal, confirmations=confs)
+
+
+# --- Auto-map provenance tiers (friction fix) ---------------------------------
+
+
+def test_auto_map_never_promotes_parent_identity_from_a_reference_field():
+    # A field that REFERENCES Account is a child's foreign key. Auto-mapping it
+    # as CRMAccount.account_id would let a child table masquerade as the parent
+    # table and mint shadow accounts from child rows -- must stay human.
+    contacts = [{"Id": f"c{i}", "AccountId": f"a{i % 2}", "Email": f"u{i}@x.test",
+                 "Name": f"Person {i} Example"} for i in range(6)]
+    meta = {"AccountId": {"field_type": "reference", "references": ["Account"]}}
+    _s, proposal, _u = propose_external_source_mapping(
+        contacts, ExternalSourceDescriptor("Contacts", object_name="Contacts"), meta
+    )
+    entries = {e.key: e for e in proposal.entries}
+    assert entries["CRMContact.account_id"].state == "mapped"  # tier A: child FK
+    assert entries["CRMContact.account_id"].reason.startswith("auto-mapped: source-declared")
+    assert entries["CRMAccount.account_id"].state == "ambiguous_confirm"  # never auto
+    assert entries["CRMContact.contact_id"].state == "ambiguous_confirm"  # identity stays human
+
+
+def test_auto_map_exact_alias_maps_nonidentity_fields_and_keeps_identity_human():
+    records = [{"Id": f"a{i}", "Name": f"Acme {i} Corp", "Email": f"a{i}@x.test",
+                "Industry": "Tech"} for i in range(5)]
+    _s, proposal, _u = propose_external_source_mapping(
+        records, ExternalSourceDescriptor("Accounts", object_name="Accounts")
+    )
+    entries = {e.key: e for e in proposal.entries}
+    assert entries["CRMAccount.name"].state == "mapped"
+    assert entries["CRMAccount.name"].reason.startswith("auto-mapped: exact standard-field")
+    assert entries["CRMAccount.account_id"].state == "ambiguous_confirm"
+    # auto-mapped amount-style fields keep their declared default transform
+    opps = [{"Id": f"o{i}", "AccountId": "a1", "StageName": "Closed Won",
+             "Amount": 100.5, "CloseDate": "2026-01-01"} for i in range(4)]
+    _s2, p2, _u2 = propose_external_source_mapping(
+        opps, ExternalSourceDescriptor("Opps", object_name="Opps")
+    )
+    amount = {e.key: e for e in p2.entries}["CRMOpportunity.amount_cents"]
+    assert amount.state == "mapped" and amount.transform == "currency_to_cents"

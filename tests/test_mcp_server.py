@@ -325,9 +325,12 @@ class TestRelayTools:
             session_id="relay-not-mappable",
         )
         confirmations = _confirmations_from_proposal(ingest["mapping_proposal"])
-        confirmations["CRMOpportunity.opportunity_type"] = {
+        # Identity fields never auto-map without a source-declared reference, so
+        # opportunity_id is guaranteed still-confirmable -- mark it not_mappable
+        # and it must land in unknown_fields (the round-trip under test).
+        confirmations["CRMOpportunity.opportunity_id"] = {
             "contract": "CRMOpportunity",
-            "internal_field": "opportunity_type",
+            "internal_field": "opportunity_id",
             "verdict": "not_mappable",
         }
 
@@ -336,7 +339,7 @@ class TestRelayTools:
             session_id=ingest["session_id"],
         )
 
-        assert "CRMOpportunity.opportunity_type" in result["coverage"]["unknown_fields"]
+        assert "CRMOpportunity.opportunity_id" in result["coverage"]["unknown_fields"]
 
     def test_injected_relay_text_is_never_echoed(self):
         records = _relay_records()
