@@ -1,11 +1,32 @@
 # A ten-minute tour
 
-Everything below runs locally with **no credentials, no cloud, and no customer data**.
-Each beat is one command plus what to look at and what it demonstrates.
+Three beats. **Beat 1** is what this finds in a book of business — that's the demo's opening
+narrative, not a footnote. **Beat 2** is why you can point it at a real tenant: two live vendors
+onboard in one conversation, and the drafts are scored by a validated judge. **Beat 3** is the
+receipts — the artifacts a skeptical reviewer would ask for. The machinery (deterministic value
+model, proposal-only gate, N-run judge) is the objection-handler underneath all three, never the
+headline.
 
-## 0. Talk to the book — zero setup
+Everything below runs locally with **no credentials, no cloud, and no customer data**, except
+where a beat is explicitly marked live.
 
-This is the only beat that needs no Postgres, no `make setup`, nothing but Python:
+## Beat 1 — the morning briefing: what it finds in a book of business
+
+```sh
+make setup && make doctor   # preflight: proves your environment can boot the test harness
+make mcp-operator-demo-csm
+```
+
+Open `eval/mcp_operator_transcript.json`. This is the demo's opening beat: a simulated morning
+over the real proposal gate, run against a 35-account book. Briefing, work queue, evidence per
+item, a plain-English revise, an approval with a payload-hash-bound receipt, a draft-never-send
+placement artifact, then two refusals (no-consent outreach, a held expansion) — the gate says no
+exactly when it should, not just when it's convenient to demo. This is the account triage a CSM
+opens with, not a health-score dashboard: green-but-quiet accounts, stalling onboardings, and
+single-threaded relationships all surface with cited evidence and a drafted next move.
+
+For the zero-setup version of this same evidence-grounded question-answering (no Postgres, no
+`make setup`), talk to the book directly:
 
 ```sh
 git clone https://github.com/owieschon/ultra-csm.git && cd ultra-csm
@@ -14,128 +35,71 @@ claude mcp add ultra-csm --env ULTRA_CSM_MCP_READONLY=1 -- \
   "$(pwd)/.venv/bin/python" -m ultra_csm.mcp_server
 ```
 
-Then, in Claude Code, ask things like:
-
-- *"Which accounts are most at risk right now, and what evidence says so?"*
-- *"Give me the brief for Harborview Fleet — what changed in the last 60 days?"*
-- *"Are any expansion actions currently held, and what's blocking them?"*
-- *"Approve the pending proposal for Sagebrush Transport."* — it will refuse:
-  write tools return a typed `MCP_READONLY` error enforced in the server process,
-  not left to the model's judgment.
-
-Every answer is grounded in the same deterministic value-model tools the agent uses
-over a simulated 35-account book; the model narrates, it never computes health. A
-captured transcript of exactly this session shape lives at
+Then ask things like *"Which accounts are most at risk right now, and what evidence says so?"* or
+*"Approve the pending proposal for Sagebrush Transport"* — the last one refuses: write tools
+return a typed `MCP_READONLY` error enforced in the server process, not left to the model's
+judgment. A captured transcript of this session shape lives at
 `demo_state/mcp_readonly_transcript.json`.
 
-Everything past this point needs the fuller install (`make setup && make doctor` —
-doctor boots and tears down a real throwaway Postgres cluster; if it passes,
-everything below will run).
+## Beat 2 — why you can point it at a real tenant
 
-## 1. The deterministic spine holds
+Two live vendors onboard into the same value model, each in one conversation:
 
 ```sh
-make scorecard-csm
+make mcp-relational-demo-csm   # normalized multi-table CRM (the Salesforce shape)
+make mcp-relay-demo-csm        # a foreign-shaped book via the generic relay
 ```
 
-Look at the terminal line (`24/24 hard_ok=True`) and `eval/scorecard_csm.json`.
-Tenant isolation, consent gating, payload-hash binding, and no-authority-minting
-are enforced in code against a real Postgres and fail the build if broken. This is
-the part of the system that is *proven*, not sampled.
+Open `eval/mcp_relational_transcript.json`: three tables relay through `ingest_table` with
+source-declared foreign keys, `confirm_book` joins them, and exactly five questions reach the
+user — four identity picks and one value direction. Every unmapped foreign field is declared
+`not_mappable` rather than silently guessed. This is the same shape a real Salesforce onboarding
+takes, proven live: `docs/LIVE_INTEGRATION_FINDINGS.md` and `docs/PROGRAM_REPORT_5.md` document
+real read-only Salesforce fetch, a real create-only Salesforce write-back, and real Rocketlane
+onboarding-phase evidence lighting up the Time-to-Value rail end-to-end, including a live
+cross-system beat that joins a real Salesforce account to real Rocketlane evidence through the
+unchanged sweep and action gate.
 
-## 2. A year in the life of a book of business
+The drafts that come out the other end are not judged by impression. `eval/gold/live_semantic_quality.json`
+is a real run: live Slot B drafts over live corpus B accounts, scored by the same judge validated
+against human-labeled gold data (`docs/DECISION_LOG.md`) under N-run (cot@5) modal aggregation.
+`eval.judge_validation.live_semantic_quality_status` derives the pass/fail from that artifact —
+never a hand-set boolean — and it currently derives **proven**.
 
-```sh
-PYTHONPATH=src:. .venv/bin/python -m eval.year_in_life_digest
-```
-
-Open `demo_state/year_in_life_digest.json`. A 35-account synthetic book evolves
-across 365 simulated days — accounts decline, recover, churn — and the value model
-snapshots trajectory at each step. Note the `claim_boundary` on the artifact: it
-says fixture, because it is.
-
-## 3. Triggers fire — and get suppressed — over simulated time
-
-```sh
-make tick-demo-csm
-```
-
-Watch the terminal narrate schedule/deadline/event triggers firing per simulated
-day, then open `demo_state/tick_demo/tick_ledger.jsonl`. The interesting rows are
-the `suppressions`: every trigger that did NOT fire records why (cooldown, already
-fired), with the evidence predicate inline. Silence is logged, not assumed.
-
-## 4. The full artifact bundle
-
-```sh
-make demo
-```
-
-Runs the scorecard, spine regression, Slot A classifier scorecard, earned-autonomy
-report, all four simulated connector onboardings (Attio, Gainsight, product
-telemetry, Salesforce — real explorer/mapping/fetch code against fake transports,
-degrading honestly to `unknown` rather than guessing), the MCP transcripts, and the
-oversight report.
-
-## 5. The operator morning
-
-```sh
-make mcp-operator-demo-csm
-```
-
-Open `eval/mcp_operator_transcript.json`. The transcript runs a simulated
-morning over the real proposal gate: briefing, queue, evidence, a plain-English
-revise, approval with a simulated receipt, a draft-never-send placement artifact,
-then two refusals (no-consent outreach and held expansion). The outbox is local
-simulation state only; `render_email_draft` creates a placement-ready artifact, not a
-live email.
-
-## 6. Bring your own book
-
-```sh
-make mcp-relay-demo-csm
-```
-
-Open `eval/mcp_relay_transcript.json`. The transcript uses a fresh synthetic
-foreign-shaped book and walks the relay flow: host-declared readiness,
-expected-count ingest, sparsity-evidenced confirmation questions, freeze/transform,
-and replay-deterministic coverage. CRM-only data gets partial credit, while missing
-telemetry and CS-platform rails remain explicit unknowns.
-
-Relay tools are labeled `provenance: mcp_relay` and `unverified_mapping: true`.
-Returned drafts are propose-only content for the host to approve and place in the
-user's own tools; `render_email_draft` only emits the approved draft artifact.
-
-For a normalized multi-table CRM (the Salesforce shape), run:
-
-```sh
-make mcp-relational-demo-csm
-```
-
-Open `eval/mcp_relational_transcript.json`. Three tables relay through
-`ingest_table` with source-declared foreign-key metadata, and `confirm_book`
-joins them into one book. Source-declared references and exact standard aliases
-auto-map with their provenance stated; exactly five questions — four identity
-picks and one value direction — reach the user, and every foreign contract's
-field on a table is declared `not_mappable` rather than silently guessed.
-
-## 7. The audit question
+## Beat 3 — the receipts
 
 ```sh
 make oversight-report
 ```
 
-Open `demo_state/oversight_report.md`. This is the document a reviewer, auditor, or
-security team asks for when someone claims "humans oversee this AI": every verdict
-with its proposal id, payload-hash-bound outbound receipts, suppression history,
-breaker trips and operator resets, the judge-validation evidence quoted verbatim,
-and autonomy tier provenance. Section 8 lists what is NOT instrumented — the report
-would rather admit a gap than imply coverage.
+Open `demo_state/oversight_report.md`. This is the document a reviewer, auditor, or security team
+asks for when someone claims "humans oversee this AI": every verdict with its proposal id,
+payload-hash-bound outbound receipts, suppression history, breaker trips and operator resets, the
+judge-validation evidence quoted verbatim, and autonomy tier provenance. Section 8 lists what is
+NOT instrumented — the report would rather admit a gap than imply coverage.
 
-## Where the claims live
+The other receipts a skeptical reviewer would want:
 
+- `docs/PROGRAM_REPORT_5.md` — the live connector and live-judged-quality run, with claim
+  boundaries and deviations stated.
+- `docs/LIVE_INTEGRATION_FINDINGS.md` — the full live battery matrix (Salesforce D1-D6,
+  Rocketlane D1-D5) with exact-number assertions against a ground truth authored before any
+  record was created.
+- `eval/scorecard_csm.json`, `eval/relational_battery.json`, `eval/relay_battery.json` — the
+  deterministic spine: tenant isolation, consent gating, payload-hash binding, and
+  no-authority-minting, enforced in code and failing the build if broken.
 - `STATUS.md` — rendered from artifacts, never hand-written (`make status` fails if stale).
-- `docs/DECISION_LOG.md` — append-only record of non-obvious decisions and the
-  evidence behind them, including the judge validation methodology.
-- Every artifact carries a machine-readable `claim_boundary` stating what it does
-  and does not prove. Simulation is labeled simulation, everywhere.
+- `docs/DECISION_LOG.md` — the append-only record of non-obvious decisions and the evidence
+  behind them, including the full judge validation methodology.
+
+Every artifact here carries a machine-readable `claim_boundary` stating what it does and does not
+prove. Simulation is labeled simulation; live is labeled live; everywhere.
+
+## The rest of the mechanics (run anytime, in any order)
+
+```sh
+make scorecard-csm     # 24/24 hard_ok=True -- the deterministic spine, proven not sampled
+PYTHONPATH=src:. .venv/bin/python -m eval.year_in_life_digest   # a 35-account book over 365 days
+make tick-demo-csm     # schedule/deadline/event triggers fire -- and get suppressed, logged either way
+make demo              # the full artifact bundle: scorecard, regression, Slot A, all connectors, transcripts
+```
