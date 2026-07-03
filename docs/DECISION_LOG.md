@@ -67,3 +67,55 @@ judge, not a *validated* one.
 - The agreement numbers above are a single session's snapshot (Opus N=3/N=20, Sonnet
   N=3/N=20). They are reproducible via `make judge-agreement-csm` but are not pinned in
   the repo, since the live judge is credential-gated and not CI-reproducible.
+
+---
+
+## Quality judge: validated under N-run aggregation (supersedes the entry above)
+
+**Context.** The entry above characterized the judge as *stabilized, not validated*, and
+picked Sonnet-terse as the gate on single-run evidence. Two things changed: (1)
+`account_specificity` and `priority_fidelity` moved from LLM-judged to deterministic
+scorers (code matches gold 99/99 offline, κ=1.0 by construction — prompt v6→v7), which
+removed the single largest source of hard-layer noise; (2) single-run hard-layer κ on the
+36-item adversarial set turned out to swing ±0.15 run-to-run (grounding and on_task each
+dipped below 0.6 in roughly 1 of 5 runs while their medians sat well above it) — a
+single-run hard gate is a coin flip by construction on a sample this size where these
+dimensions rarely fail. That reframes the prior "terse@N is the best gate" decision as
+premature: it was chosen on single-run numbers that this measurement now shows are not
+individually trustworthy.
+
+**What we measured.** 5-run modal aggregation (`eval/judge_nrun.py`) on both arms,
+head-to-head (`eval/compare_judges.py --runs 5`), hard layer n=36:
+
+- **terse@5**: on_task_relevance aggregated κ 0.479 (FAIL), 3 aggregated false negatives.
+  Disqualified — it passes bad outputs even after aggregation.
+- **cot@5**: all six dimensions aggregated κ ≥ 0.6 (min 0.661 on_task, 0.682 grounding),
+  aggregated false negatives = 0, gate repeatability 0.917, 3 indeterminate cases kept in
+  the denominator (never hidden). Clean layer (n=63, single-run — clean cases rarely flip):
+  all six ≥ 0.832, false_neg = false_pos = 0.
+
+**Decisions.**
+1. **The gate flips: cot@N is now the validated hard-layer instrument, not terse@N.**
+   The prior decision optimized for single-run accuracy/stability; under aggregation that
+   axis stops mattering (aggregation is what buys stability) and cot's lower false-negative
+   rate dominates. This does not contradict the "CoT hurts Sonnet" finding above — it was
+   true for *single-run* comparisons; aggregation changes which arm wins.
+2. **`judge_validated` is derived from evidence artifacts, never hand-set**
+   (`eval/judge_validation.py`, recomputes hard κ/false-negatives from the aggregated
+   per-case vectors rather than trusting a stored summary). Flipped to `true` on 2026-07-02
+   (commit `824f94e`). Claim boundary records the method verbatim: N-run-aggregated
+   (5 runs, cot arm), single-labeler gold, prompt v7, claude-sonnet-4-6.
+3. **Never re-litigate this gate with a single run.** The ±0.15 single-run swing on a
+   36-item rarely-failing hard layer is now measured, not hypothesized — a future prompt
+   or model change must be evaluated under the same N-run aggregation, not a one-off call.
+
+**H6b boundary-reach ruling (2026-07-02).** Open question was whether "internal_review,
+passive, no concrete ask" (on_task=1) extends to warm-but-generic drafts like "hope
+you're doing great, just checking in" — the judge fails these under v7; three H6b hard-key
+cases were authored expecting a pass. **Ruling: this is genuinely subjective and
+contextual, not a bright-line rule to encode.** No deterministic floor, no rubric
+rewrite, and no gold-key change to force agreement. The resulting 4 aggregated hard false
+positives (judge stricter than gold, fail-closed direction) are accepted as an honest,
+recorded disagreement — not a defect to chase to zero. If a future prompt revision
+resolves it, revalidate under the same N-run methodology (decision 3 above); do not
+special-case it in the judge prompt.
