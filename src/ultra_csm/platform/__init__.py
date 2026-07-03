@@ -59,47 +59,13 @@ def _resolve_toolchain() -> _Toolchain:
     if initdb and pg_ctl:
         return _Toolchain("system", initdb, pg_ctl)
 
-    pgserver = _pgserver_toolchain()
-    if pgserver is not None:
-        return pgserver
-
     missing = ", ".join(
         name for name, path in (("initdb", initdb), ("pg_ctl", pg_ctl)) if path is None
     )
     raise FileNotFoundError(
-        f"{missing} not found (need Postgres 16: `make setup`, or install .[demo] "
-        "on Python <=3.12 for the pgserver fallback)"
+        f"{missing} not found (need Postgres 16: macOS `brew install postgresql@16`; "
+        "Ubuntu `sudo apt-get install -y postgresql-16`)"
     )
-
-
-def _pgserver_toolchain() -> _Toolchain | None:
-    try:
-        import pgserver  # type: ignore[import-not-found]
-    except ImportError:
-        return None
-
-    root = Path(pgserver.__file__).resolve().parent
-    initdb = _find_pgserver_binary(root, "initdb")
-    pg_ctl = _find_pgserver_binary(root, "pg_ctl")
-    if initdb and pg_ctl:
-        return _Toolchain("pgserver", str(initdb), str(pg_ctl))
-    return None
-
-
-def _find_pgserver_binary(root: Path, name: str) -> Path | None:
-    candidates = (
-        root / name,
-        root / "bin" / name,
-        root / "postgres" / "bin" / name,
-        root / "postgresql" / "bin" / name,
-    )
-    for candidate in candidates:
-        if candidate.exists():
-            return candidate
-    for candidate in root.rglob(name):
-        if candidate.is_file():
-            return candidate
-    return None
 
 
 def _assert_tool_exists(path: str, name: str) -> None:
