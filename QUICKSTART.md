@@ -133,6 +133,29 @@ make mcp-readonly-demo-csm
 The transcript is written to `demo_state/mcp_readonly_transcript.json` and maps each demo
 answer to the tool calls that grounded it.
 
+## Run The Sim Operator Morning
+
+Use MCP as a local operator demo over the same approval gate and simulated outbox:
+
+```sh
+ULTRA_CSM_DEMO_OPERATOR=1 \
+  PYTHONPATH=src:. .venv/bin/python -m ultra_csm.mcp_server
+```
+
+In this mode, start with `get_morning_briefing`, inspect `list_proposals`, revise a draft
+with `submit_verdict(..., verdict="revise", edit_instruction="Make this more concise.")`,
+then approve the superseding proposal. Approved customer outreach writes only to
+`demo_state/mcp_operator/outbox.jsonl`; no live email is sent. The mode also refuses
+no-consent outreach and held expansion actions with typed errors.
+
+Capture the deterministic transcript with:
+
+```sh
+make mcp-operator-demo-csm
+```
+
+The committed transcript is written to `eval/mcp_operator_transcript.json`.
+
 ## Oversight evidence pack
 
 Render the oversight ledgers (verdicts, receipts, suppressions, breaker events,

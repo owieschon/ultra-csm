@@ -29,6 +29,17 @@ def check_venv() -> tuple[bool, str]:
 
 
 def check_pg_binaries() -> tuple[bool, str]:
+    try:
+        from ultra_csm.platform import resolve_postgres_boot_tier
+    except ImportError as exc:
+        return False, f"cannot import platform module: {exc} — run `make setup`"
+    try:
+        tier = resolve_postgres_boot_tier()
+    except Exception as exc:  # noqa: BLE001 - report environment resolver failures
+        return False, str(exc)
+    if tier == "pgserver":
+        return True, "pgserver fallback available"
+
     homebrew = Path("/opt/homebrew/opt/postgresql@16/bin")
     missing = []
     versions = []
@@ -68,9 +79,10 @@ def check_ephemeral_cluster() -> tuple[bool, str]:
 
             with psycopg.connect(**cluster.dsn(user=cluster.BOOTSTRAP_USER)) as conn:
                 encoding = conn.execute("SHOW server_encoding").fetchone()[0]
+            tier = cluster.boot_tier
         if encoding != "UTF8":
             return False, f"cluster boots but encoding is {encoding}, expected UTF8"
-        return True, "throwaway cluster booted, UTF8, torn down"
+        return True, f"throwaway cluster booted via {tier}, UTF8, torn down"
     except Exception as exc:  # noqa: BLE001 - report every boot failure with its cause
         log_hint = "check the server.log path in the error output"
         return False, f"cluster failed to boot: {exc} ({log_hint})"

@@ -41,10 +41,7 @@ from ultra_csm.governance import (
     ROLE_CS_ORCHESTRATOR,
 )
 from ultra_csm.value_model import build_customer_value_model, project_ttv_lens
-from ultra_csm.agent1 import (
-    build_reason_draft_request_for_account,
-    run_time_to_value_sweep,
-)
+from ultra_csm.agent1 import run_time_to_value_sweep
 from ultra_csm.agent1.precedence import (
     ActionPacket,
     FindingPacket,
@@ -52,10 +49,10 @@ from ultra_csm.agent1.precedence import (
     evaluate_precedence,
     load_precedence_config,
 )
-from ultra_csm.agent1.revise import run_slot_b_revise_loop
 from ultra_csm.api_metrics import APIMetrics, SweepTiming
 from ultra_csm.cohort_packets import build_cohort_rollup_packets
 from ultra_csm.cost_tracker import CostBudget, CostTracker
+from ultra_csm.proposal_revise import ReviseServiceError, apply_bounded_revise
 from ultra_csm._api_helpers import (
     AccountDataError,
     AuthError,
@@ -673,132 +670,33 @@ def _bounded_revise_response(
     *,
     auth_principal,
 ) -> VerdictResponse:
-    if not body.edit_instruction:
-        raise HTTPException(
-            status_code=409,
-            detail={
-                "error": "Revise verdict requires edit_instruction",
-                "code": "REVISE_INSTRUCTION_REQUIRED",
-                "proposal_id": proposal.proposal_id,
-            },
-        )
-    request = _revise_request_for_proposal(proposal)
-    verdict = Verdict(
-        verdict="revise",
-        human_principal_id=auth_principal.principal_id,
-        revised_payload={"edit_instruction": body.edit_instruction},
-        rationale=body.reason,
-    )
+    assert _data_plane is not None
     try:
-        result = run_slot_b_revise_loop(
+        result = apply_bounded_revise(
             _gate(),
             proposal,
-            verdict,
-            request,
+            data_plane=_data_plane,
+            tenant_id=DEFAULT_TENANT,
+            human_principal_id=auth_principal.principal_id,
+            reason=body.reason,
+            edit_instruction=body.edit_instruction,
             cause_ref=f"api:revise:{proposal.proposal_id}",
         )
-    except GateError as exc:
-        raise HTTPException(
-            status_code=409,
-            detail={
-                "error": str(exc),
-                "code": "REVISE_GATE_ERROR",
-                "proposal_id": proposal.proposal_id,
-            },
-        ) from exc
-
-    if result.status == "refused":
-        raise HTTPException(
-            status_code=409,
-            detail={
-                "error": result.refusal_reason or "Revise instruction refused",
-                "code": "REVISE_REFUSED",
-                "proposal_id": proposal.proposal_id,
-            },
-        )
-    if result.status == "loop_bound_reached":
-        raise HTTPException(
-            status_code=409,
-            detail={
-                "error": result.refusal_reason or "Automatic revise loop already used",
-                "code": "REVISE_BOUND_REACHED",
-                "proposal_id": proposal.proposal_id,
-            },
-        )
-    assert result.superseding_proposal is not None
+    except ReviseServiceError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=exc.to_dict()) from exc
     log.info(
         "Draft revise recorded",
         extra={
             "proposal_id": proposal.proposal_id,
-            "superseding_proposal_id": result.superseding_proposal.proposal_id,
+            "superseding_proposal_id": result.superseding_proposal_id,
             "actor": auth_principal.principal_id,
             "auth": auth_principal.auth,
         },
     )
     return VerdictResponse(
-        proposal_id=proposal.proposal_id,
-        status="denied",
-        authorized=False,
-        verdict="revise",
-        payload_sha256=proposal.payload_sha256,
-        superseding_proposal_id=result.superseding_proposal.proposal_id,
+        **result.to_dict(),
         auth=auth_principal.auth,
     )
-
-
-def _revise_request_for_proposal(proposal: ActionProposal):
-    if proposal.action != "draft_customer_outreach":
-        raise HTTPException(
-            status_code=409,
-            detail={
-                "error": "Only draft_customer_outreach proposals support bounded revise",
-                "code": "REVISE_UNSUPPORTED_ACTION",
-                "proposal_id": proposal.proposal_id,
-                "action": proposal.action,
-            },
-        )
-    account_id = proposal.payload.get("account_id")
-    if not isinstance(account_id, str) or not account_id:
-        raise HTTPException(
-            status_code=409,
-            detail={
-                "error": "Proposal payload is missing account_id",
-                "code": "REVISE_NOT_RECONSTRUCTABLE",
-                "proposal_id": proposal.proposal_id,
-            },
-        )
-    as_of = proposal.payload.get("as_of")
-    evidence_ids = proposal.payload.get("evidence_ids")
-    contact_id = proposal.payload.get("contact_id")
-    if not isinstance(as_of, str) or not isinstance(evidence_ids, list | tuple):
-        raise HTTPException(
-            status_code=409,
-            detail={
-                "error": "Proposal payload is missing revise reconstruction fields",
-                "code": "REVISE_NOT_RECONSTRUCTABLE",
-                "proposal_id": proposal.proposal_id,
-            },
-        )
-    assert _data_plane is not None
-    request = build_reason_draft_request_for_account(
-        _data_plane,
-        DEFAULT_TENANT,
-        account_id,
-        as_of=as_of,
-        action="draft_customer_outreach",
-        evidence_source_ids=tuple(str(item) for item in evidence_ids),
-        contact_id=contact_id if isinstance(contact_id, str) else None,
-    )
-    if request is None:
-        raise HTTPException(
-            status_code=409,
-            detail={
-                "error": "Unable to reconstruct bounded Slot B request",
-                "code": "REVISE_NOT_RECONSTRUCTABLE",
-                "proposal_id": proposal.proposal_id,
-            },
-        )
-    return request
 
 
 def _decode_payload(payload_raw: Any) -> dict[str, Any]:
