@@ -935,12 +935,19 @@ def get_next_steps() -> dict:
             "Use get_account_brief before approving or revising.",
             "Use submit_verdict with revise plus edit_instruction once.",
             "Approve the superseding draft and inspect get_session_ledger.",
+            "For a host-relayed book, restart without demo/read-only mode and use "
+            "report_readiness, ingest_book, then confirm_book_mappings.",
         ],
         "credential_boundary": (
             "This demo uses simulated data and local no-auth approval only when "
             f"{_DEMO_OPERATOR_ENV}=1. Live tenants must use mapped API tokens."
         ),
         "outbox": str(_DEMO_STATE_DIR / "outbox.jsonl"),
+        "bring_your_own_book": {
+            "docs": "QUICKSTART.md#bring-your-own-book",
+            "tools": ["report_readiness", "ingest_book", "confirm_book_mappings"],
+            "claim_boundary": _relay_claim_boundary(),
+        },
     }, suggested_next=["get_morning_briefing", "list_proposals"])
 
 
