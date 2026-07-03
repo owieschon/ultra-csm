@@ -43,14 +43,34 @@ the human decides. Today the shared model, the gate, Agent 1, and the determinis
 lenses are built; the cohort analyst and quality-scored lens drafts stay gated. Full spec:
 `docs/CUSTOMER_VALUE_MODEL.md`.
 
-## Quickstart
+## Try it in one minute — no Postgres, no credentials
 
-**Prerequisites:** Python 3.10+ and PostgreSQL 16 client tooling (`initdb`, `pg_ctl`) on `PATH`.
+The read-only conversational surface needs nothing but Python: no database, no system
+Postgres install, no `make setup`.
+
+```sh
+git clone https://github.com/owieschon/ultra-csm.git && cd ultra-csm
+python3 -m venv .venv && .venv/bin/pip install -q -e ".[mcp]"
+claude mcp add ultra-csm --env ULTRA_CSM_MCP_READONLY=1 -- \
+  "$(pwd)/.venv/bin/python" -m ultra_csm.mcp_server
+```
+
+Then, in Claude Code, ask: *"Which accounts are most at risk, and what evidence says
+so?"* — answers are grounded in the same deterministic value-model tools the agent
+uses over a simulated 35-account book; write tools return a typed refusal enforced in
+the server process, not left to the model's judgment. `docs/TOUR.md` has more prompts
+and a ten-minute walk through the rest of the system.
+
+## Full quickstart (tests, scorecard, connectors)
+
+**Prerequisites:** Python 3.10+ and PostgreSQL 16 client tooling (`initdb`, `pg_ctl`) on `PATH`
+— only needed past this point (the spine's regression tests use a real, ephemeral, auto-torn-down
+Postgres; the MCP path above does not).
 - macOS: `brew install postgresql@16`, then add `"$(brew --prefix postgresql@16)/bin"` to `PATH`.
 - Ubuntu: `sudo apt-get install -y postgresql-16`.
 
 ```sh
-make setup          # venv + editable install
+make setup          # venv + editable install (all extras)
 make doctor         # preflight: proves your environment can boot the test harness
 make scorecard-csm  # offline, no secrets → deterministic CSM scorecard
 make eval           # full pytest suite on an ephemeral, auto-torn-down Postgres
@@ -59,20 +79,6 @@ make lint hygiene   # ruff lint + repo-residue scan
 
 No cloud, no credentials, and no customer data are needed for any of the above. The only
 credentialed lanes are the live quality judge and the live connectors (see below).
-
-**Guided tour:** [`docs/TOUR.md`](docs/TOUR.md) walks the whole system in ten minutes —
-deterministic scorecard, a simulated year of a 35-account book, trigger suppression,
-the oversight evidence pack, and the fastest way to *feel* it:
-
-```sh
-# talk to the simulated book of business from Claude Code, read-only
-claude mcp add ultra-csm --env ULTRA_CSM_MCP_READONLY=1 -- \
-  "$(pwd)/.venv/bin/python" -m ultra_csm.mcp_server
-```
-
-Then ask: *"Which accounts are most at risk, and what evidence says so?"* Answers are
-grounded in the same deterministic tools the agent uses; write tools return a typed
-refusal enforced in the server process, not left to the model's judgment.
 
 ## What's evaluated — and why they're kept apart
 
