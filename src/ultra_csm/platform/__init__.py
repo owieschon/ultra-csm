@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import contextlib
+import os
 import shutil
 import subprocess
 import tempfile
@@ -31,6 +32,23 @@ def _tool(name: str) -> str:
     return str(found)
 
 
+def _pg_env() -> dict[str, str]:
+    """Subprocess env with a UTF-8 locale forced for initdb/pg_ctl.
+
+    Two shell states break the ephemeral cluster otherwise: with no LC_ALL/LANG at
+    all, macOS Postgres 16 dies at startup with "FATAL: postmaster became
+    multithreaded" (CoreFoundation locale lookup); with LC_ALL=C, initdb creates a
+    SQL_ASCII database that later rejects the UTF-8 schema. A UTF-8 locale avoids
+    both, so keep the caller's if it already is one and force C.UTF-8 if not.
+    """
+    env = dict(os.environ)
+    current = env.get("LC_ALL") or env.get("LANG") or ""
+    if "utf-8" not in current.lower() and "utf8" not in current.lower():
+        env["LC_ALL"] = "C.UTF-8"
+        env["LANG"] = "C.UTF-8"
+    return env
+
+
 class EphemeralCluster:
     """Throwaway Postgres cluster reachable only over a local Unix socket."""
 
@@ -55,10 +73,21 @@ class EphemeralCluster:
         )
         self._sockdir = self._sock.name
 
+        env = _pg_env()
         subprocess.run(
-            [_tool("initdb"), "-D", str(self._datadir), "-U", self.BOOTSTRAP_USER, "--auth=trust"],
+            [
+                _tool("initdb"),
+                "-D",
+                str(self._datadir),
+                "-U",
+                self.BOOTSTRAP_USER,
+                "--auth=trust",
+                "-E",
+                "UTF8",
+            ],
             check=True,
             capture_output=True,
+            env=env,
         )
         subprocess.run(
             [
@@ -75,6 +104,7 @@ class EphemeralCluster:
             check=True,
             stdout=DEVNULL,
             stderr=DEVNULL,
+            env=env,
         )
         self._started = True
         return self
