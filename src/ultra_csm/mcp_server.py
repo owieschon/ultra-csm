@@ -13,6 +13,7 @@ principal rather than a server-held authority.
 from __future__ import annotations
 
 import atexit
+import json
 import logging
 import os
 from pathlib import Path
@@ -26,8 +27,12 @@ from ultra_csm.platform.db import session
 from ultra_csm.platform.seed import det_uuid, SEED_CLOCK
 
 from ultra_csm.data_plane import (
+    ACME_LOGISTICS,
+    CYBERDYNE_NO_CONSENT,
     CustomerDataPlane,
+    DEFAULT_DEMO_STATE_DIR,
     DEFAULT_TENANT,
+    SimTenantStore,
     build_sweep_fixture_data_plane,
 )
 from ultra_csm.data_plane.synthetic_book import SEED_DATE
@@ -37,11 +42,14 @@ from ultra_csm.governance import (
     FixtureVerdictSource,
     GateError,
     Verdict,
+    proposal_fields_for,
     seed_roster,
     make_principal,
     ROLE_CS_ORCHESTRATOR,
 )
 from ultra_csm.agent1 import run_time_to_value_sweep, SweepResult
+from ultra_csm.committers import SimCrmActivityCommitter, SimOutboundCommitter
+from ultra_csm.proposal_revise import ReviseServiceError, apply_bounded_revise
 from ultra_csm._api_helpers import (
     AccountDataError,
     AuthError,
@@ -67,7 +75,9 @@ _TENANT_NAME = "acme-csm"
 _TENANT_ID = det_uuid("tenant", _TENANT_NAME)
 _SEED_AGENT = det_uuid("principal", _TENANT_NAME, "system-seed")
 _READONLY_ENV = "ULTRA_CSM_MCP_READONLY"
+_DEMO_OPERATOR_ENV = "ULTRA_CSM_DEMO_OPERATOR"
 _READONLY_CODE = "MCP_READONLY"
+_DEMO_STATE_DIR = DEFAULT_DEMO_STATE_DIR / "mcp_operator"
 _TIMELINE_DAYS = (0, 30, 60)
 
 log = logging.getLogger(__name__)
@@ -79,6 +89,7 @@ log = logging.getLogger(__name__)
 _cluster: EphemeralCluster | None = None
 _conn: psycopg.Connection | None = None
 _data_plane: CustomerDataPlane | None = None
+_sim_store: SimTenantStore | None = None
 _orch_principal: str | None = None
 
 # Map proposal_id -> ActionProposal kept in memory so submit_verdict can
@@ -87,6 +98,7 @@ _proposals: dict[str, ActionProposal] = {}
 
 # Cache the most recent sweep result so list_proposals can pull from it.
 _last_sweep: SweepResult | None = None
+_session_events: list[dict[str, object]] = []
 
 
 def _truthy(value: str | None) -> bool:
@@ -99,6 +111,27 @@ def mcp_readonly_enabled() -> bool:
     return _truthy(os.getenv(_READONLY_ENV))
 
 
+def mcp_demo_operator_enabled() -> bool:
+    """Return whether MCP should run the local sim operator loop."""
+
+    return _truthy(os.getenv(_DEMO_OPERATOR_ENV))
+
+
+def _validate_access_mode_env() -> None:
+    if mcp_readonly_enabled() and mcp_demo_operator_enabled():
+        raise RuntimeError(
+            f"{_READONLY_ENV}=1 and {_DEMO_OPERATOR_ENV}=1 are mutually exclusive"
+        )
+
+
+def _access_mode() -> str:
+    if mcp_readonly_enabled():
+        return "read_only"
+    if mcp_demo_operator_enabled():
+        return "demo_operator"
+    return "operator"
+
+
 def _readonly_refusal(tool_name: str) -> dict[str, str]:
     return {
         "error": (
@@ -109,6 +142,23 @@ def _readonly_refusal(tool_name: str) -> dict[str, str]:
         "tool": tool_name,
         "access_mode": "read_only",
     }
+
+
+def _with_demo_context(payload: dict, *, suggested_next: list[str] | None = None) -> dict:
+    if not mcp_demo_operator_enabled():
+        return payload
+    result = dict(payload)
+    result.setdefault("claim_boundary", {"sim": True, "live": False})
+    result.setdefault("suggested_next", suggested_next or _default_suggested_next())
+    return result
+
+
+def _default_suggested_next() -> list[str]:
+    return [
+        "get_morning_briefing",
+        "list_proposals",
+        "get_session_ledger",
+    ]
 
 
 def _boot() -> None:
@@ -124,9 +174,10 @@ def _boot() -> None:
     Postgres 16 install required at all to talk to the account book.
     """
 
-    global _cluster, _conn, _data_plane, _orch_principal
+    global _cluster, _conn, _data_plane, _sim_store, _orch_principal
 
     setup_logging("INFO")
+    _validate_access_mode_env()
 
     if mcp_readonly_enabled():
         _data_plane = build_sweep_fixture_data_plane(tenant_id=DEFAULT_TENANT)
@@ -139,7 +190,7 @@ def _boot() -> None:
     log.info("Booting ephemeral Postgres cluster")
     if demo_noauth_enabled():
         log.warning(
-            "ULTRA_CSM_DEMO_NOAUTH=1 enabled; MCP verdict tools allow "
+            "Demo no-auth enabled; MCP verdict tools allow "
             "tokenless local demo approvals",
             extra={"auth": "demo-noauth"},
         )
@@ -171,8 +222,19 @@ def _boot() -> None:
         now=_CLOCK,
     )
 
-    # Build the fixture data plane (in-memory, no DB needed).
-    _data_plane = build_sweep_fixture_data_plane(tenant_id=DEFAULT_TENANT)
+    if mcp_demo_operator_enabled():
+        _reset_demo_operator_state()
+        _sim_store = SimTenantStore.seed(
+            _DEMO_STATE_DIR,
+            tenant_id=DEFAULT_TENANT,
+            reset=True,
+        )
+        _data_plane = _sim_store.data_plane()
+        _run_sweep_and_cache(cause_ref="mcp-demo:boot")
+        _seed_demo_refusal_proposals()
+    else:
+        # Build the fixture data plane (in-memory, no DB needed).
+        _data_plane = build_sweep_fixture_data_plane(tenant_id=DEFAULT_TENANT)
 
     log.info(
         "Ultra CSM MCP server ready",
@@ -180,6 +242,7 @@ def _boot() -> None:
             "tenant_id": _TENANT_ID,
             "orch_principal": _orch_principal,
             "auth": auth_marker(),
+            "access_mode": _access_mode(),
             "configured_api_tokens": len(parse_api_tokens()),
         },
     )
@@ -197,6 +260,196 @@ def _gate() -> ActionGate:
     )
 
 
+def _run_sweep_and_cache(*, cause_ref: str) -> SweepResult:
+    """Run the TTV sweep and refresh proposal cache from the DB."""
+
+    global _last_sweep
+    _ = cause_ref
+    assert _data_plane is not None and _orch_principal is not None
+    sweep = run_time_to_value_sweep(
+        _data_plane,
+        DEFAULT_TENANT,
+        _gate(),
+        sweep_principal_id=_orch_principal,
+        as_of=_AS_OF,
+    )
+    _last_sweep = sweep
+    _refresh_pending_proposal_cache()
+    return sweep
+
+
+def _refresh_pending_proposal_cache() -> tuple[ActionProposal, ...]:
+    assert _conn is not None
+    with session(
+        _conn,
+        tenant_id=_TENANT_ID,
+        actor_id=_orch_principal or _SEED_AGENT,
+        now=_CLOCK,
+    ) as cur:
+        cur.execute(
+            "SELECT proposal_id, intent, action, payload, payload_sha256, "
+            "       autonomy_tier, required_permission, status "
+            "FROM action_proposal "
+            "WHERE status = 'pending' "
+            "ORDER BY created_ts DESC, proposal_id ASC"
+        )
+        rows = cur.fetchall()
+    proposals = tuple(_proposal_from_row(row) for row in rows)
+    for proposal in proposals:
+        _proposals[proposal.proposal_id] = proposal
+    return proposals
+
+
+def _lookup_proposal(proposal_id: str) -> ActionProposal | None:
+    proposal = _proposals.get(proposal_id)
+    if proposal is not None:
+        return proposal
+    assert _conn is not None
+    with session(
+        _conn,
+        tenant_id=_TENANT_ID,
+        actor_id=_orch_principal or _SEED_AGENT,
+        now=_CLOCK,
+    ) as cur:
+        cur.execute(
+            "SELECT proposal_id, intent, action, payload, payload_sha256, "
+            "       autonomy_tier, required_permission, status "
+            "FROM action_proposal WHERE proposal_id = %s",
+            (proposal_id,),
+        )
+        row = cur.fetchone()
+    if row is None:
+        return None
+    proposal = _proposal_from_row(row)
+    _proposals[proposal.proposal_id] = proposal
+    return proposal
+
+
+def _proposal_from_row(row) -> ActionProposal:
+    payload_raw = row[3]
+    payload = json.loads(payload_raw) if isinstance(payload_raw, str) else payload_raw
+    return ActionProposal(
+        proposal_id=str(row[0]),
+        intent=row[1],
+        action=row[2],
+        payload=payload if isinstance(payload, dict) else {},
+        payload_sha256=row[4],
+        autonomy_tier=row[5],
+        required_permission=row[6],
+        status=row[7],
+    )
+
+
+def _seed_demo_refusal_proposals() -> None:
+    """Create the two proposals used by the refusal beat in demo mode."""
+
+    if not mcp_demo_operator_enabled():
+        return
+    assert _data_plane is not None
+    gate = _gate()
+
+    cyberdyne = _data_plane.crm.get_account(CYBERDYNE_NO_CONSENT)
+    cyberdyne_contact = next(iter(_data_plane.crm.list_contacts(CYBERDYNE_NO_CONSENT)), None)
+    if cyberdyne is not None and cyberdyne_contact is not None:
+        gate.propose(
+            intent="mcp_demo_no_consent_refusal",
+            payload={
+                "account_id": cyberdyne.account_id,
+                "account_name": cyberdyne.name,
+                "contact_id": cyberdyne_contact.contact_id,
+                "contact_email": cyberdyne_contact.email,
+                "subject": "Onboarding activation follow-up",
+                "body": "Simulation-only draft that must not be approved without consent.",
+                "evidence_ids": [f"health:{cyberdyne.account_id}"],
+                "as_of": _AS_OF,
+                "source": "sim",
+            },
+            grounding_ref="mcp-demo:no-consent-refusal",
+            **proposal_fields_for("draft_customer_outreach"),
+        )
+
+    acme = _data_plane.crm.get_account(ACME_LOGISTICS)
+    opportunity = next(iter(_data_plane.crm.list_opportunities(ACME_LOGISTICS)), None)
+    if acme is not None and opportunity is not None:
+        gate.propose(
+            intent="mcp_demo_held_expansion_refusal",
+            payload={
+                "account_id": acme.account_id,
+                "account_name": acme.name,
+                "opportunity_id": opportunity.opportunity_id,
+                "opportunity_stage": opportunity.stage_name,
+                "as_of": _AS_OF,
+                "source": "sim",
+            },
+            grounding_ref="mcp-demo:held-expansion-refusal",
+            **proposal_fields_for("initiate_customer_call"),
+        )
+    _refresh_pending_proposal_cache()
+
+
+def _reset_demo_operator_state() -> None:
+    for path in (
+        _DEMO_STATE_DIR / "outbox.jsonl",
+        _DEMO_STATE_DIR / "commit_audit.jsonl",
+        _DEMO_STATE_DIR / "tenant_state.json",
+    ):
+        path.unlink(missing_ok=True)
+
+
+def _record_session_event(event_type: str, payload: dict[str, object]) -> None:
+    if not mcp_demo_operator_enabled():
+        return
+    _session_events.append({
+        "event_type": event_type,
+        "payload": payload,
+        "claim_boundary": {"sim": True, "live": False},
+    })
+
+
+def _typed_refusal(
+    *,
+    code: str,
+    message: str,
+    proposal: ActionProposal | None = None,
+    extra: dict[str, object] | None = None,
+) -> dict:
+    payload: dict[str, object] = {
+        "error": message,
+        "code": code,
+        "refused": True,
+    }
+    if proposal is not None:
+        payload["proposal_id"] = proposal.proposal_id
+        payload["action"] = proposal.action
+    if extra:
+        payload.update(extra)
+    _record_session_event("refusal", payload)
+    return _with_demo_context(payload, suggested_next=["get_session_ledger", "list_proposals"])
+
+
+def _proposal_has_contact_consent(proposal: ActionProposal) -> bool:
+    if proposal.action != "draft_customer_outreach":
+        return True
+    assert _data_plane is not None
+    account_id = proposal.payload.get("account_id")
+    contact_id = proposal.payload.get("contact_id")
+    if not isinstance(account_id, str):
+        return False
+    contacts = _data_plane.crm.list_contacts(account_id)
+    if isinstance(contact_id, str):
+        contacts = [contact for contact in contacts if contact.contact_id == contact_id]
+    return any(contact.consent_to_contact for contact in contacts)
+
+
+def _expansion_approval_blockers(proposal: ActionProposal) -> tuple[dict[str, object], ...]:
+    if proposal.action != "initiate_customer_call":
+        return ()
+    account_id = proposal.payload.get("account_id")
+    if not isinstance(account_id, str):
+        return ({"blocking_ref": "proposal:missing_account_id", "reason": "missing account_id"},)
+    return _expansion_blockers(account_id)
+
+
 # ---------------------------------------------------------------------------
 # MCP Server
 # ---------------------------------------------------------------------------
@@ -204,9 +457,11 @@ def _gate() -> ActionGate:
 mcp = FastMCP(
     "Ultra CSM",
     instructions=(
-        "Ultra CSM is a customer-success management system. Use these tools "
-        "to score accounts, inspect account context, review pending action "
-        "proposals, and submit human verdicts only when write access is enabled."
+        "Ultra CSM is a customer-success management system. In demo-operator "
+        "mode, start with get_morning_briefing, inspect evidence before "
+        "submitting any verdict, use revise only with a plain-English edit "
+        "instruction, and treat all outbound receipts as simulation artifacts. "
+        "In read-only mode, use tools only to inspect accounts and holds."
     ),
 )
 
@@ -243,6 +498,21 @@ MCP_TOOL_AUDIT: tuple[dict[str, object], ...] = (
         "readonly_available": True,
     },
     {
+        "name": "get_morning_briefing",
+        "classification": "read",
+        "readonly_available": False,
+    },
+    {
+        "name": "get_next_steps",
+        "classification": "read",
+        "readonly_available": True,
+    },
+    {
+        "name": "get_session_ledger",
+        "classification": "read",
+        "readonly_available": False,
+    },
+    {
         "name": "run_sweep",
         "classification": "state_changing",
         "readonly_available": False,
@@ -259,11 +529,12 @@ MCP_TOOL_AUDIT: tuple[dict[str, object], ...] = (
 def get_tool_manifest() -> dict:
     """List MCP tools and their read/write classification."""
 
-    return {
-        "access_mode": "read_only" if mcp_readonly_enabled() else "operator",
+    return _with_demo_context({
+        "access_mode": _access_mode(),
         "read_only_env": _READONLY_ENV,
+        "demo_operator_env": _DEMO_OPERATOR_ENV,
         "tools": [dict(tool) for tool in MCP_TOOL_AUDIT],
-    }
+    }, suggested_next=["get_morning_briefing", "get_next_steps"])
 
 
 @mcp.tool()
@@ -279,9 +550,14 @@ def score_account(account_id: str) -> dict:
     """
     assert _data_plane is not None
     try:
-        return _score_one_account(account_id, data_plane=_data_plane, as_of=_AS_OF)
+        return _with_demo_context(
+            _score_one_account(account_id, data_plane=_data_plane, as_of=_AS_OF),
+            suggested_next=["get_account_brief", "list_proposals"],
+        )
     except AccountDataError as exc:
-        return {"error": str(exc), "code": exc.code, "account_id": exc.account_id}
+        return _with_demo_context(
+            {"error": str(exc), "code": exc.code, "account_id": exc.account_id}
+        )
 
 
 @mcp.tool()
@@ -352,11 +628,11 @@ def list_accounts() -> dict:
         reverse=True,
     )
 
-    return {
+    return _with_demo_context({
         "tenant_id": DEFAULT_TENANT,
         "account_count": len(results),
         "accounts": results,
-    }
+    }, suggested_next=["score_account", "get_account_brief", "list_proposals"])
 
 
 @mcp.tool()
@@ -372,9 +648,14 @@ def get_account_brief(account_id: str) -> dict:
     """
     assert _data_plane is not None
     try:
-        return _build_account_brief(account_id, data_plane=_data_plane, as_of=_AS_OF)
+        return _with_demo_context(
+            _build_account_brief(account_id, data_plane=_data_plane, as_of=_AS_OF),
+            suggested_next=["list_proposals", "submit_verdict"],
+        )
     except AccountDataError as exc:
-        return {"error": str(exc), "code": exc.code, "account_id": exc.account_id}
+        return _with_demo_context(
+            {"error": str(exc), "code": exc.code, "account_id": exc.account_id}
+        )
 
 
 @mcp.tool()
@@ -392,11 +673,11 @@ def get_hold_status(account_id: str) -> dict:
     assert _data_plane is not None
     account = _find_account(account_id)
     if account is None:
-        return {
+        return _with_demo_context({
             "error": f"Account {account_id} not found",
             "code": "ACCOUNT_NOT_FOUND",
             "account_id": account_id,
-        }
+        })
 
     expansion_opps = tuple(
         opp for opp in _data_plane.crm.list_opportunities(account.account_id)
@@ -410,7 +691,7 @@ def get_hold_status(account_id: str) -> dict:
         if blockers
         else "not_held"
     )
-    return {
+    return _with_demo_context({
         "account_id": account.account_id,
         "account_name": account.name,
         "action_scope": "customer_facing",
@@ -435,7 +716,7 @@ def get_hold_status(account_id: str) -> dict:
         ],
         "source": "read_only_precedence_projection",
         "claim_boundary": {"sim": True, "live": False},
-    }
+    }, suggested_next=["list_proposals", "get_session_ledger"])
 
 
 @mcp.tool()
@@ -450,15 +731,15 @@ def get_trajectory(account_id: str, window_days: int = 60) -> dict:
     assert _data_plane is not None
     account = _find_account(account_id)
     if account is None:
-        return {
+        return _with_demo_context({
             "error": f"Account {account_id} not found",
             "code": "ACCOUNT_NOT_FOUND",
             "account_id": account_id,
-        }
+        })
 
     store = _fixture_trajectory_store(account.account_id)
     trajectory = store.build_trajectory(account.account_id, window_days=window_days)
-    return {
+    return _with_demo_context({
         "account_id": account.account_id,
         "account_name": account.name,
         "window_days": trajectory.window_days,
@@ -477,7 +758,126 @@ def get_trajectory(account_id: str, window_days: int = 60) -> dict:
             for point in trajectory.points
         ],
         "claim_boundary": {"sim": True, "live": False},
+    }, suggested_next=["get_account_brief", "get_hold_status"])
+
+
+@mcp.tool()
+def get_morning_briefing() -> dict:
+    """Return the demo operator's first screen for the simulated morning."""
+
+    if mcp_readonly_enabled():
+        return _readonly_refusal("get_morning_briefing")
+    if _last_sweep is None:
+        _run_sweep_and_cache(cause_ref="mcp:morning_briefing")
+
+    assert _last_sweep is not None and _data_plane is not None
+    pending = _refresh_pending_proposal_cache()
+    pending_sorted = sorted(
+        pending,
+        key=lambda proposal: (
+            proposal.intent,
+            proposal.action,
+            str(proposal.payload.get("account_name", "")),
+            str(proposal.payload.get("account_id", "")),
+        ),
+    )
+    sweep = _last_sweep.to_dict()
+    work_items = list(sweep.get("work_items", []))
+    stalled_arr_cents = 0
+    for item in work_items:
+        account_id = item.get("account_id")
+        if isinstance(account_id, str):
+            company = _data_plane.cs.get_company(account_id)
+            if company is not None:
+                stalled_arr_cents += int(company.arr_cents)
+
+    held_accounts = [
+        account.account_id
+        for account in _data_plane.crm.list_accounts(tenant_id=DEFAULT_TENANT)
+        if _expansion_blockers(account.account_id)
+        and _data_plane.crm.list_opportunities(account.account_id)
+    ]
+    briefing = {
+        "tenant_id": DEFAULT_TENANT,
+        "as_of": _AS_OF,
+        "headline": {
+            "accounts_need_you_today": len(work_items),
+            "identity_escalations": len(sweep.get("escalations", [])),
+            "drafts_awaiting_verdict": sum(
+                1 for proposal in pending if proposal.action == "draft_customer_outreach"
+            ),
+            "held_customer_facing_expansions": len(held_accounts),
+            "stalled_arr_cents": stalled_arr_cents,
+        },
+        "top_work_items": work_items[:5],
+        "pending_proposals": [
+            {
+                "proposal_id": proposal.proposal_id,
+                "intent": proposal.intent,
+                "action": proposal.action,
+                "account_id": proposal.payload.get("account_id"),
+                "account_name": proposal.payload.get("account_name"),
+                "autonomy_tier": proposal.autonomy_tier,
+            }
+            for proposal in pending_sorted[:5]
+        ],
+        "operator_script": [
+            "Inspect a proposed draft with list_proposals and get_account_brief.",
+            "Use submit_verdict with verdict='revise' for one bounded edit.",
+            "Approve the revised draft to write a simulation receipt.",
+            "Try approving a held or no-consent action to see the refusal.",
+            "End with get_session_ledger.",
+        ],
     }
+    return _with_demo_context(
+        briefing,
+        suggested_next=["list_proposals", "get_account_brief", "submit_verdict"],
+    )
+
+
+@mcp.tool()
+def get_next_steps() -> dict:
+    """Return the operator-demo script and credential boundary."""
+
+    return _with_demo_context({
+        "mode": _access_mode(),
+        "steps": [
+            "Run get_morning_briefing for the current simulated book.",
+            "Use list_proposals to choose a pending draft.",
+            "Use get_account_brief before approving or revising.",
+            "Use submit_verdict with revise plus edit_instruction once.",
+            "Approve the superseding draft and inspect get_session_ledger.",
+        ],
+        "credential_boundary": (
+            "This demo uses simulated data and local no-auth approval only when "
+            f"{_DEMO_OPERATOR_ENV}=1. Live tenants must use mapped API tokens."
+        ),
+        "outbox": str(_DEMO_STATE_DIR / "outbox.jsonl"),
+    }, suggested_next=["get_morning_briefing", "list_proposals"])
+
+
+@mcp.tool()
+def get_session_ledger() -> dict:
+    """Read the current demo-operator session ledger."""
+
+    if mcp_readonly_enabled():
+        return _readonly_refusal("get_session_ledger")
+
+    receipts = []
+    if (_DEMO_STATE_DIR / "commit_audit.jsonl").exists():
+        for line in (_DEMO_STATE_DIR / "commit_audit.jsonl").read_text(
+            encoding="utf-8"
+        ).splitlines():
+            if line.strip():
+                receipts.append(json.loads(line))
+    return _with_demo_context({
+        "tenant_id": DEFAULT_TENANT,
+        "events": list(_session_events),
+        "event_count": len(_session_events),
+        "receipt_count": len(receipts),
+        "receipts": receipts,
+        "not_a_compliance_assessment": True,
+    }, suggested_next=["get_next_steps"])
 
 
 @mcp.tool()
@@ -493,34 +893,11 @@ def run_sweep() -> dict:
     if mcp_readonly_enabled():
         return _readonly_refusal("run_sweep")
 
-    assert _data_plane is not None and _orch_principal is not None
-
-    gate = _gate()
-    sweep = run_time_to_value_sweep(
-        _data_plane,
-        DEFAULT_TENANT,
-        gate,
-        sweep_principal_id=_orch_principal,
-        as_of=_AS_OF,
+    sweep = _run_sweep_and_cache(cause_ref="mcp:run_sweep")
+    return _with_demo_context(
+        sweep.to_dict(),
+        suggested_next=["list_proposals", "get_morning_briefing"],
     )
-
-    # Cache proposals from work items for later verdict submission.
-    for item in sweep.work_items:
-        if item.proposal is not None:
-            _proposals[item.proposal.proposal_id] = ActionProposal(
-                proposal_id=item.proposal.proposal_id,
-                intent="agent1_time_to_value_sweep",
-                action=item.proposal.action_type,
-                payload={},  # payload not carried on ProposalRef
-                payload_sha256="",
-                autonomy_tier=0,
-                required_permission="",
-                status=item.proposal.status,
-            )
-
-    _last_sweep = sweep
-
-    return sweep.to_dict()
 
 
 @mcp.tool()
@@ -531,7 +908,7 @@ def list_proposals() -> dict:
     Run the sweep first if no proposals exist.
     """
     if mcp_readonly_enabled():
-        return {
+        return _with_demo_context({
             "tenant_id": _TENANT_ID,
             "pending_count": 0,
             "proposals": [],
@@ -540,44 +917,12 @@ def list_proposals() -> dict:
                 "here — this is not an error. Restart without "
                 f"{_READONLY_ENV}=1 and call run_sweep to generate real ones."
             ),
-        }
-
-    assert _conn is not None
-
-    # Query the DB for pending proposals in this tenant.
-    with session(
-        _conn,
-        tenant_id=_TENANT_ID,
-        actor_id=_orch_principal or _SEED_AGENT,
-        now=_CLOCK,
-    ) as cur:
-        cur.execute(
-            "SELECT proposal_id, intent, action, payload, payload_sha256, "
-            "       autonomy_tier, required_permission, status "
-            "FROM action_proposal "
-            "WHERE status = 'pending' "
-            "ORDER BY created_ts DESC"
-        )
-        rows = cur.fetchall()
+        })
 
     proposals = []
-    for row in rows:
-        proposal_id = str(row[0])
-        proposal = ActionProposal(
-            proposal_id=proposal_id,
-            intent=row[1],
-            action=row[2],
-            payload=row[3] if isinstance(row[3], dict) else {},
-            payload_sha256=row[4],
-            autonomy_tier=row[5],
-            required_permission=row[6],
-            status=row[7],
-        )
-        # Update the in-memory cache.
-        _proposals[proposal_id] = proposal
-
+    for proposal in _refresh_pending_proposal_cache():
         proposals.append({
-            "proposal_id": proposal_id,
+            "proposal_id": proposal.proposal_id,
             "intent": proposal.intent,
             "action": proposal.action,
             "payload": proposal.payload,
@@ -586,11 +931,11 @@ def list_proposals() -> dict:
             "status": proposal.status,
         })
 
-    return {
+    return _with_demo_context({
         "tenant_id": _TENANT_ID,
         "pending_count": len(proposals),
         "proposals": proposals,
-    }
+    }, suggested_next=["get_account_brief", "submit_verdict"])
 
 
 @mcp.tool()
@@ -599,6 +944,7 @@ def submit_verdict(
     verdict: str,
     reason: str,
     token: str | None = None,
+    edit_instruction: str | None = None,
 ) -> dict:
     """Submit a human verdict on a pending action proposal.
 
@@ -607,9 +953,10 @@ def submit_verdict(
 
     Args:
         proposal_id: The UUID of the proposal to judge.
-        verdict: One of "approve" or "deny".
+        verdict: One of "approve", "deny", or "revise".
         reason: Human-readable rationale for the decision.
         token: API token mapped by ULTRA_CSM_API_TOKENS to the approving human.
+        edit_instruction: Required for verdict="revise"; ignored otherwise.
     """
     if mcp_readonly_enabled():
         return _readonly_refusal("submit_verdict")
@@ -625,52 +972,79 @@ def submit_verdict(
             token=token,
         )
     except AuthError as exc:
-        return {"error": str(exc), "code": exc.code}
+        return _with_demo_context({"error": str(exc), "code": exc.code})
 
-    if verdict not in ("approve", "deny"):
-        return {"error": f"Invalid verdict '{verdict}'. Must be 'approve' or 'deny'."}
+    if verdict not in ("approve", "deny", "revise"):
+        return _with_demo_context({
+            "error": f"Invalid verdict '{verdict}'. Must be approve, deny, or revise.",
+            "code": "INVALID_VERDICT",
+        })
 
-    # Look up the proposal -- first from cache, then from the DB.
-    proposal = _proposals.get(proposal_id)
+    proposal = _lookup_proposal(proposal_id)
     if proposal is None:
-        with session(
-            _conn,
-            tenant_id=_TENANT_ID,
-            actor_id=_orch_principal or _SEED_AGENT,
-            now=_CLOCK,
-        ) as cur:
-            cur.execute(
-                "SELECT proposal_id, intent, action, payload, payload_sha256, "
-                "       autonomy_tier, required_permission, status "
-                "FROM action_proposal WHERE proposal_id = %s",
-                (proposal_id,),
-            )
-            row = cur.fetchone()
-        if row is None:
-            return {"error": f"Proposal {proposal_id} not found"}
-
-        import json as _json
-
-        payload_raw = row[3]
-        payload = (
-            _json.loads(payload_raw) if isinstance(payload_raw, str) else payload_raw
-        )
-        proposal = ActionProposal(
-            proposal_id=str(row[0]),
-            intent=row[1],
-            action=row[2],
-            payload=payload if isinstance(payload, dict) else {},
-            payload_sha256=row[4],
-            autonomy_tier=row[5],
-            required_permission=row[6],
-            status=row[7],
-        )
+        return _with_demo_context({
+            "error": f"Proposal {proposal_id} not found",
+            "code": "PROPOSAL_NOT_FOUND",
+            "proposal_id": proposal_id,
+        })
 
     if proposal.status != "pending":
-        return {
+        return _with_demo_context({
             "error": f"Proposal {proposal_id} is already '{proposal.status}', "
-            f"cannot apply verdict."
-        }
+            f"cannot apply verdict.",
+            "code": "ALREADY_VERDICTED",
+            "proposal_id": proposal_id,
+        })
+
+    if verdict == "revise":
+        assert _data_plane is not None
+        try:
+            result = apply_bounded_revise(
+                _gate(),
+                proposal,
+                data_plane=_data_plane,
+                tenant_id=DEFAULT_TENANT,
+                human_principal_id=auth_principal.principal_id,
+                reason=reason,
+                edit_instruction=edit_instruction,
+                cause_ref=f"mcp:revise:{proposal.proposal_id}",
+            )
+        except ReviseServiceError as exc:
+            return _typed_refusal(
+                code=exc.code,
+                message=exc.message,
+                proposal=proposal,
+                extra=exc.to_dict(),
+            )
+        _proposals.pop(proposal_id, None)
+        _refresh_pending_proposal_cache()
+        response = result.to_dict()
+        response["auth"] = auth_principal.auth
+        _record_session_event("verdict_recorded", {
+            "proposal_id": proposal_id,
+            "verdict": "revise",
+            "superseding_proposal_id": result.superseding_proposal_id,
+        })
+        return _with_demo_context(
+            response,
+            suggested_next=["list_proposals", "submit_verdict", "get_session_ledger"],
+        )
+
+    if verdict == "approve" and not _proposal_has_contact_consent(proposal):
+        return _typed_refusal(
+            code="CONSENT_MISSING",
+            message="Customer-facing outreach is blocked because contact consent is missing",
+            proposal=proposal,
+        )
+
+    blockers = _expansion_approval_blockers(proposal)
+    if verdict == "approve" and blockers:
+        return _typed_refusal(
+            code="PRECEDENCE_HELD",
+            message="Proposal is held by current precedence blockers",
+            proposal=proposal,
+            extra={"blocking_refs": [str(item["blocking_ref"]) for item in blockers]},
+        )
 
     gate = _gate()
     human_verdict = Verdict(
@@ -682,12 +1056,42 @@ def submit_verdict(
     try:
         outcome = gate.record_verdict(proposal, human_verdict)
     except GateError as exc:
-        return {"error": str(exc)}
+        return _typed_refusal(
+            code="GATE_ERROR",
+            message=str(exc),
+            proposal=proposal,
+        )
 
     # Update cache.
     _proposals.pop(proposal_id, None)
+    receipt = None
+    crm_receipt = None
+    if mcp_demo_operator_enabled() and outcome.authorized and proposal.action == "draft_customer_outreach":
+        assert _sim_store is not None
+        receipt = SimOutboundCommitter(gate, state_dir=_DEMO_STATE_DIR).commit(
+            proposal,
+            outcome,
+        )
+        crm_receipt = SimCrmActivityCommitter(gate, _sim_store).commit(
+            proposal,
+            outcome,
+        )
 
-    return {
+    _record_session_event("verdict_recorded", {
+        "proposal_id": outcome.proposal_id,
+        "verdict": outcome.verdict,
+        "status": outcome.status,
+        "authorized": outcome.authorized,
+    })
+    if receipt is not None:
+        _record_session_event("sim_commit_receipt", {
+            "proposal_id": receipt.proposal_id,
+            "receipt_id": receipt.receipt_id,
+            "target": receipt.target,
+            "committed": receipt.committed,
+        })
+
+    result = {
         "proposal_id": outcome.proposal_id,
         "status": outcome.status,
         "authorized": outcome.authorized,
@@ -695,6 +1099,24 @@ def submit_verdict(
         "payload_sha256": outcome.payload_sha256,
         "auth": auth_principal.auth,
     }
+    if receipt is not None:
+        result["receipt"] = {
+            "receipt_id": receipt.receipt_id,
+            "target": receipt.target,
+            "committed": receipt.committed,
+            "dry_run": receipt.dry_run,
+        }
+    if crm_receipt is not None:
+        result["crm_receipt"] = {
+            "receipt_id": crm_receipt.receipt_id,
+            "target": crm_receipt.target,
+            "committed": crm_receipt.committed,
+            "dry_run": crm_receipt.dry_run,
+        }
+    return _with_demo_context(
+        result,
+        suggested_next=["get_session_ledger", "list_proposals"],
+    )
 
 
 def _find_account(account_id: str):
