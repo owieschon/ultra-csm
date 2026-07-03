@@ -61,6 +61,27 @@ uses over a simulated 35-account book; write tools return a typed refusal enforc
 the server process, not left to the model's judgment. `docs/TOUR.md` has more prompts
 and a ten-minute walk through the rest of the system.
 
+## Bring your own book through an MCP host
+
+The relay path is for hosts that already have the user's tools connected. Ultra CSM
+does not introspect those tools or own their credentials; the host declares what it can
+relay, then passes raw records into the deterministic mapping and scoring boundary.
+
+1. `report_readiness(["crm", "email", "telemetry"])` returns a checklist: CRM is the
+   minimum viable book, email enables host-placed drafts, and telemetry fills usage
+   rails. With no sources, it routes back to the sim morning.
+2. `ingest_book(records, source_descriptor, expected_count)` accumulates chunks,
+   requires a loud expected count, records the raw inputs in the MCP session, and
+   returns sparsity-evidenced mapping questions.
+3. `confirm_book_mappings(confirmations)` accepts `mapped` or `not_mappable`, freezes
+   the map, transforms the book, runs the existing value-model read path, and returns
+   coverage plus a briefing.
+
+Relay responses carry `provenance: mcp_relay`, `unverified_mapping: true`, `sim:
+false`, and `live: false`. Drafts are propose-only data for the host to place in the
+user's own tools; Ultra CSM does not send email or write external systems from relay
+books.
+
 ## Full quickstart (tests, scorecard, connectors)
 
 **Prerequisites:** Python 3.10+ and PostgreSQL 16 client tooling (`initdb`, `pg_ctl`) on `PATH`

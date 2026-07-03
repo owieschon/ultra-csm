@@ -129,6 +129,87 @@ def test_external_book_mapping_requires_confirmation_for_relayed_fields():
         freeze_confirmed_source_map(proposal)
 
 
+def test_external_book_mapping_surfaces_competing_candidate_coverage():
+    records = [
+        {
+            "id": f"acct-{index:03d}",
+            "title": f"Customer {index:03d}",
+            "variant": f"Variant {index:03d}" if index < 2 else "",
+        }
+        for index in range(8)
+    ]
+
+    _, proposal, _ = propose_external_source_mapping(
+        records,
+        ExternalSourceDescriptor(source_name="unit"),
+    )
+
+    entry = {item.key: item for item in proposal.entries}["CRMAccount.name"]
+    candidates = {candidate.source_path: candidate for candidate in entry.candidate_evidence}
+    assert entry.source_path == "title"
+    assert candidates["title"].rows_present == 8
+    assert candidates["title"].rows_nonempty == 8
+    assert candidates["title"].rows_sampled == 8
+    assert candidates["variant"].rows_present == 8
+    assert candidates["variant"].rows_nonempty == 2
+
+
+def test_external_book_freeze_records_not_mappable_confirmation_as_unknown():
+    descriptor = ExternalSourceDescriptor(source_name="unit")
+    _, proposal, _ = propose_external_source_mapping(_book_records(), descriptor)
+    confirmations = {
+        entry.key: _confirmation_for(entry)
+        for entry in proposal.entries
+        if entry.state == "ambiguous_confirm"
+    }
+    confirmations["CRMOpportunity.opportunity_type"] = MappingConfirmation(
+        contract="CRMOpportunity",
+        internal_field="opportunity_type",
+        verdict="not_mappable",
+    )
+
+    frozen = freeze_confirmed_source_map(proposal, confirmations=confirmations)
+
+    assert "CRMOpportunity.opportunity_type" in frozen.unknown_fields
+    assert "CRMOpportunity.opportunity_type" not in {
+        mapping.key for mapping in frozen.mappings
+    }
+    reloaded = json.loads(json.dumps(frozen.to_dict(), sort_keys=True))
+    assert "CRMOpportunity.opportunity_type" in reloaded["unknown_fields"]
+
+
+def test_external_book_extracts_nested_contacts_with_parent_account_id():
+    records = [
+        {
+            "id": "acct-nested",
+            "name": "Nested Account",
+            "contacts": [
+                {
+                    "id": "contact-nested",
+                    "name": "Nested Contact",
+                    "email": "nested@example.test",
+                    "consent_to_contact": True,
+                }
+            ],
+        }
+    ]
+    descriptor = ExternalSourceDescriptor(source_name="unit")
+    _, proposal, unrepresentable = propose_external_source_mapping(records, descriptor)
+    frozen = _confirm_all(proposal)
+
+    result = ingest_external_book(records, descriptor, frozen_map=frozen)
+
+    assert unrepresentable == ()
+    assert result.coverage.records_typed["CRMAccount"] == 1
+    assert result.coverage.records_typed["CRMContact"] == 1
+    assert result.data.contacts[0].account_id == "acct-nested"
+    assert result.data.contacts[0].contact_id == "contact-nested"
+    contact_id_entry = {
+        entry.key: entry for entry in proposal.entries
+    }["CRMContact.contact_id"]
+    assert contact_id_entry.source_path == "contacts[].id"
+
+
 def test_external_book_ingest_transforms_confirmed_map_without_echoing_raw_values():
     descriptor = ExternalSourceDescriptor(source_name="unit", expected_count=3)
     _, proposal, _ = propose_external_source_mapping(_book_records(), descriptor)

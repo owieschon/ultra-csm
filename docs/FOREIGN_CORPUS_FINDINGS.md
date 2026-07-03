@@ -85,6 +85,40 @@ Two conclusions, both decisive for the product design:
   confirmation to freeze. Confirmations need an explicit "not mappable / unknown"
   verdict.
 
+## Phase 1 Hardening Re-probe
+
+After adding sparsity evidence, explicit `not_mappable` confirmations, cross-book
+sampling, and child-record extraction, a fresh bounded re-probe produced the
+following aggregate results. Runtime artifacts remain outside the repository in
+the two run directories named by the probe summaries.
+
+| Measurement | Result |
+| --- | --- |
+| Rows fetched | 200 |
+| Source-reported rows | 11,160 |
+| Pages fetched | 2 |
+| Silent guesses | 0 |
+| Fields requiring confirmation | 13 |
+| Fields degraded to unknown before confirmation | 4 |
+| Top display-label candidate coverage | 200/200 non-empty |
+| Next lower display-label alternatives | 6/200 and 1/200 non-empty |
+| Confirmed CRMAccount records | 200/200 |
+| Confirmed CRMContact records | 200/200 |
+| Confirmed CRMOpportunity records | 200/200 |
+| Contact join coverage | 200/200 |
+| Unrepresentable shape paths | 8 |
+| Injection markers observed in sample | 0 |
+
+The generated confirmation template selected the full-coverage display-label
+candidate without hand editing. The competing sparse alternatives remain visible
+in the proposal evidence, which is the intended operator-review behavior: a human
+can see why the full-coverage candidate is the obvious mapping before freeze.
+
+Child records were extracted where the existing CRMContact contract could
+represent them and the parent account identity could safely supply the join. The
+remaining unrepresentable paths stayed declared as shape limits rather than being
+guessed into new contracts.
+
 ## Structural Findings
 
 - (Superseded by the review verification above.) The initial pass read as

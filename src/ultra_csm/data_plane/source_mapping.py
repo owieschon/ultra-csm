@@ -27,6 +27,7 @@ from ultra_csm.data_plane.source_maps import (
 
 
 MappingState = Literal["mapped", "ambiguous_confirm", "missing_to_unknown"]
+MappingVerdict = Literal["mapped", "not_mappable"]
 ValueDirection = Literal[
     "not_applicable",
     "higher_is_better",
@@ -41,6 +42,19 @@ _VALUE_DIRECTIONS = {
     "ordered_confirm",
     "direction_confirm",
 }
+
+
+@dataclass(frozen=True)
+class MappingCandidateEvidence:
+    source_object: str
+    source_field: str
+    source_path: str
+    rows_present: int
+    rows_nonempty: int
+    rows_sampled: int
+    field_type: str
+    confidence: float
+    reason: str
 
 
 @dataclass(frozen=True)
@@ -59,6 +73,7 @@ class ProposedFieldMapping:
     reason: str
     pii: str
     llm_allowed: bool
+    candidate_evidence: tuple[MappingCandidateEvidence, ...] = ()
 
     @property
     def key(self) -> str:
@@ -92,11 +107,12 @@ class SourceMapProposal:
 class MappingConfirmation:
     contract: str
     internal_field: str
-    source_object: str
-    source_field: str
-    source_path: str
-    semantic_role: str
+    source_object: str | None = None
+    source_field: str | None = None
+    source_path: str | None = None
+    semantic_role: str | None = None
     value_direction: ValueDirection = "not_applicable"
+    verdict: MappingVerdict = "mapped"
 
 
 @dataclass(frozen=True)
@@ -173,6 +189,9 @@ def freeze_confirmed_source_map(
         confirmation = confirmations.get(entry.key)
         if confirmation is None:
             raise ValueError(f"{entry.key} requires human confirmation")
+        if confirmation.verdict == "not_mappable":
+            unknown.append(entry.key)
+            continue
         frozen.append(_confirmed(entry, confirmation))
 
     config_hash = _frozen_config_hash(proposal.proposal_hash, frozen, unknown)
@@ -430,6 +449,19 @@ def _entry(
         reason=reason,
         pii=source.pii,
         llm_allowed=source.llm_allowed,
+        candidate_evidence=(
+            (
+                _candidate_from_field(
+                    source_object,
+                    source_field,
+                    source_path,
+                    confidence,
+                    reason,
+                ),
+            )
+            if source_object and source_field and source_path
+            else ()
+        ),
     )
 
 
@@ -437,6 +469,12 @@ def _confirmed(
     entry: ProposedFieldMapping,
     confirmation: MappingConfirmation,
 ) -> ProposedFieldMapping:
+    if (
+        not confirmation.source_object
+        or not confirmation.source_field
+        or not confirmation.source_path
+    ):
+        raise ValueError(f"{entry.key} mapped confirmation requires source coordinates")
     value_direction = _confirmed_value_direction(entry, confirmation)
     return ProposedFieldMapping(
         connector_id=entry.connector_id,
@@ -446,13 +484,14 @@ def _confirmed(
         source_field=confirmation.source_field,
         source_path=confirmation.source_path,
         state="mapped",
-        semantic_role=confirmation.semantic_role,
+        semantic_role=confirmation.semantic_role or entry.semantic_role,
         value_direction=value_direction,
         requires_human_confirmation=False,
         confidence=1.0,
         reason="human-confirmed mapping frozen into deterministic config",
         pii=entry.pii,
         llm_allowed=entry.llm_allowed,
+        candidate_evidence=entry.candidate_evidence,
     )
 
 
@@ -628,6 +667,9 @@ def _proposal_from_payload(payload: Mapping[str, Any]) -> SourceMapProposal:
 def _field_mapping_from_payload(payload: object) -> ProposedFieldMapping:
     if not isinstance(payload, dict):
         raise ValueError("source-map mapping entries must be JSON objects")
+    candidates = payload.get("candidate_evidence", ())
+    if not isinstance(candidates, list | tuple):
+        raise ValueError("source-map candidate_evidence must be a list")
     return ProposedFieldMapping(
         connector_id=_required_str(payload, "connector_id"),  # type: ignore[arg-type]
         contract=_required_str(payload, "contract"),
@@ -643,21 +685,76 @@ def _field_mapping_from_payload(payload: object) -> ProposedFieldMapping:
         reason=_required_str(payload, "reason"),
         pii=_required_str(payload, "pii"),  # type: ignore[arg-type]
         llm_allowed=bool(payload.get("llm_allowed")),
+        candidate_evidence=tuple(_candidate_from_payload(item) for item in candidates),
     )
 
 
 def _confirmation_from_payload(payload: object) -> MappingConfirmation:
     if not isinstance(payload, dict):
         raise ValueError("mapping confirmations must be JSON objects")
+    verdict = _mapping_verdict_from_payload(payload)
+    source_object = _optional_str(payload, "source_object")
+    source_field = _optional_str(payload, "source_field")
+    source_path = _optional_str(payload, "source_path")
+    semantic_role = _optional_str(payload, "semantic_role")
+    if verdict == "mapped":
+        source_object = source_object or _required_str(payload, "source_object")
+        source_field = source_field or _required_str(payload, "source_field")
+        source_path = source_path or _required_str(payload, "source_path")
+        semantic_role = semantic_role or _required_str(payload, "semantic_role")
     return MappingConfirmation(
         contract=_required_str(payload, "contract"),
         internal_field=_required_str(payload, "internal_field"),
+        source_object=source_object,
+        source_field=source_field,
+        source_path=source_path,
+        semantic_role=semantic_role,
+        value_direction=_value_direction_from_payload(payload, default="not_applicable"),
+        verdict=verdict,
+    )
+
+
+def _candidate_from_payload(payload: object) -> MappingCandidateEvidence:
+    if not isinstance(payload, dict):
+        raise ValueError("source-map candidate evidence entries must be JSON objects")
+    return MappingCandidateEvidence(
         source_object=_required_str(payload, "source_object"),
         source_field=_required_str(payload, "source_field"),
         source_path=_required_str(payload, "source_path"),
-        semantic_role=_required_str(payload, "semantic_role"),
-        value_direction=_value_direction_from_payload(payload, default="not_applicable"),
+        rows_present=int(payload.get("rows_present", 0)),
+        rows_nonempty=int(payload.get("rows_nonempty", 0)),
+        rows_sampled=int(payload.get("rows_sampled", 0)),
+        field_type=_required_str(payload, "field_type"),
+        confidence=float(payload.get("confidence", 0.0)),
+        reason=_required_str(payload, "reason"),
     )
+
+
+def _candidate_from_field(
+    source_object: str,
+    source_field: str,
+    source_path: str,
+    confidence: float,
+    reason: str,
+) -> MappingCandidateEvidence:
+    return MappingCandidateEvidence(
+        source_object=source_object,
+        source_field=source_field,
+        source_path=source_path,
+        rows_present=0,
+        rows_nonempty=0,
+        rows_sampled=0,
+        field_type="unknown",
+        confidence=confidence,
+        reason=reason,
+    )
+
+
+def _mapping_verdict_from_payload(payload: Mapping[str, Any]) -> MappingVerdict:
+    value = payload.get("verdict", "mapped")
+    if value not in {"mapped", "not_mappable"}:
+        raise ValueError("mapping confirmation verdict must be mapped or not_mappable")
+    return value  # type: ignore[return-value]
 
 
 def _value_direction_from_payload(

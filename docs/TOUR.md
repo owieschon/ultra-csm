@@ -88,7 +88,23 @@ revise, approval with a simulated receipt, then two refusals (no-consent outreac
 and held expansion). The outbox is local simulation state only; the point is to
 show the control loop, not live delivery.
 
-## 6. The audit question
+## 6. Bring your own book
+
+```sh
+make mcp-relay-demo-csm
+```
+
+Open `eval/mcp_relay_transcript.json`. The transcript uses a fresh synthetic
+foreign-shaped book and walks the relay flow: host-declared readiness,
+expected-count ingest, sparsity-evidenced confirmation questions, freeze/transform,
+and replay-deterministic coverage. CRM-only data gets partial credit, while missing
+telemetry and CS-platform rails remain explicit unknowns.
+
+Relay tools are labeled `provenance: mcp_relay` and `unverified_mapping: true`.
+Returned drafts are propose-only content for the host to place in the user's own
+tools; Ultra CSM performs no live sends and writes no relay receipts.
+
+## 7. The audit question
 
 ```sh
 make oversight-report
