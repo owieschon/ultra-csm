@@ -111,3 +111,33 @@ fabrication and correct honest degradation everywhere else. Does not prove:
 multi-table relay with real cross-object joins (Contact→Account,
 Opportunity→Account) — that specific capability does not exist yet, this run
 is the evidence that surfaced the gap, not a workaround of it.
+
+## Addendum (same day): the gap above is closed, live
+
+The "does not prove" paragraph above is now stale, deliberately left in place
+as the record of what forced the relational build. The multi-table capability
+was built (relational engine, metadata-first foreign keys, provenance-tiered
+auto-mapping) and then exposed conversationally over MCP as
+`ingest_table`/`confirm_book`. A live re-run against the same org, through
+the MCP surface a real host would use:
+
+- Fresh bounded reads (explicit field lists) returned record-for-record
+  identical data to this morning's one-shot — zero org drift, still zero
+  writes ever issued.
+- The org's own describe supplied the foreign-key facts
+  (`Contact.AccountId` and `Opportunity.AccountId` are declared references to
+  Account); the host passed them as `field_metadata`, so both child joins
+  auto-mapped as source-declared facts rather than shape guesses.
+- Exactly five questions reached the human: four identity picks
+  (account, owner, contact, opportunity) and one value direction
+  (stage ordering). Every other field auto-mapped with provenance stated or
+  was declared not_mappable by contract intent — nothing silent.
+- Result: 13 accounts, 20/20 contacts joined, 31/31 opportunities joined,
+  foreign-key ratios 1.0, zero fabricated parents, zero injection markers,
+  `claim_boundary` intact (`mcp_relay`, `unverified_mapping: true`), and a
+  deterministic `replay_sha256` across repeat confirms.
+
+Run artifacts (out of repo, aggregates here only): the relational-onboarding
+run directory alongside the one-shot's. This is the first end-to-end proof of
+the product-surface claim: a normalized CRM onboards in one conversation with
+five human answers.
