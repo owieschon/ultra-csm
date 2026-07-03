@@ -111,3 +111,17 @@ make mcp-readonly-demo-csm
 
 The transcript is written to `demo_state/mcp_readonly_transcript.json` and maps each demo
 answer to the tool calls that grounded it.
+
+## Oversight evidence pack
+
+Render the oversight ledgers (verdicts, receipts, suppressions, breaker events,
+quality state, autonomy provenance) into one evidence artifact:
+
+```sh
+make oversight-report
+```
+
+Outputs `demo_state/oversight_report.json` and `demo_state/oversight_report.md`.
+Every claim carries its ledger row refs; evidence classes with no persisted
+source are listed under "Not instrumented" instead of being implied. It is an
+evidence record, not a compliance assessment.

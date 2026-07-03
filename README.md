@@ -75,10 +75,11 @@ A non-deterministic instrument must never own a deterministic gate. That boundar
 | Area | Status |
 |---|---|
 | Deterministic spine | **Proven** — scorecard hard gates green on real Postgres |
-| LLM quality judge | **Partially validated by dimension**, not globally validated. The definitive single-labeler pass is applied; `priority_fidelity` is deterministic, and frozen-v3 judge agreement clears several dimensions by point estimate. `account_specificity` and hard-layer `on_task_relevance` remain open |
+| LLM quality judge | **Validated** under N-run modal aggregation (single-labeler gold, prompt v7): clean layer all six dimensions κ ≥ 0.6 with zero gate errors; adversarial hard layer clears all six aggregated with zero false negatives. `priority_fidelity` and `account_specificity` are deterministic. The claim is derived from versioned evidence artifacts (`eval/judge_validation.py`), never hand-set; a second independent labeler remains open |
 | Connectors (Salesforce/Gainsight/Rocketlane/Attio) | **Built to the credential boundary**, fixture-tested; not yet run against a live tenant |
 | Data | Curated **fixtures**, not production customer data |
 | Outcome rail, Risk & Expansion lenses | Outcome rail partially instrumented; deterministic Risk and Expansion lenses are built, with draft-quality claims gated on judge validation |
+| Oversight evidence | **Rendered from ledgers** — `make oversight-report` writes `demo_state/oversight_report.{json,md}`: verdicts, payload-hash-bound receipts, suppressions, breaker events, quality state, and autonomy provenance, with an explicit "not instrumented" section. An evidence record, not a compliance certification |
 
 Nothing here claims production retention or expansion lift. It demonstrates judgment,
 architecture, and measurement discipline — `docs/DECISION_LOG.md` records what is and is not claimed.

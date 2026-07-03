@@ -73,7 +73,8 @@ this is a method lead, not a patent.
 
 Human-oversight obligations for high-risk AI under the EU AI Act (Article 14) take
 effect **August 2026**, requiring documented, defensible oversight records. The gate
-ledger and verdict stream here already *are* that evidence class — oversight as a native
+ledger and verdict stream here already *are* that evidence class (rendered into a single
+artifact by `make oversight-report`) — oversight as a native
 property rather than a retrofit. Separately: now that every incumbent claims
 propose-and-approve agents, the buyer's next question is *prove it* — and this is the
 architecture built to answer that question with a test suite rather than a slide.
