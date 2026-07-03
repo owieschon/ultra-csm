@@ -112,12 +112,30 @@ def _readonly_refusal(tool_name: str) -> dict[str, str]:
 
 
 def _boot() -> None:
-    """Boot the ephemeral Postgres, run migrations, seed governance, and build
-    the fixture data plane.  Called once at import time."""
+    """Boot the fixture data plane and, unless read-only, the ephemeral
+    Postgres governance store. Called once at import time.
+
+    Read-only mode never runs a sweep or accepts a verdict, so it never
+    writes to the governance database — the only read-only tool that would
+    otherwise query it (list_proposals) always sees zero rows, since nothing
+    but run_sweep populates action_proposal. Booting Postgres for that path
+    bought nothing but startup latency and an external-tool dependency, so
+    read-only mode skips it entirely: no initdb/pg_ctl subprocess, no
+    Postgres 16 install required at all to talk to the account book.
+    """
 
     global _cluster, _conn, _data_plane, _orch_principal
 
     setup_logging("INFO")
+
+    if mcp_readonly_enabled():
+        _data_plane = build_sweep_fixture_data_plane(tenant_id=DEFAULT_TENANT)
+        log.info(
+            "Ultra CSM MCP server ready (read-only, no database)",
+            extra={"tenant_id": _TENANT_ID, "auth": "read-only-no-db"},
+        )
+        return
+
     log.info("Booting ephemeral Postgres cluster")
     if demo_noauth_enabled():
         log.warning(
@@ -512,6 +530,18 @@ def list_proposals() -> dict:
     Returns proposals that are awaiting a human verdict (approve or deny).
     Run the sweep first if no proposals exist.
     """
+    if mcp_readonly_enabled():
+        return {
+            "tenant_id": _TENANT_ID,
+            "pending_count": 0,
+            "proposals": [],
+            "note": (
+                "read-only mode never runs a sweep, so no proposals ever exist "
+                "here — this is not an error. Restart without "
+                f"{_READONLY_ENV}=1 and call run_sweep to generate real ones."
+            ),
+        }
+
     assert _conn is not None
 
     # Query the DB for pending proposals in this tenant.

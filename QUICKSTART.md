@@ -103,6 +103,10 @@ PYTHONPATH=src:. .venv/bin/python -m pytest tests/test_connector_explorer.py -q
 
 Use MCP as a conversational shell over read-only tools. Multi-turn memory and wording live
 in the host; this process only exposes deterministic reads when read-only mode is enabled.
+Read-only mode never boots Postgres — no database, no `initdb`/`pg_ctl`, no `make setup`
+even: `python3 -m venv .venv && .venv/bin/pip install -e ".[mcp]"` is enough (list_proposals
+is the only read-only tool that would otherwise touch the DB, and it always sees zero rows
+in read-only mode since nothing but run_sweep — disabled here — ever writes a proposal).
 
 The one-command path — register it with Claude Code from the repo root and start asking
 questions ("Which accounts are most at risk and why?", "What's holding the Sagebrush
