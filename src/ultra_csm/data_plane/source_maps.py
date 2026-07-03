@@ -259,6 +259,68 @@ PRODUCT_TELEMETRY_SOURCE_MAPS: dict[str, SourceObjectMap] = {
 }
 
 
+ROCKETLANE_SOURCE_MAPS: dict[str, SourceObjectMap] = {
+    "OnboardingProject": SourceObjectMap(
+        vendor="Rocketlane",
+        object_name="Project",
+        docs_url="https://developer.rocketlane.com/reference/get-project",
+        fields={
+            "project_id": SourceField("projectId", True),
+            "account_id": SourceField(
+                "customer.companyId", True, "JOIN to CRM/CS account; see spec's open gap"
+            ),
+            "name": SourceField("projectName", True),
+            "status_value": SourceField("status.value", True),
+            "status_label": SourceField("status.label", True),
+            "owner_id": SourceField("owner.userId", True, "project owner / CSM"),
+            "progress": SourceField(
+                "inferredProgress", True, "ON_TRACK|AHEAD_OF_TIME|RUNNING_LATE|NONE"
+            ),
+            "start_date": SourceField("startDate", True),
+            "start_date_actual": SourceField("startDateActual", True),
+            "due_date": SourceField("dueDate", True),
+            "due_date_actual": SourceField("dueDateActual", True),
+            "arr_cents": SourceField(
+                "annualizedRecurringRevenue", True, "stored internally as cents"
+            ),
+        },
+    ),
+    "OnboardingTask": SourceObjectMap(
+        vendor="Rocketlane",
+        object_name="Task",
+        docs_url="https://developer.rocketlane.com/reference/tasks",
+        fields={
+            "task_id": SourceField("taskId", True),
+            "project_id": SourceField("project", True, "task.project object"),
+            "phase_id": SourceField("phase", True, "task.phase object"),
+            "name": SourceField("taskName", True),
+            "status_label": SourceField("status.label", True),
+            "start_date": SourceField("startDate", True),
+            "due_date": SourceField("dueDate", True),
+            "due_date_actual": SourceField("dueDateActual", True, "set when completed"),
+            "at_risk": SourceField("atRisk", True),
+            "assignee_ids": SourceField("assignees", True),
+        },
+    ),
+    "OnboardingPhase": SourceObjectMap(
+        vendor="Rocketlane",
+        object_name="Phase",
+        docs_url="https://developer.rocketlane.com/reference/get-phase",
+        fields={
+            "phase_id": SourceField("phaseId", True),
+            "project_id": SourceField("project.projectId", True),
+            "name": SourceField("phaseName", True),
+            "start_date": SourceField("startDate", True),
+            "start_date_actual": SourceField("startDateActual", True),
+            "due_date": SourceField("dueDate", True),
+            "due_date_actual": SourceField("dueDateActual", True),
+            "status_label": SourceField("status.label", True),
+            "private": SourceField("private", True),
+        },
+    ),
+}
+
+
 EXTERNAL_BOOK_SOURCE_MAPS: dict[str, SourceObjectMap] = {
     "CRMAccount": SourceObjectMap(
         vendor="External book",
@@ -309,4 +371,5 @@ ALL_SOURCE_MAPS: dict[str, SourceObjectMap] = {
     **SALESFORCE_SOURCE_MAPS,
     **GAINSIGHT_SOURCE_MAPS,
     **PRODUCT_TELEMETRY_SOURCE_MAPS,
+    **ROCKETLANE_SOURCE_MAPS,
 }

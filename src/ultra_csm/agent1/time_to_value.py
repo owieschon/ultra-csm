@@ -90,17 +90,23 @@ class TimeToValueAccelerator:
         entitlements = tuple(self._data_plane.telemetry.list_entitlements(account_id))
         usage_signals = tuple(self._data_plane.telemetry.list_usage_signals(account_id))
         milestones = tuple(self._data_plane.telemetry.list_ttv_milestones(account_id))
+        onboarding_milestones = _onboarding_milestones(self._data_plane, account_id)
+        all_milestones = milestones + tuple(
+            m for m in onboarding_milestones if m not in milestones
+        )
         gaps = tuple(
-            m for m in milestones
+            m for m in all_milestones
             if m.achieved_at is None and iso_date(m.expected_by) <= iso_date(as_of)
         )
-        signal_ids = {s.signal_id for s in usage_signals}
+        grounded_ids = {s.signal_id for s in usage_signals} | _onboarding_evidence_ids(
+            self._data_plane, account_id
+        )
         evidence_signal_ids = tuple(
             sorted({
                 signal_id
                 for milestone in gaps
                 for signal_id in milestone.evidence_signal_ids
-                if signal_id in signal_ids
+                if signal_id in grounded_ids
             })
         )
 
@@ -224,6 +230,47 @@ class TimeToValueAccelerator:
             as_of=as_of,
             contact_email=email,
         )
+
+
+def _onboarding_milestones(
+    data_plane: CustomerDataPlane,
+    account_id: str,
+) -> tuple[TimeToValueMilestone, ...]:
+    """Rocketlane-derived milestones, when an onboarding source is mapped.
+
+    Absence of an onboarding connector (``data_plane.onboarding is None``) is
+    the honest degraded state, not an error: this returns empty rather than
+    fabricating milestones. Fail-closed on a connector error too, for the
+    same reason (never let a live outage synthesize evidence).
+    """
+
+    if data_plane.onboarding is None:
+        return ()
+    try:
+        return tuple(data_plane.onboarding.derive_ttv_milestones(account_id))
+    except Exception:
+        return ()
+
+
+def _onboarding_evidence_ids(
+    data_plane: CustomerDataPlane,
+    account_id: str,
+) -> set[str]:
+    """Rocketlane phase/task ids groundable as evidence for this account."""
+
+    if data_plane.onboarding is None:
+        return set()
+    try:
+        projects = data_plane.onboarding.list_projects_for_account(account_id)
+        ids: set[str] = set()
+        for project in projects:
+            phases = data_plane.onboarding.list_phases(project.project_id)
+            ids.update(phase.phase_id for phase in phases)
+            tasks = data_plane.onboarding.list_tasks(project.project_id)
+            ids.update(task.task_id for task in tasks)
+        return ids
+    except Exception:
+        return set()
 
 
 def _select_contact(
