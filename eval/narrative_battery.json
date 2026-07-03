@@ -1,0 +1,292 @@
+{
+  "artifact": "narrative_property_battery",
+  "cases": [
+    {
+      "account": "pinehill-transport",
+      "case": "onboarding-stall",
+      "detail": {
+        "after": {
+          "gaps": {
+            "Kickoff": false,
+            "Legacy Dispatch Integration": false
+          },
+          "latency": 10.0,
+          "tickets": 0.0
+        },
+        "before": {
+          "gaps": {
+            "Kickoff": false,
+            "Legacy Dispatch Integration": false
+          },
+          "latency": null,
+          "tickets": 1.0
+        },
+        "during": {
+          "gaps": {
+            "Kickoff": true,
+            "Legacy Dispatch Integration": true
+          },
+          "latency": 32.0,
+          "tickets": 2.0
+        }
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "account": "pinnacle-supply",
+      "case": "single-threaded-risk",
+      "detail": {
+        "day10": {
+          "strengths": {
+            "7d31c110-b419-56eb-afa1-8496bf066887": "weak"
+          },
+          "width": 1.0
+        },
+        "day120": {
+          "strengths": {
+            "7d31c110-b419-56eb-afa1-8496bf066887": "weak",
+            "fec5c2f0-ae14-5630-8412-bfa1e791b0d4": "weak"
+          },
+          "width": 2.0
+        },
+        "day250": {
+          "strengths": {
+            "7d31c110-b419-56eb-afa1-8496bf066887": "weak",
+            "fec5c2f0-ae14-5630-8412-bfa1e791b0d4": "strong"
+          },
+          "width": 2.0
+        }
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "account": "quarrystone-logistics",
+      "case": "churn-brewing",
+      "detail": {
+        "day190": {
+          "cadence": null,
+          "tickets": 1.0,
+          "width": 1.0
+        },
+        "day225": {
+          "cadence": null,
+          "tickets": 1.0,
+          "width": 1.0
+        },
+        "day30": {
+          "cadence": null,
+          "tickets": 1.0,
+          "width": 1.0
+        }
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "account": "aspenridge-supply",
+      "case": "silent-decline",
+      "detail": {
+        "adoption_decline": {
+          "day340": 0.78,
+          "day90": 0.89
+        },
+        "day200": {
+          "adoption_rate": 0.83,
+          "band": "green",
+          "tickets": 0.0
+        },
+        "day340": {
+          "adoption_rate": 0.78,
+          "band": "green",
+          "tickets": 0.0
+        },
+        "day90": {
+          "adoption_rate": 0.89,
+          "band": "green",
+          "tickets": 0.0
+        }
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "account": "meridian-fleet",
+      "case": "expansion-ready",
+      "detail": {
+        "day170": {
+          "cadence": -2.5,
+          "width": 2.0
+        },
+        "day20": {
+          "cadence": null,
+          "width": 2.0
+        },
+        "day280": {
+          "cadence": 0.0,
+          "width": 2.0
+        }
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "account": "trailhead-logistics",
+      "case": "healthy-control",
+      "detail": {
+        "day180": {
+          "cadence": 0.0,
+          "latency": 0.5,
+          "tickets": 1.0
+        },
+        "day300": {
+          "cadence": 0.0,
+          "latency": null,
+          "tickets": 0.0
+        },
+        "day60": {
+          "cadence": 0.0,
+          "latency": null,
+          "tickets": 1.0
+        }
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "red-herrings",
+      "detail": {
+        "cedar-valley": {
+          "all_resolved": true,
+          "band": "green",
+          "case_count": 1
+        },
+        "ironridge-fleet": {
+          "all_resolved": true,
+          "band": "green",
+          "case_count": 1
+        }
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "boring-controls",
+      "detail": {
+        "bison-transport": {
+          "case_count": 1,
+          "contaminated": []
+        },
+        "blueridge-transport": {
+          "case_count": 0,
+          "contaminated": []
+        },
+        "cascade-field": {
+          "case_count": 1,
+          "contaminated": []
+        },
+        "clearwater-field-ops": {
+          "case_count": 1,
+          "contaminated": []
+        },
+        "copperfield-warehousing": {
+          "case_count": 1,
+          "contaminated": []
+        },
+        "crestline-distribution": {
+          "case_count": 0,
+          "contaminated": []
+        },
+        "cypress-field": {
+          "case_count": 4,
+          "contaminated": []
+        },
+        "driftwood-warehousing": {
+          "case_count": 0,
+          "contaminated": []
+        },
+        "dustbowl-freight": {
+          "case_count": 0,
+          "contaminated": []
+        },
+        "falcon-delivery": {
+          "case_count": 0,
+          "contaminated": []
+        },
+        "granite-peak": {
+          "case_count": 0,
+          "contaminated": []
+        },
+        "harborview-fleet": {
+          "case_count": 2,
+          "contaminated": []
+        },
+        "hawkstone-industries": {
+          "case_count": 3,
+          "contaminated": []
+        },
+        "ironhorse-freight": {
+          "case_count": 2,
+          "contaminated": []
+        },
+        "mesa-industrial": {
+          "case_count": 1,
+          "contaminated": []
+        },
+        "northstar-couriers": {
+          "case_count": 0,
+          "contaminated": []
+        },
+        "oakmont-logistics": {
+          "case_count": 0,
+          "contaminated": []
+        },
+        "prairie-wind": {
+          "case_count": 1,
+          "contaminated": []
+        },
+        "redwood-fleet": {
+          "case_count": 0,
+          "contaminated": []
+        },
+        "ridgeline-warehousing": {
+          "case_count": 0,
+          "contaminated": []
+        },
+        "riverstone-logistics": {
+          "case_count": 0,
+          "contaminated": []
+        },
+        "sagebrush-transport": {
+          "case_count": 2,
+          "contaminated": []
+        },
+        "stonebridge-fleet": {
+          "case_count": 1,
+          "contaminated": []
+        },
+        "summit-industrial": {
+          "case_count": 0,
+          "contaminated": []
+        },
+        "timberline-logistics": {
+          "case_count": 0,
+          "contaminated": []
+        },
+        "westfield-industrial": {
+          "case_count": 0,
+          "contaminated": []
+        },
+        "windmill-transport": {
+          "case_count": 0,
+          "contaminated": []
+        }
+      },
+      "ok": true,
+      "problems": []
+    }
+  ],
+  "failed_cases": [],
+  "hard_ok": true
+}
