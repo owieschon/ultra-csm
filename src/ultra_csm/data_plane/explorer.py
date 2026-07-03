@@ -29,6 +29,9 @@ class DiscoveredField:
     required: bool
     custom: bool
     source_path: str
+    rows_present: int = 0
+    rows_nonempty: int = 0
+    rows_sampled: int = 0
 
 
 @dataclass(frozen=True)
