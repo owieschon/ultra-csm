@@ -31,6 +31,7 @@ class RelayCase:
     records: tuple[dict[str, Any], ...]
     descriptor: ExternalSourceDescriptor
     use_frozen_map: bool = True
+    not_mappable_keys: tuple[str, ...] = ()
 
 
 def build_relay_battery_artifact(
@@ -76,7 +77,11 @@ def _run_case(case: RelayCase) -> dict[str, Any]:
         list(case.records),
         case.descriptor,
     )
-    frozen = _confirm_all(proposal) if case.use_frozen_map else None
+    frozen = (
+        _confirm_all(proposal, not_mappable_keys=case.not_mappable_keys)
+        if case.use_frozen_map
+        else None
+    )
     result = ingest_external_book(
         list(case.records),
         case.descriptor,
@@ -93,9 +98,22 @@ def _run_case(case: RelayCase) -> dict[str, Any]:
     }
 
 
-def _confirm_all(proposal: SourceMapProposal):
+def _confirm_all(
+    proposal: SourceMapProposal,
+    *,
+    not_mappable_keys: tuple[str, ...] = (),
+):
+    not_mappable = set(not_mappable_keys)
     confirmations = {
-        entry.key: _confirmation_for(entry)
+        entry.key: (
+            MappingConfirmation(
+                contract=entry.contract,
+                internal_field=entry.internal_field,
+                verdict="not_mappable",
+            )
+            if entry.key in not_mappable
+            else _confirmation_for(entry)
+        )
         for entry in proposal.entries
         if entry.state == "ambiguous_confirm"
     }
@@ -138,6 +156,24 @@ def _proposal_summary(proposal: SourceMapProposal) -> dict[str, Any]:
         ),
         "mapped_count": sum(1 for entry in proposal.entries if entry.state == "mapped"),
         "required_operator_actions": list(proposal.required_operator_actions),
+        "entries": [
+            {
+                "key": entry.key,
+                "state": entry.state,
+                "source_path": entry.source_path,
+                "candidate_evidence": [
+                    {
+                        "source_path": candidate.source_path,
+                        "rows_present": candidate.rows_present,
+                        "rows_nonempty": candidate.rows_nonempty,
+                        "rows_sampled": candidate.rows_sampled,
+                    }
+                    for candidate in entry.candidate_evidence
+                ],
+            }
+            for entry in proposal.entries
+            if entry.candidate_evidence
+        ],
     }
 
 
@@ -174,6 +210,21 @@ def _assert_case(
         "oversized_book": lambda: (
             result.coverage.truncated
             and result.coverage.dropped_record_count > 0
+        ),
+        "wrong_key_competing_coverage": lambda: _candidate_rows(
+            proposal,
+            "CRMAccount.name",
+            "title",
+        ) == (8, 8, 8)
+        and _candidate_rows(proposal, "CRMAccount.name", "variant") == (8, 2, 8),
+        "not_mappable_round_trip": lambda: (
+            "CRMOpportunity.opportunity_type" in result.coverage.unknown_fields
+            and result.coverage.records_typed["CRMOpportunity"] == 1
+        ),
+        "nested_contacts": lambda: (
+            result.coverage.records_typed["CRMContact"] == 1
+            and result.coverage.join_coverage["contacts_joined"] == 1
+            and result.coverage.unrepresentable_paths == ()
         ),
     }
     check = checks[name]
@@ -230,7 +281,42 @@ def _cases() -> tuple[RelayCase, ...]:
                 max_records=2,
             ),
         ),
+        RelayCase(
+            name="wrong_key_competing_coverage",
+            records=tuple(_wrong_key_records()),
+            descriptor=ExternalSourceDescriptor(source_name="battery"),
+            use_frozen_map=False,
+        ),
+        RelayCase(
+            name="not_mappable_round_trip",
+            records=tuple(_base_records()[:1]),
+            descriptor=ExternalSourceDescriptor(source_name="battery"),
+            not_mappable_keys=("CRMOpportunity.opportunity_type",),
+        ),
+        RelayCase(
+            name="nested_contacts",
+            records=(_nested_contact_record(),),
+            descriptor=ExternalSourceDescriptor(source_name="battery"),
+        ),
     )
+
+
+def _candidate_rows(
+    proposal: SourceMapProposal,
+    key: str,
+    source_path: str,
+) -> tuple[int, int, int] | None:
+    for entry in proposal.entries:
+        if entry.key != key:
+            continue
+        for candidate in entry.candidate_evidence:
+            if candidate.source_path == source_path:
+                return (
+                    candidate.rows_present,
+                    candidate.rows_nonempty,
+                    candidate.rows_sampled,
+                )
+    return None
 
 
 def _base_records() -> list[dict[str, Any]]:
@@ -296,6 +382,32 @@ def _many_records(count: int) -> list[dict[str, Any]]:
             }
         )
     return records
+
+
+def _wrong_key_records() -> list[dict[str, Any]]:
+    return [
+        {
+            "id": f"acct-display-{index:03d}",
+            "title": f"Display Account {index:03d}",
+            "variant": f"Variant {index:03d}" if index < 2 else "",
+        }
+        for index in range(8)
+    ]
+
+
+def _nested_contact_record() -> dict[str, Any]:
+    return {
+        "id": "acct-nested",
+        "name": "Nested Account",
+        "contacts": [
+            {
+                "id": "contact-nested",
+                "name": "Nested Contact",
+                "email": "nested@example.test",
+                "consent_to_contact": True,
+            }
+        ],
+    }
 
 
 def main(argv: list[str] | None = None) -> int:

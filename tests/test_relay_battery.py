@@ -9,7 +9,7 @@ def test_relay_battery_exercises_all_adversarial_cases(tmp_path):
     artifact = build_relay_battery_artifact(output_path=tmp_path / "relay.json")
 
     assert artifact["hard_ok"] is True
-    assert artifact["score"] == {"passed": 8, "total": 8}
+    assert artifact["score"] == {"passed": 11, "total": 11}
     assert {case["name"] for case in artifact["cases"]} == {
         "truncated_payload",
         "paraphrased_keys",
@@ -19,6 +19,9 @@ def test_relay_battery_exercises_all_adversarial_cases(tmp_path):
         "optional_fields_missing",
         "empty_book",
         "oversized_book",
+        "wrong_key_competing_coverage",
+        "not_mappable_round_trip",
+        "nested_contacts",
     }
 
 
@@ -35,6 +38,22 @@ def test_relay_battery_reports_specific_failure_modes(tmp_path):
     assert cases["optional_fields_missing"]["coverage"]["unknown_fields"]
     assert cases["empty_book"]["coverage"]["records_processed"] == 0
     assert cases["oversized_book"]["coverage"]["truncated"] is True
+    name_entry = next(
+        entry
+        for entry in cases["wrong_key_competing_coverage"]["proposal"]["entries"]
+        if entry["key"] == "CRMAccount.name"
+    )
+    candidate_rows = {
+        item["source_path"]: item
+        for item in name_entry["candidate_evidence"]
+    }
+    assert candidate_rows["title"]["rows_nonempty"] == 8
+    assert candidate_rows["variant"]["rows_nonempty"] == 2
+    assert (
+        "CRMOpportunity.opportunity_type"
+        in cases["not_mappable_round_trip"]["coverage"]["unknown_fields"]
+    )
+    assert cases["nested_contacts"]["coverage"]["records_typed"]["CRMContact"] == 1
 
 
 def test_relay_battery_artifact_is_deterministic_and_sanitized(tmp_path):

@@ -21,6 +21,7 @@ from ultra_csm.data_plane.explorer import DiscoveredField, DiscoveredObject, Sch
 from ultra_csm.data_plane.fixtures import DEFAULT_TENANT, FixtureCustomerData
 from ultra_csm.data_plane.source_mapping import (
     FrozenSourceMapConfig,
+    MappingCandidateEvidence,
     ProposedFieldMapping,
     SourceMapProposal,
     propose_source_mapping,
@@ -45,6 +46,11 @@ _ALIASES_BY_KEY = {
         "company name",
         "customer_name",
         "customer name",
+        "display_name",
+        "display name",
+        "title",
+        "label",
+        "variant",
     ),
     "CRMAccount.owner_id": ("owner_id", "owner id", "csm_owner", "csm owner"),
     "CRMAccount.industry": ("sector", "vertical", "category"),
@@ -159,7 +165,7 @@ def derive_schema_snapshot(
     paths: dict[str, dict[str, Any]] = {}
     unrepresentable: set[str] = set()
     for record in processed:
-        seen = set()
+        record_values: dict[str, list[Any]] = {}
         for path, value, representable in _flatten_record(
             record,
             max_depth=descriptor.max_schema_depth,
@@ -167,24 +173,31 @@ def derive_schema_snapshot(
             if not representable:
                 unrepresentable.add(path)
                 continue
-            seen.add(path)
+            record_values.setdefault(path, []).append(value)
+        for path, values in record_values.items():
             entry = paths.setdefault(
                 path,
                 {
-                    "count": 0,
+                    "rows_present": 0,
+                    "rows_nonempty": 0,
                     "types": set(),
                 },
             )
-            entry["count"] += 1
-            entry["types"].add(_field_type(value))
+            entry["rows_present"] += 1
+            if any(_is_nonempty(value) for value in values):
+                entry["rows_nonempty"] += 1
+            entry["types"].update(_field_type(value) for value in values)
 
     fields = tuple(
         DiscoveredField(
             name=path.rsplit(".", 1)[-1],
             field_type=_merged_type(meta["types"]),
-            required=meta["count"] == len(processed) if processed else False,
+            required=meta["rows_present"] == len(processed) if processed else False,
             custom=True,
             source_path=path,
+            rows_present=meta["rows_present"],
+            rows_nonempty=meta["rows_nonempty"],
+            rows_sampled=len(processed),
         )
         for path, meta in sorted(paths.items())
     )
@@ -283,26 +296,24 @@ def _with_external_aliases(
     }
     updated = []
     for entry in proposal.entries:
-        if entry.state != "missing_to_unknown":
+        candidates = _candidate_evidence(entry, object_by_name)
+        if not candidates:
             updated.append(entry)
             continue
-        candidate = _alias_candidate(entry.key, object_by_name)
-        if candidate is None:
-            updated.append(entry)
+        current = _candidate_by_path(candidates, entry.source_path)
+        if entry.state != "missing_to_unknown" and current is not None:
+            evidence = _order_candidates(current, candidates)
+            top = evidence[0]
+            if (
+                top.source_path != entry.source_path
+                and top.rows_nonempty > current.rows_nonempty
+            ):
+                updated.append(_entry_from_candidate(entry, top, evidence))
+            else:
+                updated.append(replace(entry, candidate_evidence=evidence))
             continue
-        source_object, field = candidate
-        updated.append(
-            replace(
-                entry,
-                source_object=source_object.name,
-                source_field=field.name,
-                source_path=field.source_path,
-                state="ambiguous_confirm",
-                requires_human_confirmation=True,
-                confidence=0.41,
-                reason="alias-shaped field candidate requires human confirmation",
-            )
-        )
+        top = candidates[0]
+        updated.append(_entry_from_candidate(entry, top, candidates))
     entries = tuple(updated)
     return SourceMapProposal(
         connector_id=proposal.connector_id,
@@ -314,19 +325,139 @@ def _with_external_aliases(
     )
 
 
-def _alias_candidate(
-    key: str,
+def _candidate_evidence(
+    entry: ProposedFieldMapping,
     object_by_name: dict[str, DiscoveredObject],
-) -> tuple[DiscoveredObject, DiscoveredField] | None:
-    aliases = {_norm(value) for value in _ALIASES_BY_KEY.get(key, ())}
-    if not aliases:
-        return None
+) -> tuple[MappingCandidateEvidence, ...]:
+    candidates: list[tuple[int, MappingCandidateEvidence]] = []
     for obj in object_by_name.values():
         for field_item in obj.fields:
-            candidates = {_norm(field_item.name), _norm(field_item.source_path)}
-            if candidates & aliases:
-                return obj, field_item
+            score, reason = _candidate_score(entry, field_item)
+            if score <= 0:
+                continue
+            confidence = min(
+                0.95,
+                0.32
+                + (score * 0.12)
+                + (_coverage_ratio(field_item) * 0.12),
+            )
+            candidates.append(
+                (
+                    score,
+                    MappingCandidateEvidence(
+                        source_object=obj.name,
+                        source_field=field_item.name,
+                        source_path=field_item.source_path,
+                        rows_present=field_item.rows_present,
+                        rows_nonempty=field_item.rows_nonempty,
+                        rows_sampled=field_item.rows_sampled,
+                        field_type=field_item.field_type,
+                        confidence=round(confidence, 4),
+                        reason=reason,
+                    ),
+                )
+            )
+    ordered = sorted(
+        candidates,
+        key=lambda item: (
+            -item[0],
+            -item[1].rows_nonempty,
+            -item[1].rows_present,
+            item[1].source_path,
+        ),
+    )
+    return tuple(candidate for _, candidate in ordered)
+
+
+def _candidate_score(
+    entry: ProposedFieldMapping,
+    field: DiscoveredField,
+) -> tuple[int, str]:
+    contract, internal_field = entry.contract, entry.internal_field
+    field_norm = _norm(field.name)
+    path_norm = _norm(field.source_path)
+    if "[]." in field.source_path:
+        if contract == "CRMContact" and field.source_path.startswith("contacts[]."):
+            child_name = field.source_path.split("[].", 1)[1]
+            if _norm(child_name) in _child_aliases(internal_field):
+                return 5, "nested contacts child field matches the target contract"
+        return 0, ""
+    aliases = {
+        _norm(value)
+        for value in (
+            *_ALIASES_BY_KEY.get(entry.key, ()),
+            internal_field,
+            entry.source_field or "",
+        )
+        if value
+    }
+    if field_norm in aliases or path_norm in aliases:
+        return 5, "field name matches a known alias for this contract field"
+    if internal_field == "name" and contract == "CRMAccount":
+        if field.field_type == "string" and field_norm in {"title", "label", "displayname"}:
+            return 4, "display-label-shaped field can identify the account name"
+        if field.field_type == "string" and field_norm == "variant":
+            return 2, "variant-like display field is plausible but coverage-sensitive"
+    if internal_field.endswith("_id") and field_norm.endswith("id"):
+        return 2, "identity-shaped field is a plausible join candidate"
+    if field_norm in aliases or any(alias and alias in path_norm for alias in aliases):
+        return 1, "field path partially matches a known alias"
+    return 0, ""
+
+
+def _child_aliases(internal_field: str) -> set[str]:
+    aliases = {
+        "contact_id": {"id", "contactid", "personid"},
+        "email": {"email", "emailaddress", "primaryemail"},
+        "name": {"name", "contactname", "fullname", "personname"},
+        "role": {"role"},
+        "title": {"title", "jobtitle"},
+        "consent_to_contact": {"consenttocontact", "optedin"},
+    }
+    return aliases.get(internal_field, set())
+
+
+def _candidate_by_path(
+    candidates: tuple[MappingCandidateEvidence, ...],
+    source_path: str | None,
+) -> MappingCandidateEvidence | None:
+    if source_path is None:
+        return None
+    for candidate in candidates:
+        if candidate.source_path == source_path:
+            return candidate
     return None
+
+
+def _order_candidates(
+    first: MappingCandidateEvidence,
+    candidates: tuple[MappingCandidateEvidence, ...],
+) -> tuple[MappingCandidateEvidence, ...]:
+    return (first, *(candidate for candidate in candidates if candidate != first))
+
+
+def _entry_from_candidate(
+    entry: ProposedFieldMapping,
+    candidate: MappingCandidateEvidence,
+    candidates: tuple[MappingCandidateEvidence, ...],
+) -> ProposedFieldMapping:
+    return replace(
+        entry,
+        source_object=candidate.source_object,
+        source_field=candidate.source_field,
+        source_path=candidate.source_path,
+        state="ambiguous_confirm",
+        requires_human_confirmation=True,
+        confidence=candidate.confidence,
+        reason="candidate field requires human confirmation with sparsity evidence",
+        candidate_evidence=candidates,
+    )
+
+
+def _coverage_ratio(field: DiscoveredField) -> float:
+    if field.rows_sampled <= 0:
+        return 0.0
+    return field.rows_nonempty / field.rows_sampled
 
 
 def _proposal_hash(
@@ -367,7 +498,19 @@ def _processed_records(
     records: list[dict[str, Any]] | tuple[dict[str, Any], ...],
     descriptor: ExternalSourceDescriptor,
 ) -> tuple[dict[str, Any], ...]:
-    return tuple(records[: max(0, descriptor.max_records)])
+    limit = max(0, descriptor.max_records)
+    total = len(records)
+    if limit == 0:
+        return ()
+    if total <= limit:
+        return tuple(records)
+    if limit == 1:
+        return (records[0],)
+    indexes = {
+        round(index * (total - 1) / (limit - 1))
+        for index in range(limit)
+    }
+    return tuple(records[index] for index in sorted(indexes))
 
 
 def _flatten_record(
@@ -390,12 +533,35 @@ def _flatten_record(
                 walk(child, child_path, depth + 1)
             return
         if isinstance(value, list):
-            flattened.append((path, value, False))
+            if _is_representable_collection(path, value):
+                for item in value:
+                    for key, child in item.items():
+                        child_path = f"{path}[].{key}" if path else f"[].{key}"
+                        walk(child, child_path, depth + 1)
+                return
+            if value:
+                flattened.append((path, value, False))
             return
         flattened.append((path, value, True))
 
     walk(record, "", 0)
     return tuple(item for item in flattened if item[0])
+
+
+def _is_representable_collection(path: str, value: list[Any]) -> bool:
+    if _norm(path) != "contacts":
+        return False
+    return all(isinstance(item, Mapping) for item in value)
+
+
+def _is_nonempty(value: Any) -> bool:
+    if value is None:
+        return False
+    if isinstance(value, str):
+        return bool(value.strip())
+    if isinstance(value, list | dict | tuple | set):
+        return bool(value)
+    return True
 
 
 def _field_type(value: Any) -> str:
@@ -452,8 +618,35 @@ def _transform_records(
                 owner_id=_mapped_str(record, account_fields.get("owner_id")) or "",
                 industry=_mapped_str(record, account_fields.get("industry")) or None,
             )
-        _transform_contact(index, record, account_id, contact_fields, state)
+        _transform_contacts(index, record, account_id, contact_fields, state)
         _transform_opportunity(index, record, account_id, opportunity_fields, state)
+
+
+def _transform_contacts(
+    index: int,
+    record: Mapping[str, Any],
+    account_id: str,
+    fields: dict[str, ProposedFieldMapping],
+    state: _TransformState,
+) -> None:
+    child_prefix = _child_collection_prefix(fields)
+    if child_prefix is None:
+        _transform_contact(index, record, account_id, fields, state)
+        return
+    children = _child_records(record, child_prefix)
+    if not children:
+        _transform_contact(index, record, account_id, fields, state)
+        return
+    for child in children:
+        _transform_contact(
+            index,
+            record,
+            account_id,
+            fields,
+            state,
+            child_prefix=child_prefix,
+            child_record=child,
+        )
 
 
 def _transform_contact(
@@ -462,16 +655,36 @@ def _transform_contact(
     account_id: str,
     fields: dict[str, ProposedFieldMapping],
     state: _TransformState,
+    *,
+    child_prefix: str | None = None,
+    child_record: Mapping[str, Any] | None = None,
 ) -> None:
     if not fields:
         return
-    contact_id = _mapped_str(record, fields.get("contact_id"))
-    email = _mapped_str(record, fields.get("email"))
-    name = _mapped_str(record, fields.get("name"))
+    contact_id = _mapped_str(
+        record,
+        fields.get("contact_id"),
+        child_prefix=child_prefix,
+        child_record=child_record,
+    )
+    email = _mapped_str(
+        record,
+        fields.get("email"),
+        child_prefix=child_prefix,
+        child_record=child_record,
+    )
+    name = _mapped_str(
+        record,
+        fields.get("name"),
+        child_prefix=child_prefix,
+        child_record=child_record,
+    )
     if not contact_id and not email and not name:
         return
     state.total_contact_candidates += 1
     mapped_account_id = _mapped_str(record, fields.get("account_id"))
+    if child_record is not None and not mapped_account_id:
+        mapped_account_id = account_id
     if not mapped_account_id or mapped_account_id != account_id:
         state.rejected.append(
             RejectedRecord(index, "contact_identity_join_failed", "CRMContact")
@@ -489,9 +702,24 @@ def _transform_contact(
         account_id=account_id,
         email=email or "",
         name=name or "",
-        role=_mapped_str(record, fields.get("role")) or None,
-        title=_mapped_str(record, fields.get("title")) or None,
-        consent_to_contact=_mapped_bool(record, fields.get("consent_to_contact")),
+        role=_mapped_str(
+            record,
+            fields.get("role"),
+            child_prefix=child_prefix,
+            child_record=child_record,
+        ) or None,
+        title=_mapped_str(
+            record,
+            fields.get("title"),
+            child_prefix=child_prefix,
+            child_record=child_record,
+        ) or None,
+        consent_to_contact=_mapped_bool(
+            record,
+            fields.get("consent_to_contact"),
+            child_prefix=child_prefix,
+            child_record=child_record,
+        ),
     )
 
 
@@ -535,19 +763,58 @@ def _mapping_index(
     return index
 
 
-def _mapped_value(record: Mapping[str, Any], mapping: ProposedFieldMapping | None) -> Any:
+def _child_collection_prefix(fields: dict[str, ProposedFieldMapping]) -> str | None:
+    prefixes = {
+        mapping.source_path.split("[].", 1)[0]
+        for mapping in fields.values()
+        if mapping.source_path and "[]." in mapping.source_path
+    }
+    return sorted(prefixes)[0] if prefixes else None
+
+
+def _child_records(record: Mapping[str, Any], child_prefix: str) -> tuple[Mapping[str, Any], ...]:
+    value = record.get(child_prefix)
+    if not isinstance(value, list):
+        return ()
+    return tuple(item for item in value if isinstance(item, Mapping))
+
+
+def _mapped_value(
+    record: Mapping[str, Any],
+    mapping: ProposedFieldMapping | None,
+    *,
+    child_prefix: str | None = None,
+    child_record: Mapping[str, Any] | None = None,
+) -> Any:
     if mapping is None or mapping.source_path is None:
         return None
+    source_path = mapping.source_path
     current: Any = record
-    for part in mapping.source_path.split("."):
+    if child_prefix and child_record is not None:
+        marker = f"{child_prefix}[]."
+        if source_path.startswith(marker):
+            current = child_record
+            source_path = source_path.removeprefix(marker)
+    for part in source_path.split("."):
         if not isinstance(current, Mapping) or part not in current:
             return None
         current = current[part]
     return current
 
 
-def _mapped_str(record: Mapping[str, Any], mapping: ProposedFieldMapping | None) -> str:
-    value = _mapped_value(record, mapping)
+def _mapped_str(
+    record: Mapping[str, Any],
+    mapping: ProposedFieldMapping | None,
+    *,
+    child_prefix: str | None = None,
+    child_record: Mapping[str, Any] | None = None,
+) -> str:
+    value = _mapped_value(
+        record,
+        mapping,
+        child_prefix=child_prefix,
+        child_record=child_record,
+    )
     if value is None:
         return ""
     if isinstance(value, str):
@@ -557,8 +824,19 @@ def _mapped_str(record: Mapping[str, Any], mapping: ProposedFieldMapping | None)
     return ""
 
 
-def _mapped_bool(record: Mapping[str, Any], mapping: ProposedFieldMapping | None) -> bool:
-    value = _mapped_value(record, mapping)
+def _mapped_bool(
+    record: Mapping[str, Any],
+    mapping: ProposedFieldMapping | None,
+    *,
+    child_prefix: str | None = None,
+    child_record: Mapping[str, Any] | None = None,
+) -> bool:
+    value = _mapped_value(
+        record,
+        mapping,
+        child_prefix=child_prefix,
+        child_record=child_record,
+    )
     if isinstance(value, bool):
         return value
     if isinstance(value, str):
