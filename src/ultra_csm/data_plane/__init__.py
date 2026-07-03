@@ -87,6 +87,17 @@ from ultra_csm.data_plane.source_mapping import (
     freeze_confirmed_source_map,
     propose_source_mapping,
 )
+from ultra_csm.data_plane.salesforce_live import (
+    DEFAULT_ROW_CAP,
+    SalesforceBookResult,
+    SalesforceObjectFetch,
+    SalesforceOnboardingResult,
+    SalesforceReadError,
+    audit_distinct_identity_paths,
+    fetch_salesforce_book,
+    preflight_salesforce_versions,
+    run_salesforce_onboarding,
+)
 from ultra_csm.data_plane.source_maps import (
     ALL_SOURCE_MAPS,
     EXTERNAL_BOOK_SOURCE_MAPS,
@@ -159,6 +170,15 @@ __all__ = [
     "SourceMapProposal",
     "freeze_confirmed_source_map",
     "propose_source_mapping",
+    "DEFAULT_ROW_CAP",
+    "SalesforceBookResult",
+    "SalesforceObjectFetch",
+    "SalesforceOnboardingResult",
+    "SalesforceReadError",
+    "audit_distinct_identity_paths",
+    "fetch_salesforce_book",
+    "preflight_salesforce_versions",
+    "run_salesforce_onboarding",
     "account_id_for",
     "build_fixture_data_plane",
     "build_sweep_fixture_data_plane",

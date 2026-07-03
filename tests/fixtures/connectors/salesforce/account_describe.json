@@ -1,0 +1,34 @@
+{
+  "fields": [
+    {
+      "custom": false,
+      "label": "Account ID",
+      "name": "Id",
+      "nillable": false,
+      "type": "id"
+    },
+    {
+      "custom": false,
+      "label": "Account Name",
+      "name": "Name",
+      "nillable": false,
+      "type": "string"
+    },
+    {
+      "custom": false,
+      "label": "Owner ID",
+      "name": "OwnerId",
+      "nillable": false,
+      "type": "reference"
+    },
+    {
+      "custom": false,
+      "label": "Industry",
+      "name": "Industry",
+      "nillable": true,
+      "type": "picklist"
+    }
+  ],
+  "label": "Account",
+  "name": "Account"
+}
