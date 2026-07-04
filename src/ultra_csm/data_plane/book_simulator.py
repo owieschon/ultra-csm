@@ -472,6 +472,15 @@ SCENARIO_TIMELINE: list[Mutation] = [
     # Day 350 — Mesa steady through renewal
     HealthBandChange("mesa-industrial", 350, "green",
                      ("stable_adoption", "renewal_complete")),
+
+    # =====================================================================
+    # Universe v2, WS-Segmented-Book (Wave 2): tier-mirror 1, champion-quiet.
+    # Same signal class, day 130, planted on a high-touch and a tech-touch
+    # account -- see docs/SYNTHETIC_UNIVERSE_BIBLE.md's "Tier-mirror 1"
+    # section for the expected (and forbidden) motions per tier.
+    # =====================================================================
+    ChampionGoesQuiet("ironclad-freight", 130),
+    ChampionGoesQuiet("farrow-fleet-ops", 130),
 ]
 
 

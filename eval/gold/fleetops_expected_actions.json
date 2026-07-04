@@ -6,8 +6,12 @@
     "mode": "shadow",
     "required": {
       "signal": "reply_latency_trend",
-      "motion_in": ["escalation"],
-      "evidence_must_include": ["7b7fe426-01f6-529e-a65b-3240e6ddc058"]
+      "motion_in": [
+        "escalation"
+      ],
+      "evidence_must_include": [
+        "7b7fe426-01f6-529e-a65b-3240e6ddc058"
+      ]
     },
     "forbidden_motions": [],
     "notes": "bible arc 1 (onboarding-stall), before-checkpoint: kickoff cadence still weekly, champion responsive, day-0 case open but unremarkable; trend signals correctly return insufficient-history."
@@ -19,7 +23,10 @@
     "mode": "shadow",
     "required": {
       "signal": "reply_latency_trend",
-      "motion_in": ["personal_email", "escalation"],
+      "motion_in": [
+        "personal_email",
+        "escalation"
+      ],
       "evidence_must_include": [
         "7b7fe426-01f6-529e-a65b-3240e6ddc058",
         "90c96b52-a603-51b0-aa5a-024f9d5d90fc"
@@ -35,8 +42,12 @@
     "mode": "shadow",
     "required": {
       "signal": "reply_latency_trend",
-      "motion_in": ["personal_email"],
-      "evidence_must_include": ["43a814d9-314b-522a-bda5-4ccfe507d55c"]
+      "motion_in": [
+        "personal_email"
+      ],
+      "evidence_must_include": [
+        "43a814d9-314b-522a-bda5-4ccfe507d55c"
+      ]
     },
     "forbidden_motions": [],
     "notes": "bible arc 1, after-checkpoint: post-recovery, cadence back to weekly, steady_state/green already fired."
@@ -48,8 +59,12 @@
     "mode": "gap",
     "required": {
       "signal": "reply_latency_trend",
-      "motion_in": ["escalation"],
-      "evidence_must_include": ["reply_latency_trend"]
+      "motion_in": [
+        "escalation"
+      ],
+      "evidence_must_include": [
+        "reply_latency_trend"
+      ]
     },
     "forbidden_motions": [],
     "notes": "bible arc 2 (single-threaded-risk): single point of failure exposed at day 10 (champion quiet since day 3); health band doesn't move until day 14, so the recommendation must come from communication signals, not the band."
@@ -61,8 +76,13 @@
     "mode": "gap",
     "required": {
       "signal": "thread_participation_width",
-      "motion_in": ["personal_email", "escalation"],
-      "evidence_must_include": ["thread_participation_width"]
+      "motion_in": [
+        "personal_email",
+        "escalation"
+      ],
+      "evidence_must_include": [
+        "thread_participation_width"
+      ]
     },
     "forbidden_motions": [],
     "notes": "bible arc 2: second contact surfaced (Monica Reeves, day 110) but not yet champion of record -- still a gap until day 110's NewContactAppears is followed up on."
@@ -74,8 +94,13 @@
     "mode": "shadow",
     "required": {
       "signal": "thread_participation_width",
-      "motion_in": ["personal_email", "qbr"],
-      "evidence_must_include": ["thread_participation_width"]
+      "motion_in": [
+        "personal_email",
+        "qbr"
+      ],
+      "evidence_must_include": [
+        "thread_participation_width"
+      ]
     },
     "forbidden_motions": [],
     "notes": "bible arc 2: recovered, thread width restored, StakeholderRelationship strength strong for Monica Reeves -- scripted CSM (Priya Nandan) already engaged."
@@ -87,8 +112,12 @@
     "mode": "gap",
     "required": {
       "signal": "ticket_frequency_window",
-      "motion_in": ["escalation"],
-      "evidence_must_include": ["4d9be931-5c9c-56ad-9ea7-6ef39b9acd0e"]
+      "motion_in": [
+        "escalation"
+      ],
+      "evidence_must_include": [
+        "4d9be931-5c9c-56ad-9ea7-6ef39b9acd0e"
+      ]
     },
     "forbidden_motions": [],
     "notes": "bible arc 3 (churn-brewing): red since day 0, no replacement contact ever surfaces; health band gives no new signal at any checkpoint."
@@ -100,8 +129,13 @@
     "mode": "gap",
     "required": {
       "signal": "ticket_frequency_window",
-      "motion_in": ["escalation", "personal_email"],
-      "evidence_must_include": ["dc01b971-1f4f-57dc-9f7a-afc2ddbbd239"]
+      "motion_in": [
+        "escalation",
+        "personal_email"
+      ],
+      "evidence_must_include": [
+        "dc01b971-1f4f-57dc-9f7a-afc2ddbbd239"
+      ]
     },
     "forbidden_motions": [],
     "notes": "bible arc 3: day-160 renewal case unanswered by this checkpoint -- absence despite an already-flagged risk."
@@ -113,8 +147,12 @@
     "mode": "gap",
     "required": {
       "signal": "ticket_frequency_window",
-      "motion_in": ["escalation"],
-      "evidence_must_include": ["dc01b971-1f4f-57dc-9f7a-afc2ddbbd239"]
+      "motion_in": [
+        "escalation"
+      ],
+      "evidence_must_include": [
+        "dc01b971-1f4f-57dc-9f7a-afc2ddbbd239"
+      ]
     },
     "forbidden_motions": [],
     "notes": "bible arc 3: post-churn (StatusChange to Churned at day 220) -- the gap was never remediated."
@@ -126,8 +164,12 @@
     "mode": "gap",
     "required": {
       "signal": "meeting_cadence_shift",
-      "motion_in": ["escalation"],
-      "evidence_must_include": ["meeting_cadence_shift"]
+      "motion_in": [
+        "escalation"
+      ],
+      "evidence_must_include": [
+        "meeting_cadence_shift"
+      ]
     },
     "forbidden_motions": [],
     "notes": "bible arc 4 (silent-decline): decline just starting; zero cases, zero CTAs, health band stays green -- only a UsageSignal trend read surfaces the risk."
@@ -139,8 +181,12 @@
     "mode": "gap",
     "required": {
       "signal": "meeting_cadence_shift",
-      "motion_in": ["escalation"],
-      "evidence_must_include": ["meeting_cadence_shift"]
+      "motion_in": [
+        "escalation"
+      ],
+      "evidence_must_include": [
+        "meeting_cadence_shift"
+      ]
     },
     "forbidden_motions": [],
     "notes": "bible arc 4: usage down ~7% cumulative, band still green, zero cases/CTAs -- nothing in the CRM/CS-platform view looks wrong."
@@ -152,8 +198,12 @@
     "mode": "gap",
     "required": {
       "signal": "meeting_cadence_shift",
-      "motion_in": ["escalation"],
-      "evidence_must_include": ["meeting_cadence_shift"]
+      "motion_in": [
+        "escalation"
+      ],
+      "evidence_must_include": [
+        "meeting_cadence_shift"
+      ]
     },
     "forbidden_motions": [],
     "notes": "bible arc 4: decline continued to ~12% cumulative, still under the 20% auto-adjustment threshold, still green."
@@ -165,8 +215,12 @@
     "mode": "shadow",
     "required": {
       "signal": "thread_participation_width",
-      "motion_in": ["personal_email"],
-      "evidence_must_include": ["thread_participation_width"]
+      "motion_in": [
+        "personal_email"
+      ],
+      "evidence_must_include": [
+        "thread_participation_width"
+      ]
     },
     "forbidden_motions": [],
     "notes": "bible arc 5 (expansion-ready): new department stakeholder (Sarah Chen) just onboarded day 10, usage climbing."
@@ -178,8 +232,13 @@
     "mode": "shadow",
     "required": {
       "signal": "meeting_cadence_shift",
-      "motion_in": ["personal_email", "campaign_enroll"],
-      "evidence_must_include": ["meeting_cadence_shift"]
+      "motion_in": [
+        "personal_email",
+        "campaign_enroll"
+      ],
+      "evidence_must_include": [
+        "meeting_cadence_shift"
+      ]
     },
     "forbidden_motions": [],
     "notes": "bible arc 5: usage sustained high, ARR expansion about to close at day 180 -- ideal agent flags expansion-readiness pre-confirmation."
@@ -191,8 +250,12 @@
     "mode": "shadow",
     "required": {
       "signal": "meeting_cadence_shift",
-      "motion_in": ["personal_email"],
-      "evidence_must_include": ["meeting_cadence_shift"]
+      "motion_in": [
+        "personal_email"
+      ],
+      "evidence_must_include": [
+        "meeting_cadence_shift"
+      ]
     },
     "forbidden_motions": [],
     "notes": "bible arc 5: expansion closed (ARRChange day 180), year-end uptick in progress."
@@ -207,7 +270,11 @@
       "motion_in": [],
       "evidence_must_include": []
     },
-    "forbidden_motions": ["escalation", "personal_email", "working_session"],
+    "forbidden_motions": [
+      "escalation",
+      "personal_email",
+      "working_session"
+    ],
     "notes": "bible arc 6 (healthy-control): no risk, no expansion trigger, no onboarding gap -- the baseline every other arc's briefing is judged against."
   },
   {
@@ -220,7 +287,11 @@
       "motion_in": [],
       "evidence_must_include": []
     },
-    "forbidden_motions": ["escalation", "personal_email", "working_session"],
+    "forbidden_motions": [
+      "escalation",
+      "personal_email",
+      "working_session"
+    ],
     "notes": "bible arc 6: off-beat from the mild summer dip, chosen specifically to read as unambiguously fine."
   },
   {
@@ -233,7 +304,11 @@
       "motion_in": [],
       "evidence_must_include": []
     },
-    "forbidden_motions": ["escalation", "personal_email", "working_session"],
+    "forbidden_motions": [
+      "escalation",
+      "personal_email",
+      "working_session"
+    ],
     "notes": "bible arc 6: year-end uptick in progress, still boringly fine."
   },
   {
@@ -246,7 +321,10 @@
       "motion_in": [],
       "evidence_must_include": []
     },
-    "forbidden_motions": ["escalation", "personal_email"],
+    "forbidden_motions": [
+      "escalation",
+      "personal_email"
+    ],
     "notes": "bible red herring A: usage telemetry alone reads as an early risk signal, but the CRM case + day-30 renewal-closed beat say this was renewal paperwork friction the whole time."
   },
   {
@@ -259,7 +337,613 @@
       "motion_in": [],
       "evidence_must_include": []
     },
-    "forbidden_motions": ["escalation", "personal_email"],
+    "forbidden_motions": [
+      "escalation",
+      "personal_email"
+    ],
     "notes": "bible red herring B: the case subject/priority alone pattern-matches Pinehill's onboarding-stall signature, but the fast resolution + untouched usage/calendar say it was a same-week glitch."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "ironclad-freight",
+    "checkpoint_day": 130,
+    "mode": "gap",
+    "required": {
+      "signal": "champion_inactive_driver",
+      "motion_in": [
+        "personal_email",
+        "escalation"
+      ],
+      "evidence_must_include": [
+        "champion_inactive"
+      ]
+    },
+    "forbidden_motions": [],
+    "notes": "tier-mirror 1 (champion-quiet), high-touch: ChampionGoesQuiet day 130; personal_email allowed at this tier."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "farrow-fleet-ops",
+    "checkpoint_day": 130,
+    "mode": "gap",
+    "required": {
+      "signal": "champion_inactive_driver",
+      "motion_in": [
+        "campaign_enroll"
+      ],
+      "evidence_must_include": [
+        "champion_inactive"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr"
+    ],
+    "notes": "tier-mirror 1 (champion-quiet), tech-touch: same ChampionGoesQuiet day 130 as ironclad-freight, but personal_email is forbidden at tech_touch -- the anti-pattern test for this mirror."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "brookstone-supply-chain",
+    "checkpoint_day": 90,
+    "mode": "gap",
+    "required": {
+      "signal": "underused_capabilities",
+      "motion_in": [
+        "content_route"
+      ],
+      "evidence_must_include": [
+        "content-route-optimizer-adoption",
+        "content-route-optimizer-setup-video"
+      ]
+    },
+    "forbidden_motions": [
+      "working_session"
+    ],
+    "notes": "tier-mirror 2 (shallow-adoption), mid-touch: route_optimization entitled-but-shallow; correct motion is content_route citing playbooks.json's reactivate-stalled-module catalog ids."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "sterling-fleet-services",
+    "checkpoint_day": 90,
+    "mode": "gap",
+    "required": {
+      "signal": "underused_capabilities",
+      "motion_in": [
+        "working_session"
+      ],
+      "evidence_must_include": [
+        "route_optimization"
+      ]
+    },
+    "forbidden_motions": [
+      "content_route"
+    ],
+    "notes": "tier-mirror 2 (shallow-adoption), high-touch: same signal as brookstone-supply-chain, but the correct motion is a live working_session, not a routed content asset -- the tier-differentiation this mirror tests."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "glenbrook-distribution",
+    "checkpoint_day": 140,
+    "mode": "gap",
+    "required": {
+      "signal": "underused_capabilities",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "route_optimization"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "tier-mirror 3 (cohort truth): one of 25 tech-touch accounts sharing the identical Route Optimizer shallow-adoption pattern by day 140 -- eval/tier_policy_battery.py asserts the whole cohort together yields exactly ONE cohort_action, never 25 individual per-account motions."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "kestrel-logistics",
+    "checkpoint_day": 140,
+    "mode": "gap",
+    "required": {
+      "signal": "underused_capabilities",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "route_optimization"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "tier-mirror 3 (cohort truth): one of 25 tech-touch accounts sharing the identical Route Optimizer shallow-adoption pattern by day 140 -- eval/tier_policy_battery.py asserts the whole cohort together yields exactly ONE cohort_action, never 25 individual per-account motions."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "wolfden-warehousing",
+    "checkpoint_day": 140,
+    "mode": "gap",
+    "required": {
+      "signal": "underused_capabilities",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "route_optimization"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "tier-mirror 3 (cohort truth): one of 25 tech-touch accounts sharing the identical Route Optimizer shallow-adoption pattern by day 140 -- eval/tier_policy_battery.py asserts the whole cohort together yields exactly ONE cohort_action, never 25 individual per-account motions."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "copperfield2-carriers",
+    "checkpoint_day": 140,
+    "mode": "gap",
+    "required": {
+      "signal": "underused_capabilities",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "route_optimization"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "tier-mirror 3 (cohort truth): one of 25 tech-touch accounts sharing the identical Route Optimizer shallow-adoption pattern by day 140 -- eval/tier_policy_battery.py asserts the whole cohort together yields exactly ONE cohort_action, never 25 individual per-account motions."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "duskwood-transport-co",
+    "checkpoint_day": 140,
+    "mode": "gap",
+    "required": {
+      "signal": "underused_capabilities",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "route_optimization"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "tier-mirror 3 (cohort truth): one of 25 tech-touch accounts sharing the identical Route Optimizer shallow-adoption pattern by day 140 -- eval/tier_policy_battery.py asserts the whole cohort together yields exactly ONE cohort_action, never 25 individual per-account motions."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "evergreen-warehousing",
+    "checkpoint_day": 140,
+    "mode": "gap",
+    "required": {
+      "signal": "underused_capabilities",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "route_optimization"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "tier-mirror 3 (cohort truth): one of 25 tech-touch accounts sharing the identical Route Optimizer shallow-adoption pattern by day 140 -- eval/tier_policy_battery.py asserts the whole cohort together yields exactly ONE cohort_action, never 25 individual per-account motions."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "pathfinder-freight",
+    "checkpoint_day": 140,
+    "mode": "gap",
+    "required": {
+      "signal": "underused_capabilities",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "route_optimization"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "tier-mirror 3 (cohort truth): one of 25 tech-touch accounts sharing the identical Route Optimizer shallow-adoption pattern by day 140 -- eval/tier_policy_battery.py asserts the whole cohort together yields exactly ONE cohort_action, never 25 individual per-account motions."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "truewind-distribution",
+    "checkpoint_day": 140,
+    "mode": "gap",
+    "required": {
+      "signal": "underused_capabilities",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "route_optimization"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "tier-mirror 3 (cohort truth): one of 25 tech-touch accounts sharing the identical Route Optimizer shallow-adoption pattern by day 140 -- eval/tier_policy_battery.py asserts the whole cohort together yields exactly ONE cohort_action, never 25 individual per-account motions."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "underpass-transport-co",
+    "checkpoint_day": 140,
+    "mode": "gap",
+    "required": {
+      "signal": "underused_capabilities",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "route_optimization"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "tier-mirror 3 (cohort truth): one of 25 tech-touch accounts sharing the identical Route Optimizer shallow-adoption pattern by day 140 -- eval/tier_policy_battery.py asserts the whole cohort together yields exactly ONE cohort_action, never 25 individual per-account motions."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "vernonhall-delivery",
+    "checkpoint_day": 140,
+    "mode": "gap",
+    "required": {
+      "signal": "underused_capabilities",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "route_optimization"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "tier-mirror 3 (cohort truth): one of 25 tech-touch accounts sharing the identical Route Optimizer shallow-adoption pattern by day 140 -- eval/tier_policy_battery.py asserts the whole cohort together yields exactly ONE cohort_action, never 25 individual per-account motions."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "emberfield-delivery",
+    "checkpoint_day": 140,
+    "mode": "gap",
+    "required": {
+      "signal": "underused_capabilities",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "route_optimization"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "tier-mirror 3 (cohort truth): one of 25 tech-touch accounts sharing the identical Route Optimizer shallow-adoption pattern by day 140 -- eval/tier_policy_battery.py asserts the whole cohort together yields exactly ONE cohort_action, never 25 individual per-account motions."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "ivorygate-freight",
+    "checkpoint_day": 140,
+    "mode": "gap",
+    "required": {
+      "signal": "underused_capabilities",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "route_optimization"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "tier-mirror 3 (cohort truth): one of 25 tech-touch accounts sharing the identical Route Optimizer shallow-adoption pattern by day 140 -- eval/tier_policy_battery.py asserts the whole cohort together yields exactly ONE cohort_action, never 25 individual per-account motions."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "juniperfield-logistics",
+    "checkpoint_day": 140,
+    "mode": "gap",
+    "required": {
+      "signal": "underused_capabilities",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "route_optimization"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "tier-mirror 3 (cohort truth): one of 25 tech-touch accounts sharing the identical Route Optimizer shallow-adoption pattern by day 140 -- eval/tier_policy_battery.py asserts the whole cohort together yields exactly ONE cohort_action, never 25 individual per-account motions."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "oldstone-industrial-supply",
+    "checkpoint_day": 140,
+    "mode": "gap",
+    "required": {
+      "signal": "underused_capabilities",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "route_optimization"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "tier-mirror 3 (cohort truth): one of 25 tech-touch accounts sharing the identical Route Optimizer shallow-adoption pattern by day 140 -- eval/tier_policy_battery.py asserts the whole cohort together yields exactly ONE cohort_action, never 25 individual per-account motions."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "poplarcreek-trucking",
+    "checkpoint_day": 140,
+    "mode": "gap",
+    "required": {
+      "signal": "underused_capabilities",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "route_optimization"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "tier-mirror 3 (cohort truth): one of 25 tech-touch accounts sharing the identical Route Optimizer shallow-adoption pattern by day 140 -- eval/tier_policy_battery.py asserts the whole cohort together yields exactly ONE cohort_action, never 25 individual per-account motions."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "quietbrook-warehousing",
+    "checkpoint_day": 140,
+    "mode": "gap",
+    "required": {
+      "signal": "underused_capabilities",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "route_optimization"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "tier-mirror 3 (cohort truth): one of 25 tech-touch accounts sharing the identical Route Optimizer shallow-adoption pattern by day 140 -- eval/tier_policy_battery.py asserts the whole cohort together yields exactly ONE cohort_action, never 25 individual per-account motions."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "vinecrest-freight",
+    "checkpoint_day": 140,
+    "mode": "gap",
+    "required": {
+      "signal": "underused_capabilities",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "route_optimization"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "tier-mirror 3 (cohort truth): one of 25 tech-touch accounts sharing the identical Route Optimizer shallow-adoption pattern by day 140 -- eval/tier_policy_battery.py asserts the whole cohort together yields exactly ONE cohort_action, never 25 individual per-account motions."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "watermill-trucking",
+    "checkpoint_day": 140,
+    "mode": "gap",
+    "required": {
+      "signal": "underused_capabilities",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "route_optimization"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "tier-mirror 3 (cohort truth): one of 25 tech-touch accounts sharing the identical Route Optimizer shallow-adoption pattern by day 140 -- eval/tier_policy_battery.py asserts the whole cohort together yields exactly ONE cohort_action, never 25 individual per-account motions."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "amberfield-fleet-ops",
+    "checkpoint_day": 140,
+    "mode": "gap",
+    "required": {
+      "signal": "underused_capabilities",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "route_optimization"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "tier-mirror 3 (cohort truth): one of 25 tech-touch accounts sharing the identical Route Optimizer shallow-adoption pattern by day 140 -- eval/tier_policy_battery.py asserts the whole cohort together yields exactly ONE cohort_action, never 25 individual per-account motions."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "ironwood2-line-haul",
+    "checkpoint_day": 140,
+    "mode": "gap",
+    "required": {
+      "signal": "underused_capabilities",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "route_optimization"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "tier-mirror 3 (cohort truth): one of 25 tech-touch accounts sharing the identical Route Optimizer shallow-adoption pattern by day 140 -- eval/tier_policy_battery.py asserts the whole cohort together yields exactly ONE cohort_action, never 25 individual per-account motions."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "kettlecreek-distribution",
+    "checkpoint_day": 140,
+    "mode": "gap",
+    "required": {
+      "signal": "underused_capabilities",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "route_optimization"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "tier-mirror 3 (cohort truth): one of 25 tech-touch accounts sharing the identical Route Optimizer shallow-adoption pattern by day 140 -- eval/tier_policy_battery.py asserts the whole cohort together yields exactly ONE cohort_action, never 25 individual per-account motions."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "mossgate-logistics",
+    "checkpoint_day": 140,
+    "mode": "gap",
+    "required": {
+      "signal": "underused_capabilities",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "route_optimization"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "tier-mirror 3 (cohort truth): one of 25 tech-touch accounts sharing the identical Route Optimizer shallow-adoption pattern by day 140 -- eval/tier_policy_battery.py asserts the whole cohort together yields exactly ONE cohort_action, never 25 individual per-account motions."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "palewood-field-services",
+    "checkpoint_day": 140,
+    "mode": "gap",
+    "required": {
+      "signal": "underused_capabilities",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "route_optimization"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "tier-mirror 3 (cohort truth): one of 25 tech-touch accounts sharing the identical Route Optimizer shallow-adoption pattern by day 140 -- eval/tier_policy_battery.py asserts the whole cohort together yields exactly ONE cohort_action, never 25 individual per-account motions."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "quarrycreek-haulage",
+    "checkpoint_day": 140,
+    "mode": "gap",
+    "required": {
+      "signal": "underused_capabilities",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "route_optimization"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "tier-mirror 3 (cohort truth): one of 25 tech-touch accounts sharing the identical Route Optimizer shallow-adoption pattern by day 140 -- eval/tier_policy_battery.py asserts the whole cohort together yields exactly ONE cohort_action, never 25 individual per-account motions."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "roughcut-freight",
+    "checkpoint_day": 140,
+    "mode": "gap",
+    "required": {
+      "signal": "underused_capabilities",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "route_optimization"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "tier-mirror 3 (cohort truth): one of 25 tech-touch accounts sharing the identical Route Optimizer shallow-adoption pattern by day 140 -- eval/tier_policy_battery.py asserts the whole cohort together yields exactly ONE cohort_action, never 25 individual per-account motions."
   }
 ]
