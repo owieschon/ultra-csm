@@ -716,6 +716,23 @@ strings, or `book_simulator.py`'s Pinehill `active_assets` trajectory that
 silently changes one side of an already-documented row without updating
 this table is what `eval/quantity_battery.py` exists to catch.
 
+### Survey canon table (NPS, Phase 4)
+
+Quarterly waves (days 45, 135, 225, 315), `src/ultra_csm/data_plane/surveys.py`.
+A row's `Response?` column of "none" means no `SurveyResponse` is emitted
+for that account/wave at all -- absence, not a fabricated neutral score.
+
+| Account | Day 45 | Day 135 | Day 225 | Day 315 | Arc consistency |
+| --- | --- | --- | --- | --- | --- |
+| Pinehill Transport | 3.0, detractor — cites "the dispatch integration" directly | 6.0, cautiously improved | 7.0, steady | 8.0, promoter — names the dispatch integration again, now fixed | Matches the onboarding-stall arc: detractor mid-stall (day 30/80 cases fresh), recovering post day-300 steady_state. |
+| Pinnacle Supply Chain | none (Derek silent since day 3; no survey response from a contact who never replies to anything) | 6.0, Monica still orienting | 7.0, recovery plan working | 8.0, confident, renewal smooth | Matches single-threaded-risk: no response possible before Monica appears day 110; recovers alongside her engagement. |
+| Quarrystone Logistics | none | none | none | none | Matches churn-brewing: absence despite being flagged is the entire arc's signal — a survey class with a real response option makes that absence visible in one more channel, not just comms/calendar. |
+| Aspenridge Supply Chain | 8.0, benign | 8.0, benign | 7.0, benign | 7.0, benign | Matches silent-decline: the account's relationship/survey channel stays calm throughout — the risk is invisible everywhere except telemetry, which is the entire point of this arc. |
+| Meridian Fleet Group | 9.0, warm | 9.0, expansion on track | 9.0, thrilled | 10.0, promoter | Matches expansion-ready: consistently high, trending up through the day-180 close. |
+| Trailhead Logistics | 9.0 | 9.0 | 10.0, cites the case-study feature directly | 10.0 | Matches healthy-control, and the day-225 verbatim is consistent with the existing day-165 `case_study_published` health-band driver. |
+| Cedar Valley (herring A) | 7.0, benign renewal-admin note | 7.0 | 7.0 | 8.0 | Matches "never actually at risk" — mid-range and flat throughout, no drama. |
+| Ironridge Fleet Ops (herring B) | 7.0 | 8.0, references the day-40 webhook glitch as already resolved | 8.0 | 8.0 | Matches "never actually at risk" — mid-range, and the one verbatim that references the herring's own case explicitly frames it as resolved, not ongoing. |
+
 ## Anti-Goodhart note
 
 This bible is authored once, before any extractor or battery code exists.
