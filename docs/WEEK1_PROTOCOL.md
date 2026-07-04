@@ -294,3 +294,48 @@ proposal path for Loopway (per `eval/tier_policy_battery.py`'s Owner
 Ask #1, which already disclosed no lens/sweep consumes `playbooks.json`
 motions yet) would need its own recurrence-suppression test, not an
 extension of this one.
+
+## Fieldstone baseline table (measured 2026-07-04, Universe v2
+WS-Tenant-Fieldstone, Wave 3)
+
+`--tenant fieldstone` runs a fieldstone-scoped variant of this protocol
+(`ultra_csm.data_plane.tenants.fieldstone.week1`): onboarding cost is
+driven against a HubSpot-shaped source (Phase 3's association-schema
+Tier-A capture) instead of fleetops' Salesforce-shaped one; cold-start
+honesty and false-alarm rate are computed the same way (reusing
+`eval/fieldstone_battery.py`'s own checks, not re-authored); feedback
+persistence and economics are honestly `not_applicable` for this tenant
+(see that module's docstring — fieldstone has no CS platform at all, and
+the DB-seeded governance/sweep path those two sections depend on requires
+one).
+
+| Metric | K=3 | K=7 | K=14 |
+| --- | --- | --- | --- |
+| Onboarding questions asked (HubSpot-shaped source) | 3 (constant; onboarding is not K-dependent) | | |
+| Cold-start: computed signals (of 3 arc accounts) | 0 | 0 | 0 |
+| Cold-start: insufficient_history signals | 3 | 3 | 3 |
+| Cold-start honesty `ok` | true | true | true |
+| False-alarm `ok` (fieldstone_battery, 6/6 cases) | true | true | true |
+| Feedback persistence | not_applicable (no CS platform for this tenant) | not_applicable | not_applicable |
+| Economics | not_applicable (no CS platform for this tenant) | not_applicable | not_applicable |
+
+**The onboarding-cost generalization result:** fleetops' Salesforce-shaped
+book needs 5 questions; fieldstone's HubSpot-shaped book needs 3 — fewer,
+not more, because HubSpot's association-schema endpoint gives the Tier-A
+resolver source-declared FK metadata for the Contact→Company join the
+same way Salesforce's `referenceTo` does, and fieldstone's smaller
+2-table book (Account/Contact, no Opportunity in this tenant's fixture
+scope) has fewer field-mapping ambiguities to begin with. This confirms
+Program 14's own finding generalizes across vendor shape too: onboarding
+question count is a function of schema shape diversity, not a
+vendor-specific constant.
+
+At K=3/7/14 every one of fieldstone's three arc accounts (Masonry,
+Culvert-Mechanical, Wrenhouse) reads `insufficient_history` for
+`reply_latency_trend` — consistent with the bible's own design: this
+tenant's messages are sparse and quarterly-adjacent (~6-10 per arc across
+a full year, vs. fleetops' 15-20+ for a single pilot arc), so two full
+21-day trailing windows do not exist yet this early. This is the same
+honest-silence discipline the fleetops baseline table documents above,
+now proven under a communication culture where "early" data really is
+much sparser by design, not merely by coincidence of window placement.

@@ -57,7 +57,7 @@ def test_expected_actions_rejects_unresolvable_account(tmp_path):
     rows[0]["account_slug"] = "not-a-real-account"
     (gold_dir / "acme_expected_actions.json").write_text(json.dumps(rows), encoding="utf-8")
 
-    with pytest.raises(ExpectedActionsGoldError, match="unknown synthetic-book account slug"):
+    with pytest.raises(ExpectedActionsGoldError, match="unknown acme synthetic-book account slug"):
         load_expected_actions("acme", gold_dir=gold_dir)
 
 

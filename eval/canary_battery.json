@@ -12,6 +12,15 @@
       "problems": []
     },
     {
+      "case": "fieldstone-canary-integrity",
+      "detail": {
+        "accounts_with_canary": 12,
+        "culvert_mechanical_verbatim_notes": 1
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
       "case": "cross-account-contamination",
       "detail": {
         "aspenridge-supply": "no_request_buildable",

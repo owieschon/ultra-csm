@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "fictional": true,
+  "tenant": "fieldstone",
+  "note": "Baseline-relative threshold config (Universe v2 WS-Tenant-Fieldstone HARD RULE knob). Read only by ultra_csm.data_plane.tenants.fieldstone.baselines -- never by the shared value_model.py/value_model_config.json resolver. Tenant CONFIG, never code: risk = delta from tenant baseline, not an absolute FleetOps-tuned threshold.",
+  "reply_latency_trend_hours": {
+    "flag_delta_floor": 20.0,
+    "rationale": "A delta of >=20h stretch (recent-21d mean vs prior-21d mean) is a real trajectory change for this tenant, regardless of the absolute band it starts from. FleetOps-shaped absolute thresholds (e.g. 'latency > 10h is suspicious') are explicitly NOT used -- Masonry's flat ~38-42h band would misfire against an absolute threshold, and Culvert-Mechanical's own pre-day-90 baseline sits in the exact same absolute band."
+  }
+}
