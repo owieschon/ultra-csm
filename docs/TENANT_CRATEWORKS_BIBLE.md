@@ -138,15 +138,23 @@ truth, not decorative):**
     could use to confirm the single-person read — it is not required
     reading for the day-100 gold row, since it postdates that checkpoint.
 
-**Checkpoint days:** 60 (baseline, healthy), 100 (the graded ambiguity —
-see above), 200 (post-transition: `d.okafor@...parent...` is the only
-active thread; `dana.okafor@...` has had zero activity for 70+ days — an
-ideal agent reading day 200 fresh, with both threads in evidence, should
-at minimum flag the address change as needing confirmation before treating
-the account as re-engaged, since a differently-cased, differently-domained
-contact reappearing after a long silence is exactly the shape of a
-"new contact" a naive read could mis-file as recovery when it is the same
-fading champion under a new email).
+**Checkpoint days:** 60 (baseline, healthy — both duplicate contact rows
+already carry pre-fade relationship-graph activity, an artifact of the
+CRM's accidental duplication of one real person, so width already reads 2
+here too; the bible does not claim width is a meaningful signal at any
+checkpoint for this arc, only that its literal count must never be
+reported as multi-threaded health — see Ground truth above), 100 (the
+graded ambiguity — see above), 200 (post-transition: no new email has
+arrived on the `dana.okafor@...` thread for 70+ days by this point — a
+comms-level fact, distinct from `thread_participation_width`, which has no
+staleness decay and so still reads 2 at day 200; an ideal agent reading
+day 200 fresh should read the COMMS evidence, not just the width signal,
+and at minimum flag the address change as needing confirmation before
+treating the account as re-engaged, since a differently-cased,
+differently-domained contact reappearing after a long silence on the
+original thread is exactly the shape of a "new contact" a naive read
+could mis-file as recovery when it is the same fading champion under a
+new email).
 
 **Grading mode:** `gap` for the whole arc — no scripted CSM (there is no CS
 platform, no Rocketlane, nobody logging an intervention here) acts on this
