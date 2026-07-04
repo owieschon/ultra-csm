@@ -37,6 +37,28 @@ class FixtureOnboardingData:
     tasks: tuple[OnboardingTask, ...]
 
 
+def _resolve_achieved_at(
+    phase: OnboardingPhase,
+    phase_tasks: tuple[OnboardingTask, ...],
+) -> str | None:
+    """Prefer a task-level ``due_date_actual`` over the phase's own.
+
+    Rocketlane's server-side auto-completion cascade sets a phase's
+    ``due_date_actual`` to the write-time "now" when its last task
+    completes, not to any caller-supplied or task-grounded date (see
+    docs/LIVE_INTEGRATION_FINDINGS.md, "Auto-completion cascade") -- the
+    phase-level actual is contaminated evidence. A task's own
+    ``due_date_actual`` is not touched by that cascade, so when at least one
+    task under the phase carries one, it is the more trustworthy signal.
+    Falls back to the phase-level actual only when no task has one.
+    """
+
+    task_actuals = [t.due_date_actual for t in phase_tasks if t.due_date_actual is not None]
+    if task_actuals:
+        return max(task_actuals)
+    return phase.due_date_actual
+
+
 def derive_ttv_milestones(
     account_id: str,
     *,
@@ -47,7 +69,8 @@ def derive_ttv_milestones(
     """Adapt Rocketlane phases (+ their tasks) into TimeToValueMilestone evidence.
 
     One phase -> one milestone. ``expected_by`` <- phase.due_date;
-    ``achieved_at`` <- phase.due_date_actual (None = not yet achieved).
+    ``achieved_at`` <- the task-level actual when one exists, else the
+    phase's own (see ``_resolve_achieved_at``; None = not yet achieved).
     ``evidence_signal_ids`` always includes the phase id, plus every task id
     under that phase so a proposal can cite concrete task-level evidence.
     Activation-gap tasks (overdue-with-null-actual, or atRisk) do not change
@@ -71,11 +94,46 @@ def derive_ttv_milestones(
                 account_id=account_id,
                 milestone=phase.name,
                 expected_by=phase.due_date,
-                achieved_at=phase.due_date_actual,
+                achieved_at=_resolve_achieved_at(phase, phase_tasks),
                 evidence_signal_ids=evidence_ids,
             )
         )
     return milestones
+
+
+def onboarding_activation_gap_ids(
+    *,
+    projects: tuple[OnboardingProject, ...],
+    phases: tuple[OnboardingPhase, ...],
+    tasks: tuple[OnboardingTask, ...],
+    as_of: str,
+    covered_milestone_names: frozenset[str] = frozenset(),
+) -> tuple[str, ...]:
+    """Phase/task ids carrying activation-gap evidence not already covered
+    by a date-based open milestone gap.
+
+    ``has_activation_gap`` (RUNNING_LATE progress, an at-risk task, or an
+    overdue phase with no actual) can be true for a phase that the
+    date-based ``expected_by <= as_of`` filter does not catch on its own --
+    an at-risk task before its own due date is the exact blind spot: no
+    signal reaches Agent 1's sweep for an onboarding-stage account whose
+    only evidence is delivery slippage. ``covered_milestone_names`` (phase
+    names already surfaced as an open gap) excludes double-counting the
+    same phase under both paths.
+    """
+
+    project_by_id = {p.project_id: p for p in projects}
+    ids: list[str] = []
+    for phase in phases:
+        if phase.name in covered_milestone_names:
+            continue
+        phase_tasks = tuple(t for t in tasks if t.phase_id == phase.phase_id)
+        project = project_by_id.get(phase.project_id)
+        if not has_activation_gap(phase, project, phase_tasks, as_of=as_of):
+            continue
+        ids.append(phase.phase_id)
+        ids.extend(t.task_id for t in phase_tasks if t.at_risk)
+    return tuple(ids)
 
 
 def has_activation_gap(

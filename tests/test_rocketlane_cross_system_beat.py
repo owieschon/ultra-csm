@@ -14,16 +14,17 @@ ULTRA_CSM_CROSS_SYSTEM_SF_OWNER_ID, then run this file. Salesforce itself
 is read-only in this program -- these env vars are populated from a read
 query result, never a write.
 
-Rocketlane evidence is D2 (the slipping/overdue dataset seeded this
-program), fetched live via mcp__rocketlane__get_phases/get_tasks
-2026-07-03 -- same recorded payload as test_rocketlane_live_battery.py.
-D2, not D3, because Agent 1's sweep only turns a milestone into a scored
-work item through its existing date-based open_milestone_gaps filter
-(expected_by <= as_of and achieved_at is None); D3's activation-gap
-(atRisk-before-due-date) is real and asserted directly in
-test_rocketlane_live_battery.py's has_activation_gap() checks, but does not
-by itself clear the sweep's score>0 threshold -- see docs/PROGRAM_REPORT_4.md
-for why this is flagged as a scope note, not silently worked around.
+Rocketlane evidence is D3 (the at-risk-cluster dataset seeded in Program 4),
+fetched live via mcp__rocketlane__get_phases/get_tasks 2026-07-03 -- same
+recorded payload as test_rocketlane_live_battery.py. Program 4 used D2 here
+instead of D3 because Agent 1's sweep only turned a milestone into a scored
+work item through the date-based open_milestone_gaps filter (expected_by <=
+as_of and achieved_at is None); D3's activation-gap (atRisk-before-due-date)
+did not by itself clear the sweep's score>0 threshold (see
+docs/PROGRAM_REPORT_4.md, Owner Ask #2). The lifecycle-aware TTV fix in
+value_model.py/sweep.py closes that gap for onboarding-stage accounts, so
+this beat now runs on D3 itself -- the exact dataset the prior program had
+to substitute away from.
 """
 
 from __future__ import annotations
@@ -51,19 +52,35 @@ from ultra_csm.platform.db import session
 
 AS_OF = "2026-07-03"
 
-D2_PHASE_RAW = {
-    "phaseId": 5000000385260, "phaseName": "UCSM-P4C-D2 Slipping Data Migration",
-    "project": {"projectId": 5000000116922, "projectName": "[Sample] Modert 5 week onboarding"},
-    "startDate": "2026-06-01", "dueDate": "2026-06-20",
+D3_PHASE_RAW = {
+    "phaseId": 5000000385261, "phaseName": "UCSM-P4C-D3 At-Risk Integration Cluster",
+    "project": {"projectId": 5000000116921, "projectName": "[Sample] Acme 2 week onboarding"},
+    "startDate": "2026-07-01", "dueDate": "2026-08-01",
     "status": {"value": 1, "label": "To do"}, "private": False,
 }
-D2_TASK_RAWS = [
+D3_TASK_RAWS = [
     {
-        "taskId": 5000002982469, "taskName": "UCSM-P4C-D2-T1 Legacy export overdue",
-        "startDate": "2026-06-01", "dueDate": "2026-06-20",
-        "project": {"projectId": 5000000116922, "projectName": "[Sample] Modert 5 week onboarding"},
+        "taskId": 5000002982470, "taskName": "UCSM-P4C-D3-T1 API credential exchange",
+        "startDate": "2026-07-01", "dueDate": "2026-07-15", "atRisk": True,
+        "project": {"projectId": 5000000116921, "projectName": "[Sample] Acme 2 week onboarding"},
         "status": {"value": 1, "label": "To do"},
-        "phase": {"phaseId": 5000000385260, "phaseName": "UCSM-P4C-D2 Slipping Data Migration"},
+        "phase": {"phaseId": 5000000385261, "phaseName": "UCSM-P4C-D3 At-Risk Integration Cluster"},
+        "assignees": {},
+    },
+    {
+        "taskId": 5000002982471, "taskName": "UCSM-P4C-D3-T2 Data mapping validation",
+        "startDate": "2026-07-05", "dueDate": "2026-07-20", "atRisk": True,
+        "project": {"projectId": 5000000116921, "projectName": "[Sample] Acme 2 week onboarding"},
+        "status": {"value": 1, "label": "To do"},
+        "phase": {"phaseId": 5000000385261, "phaseName": "UCSM-P4C-D3 At-Risk Integration Cluster"},
+        "assignees": {},
+    },
+    {
+        "taskId": 5000002982472, "taskName": "UCSM-P4C-D3-T3 Non-risk documentation task",
+        "startDate": "2026-07-01", "dueDate": "2026-08-01",
+        "project": {"projectId": 5000000116921, "projectName": "[Sample] Acme 2 week onboarding"},
+        "status": {"value": 1, "label": "To do"},
+        "phase": {"phaseId": 5000000385261, "phaseName": "UCSM-P4C-D3 At-Risk Integration Cluster"},
         "assignees": {},
     },
 ]
@@ -94,8 +111,8 @@ def cross_beat_conn(runtime_conn):
 def test_salesforce_account_ttv_proposal_cites_rocketlane_evidence(cross_beat_conn):
     sf_account_id, sf_account_name, sf_owner_id = _sf_account_env()
 
-    phase = parse_phase(D2_PHASE_RAW)
-    tasks = tuple(parse_task(t) for t in D2_TASK_RAWS)
+    phase = parse_phase(D3_PHASE_RAW)
+    tasks = tuple(parse_task(t) for t in D3_TASK_RAWS)
     project = OnboardingProject(
         project_id=phase.project_id,
         account_id=sf_account_id,  # the cross-system join

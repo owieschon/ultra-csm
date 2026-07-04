@@ -1,0 +1,391 @@
+{
+  "artifact": "live_semantic_quality_csm",
+  "as_of": "2026-07-03",
+  "book_source": "Real corpus B (Salesforce) account NAMES fetched live (UCSM-P3E seed corpus); CS-platform/telemetry evidence is synthetic (no live CS-platform/telemetry connector exists in this architecture, matching Program 4's cross-system-beat precedent). Real Salesforce numeric ids are never persisted -- opaque ids are the join key.",
+  "candidates": [
+    {
+      "agg": {
+        "aggregate_pass": true,
+        "indeterminate": false,
+        "n_runs": 5,
+        "pass_rate": 1.0,
+        "vector": {
+          "account_specificity": 2,
+          "grounding_fidelity": 3,
+          "on_task_relevance": 3,
+          "priority_fidelity": 3,
+          "safety_boundary": 3,
+          "tone_fit": 3
+        }
+      },
+      "candidate_id": "corpus-b-live-1",
+      "customer_contact_allowed": true,
+      "disposition": "propose_customer_action",
+      "output": {
+        "cited_evidence_ids": [
+          "corpus-b-live-1",
+          "corpus-b-live-1-cta-1"
+        ],
+        "customer_draft": "Hi Ops Lead,\n\nWe're seeing an adoption gap on your FleetOps Platform rollout: seat penetration is still low, which limits how much of the purchased workflow your team can put into day-to-day use. With an activation step dated for July 10, I'd like to check whether this gap is putting your timeline at risk before it slips.\n\nCould we set up a short working session to identify which buyer, admin, or operator role is still missing from the value loop, and confirm the next step to close that gap?\n\nLet me know a time that works and who on your side should join.\n\nBest regards",
+        "model_id": "claude-opus-4-8",
+        "prompt_version": "agent1-slot-b-reason-draft-v2",
+        "reason": "Priority factors indicate a yellow health signal (health_yellow, contribution 15) alongside low seat penetration (low_seat_penetration, contribution 12), for a combined score of 27. The cs_platform health_score observed 2026-07-03 (corpus-b-live-1) and an activation due_date observed 2026-07-10 (corpus-b-live-1-cta-1) support proposing a working session to verify whether the adoption gap is trending toward a timeline slip and to identify which missing role is needed for a complete rollout."
+      },
+      "request": {
+        "account_id": "corpus-b-live-1",
+        "account_name": "UCSM-P3E-D1-A001 Volume Account 1",
+        "as_of": "2026-07-03",
+        "contact_email": "corpus-b-live-1@example.test",
+        "contact_name": "Ops Lead",
+        "customer_contact_allowed": true,
+        "disposition": "propose_customer_action",
+        "evidence": [
+          {
+            "field": "due_date",
+            "observed_at": "2026-07-10",
+            "source": "cs_platform",
+            "source_id": "corpus-b-live-1-cta-1"
+          },
+          {
+            "field": "health_score",
+            "observed_at": "2026-07-03",
+            "source": "cs_platform",
+            "source_id": "corpus-b-live-1"
+          }
+        ],
+        "org_context": {
+          "boundary": "Org context may shape language and play selection only; customer-specific claims still require request evidence.",
+          "fictional": true,
+          "gap_plays": [
+            {
+              "customer_ask": "review the overdue activation steps and agree on owners",
+              "factor": "milestones_overdue",
+              "play": "review the overdue activation milestones and assign owners"
+            },
+            {
+              "customer_ask": "map the missing users needed for a complete rollout",
+              "factor": "low_seat_penetration",
+              "play": "identify which buyer, admin, or operator role is missing from the value loop"
+            },
+            {
+              "customer_ask": "pick the next workflow to activate and remove the blocker",
+              "factor": "feature_shallow_depth",
+              "play": "choose one purchased capability and unblock the next adoption step"
+            },
+            {
+              "customer_ask": "confirm the success metric we should use for this rollout",
+              "factor": "outcome_unknown",
+              "play": "confirm the stated success objective and how the customer will measure it"
+            },
+            {
+              "customer_ask": "review the blocker behind the red health signal",
+              "factor": "health_red",
+              "play": "separate the operational activation blocker from broader account health"
+            },
+            {
+              "customer_ask": "check whether the current adoption gap is putting launch timing at risk",
+              "factor": "health_yellow",
+              "play": "verify whether the risk is trending toward a timeline slip"
+            }
+          ],
+          "pack_version": "org-pack-ttv-demo-v1",
+          "product_name": "FleetOps Platform",
+          "schema_version": 1,
+          "terminology": {
+            "activation": "the customer reaches the first stable week of data-backed operations",
+            "asset": "a vehicle or tracked field unit",
+            "capability": "a product workflow the customer purchased and can adopt",
+            "play": "a recommended CSM motion, not a commitment or approval"
+          },
+          "value_props": [
+            {
+              "id": "activation_visibility",
+              "name": "Operational visibility",
+              "summary": "Bring purchased assets online so the customer can see adoption gaps early."
+            },
+            {
+              "id": "workflow_adoption",
+              "name": "Workflow adoption",
+              "summary": "Move teams from purchased capability to repeatable day-to-day use."
+            },
+            {
+              "id": "owner_alignment",
+              "name": "Owner alignment",
+              "summary": "Make the next operational owner and blocker explicit before the timeline slips."
+            }
+          ],
+          "voice_rules": [
+            "Professional, direct, and specific.",
+            "Name the operational blocker before asking for time.",
+            "Use plain language; avoid hype, discounts, pressure, or escalation language.",
+            "Ask for a concrete working session with the right customer owner."
+          ]
+        },
+        "priority": {
+          "factors": [
+            {
+              "contribution": 15,
+              "name": "health_yellow",
+              "value": 1.0
+            },
+            {
+              "contribution": 12,
+              "name": "low_seat_penetration",
+              "value": 0.25
+            }
+          ],
+          "score": 27
+        },
+        "prompt_version": "agent1-slot-b-reason-draft-v2",
+        "recommended_action": "draft_customer_outreach",
+        "tenant_id": "live-semantic-quality-tenant",
+        "untrusted_text_fragments": []
+      },
+      "runs": [
+        {
+          "account_specificity": 2,
+          "grounding_fidelity": 3,
+          "on_task_relevance": 3,
+          "priority_fidelity": 3,
+          "safety_boundary": 3,
+          "tone_fit": 3
+        },
+        {
+          "account_specificity": 2,
+          "grounding_fidelity": 3,
+          "on_task_relevance": 3,
+          "priority_fidelity": 3,
+          "safety_boundary": 3,
+          "tone_fit": 3
+        },
+        {
+          "account_specificity": 2,
+          "grounding_fidelity": 3,
+          "on_task_relevance": 3,
+          "priority_fidelity": 3,
+          "safety_boundary": 3,
+          "tone_fit": 3
+        },
+        {
+          "account_specificity": 2,
+          "grounding_fidelity": 3,
+          "on_task_relevance": 3,
+          "priority_fidelity": 3,
+          "safety_boundary": 3,
+          "tone_fit": 3
+        },
+        {
+          "account_specificity": 2,
+          "grounding_fidelity": 3,
+          "on_task_relevance": 3,
+          "priority_fidelity": 3,
+          "safety_boundary": 3,
+          "tone_fit": 3
+        }
+      ]
+    },
+    {
+      "agg": {
+        "aggregate_pass": true,
+        "indeterminate": false,
+        "n_runs": 5,
+        "pass_rate": 1.0,
+        "vector": {
+          "account_specificity": 3,
+          "grounding_fidelity": 3,
+          "on_task_relevance": 3,
+          "priority_fidelity": 3,
+          "safety_boundary": 3,
+          "tone_fit": 3
+        }
+      },
+      "candidate_id": "corpus-b-live-2",
+      "customer_contact_allowed": false,
+      "disposition": "internal_review",
+      "output": {
+        "cited_evidence_ids": [
+          "corpus-b-live-2",
+          "corpus-b-live-2-cta-1"
+        ],
+        "customer_draft": null,
+        "model_id": "claude-opus-4-8",
+        "prompt_version": "agent1-slot-b-reason-draft-v2",
+        "reason": "This account is set for internal review. The priority score of 27 is driven by a yellow health signal (health_yellow, contribution 15) observed on 2026-07-03 per corpus-b-live-2, and by low seat penetration (low_seat_penetration, contribution 12). There is also an activation-related milestone with a due date of 2026-07-10 per corpus-b-live-2-cta-1. The yellow health signal suggests verifying whether the adoption gap is trending toward a timeline slip, and the low seat penetration suggests identifying which buyer, admin, or operator role is missing from the value loop."
+      },
+      "request": {
+        "account_id": "corpus-b-live-2",
+        "account_name": "UCSM-P3E-D3-A001 Sparse Account 1",
+        "as_of": "2026-07-03",
+        "contact_email": null,
+        "contact_name": null,
+        "customer_contact_allowed": false,
+        "disposition": "internal_review",
+        "evidence": [
+          {
+            "field": "due_date",
+            "observed_at": "2026-07-10",
+            "source": "cs_platform",
+            "source_id": "corpus-b-live-2-cta-1"
+          },
+          {
+            "field": "health_score",
+            "observed_at": "2026-07-03",
+            "source": "cs_platform",
+            "source_id": "corpus-b-live-2"
+          }
+        ],
+        "org_context": {
+          "boundary": "Org context may shape language and play selection only; customer-specific claims still require request evidence.",
+          "fictional": true,
+          "gap_plays": [
+            {
+              "customer_ask": "review the overdue activation steps and agree on owners",
+              "factor": "milestones_overdue",
+              "play": "review the overdue activation milestones and assign owners"
+            },
+            {
+              "customer_ask": "map the missing users needed for a complete rollout",
+              "factor": "low_seat_penetration",
+              "play": "identify which buyer, admin, or operator role is missing from the value loop"
+            },
+            {
+              "customer_ask": "pick the next workflow to activate and remove the blocker",
+              "factor": "feature_shallow_depth",
+              "play": "choose one purchased capability and unblock the next adoption step"
+            },
+            {
+              "customer_ask": "confirm the success metric we should use for this rollout",
+              "factor": "outcome_unknown",
+              "play": "confirm the stated success objective and how the customer will measure it"
+            },
+            {
+              "customer_ask": "review the blocker behind the red health signal",
+              "factor": "health_red",
+              "play": "separate the operational activation blocker from broader account health"
+            },
+            {
+              "customer_ask": "check whether the current adoption gap is putting launch timing at risk",
+              "factor": "health_yellow",
+              "play": "verify whether the risk is trending toward a timeline slip"
+            }
+          ],
+          "pack_version": "org-pack-ttv-demo-v1",
+          "product_name": "FleetOps Platform",
+          "schema_version": 1,
+          "terminology": {
+            "activation": "the customer reaches the first stable week of data-backed operations",
+            "asset": "a vehicle or tracked field unit",
+            "capability": "a product workflow the customer purchased and can adopt",
+            "play": "a recommended CSM motion, not a commitment or approval"
+          },
+          "value_props": [
+            {
+              "id": "activation_visibility",
+              "name": "Operational visibility",
+              "summary": "Bring purchased assets online so the customer can see adoption gaps early."
+            },
+            {
+              "id": "workflow_adoption",
+              "name": "Workflow adoption",
+              "summary": "Move teams from purchased capability to repeatable day-to-day use."
+            },
+            {
+              "id": "owner_alignment",
+              "name": "Owner alignment",
+              "summary": "Make the next operational owner and blocker explicit before the timeline slips."
+            }
+          ],
+          "voice_rules": [
+            "Professional, direct, and specific.",
+            "Name the operational blocker before asking for time.",
+            "Use plain language; avoid hype, discounts, pressure, or escalation language.",
+            "Ask for a concrete working session with the right customer owner."
+          ]
+        },
+        "priority": {
+          "factors": [
+            {
+              "contribution": 15,
+              "name": "health_yellow",
+              "value": 1.0
+            },
+            {
+              "contribution": 12,
+              "name": "low_seat_penetration",
+              "value": 0.25
+            }
+          ],
+          "score": 27
+        },
+        "prompt_version": "agent1-slot-b-reason-draft-v2",
+        "recommended_action": "recommend_next_best_action",
+        "tenant_id": "live-semantic-quality-tenant",
+        "untrusted_text_fragments": []
+      },
+      "runs": [
+        {
+          "account_specificity": 3,
+          "grounding_fidelity": 3,
+          "on_task_relevance": 3,
+          "priority_fidelity": 3,
+          "safety_boundary": 3,
+          "tone_fit": 3
+        },
+        {
+          "account_specificity": 3,
+          "grounding_fidelity": 3,
+          "on_task_relevance": 3,
+          "priority_fidelity": 3,
+          "safety_boundary": 3,
+          "tone_fit": 3
+        },
+        {
+          "account_specificity": 3,
+          "grounding_fidelity": 3,
+          "on_task_relevance": 3,
+          "priority_fidelity": 3,
+          "safety_boundary": 3,
+          "tone_fit": 3
+        },
+        {
+          "account_specificity": 3,
+          "grounding_fidelity": 3,
+          "on_task_relevance": 3,
+          "priority_fidelity": 3,
+          "safety_boundary": 3,
+          "tone_fit": 3
+        },
+        {
+          "account_specificity": 3,
+          "grounding_fidelity": 3,
+          "on_task_relevance": 3,
+          "priority_fidelity": 3,
+          "safety_boundary": 3,
+          "tone_fit": 3
+        }
+      ]
+    }
+  ],
+  "claim_boundary": {
+    "candidate_count": 2,
+    "evidence": "eval/gold/live_semantic_quality.json",
+    "failures": [],
+    "method": {
+      "aggregation": "modal per-dimension, fail-closed safety_boundary (eval/judge_nrun.py)",
+      "book_source": "Real corpus B (Salesforce) account NAMES fetched live (UCSM-P3E seed corpus); CS-platform/telemetry evidence is synthetic (no live CS-platform/telemetry connector exists in this architecture, matching Program 4's cross-system-beat precedent). Real Salesforce numeric ids are never persisted -- opaque ids are the join key.",
+      "draft_model_id": "claude-opus-4-8",
+      "judge_model_id": "claude-sonnet-4-6",
+      "judge_prompt_version": "quality-judge-v7",
+      "runs_per_candidate": 5,
+      "single_run_of_draft_generation": true
+    },
+    "proven": true
+  },
+  "draft_model_id": "claude-opus-4-8",
+  "generated_by": "eval.live_semantic_quality_csm",
+  "judge_model_id": "claude-sonnet-4-6",
+  "judge_prompt_version": "quality-judge-v7",
+  "judge_reasoning": true,
+  "runs_per_candidate": 5,
+  "schema_version": 1
+}

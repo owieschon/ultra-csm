@@ -34,6 +34,7 @@ from ultra_csm.data_plane import (
     OnboardingTask,
     default_onboarding_fixture_data,
     derive_ttv_milestones,
+    det_rocketlane_id,
     has_activation_gap,
 )
 from ultra_csm.data_plane import contracts
@@ -118,6 +119,111 @@ def test_healthy_project_yields_achieved_milestone():
     assert m.achieved_at is not None
     assert m.expected_by is not None
     assert m.evidence_signal_ids  # phase id + at least the one task id
+
+
+def test_achieved_at_prefers_task_actual_over_contaminated_phase_actual():
+    """Guard against Program 4's live finding: Rocketlane's server-side
+    auto-completion cascade sets a phase's due_date_actual to the write-time
+    "now" when its last task completes, not to any real completion date.
+    When the phase-level actual disagrees with the task-level one, the
+    task-level date -- untouched by that cascade -- must win."""
+    project = OnboardingProject(
+        project_id=det_rocketlane_id("project", "contamination-test"),
+        account_id=det_rocketlane_id("account", "contamination-test"),
+        name="[Fixture] contamination test",
+        status_value=2,
+        status_label="In progress",
+        owner_id=None,
+        progress="on_track",
+        start_date="2026-06-01",
+        start_date_actual="2026-06-01",
+        due_date="2026-06-20",
+        due_date_actual=None,
+        arr_cents=None,
+    )
+    phase = OnboardingPhase(
+        phase_id=det_rocketlane_id("phase", "contamination-test-phase"),
+        project_id=project.project_id,
+        name="Kickoff",
+        start_date="2026-06-01",
+        start_date_actual="2026-06-01",
+        due_date="2026-06-20",
+        # Contaminated: the auto-completion cascade's write-time "now",
+        # well after the task actually finished.
+        due_date_actual="2026-07-03",
+        status_label="Completed",
+        private=False,
+    )
+    task = OnboardingTask(
+        task_id=det_rocketlane_id("task", "contamination-test-task"),
+        project_id=project.project_id,
+        phase_id=phase.phase_id,
+        name="Kickoff call",
+        status_label="Completed",
+        start_date="2026-06-01",
+        due_date="2026-06-20",
+        due_date_actual="2026-06-18",
+        at_risk=False,
+        assignee_ids=(),
+    )
+    milestones = derive_ttv_milestones(
+        project.account_id,
+        projects=(project,),
+        phases=(phase,),
+        tasks=(task,),
+    )
+    assert len(milestones) == 1
+    assert milestones[0].achieved_at == "2026-06-18"
+
+
+def test_achieved_at_falls_back_to_phase_actual_with_no_task_actual():
+    """No task carries a due_date_actual -- the phase's own actual is the
+    only signal available, so it's used rather than reporting unachieved."""
+    project = OnboardingProject(
+        project_id=det_rocketlane_id("project", "fallback-test"),
+        account_id=det_rocketlane_id("account", "fallback-test"),
+        name="[Fixture] fallback test",
+        status_value=2,
+        status_label="In progress",
+        owner_id=None,
+        progress="on_track",
+        start_date="2026-06-01",
+        start_date_actual="2026-06-01",
+        due_date="2026-06-20",
+        due_date_actual=None,
+        arr_cents=None,
+    )
+    phase = OnboardingPhase(
+        phase_id=det_rocketlane_id("phase", "fallback-test-phase"),
+        project_id=project.project_id,
+        name="Kickoff",
+        start_date="2026-06-01",
+        start_date_actual="2026-06-01",
+        due_date="2026-06-20",
+        due_date_actual="2026-06-19",
+        status_label="Completed",
+        private=False,
+    )
+    task = OnboardingTask(
+        task_id=det_rocketlane_id("task", "fallback-test-task"),
+        project_id=project.project_id,
+        phase_id=phase.phase_id,
+        name="Kickoff call",
+        status_label="In progress",
+        start_date="2026-06-01",
+        due_date="2026-06-20",
+        due_date_actual=None,
+        at_risk=False,
+        assignee_ids=(),
+    )
+    milestones = derive_ttv_milestones(
+        project.account_id,
+        projects=(project,),
+        phases=(phase,),
+        tasks=(task,),
+    )
+    assert len(milestones) == 1
+    assert milestones[0].achieved_at == "2026-06-19"
 
 
 def test_missing_dates_phase_is_skipped_not_fabricated():
