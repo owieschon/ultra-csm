@@ -28,6 +28,21 @@ def det_uuid(*parts: str) -> str:
 _det_uuid = det_uuid
 
 
+def det_jitter_minutes(*parts: str) -> int:
+    """Deterministic 0-59 minute offset, hashed the same way as det_uuid.
+
+    Fixture-authored artifact timestamps carry realistic hour-of-day and
+    day-offset variation (hand-authored per message) but default to :00
+    minutes -- fine for a fixture, but a live mailbox/calendar where every
+    message lands on the exact hour is a flat, detectable tell. This adds
+    a reproducible, non-random minute so the same (parts) always yields
+    the same minute across repeated live-seeding runs.
+    """
+
+    digest = uuid.uuid5(SEED_NS, "jitter-minutes:" + ":".join(parts)).bytes
+    return int.from_bytes(digest[:2], "big") % 60
+
+
 def engine_data_dir() -> Path:
     """Compatibility shim for callers that only need a stable repo-local path."""
 

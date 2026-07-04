@@ -235,16 +235,24 @@ def meridian_email_thread(as_of_day: int) -> dict:
     return {"threads": threads}
 
 
-def meridian_communication_signals(as_of_day: int) -> list[CommunicationSignal]:
+def meridian_communication_signals(
+    as_of_day: int, threads: list[dict] | None = None
+) -> list[CommunicationSignal]:
     """Adapt both raw Gmail-shaped threads into ``CommunicationSignal``
     rows, one per contact reply, with ``response_time_hours`` computed from
     the preceding outbound message -- per thread, since Alicia's and
-    Sarah's reply-latency histories are independent."""
+    Sarah's reply-latency histories are independent.
+
+    ``threads`` defaults to the fixture's ``["threads"]`` list (Alicia's
+    thread first, then Sarah's); pass a live-read equivalent
+    (``live_gmail_reader.live_email_thread``, one call per contact) in the
+    same order to drive this same extraction from real mailbox data."""
 
     signals: list[CommunicationSignal] = []
+    threads = threads if threads is not None else meridian_email_thread(as_of_day)["threads"]
     for thread, contact_email, contact_id in (
-        (meridian_email_thread(as_of_day)["threads"][0], _ALICIA_EMAIL, MERIDIAN_ALICIA_CONTACT_ID),
-        (meridian_email_thread(as_of_day)["threads"][1], _SARAH_EMAIL, MERIDIAN_SARAH_CONTACT_ID),
+        (threads[0], _ALICIA_EMAIL, MERIDIAN_ALICIA_CONTACT_ID),
+        (threads[1], _SARAH_EMAIL, MERIDIAN_SARAH_CONTACT_ID),
     ):
         prev_outbound_at: datetime | None = None
         for msg in thread["messages"]:
