@@ -1,5 +1,16 @@
 # Re-seed Plan
 
+**STATUS: EXECUTED by Program 9 (2026-07-04, `docs/PROGRAM_REPORT_9.md`).**
+The SEED_DATE dependency below was resolved via anchor translation at the
+seeding boundary (SEED_DATE unchanged in code; frozen `anchor.json` in the
+run directory maps story day 50 to the seed-run date); the enriched
+backfill, full-year Calendar seed, distractor layer, and daily drip-seeder
+are live. This document is retained as the plan Program 9 executed
+against; see `docs/LIVE_INTEGRATION_FINDINGS.md`'s Program 9 section for
+observed results.
+
+Original plan text follows.
+
 Input to a future live-seeding program, not work executed here. Program 7
 (`docs/PROGRAM_REPORT_7.md`) seeded the *thin* pre-Program-8 content into
 real Rocketlane (Pinehill) and Gmail (all six arcs) orgs. Program 8
