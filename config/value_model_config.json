@@ -57,5 +57,27 @@
         "arr_review_points": 5
       }
     }
+  ],
+  "tier_rules": [
+    {
+      "name": "tech_touch_default",
+      "match": [],
+      "tier": "tech_touch"
+    },
+    {
+      "name": "mid_touch_arr",
+      "match": [
+        {"field": "arr_cents", "op": ">=", "value": 2500000}
+      ],
+      "tier": "mid_touch"
+    },
+    {
+      "name": "high_touch_arr",
+      "match": [
+        {"field": "arr_cents", "op": ">=", "value": 2500000},
+        {"field": "arr_cents", "op": ">=", "value": 10000000}
+      ],
+      "tier": "high_touch"
+    }
   ]
 }

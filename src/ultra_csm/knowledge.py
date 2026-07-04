@@ -10,7 +10,19 @@ from typing import Any
 
 DEFAULT_ORG_PACK_PATH = Path(__file__).resolve().parents[2] / "knowledge" / "org_pack.json"
 DEFAULT_GOLDEN_CORPUS_DIR = Path(__file__).resolve().parents[2] / "knowledge" / "golden_corpus"
+DEFAULT_TENANTS_DIR = Path(__file__).resolve().parents[2] / "knowledge" / "tenants"
 ORG_CONTEXT_SCHEMA_VERSION = 1
+PLAYBOOK_SCHEMA_VERSION = 1
+PLAYBOOK_SERVICE_TIERS = ("high_touch", "mid_touch", "tech_touch")
+PLAYBOOK_MOTIONS = (
+    "personal_email",
+    "working_session",
+    "qbr",
+    "escalation",
+    "campaign_enroll",
+    "content_route",
+    "cohort_action",
+)
 _FORBIDDEN_KEYS = {
     "account_id",
     "account_name",
@@ -139,6 +151,122 @@ def load_org_pack(
     if not pack.voice_rules or not pack.value_props or not pack.gap_plays:
         raise OrgPackError("org pack must include voice_rules, value_props, and gap_plays")
     return pack
+
+
+class PlaybookError(ValueError):
+    """Raised when a tenant playbook file is missing required shape."""
+
+
+@dataclass(frozen=True)
+class ServiceTier:
+    tier: str
+    rule: dict[str, Any]
+    allowed_motions: tuple[str, ...]
+    forbidden_motions: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
+class Play:
+    id: str
+    trigger_factor: str
+    motion: str
+    tiers: tuple[str, ...]
+    content_refs: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
+class PlaybookSet:
+    schema_version: int
+    fictional: bool
+    tenant: str
+    service_tiers: tuple[ServiceTier, ...]
+    plays: tuple[Play, ...]
+
+    def tier_for(self, tier_name: str) -> ServiceTier:
+        for service_tier in self.service_tiers:
+            if service_tier.tier == tier_name:
+                return service_tier
+        raise PlaybookError(f"unknown service tier: {tier_name}")
+
+
+def load_playbooks(
+    tenant_slug: str,
+    *,
+    tenants_dir: Path | str = DEFAULT_TENANTS_DIR,
+) -> PlaybookSet:
+    """Load and validate ``knowledge/tenants/<tenant_slug>/playbooks.json``.
+
+    Fail-closed, same discipline as :func:`load_org_pack`: unknown tier/motion
+    names, a missing ``"fictional": true``, or a play referencing an
+    undefined tier all raise :class:`PlaybookError` rather than loading
+    partially-valid data.
+    """
+
+    path = Path(tenants_dir) / tenant_slug / "playbooks.json"
+    raw = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(raw, dict):
+        raise PlaybookError("playbook file must be a JSON object")
+    schema_version = _required_int(raw, "schema_version")
+    if schema_version != PLAYBOOK_SCHEMA_VERSION:
+        raise PlaybookError(f"unsupported playbook schema_version: {schema_version}")
+    if not _required_bool(raw, "fictional"):
+        raise PlaybookError("playbook file must be marked fictional")
+    tenant = _required_str(raw, "tenant")
+    if tenant != tenant_slug:
+        raise PlaybookError(f"playbook tenant field {tenant!r} does not match {tenant_slug!r}")
+
+    service_tiers = tuple(_service_tier(item) for item in _required_list(raw, "service_tiers"))
+    tier_names = {service_tier.tier for service_tier in service_tiers}
+    plays = tuple(_play(item, tier_names) for item in _required_list(raw, "plays"))
+
+    return PlaybookSet(
+        schema_version=schema_version,
+        fictional=True,
+        tenant=tenant,
+        service_tiers=service_tiers,
+        plays=plays,
+    )
+
+
+def _service_tier(raw: Any) -> ServiceTier:
+    if not isinstance(raw, dict):
+        raise PlaybookError("service_tiers entries must be objects")
+    tier = _required_str(raw, "tier")
+    if tier not in PLAYBOOK_SERVICE_TIERS:
+        raise PlaybookError(f"unknown service tier: {tier}")
+    rule = raw.get("rule")
+    if not isinstance(rule, dict) or not rule:
+        raise PlaybookError(f"service tier {tier} missing a rule object")
+    allowed = _string_tuple(raw, "allowed_motions")
+    _validate_motions(allowed, context=f"service tier {tier} allowed_motions")
+    forbidden = tuple(raw.get("forbidden_motions", ()))
+    _validate_motions(forbidden, context=f"service tier {tier} forbidden_motions")
+    return ServiceTier(tier=tier, rule=rule, allowed_motions=allowed, forbidden_motions=forbidden)
+
+
+def _play(raw: Any, tier_names: set[str]) -> Play:
+    if not isinstance(raw, dict):
+        raise PlaybookError("plays entries must be objects")
+    motion = _required_str(raw, "motion")
+    _validate_motions((motion,), context="play motion")
+    tiers = _string_tuple(raw, "tiers")
+    for tier in tiers:
+        if tier not in tier_names:
+            raise PlaybookError(f"play references undefined service tier: {tier}")
+    content_refs = tuple(raw.get("content_refs", ()))
+    return Play(
+        id=_required_str(raw, "id"),
+        trigger_factor=_required_str(raw, "trigger_factor"),
+        motion=motion,
+        tiers=tiers,
+        content_refs=content_refs,
+    )
+
+
+def _validate_motions(motions: tuple[str, ...], *, context: str) -> None:
+    for motion in motions:
+        if motion not in PLAYBOOK_MOTIONS:
+            raise PlaybookError(f"{context}: unknown motion {motion}")
 
 
 def _load_golden_corpus(corpus_dir: Path) -> tuple[GoldenExample, ...]:

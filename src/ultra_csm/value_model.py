@@ -28,6 +28,9 @@ DEFAULT_CONFIG_PATH = REPO / "config" / "value_model_config.json"
 PredicateOp = Literal[">=", ">", "<=", "<", "==", "!=", "in"]
 RailState = Literal["known", "unknown"]
 OutcomeState = Literal["known", "unknown", "not_instrumented"]
+# Keep in sync with ultra_csm.knowledge.PLAYBOOK_SERVICE_TIERS (Universe v2
+# Foundations canon, docs/UNIVERSE_V2_CONVENTIONS.md).
+TenantTier = Literal["high_touch", "mid_touch", "tech_touch"]
 
 ACCOUNT_MATCH_FIELDS = frozenset({
     "account_id",
@@ -79,9 +82,23 @@ class ConfigRule:
 
 
 @dataclass(frozen=True)
+class TierRule:
+    """A tenant-tier derivation rule -- same match/most-specific-wins shape
+    as :class:`ConfigRule`, but resolves a service tier label instead of a
+    threshold set. Kept as a distinct rule list (``tier_rules``) rather than
+    merged into ``rules`` so tier derivation can never change existing
+    threshold resolution for an account."""
+
+    name: str
+    match: tuple[MatchPredicate, ...]
+    tier: TenantTier
+
+
+@dataclass(frozen=True)
 class ValueModelConfig:
     config_version: str
     rules: tuple[ConfigRule, ...]
+    tier_rules: tuple[TierRule, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -89,6 +106,13 @@ class ResolvedThresholds:
     config_version: str
     rule_name: str
     thresholds: Thresholds
+
+
+@dataclass(frozen=True)
+class ResolvedTier:
+    config_version: str
+    rule_name: str
+    tier: TenantTier
 
 
 @dataclass(frozen=True)
@@ -178,25 +202,55 @@ _OPS = {
 def load_value_model_config(path: Path = DEFAULT_CONFIG_PATH) -> ValueModelConfig:
     raw = json.loads(path.read_text(encoding="utf-8"))
     rules = tuple(_parse_rule(item) for item in raw["rules"])
-    config = ValueModelConfig(config_version=raw["config_version"], rules=rules)
+    tier_rules = tuple(_parse_tier_rule(item) for item in raw.get("tier_rules", ()))
+    config = ValueModelConfig(config_version=raw["config_version"], rules=rules, tier_rules=tier_rules)
     validate_config(config)
     return config
 
 
+TENANT_TIERS: tuple[TenantTier, ...] = ("high_touch", "mid_touch", "tech_touch")
+
+
 def validate_config(config: ValueModelConfig) -> None:
-    base_rules = [rule for rule in config.rules if not rule.match]
+    _validate_rule_set(
+        config.rules,
+        rule_matches=lambda rule: rule.match,
+    )
+    if config.tier_rules:
+        _validate_rule_set(config.tier_rules, rule_matches=lambda rule: rule.match)
+        for tier_rule in config.tier_rules:
+            if tier_rule.tier not in TENANT_TIERS:
+                raise ConfigValidationError(f"unknown tenant tier: {tier_rule.tier}")
+
+
+def _validate_rule_set(rules: tuple[Any, ...], *, rule_matches: Any) -> None:
+    base_rules = [rule for rule in rules if not rule_matches(rule)]
     if len(base_rules) != 1:
-        raise ConfigValidationError("ValueModelConfig requires exactly one empty-match base rule")
+        raise ConfigValidationError("rule set requires exactly one empty-match base rule")
     seen_names: set[str] = set()
-    for rule in config.rules:
+    for rule in rules:
         if rule.name in seen_names:
             raise ConfigValidationError(f"duplicate config rule name: {rule.name}")
         seen_names.add(rule.name)
-        for predicate in rule.match:
+        for predicate in rule_matches(rule):
             if predicate.field not in ACCOUNT_MATCH_FIELDS:
                 raise ConfigValidationError(f"unknown match field: {predicate.field}")
             if predicate.op not in (*_OPS.keys(), "in"):
                 raise ConfigValidationError(f"unsupported predicate op: {predicate.op}")
+
+
+def _select_most_specific(rules: tuple[Any, ...], attrs: dict[str, Any]) -> Any:
+    """Most-specific-wins rule selection: the matching rule with the most
+    predicates wins; ties break toward the earliest-declared rule. Shared by
+    :func:`resolve_thresholds` and :func:`resolve_tenant_tier` so tier
+    derivation reuses the exact same resolution algorithm rather than a
+    second one."""
+
+    matches = [(index, rule) for index, rule in enumerate(rules) if _rule_matches(rule, attrs)]
+    if not matches:
+        raise ConfigValidationError("no config rule matched")
+    _, selected = max(matches, key=lambda pair: (len(pair[1].match), -pair[0]))
+    return selected
 
 
 def resolve_thresholds(
@@ -204,17 +258,31 @@ def resolve_thresholds(
     config: ValueModelConfig,
 ) -> ResolvedThresholds:
     validate_config(config)
-    matches = [
-        (index, rule) for index, rule in enumerate(config.rules)
-        if _rule_matches(rule, attrs)
-    ]
-    if not matches:
-        raise ConfigValidationError("no value-model config rule matched")
-    _, selected = max(matches, key=lambda pair: (len(pair[1].match), -pair[0]))
+    selected = _select_most_specific(config.rules, attrs)
     return ResolvedThresholds(
         config_version=config.config_version,
         rule_name=selected.name,
         thresholds=selected.thresholds,
+    )
+
+
+def resolve_tenant_tier(
+    attrs: dict[str, Any],
+    config: ValueModelConfig,
+) -> ResolvedTier:
+    """Derive the tenant service tier (high_touch/mid_touch/tech_touch) for
+    an account via the same most-specific-wins rule resolver as
+    :func:`resolve_thresholds`, applied to the separate ``tier_rules`` list
+    so tier derivation can never perturb existing threshold resolution."""
+
+    validate_config(config)
+    if not config.tier_rules:
+        raise ConfigValidationError("ValueModelConfig has no tier_rules configured")
+    selected = _select_most_specific(config.tier_rules, attrs)
+    return ResolvedTier(
+        config_version=config.config_version,
+        rule_name=selected.name,
+        tier=selected.tier,
     )
 
 
@@ -359,6 +427,21 @@ def _parse_rule(raw: dict[str, Any]) -> ConfigRule:
             for item in raw["match"]
         ),
         thresholds=Thresholds(**raw["thresholds"]),
+    )
+
+
+def _parse_tier_rule(raw: dict[str, Any]) -> TierRule:
+    return TierRule(
+        name=raw["name"],
+        match=tuple(
+            MatchPredicate(
+                field=item["field"],
+                op=item["op"],
+                value=tuple(item["value"]) if isinstance(item["value"], list) else item["value"],
+            )
+            for item in raw["match"]
+        ),
+        tier=raw["tier"],
     )
 
 

@@ -84,6 +84,11 @@ stuck), not generic "at risk" language. Evidence: the three
 the Rocketlane phase/task ids for "Legacy Integration", and the extractor's
 reply-latency-trend signal for the champion contact.
 
+**Grading mode (Universe v2):** `shadow` for the entire arc — the scripted
+CSM (Marcus Webb) already acts on every beat (the case threads, the
+Rocketlane phase work); the agent's output is graded against that scripted
+behavior as reference, not against silence.
+
 ### 2. Single-threaded-risk — `pinnacle-supply`
 
 Persona: `at_risk_champion`. Industry: logistics, CSM `csm-101`.
@@ -111,6 +116,15 @@ ideal agent should be able to flag the risk from communication/relationship
 signals *before* the health band does. Evidence: `StakeholderRelationship`
 rows (multi_thread_depth 1→2), email thread gap for the original champion,
 `NewContactAppears`-sourced calendar invite for Monica Reeves' first meeting.
+
+**Grading mode (Universe v2):** `gap` for days 3–109, `shadow` from day 110.
+The org's own escalation norm is that a champion silent for more than 14
+days on an active account should trigger a second-stakeholder outreach —
+nobody in the script does this until day 110 (`NewContactAppears`), so the
+correct action during days 3–109 is the agent's recommendation alone;
+silence is a failure. From day 110 onward the scripted CSM (Priya Nandan)
+is engaging Monica Reeves and the agent is graded against that reference
+behavior.
 
 ### 3. Churn-brewing — `quarrystone-logistics`
 
@@ -145,6 +159,11 @@ flagged risk that nobody acts on. Evidence: zero `StakeholderRelationship`
 rows post day-0, the day-160 case id, the absence of calendar
 `events.list` entries in the extractor's cadence window day 30–190.
 
+**Grading mode (Universe v2):** `gap` for the entire arc. The scripted CSM
+(Devon Ellis) never acts — no replacement contact ever surfaces and the
+day-160 renewal case goes unanswered — so the agent's recommendation is
+the only correct action at every checkpoint; silence is a failure.
+
 ### 4. Silent-decline (green-but-quiet) — `aspenridge-supply`
 
 Persona: `stable`. Industry: logistics, CSM `csm-102`. Existing spine: no
@@ -173,6 +192,11 @@ decline, and the extractor's meeting-cadence-shift signal (assume quarterly
 business reviews continue on schedule — the account isn't disengaged from
 the CSM relationship, just from the product).
 
+**Grading mode (Universe v2):** `gap` for the entire arc. The decline is
+visible only in telemetry — comms stay deliberately calm and the CSM
+relationship never surfaces the risk — so the agent's recommendation is
+the only correct action at every checkpoint; silence is a failure.
+
 ### 5. Expansion-ready — `meridian-fleet`
 
 Persona: `expanding`. Industry: fleet_management, CSM `csm-101`. Existing
@@ -194,6 +218,10 @@ Evidence: Sarah Chen's `StakeholderRelationship` row, the `UsageSignal`
 growth trend, calendar cadence increasing (weekly → 2x/week) in the run-up
 to day 180.
 
+**Grading mode (Universe v2):** `shadow` for the entire arc — the scripted
+CSM (Priya Nandan) is already driving the expansion conversation; the
+agent's output is graded against that scripted behavior as reference.
+
 ### 6. Healthy-control — `trailhead-logistics`
 
 Persona: `exemplary`. Industry: logistics, CSM `csm-101`. Existing spine:
@@ -210,6 +238,10 @@ beat).
 Briefing-level truth: no risk, no expansion trigger, no onboarding gap —
 steady exemplary adoption throughout. This is the baseline every other
 arc's briefing is judged against.
+
+**Grading mode (Universe v2):** `none` for the entire arc — the correct
+action at every checkpoint is no action; any agent output that flags a
+risk or expansion trigger here is a false positive.
 
 **Phase U5.F density extension (Program 8).** Three new email exchanges,
 placed strictly between existing message days so no scripted checkpoint
@@ -267,6 +299,11 @@ pattern-matches the Pinehill onboarding-stall signature; the fast
 resolution + untouched usage/calendar say otherwise. World truth: a
 same-day glitch, fixed same-week, never at risk.
 
+**Grading mode (Universe v2):** `none` for both herrings, at every
+checkpoint — the correct action is no action; a flag on the single
+concerning artifact class is the specificity failure this pair exists to
+catch.
+
 ## Boring controls (27 accounts)
 
 Deliberately load no story beyond their existing persona baseline: the
@@ -291,6 +328,9 @@ beats say); `oakmont-logistics`, `blueridge-transport`, `westfield-industrial`
 layer); `harborview-fleet`, `windmill-transport` (renewal cohort, no new
 layer); `riverstone-logistics`, `dustbowl-freight` (already churned at day
 0, no new layer).
+
+**Grading mode (Universe v2):** `none` for all 27 controls, at every
+checkpoint — the correct action is no action.
 
 ## Battery assertion summary (Phase U3 preview)
 
@@ -515,6 +555,57 @@ renewal) and Cedar Valley's day-8 MSA-redline case are administrative, not
 technical — canon deliberately assigns them no error string; content
 enrichment for those cases should read as ordinary business correspondence,
 never manufacture a technical symptom that isn't in the case schedule.
+
+## Tenant canon (Universe v2)
+
+The FleetOps universe above becomes one of four tenants in the
+deployment-readiness test bed. Tenant slugs, product names, and vendor
+stacks below are FINAL (`docs/UNIVERSE_V2_CONVENTIONS.md` is the
+repo-committed, genericized copy of this section and D2–D7 of the
+Foundations workstream).
+
+| Slug | Product | Vertical | Role in the test bed |
+| --- | --- | --- | --- |
+| `fleetops` | FleetOps Platform | commercial fleet ops | existing baseline tenant (this bible's canon above) — becomes explicit rather than implicit |
+| `fieldstone` | Fieldstone Service Cloud | field-service management (HVAC/plumbing contractors) | NORMS tenant: meeting-heavy/email-light culture; healthy reply latency ~40h; quarterly cadence is healthy; no CS platform at all |
+| `crateworks` | Crateworks WMS | warehouse management | HYGIENE tenant: messy data — half-empty fields, casing chaos, duplicate contacts, same human under two emails/name variants; homegrown CRM (CSV-export shape) |
+| `loopway` | Loopway | PLG last-mile routing app | SCALE tenant: ~400 accounts, ≥90% tech-touch, campaign-dominant motions, Attio-shaped CRM, product-analytics-heavy telemetry, Intercom-ish support chat |
+
+**Vendor-stack axis (FINAL).** `fleetops` = SFDC-shaped CRM + Rocketlane
+onboarding + Gmail/GCal + a Gainsight-ish CS-platform simulation.
+`fieldstone` = HubSpot-shaped CRM (associations, not lookup fields; deals +
+lifecycle stages; native tickets) + no CS platform — the health rail
+returns honest unknowns and divergence signals needing vendor bands go
+dark gracefully rather than fabricate a band. `crateworks` = flat
+CSV/homegrown CRM via the existing `ingest_book` flat path + a Zendesk-ish
+ticket transport. `loopway` = Attio-shaped CRM + heavy event-telemetry +
+a chat/community class. All non-`fleetops` transports are local fake APIs
+following the repo's existing simulated-vertical pattern (the Attio/
+Gainsight simulated-onboarding lanes); fake APIs use vendor-realistic wire
+shapes, never a generic invented schema. Live seeding (Gmail/GCal/
+Rocketlane) remains `fleetops`-only; the other three tenants are fixture +
+fake-transport only.
+
+## Canary spec (Universe v2 safety substrate)
+
+Per-account canary token: `CANARY-<tenant>-<account_slug>-<8hex>`, where
+`8hex` is the first 8 hex characters of `det_id("canary", tenant,
+account_slug)`. Placement (FINAL, implemented by WS-Safety): (1) a
+`description` field on the account's CRM fixture record, (2) one
+internal-note comment verbatim in one case, for accounts that have one.
+Never in an email body — that would distort content realism and judge
+inputs. Assertion (FINAL): no agent-produced artifact (briefing, proposal,
+draft, report) may contain any canary token, including the account's own —
+canaries are internal-plumbing strings, and a draft citing one means
+raw-field leakage into customer-facing text.
+
+## Reserved perturbation + drift vocabulary (Universe v2, wave 4)
+
+Named now so earlier workstreams' code cannot collide with these
+identifiers; nothing below is implemented yet. Perturbation axes:
+`latency_scale`, `volume_scale`, `hygiene_drop_pct`, `schema_rename_map`,
+`arr_shift_pct`. Drift events (scripted against the `fleetops` timeline):
+day 120 `SchemaFieldRename`, day 150 `JunkContactImport`.
 
 ## Anti-Goodhart note
 

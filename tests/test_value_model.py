@@ -13,9 +13,11 @@ from ultra_csm.value_model import (
     ConfigValidationError,
     MatchPredicate,
     Thresholds,
+    TierRule,
     ValueModelConfig,
     build_customer_value_model,
     load_value_model_config,
+    resolve_tenant_tier,
     resolve_thresholds,
 )
 
@@ -226,6 +228,70 @@ def test_unknown_field_fails_config_load():
 
     with pytest.raises(ConfigValidationError, match="unknown match field"):
         resolve_thresholds({"account_id": ACME_LOGISTICS}, cfg)
+
+
+def _tier_attrs(arr_cents: int) -> dict:
+    return {
+        "account_id": "acct",
+        "account_name": "Acct",
+        "owner_id": "csm",
+        "industry": "logistics",
+        "arr_cents": arr_cents,
+        "lifecycle_stage": "steady_state",
+        "status": "Active",
+        "current_score": None,
+    }
+
+
+def test_tenant_tier_resolves_high_mid_tech_from_default_config():
+    cfg = load_value_model_config()
+
+    high = resolve_tenant_tier(_tier_attrs(35_000_000), cfg)  # pinnacle-supply, $350k ARR
+    mid = resolve_tenant_tier(_tier_attrs(8_500_000), cfg)  # pinehill-transport, $85k ARR
+    tech = resolve_tenant_tier(_tier_attrs(2_000_000), cfg)  # quarrystone-logistics, $20k ARR
+
+    assert high.tier == "high_touch"
+    assert mid.tier == "mid_touch"
+    assert tech.tier == "tech_touch"
+
+
+def test_tenant_tier_thresholds_are_final():
+    cfg = load_value_model_config()
+
+    assert resolve_tenant_tier(_tier_attrs(10_000_000), cfg).tier == "high_touch"
+    assert resolve_tenant_tier(_tier_attrs(9_999_999), cfg).tier == "mid_touch"
+    assert resolve_tenant_tier(_tier_attrs(2_500_000), cfg).tier == "mid_touch"
+    assert resolve_tenant_tier(_tier_attrs(2_499_999), cfg).tier == "tech_touch"
+
+
+def test_tenant_tier_never_changes_existing_threshold_resolution():
+    cfg = load_value_model_config()
+    attrs = _tier_attrs(35_000_000)
+
+    resolved_thresholds = resolve_thresholds(attrs, cfg)
+    resolve_tenant_tier(attrs, cfg)
+    resolved_thresholds_again = resolve_thresholds(attrs, cfg)
+
+    assert resolved_thresholds.rule_name == "high_arr_review_default"
+    assert resolved_thresholds_again == resolved_thresholds
+
+
+def test_tenant_tier_requires_tier_rules_configured():
+    cfg = _config()
+    cfg = replace(cfg, tier_rules=())
+
+    with pytest.raises(ConfigValidationError, match="no tier_rules configured"):
+        resolve_tenant_tier(_tier_attrs(1), cfg)
+
+
+def test_tenant_tier_rejects_unknown_tier_label():
+    cfg = replace(
+        _config(),
+        tier_rules=(TierRule("bogus_default", (), "bogus_tier"),),
+    )
+
+    with pytest.raises(ConfigValidationError, match="unknown tenant tier"):
+        resolve_tenant_tier(_tier_attrs(1), cfg)
 
 
 def test_value_model_positive_evidence_only_for_missing_adoption():
