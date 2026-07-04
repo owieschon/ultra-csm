@@ -19,6 +19,9 @@ CSMActionName = Literal[
     "update_cs_platform_record",
     "edit_success_plan",
     "initiate_customer_call",
+    "campaign_enroll",
+    "content_route",
+    "cohort_action",
 ]
 CSMActionType = CSMActionName
 
@@ -92,6 +95,40 @@ CSM_ACTION_SPECS: dict[CSMActionName, CSMActionSpec] = {
         release_condition="human_approve_with_dual_control",
         customer_affecting=True,
         description="Customer call initiation proposal; strictest tier.",
+    ),
+    "campaign_enroll": CSMActionSpec(
+        action="campaign_enroll",
+        autonomy_tier=2,
+        required_permission="campaign.enroll",
+        release_condition="human_approve",
+        customer_affecting=True,
+        description=(
+            "Enroll an account/contact into a pre-approved lifecycle or nurture "
+            "campaign; the campaign's own approved content is what reaches the "
+            "customer, not CSM-authored prose."
+        ),
+    ),
+    "content_route": CSMActionSpec(
+        action="content_route",
+        autonomy_tier=2,
+        required_permission="content.route",
+        release_condition="human_approve",
+        customer_affecting=True,
+        description=(
+            "Route a pre-approved content-catalog asset (help doc, in-app tip, "
+            "template) to a customer contact; only the routing decision is proposed."
+        ),
+    ),
+    "cohort_action": CSMActionSpec(
+        action="cohort_action",
+        autonomy_tier=3,
+        required_permission="cohort.action.initiate",
+        release_condition="human_approve_with_dual_control",
+        customer_affecting=True,
+        description=(
+            "Apply one motion across a defined account cohort/segment at scale; "
+            "highest blast radius of any CSM action, strictest release tier."
+        ),
     ),
 }
 

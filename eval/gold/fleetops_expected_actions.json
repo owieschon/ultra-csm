@@ -1,0 +1,265 @@
+[
+  {
+    "tenant": "fleetops",
+    "account_slug": "pinehill-transport",
+    "checkpoint_day": 20,
+    "mode": "shadow",
+    "required": {
+      "signal": "reply_latency_trend",
+      "motion_in": ["escalation"],
+      "evidence_must_include": ["7b7fe426-01f6-529e-a65b-3240e6ddc058"]
+    },
+    "forbidden_motions": [],
+    "notes": "bible arc 1 (onboarding-stall), before-checkpoint: kickoff cadence still weekly, champion responsive, day-0 case open but unremarkable; trend signals correctly return insufficient-history."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "pinehill-transport",
+    "checkpoint_day": 50,
+    "mode": "shadow",
+    "required": {
+      "signal": "reply_latency_trend",
+      "motion_in": ["personal_email", "escalation"],
+      "evidence_must_include": [
+        "7b7fe426-01f6-529e-a65b-3240e6ddc058",
+        "90c96b52-a603-51b0-aa5a-024f9d5d90fc"
+      ]
+    },
+    "forbidden_motions": [],
+    "notes": "bible arc 1, during-checkpoint: two dispatch-integration cases fired, reply latency stretching, Rocketlane phase overdue."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "pinehill-transport",
+    "checkpoint_day": 310,
+    "mode": "shadow",
+    "required": {
+      "signal": "reply_latency_trend",
+      "motion_in": ["personal_email"],
+      "evidence_must_include": ["43a814d9-314b-522a-bda5-4ccfe507d55c"]
+    },
+    "forbidden_motions": [],
+    "notes": "bible arc 1, after-checkpoint: post-recovery, cadence back to weekly, steady_state/green already fired."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "pinnacle-supply",
+    "checkpoint_day": 10,
+    "mode": "gap",
+    "required": {
+      "signal": "reply_latency_trend",
+      "motion_in": ["escalation"],
+      "evidence_must_include": ["reply_latency_trend"]
+    },
+    "forbidden_motions": [],
+    "notes": "bible arc 2 (single-threaded-risk): single point of failure exposed at day 10 (champion quiet since day 3); health band doesn't move until day 14, so the recommendation must come from communication signals, not the band."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "pinnacle-supply",
+    "checkpoint_day": 120,
+    "mode": "gap",
+    "required": {
+      "signal": "thread_participation_width",
+      "motion_in": ["personal_email", "escalation"],
+      "evidence_must_include": ["thread_participation_width"]
+    },
+    "forbidden_motions": [],
+    "notes": "bible arc 2: second contact surfaced (Monica Reeves, day 110) but not yet champion of record -- still a gap until day 110's NewContactAppears is followed up on."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "pinnacle-supply",
+    "checkpoint_day": 250,
+    "mode": "shadow",
+    "required": {
+      "signal": "thread_participation_width",
+      "motion_in": ["personal_email", "qbr"],
+      "evidence_must_include": ["thread_participation_width"]
+    },
+    "forbidden_motions": [],
+    "notes": "bible arc 2: recovered, thread width restored, StakeholderRelationship strength strong for Monica Reeves -- scripted CSM (Priya Nandan) already engaged."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "quarrystone-logistics",
+    "checkpoint_day": 30,
+    "mode": "gap",
+    "required": {
+      "signal": "ticket_frequency_window",
+      "motion_in": ["escalation"],
+      "evidence_must_include": ["4d9be931-5c9c-56ad-9ea7-6ef39b9acd0e"]
+    },
+    "forbidden_motions": [],
+    "notes": "bible arc 3 (churn-brewing): red since day 0, no replacement contact ever surfaces; health band gives no new signal at any checkpoint."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "quarrystone-logistics",
+    "checkpoint_day": 190,
+    "mode": "gap",
+    "required": {
+      "signal": "ticket_frequency_window",
+      "motion_in": ["escalation", "personal_email"],
+      "evidence_must_include": ["dc01b971-1f4f-57dc-9f7a-afc2ddbbd239"]
+    },
+    "forbidden_motions": [],
+    "notes": "bible arc 3: day-160 renewal case unanswered by this checkpoint -- absence despite an already-flagged risk."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "quarrystone-logistics",
+    "checkpoint_day": 225,
+    "mode": "gap",
+    "required": {
+      "signal": "ticket_frequency_window",
+      "motion_in": ["escalation"],
+      "evidence_must_include": ["dc01b971-1f4f-57dc-9f7a-afc2ddbbd239"]
+    },
+    "forbidden_motions": [],
+    "notes": "bible arc 3: post-churn (StatusChange to Churned at day 220) -- the gap was never remediated."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "aspenridge-supply",
+    "checkpoint_day": 90,
+    "mode": "gap",
+    "required": {
+      "signal": "meeting_cadence_shift",
+      "motion_in": ["escalation"],
+      "evidence_must_include": ["meeting_cadence_shift"]
+    },
+    "forbidden_motions": [],
+    "notes": "bible arc 4 (silent-decline): decline just starting; zero cases, zero CTAs, health band stays green -- only a UsageSignal trend read surfaces the risk."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "aspenridge-supply",
+    "checkpoint_day": 200,
+    "mode": "gap",
+    "required": {
+      "signal": "meeting_cadence_shift",
+      "motion_in": ["escalation"],
+      "evidence_must_include": ["meeting_cadence_shift"]
+    },
+    "forbidden_motions": [],
+    "notes": "bible arc 4: usage down ~7% cumulative, band still green, zero cases/CTAs -- nothing in the CRM/CS-platform view looks wrong."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "aspenridge-supply",
+    "checkpoint_day": 340,
+    "mode": "gap",
+    "required": {
+      "signal": "meeting_cadence_shift",
+      "motion_in": ["escalation"],
+      "evidence_must_include": ["meeting_cadence_shift"]
+    },
+    "forbidden_motions": [],
+    "notes": "bible arc 4: decline continued to ~12% cumulative, still under the 20% auto-adjustment threshold, still green."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "meridian-fleet",
+    "checkpoint_day": 20,
+    "mode": "shadow",
+    "required": {
+      "signal": "thread_participation_width",
+      "motion_in": ["personal_email"],
+      "evidence_must_include": ["thread_participation_width"]
+    },
+    "forbidden_motions": [],
+    "notes": "bible arc 5 (expansion-ready): new department stakeholder (Sarah Chen) just onboarded day 10, usage climbing."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "meridian-fleet",
+    "checkpoint_day": 170,
+    "mode": "shadow",
+    "required": {
+      "signal": "meeting_cadence_shift",
+      "motion_in": ["personal_email", "campaign_enroll"],
+      "evidence_must_include": ["meeting_cadence_shift"]
+    },
+    "forbidden_motions": [],
+    "notes": "bible arc 5: usage sustained high, ARR expansion about to close at day 180 -- ideal agent flags expansion-readiness pre-confirmation."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "meridian-fleet",
+    "checkpoint_day": 280,
+    "mode": "shadow",
+    "required": {
+      "signal": "meeting_cadence_shift",
+      "motion_in": ["personal_email"],
+      "evidence_must_include": ["meeting_cadence_shift"]
+    },
+    "forbidden_motions": [],
+    "notes": "bible arc 5: expansion closed (ARRChange day 180), year-end uptick in progress."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "trailhead-logistics",
+    "checkpoint_day": 60,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": ["escalation", "personal_email", "working_session"],
+    "notes": "bible arc 6 (healthy-control): no risk, no expansion trigger, no onboarding gap -- the baseline every other arc's briefing is judged against."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "trailhead-logistics",
+    "checkpoint_day": 180,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": ["escalation", "personal_email", "working_session"],
+    "notes": "bible arc 6: off-beat from the mild summer dip, chosen specifically to read as unambiguously fine."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "trailhead-logistics",
+    "checkpoint_day": 300,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": ["escalation", "personal_email", "working_session"],
+    "notes": "bible arc 6: year-end uptick in progress, still boringly fine."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "cedar-valley",
+    "checkpoint_day": 18,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": ["escalation", "personal_email"],
+    "notes": "bible red herring A: usage telemetry alone reads as an early risk signal, but the CRM case + day-30 renewal-closed beat say this was renewal paperwork friction the whole time."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "ironridge-fleet",
+    "checkpoint_day": 42,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": ["escalation", "personal_email"],
+    "notes": "bible red herring B: the case subject/priority alone pattern-matches Pinehill's onboarding-stall signature, but the fast resolution + untouched usage/calendar say it was a same-week glitch."
+  }
+]
