@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "fictional": true,
+  "tenant": "fleetops",
+  "account_slug": "pinnacle-supply",
+  "why_they_bought": "Bought FleetOps for scale -- a 250-asset operation that had outgrown a homegrown dispatch spreadsheet years before this account's arc begins.",
+  "legacy_system": "a homegrown dispatch spreadsheet",
+  "success_criteria": [
+    "Full adoption across all five entitled modules (Live Map, Route Optimizer, Insights Hub, Fuel Analytics, Dispatch Automation)",
+    "Reliable stakeholder engagement at the VP/Director level",
+    "Clean renewal at the 2027-06-01 term"
+  ],
+  "stakeholders": [
+    {"name": "Derek Vaughn", "title": "Director of Operations", "role": "original_champion_departed"},
+    {"name": "Monica Reeves", "title": "VP Supply Chain Operations", "role": "current_champion"}
+  ]
+}

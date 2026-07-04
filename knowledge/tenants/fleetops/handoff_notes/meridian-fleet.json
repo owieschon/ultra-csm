@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "fictional": true,
+  "tenant": "fleetops",
+  "account_slug": "meridian-fleet",
+  "why_they_bought": "Replaced FleetTrak Enterprise, a national competitor product, roughly two years before this arc begins -- the migration is old news; the arc is organic multi-department growth, not integration recovery.",
+  "legacy_system": "FleetTrak Enterprise",
+  "success_criteria": [
+    "Multi-department adoption across fleet ops and facilities",
+    "Expand ARR from $280,000 to $360,000 by bringing the facilities fleet's assets under existing coverage",
+    "Sustained usage growth heading into year-end"
+  ],
+  "stakeholders": [
+    {"name": "Alicia Fernandez", "title": "VP Fleet Ops", "role": "champion"},
+    {"name": "Sarah Chen", "title": "Facilities Manager", "role": "secondary_stakeholder"},
+    {"name": "Karen Bright", "title": "Facilities Director", "role": "aware_not_hands_on"}
+  ]
+}

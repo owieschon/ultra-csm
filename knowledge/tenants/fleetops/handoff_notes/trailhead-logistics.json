@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "fictional": true,
+  "tenant": "fleetops",
+  "account_slug": "trailhead-logistics",
+  "why_they_bought": "Retired a patchwork of spreadsheets and a regional compliance-reporting tool years ago; the existing 'Feature request: custom compliance report template' case is this account asking FleetOps to extend Compliance Center further, not a problem with it.",
+  "legacy_system": "a patchwork of spreadsheets and a regional compliance-reporting tool",
+  "success_criteria": [
+    "Exemplary adoption across the richest capability set of any arc account (Live Map, Route Optimizer, Insights Hub, Compliance Center, Fuel Analytics)",
+    "Serve as a reference/case-study customer"
+  ],
+  "stakeholders": [
+    {"name": "Vanessa Torres", "title": "VP Operations", "role": "champion"},
+    {"name": "Mike Lindgren", "title": "Fleet Director", "role": "secondary_stakeholder"}
+  ]
+}

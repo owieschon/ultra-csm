@@ -1,0 +1,183 @@
+{
+  "artifact": "transcript_consistency_battery",
+  "cases": [
+    {
+      "case": "error_string_cross_reference_spans_transcripts",
+      "detail": {
+        "day57_has_day0": true,
+        "day57_has_day30": true,
+        "day99_has_day80": true
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "transcript_tier_vocabulary",
+      "detail": {
+        "Meridian Facilities <> CSM Sync -- Expansion Scoping": {
+          "entitled": [
+            "Driver Scorecards",
+            "Live Map",
+            "Maintenance Radar",
+            "Route Optimizer"
+          ],
+          "found_forbidden": []
+        },
+        "Meridian Fleet Ops <> CSM Sync -- Expansion Close": {
+          "entitled": [
+            "Driver Scorecards",
+            "Live Map",
+            "Maintenance Radar",
+            "Route Optimizer"
+          ],
+          "found_forbidden": []
+        },
+        "Pinehill Transport <> CSM Sync -- Kickoff": {
+          "entitled": [
+            "Live Map",
+            "Route Optimizer"
+          ],
+          "found_forbidden": []
+        },
+        "Pinehill Transport <> CSM Sync -- Mid-Stall Check-In": {
+          "entitled": [
+            "Live Map",
+            "Route Optimizer"
+          ],
+          "found_forbidden": []
+        },
+        "Pinehill Transport <> CSM Sync -- Post-Fix Review": {
+          "entitled": [
+            "Live Map",
+            "Route Optimizer"
+          ],
+          "found_forbidden": []
+        },
+        "Pinnacle Supply Chain <> CSM Sync -- Monica Intro Call": {
+          "entitled": [
+            "Dispatch Automation",
+            "Fuel Analytics",
+            "Insights Hub",
+            "Live Map",
+            "Route Optimizer"
+          ],
+          "found_forbidden": []
+        },
+        "Trailhead Logistics <> CSM Sync -- QBR": {
+          "entitled": [
+            "Compliance Center",
+            "Fuel Analytics",
+            "Insights Hub",
+            "Live Map",
+            "Route Optimizer"
+          ],
+          "found_forbidden": []
+        }
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "attendee_consistency_vs_calendar_fixture",
+      "detail": {
+        "Meridian Facilities <> CSM Sync -- Expansion Scoping": {
+          "calendar_attendees": [
+            "csm101@fleetops-platform.example",
+            "sarah.chen@meridian-fleet.example"
+          ],
+          "extra": [],
+          "transcript_attendees": [
+            "csm101@fleetops-platform.example",
+            "sarah.chen@meridian-fleet.example"
+          ]
+        },
+        "Meridian Fleet Ops <> CSM Sync -- Expansion Close": {
+          "calendar_attendees": [
+            "alicia.fernandez@meridian-fleet.example",
+            "csm101@fleetops-platform.example"
+          ],
+          "extra": [],
+          "transcript_attendees": [
+            "alicia.fernandez@meridian-fleet.example",
+            "csm101@fleetops-platform.example"
+          ]
+        },
+        "Pinehill Transport <> CSM Sync -- Kickoff": {
+          "calendar_attendees": [
+            "csm102@fleetops-platform.example",
+            "dennis.gruber@pinehill-transport.example"
+          ],
+          "extra": [],
+          "transcript_attendees": [
+            "csm102@fleetops-platform.example",
+            "dennis.gruber@pinehill-transport.example"
+          ]
+        },
+        "Pinehill Transport <> CSM Sync -- Mid-Stall Check-In": {
+          "calendar_attendees": [
+            "csm102@fleetops-platform.example",
+            "dennis.gruber@pinehill-transport.example"
+          ],
+          "extra": [],
+          "transcript_attendees": [
+            "csm102@fleetops-platform.example",
+            "dennis.gruber@pinehill-transport.example"
+          ]
+        },
+        "Pinehill Transport <> CSM Sync -- Post-Fix Review": {
+          "calendar_attendees": [
+            "csm102@fleetops-platform.example",
+            "dennis.gruber@pinehill-transport.example"
+          ],
+          "extra": [],
+          "transcript_attendees": [
+            "csm102@fleetops-platform.example",
+            "dennis.gruber@pinehill-transport.example"
+          ]
+        },
+        "Pinnacle Supply Chain <> CSM Sync -- Monica Intro Call": {
+          "calendar_attendees": [
+            "csm101@fleetops-platform.example",
+            "monica.reeves@pinnacle-supply.example"
+          ],
+          "extra": [],
+          "transcript_attendees": [
+            "csm101@fleetops-platform.example",
+            "monica.reeves@pinnacle-supply.example"
+          ]
+        },
+        "Trailhead Logistics <> CSM Sync -- QBR": {
+          "calendar_attendees": [
+            "csm101@fleetops-platform.example",
+            "mike.lindgren@trailhead-logistics.example",
+            "vanessa.torres@trailhead-logistics.example"
+          ],
+          "extra": [],
+          "transcript_attendees": [
+            "csm101@fleetops-platform.example",
+            "mike.lindgren@trailhead-logistics.example",
+            "vanessa.torres@trailhead-logistics.example"
+          ]
+        }
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "every_transcript_keyed_to_a_real_calendar_event",
+      "detail": {
+        "Meridian Facilities <> CSM Sync -- Expansion Scoping": true,
+        "Meridian Fleet Ops <> CSM Sync -- Expansion Close": true,
+        "Pinehill Transport <> CSM Sync -- Kickoff": true,
+        "Pinehill Transport <> CSM Sync -- Mid-Stall Check-In": true,
+        "Pinehill Transport <> CSM Sync -- Post-Fix Review": true,
+        "Pinnacle Supply Chain <> CSM Sync -- Monica Intro Call": true,
+        "Trailhead Logistics <> CSM Sync -- QBR": true
+      },
+      "ok": true,
+      "problems": []
+    }
+  ],
+  "failed_cases": [],
+  "hard_ok": true
+}

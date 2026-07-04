@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "fictional": true,
+  "tenant": "fleetops",
+  "account_slug": "pinehill-transport",
+  "why_they_bought": "Ran RouteLedger 5.2, an unsupported on-prem dispatch system from a defunct vendor, for over a decade before buying FleetOps specifically to retire it -- the entire onboarding hinges on Dispatch Bridge integration work rather than being incidental to it.",
+  "legacy_system": "RouteLedger 5.2",
+  "success_criteria": [
+    "Retire RouteLedger 5.2 as the system of record for dispatch",
+    "50% of 50 licensed assets reporting through Live Map by June 28",
+    "Stable Dispatch Bridge connection to RouteLedger with no recurring event loss"
+  ],
+  "stakeholders": [
+    {"name": "Dennis Gruber", "title": "Operations Director", "role": "champion"},
+    {"name": "Amy Zhao", "title": "IT Lead", "role": "technical_contact"}
+  ]
+}

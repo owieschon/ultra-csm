@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "fictional": true,
+  "tenant": "fleetops",
+  "account_slug": "cedar-valley",
+  "why_they_bought": "A small, steady account approaching renewal; no legacy-integration story is attributed to this account -- the herring's entire point is that nothing about it needs a story.",
+  "legacy_system": null,
+  "legacy_system_note": "No legacy system is named in canon for this account (Red Herring A) -- consistent with the bible's statement that 'no new cast authored here' and nothing about this account needs a story.",
+  "success_criteria": [
+    "Clean renewal at the 2026-07-21 term"
+  ],
+  "stakeholders": [
+    {"name": "Diane Mercer", "title": "Distribution Manager", "role": "sole_contact"}
+  ]
+}

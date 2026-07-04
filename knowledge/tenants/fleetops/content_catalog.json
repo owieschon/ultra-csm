@@ -1,0 +1,119 @@
+{
+  "schema_version": 1,
+  "fictional": true,
+  "tenant": "fleetops",
+  "entries": [
+    {
+      "id": "content-live-map-quickstart",
+      "title": "Live Map Quickstart: Getting Your First 10 Assets Reporting",
+      "module": "core_telematics",
+      "addresses_gap": "activation_stalled",
+      "format": "guide"
+    },
+    {
+      "id": "content-route-optimizer-adoption",
+      "title": "5 Ways Fleets Cut Deadhead Miles with Route Optimizer",
+      "module": "route_optimization",
+      "addresses_gap": "feature_shallow_depth",
+      "format": "webinar"
+    },
+    {
+      "id": "content-route-optimizer-setup-video",
+      "title": "Route Optimizer Setup Walkthrough (12 min)",
+      "module": "route_optimization",
+      "addresses_gap": "feature_shallow_depth",
+      "format": "video"
+    },
+    {
+      "id": "content-driver-scorecards-manager-guide",
+      "title": "Driver Scorecards for Fleet Managers: Reading the Weekly Digest",
+      "module": "driver_coaching",
+      "addresses_gap": "underused_capability",
+      "format": "guide"
+    },
+    {
+      "id": "content-driver-scorecards-coaching-playbook",
+      "title": "Turning Driver Scorecards into a Coaching Conversation",
+      "module": "driver_coaching",
+      "addresses_gap": "low_engagement",
+      "format": "playbook"
+    },
+    {
+      "id": "content-maintenance-radar-alert-tuning",
+      "title": "Tuning Maintenance Radar Alerts to Cut False Positives",
+      "module": "maintenance_alerts",
+      "addresses_gap": "alert_fatigue",
+      "format": "guide"
+    },
+    {
+      "id": "content-maintenance-radar-predictive-primer",
+      "title": "Predictive Maintenance 101: How Maintenance Radar Scores Risk",
+      "module": "maintenance_alerts",
+      "addresses_gap": "underused_capability",
+      "format": "one_pager"
+    },
+    {
+      "id": "content-insights-hub-exec-dashboard",
+      "title": "Building an Executive Dashboard in Insights Hub",
+      "module": "advanced_reporting",
+      "addresses_gap": "underused_capability",
+      "format": "webinar"
+    },
+    {
+      "id": "content-compliance-center-audit-prep",
+      "title": "Audit Season Prep with Compliance Center",
+      "module": "compliance_dashboard",
+      "addresses_gap": "renewal_risk",
+      "format": "guide"
+    },
+    {
+      "id": "content-compliance-center-custom-templates",
+      "title": "Building Custom Compliance Report Templates",
+      "module": "compliance_dashboard",
+      "addresses_gap": "underused_capability",
+      "format": "video"
+    },
+    {
+      "id": "content-fuel-analytics-benchmark-report",
+      "title": "2026 Fleet Fuel Efficiency Benchmark Report",
+      "module": "fuel_analytics",
+      "addresses_gap": "underused_capability",
+      "format": "report"
+    },
+    {
+      "id": "content-dispatch-automation-rollout-guide",
+      "title": "Rolling Out Dispatch Automation Without Disrupting Dispatchers",
+      "module": "dispatch_automation",
+      "addresses_gap": "activation_stalled",
+      "format": "guide"
+    },
+    {
+      "id": "content-onboarding-launch-plan-overview",
+      "title": "The FleetOps Launch Plan: What to Expect in Your First 90 Days",
+      "module": "methodology",
+      "addresses_gap": "activation_stalled",
+      "format": "one_pager"
+    },
+    {
+      "id": "content-onboarding-dispatch-bridge-explainer",
+      "title": "Dispatch Bridge Explained: Connecting Your Legacy Dispatch System",
+      "module": "methodology",
+      "addresses_gap": "integration_blocker",
+      "format": "video"
+    },
+    {
+      "id": "content-methodology-champion-transition",
+      "title": "What to Do When Your FleetOps Champion Changes Roles",
+      "module": "methodology",
+      "addresses_gap": "single_threaded_risk",
+      "format": "playbook"
+    },
+    {
+      "id": "content-methodology-qbr-prep-checklist",
+      "title": "QBR Prep Checklist for FleetOps Customers",
+      "module": "methodology",
+      "addresses_gap": "renewal_risk",
+      "format": "one_pager"
+    }
+  ]
+}

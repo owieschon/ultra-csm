@@ -1,0 +1,28 @@
+{
+  "accounts": {
+    "meridian-fleet": {
+      "as_of_day": 280,
+      "in_process_event_count": 8304,
+      "wire_event_count": 8304,
+      "wire_matches_in_process": true
+    },
+    "pinehill-transport": {
+      "as_of_day": 310,
+      "in_process_event_count": 1605,
+      "wire_event_count": 1605,
+      "wire_matches_in_process": true
+    }
+  },
+  "artifact": "telemetry_simulated_live",
+  "claim_boundary": {
+    "live": false,
+    "live_tenant_proven": false,
+    "sim": true,
+    "uses_live_credentials": false
+  },
+  "endpoint": "https://ultra-csm-simulated-telemetry.internal/v1/events",
+  "generated_by": "eval.telemetry_simulated_live",
+  "measurement_scope": "Event-level login/feature_action/api_call telemetry for Pinehill Transport and Meridian Fleet Group, served over a local fake transport and read back via a thin reader, proving the wire shape and the in-process derivation agree.",
+  "requests_on_fake_transport": 2,
+  "transport": "FakeTelemetryEventsClient"
+}

@@ -1,0 +1,40 @@
+{
+  "artifact": "quantity_reconciliation_battery",
+  "cases": [
+    {
+      "case": "pinehill_day8_known_variance",
+      "detail": {
+        "claimed_active": 22,
+        "claimed_entitled": 50,
+        "claimed_text": "22 of 50 assets",
+        "simulator_active_assets": 12,
+        "simulator_entitled_assets": 50,
+        "status": "known_variance"
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "pinehill_day85_internal_math_consistency",
+      "detail": {
+        "claimed_pct": 11,
+        "computed_pct": 11,
+        "denominator": 1880,
+        "numerator": 214,
+        "status": "consistent_no_simulator_counterpart"
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "ironridge_webhook_internal_math_consistency",
+      "detail": {
+        "status": "consistent_no_simulator_counterpart"
+      },
+      "ok": true,
+      "problems": []
+    }
+  ],
+  "failed_cases": [],
+  "hard_ok": true
+}
