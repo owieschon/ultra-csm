@@ -32,7 +32,8 @@ from datetime import datetime
 
 from ultra_csm.data_plane.contracts import CommunicationSignal, CRMCase, StakeholderRelationship
 from ultra_csm.data_plane.fixtures import account_id_for, det_id
-from ultra_csm.data_plane.narrative_shared import cases_as_of, rfc3339 as _rfc3339
+from ultra_csm.data_plane.narrative_content.trailhead_content import BODIES as _BODIES
+from ultra_csm.data_plane.narrative_shared import cases_as_of, derive_snippet, rfc3339 as _rfc3339
 
 TRAILHEAD_ACCOUNT_ID = account_id_for("trailhead-logistics")
 TRAILHEAD_CHAMPION_CONTACT_ID = det_id(
@@ -57,49 +58,38 @@ _SECONDARY_EMAIL = "mike.lindgren@trailhead-logistics.example"
 # questions left hanging.
 # ---------------------------------------------------------------------------
 
-_MESSAGE_SCHEDULE: tuple[tuple[int, int, bool, bool, str, str], ...] = (
-    (10, 9, False, False, "Quarterly check-in — Q3 planning",
-     "Hope things are going well, wanted to grab time for our regular check-in."),
-    (10, 13, True, False, "Re: Quarterly check-in — Q3 planning",
-     "Works for us, adoption's been steady on our end, see you at the sync."),
-    (45, 9, False, False, "Compliance reporting — any feedback on the new template?",
-     "Curious how the new compliance report template is landing with your team."),
-    (45, 12, True, False, "Re: Compliance reporting — any feedback on the new template?",
-     "Team likes it, saved us real time on the monthly filing, thanks for shipping it."),
-    (55, 10, False, False, "Ahead of next week's sync",
-     "Sending a quick agenda for next week's sync, nothing pressing on our side."),
-    (55, 13, False, True, "Re: Ahead of next week's sync",
-     "Agenda looks good, I'll cover the fleet-side usage numbers."),
-    (95, 9, False, False, "Case study — quote check",
-     "Circulating the draft case study quote for sign-off before we publish."),
-    (95, 11, True, False, "Re: Case study — quote check",
-     "Quote looks great, approved to publish as-is."),
-    (140, 9, False, False, "Mid-year usage recap",
-     "Sharing the mid-year usage recap ahead of our sync — nothing unusual, seasonal dip as expected."),
-    (140, 13, True, False, "Re: Mid-year usage recap",
-     "Matches what we're seeing, expect it to pick back up after peak season."),
-    (175, 9, False, False, "Ahead of the quarterly business review",
-     "Sending the QBR deck ahead of Thursday, let me know if you want anything added."),
-    (175, 12, True, False, "Re: Ahead of the quarterly business review",
-     "Deck looks thorough, nothing to add, see you Thursday."),
-    (175, 15, False, True, "Re: Ahead of the quarterly business review",
-     "Adding one fleet-utilization slide on my end, will send over tonight."),
-    (210, 9, False, False, "Webhook rollout — how's it working for your team?",
-     "Checking in on the new asset-alert webhook now that it's live."),
-    (210, 12, True, False, "Re: Webhook rollout — how's it working for your team?",
-     "Working great, exactly what the fleet team asked for."),
-    (250, 9, False, False, "Year-end planning check-in",
-     "Starting to think about year-end planning, want to sync on priorities for next year."),
-    (250, 13, True, False, "Re: Year-end planning check-in",
-     "Happy to sync, we're in good shape and excited to keep expanding usage."),
-    (285, 9, False, False, "Ahead of the year-end review",
-     "Sending the year-end review agenda, looking forward to it."),
-    (285, 13, False, True, "Re: Ahead of the year-end review",
-     "Agenda's good, I'll bring the year-end fleet metrics."),
-    (295, 9, False, False, "Great year — thank you",
-     "Wanted to say thanks for another strong year, usage numbers look great heading into next quarter."),
-    (295, 12, True, False, "Re: Great year — thank you",
-     "Likewise, this has been a smooth partnership all year, appreciate the support."),
+_MESSAGE_SCHEDULE: tuple[tuple[int, int, bool, bool, str], ...] = (
+    (10, 9, False, False, "Quarterly check-in — Q3 planning"),
+    (10, 13, True, False, "Re: Quarterly check-in — Q3 planning"),
+    # Phase U5.F density extension (Program 8, bible-first): a same-day FYI
+    # exchange, strictly between the day-10 and day-45 checkpoints' windows.
+    (25, 9, False, False, "Quick FYI — new asset onboarded this week"),
+    (25, 12, True, False, "Re: Quick FYI — new asset onboarded this week"),
+    (45, 9, False, False, "Compliance reporting — any feedback on the new template?"),
+    (45, 12, True, False, "Re: Compliance reporting — any feedback on the new template?"),
+    (55, 10, False, False, "Ahead of next week's sync"),
+    (55, 13, False, True, "Re: Ahead of next week's sync"),
+    (95, 9, False, False, "Case study — quote check"),
+    (95, 11, True, False, "Re: Case study — quote check"),
+    # Phase U5.F density extension: a short recap after an informal call.
+    (120, 9, False, False, "Recap — quick call earlier today"),
+    (120, 13, True, False, "Re: Recap — quick call earlier today"),
+    (140, 9, False, False, "Mid-year usage recap"),
+    (140, 13, True, False, "Re: Mid-year usage recap"),
+    (175, 9, False, False, "Ahead of the quarterly business review"),
+    (175, 12, True, False, "Re: Ahead of the quarterly business review"),
+    (175, 15, False, True, "Re: Ahead of the quarterly business review"),
+    (210, 9, False, False, "Webhook rollout — how's it working for your team?"),
+    (210, 12, True, False, "Re: Webhook rollout — how's it working for your team?"),
+    # Phase U5.F density extension: a quick fleet-utilization status check.
+    (240, 9, False, False, "Quick status check before next sync"),
+    (240, 12, False, True, "Re: Quick status check before next sync"),
+    (250, 9, False, False, "Year-end planning check-in"),
+    (250, 13, True, False, "Re: Year-end planning check-in"),
+    (285, 9, False, False, "Ahead of the year-end review"),
+    (285, 13, False, True, "Re: Ahead of the year-end review"),
+    (295, 9, False, False, "Great year — thank you"),
+    (295, 12, True, False, "Re: Great year — thank you"),
 )
 
 
@@ -109,7 +99,7 @@ def trailhead_email_thread(as_of_day: int) -> dict:
 
     thread_id = det_id("email-thread", TRAILHEAD_ACCOUNT_ID, "quarterly-check-ins")
     messages = []
-    for day_offset, hour, from_champion, from_secondary, subject, snippet in _MESSAGE_SCHEDULE:
+    for day_offset, hour, from_champion, from_secondary, subject in _MESSAGE_SCHEDULE:
         if day_offset > as_of_day:
             break
         if from_champion:
@@ -120,12 +110,13 @@ def trailhead_email_thread(as_of_day: int) -> dict:
             sender = _CSM_EMAIL
         recipient = _CSM_EMAIL if (from_champion or from_secondary) else _CHAMPION_EMAIL
         msg_id = det_id("email-msg", TRAILHEAD_ACCOUNT_ID, day_offset, hour)
+        body = _BODIES[(day_offset, hour)]
         messages.append(
             {
                 "id": msg_id,
                 "threadId": thread_id,
                 "labelIds": ["INBOX"] if (from_champion or from_secondary) else ["SENT"],
-                "snippet": snippet,
+                "snippet": derive_snippet(body),
                 "internalDate": str(
                     int(datetime.fromisoformat(_rfc3339(day_offset, hour).replace("Z", "+00:00")).timestamp() * 1000)
                 ),
@@ -136,7 +127,7 @@ def trailhead_email_thread(as_of_day: int) -> dict:
                         {"name": "Date", "value": _rfc3339(day_offset, hour)},
                         {"name": "Subject", "value": subject},
                     ],
-                    "body": {"data": snippet},
+                    "body": {"data": body},
                 },
             }
         )

@@ -44,6 +44,16 @@ def iso_date(day_offset: int) -> str:
     return (_SEED + timedelta(days=day_offset)).isoformat()
 
 
+def derive_snippet(body: str, limit: int = 100) -> str:
+    """Gmail-style preview snippet: the body's first non-empty line,
+    truncated to *limit* characters (Gmail truncates ~100). Derived from
+    content authored in ``narrative_content/`` rather than hand-maintained
+    separately, so the preview can never drift from the full body."""
+
+    first_line = next((line.strip() for line in body.splitlines() if line.strip()), "")
+    return first_line if len(first_line) <= limit else first_line[: limit - 1].rstrip() + "…"
+
+
 def case_lifecycle_to_crmcase(cl: CaseLifecycle) -> CRMCase:
     created_at = rfc3339(cl.open_day)
     closed_at = rfc3339(cl.resolution_day) if cl.resolution_day is not None else None

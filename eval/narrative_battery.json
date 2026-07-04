@@ -147,7 +147,7 @@
         },
         "day60": {
           "cadence": 0.0,
-          "latency": null,
+          "latency": 0.0,
           "tickets": 1.0
         }
       },

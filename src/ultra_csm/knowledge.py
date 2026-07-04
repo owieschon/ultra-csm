@@ -9,6 +9,7 @@ from typing import Any
 
 
 DEFAULT_ORG_PACK_PATH = Path(__file__).resolve().parents[2] / "knowledge" / "org_pack.json"
+DEFAULT_GOLDEN_CORPUS_DIR = Path(__file__).resolve().parents[2] / "knowledge" / "golden_corpus"
 ORG_CONTEXT_SCHEMA_VERSION = 1
 _FORBIDDEN_KEYS = {
     "account_id",
@@ -56,6 +57,20 @@ class ValueProp:
 
 
 @dataclass(frozen=True)
+class GoldenExample:
+    """One reference artifact from ``knowledge/golden_corpus/`` -- exemplar
+    prose an author or reviewer can compare drafted content against. Not
+    yet wired into ``slot_b_context()``: doing so needs more than a
+    pass-through (which exemplar is relevant to a given draft, token
+    budget), so it is surfaced on ``OrgPack`` and left for a future wiring
+    decision rather than half-wired here."""
+
+    kind: str
+    title: str
+    content: str
+
+
+@dataclass(frozen=True)
 class OrgPack:
     schema_version: int
     pack_version: str
@@ -65,6 +80,7 @@ class OrgPack:
     voice_rules: tuple[str, ...]
     value_props: tuple[ValueProp, ...]
     gap_plays: tuple[GapPlay, ...]
+    golden_corpus: tuple[GoldenExample, ...] = ()
 
     def slot_b_context(self) -> dict[str, Any]:
         """Return the compact context included in Slot B requests."""
@@ -95,7 +111,11 @@ class OrgPack:
         }
 
 
-def load_org_pack(path: Path | str = DEFAULT_ORG_PACK_PATH) -> OrgPack:
+def load_org_pack(
+    path: Path | str = DEFAULT_ORG_PACK_PATH,
+    *,
+    corpus_dir: Path | str = DEFAULT_GOLDEN_CORPUS_DIR,
+) -> OrgPack:
     raw = json.loads(Path(path).read_text(encoding="utf-8"))
     if not isinstance(raw, dict):
         raise OrgPackError("org pack must be a JSON object")
@@ -112,12 +132,41 @@ def load_org_pack(path: Path | str = DEFAULT_ORG_PACK_PATH) -> OrgPack:
         voice_rules=_string_tuple(raw, "voice_rules"),
         value_props=tuple(_value_prop(item) for item in _required_list(raw, "value_props")),
         gap_plays=tuple(_gap_play(item) for item in _required_list(raw, "gap_plays")),
+        golden_corpus=_load_golden_corpus(Path(corpus_dir)),
     )
     if not pack.fictional:
         raise OrgPackError("default demo org pack must be marked fictional")
     if not pack.voice_rules or not pack.value_props or not pack.gap_plays:
         raise OrgPackError("org pack must include voice_rules, value_props, and gap_plays")
     return pack
+
+
+def _load_golden_corpus(corpus_dir: Path) -> tuple[GoldenExample, ...]:
+    """Load every ``*.json`` exemplar in *corpus_dir*. A missing directory is
+    not an error -- the corpus is optional -- but a present, malformed file
+    fails closed with the filename in the error, never silently skipped."""
+
+    if not corpus_dir.is_dir():
+        return ()
+    examples: list[GoldenExample] = []
+    for file_path in sorted(corpus_dir.glob("*.json")):
+        try:
+            raw = json.loads(file_path.read_text(encoding="utf-8"))
+            if not isinstance(raw, dict):
+                raise OrgPackError("golden corpus file must be a JSON object")
+            _reject_forbidden_keys(raw)
+            if not _required_bool(raw, "fictional"):
+                raise OrgPackError("golden corpus file must be marked fictional")
+            examples.append(
+                GoldenExample(
+                    kind=_required_str(raw, "kind"),
+                    title=_required_str(raw, "title"),
+                    content=_required_str(raw, "content"),
+                )
+            )
+        except (OrgPackError, json.JSONDecodeError) as exc:
+            raise OrgPackError(f"golden corpus file {file_path.name}: {exc}") from exc
+    return tuple(examples)
 
 
 def _reject_forbidden_keys(value: Any) -> None:
