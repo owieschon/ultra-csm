@@ -26,17 +26,33 @@ from __future__ import annotations
 import argparse
 import json
 from collections import defaultdict
+from datetime import date, timedelta
 from pathlib import Path
 from typing import Any
 
+import psycopg
+
 from eval.expected_actions_gold import load_expected_actions
+from ultra_csm.agent1 import collapse_cohorts, run_time_to_value_sweep
+from ultra_csm.data_plane import (
+    CustomerDataPlane,
+    FixtureCRMDataConnector,
+    FixtureCSPlatformConnector,
+    FixtureProductTelemetryConnector,
+)
 from ultra_csm.data_plane.book_simulator import simulate_book
 from ultra_csm.data_plane.fixtures import account_id_for
-from ultra_csm.data_plane.synthetic_book import build_synthetic_book
+from ultra_csm.data_plane.synthetic_book import SEED_DATE, build_synthetic_book
+from ultra_csm.governance import ActionGate, FixtureVerdictSource, ROLE_CS_ORCHESTRATOR, make_principal, seed_roster
 from ultra_csm.knowledge import load_playbooks
-from ultra_csm.motion_resolver import resolve_motions
+from ultra_csm.motion_resolver import COHORT_THRESHOLD, resolve_motions  # noqa: F401 - re-exported, tests/test_tier_policy_battery.py imports it from this module
+from ultra_csm.platform import EphemeralCluster
+from ultra_csm.platform.db import apply_migrations, session
+from ultra_csm.platform.seed import SEED_CLOCK, det_uuid
 from ultra_csm.value_model import account_attributes, load_value_model_config, resolve_tenant_tier
 
+REPO = Path(__file__).resolve().parents[1]
+MIGRATIONS = REPO / "migrations"
 ARTIFACT_PATH = Path(__file__).with_name("tier_policy_battery.json")
 
 # Cohort collapse threshold (motion_resolver.COHORT_THRESHOLD, its default):
@@ -64,6 +80,42 @@ _TIER_MIRROR_3_COHORT = (
     "roughcut-freight",
 )
 TIER_MIRROR_ACCOUNTS = _TIER_MIRROR_1_2 + _TIER_MIRROR_3_COHORT
+
+# Real-pipeline gate identity (Harvest 5 Phase 4's check_cohort_collapses_
+# to_one_action only -- every other case in this module still calls the
+# standalone resolver directly and needs no gate/roster at all).
+_GATE_TENANT_ID = det_uuid("tenant", "ultra-csm-tier-policy-battery")
+_GATE_SEED_ACTOR_ID = det_uuid("principal", "ultra-csm-tier-policy-battery", "system-seed")
+
+
+def _setup_real_pipeline_gate(conn: psycopg.Connection) -> ActionGate:
+    with session(conn, tenant_id=_GATE_TENANT_ID, actor_id=_GATE_SEED_ACTOR_ID, now=SEED_CLOCK) as cur:
+        cur.execute(
+            "INSERT INTO tenant (tenant_id, name) VALUES (%s, %s) "
+            "ON CONFLICT (tenant_id) DO NOTHING",
+            (_GATE_TENANT_ID, "Ultra CSM Tier Policy Battery Eval"),
+        )
+        cur.execute(
+            "INSERT INTO principal (principal_id, tenant_id, kind, display_name) "
+            "VALUES (%s, %s, 'agent', %s) ON CONFLICT (principal_id) DO NOTHING",
+            (_GATE_SEED_ACTOR_ID, _GATE_TENANT_ID, "system-seed"),
+        )
+    seed_roster(conn, tenant_id=_GATE_TENANT_ID, actor_id=_GATE_SEED_ACTOR_ID, now=SEED_CLOCK)
+    actor_id = make_principal(
+        conn,
+        tenant_id=_GATE_TENANT_ID,
+        actor_id=_GATE_SEED_ACTOR_ID,
+        display_name="tier-policy-battery-eval",
+        role=ROLE_CS_ORCHESTRATOR,
+        now=SEED_CLOCK,
+    )
+    return ActionGate(
+        conn,
+        tenant_id=_GATE_TENANT_ID,
+        actor_principal_id=actor_id,
+        verdict_source=FixtureVerdictSource(),
+        now=SEED_CLOCK,
+    )
 
 
 def _account_triggers(account_id: str, health, adoption, entitlements) -> set[str]:
@@ -215,7 +267,11 @@ def check_no_tier_forbidden_motion_anywhere() -> dict[str, Any]:
 def check_cohort_collapses_to_one_action() -> dict[str, Any]:
     """The bible's 25-account tier-mirror-3 cohort yields exactly one
     cohort_action at day 140, and zero per-account personal motions for
-    those 25 accounts."""
+    those 25 accounts -- through the REAL production sweep +
+    `collapse_cohorts` post-sweep pass this time (Harvest 5 Phase 4's
+    mandate: "against the real pipeline path, not the standalone
+    resolver"), unlike every other case in this module, which still calls
+    `resolve_motions_for_day` (the standalone resolver) directly."""
 
     problems: list[str] = []
     cohort_slugs = sorted(
@@ -224,16 +280,52 @@ def check_cohort_collapses_to_one_action() -> dict[str, Any]:
         if row.checkpoint_day == 140 and "cohort_action" in row.motion_in
     )
     cohort_ids = {account_id_for(slug) for slug in cohort_slugs}
-    resolved = resolve_motions_for_day(140)
 
-    matching_cohort_actions = [c for c in resolved["cohort_actions"] if cohort_ids <= set(c["account_ids"])]
-    check(len(matching_cohort_actions) == 1, problems,
-          "expected exactly one cohort_action covering the 25-account cohort", len(matching_cohort_actions))
+    base = build_synthetic_book()
+    book = simulate_book(base, 140)
+    data_plane = CustomerDataPlane(
+        crm=FixtureCRMDataConnector(data=book),
+        cs=FixtureCSPlatformConnector(data=book),
+        telemetry=FixtureProductTelemetryConnector(data=book),
+    )
+    playbooks = load_playbooks("fleetops")
+    cfg = load_value_model_config()
+    as_of = (date.fromisoformat(SEED_DATE) + timedelta(days=140)).isoformat()
+
+    with EphemeralCluster() as cluster:
+        with psycopg.connect(**cluster.dsn(user=cluster.BOOTSTRAP_USER)) as boot:
+            apply_migrations(boot, MIGRATIONS)
+        with psycopg.connect(**cluster.dsn(user="app_runtime")) as conn:
+            gate = _setup_real_pipeline_gate(conn)
+            sweep = run_time_to_value_sweep(
+                data_plane,
+                "ultra-demo",
+                gate,
+                sweep_principal_id=_GATE_SEED_ACTOR_ID,
+                as_of=as_of,
+                playbook_tenant_slug="fleetops",
+            )
+            collapsed = collapse_cohorts(
+                sweep,
+                data_plane,
+                tenant_id="ultra-demo",
+                playbooks=playbooks,
+                value_model_config=cfg,
+                as_of=as_of,
+            )
+
+    matching_cohort_items = [
+        item for item in collapsed.work_items
+        if item.recommended_action == "cohort_action" and cohort_ids <= set(item.candidate_account_ids)
+    ]
+    check(len(matching_cohort_items) == 1, problems,
+          "expected exactly one cohort_action work item covering the 25-account cohort",
+          len(matching_cohort_items))
 
     per_account_leaks = {
-        aid: [p["motion"] for p in resolved["per_account"].get(aid, ())]
-        for aid in cohort_ids
-        if resolved["per_account"].get(aid)
+        item.account_id: item.motion
+        for item in collapsed.work_items
+        if item.account_id in cohort_ids and item.motion is not None
     }
     check(not per_account_leaks, problems,
           "cohort accounts should have zero per-account motions once collapsed", per_account_leaks)
@@ -242,7 +334,11 @@ def check_cohort_collapses_to_one_action() -> dict[str, Any]:
         "case": "cohort-collapses-to-one-action",
         "ok": not problems,
         "problems": problems,
-        "detail": {"cohort_size": len(cohort_ids), "cohort_actions_found": len(matching_cohort_actions)},
+        "detail": {
+            "cohort_size": len(cohort_ids),
+            "cohort_items_found": len(matching_cohort_items),
+            "real_pipeline": True,
+        },
     }
 
 

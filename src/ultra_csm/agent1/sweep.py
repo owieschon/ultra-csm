@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 import time
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 from typing import TYPE_CHECKING, Literal
 
 from ultra_csm._util import compact_asdict, iso_date
@@ -610,21 +610,17 @@ def _account_triggers_for_motion(health, adoption, entitlements) -> set[str]:
     return triggers
 
 
-def _account_tier_and_motion(
+def _account_tier_and_triggers(
     data_plane: CustomerDataPlane,
     account: CRMAccount,
     *,
-    playbooks: PlaybookSet,
     value_model_config: ValueModelConfig,
-) -> tuple[str, str | None] | None:
-    """Resolve this one account's tier and tier-appropriate motion together
-    (one data_plane pass) via the promoted ``motion_resolver.resolve_motions``
-    -- a single-account map naturally never reaches cohort-collapse
-    threshold, so this yields the same per-account motion a whole-book
-    sweep would (see motion_resolver's docstring). Returns None if the
-    account has no CS-platform company record; in practice callers only
-    reach this after ``_slot_b_inputs_for_account`` already required one,
-    so this branch mirrors that check rather than adding a new failure mode."""
+) -> tuple[str, set[str]] | None:
+    """This account's tier and fired trigger_factor set (one data_plane
+    pass). Returns None if the account has no CS-platform company record;
+    in practice callers only reach this after ``_slot_b_inputs_for_account``
+    already required one, so this branch mirrors that check rather than
+    adding a new failure mode."""
 
     company = data_plane.cs.get_company(account.account_id)
     if company is None:
@@ -634,10 +630,110 @@ def _account_tier_and_motion(
     entitlements = tuple(data_plane.telemetry.list_entitlements(account.account_id))
     tier = resolve_tenant_tier(account_attributes(account, company), value_model_config).tier
     triggers = _account_triggers_for_motion(health, adoption, entitlements)
+    return tier, triggers
+
+
+def _account_tier_and_motion(
+    data_plane: CustomerDataPlane,
+    account: CRMAccount,
+    *,
+    playbooks: PlaybookSet,
+    value_model_config: ValueModelConfig,
+) -> tuple[str, str | None] | None:
+    """Resolve this one account's tier and tier-appropriate motion together
+    via the promoted ``motion_resolver.resolve_motions`` -- a single-account
+    map naturally never reaches cohort-collapse threshold, so this yields
+    the same per-account motion a whole-book sweep would (see
+    motion_resolver's docstring)."""
+
+    tier_and_triggers = _account_tier_and_triggers(data_plane, account, value_model_config=value_model_config)
+    if tier_and_triggers is None:
+        return None
+    tier, triggers = tier_and_triggers
     resolved = resolve_motions({account.account_id: tier}, {account.account_id: triggers}, playbooks)
     plays = resolved["per_account"].get(account.account_id, ())
     motion = plays[0]["motion"] if plays else None
     return tier, motion
+
+
+def collapse_cohorts(
+    sweep: SweepResult,
+    data_plane: CustomerDataPlane,
+    *,
+    tenant_id: str,
+    playbooks: PlaybookSet,
+    value_model_config: ValueModelConfig,
+    as_of: str,
+) -> SweepResult:
+    """Post-sweep pass, additive and SEPARATE from per-account work-item
+    construction: collapse per-account items sharing a (trigger_factor,
+    tier) pair at or above cohort threshold into ONE cohort_action work
+    item, exactly mirroring ``motion_resolver.resolve_motions``'s
+    cohort-collapse branch -- a single account's work-item construction
+    cannot see its siblings, so this runs over *tenant_id*'s whole book at
+    *as_of* instead, the same way ``eval/tier_policy_battery.py``'s battery
+    already proves offline. Collapsed per-account items are DROPPED from
+    ``work_items`` (not flagged) -- this matches ``resolve_motions``'s own
+    precedent of simply omitting collapsed accounts from ``per_account``
+    rather than marking them, so no new suppression concept is introduced.
+
+    A cohort item has no single ``account_id`` (it covers many), which
+    ``CSMWorkItem.account_resolution`` has no dedicated value for --
+    ``"ambiguous"`` (account_id=None + candidate_account_ids=many) is the
+    closest existing fit, reused here NOT because identity is uncertain
+    (every member account is known) but because it is the only existing
+    state shaped like "no single account_id, see candidate_account_ids".
+    Nothing in this codebase currently branches on ``account_resolution``
+    (verified), so this reuse carries no known behavioral risk; a
+    dedicated value is a follow-on Owner Ask, not added here (would touch
+    ``data_plane/contracts.py``'s shared ``ResolutionState``, outside this
+    dispatch's ownership map).
+    """
+
+    accounts = tuple(data_plane.crm.list_accounts(tenant_id=tenant_id))
+    tier_by_account_id: dict[str, str] = {}
+    triggers_by_account_id: dict[str, set[str]] = {}
+    for account in accounts:
+        tier_and_triggers = _account_tier_and_triggers(
+            data_plane, account, value_model_config=value_model_config
+        )
+        if tier_and_triggers is None:
+            continue
+        tier_by_account_id[account.account_id] = tier_and_triggers[0]
+        triggers_by_account_id[account.account_id] = tier_and_triggers[1]
+
+    resolved = resolve_motions(tier_by_account_id, triggers_by_account_id, playbooks)
+    cohort_actions = resolved["cohort_actions"]
+    if not cohort_actions:
+        return sweep
+
+    cohort_account_ids: set[str] = set()
+    cohort_items: list[CSMWorkItem] = []
+    for cohort in cohort_actions:
+        cohort_account_ids.update(cohort["account_ids"])
+        cohort_items.append(CSMWorkItem(
+            tenant_id=tenant_id,
+            account_resolution="ambiguous",
+            account_id=None,
+            candidate_account_ids=tuple(cohort["account_ids"]),
+            disposition="propose_customer_action",
+            recommended_action="cohort_action",
+            reason=(
+                f"Cohort collapse: {cohort['trigger_factor']} affects "
+                f"{len(cohort['account_ids'])} {cohort['tier']} accounts via play "
+                f"{cohort['play_id']!r} -- one cohort_action covers all, not "
+                f"{len(cohort['account_ids'])} individual motions."
+            ),
+            priority=None,
+            evidence=(),
+            customer_contact_allowed=False,
+            proposal=None,
+            swept_at=as_of,
+            motion="cohort_action",
+        ))
+
+    kept_items = tuple(item for item in sweep.work_items if item.account_id not in cohort_account_ids)
+    return replace(sweep, work_items=kept_items + tuple(cohort_items))
 
 
 def _work_item_for_account(
