@@ -37,6 +37,8 @@ from ultra_csm.data_plane.narrative_content import (
     quarrystone_content,
     trailhead_content,
 )
+from ultra_csm.data_plane.tenants.fieldstone import canary as fieldstone_canary
+from ultra_csm.data_plane.tenants.fieldstone import case_verbatims as fieldstone_case_verbatims
 from ultra_csm.tick import ObservedTickState, observe_sim_state
 from ultra_csm.value_model import build_customer_value_model
 
@@ -131,6 +133,45 @@ def check_canary_integrity() -> dict[str, Any]:
     check(not leaked, problems, "canary token found in an email body (forbidden placement)", leaked)
 
     return {"case": "canary-integrity", "ok": not problems, "problems": problems, "detail": detail}
+
+
+def check_fieldstone_canary_integrity() -> dict[str, Any]:
+    """Universe v2 WS-Tenant-Fieldstone (Wave 3): D4 canary coverage for
+    fieldstone's 12 accounts, mirroring ``check_canary_integrity`` above
+    but reading fieldstone's own namespaced canary registry/case-verbatim
+    module (never fleetops') -- see docs/TENANT_FIELDSTONE_BIBLE.md's
+    Canary spec."""
+
+    problems: list[str] = []
+    detail: dict[str, Any] = {}
+
+    missing = [
+        slug
+        for slug in fieldstone_canary.ACCOUNT_DESCRIPTIONS
+        if fieldstone_canary.canary_token(fieldstone_canary.TENANT, slug)
+        not in fieldstone_canary.ACCOUNT_DESCRIPTIONS[slug]
+    ]
+    check(not missing, problems, "fieldstone account description missing its own canary", missing)
+    detail["accounts_with_canary"] = len(fieldstone_canary.ACCOUNT_DESCRIPTIONS) - len(missing)
+
+    culvert_token = fieldstone_canary.canary_token(fieldstone_canary.TENANT, "culvert-mechanical")
+    matches = [
+        v
+        for v in fieldstone_case_verbatims.VERBATIMS.values()
+        if any(c.author == "Internal Note" and culvert_token in c.body for c in v.comments)
+    ]
+    detail["culvert_mechanical_verbatim_notes"] = len(matches)
+    check(
+        len(matches) == 1,
+        problems,
+        "culvert-mechanical: expected exactly 1 case verbatim carrying its canary, found",
+        len(matches),
+    )
+
+    return {
+        "case": "fieldstone-canary-integrity",
+        "ok": not problems, "problems": problems, "detail": detail,
+    }
 
 
 def check_cross_account_contamination() -> dict[str, Any]:
@@ -334,6 +375,7 @@ def check_repeatability() -> dict[str, Any]:
 
 CASES = (
     check_canary_integrity,
+    check_fieldstone_canary_integrity,
     check_cross_account_contamination,
     check_injection_noncompliance,
     check_pii_sentinels,

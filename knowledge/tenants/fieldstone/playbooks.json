@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "fictional": true,
+  "tenant": "fieldstone",
+  "service_tiers": [
+    {
+      "tier": "high_touch",
+      "rule": {"arr_cents": ">=10000000"},
+      "allowed_motions": [
+        "personal_email",
+        "working_session",
+        "qbr",
+        "escalation",
+        "campaign_enroll",
+        "content_route",
+        "cohort_action"
+      ],
+      "forbidden_motions": []
+    },
+    {
+      "tier": "mid_touch",
+      "rule": {"arr_cents": ">=2500000"},
+      "allowed_motions": [
+        "personal_email",
+        "escalation",
+        "campaign_enroll",
+        "content_route",
+        "cohort_action"
+      ],
+      "forbidden_motions": []
+    },
+    {
+      "tier": "tech_touch",
+      "rule": {"arr_cents": "<2500000"},
+      "allowed_motions": [
+        "campaign_enroll",
+        "content_route",
+        "cohort_action"
+      ],
+      "forbidden_motions": ["personal_email", "working_session", "qbr"]
+    }
+  ],
+  "plays": [
+    {
+      "id": "reply-latency-baseline-delta-highmid",
+      "trigger_factor": "reply_latency_baseline_delta",
+      "motion": "personal_email",
+      "tiers": ["high_touch", "mid_touch"],
+      "content_refs": []
+    },
+    {
+      "id": "reply-latency-baseline-delta-escalation",
+      "trigger_factor": "reply_latency_baseline_delta_with_open_case",
+      "motion": "escalation",
+      "tiers": ["high_touch", "mid_touch"],
+      "content_refs": []
+    },
+    {
+      "id": "reply-latency-baseline-delta-techtouch",
+      "trigger_factor": "reply_latency_baseline_delta",
+      "motion": "campaign_enroll",
+      "tiers": ["tech_touch"],
+      "content_refs": []
+    }
+  ]
+}

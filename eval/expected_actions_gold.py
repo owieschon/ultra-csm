@@ -14,17 +14,19 @@ from typing import Any
 
 from ultra_csm.data_plane.synthetic_book import _ACCT_DATA
 from ultra_csm.data_plane.tenants.crateworks.book import ACCOUNTS as _CRATEWORKS_ACCT_DATA
+from ultra_csm.data_plane.tenants.fieldstone.book import ACCOUNT_SLUGS as _FIELDSTONE_ACCOUNT_SLUGS
 from ultra_csm.knowledge import PLAYBOOK_MOTIONS
 
-# Additive union across tenants (Universe v2, Wave 3): this loader started
-# fleetops-only; WS-Tenant-Crateworks widened it to also recognize
-# crateworks' own account slugs, so `crateworks_expected_actions.json` can
-# validate through the SAME shared loader rather than forking a second one.
-# fleetops' own slug set and validation behavior are unchanged (still the
-# only tenant `tests/test_expected_actions_gold.py` exercises).
-_KNOWN_ACCOUNT_SLUGS = frozenset(slug for slug, *_ in _ACCT_DATA) | frozenset(
-    slug for slug, *_ in _CRATEWORKS_ACCT_DATA
-)
+# Per-tenant known-slug registry (Universe v2 D5): additive so a new
+# tenant's gold file can validate account_slug without widening this
+# module's understanding of any OTHER tenant's book. fleetops keeps its
+# original single-frozenset shape unchanged.
+_KNOWN_ACCOUNT_SLUGS_BY_TENANT: dict[str, frozenset[str]] = {
+    "fleetops": frozenset(slug for slug, *_ in _ACCT_DATA),
+    "crateworks": frozenset(slug for slug, *_ in _CRATEWORKS_ACCT_DATA),
+    "fieldstone": frozenset(_FIELDSTONE_ACCOUNT_SLUGS),
+}
+_KNOWN_ACCOUNT_SLUGS = _KNOWN_ACCOUNT_SLUGS_BY_TENANT["fleetops"]
 
 GOLD_DIR = Path(__file__).resolve().parent / "gold"
 GRADING_MODES = ("shadow", "gap", "none")
@@ -62,11 +64,24 @@ def load_expected_actions(
     if not isinstance(raw, list) or not raw:
         raise ExpectedActionsGoldError(f"{path.name} must be a non-empty JSON array")
     rows = tuple(_row(item, tenant) for item in raw)
-    if len(rows) < 18:
+    # Coverage floor is tenant-scaled: fleetops' 18 was derived from ITS OWN
+    # bible (one row per checkpoint across six scripted arcs) -- fieldstone's
+    # smaller 12-account book (two arcs + one herring + nine boring controls,
+    # per docs/TENANT_FIELDSTONE_BIBLE.md) has a proportionally smaller real
+    # checkpoint count. The floor per tenant is this module's own record of
+    # "at least one row per bible-named checkpoint," not a borrowed constant.
+    floor = _COVERAGE_FLOOR_BY_TENANT.get(tenant, 18)
+    if len(rows) < floor:
         raise ExpectedActionsGoldError(
-            f"{path.name} has {len(rows)} rows, fewer than the 18-checkpoint coverage floor"
+            f"{path.name} has {len(rows)} rows, fewer than the {floor}-checkpoint coverage floor"
         )
     return rows
+
+
+_COVERAGE_FLOOR_BY_TENANT: dict[str, int] = {
+    "fleetops": 18,
+    "fieldstone": 17,
+}
 
 
 def _row(raw: Any, tenant: str) -> ExpectedActionRow:
@@ -77,8 +92,9 @@ def _row(raw: Any, tenant: str) -> ExpectedActionRow:
     account_slug = raw.get("account_slug")
     if not isinstance(account_slug, str) or not account_slug:
         raise ExpectedActionsGoldError("row missing account_slug")
-    if account_slug not in _KNOWN_ACCOUNT_SLUGS:
-        raise ExpectedActionsGoldError(f"unknown synthetic-book account slug: {account_slug}")
+    known_slugs = _KNOWN_ACCOUNT_SLUGS_BY_TENANT.get(tenant, _KNOWN_ACCOUNT_SLUGS)
+    if account_slug not in known_slugs:
+        raise ExpectedActionsGoldError(f"unknown {tenant} synthetic-book account slug: {account_slug}")
 
     mode = raw.get("mode")
     if mode not in GRADING_MODES:

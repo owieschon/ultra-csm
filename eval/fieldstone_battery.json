@@ -1,0 +1,220 @@
+{
+  "artifact": "fieldstone_narrative_property_battery",
+  "cases": [
+    {
+      "account": "masonry-home-services",
+      "case": "arc-f1-healthy-despite-fleetops-alarming-absolutes",
+      "detail": {
+        "day180": {
+          "flagged": false,
+          "latency_value": -0.5,
+          "reason": "delta -0.5 < tenant baseline floor 20.0: within normal variance",
+          "tickets": 0.0
+        },
+        "day300": {
+          "flagged": false,
+          "latency_value": null,
+          "reason": "insufficient_history: no delta computable yet",
+          "tickets": 0.0
+        },
+        "day60": {
+          "flagged": false,
+          "latency_value": null,
+          "reason": "insufficient_history: no delta computable yet",
+          "tickets": 0.0
+        }
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "account": "culvert-mechanical",
+      "case": "arc-f2-baseline-delta-risk",
+      "detail": {
+        "cross_account_baseline_comparison": {
+          "culvert_day80_delta": -0.5,
+          "gap": 0.0,
+          "masonry_day180_delta": -0.5
+        },
+        "day140": {
+          "flagged": true,
+          "latency_value": 26.0,
+          "reason": "delta 26.0 >= tenant baseline floor 20.0: flagged"
+        },
+        "day80": {
+          "flagged": false,
+          "latency_value": -0.5,
+          "reason": "delta -0.5 < tenant baseline floor 20.0: within normal variance"
+        }
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "account": "wrenhouse-hvac",
+      "case": "herring-fh1-zero-flag",
+      "detail": {
+        "case_count": 1,
+        "day180": {
+          "flagged": false,
+          "latency_value": null,
+          "tickets": 0.0
+        },
+        "day300": {
+          "flagged": false,
+          "latency_value": null,
+          "tickets": 0.0
+        },
+        "day60": {
+          "flagged": false,
+          "latency_value": null,
+          "tickets": 1.0
+        }
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "boring-controls-zero-flag",
+      "detail": {
+        "cobblestone-hvac-co": {
+          "case_count": 0
+        },
+        "driftstone-plumbing": {
+          "case_count": 0
+        },
+        "fieldstone-mortar-co": {
+          "case_count": 0
+        },
+        "graybrick-hvac": {
+          "case_count": 0
+        },
+        "hearthstone-plumbing": {
+          "case_count": 0
+        },
+        "quarrybed-mechanical": {
+          "case_count": 0
+        },
+        "shale-plumbing-group": {
+          "case_count": 0
+        },
+        "slaterock-home-services": {
+          "case_count": 0
+        },
+        "tanbark-mechanical": {
+          "case_count": 0
+        }
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "no-health-band-rail-returns-unknown",
+      "detail": {
+        "cobblestone-hvac-co": {
+          "adoption_is_none": true,
+          "company_is_none": true,
+          "ctas_empty": true,
+          "health_is_none": true,
+          "plans_empty": true
+        },
+        "culvert-mechanical": {
+          "adoption_is_none": true,
+          "company_is_none": true,
+          "ctas_empty": true,
+          "health_is_none": true,
+          "plans_empty": true
+        },
+        "driftstone-plumbing": {
+          "adoption_is_none": true,
+          "company_is_none": true,
+          "ctas_empty": true,
+          "health_is_none": true,
+          "plans_empty": true
+        },
+        "fieldstone-mortar-co": {
+          "adoption_is_none": true,
+          "company_is_none": true,
+          "ctas_empty": true,
+          "health_is_none": true,
+          "plans_empty": true
+        },
+        "graybrick-hvac": {
+          "adoption_is_none": true,
+          "company_is_none": true,
+          "ctas_empty": true,
+          "health_is_none": true,
+          "plans_empty": true
+        },
+        "hearthstone-plumbing": {
+          "adoption_is_none": true,
+          "company_is_none": true,
+          "ctas_empty": true,
+          "health_is_none": true,
+          "plans_empty": true
+        },
+        "masonry-home-services": {
+          "adoption_is_none": true,
+          "company_is_none": true,
+          "ctas_empty": true,
+          "health_is_none": true,
+          "plans_empty": true
+        },
+        "quarrybed-mechanical": {
+          "adoption_is_none": true,
+          "company_is_none": true,
+          "ctas_empty": true,
+          "health_is_none": true,
+          "plans_empty": true
+        },
+        "shale-plumbing-group": {
+          "adoption_is_none": true,
+          "company_is_none": true,
+          "ctas_empty": true,
+          "health_is_none": true,
+          "plans_empty": true
+        },
+        "slaterock-home-services": {
+          "adoption_is_none": true,
+          "company_is_none": true,
+          "ctas_empty": true,
+          "health_is_none": true,
+          "plans_empty": true
+        },
+        "tanbark-mechanical": {
+          "adoption_is_none": true,
+          "company_is_none": true,
+          "ctas_empty": true,
+          "health_is_none": true,
+          "plans_empty": true
+        },
+        "wrenhouse-hvac": {
+          "adoption_is_none": true,
+          "company_is_none": true,
+          "ctas_empty": true,
+          "health_is_none": true,
+          "plans_empty": true
+        }
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "baseline-config-loads-fail-closed",
+      "detail": {
+        "floors": {
+          "reply_latency_trend_hours": 20.0
+        },
+        "tenant": "fieldstone",
+        "unconfigured_metric_fails_closed": {
+          "flagged": false,
+          "reason": "no configured baseline floor for metric 'some_unconfigured_metric'"
+        }
+      },
+      "ok": true,
+      "problems": []
+    }
+  ],
+  "failed_cases": [],
+  "hard_ok": true
+}

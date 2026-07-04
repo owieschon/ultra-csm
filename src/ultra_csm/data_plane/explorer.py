@@ -288,6 +288,58 @@ def _attio_explorer_steps(env: Mapping[str, str]):
     )
 
 
+def _hubspot_explorer_steps(env: Mapping[str, str]):
+    """Universe v2 WS-Tenant-Fieldstone (Wave 3): HubSpot-shaped CRM
+    explorer, additive alongside ``_attio_explorer_steps``/
+    ``_salesforce_explorer_steps`` above -- zero edits to either.
+
+    HubSpot declares its object-to-object foreign-key graph via a SEPARATE
+    schema surface from the properties describe (unlike Salesforce, where
+    a Lookup field's ``referenceTo`` lives directly on the field
+    describe): the Associations v4 "labels" schema endpoint,
+    ``GET /crm/v4/associations/{fromObjectType}/{toObjectType}/labels``.
+    This is the real Tier-A gap the dispatch's pluggability test names:
+    a Tier-A parser that only reads the properties-describe response (the
+    way ``_parse_attio_attributes`` does today) cannot see this FK graph
+    at all. ``_parse_hubspot_associations_schema`` below fetches and
+    parses that separate endpoint, attaching the association's `toObjectType`
+    onto ``DiscoveredField.references`` -- source-declared ground truth,
+    not a value-shape inference.
+    """
+
+    token = _env(env, "ULTRA_CSM_HUBSPOT_ACCESS_TOKEN")
+    base = env.get("ULTRA_CSM_HUBSPOT_BASE_URL", "https://api.hubapi.com").rstrip("/")
+    headers = _json_headers({"authorization": f"Bearer {token}"})
+    return (
+        (
+            "company_properties",
+            ExploreStep(
+                "company_properties",
+                HttpRequest("GET", f"{base}/crm/v3/properties/companies", headers),
+            ),
+            lambda raw: _parse_hubspot_properties(raw, "companies"),
+        ),
+        (
+            "contact_properties",
+            ExploreStep(
+                "contact_properties",
+                HttpRequest("GET", f"{base}/crm/v3/properties/contacts", headers),
+            ),
+            lambda raw: _parse_hubspot_properties(raw, "contacts"),
+        ),
+        (
+            "contact_to_company_associations_schema",
+            ExploreStep(
+                "contact_to_company_associations_schema",
+                HttpRequest(
+                    "GET", f"{base}/crm/v4/associations/contacts/companies/labels", headers,
+                ),
+            ),
+            lambda raw: _parse_hubspot_associations_schema(raw, "contacts", "companies"),
+        ),
+    )
+
+
 def _salesforce_explorer_steps(env: Mapping[str, str]):
     from ultra_csm.data_plane.live_smoke import _salesforce_steps
 
@@ -421,6 +473,7 @@ def _telemetry_explorer_steps(env: Mapping[str, str]):
 EXPLORER_BUILDERS = {
     "attio_crm": _attio_explorer_steps,
     "salesforce_crm": _salesforce_explorer_steps,
+    "hubspot_crm": _hubspot_explorer_steps,
     "gainsight_cs": _gainsight_explorer_steps,
     "rocketlane_onboarding": _rocketlane_explorer_steps,
     "product_telemetry": _telemetry_explorer_steps,
@@ -465,6 +518,63 @@ def _parse_attio_attributes(raw: dict[str, object], object_name: str) -> tuple[t
         if isinstance(item, dict)
     )
     return (DiscoveredObject(object_name, object_name.title(), tuple(field for field in fields if field.name)),), len(data)
+
+
+def _parse_hubspot_properties(raw: dict[str, object], object_name: str) -> tuple[tuple[DiscoveredObject, ...], int]:
+    """HubSpot ``GET /crm/v3/properties/{object}`` -- plain field metadata,
+    no FK graph here (see ``_parse_hubspot_associations_schema`` below for
+    where HubSpot actually declares associations)."""
+
+    data = _list(raw.get("results"))
+    fields = tuple(
+        DiscoveredField(
+            name=str(item.get("name") or ""),
+            field_type=str(item.get("type") or "unknown"),
+            required=False,
+            custom=bool(item.get("hubspotDefined") is False),
+            source_path=f"properties.{item.get('name')}",
+        )
+        for item in data
+        if isinstance(item, dict)
+    )
+    return (DiscoveredObject(object_name, object_name.title(), tuple(field for field in fields if field.name)),), len(data)
+
+
+def _parse_hubspot_associations_schema(
+    raw: dict[str, object], from_object: str, to_object: str,
+) -> tuple[tuple[DiscoveredObject, ...], int]:
+    """HubSpot ``GET /crm/v4/associations/{fromObjectType}/{toObjectType}/labels``
+    -- the SEPARATE schema surface HubSpot uses to declare its
+    association-style (not lookup-field) foreign-key graph. Unlike a
+    Salesforce Lookup field (whose ``referenceTo`` lives on the field
+    describe itself) or Attio's record-reference attribute (whose target
+    object lives only in sampled VALUES, not in the attributes-describe
+    response), a HubSpot association is source-declared schema metadata
+    available before any record is ever sampled -- this is the real Tier-A
+    signal the dispatch's pluggability test asks for: a Tier-A parser
+    that only reads the properties-describe response cannot see this at
+    all, exactly the gap this function closes, additively, for HubSpot
+    only (``_parse_attio_attributes``/``_parse_salesforce_describe`` above
+    are untouched).
+
+    A present-but-empty ``results`` list (a real, valid HubSpot response
+    for an object pair with no defined association labels) still counts
+    as a discovered, zero-cardinality association -- ``references`` is
+    populated either way, since the *pair itself* existing in the schema
+    is the ground truth being captured, not the label count.
+    """
+
+    data = _list(raw.get("results"))
+    field = DiscoveredField(
+        name=f"associations.{to_object}",
+        field_type="association",
+        required=False,
+        custom=False,
+        source_path=f"associations.{to_object}",
+        references=(to_object,),
+        relationship_name=f"{from_object}_to_{to_object}",
+    )
+    return (DiscoveredObject(from_object, from_object.title(), (field,)),), len(data)
 
 
 def _parse_salesforce_global(raw: dict[str, object]) -> tuple[tuple[DiscoveredObject, ...], int]:

@@ -8,7 +8,9 @@ from eval.canary_battery import run_battery
 def test_canary_battery_hard_ok():
     report = run_battery()
     assert report["hard_ok"], report["failed_cases"]
-    assert len(report["cases"]) == 5
+    # 4 original cases + repeatability + fieldstone-canary-integrity
+    # (Universe v2 WS-Tenant-Fieldstone, Wave 3, additive sweep-list line).
+    assert len(report["cases"]) == 6
 
 
 def test_canary_battery_two_runs_byte_identical():

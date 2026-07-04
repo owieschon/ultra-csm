@@ -18,6 +18,9 @@ def test_every_connector_spec_meets_the_shared_real_ready_bar():
     assert set(CONNECTOR_SPECS) == {
         "salesforce_crm",
         "attio_crm",
+        # Universe v2 WS-Tenant-Fieldstone (Wave 3): additive registration
+        # for fieldstone's HubSpot-shaped CRM.
+        "hubspot_crm",
         "gainsight_cs",
         "rocketlane_onboarding",
         "product_telemetry",

@@ -1,0 +1,164 @@
+{
+  "artifact": "week1_protocol_report",
+  "by_install_day": {
+    "14": {
+      "cold_start_honesty": {
+        "computed_count": 0,
+        "install_day": 14,
+        "insufficient_history_count": 3,
+        "ok": true,
+        "signal_classifications": [
+          {
+            "account_slug": "masonry-home-services",
+            "metric_name": "reply_latency_trend_hours",
+            "status": "insufficient_history",
+            "value": null
+          },
+          {
+            "account_slug": "culvert-mechanical",
+            "metric_name": "reply_latency_trend_hours",
+            "status": "insufficient_history",
+            "value": null
+          },
+          {
+            "account_slug": "wrenhouse-hvac",
+            "metric_name": "reply_latency_trend_hours",
+            "status": "insufficient_history",
+            "value": null
+          }
+        ]
+      },
+      "economics": {
+        "not_applicable": true,
+        "reason": "not_applicable: fieldstone has no CS platform at all (bible's No-CS-platform discipline) -- ultra_csm.agent1.time_to_value.TimeToValueAccelerator.build_evidence requires a non-None CSCompany/HealthScore/AdoptionSummary and returns None otherwise (verified against its own source, not assumed), so the DB-seeded governance/sweep path this section depends on cannot run against this tenant's fixtures without fabricating a CS-platform presence this tenant does not have. Recorded honestly rather than built speculatively -- see PROGRAM_REPORT_15.md's Consolidated Owner Ask."
+      },
+      "false_alarm_rate": {
+        "install_day": 14,
+        "ok": true,
+        "problems": []
+      },
+      "feedback_persistence": {
+        "not_applicable": true,
+        "reason": "not_applicable: fieldstone has no CS platform at all (bible's No-CS-platform discipline) -- ultra_csm.agent1.time_to_value.TimeToValueAccelerator.build_evidence requires a non-None CSCompany/HealthScore/AdoptionSummary and returns None otherwise (verified against its own source, not assumed), so the DB-seeded governance/sweep path this section depends on cannot run against this tenant's fixtures without fabricating a CS-platform presence this tenant does not have. Recorded honestly rather than built speculatively -- see PROGRAM_REPORT_15.md's Consolidated Owner Ask."
+      },
+      "install_day": 14,
+      "ok": true
+    },
+    "3": {
+      "cold_start_honesty": {
+        "computed_count": 0,
+        "install_day": 3,
+        "insufficient_history_count": 3,
+        "ok": true,
+        "signal_classifications": [
+          {
+            "account_slug": "masonry-home-services",
+            "metric_name": "reply_latency_trend_hours",
+            "status": "insufficient_history",
+            "value": null
+          },
+          {
+            "account_slug": "culvert-mechanical",
+            "metric_name": "reply_latency_trend_hours",
+            "status": "insufficient_history",
+            "value": null
+          },
+          {
+            "account_slug": "wrenhouse-hvac",
+            "metric_name": "reply_latency_trend_hours",
+            "status": "insufficient_history",
+            "value": null
+          }
+        ]
+      },
+      "economics": {
+        "not_applicable": true,
+        "reason": "not_applicable: fieldstone has no CS platform at all (bible's No-CS-platform discipline) -- ultra_csm.agent1.time_to_value.TimeToValueAccelerator.build_evidence requires a non-None CSCompany/HealthScore/AdoptionSummary and returns None otherwise (verified against its own source, not assumed), so the DB-seeded governance/sweep path this section depends on cannot run against this tenant's fixtures without fabricating a CS-platform presence this tenant does not have. Recorded honestly rather than built speculatively -- see PROGRAM_REPORT_15.md's Consolidated Owner Ask."
+      },
+      "false_alarm_rate": {
+        "install_day": 3,
+        "ok": true,
+        "problems": []
+      },
+      "feedback_persistence": {
+        "not_applicable": true,
+        "reason": "not_applicable: fieldstone has no CS platform at all (bible's No-CS-platform discipline) -- ultra_csm.agent1.time_to_value.TimeToValueAccelerator.build_evidence requires a non-None CSCompany/HealthScore/AdoptionSummary and returns None otherwise (verified against its own source, not assumed), so the DB-seeded governance/sweep path this section depends on cannot run against this tenant's fixtures without fabricating a CS-platform presence this tenant does not have. Recorded honestly rather than built speculatively -- see PROGRAM_REPORT_15.md's Consolidated Owner Ask."
+      },
+      "install_day": 3,
+      "ok": true
+    },
+    "7": {
+      "cold_start_honesty": {
+        "computed_count": 0,
+        "install_day": 7,
+        "insufficient_history_count": 3,
+        "ok": true,
+        "signal_classifications": [
+          {
+            "account_slug": "masonry-home-services",
+            "metric_name": "reply_latency_trend_hours",
+            "status": "insufficient_history",
+            "value": null
+          },
+          {
+            "account_slug": "culvert-mechanical",
+            "metric_name": "reply_latency_trend_hours",
+            "status": "insufficient_history",
+            "value": null
+          },
+          {
+            "account_slug": "wrenhouse-hvac",
+            "metric_name": "reply_latency_trend_hours",
+            "status": "insufficient_history",
+            "value": null
+          }
+        ]
+      },
+      "economics": {
+        "not_applicable": true,
+        "reason": "not_applicable: fieldstone has no CS platform at all (bible's No-CS-platform discipline) -- ultra_csm.agent1.time_to_value.TimeToValueAccelerator.build_evidence requires a non-None CSCompany/HealthScore/AdoptionSummary and returns None otherwise (verified against its own source, not assumed), so the DB-seeded governance/sweep path this section depends on cannot run against this tenant's fixtures without fabricating a CS-platform presence this tenant does not have. Recorded honestly rather than built speculatively -- see PROGRAM_REPORT_15.md's Consolidated Owner Ask."
+      },
+      "false_alarm_rate": {
+        "install_day": 7,
+        "ok": true,
+        "problems": []
+      },
+      "feedback_persistence": {
+        "not_applicable": true,
+        "reason": "not_applicable: fieldstone has no CS platform at all (bible's No-CS-platform discipline) -- ultra_csm.agent1.time_to_value.TimeToValueAccelerator.build_evidence requires a non-None CSCompany/HealthScore/AdoptionSummary and returns None otherwise (verified against its own source, not assumed), so the DB-seeded governance/sweep path this section depends on cannot run against this tenant's fixtures without fabricating a CS-platform presence this tenant does not have. Recorded honestly rather than built speculatively -- see PROGRAM_REPORT_15.md's Consolidated Owner Ask."
+      },
+      "install_day": 7,
+      "ok": true
+    }
+  },
+  "claim_boundary": {
+    "live": false,
+    "n_tenants": 1,
+    "sim": true
+  },
+  "install_days": [
+    3,
+    7,
+    14
+  ],
+  "ok": true,
+  "onboarding_cost": {
+    "auto_mapped_by_tier": {
+      "other": 0,
+      "tier_a_source_declared": 1,
+      "tier_b_exact_alias": 5
+    },
+    "confirmations_required": 3,
+    "questions_asked": [
+      "CRMAccount.account_id",
+      "CRMAccount.owner_id",
+      "CRMContact.contact_id"
+    ],
+    "questions_asked_count": 3,
+    "wall_clock_seconds": 0.005863
+  },
+  "repeatability": {
+    "note": "checked by --repeatability-check at the CLI layer, not embedded here"
+  },
+  "tenant": "fieldstone"
+}

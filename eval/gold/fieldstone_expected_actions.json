@@ -1,0 +1,187 @@
+[
+  {
+    "tenant": "fieldstone",
+    "account_slug": "masonry-home-services",
+    "checkpoint_day": 60,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": ["personal_email", "escalation", "working_session", "qbr"],
+    "notes": "bible Arc F1 day-60 checkpoint: insufficient reply-latency history yet, zero cases -- correct read is no action."
+  },
+  {
+    "tenant": "fieldstone",
+    "account_slug": "masonry-home-services",
+    "checkpoint_day": 180,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": ["personal_email", "escalation", "working_session", "qbr"],
+    "notes": "bible Arc F1 day-180 checkpoint: reply_latency_trend delta -0.5h (37.5h vs 38.0h prior) -- flat, healthy for this tenant despite the absolute ~38h level that would alarm a FleetOps-tuned reader."
+  },
+  {
+    "tenant": "fieldstone",
+    "account_slug": "masonry-home-services",
+    "checkpoint_day": 300,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": ["personal_email", "escalation", "working_session", "qbr"],
+    "notes": "bible Arc F1 day-300 checkpoint: latency flat all year, zero cases ever -- the norms proof's terminal state."
+  },
+  {
+    "tenant": "fieldstone",
+    "account_slug": "culvert-mechanical",
+    "checkpoint_day": 80,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": ["personal_email", "escalation", "working_session", "qbr"],
+    "notes": "bible Arc F2 day-80 checkpoint: reply_latency_trend delta -0.5h (37.5h vs 38.0h prior), identical to Masonry's day-180 delta -- this account's own baseline is healthy at this point; any flag here is a false alarm."
+  },
+  {
+    "tenant": "fieldstone",
+    "account_slug": "culvert-mechanical",
+    "checkpoint_day": 140,
+    "mode": "gap",
+    "required": {
+      "signal": "reply_latency_trend",
+      "motion_in": ["personal_email", "escalation"],
+      "evidence_must_include": ["reply_latency_trend", "9409e2a7-7ee5-5c62-b0da-37b7ac97c3c2"]
+    },
+    "forbidden_motions": [],
+    "notes": "bible Arc F2 day-140 checkpoint: reply_latency_trend delta +26.0h (104.0h vs 78.0h prior) atop an absolute level well above the tenant's healthy band, the day-100 billing-dispute case (9409e2a7-...) still open, and the day-90 quarterly meeting never happened. High-touch tier: personal_email or escalation are the correct motions; silence is a failure."
+  },
+  {
+    "tenant": "fieldstone",
+    "account_slug": "wrenhouse-hvac",
+    "checkpoint_day": 60,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": ["personal_email", "escalation", "working_session", "qbr"],
+    "notes": "bible Herring F-H1 day-60 checkpoint: no drama yet, flat baseline like a boring control."
+  },
+  {
+    "tenant": "fieldstone",
+    "account_slug": "wrenhouse-hvac",
+    "checkpoint_day": 180,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": ["personal_email", "escalation", "working_session", "qbr"],
+    "notes": "bible Herring F-H1 day-180 checkpoint: the one loud-looking case (day 45, P1 subject) resolved same-day months earlier -- no ongoing signal."
+  },
+  {
+    "tenant": "fieldstone",
+    "account_slug": "wrenhouse-hvac",
+    "checkpoint_day": 300,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": ["personal_email", "escalation", "working_session", "qbr"],
+    "notes": "bible Herring F-H1 day-300 checkpoint: still flat, still resolved -- the herring's entire point is specificity, not volume."
+  },
+  {
+    "tenant": "fieldstone",
+    "account_slug": "shale-plumbing-group",
+    "checkpoint_day": 300,
+    "mode": "none",
+    "required": {"signal": null, "motion_in": [], "evidence_must_include": []},
+    "forbidden_motions": ["personal_email", "escalation", "working_session", "qbr"],
+    "notes": "boring control, spot day 300: zero cases, no scripted story."
+  },
+  {
+    "tenant": "fieldstone",
+    "account_slug": "tanbark-mechanical",
+    "checkpoint_day": 300,
+    "mode": "none",
+    "required": {"signal": null, "motion_in": [], "evidence_must_include": []},
+    "forbidden_motions": ["personal_email", "escalation", "working_session", "qbr"],
+    "notes": "boring control, spot day 300: zero cases, no scripted story."
+  },
+  {
+    "tenant": "fieldstone",
+    "account_slug": "cobblestone-hvac-co",
+    "checkpoint_day": 300,
+    "mode": "none",
+    "required": {"signal": null, "motion_in": [], "evidence_must_include": []},
+    "forbidden_motions": ["personal_email", "escalation", "working_session", "qbr"],
+    "notes": "boring control, spot day 300: zero cases, no scripted story."
+  },
+  {
+    "tenant": "fieldstone",
+    "account_slug": "driftstone-plumbing",
+    "checkpoint_day": 300,
+    "mode": "none",
+    "required": {"signal": null, "motion_in": [], "evidence_must_include": []},
+    "forbidden_motions": ["personal_email", "working_session", "qbr"],
+    "notes": "boring control, tech-touch, spot day 300: zero cases, no scripted story; personal_email/working_session/qbr forbidden at this tier per playbooks.json."
+  },
+  {
+    "tenant": "fieldstone",
+    "account_slug": "quarrybed-mechanical",
+    "checkpoint_day": 300,
+    "mode": "none",
+    "required": {"signal": null, "motion_in": [], "evidence_must_include": []},
+    "forbidden_motions": ["personal_email", "working_session", "qbr"],
+    "notes": "boring control, tech-touch, spot day 300: zero cases, no scripted story."
+  },
+  {
+    "tenant": "fieldstone",
+    "account_slug": "slaterock-home-services",
+    "checkpoint_day": 300,
+    "mode": "none",
+    "required": {"signal": null, "motion_in": [], "evidence_must_include": []},
+    "forbidden_motions": ["personal_email", "working_session", "qbr"],
+    "notes": "boring control, tech-touch, spot day 300: zero cases, no scripted story."
+  },
+  {
+    "tenant": "fieldstone",
+    "account_slug": "graybrick-hvac",
+    "checkpoint_day": 300,
+    "mode": "none",
+    "required": {"signal": null, "motion_in": [], "evidence_must_include": []},
+    "forbidden_motions": ["personal_email", "working_session", "qbr"],
+    "notes": "boring control, tech-touch, spot day 300: zero cases, no scripted story."
+  },
+  {
+    "tenant": "fieldstone",
+    "account_slug": "fieldstone-mortar-co",
+    "checkpoint_day": 300,
+    "mode": "none",
+    "required": {"signal": null, "motion_in": [], "evidence_must_include": []},
+    "forbidden_motions": ["personal_email", "working_session", "qbr"],
+    "notes": "boring control, tech-touch, spot day 300: zero cases, no scripted story."
+  },
+  {
+    "tenant": "fieldstone",
+    "account_slug": "hearthstone-plumbing",
+    "checkpoint_day": 300,
+    "mode": "none",
+    "required": {"signal": null, "motion_in": [], "evidence_must_include": []},
+    "forbidden_motions": ["personal_email", "working_session", "qbr"],
+    "notes": "boring control, tech-touch, spot day 300: zero cases, no scripted story."
+  }
+]

@@ -107,6 +107,52 @@ ATTIO_CRM_SPEC = ConnectorSpec(
 )
 
 
+HUBSPOT_CRM_SPEC = ConnectorSpec(
+    # Universe v2 WS-Tenant-Fieldstone (Wave 3): fieldstone's HubSpot-shaped
+    # CRM. Additive registration only, mirroring ATTIO_CRM_SPEC's shape --
+    # zero edits to any existing spec above.
+    connector_id="hubspot_crm",
+    display_name="HubSpot CRM",
+    mode_env="ULTRA_CSM_HUBSPOT_MODE",
+    credential_env=("ULTRA_CSM_HUBSPOT_ACCESS_TOKEN",),
+    auth_strategies=("oauth2", "api_key"),
+    pagination=("cursor",),
+    source_contracts=("CRMAccount", "CRMContact", "CRMActivity"),
+    discovery_surfaces=("properties", "objects", "associations schema", "search"),
+    recorded_shapes=(
+        RecordedShape(
+            name="company_properties",
+            contract="CRMAccount",
+            fixture_path="tests/fixtures/connectors/hubspot/company_properties.json",
+            docs=(
+                doc(
+                    "Companies properties",
+                    "https://developers.hubspot.com/docs/api/crm/properties",
+                ),
+            ),
+        ),
+        RecordedShape(
+            name="contact_to_company_associations_schema",
+            contract="CRMContact",
+            fixture_path="tests/fixtures/connectors/hubspot/contact_company_associations_schema.json",
+            docs=(
+                doc(
+                    "Associations API",
+                    "https://developers.hubspot.com/docs/api/crm/associations",
+                ),
+            ),
+        ),
+    ),
+    smoke_command="ucsm connectors smoke hubspot_crm --read-only",
+    docs=(
+        doc("CRM API overview", "https://developers.hubspot.com/docs/api/crm/understanding-the-crm"),
+        doc("Authentication", "https://developers.hubspot.com/docs/api/working-with-oauth"),
+        doc("Associations API", "https://developers.hubspot.com/docs/api/crm/associations"),
+        doc("Companies API", "https://developers.hubspot.com/docs/api/crm/companies"),
+    ),
+)
+
+
 GAINSIGHT_CS_SPEC = ConnectorSpec(
     connector_id="gainsight_cs",
     display_name="Gainsight CS",
@@ -270,6 +316,7 @@ CONNECTOR_SPECS: dict[str, ConnectorSpec] = {
     for spec in (
         SALESFORCE_CRM_SPEC,
         ATTIO_CRM_SPEC,
+        HUBSPOT_CRM_SPEC,
         GAINSIGHT_CS_SPEC,
         ROCKETLANE_ONBOARDING_SPEC,
         PRODUCT_TELEMETRY_SPEC,
