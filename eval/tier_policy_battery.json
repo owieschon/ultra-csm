@@ -1,0 +1,270 @@
+{
+  "artifact": "tier_policy_battery",
+  "cases": [
+    {
+      "case": "expected-motions-resolved",
+      "detail": {
+        "amberfield-fleet-ops": {
+          "emitted": [
+            "cohort_action"
+          ],
+          "required": [
+            "cohort_action"
+          ]
+        },
+        "brookstone-supply-chain": {
+          "emitted": [
+            "content_route"
+          ],
+          "required": [
+            "content_route"
+          ]
+        },
+        "copperfield2-carriers": {
+          "emitted": [
+            "cohort_action"
+          ],
+          "required": [
+            "cohort_action"
+          ]
+        },
+        "duskwood-transport-co": {
+          "emitted": [
+            "cohort_action"
+          ],
+          "required": [
+            "cohort_action"
+          ]
+        },
+        "emberfield-delivery": {
+          "emitted": [
+            "cohort_action"
+          ],
+          "required": [
+            "cohort_action"
+          ]
+        },
+        "evergreen-warehousing": {
+          "emitted": [
+            "cohort_action"
+          ],
+          "required": [
+            "cohort_action"
+          ]
+        },
+        "farrow-fleet-ops": {
+          "emitted": [
+            "campaign_enroll"
+          ],
+          "required": [
+            "campaign_enroll"
+          ]
+        },
+        "glenbrook-distribution": {
+          "emitted": [
+            "cohort_action"
+          ],
+          "required": [
+            "cohort_action"
+          ]
+        },
+        "ironclad-freight": {
+          "emitted": [
+            "personal_email"
+          ],
+          "required": [
+            "escalation",
+            "personal_email"
+          ]
+        },
+        "ironwood2-line-haul": {
+          "emitted": [
+            "cohort_action"
+          ],
+          "required": [
+            "cohort_action"
+          ]
+        },
+        "ivorygate-freight": {
+          "emitted": [
+            "cohort_action"
+          ],
+          "required": [
+            "cohort_action"
+          ]
+        },
+        "juniperfield-logistics": {
+          "emitted": [
+            "cohort_action"
+          ],
+          "required": [
+            "cohort_action"
+          ]
+        },
+        "kestrel-logistics": {
+          "emitted": [
+            "cohort_action"
+          ],
+          "required": [
+            "cohort_action"
+          ]
+        },
+        "kettlecreek-distribution": {
+          "emitted": [
+            "cohort_action"
+          ],
+          "required": [
+            "cohort_action"
+          ]
+        },
+        "mossgate-logistics": {
+          "emitted": [
+            "cohort_action"
+          ],
+          "required": [
+            "cohort_action"
+          ]
+        },
+        "oldstone-industrial-supply": {
+          "emitted": [
+            "cohort_action"
+          ],
+          "required": [
+            "cohort_action"
+          ]
+        },
+        "palewood-field-services": {
+          "emitted": [
+            "cohort_action"
+          ],
+          "required": [
+            "cohort_action"
+          ]
+        },
+        "pathfinder-freight": {
+          "emitted": [
+            "cohort_action"
+          ],
+          "required": [
+            "cohort_action"
+          ]
+        },
+        "poplarcreek-trucking": {
+          "emitted": [
+            "cohort_action"
+          ],
+          "required": [
+            "cohort_action"
+          ]
+        },
+        "quarrycreek-haulage": {
+          "emitted": [
+            "cohort_action"
+          ],
+          "required": [
+            "cohort_action"
+          ]
+        },
+        "quietbrook-warehousing": {
+          "emitted": [
+            "cohort_action"
+          ],
+          "required": [
+            "cohort_action"
+          ]
+        },
+        "roughcut-freight": {
+          "emitted": [
+            "cohort_action"
+          ],
+          "required": [
+            "cohort_action"
+          ]
+        },
+        "sterling-fleet-services": {
+          "emitted": [
+            "working_session"
+          ],
+          "required": [
+            "working_session"
+          ]
+        },
+        "truewind-distribution": {
+          "emitted": [
+            "cohort_action"
+          ],
+          "required": [
+            "cohort_action"
+          ]
+        },
+        "underpass-transport-co": {
+          "emitted": [
+            "cohort_action"
+          ],
+          "required": [
+            "cohort_action"
+          ]
+        },
+        "vernonhall-delivery": {
+          "emitted": [
+            "cohort_action"
+          ],
+          "required": [
+            "cohort_action"
+          ]
+        },
+        "vinecrest-freight": {
+          "emitted": [
+            "cohort_action"
+          ],
+          "required": [
+            "cohort_action"
+          ]
+        },
+        "watermill-trucking": {
+          "emitted": [
+            "cohort_action"
+          ],
+          "required": [
+            "cohort_action"
+          ]
+        },
+        "wolfden-warehousing": {
+          "emitted": [
+            "cohort_action"
+          ],
+          "required": [
+            "cohort_action"
+          ]
+        }
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "no-tier-forbidden-motion",
+      "detail": {
+        "accounts_swept_per_day": 180
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "cohort-collapses-to-one-action",
+      "detail": {
+        "cohort_actions_found": 1,
+        "cohort_size": 25
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "repeatability",
+      "detail": {},
+      "ok": true,
+      "problems": []
+    }
+  ],
+  "failed_cases": [],
+  "hard_ok": true
+}

@@ -20,7 +20,7 @@ def test_product_telemetry_simulated_onboarding_runs_full_pipeline_without_live_
     }
     assert artifact["credential_boundary"]["requests_without_credentials"] == 0
     assert artifact["credential_boundary"]["missing_env"] == ["OTEL_EXPORTER_OTLP_ENDPOINT"]
-    assert artifact["source_book"]["accounts"] == 35
+    assert artifact["source_book"]["accounts"] == 180
     assert artifact["discovery"]["ok"] is True
     assert artifact["discovery"]["requests_on_fake_transport"] == 2
     assert artifact["readiness"]["mode"] == "fixture"

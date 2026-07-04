@@ -4,7 +4,7 @@
     {
       "case": "canary-integrity",
       "detail": {
-        "accounts_with_canary": 35,
+        "accounts_with_canary": 180,
         "ironridge-fleet_verbatim_notes": 1,
         "pinehill-transport_verbatim_notes": 3
       },
