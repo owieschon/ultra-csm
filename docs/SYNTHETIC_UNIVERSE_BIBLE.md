@@ -733,6 +733,18 @@ for that account/wave at all -- absence, not a fabricated neutral score.
 | Cedar Valley (herring A) | 7.0, benign renewal-admin note | 7.0 | 7.0 | 8.0 | Matches "never actually at risk" — mid-range and flat throughout, no drama. |
 | Ironridge Fleet Ops (herring B) | 7.0 | 8.0, references the day-40 webhook glitch as already resolved | 8.0 | 8.0 | Matches "never actually at risk" — mid-range, and the one verbatim that references the herring's own case explicitly frames it as resolved, not ongoing. |
 
+### Job-change signal canon (Phase 6)
+
+`src/ultra_csm/data_plane/relationship_signals.py`'s `JobChangeSignal` is
+a new dataclass (deliberately NOT added to `contracts.py`) representing an
+enrichment-feed event. Two fixture rows, both dormant until a lens/
+enrichment consumer reads them:
+
+| Account | Contact | Day | Type | Consistency |
+| --- | --- | --- | --- | --- |
+| Pinnacle Supply Chain | Derek Vaughn | 5 | departure | Two days after the existing `ChampionGoesQuiet("pinnacle-supply", 3)` mutation, and 9 days before the existing day-14 `HealthBandChange`. This is the signal an enrichment-feed-aware lens could have used to flag the single-threaded-risk arc's root cause 9 days earlier than the health band does — exactly the "beats silence-detection to the punch" framing this class exists to test. |
+| Trailhead Logistics | Mike Lindgren | 200 | promotion (same-company) | Benign red herring — a title change with no risk, consistent with the healthy-control arc never surfacing a real signal at any checkpoint (day 60/180/300). |
+
 ## Anti-Goodhart note
 
 This bible is authored once, before any extractor or battery code exists.
