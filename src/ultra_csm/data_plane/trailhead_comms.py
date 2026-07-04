@@ -143,14 +143,20 @@ def trailhead_email_thread(as_of_day: int) -> dict:
     return {"id": thread_id, "historyId": str(1000 + as_of_day), "messages": messages}
 
 
-def trailhead_communication_signals(as_of_day: int) -> list[CommunicationSignal]:
+def trailhead_communication_signals(
+    as_of_day: int, thread: dict | None = None
+) -> list[CommunicationSignal]:
     """Adapt the raw Gmail-shaped thread into ``CommunicationSignal`` rows,
     one per inbound reply (Vanessa or Mike), with ``response_time_hours``
     computed from the preceding outbound message. Latencies stay in the
     few-hours range throughout -- no stretch, matching the "boringly fine"
-    control."""
+    control.
 
-    thread = trailhead_email_thread(as_of_day)
+    ``thread`` defaults to the fixture; pass a live-read Gmail thread of
+    the same shape (``live_gmail_reader.live_email_thread``) to drive this
+    same extraction from real mailbox data."""
+
+    thread = thread if thread is not None else trailhead_email_thread(as_of_day)
     signals: list[CommunicationSignal] = []
     prev_outbound_at: datetime | None = None
     for msg in thread["messages"]:

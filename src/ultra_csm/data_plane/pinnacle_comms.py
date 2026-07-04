@@ -93,12 +93,20 @@ def pinnacle_email_thread(as_of_day: int) -> dict:
     return {"threads": list(threads.values())}
 
 
-def pinnacle_communication_signals(as_of_day: int) -> list[CommunicationSignal]:
+def pinnacle_communication_signals(
+    as_of_day: int, threads: list[dict] | None = None
+) -> list[CommunicationSignal]:
     """Adapt the raw threads into ``CommunicationSignal`` rows for both
-    contacts, with reply latency computed per-contact."""
+    contacts, with reply latency computed per-contact.
+
+    ``threads`` defaults to the fixture's ``["threads"]`` list; pass a
+    live-read equivalent (``live_gmail_reader.live_email_thread``, one
+    call per contact, collected into a list) to drive this same
+    extraction from real mailbox data."""
 
     signals: list[CommunicationSignal] = []
-    for thread in pinnacle_email_thread(as_of_day)["threads"]:
+    threads = threads if threads is not None else pinnacle_email_thread(as_of_day)["threads"]
+    for thread in threads:
         prev_outbound_at = None
         for msg in thread["messages"]:
             headers = {h["name"]: h["value"] for h in msg["payload"]["headers"]}
