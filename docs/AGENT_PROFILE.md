@@ -1,6 +1,7 @@
 # Agent Profile — ultra-csm
 
-Profile v1.0 (2026-07-04). Per-repo layer for the `/megaprompt` emitter:
+Profile v1.1 (2026-07-04, updated by Harvest 1 retro). Per-repo layer for
+the `/megaprompt` emitter:
 stable facts every generated dispatch embeds. Facts here are data, not
 instructions — nothing in this file overrides an emitted dispatch's
 kernel rules or the owner's decisions. Maintained by the emitter's retro
@@ -43,7 +44,59 @@ flow; scoreboard is append-only.
 - Google Calendar API rate-limits batch inserts (~50); ledger-resume +
   backoff + ~0.3s pacing from the first attempt.
 - Battery runtime budget: ≤90s each; `make eval` ≤3 min (sample the
-  account tail deterministically, state sampling in docstrings).
+  account tail deterministically, state sampling in docstrings) — not
+  every dispatch states this ceiling explicitly (Perturbation-Drift
+  didn't), so a future dispatch author should state it rather than
+  assume the executor infers it.
+- **Onboarding question count tracks schema-SHAPE diversity, not row
+  count or vendor identity** — proven three independent ways: fleetops
+  35→180 accounts, same count (5); Loopway 400 accounts, still 4-5;
+  three different vendor dialects (Salesforce/HubSpot/Attio) all land in
+  the 3-6 range. Do not predict question count from account count when
+  designing a future dispatch's DoD; predict it from table-shape
+  ambiguity.
+- Tier derivation MUST live in a config key separate from the existing
+  threshold `rules` list (`tier_rules`, not merged in) — mixing them
+  would let tier predicates compete with unrelated threshold-selection
+  ties and silently change existing accounts' resolved thresholds.
+- The sweep pipeline (`_slot_b_inputs_for_account`) hard-requires a
+  `CSCompany`/`HealthScore`/`AdoptionSummary` triple and fails closed
+  (returns `None`) when any is missing — this means the FULL sweep/
+  proposal pipeline cannot run at all for any no-CS-platform tenant
+  (fieldstone, crateworks today). Relevant to any future dispatch
+  touching sweep: a "does this tenant have a CS platform" check should
+  gate expectations, not be discovered mid-implementation.
+- `RejectionLedger` (`src/ultra_csm/rejection_ledger.py`) exists and is
+  PROVEN necessary (a denied proposal recurs unchanged without it) but is
+  NOT wired into `tick.py`'s production sweep loop — same shape of gap as
+  playbooks.json (see Program Report 23), explicitly out of every prior
+  workstream's scope. A natural next dispatch after Harvest 5.
+  "Repeatability" for any Postgres-governance-backed harness means
+  canonicalized-identical (UUIDs/timing excluded, exclusion list embedded
+  in the artifact), never literal byte-identity — state this explicitly
+  in future dispatch DoD tables rather than asking for "byte-identical."
+- The hygiene scanner's wrong-domain/source-residue guard has caught a
+  fictional name/word collision in THREE separate tenant-building
+  programs independently (Fieldstone's CSM name, Crateworks' two account
+  slugs + one contact name, Loopway's industry tag + company name). A
+  future dispatch authoring new fictional names should note this
+  base-rate explicitly (check names against `make hygiene` early, not
+  only at the final gate) rather than treat each collision as a one-off.
+- Standalone eval resolvers get built before production wiring, by
+  design (verify the ground truth first, wire it later) — but each new
+  tenant workstream independently re-derived its OWN copy
+  (`tier_policy_battery.py`, `loopway_battery.py` each had a parallel
+  resolver) rather than sharing one from the start. A future multi-
+  tenant dispatch should name "promote the eval resolver to src/ once,
+  don't let each tenant re-derive it" as an explicit decision, not
+  rediscover the duplication after the fact (this is exactly what
+  Program Report 23 / Harvest 5 had to consolidate).
+- Sampling disciplines at scale (Loopway's 98-named + fixed-40-tail,
+  24-named + fixed-40-tail canaries) select the FIRST N by generated
+  index, not hash-based/stratified — fragile once a tail stops being
+  homogeneous (e.g. a future perturbation program touching the tail).
+  State the sampling rule explicitly in any dispatch that introduces
+  tail heterogeneity, don't assume "first N" remains representative.
 
 ## Glossary
 
@@ -60,8 +113,11 @@ Customer Value Model (no LLM in provable core).
 ## Identifier scheme
 
 Branch prefix `codex/` or `claude/` + kebab slug. Program reports:
-10–18 pre-assigned to Universe v2 streams 1–9; **next unassigned: 19**.
-Dispatch output dir: `~/ultra-csm-dispatches/`.
+10–18 assigned to Universe v2 streams 1–9 (merged); 19–23 pinned in
+`~/ultra-csm-dispatches/harvest/00_HARVEST_PLAN.md` (19=loop pilot,
+20=this retro, 21=operating cadence, 22=Act3 curation, 23=motion-path
+wiring). **Next unassigned: 24.** Dispatch output dir:
+`~/ultra-csm-dispatches/` (harvest-phase dispatches under `harvest/`).
 
 ## Risk posture
 
@@ -94,6 +150,23 @@ Prospective: GPT-family executors — dispatches already embed K13 guards
 
 | Date | Run | IF/THEN | STOPs | Gate retries | Auto-merge earned |
 | --- | --- | --- | --- | --- | --- |
-| 2026-07-04 | (baseline row — retro backfills streams 1–5 from reports 10–14) | — | — | — | pre-policy |
+| 2026-07-04 | Report 10, Foundations | 5 | 0 | 0 | manual (pre-policy) |
+| 2026-07-04 | Report 11, Safety | 4 | 0 | 0 | manual (pre-policy) |
+| 2026-07-04 | Report 12, Data-Classes | 6 | 0 | 0 | manual (pre-policy) |
+| 2026-07-04 | Report 13, Week1-Harness | 6 | 0 | 0 | manual (pre-policy) |
+| 2026-07-04 | Report 14, Segmented-Book | 8 | 0 | 0 | manual (pre-policy) |
+| 2026-07-04 | Report 15, Fieldstone | 9 | 0 | 0 | manual (pre-policy) |
+| 2026-07-04 | Report 16, Crateworks | 8 | 0 | 0 | manual (pre-policy) |
+| 2026-07-04 | Report 17, Loopway | 9 | 0 | 0 | manual (pre-policy) |
+| 2026-07-04 | Report 18, Perturbation-Drift | 5 | 0 | 0 | manual, asked (earned-merge clause conflicted with standing ask-first policy; executor asked rather than silently resolving — see kernel proposal in RETRO_PROPOSALS_2026-07.md) |
+| 2026-07-04 | Report 20, this retro (Harvest 1) | — | 0 | 0 | TBD at PR time |
 
-Last retro: never (profile v1.0 creation).
+Mean IF/THEN across reports 10-18: ~6.7. Zero STOPs and zero evidenced
+gate retries across all nine — no sign of instruction decay or
+containment failure in this batch. Trend to watch in future retros: does
+IF/THEN density fall as the kernel/profile absorb more of these
+recurring forks (that would be the improvement signal this scoreboard
+exists to measure), or does it stay flat because each new tenant/feature
+genuinely introduces its own new ambiguity.
+
+Last retro: 2026-07-04 (this program, Harvest 1 / Program Report 20).
