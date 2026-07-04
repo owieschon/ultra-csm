@@ -49,3 +49,96 @@ types are correctly built and battery-validated, but zero production code
 consumes any of it. This is the single most-repeated Owner Ask in the
 whole program — see `docs/PROGRAM_REPORT_23.md` (Harvest 5,
 motion-path-wiring), dispatched specifically to close it.
+
+## DoD Evidence
+
+The mining table above IS this report's primary evidence table (per K10's
+report-contract flexibility — a retro's "DoD" is the mining itself, not a
+code-change verification table). Supplementary: `docs/AGENT_PROFILE.md`
+gained 10 scoreboard rows (9 backfilled + this run) and 7 harvested quirks
+(Phase 2, commit `cd93ac5`); `docs/RETRO_PROPOSALS_2026-07.md` carries 3
+ratification-ready proposals + 2 explicitly-rejected candidates (Phase 3).
+
+## IF/THEN Branches Taken
+
+- Presented the mining table as this report's DoD evidence directly
+  rather than duplicating it into a separate table — the dispatch's own
+  Decisions section left the exact report shape to the executor's
+  judgment; this is the smallest faithful rendering.
+- Proposed the two kernel amendments (K10, K12) as single-clause
+  extensions to EXISTING enumerated lists rather than new K-rules,
+  specifically to respect the kernel's own size-budget discipline
+  ("adding a rule requires consolidating or removing one") — a new K15
+  would have cost more lines for the same content.
+- The runtime-ceiling-mandate and telemetry-self-consistency candidates
+  were considered as kernel proposals and explicitly REJECTED (not
+  silently dropped) — recorded in the proposals doc's "Not proposed"
+  section with reasoning, since both are real observations that don't
+  pass the kernel's "make sense in a repo you've never seen" litmus test.
+- Scoreboard/quirks were applied directly to `docs/AGENT_PROFILE.md`
+  without a ratification step, per the megaprompt skill's own explicit
+  rule distinguishing profile facts (auto-apply) from kernel/template
+  changes (ratify-only) — this is not this retro's own judgment call,
+  it is the skill's pre-existing, documented policy.
+
+## Consolidated Owner Ask
+
+1. **Ratify or reject the three proposals in `docs/RETRO_PROPOSALS_2026-07.md`.**
+   Proposals 1-2 are kernel amendments (K12 tripwire extension, K10
+   report-contract extension); Proposal 3 is a template-only addition
+   with no kernel-budget cost. None have been applied.
+2. **Kernel headroom is now tight.** Applying Proposals 1+2 brings the
+   kernel to roughly 121-122 lines against its stated 120-line budget —
+   right at the edge. Whoever ratifies should either accept a small
+   budget overrun, trim something else first, or apply only one of the
+   two this round and defer the other.
+3. **The quality-gate log has almost no real signal yet** (9 entries, all
+   from the gate's own build/test session). A future retro should re-check
+   this log once more sessions have run under the fresh-session-only
+   hook — there was nothing to mine this time, which is itself worth
+   knowing rather than assuming the gate has been silently proving itself.
+
+## STOP Conditions
+
+No STOP conditions fired. This program touched exactly the three files in
+its ownership map (`docs/AGENT_PROFILE.md`, `docs/RETRO_PROPOSALS_2026-07.md`,
+`docs/PROGRAM_REPORT_20.md`) — verified by `git status --short` before
+every commit. No kernel or template file was edited (proposals only). No
+code, battery, or test was touched; `make eval`'s count is unchanged from
+this branch's baseline (589 passed, 1 skipped, captured before any commit).
+
+## Skeptical Reviewer Paragraph
+
+A reviewer should weigh two real limits. First, this retro's scoreboard
+(IF/THEN counts, STOP counts, gate-retry counts for reports 10-18) is
+MINED FROM EACH REPORT'S OWN SELF-REPORTED TEXT, not independently
+re-verified against the actual commits/diffs of all nine prior programs —
+that would be a full re-audit, out of scope here. "Zero STOPs across nine
+reports" means nine reports each SAID zero STOPs fired, which is
+consistent with (but not independent proof against) a report having
+under-disclosed a STOP-worthy event — the same trust boundary this
+project's own reports routinely apply to live-system claims, now applied
+reflexively to its own retro. Second, the quality-gate log analysis is an
+honest non-finding: 9 entries, all pre-production test data, essentially
+zero signal about whether the gate is working well in real use yet — a
+reader should not read "no register-strengthening proposal was needed"
+as "the gate has been proven effective," only as "there isn't enough
+data yet to say either way."
+
+## Final Verification
+
+| Command | Observed result |
+| --- | --- |
+| `LC_ALL=en_US.UTF-8 make eval` | `589 passed, 1 skipped` (baseline, unchanged — docs-only program) |
+| `LC_ALL=en_US.UTF-8 make lint` | `All checks passed!` |
+| `LC_ALL=en_US.UTF-8 make hygiene` | Exited 0 |
+| `git diff --check` | Exited 0 |
+| `grep -c "PROGRAM_REPORT_1" docs/PROGRAM_REPORT_20.md` | `9` |
+| `grep -c "\| 2026" docs/AGENT_PROFILE.md` | `10` |
+| `make status` | (see receipts appendix) |
+
+## Receipts appendix
+
+- Reports mined (file:line spot-checks quoted verbatim above): `docs/PROGRAM_REPORT_10.md:23-68`, `_11.md:22-57`, `_12.md:25-77`, `_13.md:25-94`, `_14.md:29-89`, `_15.md:70-163`, `_16.md:43-122`, `_17.md:54-149`, `_18.md:28-79`.
+- Commits this program: `455bb9b` (Phase 1, mining table), `cd93ac5` (Phase 2, scoreboard + quirks).
+- Files owned and touched, verified via `git status --short`: `docs/AGENT_PROFILE.md`, `docs/RETRO_PROPOSALS_2026-07.md`, `docs/PROGRAM_REPORT_20.md` — no others.
