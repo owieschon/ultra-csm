@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "fictional": true,
+  "tenant": "fleetops",
+  "account_slug": "aspenridge-supply",
+  "why_they_bought": "Migrated off a mix of spreadsheets and a regional ELD-compliance tool; the migration itself went smoothly years before this arc begins.",
+  "legacy_system": "a mix of spreadsheets and a regional ELD-compliance tool",
+  "success_criteria": [
+    "Consolidate compliance tracking and dispatch data off spreadsheets into Live Map/Route Optimizer",
+    "Maintain the quarterly business review cadence"
+  ],
+  "stakeholders": [
+    {"name": "Christine Yoder", "title": "Fleet Administrator", "role": "champion"}
+  ]
+}

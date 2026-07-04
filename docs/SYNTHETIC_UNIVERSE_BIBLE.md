@@ -684,6 +684,67 @@ injected instruction text may appear in a *request payload* as cited
 evidence (hiding it would be dishonest) but must never change a
 deterministic layer's computed output.
 
+## Class canon (Universe v2, WS-Data-Classes Wave 1)
+
+Appendix for the six new data classes added in Program 12
+(`docs/PROGRAM_REPORT_12.md`): telemetry events, meeting transcripts,
+content catalog + campaigns, surveys, sales→CS handoff notes, and the
+job-change signal class. Every row below is causal exhaust of an existing
+scripted beat above — no new story invented, only rendered in a new
+medium.
+
+### Quantity-reconciliation canon table
+
+The bible's own enriched email/case-verbatim bodies (authored in Program 8,
+before `telemetry_events.py` existed) make a small number of quantitative
+claims about asset counts and event percentages. This table cross-checks
+each against `book_simulator.simulate_book`'s `AdoptionSummary` (the same
+ground truth `telemetry_events.py`'s event-level derivation reproduces
+exactly) as of the claim's story day. `eval/quantity_battery.py` asserts
+this table, not the other way around — a future drift in either the prose
+or the simulator is a battery failure, never a silent battery edit.
+
+| Account | Day | Claim (verbatim) | Source | Simulator value | Status | Reasoning |
+| --- | --- | --- | --- | --- | --- | --- |
+| Pinehill Transport | 8 | "22 of 50 assets reporting through Live Map" | `pinehill_content.BODIES[(8, 9)]` | `active_assets=12`, `entitled_assets=50` | **known variance** | Authored in Program 8 before `book_simulator`'s per-day `active_assets` trajectory existed at fine granularity for this account; the email's "22" reads as optimistic scripted color for the milestone check-in, not a value ever computed from the simulator. Documented here rather than silently changed in either direction — the email prose is frozen (out of this workstream's ownership) and the simulator's day-8 `active_assets=12` is the real number every extractor/telemetry consumer actually reads. |
+| Pinehill Transport | 85 | "214 of 1,880 dispatch events unacknowledged... about 11%" | `pinehill_content.BODIES[(85, 9)]`, error-string canon | n/a — dispatch-event-loss count, not an `AdoptionSummary`/telemetry-derivable metric | **consistent, no simulator counterpart** | 214/1880 = 11.38%, matching "about 11%" (internal math consistency, asserted directly); this is a Dispatch Bridge event-queue metric, never modeled as a `UsageSignal`/`AdoptionSummary` quantity, so there is nothing in `book_simulator.py` to reconcile it against — recorded as consistent-by-construction, not reconciled against telemetry. |
+| Ironridge Fleet Ops | 40 | "HTTP 500 on 6 of 140 attempts over 90 minutes" | `case_verbatims.VERBATIMS[_case_id(_IRONRIDGE, 40)]` | n/a — Ironridge has no `TELEMETRY_ACCOUNTS` entry (webhook-delivery metric, not asset-usage) | **consistent, no simulator counterpart** | Same class of metric as the Pinehill day-85 row: a delivery-failure count with no `AdoptionSummary` analog. Ironridge is also outside `telemetry_events.TELEMETRY_ACCOUNTS` (Phase 1 scopes event-level exhaust to Pinehill and Meridian only), so there is no telemetry ground truth to check this against at all. |
+
+The battery's job from here forward is **preventing new drift**: any
+future edit to the Pinehill day-8 email body, the day-85/Ironridge error
+strings, or `book_simulator.py`'s Pinehill `active_assets` trajectory that
+silently changes one side of an already-documented row without updating
+this table is what `eval/quantity_battery.py` exists to catch.
+
+### Survey canon table (NPS, Phase 4)
+
+Quarterly waves (days 45, 135, 225, 315), `src/ultra_csm/data_plane/surveys.py`.
+A row's `Response?` column of "none" means no `SurveyResponse` is emitted
+for that account/wave at all -- absence, not a fabricated neutral score.
+
+| Account | Day 45 | Day 135 | Day 225 | Day 315 | Arc consistency |
+| --- | --- | --- | --- | --- | --- |
+| Pinehill Transport | 3.0, detractor — cites "the dispatch integration" directly | 6.0, cautiously improved | 7.0, steady | 8.0, promoter — names the dispatch integration again, now fixed | Matches the onboarding-stall arc: detractor mid-stall (day 30/80 cases fresh), recovering post day-300 steady_state. |
+| Pinnacle Supply Chain | none (Derek silent since day 3; no survey response from a contact who never replies to anything) | 6.0, Monica still orienting | 7.0, recovery plan working | 8.0, confident, renewal smooth | Matches single-threaded-risk: no response possible before Monica appears day 110; recovers alongside her engagement. |
+| Quarrystone Logistics | none | none | none | none | Matches churn-brewing: absence despite being flagged is the entire arc's signal — a survey class with a real response option makes that absence visible in one more channel, not just comms/calendar. |
+| Aspenridge Supply Chain | 8.0, benign | 8.0, benign | 7.0, benign | 7.0, benign | Matches silent-decline: the account's relationship/survey channel stays calm throughout — the risk is invisible everywhere except telemetry, which is the entire point of this arc. |
+| Meridian Fleet Group | 9.0, warm | 9.0, expansion on track | 9.0, thrilled | 10.0, promoter | Matches expansion-ready: consistently high, trending up through the day-180 close. |
+| Trailhead Logistics | 9.0 | 9.0 | 10.0, cites the case-study feature directly | 10.0 | Matches healthy-control, and the day-225 verbatim is consistent with the existing day-165 `case_study_published` health-band driver. |
+| Cedar Valley (herring A) | 7.0, benign renewal-admin note | 7.0 | 7.0 | 8.0 | Matches "never actually at risk" — mid-range and flat throughout, no drama. |
+| Ironridge Fleet Ops (herring B) | 7.0 | 8.0, references the day-40 webhook glitch as already resolved | 8.0 | 8.0 | Matches "never actually at risk" — mid-range, and the one verbatim that references the herring's own case explicitly frames it as resolved, not ongoing. |
+
+### Job-change signal canon (Phase 6)
+
+`src/ultra_csm/data_plane/relationship_signals.py`'s `JobChangeSignal` is
+a new dataclass (deliberately NOT added to `contracts.py`) representing an
+enrichment-feed event. Two fixture rows, both dormant until a lens/
+enrichment consumer reads them:
+
+| Account | Contact | Day | Type | Consistency |
+| --- | --- | --- | --- | --- |
+| Pinnacle Supply Chain | Derek Vaughn | 5 | departure | Two days after the existing `ChampionGoesQuiet("pinnacle-supply", 3)` mutation, and 9 days before the existing day-14 `HealthBandChange`. This is the signal an enrichment-feed-aware lens could have used to flag the single-threaded-risk arc's root cause 9 days earlier than the health band does — exactly the "beats silence-detection to the punch" framing this class exists to test. |
+| Trailhead Logistics | Mike Lindgren | 200 | promotion (same-company) | Benign red herring — a title change with no risk, consistent with the healthy-control arc never surfacing a real signal at any checkpoint (day 60/180/300). |
+
 ## Anti-Goodhart note
 
 This bible is authored once, before any extractor or battery code exists.

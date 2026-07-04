@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "fictional": true,
+  "tenant": "fleetops",
+  "account_slug": "ironridge-fleet",
+  "why_they_bought": "Runs a third-party maintenance-ticketing system that FleetOps' Maintenance Radar module pushes alerts to over an outbound webhook -- no legacy dispatch system is involved at all; no new cast authored here for the same reason as Cedar Valley.",
+  "legacy_system": null,
+  "legacy_system_note": "No legacy system is named in canon for this account (Red Herring B). The third-party maintenance-ticketing system it runs today is a current integration target, not a replaced legacy system.",
+  "success_criteria": [
+    "Reliable Maintenance Radar webhook delivery to the third-party ticketing system"
+  ],
+  "stakeholders": [
+    {"name": "Walter Benton", "title": "Fleet Director", "role": "primary_contact"},
+    {"name": "Shelly Ramos", "title": "Safety Coordinator", "role": "secondary_contact"}
+  ]
+}
