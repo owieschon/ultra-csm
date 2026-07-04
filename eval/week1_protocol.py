@@ -823,16 +823,105 @@ def run_protocol_for_day(install_day: int, *, conn, ledger_path: Path) -> dict[s
     }
 
 
+def run_full_protocol_crateworks(
+    *,
+    install_days: tuple[int, ...] = DEFAULT_INSTALL_DAYS,
+) -> dict[str, Any]:
+    """Crateworks widening (Universe v2, Wave 3, WS-Tenant-Crateworks): this
+    tenant has no CS platform and no product telemetry vendor
+    (``docs/TENANT_CRATEWORKS_BIBLE.md`` section 0), so
+    ``ultra_csm.agent1.sweep._slot_b_inputs_for_account`` fails closed for
+    every crateworks account -- the sweep-engine-dependent sections
+    (feedback_persistence, the sweep half of economics) cannot run for
+    this tenant BY DESIGN, not by omission. Those sections loudly SKIP
+    (recorded, never fabricated) rather than reusing fleetops' Postgres-
+    gate/sweep machinery against a data plane it was never built to grade.
+
+    Section 1 (onboarding_cost) reuses ``eval.crateworks_onboarding``
+    (the real conversational-onboarding driver over the messy book).
+    Section 2/3's crateworks-appropriate equivalents (degradation honesty,
+    controls zero-flag, Arc C1 checkpoint truths) reuse
+    ``eval.crateworks_battery.run_battery`` verbatim rather than
+    re-authoring the same assertions a second time under a different name.
+    """
+
+    from eval import crateworks_battery, crateworks_onboarding
+
+    onboarding_report = crateworks_onboarding.build_report()
+    battery_report = crateworks_battery.run_battery()
+
+    per_day: dict[str, Any] = {}
+    for day in install_days:
+        arc_detail = next(
+            (c["detail"] for c in battery_report["cases"] if c["case"] == "arc-c1-checkpoints"),
+            {},
+        ).get(str(day), {})
+        per_day[str(day)] = {
+            "install_day": day,
+            "arc_c1_checkpoint": arc_detail,
+            "feedback_persistence": {
+                "skip_reason": (
+                    "SKIP (loud): crateworks has no CS platform/product telemetry, so the "
+                    "sweep engine (agent1.sweep._slot_b_inputs_for_account) fails closed for "
+                    "every account -- there is no proposal to reject/regenerate. This is the "
+                    "correct degraded outcome for this tenant's vendor-stack gap, not an omission."
+                ),
+                "ran": False,
+            },
+            "economics": {
+                "skip_reason": (
+                    "SKIP (loud): tier resolution for this tenant is derived directly from "
+                    "the CRM Opportunity's amount_cents (book.py), not a CSCompany/health-score "
+                    "record; the sweep-driven per-tier cost ledger this section normally reports "
+                    "has nothing to sweep for a tenant with no CS platform."
+                ),
+                "ran": False,
+            },
+            "ok": True,
+        }
+
+    report = {
+        "artifact": "week1_protocol_report",
+        "tenant": "crateworks",
+        "install_days": list(install_days),
+        "claim_boundary": {"sim": True, "live": False, "n_tenants": 1},
+        "onboarding_cost": {
+            "questions_asked_count": onboarding_report["friction_measurement"]["questions_asked_count"],
+            "questions_asked": onboarding_report["friction_measurement"]["questions_asked"],
+            "auto_mapped_by_tier": onboarding_report["friction_measurement"]["auto_mapped_by_tier"],
+            "fleetops_baseline_ceiling": onboarding_report["friction_measurement"][
+                "fleetops_baseline_ceiling"
+            ],
+            "confirmed_ingest": onboarding_report["confirmed_ingest"],
+            "note": (
+                "crateworks is graded on the SHAPE of degradation, not a low count "
+                "(docs/TENANT_CRATEWORKS_BIBLE.md section 7) -- no within_ceiling gate here."
+            ),
+        },
+        "degradation_battery": {
+            "hard_ok": battery_report["hard_ok"],
+            "failed_cases": battery_report["failed_cases"],
+            "cases": [c["case"] for c in battery_report["cases"]],
+        },
+        "by_install_day": per_day,
+        "repeatability": {"note": "checked by --repeatability-check at the CLI layer, not embedded here"},
+    }
+    report["ok"] = onboarding_report["ok"] and battery_report["hard_ok"]
+    return report
+
+
 def run_full_protocol(
     *,
     tenant: str = "fleetops",
     install_days: tuple[int, ...] = DEFAULT_INSTALL_DAYS,
     ledger_path: Path | None = None,
 ) -> dict[str, Any]:
+    if tenant == "crateworks":
+        return run_full_protocol_crateworks(install_days=install_days)
     if tenant != "fleetops":
         raise NotImplementedError(
-            f"week1_protocol is tenant-parameterized by design but only fleetops "
-            f"fixtures exist as of Wave 1; got tenant={tenant!r}"
+            f"week1_protocol is tenant-parameterized by design but only fleetops and "
+            f"crateworks fixtures exist as of Wave 3; got tenant={tenant!r}"
         )
 
     onboarding = run_onboarding_cost_driver()
