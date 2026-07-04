@@ -40,7 +40,7 @@
       "trigger_factor": "feature_shallow_depth",
       "motion": "content_route",
       "tiers": ["tech_touch", "mid_touch"],
-      "content_refs": []
+      "content_refs": ["content-route-optimizer-adoption", "content-route-optimizer-setup-video"]
     },
     {
       "id": "close-milestone-gap",
