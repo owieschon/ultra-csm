@@ -530,13 +530,19 @@
         "latency": {
           "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
           "as_of": "2026-12-08",
-          "detail": "trailing 21d mean reply latency 1.2h vs prior window 2.0h",
+          "detail": "trailing 21d mean reply latency 1.2h vs prior window 3.5h",
           "evidence": [
             {
               "field": "response_time_hours",
               "observed_at": "2026-10-29T02:00:00Z",
               "source": "communications",
               "source_id": "02367460-4908-51f0-9a05-a5fef158390d"
+            },
+            {
+              "field": "response_time_hours",
+              "observed_at": "2026-10-29T05:00:00Z",
+              "source": "communications",
+              "source_id": "19638425-02f5-5403-88ed-46025c1230b9"
             },
             {
               "field": "response_time_hours",
@@ -565,7 +571,7 @@
           ],
           "metric_name": "reply_latency_trend_hours",
           "unit": "hours_delta",
-          "value": -0.8
+          "value": -2.2
         },
         "relationship_strengths": [
           {
@@ -1699,7 +1705,7 @@
         "latency": {
           "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
           "as_of": "2026-08-10",
-          "detail": "trailing 21d mean reply latency 50.0h vs prior window 18.0h",
+          "detail": "trailing 21d mean reply latency 133.5h vs prior window 18.0h",
           "evidence": [
             {
               "field": "response_time_hours",
@@ -1718,11 +1724,17 @@
               "observed_at": "2026-07-25T02:00:00Z",
               "source": "communications",
               "source_id": "c84b06ee-e286-508f-8612-93378f0df2a2"
+            },
+            {
+              "field": "response_time_hours",
+              "observed_at": "2026-08-01T01:00:00Z",
+              "source": "communications",
+              "source_id": "ec637c0b-8a2d-5ea7-8bf2-01fb8eabfd1c"
             }
           ],
           "metric_name": "reply_latency_trend_hours",
           "unit": "hours_delta",
-          "value": 32.0
+          "value": 115.5
         },
         "relationship_strengths": [
           {
@@ -1766,7 +1778,7 @@
           "evidence": [
             {
               "field": "relationship_type",
-              "observed_at": "2026-07-25T02:00:00Z",
+              "observed_at": "2026-08-01T01:00:00Z",
               "source": "communications",
               "source_id": "fdd4645a-e0b6-53d8-ba03-249f260574d8"
             }

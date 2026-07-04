@@ -100,6 +100,11 @@ _SARAH_MESSAGE_SCHEDULE: tuple[tuple[int, int, bool, str], ...] = (
     (95, 13, True, "Re: Facilities — budget approval check-in"),
     (125, 9, False, "Facilities — expansion scope alignment"),
     (125, 10, True, "Re: Facilities — expansion scope alignment"),
+    # Universe v2 WS-Safety extension (bible-first, adversarial-content
+    # corpus, not a narrative beat): a PII-bearing roster snippet. See
+    # docs/SYNTHETIC_UNIVERSE_BIBLE.md's Safety appendix.
+    (130, 9, False, "Facilities — new hires for the rollout"),
+    (130, 14, True, "Re: Facilities — new hires for the rollout"),
     (155, 9, False, "Facilities — pre-close readiness"),
     (155, 11, True, "Re: Facilities — pre-close readiness"),
     (168, 9, False, "Facilities — expansion close next week"),
