@@ -278,6 +278,221 @@ truth. For the 2 red herrings and the 27 boring controls, at every
 checkpoint: zero flags from the extractor beyond the single artifact class
 each herring is designed to trip, and zero flags at all for controls.
 
+## Canon — the FleetOps universe
+
+Program 8 (Universe Deepening). Everything below is fixed narrative fact —
+new content (emails, tickets, meeting notes, knowledge-pack prose) must be
+causal exhaust of this canon, the same discipline the six arcs above
+already follow for beats. Where canon below could conflict with an
+existing fixture value (an ARR figure, an entitlement, a scripted date),
+the fixture wins and the conflict is resolved in canon's favor of the code,
+not the other way around — checked line by line against
+`src/ultra_csm/data_plane/synthetic_book.py` before writing this section.
+
+### The vendor: FleetOps Platform
+
+A mid-market B2B SaaS company for commercial fleet operations (trucking,
+field services, supply-chain logistics), HQ'd in a fictional US Midwest
+city, ~200 employees. Sells telematics/routing/compliance software to
+fleet operators ranging from ~12 to ~250 licensed assets.
+
+**Product suite.** The eight capability keys already scored by the
+feature-depth pillar (`synthetic_book.py`'s entitlement tables) are the
+real product surface — canon names them rather than inventing a
+competing list:
+
+| Capability key | Product name | What it does |
+| --- | --- | --- |
+| `core_telematics` | **Live Map** | Real-time asset location/status tracking. Universal entry point — every account in the book has this. |
+| `route_optimization` | **Route Optimizer** | Route/load planning optimization. |
+| `driver_coaching` | **Driver Scorecards** | Per-driver safety/behavior analytics. |
+| `maintenance_alerts` | **Maintenance Radar** | Predictive vehicle-maintenance alerting. |
+| `advanced_reporting` | **Insights Hub** | Cross-fleet BI/reporting. |
+| `compliance_dashboard` | **Compliance Center** | Regulatory/compliance reporting (the module Trailhead's "custom compliance report template" case, already in `_CASE_SCHEDULE`, is about). |
+| `fuel_analytics` | **Fuel Analytics** | Fuel cost/efficiency analytics. |
+| `dispatch_automation` | **Dispatch Automation** | Automated load/dispatch assignment — a purchased module (Pinnacle, e.g.), distinct from... |
+
+**Dispatch Bridge** is NOT a purchased module or entitlement key — it is
+FleetOps' name for the professional-services integration workstream that
+connects a new customer's *own pre-existing, third-party* dispatch
+software to FleetOps during onboarding. It is the work item behind
+Pinehill's "Legacy Dispatch Integration" Rocketlane phase. Every account's
+integration difficulty is a function of what legacy system it is bridging
+away from (see dossiers below), not a module tier.
+
+**Packaging.** Most new contracts are pitched as one of three named tiers
+— Essentials (Live Map only), Professional (+ Route Optimizer, typically +
+one of Driver Scorecards/Maintenance Radar), Enterprise (+ Insights Hub,
+Compliance Center, Fuel Analytics, Dispatch Automation, custom SLAs) — but
+several accounts below predate current packaging or negotiated
+custom/legacy bundles; their entitlements (ground truth: the tables in
+`synthetic_book.py`) are cited as-is rather than forced to fit a tier.
+
+**Onboarding methodology — the "FleetOps Launch Plan."** Four phases,
+typical durations: **Kickoff** (week 1: intro call, success-plan sign-off)
+→ **Integration & Data Setup** (weeks 2–6: asset/driver data load, plus
+Dispatch Bridge work when a legacy system is involved — this generic phase
+is instantiated per-account in Rocketlane under a customer-specific name,
+e.g. Pinehill's is literally named "Legacy Dispatch Integration" because
+that is its entire content) → **Activation** (weeks 4–8: `activate_50pct_assets`-
+style milestones, driver training, first live usage) → **Steady-State
+Handoff** (ongoing-success ownership moves from the implementation team to
+the CSM of record). Common blockers per phase: Kickoff — no named
+technical point of contact, success criteria not agreed; Integration &
+Data Setup — legacy system API/auth failures (Pinehill's arc), incomplete
+asset/driver data exports, IT team bandwidth; Activation — driver adoption
+lag, incomplete data preventing milestone sign-off.
+
+**Vendor cast.**
+- **Priya Nandan** (`csm101@fleetops-platform.example`) — senior CSM;
+  owns the growth/healthy book (Meridian, Pinnacle, Trailhead).
+- **Marcus Webb** (`csm102@fleetops-platform.example`) — mid-level CSM;
+  owns the two hardest books (Pinehill, Aspenridge). Thorough,
+  slightly-defensive documentation habits — every email he sends
+  restates the open action items, a tell of a CSM whose accounts get
+  second-guessed.
+- **Devon Ellis** (`csm104@fleetops-platform.example`) — newer CSM, less
+  than a year in the seat; owns Quarrystone. Quarrystone's silent churn
+  partly slips past his inexperience reading absence as "nothing to
+  report" rather than a flag.
+- **Renata Kucera** (`csm103@fleetops-platform.example`) — CSM of record
+  for Ironridge Fleet Ops (red herring B); no authored voice, since no
+  comms fixture gives her a thread.
+- **Grace Okafor** — Implementation Engineer, the Dispatch Bridge
+  specialist. Appears in Pinehill's integration meeting attendees and
+  ticket verbatims; never sends the customer-facing emails herself (those
+  stay Marcus Webb's), but is cited by name inside them ("looping in
+  Grace from our integration team").
+- **Ben Alvarez** — Support Engineer; answers the technical cases across
+  accounts (the responder voice in every case-verbatim comment thread).
+- **Colin Reyes** — Account Executive; closes expansion/renewal
+  commercial terms (Meridian's expansion, Cedar Valley's renewal). Never
+  appears as a sender in any seeded email thread — commercial terms route
+  through him but the CSM-authored comms channel never carries his
+  voice directly, matching `org_pack.json`'s constitution rule that
+  commercial terms are never drafted by the CSM motion.
+
+### Per-account dossiers
+
+Firmographics and commercial figures below are read directly from
+`synthetic_book.py` (`_COMPANY`, entitlement tables) — canon adds the
+fictional texture (legacy system, buying reason, cast titles/voice), never
+a contradicting number.
+
+**Pinehill Transport** (`pinehill-transport`, logistics, ~50 licensed
+assets, $85,000 ARR, contract 2026-05-17 → renewal 2027-05-17, Professional
+tier: Live Map + Route Optimizer). Ran **RouteLedger 5.2**, an unsupported
+on-prem dispatch system from a defunct vendor, for over a decade before
+buying FleetOps specifically to retire it — which is why the entire
+onboarding hinges on Dispatch Bridge integration work rather than being
+incidental to it. Champion: **Dennis Gruber**, Operations Director — terse,
+replies from his phone between dock shifts, lowercase, no signature block
+beyond his name.
+
+**Pinnacle Supply Chain** (`pinnacle-supply`, logistics, ~250 licensed
+assets, $350,000 ARR, contract 2024-06-01 → renewal 2027-06-01, Enterprise
+tier: Live Map + Route Optimizer + Insights Hub + Fuel Analytics +
+Dispatch Automation). Bought FleetOps for scale — a 250-asset operation
+that had outgrown a homegrown dispatch spreadsheet years before this
+account's arc begins; there is no legacy-integration story here, which is
+precisely why the risk in this arc is relational (a single champion going
+quiet), not technical. Original champion: **Derek Vaughn**, Director of
+Operations, went quiet day 3. Replacement: **Monica Reeves**, VP Supply
+Chain Operations (per the existing `NewContactAppears` scripted event,
+day 110) — writes in full paragraphs, methodical, always restates next
+steps at the end of her replies.
+
+**Quarrystone Logistics** (`quarrystone-logistics`, logistics, ~12
+licensed assets, $20,000 ARR, contract 2026-02-01 → renewal 2027-02-01,
+Essentials tier: Live Map only). The smallest account in the arc set —
+a small regional carrier that bought the minimum viable package and never
+expanded usage past it, which is consistent with why there was no
+successor lined up when its only stakeholder left. Champion: **Tim
+Kowalczyk**, Operations Manager — the account's sole point of contact,
+already gone quiet by day 0 per the existing `ChampionGoesQuiet` mutation;
+his one surviving message is a half-finished handoff that never resolves.
+
+**Aspenridge Supply Chain** (`aspenridge-supply`, logistics, ~18 licensed
+assets, $40,000 ARR, contract 2025-02-01 → renewal 2027-02-01, Professional
+tier: Live Map + Route Optimizer). Migrated off a mix of spreadsheets and a
+regional ELD-compliance tool; the migration itself went smoothly years
+before this arc begins, which is exactly why nothing here ever looks
+technically wrong — the risk is purely in product usage, never in the
+relationship or the integration history. Champion: **Christine Yoder**,
+Fleet Administrator — calm, professional, always replies same-day,
+never raises anything beyond the quarterly agenda.
+
+**Meridian Fleet Group** (`meridian-fleet`, fleet_management, ~60 licensed
+assets pre-expansion, $280,000 ARR expanding to $360,000 at day 180,
+contract 2025-01-01 → renewal 2027-01-01, custom/legacy bundle: Live Map +
+Route Optimizer + Driver Scorecards + Maintenance Radar). Replaced
+**FleetTrak Enterprise**, a national competitor product, roughly two years
+before this arc begins — the migration is old news; this arc is about
+organic multi-department growth, not integration recovery. Champion:
+**Alicia Fernandez**, VP Fleet Ops — direct, decisive, writes short but
+warm. Second stakeholder: **Sarah Chen**, Facilities Manager (per the
+existing `NewContactAppears` event, day 10) — enthusiastic, asks
+follow-up questions, cc's her own team once she ramps. *Pre-existing
+dossier note, not authored here*: the account's static contact roster in
+`synthetic_book.py` separately lists a "Karen Bright, Facilities
+Director" who never appears in any comms fixture or scripted event —
+canon resolves this without contradicting either row by treating Karen
+Bright as Sarah Chen's department head, aware of the rollout but never
+the one at the keyboard.
+
+**Trailhead Logistics** (`trailhead-logistics`, logistics, ~200 licensed
+assets, $310,000 ARR, contract 2025-01-01 → renewal 2027-01-01, Enterprise
+tier: Live Map + Route Optimizer + Insights Hub + Compliance Center + Fuel
+Analytics — the richest capability set of any arc account, matching its
+role as the exemplary-adoption baseline). Retired a patchwork of
+spreadsheets and a regional compliance-reporting tool years ago; the
+existing "Feature request: custom compliance report template" case
+(`_CASE_SCHEDULE`, day 0) is this account asking FleetOps to extend
+Compliance Center further, not a problem with it. Champion: **Vanessa
+Torres**, VP Operations — warm, concise, replies same-day. Secondary:
+**Mike Lindgren**, Fleet Director — covers fleet-utilization specifics,
+genuinely multi-threaded without any drama.
+
+**Cedar Valley Distribution** (`cedar-valley`, logistics, ~15 licensed
+assets, $35,000 ARR, contract 2025-07-01 → renewal 2026-07-21, Professional
+tier: Live Map + Route Optimizer — Red Herring A). A small, steady
+account approaching renewal; the day-5 usage wobble the bible describes is
+pre-renewal seasonal softness, and the one scripted case (day 8, MSA
+redline request) is routine renewal paperwork with zero technical content.
+No new cast authored here — the herring's entire point is that nothing
+about it needs a story.
+
+**Ironridge Fleet Ops** (`ironridge-fleet`, fleet_management, ~16 licensed
+assets, $36,000 ARR, contract 2025-05-01 → renewal 2027-05-01, custom
+bundle: Live Map + Driver Scorecards + Maintenance Radar — Red Herring B).
+Runs a third-party maintenance-ticketing system that FleetOps' Maintenance
+Radar module pushes alerts to over an outbound webhook; the one scripted
+case (day 40) is a same-week transient delivery glitch on that webhook,
+not an integration failure of Pinehill's kind — no legacy dispatch system
+is involved at all. No new cast authored here for the same reason as
+Cedar Valley.
+
+### Error-string canon
+
+The exact technical strings every enriched artifact (email body, ticket
+verbatim) must quote consistently, so Phase E's cross-channel battery has
+something concrete to check. Authored to be internally consistent with
+each case's existing subject/priority/topic in `_CASE_SCHEDULE` — never a
+new case, only a body for an existing one.
+
+| Account | Case day | Module/system | Error string |
+| --- | --- | --- | --- |
+| Pinehill Transport | 0 | Dispatch Bridge ↔ RouteLedger 5.2 | `DISPATCH_BRIDGE_CONNECT_FAILURE: RouteLedger 5.2 SOAP endpoint refused connection (fault code AUTH-401, host dispatch.pinehill-transport.internal:8443)` |
+| Pinehill Transport | 30 | Dispatch Bridge ↔ RouteLedger 5.2 | `DISPATCH_BRIDGE_TIMEOUT: upstream RouteLedger socket closed after 30000ms (job batch 4417, retry_count=3)` |
+| Pinehill Transport | 80 | Dispatch Bridge ↔ RouteLedger 5.2 | `DISPATCH_BRIDGE_EVENT_LOSS: 214 of 1,880 dispatch events unacknowledged in trailing 24h window (RouteLedger ack timeout, queue=pinehill-dispatch-out)` |
+| Ironridge Fleet Ops | 40 | Maintenance Radar outbound webhook | `WEBHOOK_DELIVERY_500: outbound maintenance-alert webhook to Ironridge's ticketing endpoint returned HTTP 500 on 6 of 140 attempts over 90 minutes (endpoint https://tickets.ironridge-fleet.example/hooks/fleetops, no retry backoff configured)` |
+
+Quarrystone's two cases (day 0 admin-transfer, day 160 unanswered
+renewal) and Cedar Valley's day-8 MSA-redline case are administrative, not
+technical — canon deliberately assigns them no error string; content
+enrichment for those cases should read as ordinary business correspondence,
+never manufacture a technical symptom that isn't in the case schedule.
+
 ## Anti-Goodhart note
 
 This bible is authored once, before any extractor or battery code exists.
