@@ -648,11 +648,69 @@ raw-field leakage into customer-facing text.
 
 ## Reserved perturbation + drift vocabulary (Universe v2, wave 4)
 
-Named now so earlier workstreams' code cannot collide with these
-identifiers; nothing below is implemented yet. Perturbation axes:
+Perturbation axes (implemented in `eval/perturbation/perturb.py`, Wave 4):
 `latency_scale`, `volume_scale`, `hygiene_drop_pct`, `schema_rename_map`,
-`arr_shift_pct`. Drift events (scripted against the `fleetops` timeline):
-day 120 `SchemaFieldRename`, day 150 `JunkContactImport`.
+`arr_shift_pct`. Drift events (scripted against the `fleetops` timeline,
+implemented as `book_simulator.py` mutations, Wave 4): day 120
+`SchemaFieldRename`, day 150 `JunkContactImport`.
+
+## Drift events (Universe v2, WS-Perturbation-Drift, Wave 4)
+
+Hand-authored tenants catch judgment failures; perturbation catches
+calibration failures; drift catches the time dimension nobody tests --
+the tenant changing under the agent mid-flight. Both events are scripted
+against the fleetops timeline only (`SCENARIO_TIMELINE` in
+`book_simulator.py`), additive, isolated from every existing beat.
+
+### Day 120 — `SchemaFieldRename` (marker event, tenant-wide)
+
+The tenant admin renames two CRM source fields that Program 3's recorded
+mapping already maps: Account's `Industry` → `Vertical`, Contact's
+`Title` → `JobTitle`. This is a MARKER event (`account_slug="*"`, not a
+real account) -- it changes nothing in any `FixtureCustomerData` row;
+the rename applies to the RAW onboarding source records the mapping
+layer sees (`eval/week1_protocol.py`'s `_crm_records_for_onboarding`),
+via `eval.perturbation.perturb.schema_rename`, exercised directly by
+`eval/drift_battery.py`.
+
+**Grading truth (FINAL):** re-running the onboarding/mapping refresh
+path against the renamed fields must DETECT the unknown-field condition
+and surface a re-confirmation need -- it must NOT silently continue
+reading stale data under the old field name, and must NOT silently guess
+the rename. Checkpoints: day 115 (before -- fields still named
+`Industry`/`Title`, mapping proceeds as always), day 125 (at -- renamed
+fields surface as new confirmation questions or are refused, never
+auto-mapped under their old meaning), day 155 (after -- same as day 125;
+the drift is permanent, not a one-time blip).
+
+### Day 150 — `JunkContactImport` (fleetops' six arc accounts)
+
+40 junk contacts (test-user names, invalid emails, zero interactions,
+`consent_to_contact=False`) land across the six existing arc accounts:
+Pinehill (7), Pinnacle (7), Quarrystone (6), Aspenridge (7), Meridian (7),
+Trailhead (6) -- implemented as a real `contacts_list` append in
+`simulate_book`, keyed by `det_id("junk-contact", account_id, day_offset,
+i)`, so it participates in the same deterministic-fixture discipline as
+every other mutation.
+
+**Grading truth (FINAL):** relationship-width signals for all six arcs
+must NOT inflate from these. Width is computed from
+`StakeholderRelationship`/comms-fixture rows keyed by real interaction
+history (each arc's own `*_stakeholder_relationships` function), never
+from the raw `CRMContact` table these junk rows land in -- so this is
+true BY CONSTRUCTION for the existing six arcs' width signal, verified
+directly by `eval/drift_battery.py` rather than assumed. Checkpoints:
+day 115/125 (before the import), day 155 (after) -- each arc's own
+bible-checkpoint width value (§ each arc's section above) must be
+unchanged at day 155 versus its pre-drift value.
+
+### Isolation requirement (both events)
+
+Neither event may perturb `eval/content_invariance_snapshot.json` --
+day 120/150 are not comms-schedule days for any of the six arcs'
+checkpoints, so the snapshot must stay byte-identical after both events
+are added to `SCENARIO_TIMELINE`. If it doesn't, the event leaked into
+shared fixture state and the isolation is wrong, not the snapshot.
 
 ## Safety appendix (Universe v2, WS-Safety)
 

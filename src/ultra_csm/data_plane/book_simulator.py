@@ -157,6 +157,40 @@ class ARRChange:
     new_arr_cents: int
 
 
+@dataclass(frozen=True)
+class SchemaFieldRename:
+    """Universe v2, WS-Perturbation-Drift (Wave 4): a D7-reserved marker
+    event -- the tenant admin renames source CRM fields at ``day_offset``.
+    This does NOT mutate any ``FixtureCustomerData`` row (renamed source
+    fields live in the RAW onboarding records the mapping layer sees, not
+    in the typed fixture contracts) -- it is a timeline marker
+    ``eval/drift_battery.py`` reads to know when to apply
+    ``eval.perturbation.perturb.schema_rename`` to the raw onboarding
+    records for the affected fields, and to assert the mapping layer
+    detects rather than silently mis-maps.
+    """
+
+    account_slug: str
+    day_offset: int
+    rename_map: dict[str, str]
+
+
+@dataclass(frozen=True)
+class JunkContactImport:
+    """Universe v2, WS-Perturbation-Drift (Wave 4): a D7-reserved event --
+    ``count`` junk contacts (test-user names, invalid emails, zero
+    interactions) land on the account at ``day_offset``. Truth:
+    relationship-width signals must NOT inflate from these, since width
+    is computed from ``StakeholderRelationship``/comms-fixture rows keyed
+    by real interaction history, never from the raw ``CRMContact`` table
+    these land in.
+    """
+
+    account_slug: str
+    day_offset: int
+    count: int
+
+
 Mutation = (
     UsageDecline
     | UsageGrowth
@@ -169,6 +203,8 @@ Mutation = (
     | LifecycleChange
     | StatusChange
     | ARRChange
+    | SchemaFieldRename
+    | JunkContactImport
 )
 
 
@@ -481,6 +517,29 @@ SCENARIO_TIMELINE: list[Mutation] = [
     # =====================================================================
     ChampionGoesQuiet("ironclad-freight", 130),
     ChampionGoesQuiet("farrow-fleet-ops", 130),
+
+    # =====================================================================
+    # Universe v2, WS-Perturbation-Drift (Wave 4): the two D7-reserved
+    # drift events, scripted against the fleetops timeline. See
+    # docs/SYNTHETIC_UNIVERSE_BIBLE.md's "Drift events" section for the
+    # ground truth and eval/drift_battery.py for the before/at/after
+    # assertions.
+    # =====================================================================
+    # Day 120 -- the tenant admin renames two CRM source fields (Account's
+    # Industry, Contact's Title) that Program 3's recorded mapping already
+    # maps. account_slug="*" marks this tenant-wide, not account-scoped.
+    SchemaFieldRename("*", 120, {"Industry": "Vertical", "Title": "JobTitle"}),
+
+    # Day 150 -- 40 junk contacts (test-user names, invalid emails, zero
+    # interactions) land across the six arc accounts (~7 each), so the
+    # drift battery can assert relationship-width signals for every one
+    # of the six existing arcs stay unaffected.
+    JunkContactImport("pinehill-transport", 150, 7),
+    JunkContactImport("pinnacle-supply", 150, 7),
+    JunkContactImport("quarrystone-logistics", 150, 6),
+    JunkContactImport("aspenridge-supply", 150, 7),
+    JunkContactImport("meridian-fleet", 150, 7),
+    JunkContactImport("trailhead-logistics", 150, 6),
 ]
 
 
@@ -576,6 +635,12 @@ def simulate_book(
 
     for mutation in SCENARIO_TIMELINE:
         if mutation.day_offset > day_offset:
+            continue
+
+        if isinstance(mutation, SchemaFieldRename):
+            # Marker-only event (account_slug="*", not a real account) --
+            # no FixtureCustomerData row changes; eval/drift_battery.py
+            # applies the actual rename to raw onboarding records itself.
             continue
 
         acct_id = _id[mutation.account_slug]
@@ -711,6 +776,19 @@ def simulate_book(
                 csm_owner_id=co.csm_owner_id,
                 current_score=co.current_score,
             )
+
+        elif isinstance(mutation, JunkContactImport):
+            for i in range(mutation.count):
+                junk_email = f"testuser{i}@invalid.example"
+                contacts_list.append(CRMContact(
+                    contact_id=det_id("junk-contact", acct_id, mutation.day_offset, i),
+                    account_id=acct_id,
+                    email=junk_email,
+                    name=f"Test User {i}",
+                    role=None,
+                    title=None,
+                    consent_to_contact=False,
+                ))
 
     # ------------------------------------------------------------------
     # Apply cumulative usage deltas
