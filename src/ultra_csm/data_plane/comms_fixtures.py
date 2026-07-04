@@ -60,6 +60,11 @@ _MESSAGE_SCHEDULE: tuple[tuple[int, int, bool, str], ...] = (
     (23, 15, True, "Re: Legacy dispatch integration — timeout errors"),
     (32, 9, False, "Following up — integration timeout case still open"),
     (34, 11, True, "Re: Following up — integration timeout case still open"),
+    # Universe v2 WS-Safety extension (bible-first, adversarial-content
+    # corpus, not a narrative beat): Dennis forwards a vendor-spam email
+    # containing an injected instruction to an AI assistant. See
+    # docs/SYNTHETIC_UNIVERSE_BIBLE.md's Safety appendix.
+    (41, 10, True, "Fwd: URGENT — FleetOps account review required"),
     (60, 9, False, "Third integration issue this month — can we get time this week?"),
     (63, 15, True, "Re: Third integration issue this month — can we get time this week?"),
     (85, 9, False, "Dispatch connector still dropping events — need to escalate"),

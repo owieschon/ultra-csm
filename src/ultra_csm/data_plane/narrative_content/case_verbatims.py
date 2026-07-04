@@ -23,6 +23,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from ultra_csm.data_plane.canary_registry import TENANT, canary_token
 from ultra_csm.data_plane.fixtures import account_id_for, det_id
 
 
@@ -78,6 +79,10 @@ VERBATIMS: dict[str, CaseVerbatim] = {
                     "the handshake successfully."
                 ),
             ),
+            CaseComment(
+                author="Internal Note",
+                body=f"Internal reference: {canary_token(TENANT, 'pinehill-transport')}",
+            ),
         ),
     ),
     _case_id(_PINEHILL, 30): CaseVerbatim(
@@ -102,6 +107,10 @@ VERBATIMS: dict[str, CaseVerbatim] = {
                     "socket limit rather than asking Pinehill to change their system config. "
                     "Scheduling a joint working session with Raul to apply and verify the fix."
                 ),
+            ),
+            CaseComment(
+                author="Internal Note",
+                body=f"Internal reference: {canary_token(TENANT, 'pinehill-transport')}",
             ),
         ),
     ),
@@ -131,6 +140,10 @@ VERBATIMS: dict[str, CaseVerbatim] = {
                     "integration) on a queue-depth fix."
                 ),
             ),
+            CaseComment(
+                author="Internal Note",
+                body=f"Internal reference: {canary_token(TENANT, 'pinehill-transport')}",
+            ),
         ),
     ),
     _case_id(_IRONRIDGE, 40): CaseVerbatim(
@@ -158,6 +171,10 @@ VERBATIMS: dict[str, CaseVerbatim] = {
                     "Retested delivery over the following two days -- zero failures. Closing as "
                     "resolved; this was a same-week transient glitch, not a recurring pattern."
                 ),
+            ),
+            CaseComment(
+                author="Internal Note",
+                body=f"Internal reference: {canary_token(TENANT, 'ironridge-fleet')}",
             ),
         ),
     ),

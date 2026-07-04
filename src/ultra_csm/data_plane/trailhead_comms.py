@@ -74,6 +74,11 @@ _MESSAGE_SCHEDULE: tuple[tuple[int, int, bool, bool, str], ...] = (
     # Phase U5.F density extension: a short recap after an informal call.
     (120, 9, False, False, "Recap — quick call earlier today"),
     (120, 13, True, False, "Re: Recap — quick call earlier today"),
+    # Universe v2 WS-Safety extension (bible-first, adversarial-content
+    # corpus, not a narrative beat): a hidden-instruction signature-block
+    # injection. See docs/SYNTHETIC_UNIVERSE_BIBLE.md's Safety appendix.
+    (130, 9, False, False, "Quick question on the compliance module"),
+    (130, 13, True, False, "Re: Quick question on the compliance module"),
     (140, 9, False, False, "Mid-year usage recap"),
     (140, 13, True, False, "Re: Mid-year usage recap"),
     (175, 9, False, False, "Ahead of the quarterly business review"),
