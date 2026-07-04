@@ -214,10 +214,12 @@ tech-touch) — this arc exercises that one allowed exception deliberately.
 
 A 20-account tail cohort (generated indices 63-82 — see
 `synthetic_book.py`'s `L3_COHORT` tuple for the literal list) shows usage
-decaying to zero across days 150-210 — `active_users` and
-route-plans-per-week both trend to zero, no cancellation event, zero
-support-chat contact initiated by any of the 20 (silence is part of the
-signal: a churning tech-touch account does not reach out, it just stops).
+decaying linearly from day 150 to a flat, fully-settled zero by day 200
+(and remains zero through day 210 and beyond) — `active_users` and
+route-plans-per-week both trend to and reach zero, no cancellation event,
+zero support-chat contact initiated by any of the 20 (silence is part of
+the signal: a churning tech-touch account does not reach out, it just
+stops).
 
 **Truth:** ONE win-back `cohort_action` by day 200, citing the decay
 pattern across the cohort. Per-account drafts (20 individual

@@ -66,13 +66,16 @@ def _l2_curve(day: int) -> tuple[float, float]:
 
 
 def _l3_curve(day: int) -> tuple[float, float]:
-    """Healthy through day 150, then decays to zero by day 210."""
+    """Healthy through day 150, then decays to zero by day 200 (flat zero
+    day 200-210 and beyond -- the win-back cohort_action fires "by day
+    200" per the bible, so usage must already read zero at that
+    checkpoint, not merely trending toward it)."""
 
     if day < 150:
         return (4.0, 12.0)
-    if day >= 210:
+    if day >= 200:
         return (0.0, 0.0)
-    decay_frac = (day - 150) / 60.0
+    decay_frac = (day - 150) / 50.0
     active_users = 4.0 * (1.0 - decay_frac)
     return (max(active_users, 0.0), max(active_users, 0.0) * 3)
 

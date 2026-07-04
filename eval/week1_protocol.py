@@ -918,10 +918,21 @@ def run_full_protocol(
 ) -> dict[str, Any]:
     if tenant == "crateworks":
         return run_full_protocol_crateworks(install_days=install_days)
+    if tenant == "loopway":
+        # Additive dispatch (Universe v2, WS-Tenant-Loopway, Wave 3): all
+        # Loopway-specific logic lives in eval/loopway_week1.py, within
+        # that workstream's ownership map -- see its module docstring for
+        # why section 4 (feedback_persistence) is an honest SKIP there
+        # rather than force-fitting fleetops' divergence-heuristic sweep
+        # engine, which returns zero work items against Loopway's book.
+        from eval.loopway_week1 import run_loopway_protocol
+
+        return run_loopway_protocol(install_days=install_days)
+
     if tenant != "fleetops":
         raise NotImplementedError(
-            f"week1_protocol is tenant-parameterized by design but only fleetops and "
-            f"crateworks fixtures exist as of Wave 3; got tenant={tenant!r}"
+            f"week1_protocol is tenant-parameterized by design but only fleetops, "
+            f"crateworks, and loopway fixtures exist as of Wave 3; got tenant={tenant!r}"
         )
 
     onboarding = run_onboarding_cost_driver()
