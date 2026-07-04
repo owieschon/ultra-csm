@@ -243,3 +243,130 @@ account id is never committed — see the test's docstring).
 - Update/delete paths beyond the two `update_task` status changes on
   records created this run were not exercised — the program's standing
   rule is create-only.
+
+# Live Integration Findings — Program 7, Live Narrative Seeding
+
+The Synthetic Tenant Universe (six arcs, PR #13) built rich causal-exhaust
+fixtures — email/calendar/ticket/Rocketlane content authored to tell each
+arc's story — entirely offline. This program seeds that same content into
+the real, live orgs, and reads it back through the unmodified product code
+path (the same `*_communication_signals` extraction functions and Rocketlane
+`derive_ttv_milestones`/`has_activation_gap` bridge the fixture-based U1
+pilot proved), to close the gap between "rich but simulated" and "real but
+thin" that Programs 3/4/synthetic-universe each left open on their own.
+
+## What "live" honestly covers, and what it does not
+
+Three real, hard walls were found and are why this program's live scope is
+narrower than "all six arcs, every channel, live":
+
+1. **Salesforce `Case.CreatedDate` is not writable in this org** (a live
+   `INVALID_FIELD_FOR_INSERT_UPDATE` 400 on a direct probe — this needs a
+   special "Set Audit Fields upon Record Creation" permission this org's
+   connected app does not have). Combined with Program 3's D5 finding that
+   this connector has no live `CRMCase` parser at all, seeding Cases here
+   would create undated, unread clutter with zero proof value. Skipped.
+2. **Health-band/adoption-rate/usage signals are fixture-only architecture-
+   wide.** No live CS-platform/telemetry connector exists anywhere in this
+   codebase (already disclosed in Program-6's `live_semantic_quality`
+   claim_boundary). Several arcs' core signal (Aspenridge's usage decline,
+   Meridian's usage growth) is inherently this kind of data. Not buildable
+   within this program's scope.
+3. **No Rocketlane project-creation tool exists, MCP or REST** — the exact
+   wall Program 4 hit. New Rocketlane content is new phases/tasks inside
+   the existing Acme project, not a dedicated new project per arc.
+
+What genuinely went live: **Rocketlane** (Pinehill's onboarding-stall
+phases/tasks) and **Gmail** (all six arcs' full email history, 113
+messages, via IMAP `APPEND` with a custom `INTERNALDATE`).
+
+## The future-dating wall (Gmail), and why the seeded data is still correct
+
+The six arcs' scripted timeline runs from `SEED_DATE` (2026-06-21) out to
+day 365 (~2027-06-21) — but the real calendar date this program ran on was
+2026-07-04. Only the first ~13 days of each arc's timeline are genuinely in
+the past; the rest is, from *this* moment's perspective, in the future.
+Gmail's IMAP `APPEND` silently substitutes the current server time for any
+requested `INTERNALDATE` in the future rather than erroring — caught only
+by post-write verification (97 of 113 messages showed today's date instead
+of their intended historical date). This is a hard, correct constraint of
+any real mail system (a message cannot be "received" before it exists), not
+a bug to route around.
+
+It does not corrupt the seeded data's usefulness: `reply_latency_trend` and
+every other extraction function reads the message's `Date:` **header**
+content, never `INTERNALDATE` — confirmed by grep before deciding whether to
+delete and redo anything. All 113 messages' Date headers are correct,
+verified by direct IMAP fetch. The only real-world effect is cosmetic: a
+human scrolling the mailbox's native "received" sort order would see these
+messages clustered oddly rather than spread across the story's timeline;
+the product's own live-read path is unaffected.
+
+## Live-read wiring (Workstream 4)
+
+`src/ultra_csm/data_plane/live_gmail_reader.py`: reads real IMAP messages
+into the exact Gmail `users.threads.get` shape the fixture comms modules
+already produce. Rather than duplicating the six arcs' extraction logic,
+each `*_communication_signals` function gained a minimal, backward-
+compatible optional `thread=`/`threads=` parameter (defaults to the fixture
+call unchanged) — the same well-tested extraction code now drives off live
+data with zero duplication.
+
+## Battery matrix — live read-back vs. the known fixture ground truth
+
+| Check | Live result | Fixture ground truth (u1_pinehill_pilot.json) |
+| --- | --- | --- |
+| Pinehill reply-latency trend @ day 50 ("during") | 32.9h | 32.0h |
+| Pinehill reply-latency trend @ day 310 ("after") | 9.8h | 10.0h |
+| Rocketlane Kickoff activation gap | `False` (completed) | `False` |
+| Rocketlane Legacy Dispatch Integration activation gap | `True` (at-risk task) | `True` |
+| Quarrystone signal count | 2 (exact) | 2 |
+| Aspenridge signal count | 10 (exact) | 10 |
+| Pinnacle signal count | 12 (exact) | 12 |
+| Meridian raw message count | 50 (exact) | 50 |
+| Trailhead reply-latency @ two checkpoints | -0.8h, insufficient-history | flat/low, matching control |
+
+Live numbers land within ~1 hour of the fixture-derived ground truth (the
+deterministic minute/second jitter added at seed time accounts for the
+difference) — the same story, read through the real product surface
+instead of a fixture. Full run artifact:
+`~/ultra-csm-corpus-runs/live-narrative-seeding-20260704/live_battery_report.json`
+(`"problems": []`, `"ok": true`).
+
+## Rocketlane live quirks, exercised again and handled without faking history
+
+Both quirks Program 4 discovered fired again exactly as documented:
+completing Kickoff's one task auto-completed the phase, stamping actual
+dates to the write day (2026-07-03/04 — a few days after its June 28
+planned due date, a realistic "completed a bit late," not a nonsensical
+value); creating tasks under Legacy Dispatch Integration recalculated the
+phase's `dueDate` to the last-created task's `dueDate` (day 90). Rather than
+fight these quirks to fake a specific historical checkpoint (mechanically
+impossible — actual/completion dates can only be "now" or null, never a
+chosen past value, the same root constraint as Gmail's), the seeded
+Rocketlane state represents the arc's **current live truth**: Kickoff done,
+Legacy Dispatch Integration genuinely open with an at-risk task — which
+*is* the "during the stall" activation-gap-true state, achieved honestly.
+
+## Regression trio (same commit as this battery)
+
+| Command | Result |
+| --- | --- |
+| `make eval` | `454 passed, 1 skipped` |
+| `make relational-battery-csm` | `hard_ok: true`, `seeds: 20` |
+| `make relay-battery-csm` | `passed: 11 / 11` |
+| `make narrative-battery-csm` | `hard_ok: true`, `cases: 8`, `failed_cases: []` |
+| `make demo` | Passed; `git status --short` clean after run |
+
+## Scope not covered
+
+- Salesforce Cases and Calendar events for any arc (see the three walls
+  above) — Calendar additionally blocked on a missing credential
+  (`ULTRA_CSM_CALENDAR_OAUTH_REFRESH_TOKEN` was never set up).
+- Live-read wiring was built and proven for Gmail only; Rocketlane's live
+  read path already existed from Program 4.
+- Meridian and Pinnacle's live-read verification in this run checked raw
+  message/signal counts rather than full per-contact latency-trend
+  comparison (their extraction functions attribute signals across two
+  contacts sharing one email domain, which the generic live reader merges
+  into one thread) — a real, disclosed simplification, not a silent gap.
