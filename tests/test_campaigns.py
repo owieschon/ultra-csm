@@ -13,9 +13,23 @@ from ultra_csm.data_plane.fixtures import account_id_for
 
 
 def test_target_cohort_is_route_optimizer_entitled_and_shallow_depth():
-    assert set(TARGET_COHORT) == {
-        "pinehill-transport", "stonebridge-fleet", "sagebrush-transport", "cedar-valley",
+    # Universe v2 Stream 5 (WS-Segmented-Book) added underused_capabilities
+    # entries for its tier-mirror accounts (sterling-fleet-services,
+    # brookstone-supply-chain, and the 25-account cohort) -- TARGET_COHORT
+    # is derived generically from synthetic_book.py's own tables, so it
+    # correctly picked those up with no code change here.
+    original_four = {"pinehill-transport", "stonebridge-fleet", "sagebrush-transport", "cedar-valley"}
+    tier_mirror_additions = {
+        "sterling-fleet-services", "brookstone-supply-chain",
+        "glenbrook-distribution", "kestrel-logistics", "wolfden-warehousing", "copperfield2-carriers",
+        "duskwood-transport-co", "evergreen-warehousing", "pathfinder-freight", "truewind-distribution",
+        "underpass-transport-co", "vernonhall-delivery", "emberfield-delivery", "ivorygate-freight",
+        "juniperfield-logistics", "oldstone-industrial-supply", "poplarcreek-trucking", "quietbrook-warehousing",
+        "vinecrest-freight", "watermill-trucking", "amberfield-fleet-ops", "ironwood2-line-haul",
+        "kettlecreek-distribution", "mossgate-logistics", "palewood-field-services", "quarrycreek-haulage",
+        "roughcut-freight",
     }
+    assert set(TARGET_COHORT) == original_four | tier_mirror_additions
 
 
 def test_campaign_schedule_spans_days_60_to_120():

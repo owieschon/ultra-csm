@@ -20,8 +20,11 @@ def test_canary_token_differs_by_account():
     assert a != b
 
 
-def test_all_35_fleetops_accounts_have_a_canary_description():
-    assert len(ACCOUNT_DESCRIPTIONS) == len(_ACCT_DATA) == 35
+def test_every_fleetops_account_has_a_canary_description():
+    # Universe v2 Stream 5 expanded the book from 35 to 180 accounts;
+    # canary_registry.ACCOUNT_DESCRIPTIONS derives from _ACCT_DATA directly,
+    # so every new account already has a canary with no code change here.
+    assert len(ACCOUNT_DESCRIPTIONS) == len(_ACCT_DATA) == 180
     for slug, *_rest in _ACCT_DATA:
         assert slug in ACCOUNT_DESCRIPTIONS
         assert canary_token(TENANT, slug) in ACCOUNT_DESCRIPTIONS[slug]

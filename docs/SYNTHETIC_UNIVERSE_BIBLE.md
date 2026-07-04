@@ -745,6 +745,98 @@ enrichment consumer reads them:
 | Pinnacle Supply Chain | Derek Vaughn | 5 | departure | Two days after the existing `ChampionGoesQuiet("pinnacle-supply", 3)` mutation, and 9 days before the existing day-14 `HealthBandChange`. This is the signal an enrichment-feed-aware lens could have used to flag the single-threaded-risk arc's root cause 9 days earlier than the health band does — exactly the "beats silence-detection to the punch" framing this class exists to test. |
 | Trailhead Logistics | Mike Lindgren | 200 | promotion (same-company) | Benign red herring — a title change with no risk, consistent with the healthy-control arc never surfacing a real signal at any checkpoint (day 60/180/300). |
 
+## Segmented book (Universe v2, WS-Segmented-Book, Wave 2)
+
+Expands the book from 35 to 180 accounts: ~7 new high-touch (`arr_cents >=
+10_000_000`), ~28 new mid-touch (`arr_cents >= 2_500_000`), ~110 new
+tech-touch (below both floors) — fictional logistics/field-ops businesses,
+authored as frozen data (deterministic hash-derived at authoring time, no
+runtime randomness), hygiene-scanner-clean. The existing 35 accounts are
+untouched; tier resolution (`resolve_tenant_tier`, built in Foundations)
+now simply applies to a much larger book.
+
+**Comms discipline for the tail (FINAL).** None of the 145 new accounts
+has an email-thread comms module — thinness is CORRECT at tech tier, not
+an artifact the way it was for the old 27 boring controls (which were
+thin because no *new* content layer had been authored for them yet, not
+because thinness is the right ground truth). A tech-touch account
+genuinely has no CSM-authored email thread; its correct servicing motions
+are `campaign_enroll`/`content_route`/`cohort_action`, never
+`personal_email`. 20 of the new mid/high accounts (a deterministic
+subset, not all of them) do get real comms — 2-4 short, boring, benign
+message exchanges — proving the tier-mirror batteries can read genuine
+comms signals where they exist without requiring every account to have
+one.
+
+**Underused-capabilities discipline.** `book_simulator.py` has no mutation
+that changes `AdoptionSummary.underused_capabilities` over time — it is a
+static fixture field, carried through from each account's baseline row,
+same as for all 35 existing accounts. The "from day 90"/"by day 140"
+framing below names the checkpoint an ideal agent is graded at, not a
+scripted onset day the signal newly appears on — the shallow-adoption
+fact is true for that account from day 0 onward, exactly like every
+other account's static `underused_capabilities` entry.
+
+### Tier-mirror 1 — champion-quiet
+
+The SAME signal class (`ChampionGoesQuiet`, the existing generic
+mutation — it only needs a `HealthScore` row, not a bespoke comms module,
+so it applies to any account) planted on two different tiers, day 130,
+with DIFFERENT correct motions:
+
+- **High-touch**: `ironclad-freight` (new, $210K ARR). Correct motion:
+  `personal_email` first, escalating to `escalation` if unaddressed — the
+  playbook's `close-milestone-gap`/direct-outreach pattern for a
+  high-touch relationship risk. `personal_email` is allowed at this tier.
+- **Tech-touch**: `farrow-fleet-ops` (new, tail account, its only
+  contact). Correct motion: `campaign_enroll` re-engagement.
+  `personal_email` is FORBIDDEN at this tier (playbooks.json's
+  `tech_touch` `forbidden_motions`) — a correct agent must not propose
+  the high-touch motion just because the signal looks identical.
+
+### Tier-mirror 2 — shallow-adoption
+
+Route Optimizer entitled-but-shallow (`underused_capabilities` includes
+`route_optimization`), checkpoint day 90, on two different tiers:
+
+- **Mid-touch**: `brookstone-supply-chain` (new, $6.5M ARR). Correct
+  motion: `content_route`, citing catalog id
+  `content-route-optimizer-adoption` or
+  `content-route-optimizer-setup-video` (the two ids
+  `playbooks.json`'s `reactivate-stalled-module` play now references).
+- **High-touch**: `sterling-fleet-services` (new, $17M ARR). Correct
+  motion: `working_session` — a high-touch relationship warrants a live
+  session over a routed content asset for the same underlying gap.
+
+### Tier-mirror 3 — cohort truth (the anti-pattern assertion)
+
+25 tech-touch tail accounts share the identical Route Optimizer
+shallow-adoption pattern by day 140 (all Route-Optimizer-entitled, all
+`underused_capabilities` including `route_optimization`, aligned with
+WS-Data-Classes' seeded Route Optimizer adoption campaign where
+sensible): `glenbrook-distribution`, `kestrel-logistics`,
+`wolfden-warehousing`, `copperfield2-carriers`, `duskwood-transport-co`,
+`evergreen-warehousing`, `pathfinder-freight`, `truewind-distribution`,
+`underpass-transport-co`, `vernonhall-delivery`, `emberfield-delivery`,
+`ivorygate-freight`, `juniperfield-logistics`, `oldstone-industrial-supply`,
+`poplarcreek-trucking`, `quietbrook-warehousing`, `vinecrest-freight`,
+`watermill-trucking`, `amberfield-fleet-ops`, `ironwood2-line-haul`,
+`kettlecreek-distribution`, `mossgate-logistics`, `palewood-field-services`,
+`quarrycreek-haulage`, `roughcut-freight`.
+
+Correct motion: exactly ONE `cohort_action` recommendation covering the
+whole cohort — never 25 individual per-account motions. This is the
+anti-pattern assertion this tier-mirror exists to test: an agent that
+proposes 25 separate `content_route`/`personal_email` drafts for
+economically-identical tech-touch accounts has failed the
+tier-appropriateness test even if each individual draft looks reasonable
+in isolation. `eval/tier_policy_battery.py` asserts this directly.
+
+**Grading mode (Universe v2):** `gap` for all three tier-mirrors, at
+every checkpoint — no scripted CSM acts on any of these new accounts;
+the agent's recommendation is the only correct action, silence (or the
+wrong-tier motion) is a failure.
+
 ## Anti-Goodhart note
 
 This bible is authored once, before any extractor or battery code exists.

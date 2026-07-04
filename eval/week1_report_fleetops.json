@@ -186,7 +186,7 @@
         "recurred_unchanged": false,
         "recurrence_detail": {
           "ledger_acknowledged": true,
-          "new_proposal_id": "a68ef2ab-874d-4cb1-a476-75bc80bda83b",
+          "new_proposal_id": "94e21ced-9bcb-413c-9e9e-40f784b15c67",
           "recurred": true
         },
         "rejected_key": {
@@ -194,7 +194,7 @@
           "factor_name": "days_overdue",
           "motion": "draft_customer_outreach"
         },
-        "rejected_proposal_id": "6d9751b0-c31d-4bd0-a6c9-6b73c9045413"
+        "rejected_proposal_id": "a6b8df4c-b569-49fa-8cca-4ce09b2caa4f"
       },
       "install_day": 14,
       "ok": true
@@ -384,7 +384,7 @@
         "recurred_unchanged": false,
         "recurrence_detail": {
           "ledger_acknowledged": true,
-          "new_proposal_id": "a1321c05-08c5-4b59-a71c-89f65c62cc02",
+          "new_proposal_id": "092d4b9a-46b8-47ae-8493-f786908b2013",
           "recurred": true
         },
         "rejected_key": {
@@ -392,7 +392,7 @@
           "factor_name": "milestones_overdue",
           "motion": "draft_customer_outreach"
         },
-        "rejected_proposal_id": "ba3949ab-ba22-4fee-825e-ebc1e5e1fcd5"
+        "rejected_proposal_id": "93f37e6d-aaa7-4c6c-b43d-31b6011c13d6"
       },
       "install_day": 3,
       "ok": true
@@ -582,7 +582,7 @@
         "recurred_unchanged": false,
         "recurrence_detail": {
           "ledger_acknowledged": true,
-          "new_proposal_id": "f20ccc0f-f3ec-4bfb-98a6-09477ba1d5c6",
+          "new_proposal_id": "f4f25298-ceea-4e8c-823c-31cb4fb55d52",
           "recurred": true
         },
         "rejected_key": {
@@ -590,7 +590,7 @@
           "factor_name": "milestones_overdue",
           "motion": "draft_customer_outreach"
         },
-        "rejected_proposal_id": "868c38a9-cab3-4095-93ef-a8cda2b9a70a"
+        "rejected_proposal_id": "a2613aeb-4cfe-4616-8ccd-6d5a87983ef4"
       },
       "install_day": 7,
       "ok": true
@@ -623,7 +623,7 @@
       "CRMOpportunity.stage_name"
     ],
     "questions_asked_count": 5,
-    "wall_clock_seconds": 0.014168,
+    "wall_clock_seconds": 0.027746,
     "within_ceiling": true
   },
   "repeatability": {

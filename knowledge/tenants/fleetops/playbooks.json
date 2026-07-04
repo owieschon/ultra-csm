@@ -40,6 +40,34 @@
       "trigger_factor": "feature_shallow_depth",
       "motion": "content_route",
       "tiers": ["tech_touch", "mid_touch"],
+      "content_refs": ["content-route-optimizer-adoption", "content-route-optimizer-setup-video"]
+    },
+    {
+      "id": "reactivate-stalled-module-live",
+      "trigger_factor": "feature_shallow_depth",
+      "motion": "working_session",
+      "tiers": ["high_touch"],
+      "content_refs": []
+    },
+    {
+      "id": "reactivate-stalled-module-cohort",
+      "trigger_factor": "feature_shallow_depth",
+      "motion": "cohort_action",
+      "tiers": ["tech_touch"],
+      "content_refs": ["content-route-optimizer-adoption", "content-route-optimizer-setup-video"]
+    },
+    {
+      "id": "reengage-quiet-champion-direct",
+      "trigger_factor": "champion_inactive",
+      "motion": "personal_email",
+      "tiers": ["mid_touch", "high_touch"],
+      "content_refs": []
+    },
+    {
+      "id": "reengage-quiet-contact-campaign",
+      "trigger_factor": "champion_inactive",
+      "motion": "campaign_enroll",
+      "tiers": ["tech_touch"],
       "content_refs": []
     },
     {
