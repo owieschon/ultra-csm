@@ -133,6 +133,25 @@ CSM_ACTION_SPECS: dict[CSMActionName, CSMActionSpec] = {
 }
 
 
+# The playbook motion a CSMActionType implies, for the tier-forbidden-
+# motion guard only (docs/UNIVERSE_V2_CONVENTIONS.md ยง2's full motion ->
+# action-type table, narrowed to the two customer-contact-gated action
+# types the guard needs). recommend_next_best_action has no forbidden-
+# motion implication -- it is never customer-facing, so it is
+# deliberately absent here, not an oversight.
+ACTION_IMPLIED_MOTION: dict[CSMActionName, str] = {
+    "draft_customer_outreach": "personal_email",
+    "initiate_customer_call": "working_session",
+}
+
+
+def implied_motion_for_action(action: str) -> str | None:
+    """The playbook motion *action* implies, or None if that action type
+    has no forbidden-motion implication (e.g. it is not customer-facing)."""
+
+    return ACTION_IMPLIED_MOTION.get(action)  # type: ignore[arg-type]
+
+
 def csm_action_spec(action: str) -> CSMActionSpec:
     try:
         return CSM_ACTION_SPECS[action]  # type: ignore[index]

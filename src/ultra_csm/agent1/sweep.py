@@ -33,7 +33,7 @@ from ultra_csm.data_plane import (
 )
 from ultra_csm.data_plane.contracts import ResolutionState
 from ultra_csm.governance import ActionGate, ActionProposal, proposal_fields_for
-from ultra_csm.governance.csm_actions import CSMActionType
+from ultra_csm.governance.csm_actions import CSMActionType, implied_motion_for_action
 from ultra_csm.knowledge import PlaybookSet, load_org_pack, load_playbooks
 from ultra_csm.motion_resolver import resolve_motions
 from ultra_csm.quality_breaker import (
@@ -610,30 +610,34 @@ def _account_triggers_for_motion(health, adoption, entitlements) -> set[str]:
     return triggers
 
 
-def _account_motion(
+def _account_tier_and_motion(
     data_plane: CustomerDataPlane,
     account: CRMAccount,
     *,
     playbooks: PlaybookSet,
     value_model_config: ValueModelConfig,
-) -> str | None:
-    """Resolve this one account's tier-appropriate motion via the promoted
-    ``motion_resolver.resolve_motions`` -- a single-account map naturally
-    never reaches cohort-collapse threshold, so this yields the same
-    per-account motion a whole-book sweep would (see motion_resolver's
-    docstring)."""
+) -> tuple[str, str | None] | None:
+    """Resolve this one account's tier and tier-appropriate motion together
+    (one data_plane pass) via the promoted ``motion_resolver.resolve_motions``
+    -- a single-account map naturally never reaches cohort-collapse
+    threshold, so this yields the same per-account motion a whole-book
+    sweep would (see motion_resolver's docstring). Returns None if the
+    account has no CS-platform company record; in practice callers only
+    reach this after ``_slot_b_inputs_for_account`` already required one,
+    so this branch mirrors that check rather than adding a new failure mode."""
 
     company = data_plane.cs.get_company(account.account_id)
-    health = data_plane.cs.get_health_score(account.account_id)
     if company is None:
         return None
+    health = data_plane.cs.get_health_score(account.account_id)
     adoption = data_plane.cs.get_adoption_summary(account.account_id)
     entitlements = tuple(data_plane.telemetry.list_entitlements(account.account_id))
     tier = resolve_tenant_tier(account_attributes(account, company), value_model_config).tier
     triggers = _account_triggers_for_motion(health, adoption, entitlements)
     resolved = resolve_motions({account.account_id: tier}, {account.account_id: triggers}, playbooks)
     plays = resolved["per_account"].get(account.account_id, ())
-    return plays[0]["motion"] if plays else None
+    motion = plays[0]["motion"] if plays else None
+    return tier, motion
 
 
 def _work_item_for_account(
@@ -665,12 +669,37 @@ def _work_item_for_account(
     if inputs is None:
         return None
 
+    tier_and_motion = (
+        _account_tier_and_motion(
+            data_plane, account, playbooks=playbooks, value_model_config=value_model_config
+        )
+        if playbooks is not None
+        else None
+    )
+    tier = tier_and_motion[0] if tier_and_motion is not None else None
+    motion = tier_and_motion[1] if tier_and_motion is not None else None
+
     contact = next((contact for contact in contacts if contact.consent_to_contact), None)
     customer_contact_allowed = contact is not None
+    # Tier-forbidden-motion guard: narrows customer_contact_allowed exactly
+    # like the quality breaker already does -- it never touches
+    # recommended_action's derivation below, only whether this item is
+    # allowed to proceed as a customer-facing draft. Fail-open when tier
+    # can't be resolved or motion resolution wasn't requested (playbooks
+    # is None); fail-closed only when a resolved tier actively forbids the
+    # action's implied motion.
+    tier_forbids_motion = (
+        customer_contact_allowed
+        and tier is not None
+        and playbooks is not None
+        and implied_motion_for_action("draft_customer_outreach") in playbooks.tier_for(tier).forbidden_motions
+    )
     customer_action_blocked = (
         customer_contact_allowed
-        and quality_breaker is not None
-        and quality_breaker.triggered
+        and (
+            (quality_breaker is not None and quality_breaker.triggered)
+            or tier_forbids_motion
+        )
     )
     disposition: Disposition = (
         "propose_customer_action"
@@ -718,12 +747,6 @@ def _work_item_for_account(
         if timing is not None:
             timing.governance_ms += (time.perf_counter() - governance_start) * 1000.0
         proposal_ref = _proposal_ref(proposal, action=action, principal_id=sweep_principal_id)
-
-    motion = (
-        _account_motion(data_plane, account, playbooks=playbooks, value_model_config=value_model_config)
-        if playbooks is not None
-        else None
-    )
 
     return CSMWorkItem(
         tenant_id=tenant_id,

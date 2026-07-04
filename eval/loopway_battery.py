@@ -46,7 +46,7 @@ from ultra_csm.data_plane.tenants.loopway.synthetic_book import (
     NAMED_ACCOUNTS,
 )
 from ultra_csm.knowledge import load_playbooks
-from ultra_csm.motion_resolver import COHORT_THRESHOLD, resolve_motions
+from ultra_csm.motion_resolver import resolve_motions
 from ultra_csm.value_model import account_attributes, load_value_model_config, resolve_tenant_tier
 
 ARTIFACT_PATH = Path(__file__).with_name("loopway_battery.json")

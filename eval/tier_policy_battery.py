@@ -34,12 +34,12 @@ from ultra_csm.data_plane.book_simulator import simulate_book
 from ultra_csm.data_plane.fixtures import account_id_for
 from ultra_csm.data_plane.synthetic_book import build_synthetic_book
 from ultra_csm.knowledge import load_playbooks
-from ultra_csm.motion_resolver import COHORT_THRESHOLD, resolve_motions
+from ultra_csm.motion_resolver import resolve_motions
 from ultra_csm.value_model import account_attributes, load_value_model_config, resolve_tenant_tier
 
 ARTIFACT_PATH = Path(__file__).with_name("tier_policy_battery.json")
 
-# COHORT_THRESHOLD (imported from motion_resolver, shared with loopway):
+# Cohort collapse threshold (motion_resolver.COHORT_THRESHOLD, its default):
 # below this many same-day, same-tier, same-capability accounts, each gets
 # its own per-account play motion; at or above it, the cohort collapses to
 # one cohort_action -- the anti-pattern assertion tier-mirror 3 exists to
