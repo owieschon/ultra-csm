@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "fictional": true,
+  "tenant": "fleetops",
+  "account_slug": "quarrystone-logistics",
+  "why_they_bought": "A small regional carrier that bought the minimum viable package (Live Map only) and never expanded usage past it.",
+  "legacy_system": null,
+  "legacy_system_note": "No prior dispatch/telematics system is named in canon for this account -- the bible does not attribute a legacy-migration story to Quarrystone (unlike Pinehill/Meridian/Aspenridge/Trailhead), consistent with it being the smallest, lowest-touch account in the arc set. Recorded as null rather than invented.",
+  "success_criteria": [
+    "Basic Live Map coverage across its 12 licensed assets"
+  ],
+  "stakeholders": [
+    {"name": "Tim Kowalczyk", "title": "Operations Manager", "role": "sole_contact_gone_quiet"}
+  ]
+}
