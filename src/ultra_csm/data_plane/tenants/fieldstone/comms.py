@@ -32,7 +32,7 @@ SEED_DATE = "2026-06-21"
 _CSM_EMAIL_BY_SLUG = {
     ARC_F1_SLUG: "priya.anand@fieldstone-service.example",
     ARC_F2_SLUG: "priya.anand@fieldstone-service.example",
-    HERRING_SLUG: "owen.marsh@fieldstone-service.example",
+    HERRING_SLUG: "grant.bellamy@fieldstone-service.example",
 }
 _CHAMPION_EMAIL_BY_SLUG = {
     ARC_F1_SLUG: "renata@masonry-home-services.example",

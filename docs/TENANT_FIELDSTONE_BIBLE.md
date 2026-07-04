@@ -27,7 +27,7 @@ tenant):
 
 **Cast:**
 - CSM `fs-csm-201` (Priya Anand) — high/mid-touch accounts.
-- CSM `fs-csm-202` (Owen Marsh) — mid/tech-touch accounts.
+- CSM `fs-csm-202` (Grant Bellamy) — mid/tech-touch accounts.
 - Implementation Engineer `fs-ie-301` (Devon Cole) — onboarding delivery
   for high-touch accounts only (Fieldstone's cast is smaller than
   fleetops': no dedicated Rocketlane-style onboarding platform exists for

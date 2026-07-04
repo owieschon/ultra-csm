@@ -13,6 +13,10 @@ ConnectorId = Literal[
     "rocketlane_onboarding",
     "product_telemetry",
     "external_book",
+    # Universe v2 WS-Tenant-Fieldstone (Wave 3): fieldstone's HubSpot-shaped
+    # CRM. Additive registration only -- see connector_catalog.py's
+    # HUBSPOT_CRM_SPEC and explorer.py's hubspot explorer/parser functions.
+    "hubspot_crm",
 ]
 ConnectorMode = Literal["fixture", "live", "disabled"]
 ReadinessState = Literal[

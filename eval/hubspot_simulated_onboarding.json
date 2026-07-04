@@ -1,0 +1,141 @@
+{
+  "artifact": "hubspot_simulated_onboarding",
+  "claim_boundary": {
+    "live": false,
+    "live_tenant_proven": false,
+    "sim": true,
+    "uses_live_credentials": false
+  },
+  "confirmation_fixture": {
+    "confirmed_keys": [],
+    "path": "eval/hubspot_simulated_confirmations.json"
+  },
+  "credential_boundary": {
+    "live_credentials_used": false,
+    "live_tenant_proof": false,
+    "missing_credentials_state": "shape_verified_pending_live_creds",
+    "missing_env": [
+      "ULTRA_CSM_HUBSPOT_ACCESS_TOKEN"
+    ],
+    "requests_without_credentials": 0,
+    "simulated_credentials_used": true,
+    "transport": "FakeHubSpotClient"
+  },
+  "discovery": {
+    "explorer_connected_flag_is_not_live_proof": true,
+    "explorer_state_on_fake_transport": "live_schema_verified",
+    "objects": [
+      {
+        "fields": [
+          "name",
+          "lifecyclestage",
+          "annualrevenue",
+          "fieldstone_service_tier"
+        ],
+        "name": "companies"
+      },
+      {
+        "fields": [
+          "email",
+          "firstname",
+          "lastname",
+          "jobtitle"
+        ],
+        "name": "contacts"
+      },
+      {
+        "fields": [
+          "associations.companies"
+        ],
+        "name": "contacts"
+      }
+    ],
+    "ok": true,
+    "request_urls": [
+      "https://api.hubapi.com/crm/v3/properties/companies",
+      "https://api.hubapi.com/crm/v3/properties/contacts",
+      "https://api.hubapi.com/crm/v4/associations/contacts/companies/labels"
+    ],
+    "requests_on_fake_transport": 3,
+    "sample_counts": {
+      "company_properties": 4,
+      "contact_properties": 4,
+      "contact_to_company_associations_schema": 1
+    },
+    "schema_hash": "sha256:c6a1c590a8a19cec2372519eff4d50aaad0111016a0328b1b29e809912a7ccc7",
+    "source_steps": [
+      "company_properties",
+      "contact_properties",
+      "contact_to_company_associations_schema"
+    ]
+  },
+  "frozen_source_map": {
+    "config_hash": "sha256:256cb1c37c806d399aaa851a306b57d29e307f30d48b06773928b96753b20af4",
+    "connector_id": "hubspot_crm",
+    "mappings": [],
+    "proposal_hash": "sha256:7a3a8b3bf6ee980c500780bbe8b22926522163d2725bcde025f93453183de3ba",
+    "schema_hash": "sha256:c6a1c590a8a19cec2372519eff4d50aaad0111016a0328b1b29e809912a7ccc7",
+    "unknown_fields": []
+  },
+  "generated_by": "eval.hubspot_simulated_onboarding",
+  "mapping_proposal": {
+    "ambiguous_keys": [],
+    "coverage": {
+      "ambiguous_confirm": 0,
+      "mapped": 0,
+      "missing_to_unknown": 0,
+      "total": 0
+    },
+    "missing_to_unknown_keys": [],
+    "proposal_hash": "sha256:7a3a8b3bf6ee980c500780bbe8b22926522163d2725bcde025f93453183de3ba",
+    "required_operator_actions": [],
+    "schema_hash": "sha256:c6a1c590a8a19cec2372519eff4d50aaad0111016a0328b1b29e809912a7ccc7"
+  },
+  "measurement_scope": "HubSpot discovery, source-map proposal, deterministic confirmation, freeze, and readiness artifact over fieldstone's synthetic 12-account book and fake transport.",
+  "pluggability_test": {
+    "association_fields_discovered": [
+      {
+        "name": "associations.companies",
+        "references": [
+          "companies"
+        ],
+        "relationship_name": "contacts_to_companies"
+      }
+    ],
+    "claim": "HubSpot declares its contact<->company FK graph via a SEPARATE associations-schema endpoint, not a lookup field on the properties describe (unlike Salesforce's referenceTo, or Attio's attributes describe, neither of which surfaces this the same way). A Tier-A parser reading only the properties-describe response would miss it entirely.",
+    "tier_a_association_capture_proven": true
+  },
+  "readiness": {
+    "connected": false,
+    "connector_id": "hubspot_crm",
+    "evidence": [
+      "fieldstone_synthetic_book",
+      "fake_hubspot_client",
+      "hubspot_explorer_parser",
+      "frozen_source_map_config"
+    ],
+    "mode": "fixture",
+    "rails_degraded": [],
+    "required_operator_actions": [
+      "connect live HubSpot credentials before any live readiness claim",
+      "review unknown source-map fields before customer-tenant use"
+    ],
+    "state": "fixture_verified"
+  },
+  "readiness_report": {
+    "degraded_rails": [],
+    "required_operator_actions": [
+      "connect live HubSpot credentials before any live readiness claim",
+      "review unknown source-map fields before customer-tenant use"
+    ],
+    "sources": {
+      "hubspot_crm": "fixture_verified"
+    }
+  },
+  "source_book": {
+    "accounts": 12,
+    "contacts": 12,
+    "source": "src/ultra_csm/data_plane/tenants/fieldstone/book.py"
+  },
+  "tenant": "fieldstone"
+}
