@@ -1,0 +1,91 @@
+{
+  "artifact": "crateworks_onboarding_report",
+  "confirmed_ingest": {
+    "auto_mapped_by_tier": {
+      "other": 0,
+      "tier_a_source_declared": 0,
+      "tier_b_exact_alias": 7
+    },
+    "book_has_parent": true,
+    "declared_not_mappable": {
+      "accounts": [
+        "CRMContact.account_id",
+        "CRMContact.contact_id",
+        "CRMContact.email",
+        "CRMContact.name",
+        "CRMOpportunity.account_id",
+        "CRMOpportunity.opportunity_id",
+        "__tenant_custom__.onboarding_owner",
+        "__tenant_custom__.renewal_notes"
+      ],
+      "contacts": [
+        "CRMAccount.account_id",
+        "CRMAccount.name",
+        "CRMAccount.owner_id",
+        "CRMOpportunity.account_id",
+        "CRMOpportunity.close_date",
+        "CRMOpportunity.opportunity_id"
+      ],
+      "opportunities": [
+        "CRMAccount.account_id",
+        "CRMAccount.owner_id",
+        "CRMContact.account_id",
+        "CRMContact.contact_id"
+      ]
+    },
+    "expected_counts": {
+      "CRMAccount": 10,
+      "CRMContact": 30,
+      "CRMOpportunity": 10
+    },
+    "fabricated_mappings": [],
+    "questions_asked_count": 6,
+    "refused": [],
+    "refused_count": 0,
+    "rejection_counts": {},
+    "typed_counts": {
+      "CRMAccount": 10,
+      "CRMContact": 30,
+      "CRMOpportunity": 10
+    },
+    "zero_fabricated_mappings": true,
+    "zero_hollow_records": true
+  },
+  "friction_measurement": {
+    "auto_mapped_by_tier": {
+      "other": 0,
+      "tier_a_source_declared": 0,
+      "tier_b_exact_alias": 7
+    },
+    "auto_mapped_total": 7,
+    "fleetops_baseline_ceiling": 8,
+    "per_table": {
+      "accounts": {
+        "auto_mapped_count": 2,
+        "questions_count": 2,
+        "records_submitted": 10
+      },
+      "contacts": {
+        "auto_mapped_count": 3,
+        "questions_count": 2,
+        "records_submitted": 30
+      },
+      "opportunities": {
+        "auto_mapped_count": 2,
+        "questions_count": 2,
+        "records_submitted": 10
+      }
+    },
+    "questions_asked": [
+      "CRMAccount.account_id",
+      "CRMAccount.owner_id",
+      "CRMContact.account_id",
+      "CRMContact.contact_id",
+      "CRMOpportunity.account_id",
+      "CRMOpportunity.opportunity_id"
+    ],
+    "questions_asked_count": 6
+  },
+  "ok": true,
+  "tenant": "crateworks"
+}

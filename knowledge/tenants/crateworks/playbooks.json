@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "fictional": true,
+  "tenant": "crateworks",
+  "service_tiers": [
+    {
+      "tier": "high_touch",
+      "rule": {"arr_cents_gte": 10000000},
+      "allowed_motions": [
+        "personal_email",
+        "working_session",
+        "qbr",
+        "escalation",
+        "campaign_enroll",
+        "content_route",
+        "cohort_action"
+      ]
+    },
+    {
+      "tier": "mid_touch",
+      "rule": {"arr_cents_gte": 2500000},
+      "allowed_motions": [
+        "personal_email",
+        "escalation",
+        "campaign_enroll",
+        "content_route",
+        "cohort_action"
+      ]
+    },
+    {
+      "tier": "tech_touch",
+      "rule": {"default": true},
+      "allowed_motions": ["campaign_enroll", "content_route", "cohort_action"],
+      "forbidden_motions": ["personal_email", "working_session", "qbr"]
+    }
+  ],
+  "plays": [
+    {
+      "id": "escalate-identity-ambiguous-champion",
+      "trigger_factor": "champion_identity_ambiguous",
+      "motion": "escalation",
+      "tiers": ["high_touch", "mid_touch"],
+      "content_refs": []
+    },
+    {
+      "id": "escalate-reply-latency-stretch",
+      "trigger_factor": "champion_inactive",
+      "motion": "escalation",
+      "tiers": ["high_touch", "mid_touch", "tech_touch"],
+      "content_refs": []
+    },
+    {
+      "id": "route-stale-record-review",
+      "trigger_factor": "stale_record_detected",
+      "motion": "content_route",
+      "tiers": ["tech_touch"],
+      "content_refs": []
+    }
+  ]
+}

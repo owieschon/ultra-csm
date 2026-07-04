@@ -199,3 +199,53 @@ paper over that with a fabricated trend.
 
 Future tenant runs append a column to this table (per-tenant baseline),
 matching the fleetops baseline established here.
+
+## Crateworks baseline (measured 2026-07-04, Universe v2 Wave 3,
+WS-Tenant-Crateworks)
+
+`--tenant crateworks` runs a DIFFERENT protocol shape than fleetops', not
+the same sections re-run against different fixtures — see
+`run_full_protocol_crateworks` in `eval/week1_protocol.py`. Crateworks has
+no CS platform and no product telemetry vendor
+(`docs/TENANT_CRATEWORKS_BIBLE.md` section 0), so
+`ultra_csm.agent1.sweep._slot_b_inputs_for_account` fails closed for every
+crateworks account — sections 4 (`feedback_persistence`) and the sweep half
+of section 5 (`economics`) cannot run for this tenant by construction, not
+by omission, and SKIP loudly rather than reusing fleetops' Postgres-gate/
+sweep machinery against a data plane it was never built to grade:
+
+- **Section 1 (`onboarding_cost`)** reuses `eval.crateworks_onboarding`'s
+  two-pass driver (friction measurement + confirmed ingest) over the messy
+  flat book, not fleetops' clean-book driver.
+- **Sections 2/3 equivalent (degradation battery)** reuses
+  `eval.crateworks_battery.run_battery()` verbatim (Arc C1 checkpoint
+  truths, mess-integrity, degradation honesty, controls zero-flag, canary
+  presence) rather than re-authoring cold-start-honesty/false-alarm checks
+  that don't fit a CRM-only, no-CS-platform tenant's fixture shape.
+- **Sections 4/5** loudly skip (`ran: false` + a recorded `skip_reason`),
+  per the vendor-stack gap above.
+- **Section 6 (repeatability)** works unchanged via `--repeatability-check`.
+
+| Metric | K=3 | K=7 | K=14 |
+| --- | --- | --- | --- |
+| Onboarding questions asked (friction pass, blanket not_mappable) | 6 (constant; not K-dependent) | | |
+| Fleetops baseline ceiling (reported, not gated — bible section 7) | 8 | | |
+| Onboarding auto-mapped by tier (Tier A / Tier B / other) | 0 / 7 / 0 (constant) | | |
+| Confirmed-ingest typed counts (Account/Contact/Opportunity) | 10 / 30 / 10 (constant) | | |
+| Confirmed-ingest zero-hollow-records | true | | |
+| Confirmed-ingest zero-fabricated-mappings | true | | |
+| Degradation battery `hard_ok` (6 cases) | true | true | true |
+| Arc C1 day-100 checkpoint: `thread_participation_width` (uncorrected) | -- | 2.0 | -- |
+| Arc C1 day-100 checkpoint: `reply_latency_trend_hours` | -- | +16.0 | -- |
+| Repeatability (`--repeatability-check`) | true (canonicalized) | -- | -- |
+
+Interpretation: crateworks' raw friction number (6) sits close to
+fleetops' (5) rather than far above it — identity fields always require
+human confirmation regardless of mess (`external_book._auto_map_entry`
+never auto-maps an identity field), so the mess's real cost shows up
+elsewhere: all 7 auto-mapped fields survive at Tier B (exact-alias)
+despite the header casing/whitespace chaos, meaning the degradation this
+tenant demonstrates is not "the mapper breaks" but "the identity layer
+downstream of a clean ingest still cannot tell two duplicate contact rows
+apart" (Arc C1's day-100 finding) — the SHAPE of degradation the bible
+asks this workstream to measure, not a low-vs-high question count.

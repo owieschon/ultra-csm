@@ -13,9 +13,18 @@ from pathlib import Path
 from typing import Any
 
 from ultra_csm.data_plane.synthetic_book import _ACCT_DATA
+from ultra_csm.data_plane.tenants.crateworks.book import ACCOUNTS as _CRATEWORKS_ACCT_DATA
 from ultra_csm.knowledge import PLAYBOOK_MOTIONS
 
-_KNOWN_ACCOUNT_SLUGS = frozenset(slug for slug, *_ in _ACCT_DATA)
+# Additive union across tenants (Universe v2, Wave 3): this loader started
+# fleetops-only; WS-Tenant-Crateworks widened it to also recognize
+# crateworks' own account slugs, so `crateworks_expected_actions.json` can
+# validate through the SAME shared loader rather than forking a second one.
+# fleetops' own slug set and validation behavior are unchanged (still the
+# only tenant `tests/test_expected_actions_gold.py` exercises).
+_KNOWN_ACCOUNT_SLUGS = frozenset(slug for slug, *_ in _ACCT_DATA) | frozenset(
+    slug for slug, *_ in _CRATEWORKS_ACCT_DATA
+)
 
 GOLD_DIR = Path(__file__).resolve().parent / "gold"
 GRADING_MODES = ("shadow", "gap", "none")
