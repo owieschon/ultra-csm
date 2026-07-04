@@ -4,7 +4,7 @@
       "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
       "factor_name": "milestones_overdue",
       "motion": "draft_customer_outreach",
-      "proposal_id": "93f37e6d-aaa7-4c6c-b43d-31b6011c13d6",
+      "proposal_id": "531575d6-0951-4a97-90f1-5f0b563df095",
       "reason": "week1-protocol: rejecting to test recurring-eligible suppression",
       "rejected_on_day": 3,
       "tenant_id": "ultra-demo"
@@ -13,7 +13,7 @@
       "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
       "factor_name": "milestones_overdue",
       "motion": "draft_customer_outreach",
-      "proposal_id": "a2613aeb-4cfe-4616-8ccd-6d5a87983ef4",
+      "proposal_id": "51c2c825-9556-4ece-b5b5-b28efe2959dc",
       "reason": "week1-protocol: rejecting to test recurring-eligible suppression",
       "rejected_on_day": 7,
       "tenant_id": "ultra-demo"
@@ -22,7 +22,7 @@
       "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
       "factor_name": "days_overdue",
       "motion": "draft_customer_outreach",
-      "proposal_id": "a6b8df4c-b569-49fa-8cca-4ce09b2caa4f",
+      "proposal_id": "83aac432-f10f-47b3-8d37-58495407388b",
       "reason": "week1-protocol: rejecting to test recurring-eligible suppression",
       "rejected_on_day": 14,
       "tenant_id": "ultra-demo"
