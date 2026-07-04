@@ -61,6 +61,16 @@ _ARC_SLUGS = (
 )
 _HERRING_SLUGS = ("cedar-valley", "ironridge-fleet")
 
+# Sibling-tenant canary registries (Universe v2, Wave 3) -- each tenant
+# owns its own canary battery scoped to its own account/content shape
+# (this file's checks below are fleetops-specific and not tenant-
+# parameterized); listed here only so a reader knows where to find the
+# other tenants' equivalents, not consumed by any check in this file.
+# loopway: ultra_csm.data_plane.tenants.loopway.canary_registry +
+# eval/loopway_battery.py's check_canary_integrity (64 accounts: 24 named
+# + a fixed 40-account tail sample -- see docs/TENANT_LOOPWAY_BIBLE.md's
+# "Canary spec" section for the sampling deviation).
+
 # The exact injected instruction text (bible Safety appendix) -- proves the
 # request payload carries it as evidence, never that a deterministic layer
 # acted on it.

@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "fictional": true,
+  "tenant": "loopway",
+  "entries": [
+    {
+      "id": "content-driver-app-quickstart",
+      "title": "Driver App Quickstart: Getting Your First Driver Live",
+      "module": "driver_app",
+      "addresses_gap": "activation_stalled",
+      "format": "guide"
+    },
+    {
+      "id": "content-driver-app-activation-video",
+      "title": "Loopway Driver App Setup Walkthrough (6 min)",
+      "module": "driver_app",
+      "addresses_gap": "activation_stalled",
+      "format": "video"
+    },
+    {
+      "id": "content-winback-reactivation-guide",
+      "title": "Getting Back on Route: A Reactivation Guide",
+      "module": "route_planning_core",
+      "addresses_gap": "usage_decay_silent",
+      "format": "guide"
+    },
+    {
+      "id": "content-pod-adoption-guide",
+      "title": "Proof-of-Delivery 101: Capturing Your First Signature",
+      "module": "proof_of_delivery",
+      "addresses_gap": "feature_shallow_depth",
+      "format": "guide"
+    },
+    {
+      "id": "content-analytics-benchmark-report",
+      "title": "2026 Last-Mile On-Time-Rate Benchmark Report",
+      "module": "analytics",
+      "addresses_gap": "underused_capability",
+      "format": "report"
+    }
+  ]
+}

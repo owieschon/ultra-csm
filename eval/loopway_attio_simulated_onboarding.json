@@ -1,0 +1,468 @@
+{
+  "artifact": "loopway_attio_simulated_onboarding",
+  "claim_boundary": {
+    "live": false,
+    "live_tenant_proven": false,
+    "sim": true,
+    "uses_live_credentials": false
+  },
+  "confirmation_fixture": {
+    "confirmed_keys": [
+      "CRMAccount.owner_id",
+      "CRMContact.account_id",
+      "CRMContact.consent_to_contact",
+      "CRMContact.role",
+      "CRMContact.title"
+    ],
+    "path": "eval/loopway_attio_simulated_confirmations.json"
+  },
+  "credential_boundary": {
+    "live_credentials_used": false,
+    "live_tenant_proof": false,
+    "missing_credentials_state": "shape_verified_pending_live_creds",
+    "missing_env": [
+      "ULTRA_CSM_ATTIO_ACCESS_TOKEN"
+    ],
+    "requests_without_credentials": 0,
+    "simulated_credentials_used": true,
+    "transport": "FakeLoopwayAttioClient"
+  },
+  "discovery": {
+    "explorer_connected_flag_is_not_live_proof": true,
+    "explorer_state_on_fake_transport": "live_schema_verified",
+    "objects": [
+      {
+        "fields": [
+          "id",
+          "name",
+          "owner",
+          "arr_cents"
+        ],
+        "name": "companies"
+      },
+      {
+        "fields": [
+          "id",
+          "associated_company",
+          "email_addresses",
+          "name",
+          "role",
+          "job_title",
+          "consent_to_contact"
+        ],
+        "name": "people"
+      }
+    ],
+    "ok": true,
+    "request_urls": [
+      "https://api.attio.com/v2/self",
+      "https://api.attio.com/v2/objects",
+      "https://api.attio.com/v2/objects/companies/attributes",
+      "https://api.attio.com/v2/objects/people/attributes",
+      "https://api.attio.com/v2/objects/companies/records/query",
+      "https://api.attio.com/v2/objects/people/records/query"
+    ],
+    "requests_on_fake_transport": 6,
+    "sample_counts": {
+      "companies_attributes": 4,
+      "companies_sample": 1,
+      "objects": 2,
+      "people_attributes": 7,
+      "people_sample": 1,
+      "self": 0
+    },
+    "schema_hash": "sha256:365aceb2becbfc8177d2b6c9dc03a588ba1408fc6c35368629160d1b2c008aef",
+    "source_steps": [
+      "self",
+      "objects",
+      "companies_attributes",
+      "people_attributes",
+      "companies_sample",
+      "people_sample"
+    ]
+  },
+  "frozen_source_map": {
+    "config_hash": "sha256:d305214ee84e8aec8773ffe1c2642edeaccaa0735bc79da68bf4da389d5e4fd9",
+    "connector_id": "attio_crm",
+    "mappings": [
+      {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "distinct_count": 0,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "id",
+            "source_object": "companies",
+            "source_path": "values.id",
+            "value_shape": ""
+          }
+        ],
+        "confidence": 0.95,
+        "connector_id": "attio_crm",
+        "contract": "CRMAccount",
+        "internal_field": "account_id",
+        "llm_allowed": false,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "identity_join",
+        "source_field": "id",
+        "source_object": "companies",
+        "source_path": "values.id",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "distinct_count": 0,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "name",
+            "source_object": "companies",
+            "source_path": "values.name",
+            "value_shape": ""
+          }
+        ],
+        "confidence": 0.95,
+        "connector_id": "attio_crm",
+        "contract": "CRMAccount",
+        "internal_field": "name",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "context",
+        "source_field": "name",
+        "source_object": "companies",
+        "source_path": "values.name",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "candidate_evidence": [
+          {
+            "confidence": 0.58,
+            "distinct_count": 0,
+            "field_type": "unknown",
+            "reason": "custom or tenant-specific field requires confirmation",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "owner",
+            "source_object": "companies",
+            "source_path": "values.owner",
+            "value_shape": ""
+          }
+        ],
+        "confidence": 1.0,
+        "connector_id": "attio_crm",
+        "contract": "CRMAccount",
+        "internal_field": "owner_id",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "human-confirmed mapping frozen into deterministic config",
+        "requires_human_confirmation": false,
+        "semantic_role": "context",
+        "source_field": "owner",
+        "source_object": "companies",
+        "source_path": "values.owner",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "distinct_count": 0,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "id",
+            "source_object": "people",
+            "source_path": "values.id",
+            "value_shape": ""
+          }
+        ],
+        "confidence": 0.95,
+        "connector_id": "attio_crm",
+        "contract": "CRMContact",
+        "internal_field": "contact_id",
+        "llm_allowed": false,
+        "pii": "none",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "identity_join",
+        "source_field": "id",
+        "source_object": "people",
+        "source_path": "values.id",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "candidate_evidence": [
+          {
+            "confidence": 0.58,
+            "distinct_count": 0,
+            "field_type": "unknown",
+            "reason": "custom or tenant-specific field requires confirmation",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "associated_company",
+            "source_object": "people",
+            "source_path": "values.associated_company",
+            "value_shape": ""
+          }
+        ],
+        "confidence": 1.0,
+        "connector_id": "attio_crm",
+        "contract": "CRMContact",
+        "internal_field": "account_id",
+        "llm_allowed": false,
+        "pii": "none",
+        "reason": "human-confirmed mapping frozen into deterministic config",
+        "requires_human_confirmation": false,
+        "semantic_role": "identity_join",
+        "source_field": "associated_company",
+        "source_object": "people",
+        "source_path": "values.associated_company",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "distinct_count": 0,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "email_addresses",
+            "source_object": "people",
+            "source_path": "values.email_addresses",
+            "value_shape": ""
+          }
+        ],
+        "confidence": 0.95,
+        "connector_id": "attio_crm",
+        "contract": "CRMContact",
+        "internal_field": "email",
+        "llm_allowed": false,
+        "pii": "contact",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "context",
+        "source_field": "email_addresses",
+        "source_object": "people",
+        "source_path": "values.email_addresses",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "candidate_evidence": [
+          {
+            "confidence": 0.95,
+            "distinct_count": 0,
+            "field_type": "unknown",
+            "reason": "deterministic standard-field match",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "name",
+            "source_object": "people",
+            "source_path": "values.name",
+            "value_shape": ""
+          }
+        ],
+        "confidence": 0.95,
+        "connector_id": "attio_crm",
+        "contract": "CRMContact",
+        "internal_field": "name",
+        "llm_allowed": true,
+        "pii": "contact",
+        "reason": "deterministic standard-field match",
+        "requires_human_confirmation": false,
+        "semantic_role": "context",
+        "source_field": "name",
+        "source_object": "people",
+        "source_path": "values.name",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "candidate_evidence": [
+          {
+            "confidence": 0.58,
+            "distinct_count": 0,
+            "field_type": "unknown",
+            "reason": "custom or tenant-specific field requires confirmation",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "role",
+            "source_object": "people",
+            "source_path": "values.role",
+            "value_shape": ""
+          }
+        ],
+        "confidence": 1.0,
+        "connector_id": "attio_crm",
+        "contract": "CRMContact",
+        "internal_field": "role",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "human-confirmed mapping frozen into deterministic config",
+        "requires_human_confirmation": false,
+        "semantic_role": "context",
+        "source_field": "role",
+        "source_object": "people",
+        "source_path": "values.role",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "candidate_evidence": [
+          {
+            "confidence": 0.58,
+            "distinct_count": 0,
+            "field_type": "unknown",
+            "reason": "custom or tenant-specific field requires confirmation",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "job_title",
+            "source_object": "people",
+            "source_path": "values.job_title",
+            "value_shape": ""
+          }
+        ],
+        "confidence": 1.0,
+        "connector_id": "attio_crm",
+        "contract": "CRMContact",
+        "internal_field": "title",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "human-confirmed mapping frozen into deterministic config",
+        "requires_human_confirmation": false,
+        "semantic_role": "context",
+        "source_field": "job_title",
+        "source_object": "people",
+        "source_path": "values.job_title",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      },
+      {
+        "candidate_evidence": [
+          {
+            "confidence": 0.58,
+            "distinct_count": 0,
+            "field_type": "unknown",
+            "reason": "custom or tenant-specific field requires confirmation",
+            "rows_nonempty": 0,
+            "rows_present": 0,
+            "rows_sampled": 0,
+            "source_field": "consent_to_contact",
+            "source_object": "people",
+            "source_path": "values.consent_to_contact",
+            "value_shape": ""
+          }
+        ],
+        "confidence": 1.0,
+        "connector_id": "attio_crm",
+        "contract": "CRMContact",
+        "internal_field": "consent_to_contact",
+        "llm_allowed": true,
+        "pii": "none",
+        "reason": "human-confirmed mapping frozen into deterministic config",
+        "requires_human_confirmation": false,
+        "semantic_role": "context",
+        "source_field": "consent_to_contact",
+        "source_object": "people",
+        "source_path": "values.consent_to_contact",
+        "state": "mapped",
+        "value_direction": "not_applicable"
+      }
+    ],
+    "proposal_hash": "sha256:7691f55077b5f717ca23650e330079f595bebfe75e02cadae69cd6885e48a629",
+    "schema_hash": "sha256:365aceb2becbfc8177d2b6c9dc03a588ba1408fc6c35368629160d1b2c008aef",
+    "unknown_fields": [
+      "CRMAccount.industry"
+    ]
+  },
+  "generated_by": "eval.loopway_attio_simulated_onboarding",
+  "mapping_proposal": {
+    "ambiguous_keys": [
+      "CRMAccount.owner_id",
+      "CRMContact.account_id",
+      "CRMContact.consent_to_contact",
+      "CRMContact.role",
+      "CRMContact.title"
+    ],
+    "coverage": {
+      "ambiguous_confirm": 5,
+      "mapped": 5,
+      "missing_to_unknown": 1,
+      "total": 11
+    },
+    "missing_to_unknown_keys": [
+      "CRMAccount.industry"
+    ],
+    "proposal_hash": "sha256:7691f55077b5f717ca23650e330079f595bebfe75e02cadae69cd6885e48a629",
+    "required_operator_actions": [
+      "confirm 5 semantic/value mappings",
+      "review 1 missing fields; affected rails remain unknown"
+    ],
+    "schema_hash": "sha256:365aceb2becbfc8177d2b6c9dc03a588ba1408fc6c35368629160d1b2c008aef"
+  },
+  "measurement_scope": "Attio discovery, source-map proposal, deterministic confirmation, freeze, and readiness artifact over Loopway's 400-account synthetic book and fake transport -- the mapping layer's third vendor dialect (fleetops=Salesforce-shaped, loopway=Attio-shaped).",
+  "readiness": {
+    "connected": false,
+    "connector_id": "attio_crm",
+    "evidence": [
+      "loopway_synthetic_book",
+      "fake_loopway_attio_client",
+      "attio_explorer_parser",
+      "frozen_source_map_config"
+    ],
+    "mode": "fixture",
+    "rails_degraded": [
+      "CRMAccount"
+    ],
+    "required_operator_actions": [
+      "connect live Attio credentials before any live readiness claim",
+      "review unknown source-map fields before customer-tenant use"
+    ],
+    "state": "fixture_verified"
+  },
+  "readiness_report": {
+    "degraded_rails": [
+      "CRMAccount"
+    ],
+    "required_operator_actions": [
+      "connect live Attio credentials before any live readiness claim",
+      "review unknown source-map fields before customer-tenant use"
+    ],
+    "sources": {
+      "attio_crm": "fixture_verified"
+    }
+  },
+  "source_book": {
+    "accounts": 400,
+    "contacts": 400,
+    "source": "src/ultra_csm/data_plane/tenants/loopway/synthetic_book.py"
+  },
+  "third_dialect_note": "question_count=5 confirmation questions on this Attio-shaped dialect at 400 accounts -- see docs/PROGRAM_REPORT_17.md for the cross-dialect comparison."
+}

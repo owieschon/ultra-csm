@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "fictional": true,
+  "tenant": "loopway",
+  "service_tiers": [
+    {
+      "tier": "high_touch",
+      "rule": {"arr_cents_gte": 10000000},
+      "allowed_motions": [
+        "personal_email",
+        "working_session",
+        "escalation",
+        "campaign_enroll",
+        "content_route",
+        "cohort_action"
+      ]
+    },
+    {
+      "tier": "mid_touch",
+      "rule": {"arr_cents_gte": 2500000},
+      "allowed_motions": [
+        "personal_email",
+        "escalation",
+        "campaign_enroll",
+        "content_route",
+        "cohort_action"
+      ],
+      "forbidden_motions": ["working_session", "qbr"]
+    },
+    {
+      "tier": "tech_touch",
+      "rule": {"default": true},
+      "allowed_motions": ["campaign_enroll", "content_route", "cohort_action", "escalation"],
+      "forbidden_motions": ["personal_email", "working_session", "qbr"]
+    }
+  ],
+  "plays": [
+    {
+      "id": "activation-nurture-cohort",
+      "trigger_factor": "activation_stalled",
+      "motion": "cohort_action",
+      "tiers": ["tech_touch"],
+      "content_refs": ["content-driver-app-quickstart", "content-driver-app-activation-video"]
+    },
+    {
+      "id": "pql-escalate-to-growth-team",
+      "trigger_factor": "product_qualified_lead",
+      "motion": "escalation",
+      "tiers": ["tech_touch", "mid_touch", "high_touch"],
+      "content_refs": []
+    },
+    {
+      "id": "winback-cohort-usage-decay",
+      "trigger_factor": "usage_decay_silent",
+      "motion": "cohort_action",
+      "tiers": ["tech_touch"],
+      "content_refs": ["content-winback-reactivation-guide"]
+    },
+    {
+      "id": "champion-quiet-direct",
+      "trigger_factor": "champion_inactive",
+      "motion": "personal_email",
+      "tiers": ["mid_touch", "high_touch"],
+      "content_refs": []
+    },
+    {
+      "id": "champion-quiet-campaign",
+      "trigger_factor": "champion_inactive",
+      "motion": "campaign_enroll",
+      "tiers": ["tech_touch"],
+      "content_refs": []
+    },
+    {
+      "id": "reactivate-shallow-module-content",
+      "trigger_factor": "feature_shallow_depth",
+      "motion": "content_route",
+      "tiers": ["tech_touch", "mid_touch"],
+      "content_refs": ["content-pod-adoption-guide"]
+    },
+    {
+      "id": "reactivate-shallow-module-live",
+      "trigger_factor": "feature_shallow_depth",
+      "motion": "working_session",
+      "tiers": ["high_touch"],
+      "content_refs": []
+    }
+  ]
+}
