@@ -32,7 +32,8 @@ from datetime import datetime
 
 from ultra_csm.data_plane.contracts import CommunicationSignal, CRMCase, StakeholderRelationship
 from ultra_csm.data_plane.fixtures import account_id_for, det_id
-from ultra_csm.data_plane.narrative_shared import cases_as_of, rfc3339 as _rfc3339
+from ultra_csm.data_plane.narrative_content.aspenridge_content import BODIES as _BODIES
+from ultra_csm.data_plane.narrative_shared import cases_as_of, derive_snippet, rfc3339 as _rfc3339
 
 ASPENRIDGE_ACCOUNT_ID = account_id_for("aspenridge-supply")
 ASPENRIDGE_CHAMPION_CONTACT_ID = det_id(
@@ -52,27 +53,17 @@ _CHAMPION_EMAIL = "christine.yoder@aspenridge-sc.example"
 # as fine, it just needs to stay calm.
 # ---------------------------------------------------------------------------
 
-_MESSAGE_SCHEDULE: tuple[tuple[int, int, bool, str, str], ...] = (
-    (1, 9, False, "Q1 business review — agenda attached",
-     "Sending over the agenda ahead of our quarterly review next week."),
-    (1, 13, True, "Re: Q1 business review — agenda attached",
-     "Looks good, see you then."),
-    (91, 9, False, "Q2 business review — agenda attached",
-     "Sending over the agenda ahead of our quarterly review next week."),
-    (91, 12, True, "Re: Q2 business review — agenda attached",
-     "Thanks, agenda works for our team."),
-    (181, 9, False, "Q3 business review — agenda attached",
-     "Sending over the agenda ahead of our quarterly review next week."),
-    (181, 14, True, "Re: Q3 business review — agenda attached",
-     "Sounds good, nothing new to flag on our end."),
-    (271, 9, False, "Q4 business review — agenda attached",
-     "Sending over the agenda ahead of our quarterly review next week."),
-    (271, 11, True, "Re: Q4 business review — agenda attached",
-     "Works for us, talk then."),
-    (361, 9, False, "Year-end check-in — agenda attached",
-     "Sending over the agenda ahead of our year-end review next week."),
-    (361, 15, True, "Re: Year-end check-in — agenda attached",
-     "Appreciate the heads up, see you at the review."),
+_MESSAGE_SCHEDULE: tuple[tuple[int, int, bool, str], ...] = (
+    (1, 9, False, "Q1 business review — agenda attached"),
+    (1, 13, True, "Re: Q1 business review — agenda attached"),
+    (91, 9, False, "Q2 business review — agenda attached"),
+    (91, 12, True, "Re: Q2 business review — agenda attached"),
+    (181, 9, False, "Q3 business review — agenda attached"),
+    (181, 14, True, "Re: Q3 business review — agenda attached"),
+    (271, 9, False, "Q4 business review — agenda attached"),
+    (271, 11, True, "Re: Q4 business review — agenda attached"),
+    (361, 9, False, "Year-end check-in — agenda attached"),
+    (361, 15, True, "Re: Year-end check-in — agenda attached"),
 )
 
 
@@ -82,18 +73,19 @@ def aspenridge_email_thread(as_of_day: int) -> dict:
 
     thread_id = det_id("email-thread", ASPENRIDGE_ACCOUNT_ID, "quarterly-check-in")
     messages = []
-    for day_offset, hour, from_champion, subject, snippet in _MESSAGE_SCHEDULE:
+    for day_offset, hour, from_champion, subject in _MESSAGE_SCHEDULE:
         if day_offset > as_of_day:
             break
         sender = _CHAMPION_EMAIL if from_champion else _CSM_EMAIL
         recipient = _CSM_EMAIL if from_champion else _CHAMPION_EMAIL
         msg_id = det_id("email-msg", ASPENRIDGE_ACCOUNT_ID, day_offset, hour)
+        body = _BODIES[(day_offset, hour)]
         messages.append(
             {
                 "id": msg_id,
                 "threadId": thread_id,
                 "labelIds": ["INBOX"] if from_champion else ["SENT"],
-                "snippet": snippet,
+                "snippet": derive_snippet(body),
                 "internalDate": str(
                     int(datetime.fromisoformat(_rfc3339(day_offset, hour).replace("Z", "+00:00")).timestamp() * 1000)
                 ),
@@ -104,7 +96,7 @@ def aspenridge_email_thread(as_of_day: int) -> dict:
                         {"name": "Date", "value": _rfc3339(day_offset, hour)},
                         {"name": "Subject", "value": subject},
                     ],
-                    "body": {"data": snippet},
+                    "body": {"data": body},
                 },
             }
         )

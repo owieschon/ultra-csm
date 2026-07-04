@@ -15,7 +15,8 @@ from datetime import datetime
 
 from ultra_csm.data_plane.contracts import CommunicationSignal, CRMCase, StakeholderRelationship
 from ultra_csm.data_plane.fixtures import account_id_for, det_id
-from ultra_csm.data_plane.narrative_shared import cases_as_of, rfc3339 as _rfc3339
+from ultra_csm.data_plane.narrative_content.pinnacle_content import BODIES as _BODIES
+from ultra_csm.data_plane.narrative_shared import cases_as_of, derive_snippet, rfc3339 as _rfc3339
 
 PINNACLE_ACCOUNT_ID = account_id_for("pinnacle-supply")
 _CSM_EMAIL = "csm101@fleetops-platform.example"
@@ -24,33 +25,21 @@ _MONICA_EMAIL = "monica.reeves@pinnacle-supply.example"
 DEREK_CONTACT_ID = det_id("contact", PINNACLE_ACCOUNT_ID, _DEREK_EMAIL)
 MONICA_CONTACT_ID = det_id("contact", PINNACLE_ACCOUNT_ID, _MONICA_EMAIL)
 
-# (day_offset, hour, contact_email, from_contact, subject, snippet)
-_MESSAGE_SCHEDULE: tuple[tuple[int, int, str, bool, str, str], ...] = (
-    (1, 9, _DEREK_EMAIL, False, "Kickoff — quarterly ops review",
-     "Looking forward to our quarterly review next week."),
-    (1, 13, _DEREK_EMAIL, True, "Re: Kickoff — quarterly ops review",
-     "Sounds good, see you then."),
+# (day_offset, hour, contact_email, from_contact, subject)
+_MESSAGE_SCHEDULE: tuple[tuple[int, int, str, bool, str], ...] = (
+    (1, 9, _DEREK_EMAIL, False, "Kickoff — quarterly ops review"),
+    (1, 13, _DEREK_EMAIL, True, "Re: Kickoff — quarterly ops review"),
     # Derek goes quiet day 3 (ChampionGoesQuiet) -- no further messages from him, ever.
-    (110, 9, _MONICA_EMAIL, False, "Introduction — Pinnacle Supply Chain account",
-     "Hi Monica, introducing myself as your CSM contact going forward."),
-    (112, 20, _MONICA_EMAIL, True, "Re: Introduction — Pinnacle Supply Chain account",
-     "Thanks for reaching out, still getting oriented on my end."),
-    (135, 9, _MONICA_EMAIL, False, "Recovery plan — activation review",
-     "Sending over the activation review agenda for this week."),
-    (136, 15, _MONICA_EMAIL, True, "Re: Recovery plan — activation review",
-     "Looks good, appreciate you putting this together."),
-    (170, 9, _MONICA_EMAIL, False, "Check-in — how's adoption looking",
-     "Wanted to check in on how the rollout is progressing."),
-    (170, 13, _MONICA_EMAIL, True, "Re: Check-in — how's adoption looking",
-     "Going well, team's fully ramped now."),
-    (210, 9, _MONICA_EMAIL, False, "Renewal prep kickoff",
-     "Starting renewal prep conversations a bit early this cycle."),
-    (210, 12, _MONICA_EMAIL, True, "Re: Renewal prep kickoff",
-     "Great, let's get time on the calendar."),
-    (245, 9, _MONICA_EMAIL, False, "Quarterly business review — recap",
-     "Recap from today's QBR, great momentum across the board."),
-    (245, 12, _MONICA_EMAIL, True, "Re: Quarterly business review — recap",
-     "Agreed, really pleased with where things stand."),
+    (110, 9, _MONICA_EMAIL, False, "Introduction — Pinnacle Supply Chain account"),
+    (112, 20, _MONICA_EMAIL, True, "Re: Introduction — Pinnacle Supply Chain account"),
+    (135, 9, _MONICA_EMAIL, False, "Recovery plan — activation review"),
+    (136, 15, _MONICA_EMAIL, True, "Re: Recovery plan — activation review"),
+    (170, 9, _MONICA_EMAIL, False, "Check-in — how's adoption looking"),
+    (170, 13, _MONICA_EMAIL, True, "Re: Check-in — how's adoption looking"),
+    (210, 9, _MONICA_EMAIL, False, "Renewal prep kickoff"),
+    (210, 12, _MONICA_EMAIL, True, "Re: Renewal prep kickoff"),
+    (245, 9, _MONICA_EMAIL, False, "Quarterly business review — recap"),
+    (245, 12, _MONICA_EMAIL, True, "Re: Quarterly business review — recap"),
 )
 
 
@@ -59,7 +48,7 @@ def pinnacle_email_thread(as_of_day: int) -> dict:
     dies after day 3; Monica's starts day 110), truncated to *as_of_day*."""
 
     threads: dict[str, dict] = {}
-    for day_offset, hour, contact_email, from_contact, subject, snippet in _MESSAGE_SCHEDULE:
+    for day_offset, hour, contact_email, from_contact, subject in _MESSAGE_SCHEDULE:
         if day_offset > as_of_day:
             break
         thread_key = "derek" if contact_email == _DEREK_EMAIL else "monica"
@@ -67,6 +56,7 @@ def pinnacle_email_thread(as_of_day: int) -> dict:
         sender = contact_email if from_contact else _CSM_EMAIL
         recipient = _CSM_EMAIL if from_contact else contact_email
         msg_id = det_id("email-msg", PINNACLE_ACCOUNT_ID, day_offset, hour)
+        body = _BODIES[(day_offset, hour)]
         threads.setdefault(
             thread_id, {"id": thread_id, "historyId": str(1000 + as_of_day), "messages": []}
         )
@@ -75,7 +65,7 @@ def pinnacle_email_thread(as_of_day: int) -> dict:
                 "id": msg_id,
                 "threadId": thread_id,
                 "labelIds": ["INBOX"] if from_contact else ["SENT"],
-                "snippet": snippet,
+                "snippet": derive_snippet(body),
                 "internalDate": str(
                     int(datetime.fromisoformat(_rfc3339(day_offset, hour).replace("Z", "+00:00")).timestamp() * 1000)
                 ),
@@ -86,7 +76,7 @@ def pinnacle_email_thread(as_of_day: int) -> dict:
                         {"name": "Date", "value": _rfc3339(day_offset, hour)},
                         {"name": "Subject", "value": subject},
                     ],
-                    "body": {"data": snippet},
+                    "body": {"data": body},
                 },
             }
         )
@@ -168,7 +158,7 @@ def pinnacle_stakeholder_relationships(as_of_day: int) -> list[StakeholderRelati
     if as_of_day >= 110:
         strength = "strong" if as_of_day >= 240 else "moderate" if as_of_day >= 135 else "weak"
         last_interaction = _rfc3339(1, 13)
-        for day_offset, hour, contact_email, from_contact, _subject, _snippet in _MESSAGE_SCHEDULE:
+        for day_offset, hour, contact_email, from_contact, _subject in _MESSAGE_SCHEDULE:
             if day_offset > as_of_day or contact_email != _MONICA_EMAIL or not from_contact:
                 continue
             last_interaction = _rfc3339(day_offset, hour)

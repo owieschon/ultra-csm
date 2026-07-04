@@ -29,7 +29,8 @@ from datetime import datetime
 
 from ultra_csm.data_plane.contracts import CommunicationSignal, CRMCase, StakeholderRelationship
 from ultra_csm.data_plane.fixtures import account_id_for, det_id
-from ultra_csm.data_plane.narrative_shared import cases_as_of, rfc3339 as _rfc3339
+from ultra_csm.data_plane.narrative_content.pinehill_content import BODIES as _BODIES
+from ultra_csm.data_plane.narrative_shared import cases_as_of, derive_snippet, rfc3339 as _rfc3339
 
 PINEHILL_ACCOUNT_ID = account_id_for("pinehill-transport")
 PINEHILL_CHAMPION_CONTACT_ID = det_id(
@@ -50,43 +51,25 @@ _CHAMPION_EMAIL = "dennis.gruber@pinehill-transport.example"
 # single-threaded-risk arc, which is a width story).
 # ---------------------------------------------------------------------------
 
-_MESSAGE_SCHEDULE: tuple[tuple[int, int, bool, str, str], ...] = (
-    (1, 9, False, "Kickoff — legacy dispatch integration timeline",
-     "Looking forward to getting the legacy dispatch connector live this month."),
-    (1, 14, True, "Re: Kickoff — legacy dispatch integration timeline",
-     "Sounds good, our team is ready to start whenever you are."),
-    (8, 9, False, "Checking in ahead of the 50% activation milestone",
-     "Quick check-in before Friday's milestone review."),
-    (8, 15, True, "Re: Checking in ahead of the 50% activation milestone",
-     "All set on our end, talk Friday."),
-    (22, 9, False, "Legacy dispatch integration — timeout errors",
-     "Seeing timeout errors on the legacy dispatch connector, need your IT team's help."),
-    (23, 15, True, "Re: Legacy dispatch integration — timeout errors",
-     "Will loop in IT, bit swamped this week, give us a few days."),
-    (32, 9, False, "Following up — integration timeout case still open",
-     "Following up on the timeout case, any movement from IT?"),
-    (34, 11, True, "Re: Following up — integration timeout case still open",
-     "Sorry for the delay, IT is still looking into it."),
-    (60, 9, False, "Third integration issue this month — can we get time this week?",
-     "This is the third dispatch connector issue this month, can we find 30 minutes?"),
-    (63, 15, True, "Re: Third integration issue this month — can we get time this week?",
-     "Apologies, been heads down on our end, let's find time next week."),
-    (85, 9, False, "Dispatch connector still dropping events — need to escalate",
-     "The connector is still dropping events, we should escalate this internally."),
-    (87, 21, True, "Re: Dispatch connector still dropping events — need to escalate",
-     "Understood, escalating on our side too."),
-    (275, 9, False, "Quarterly check-in — integration holding steady",
-     "Wanted to check in now that things have settled down on the connector."),
-    (275, 15, True, "Re: Quarterly check-in — integration holding steady",
-     "Yes, quiet on our end too, appreciate the follow-through."),
-    (295, 9, False, "Steady-state review prep",
-     "Sending over the steady-state review agenda for next week."),
-    (295, 14, True, "Re: Steady-state review prep",
-     "Looks good, see you then."),
-    (305, 9, False, "Great news — integration fully stable",
-     "Wanted to flag that the legacy dispatch integration has been fully stable for two weeks."),
-    (306, 12, True, "Re: Great news — integration fully stable",
-     "Fantastic, thank you for sticking with this one."),
+_MESSAGE_SCHEDULE: tuple[tuple[int, int, bool, str], ...] = (
+    (1, 9, False, "Kickoff — legacy dispatch integration timeline"),
+    (1, 14, True, "Re: Kickoff — legacy dispatch integration timeline"),
+    (8, 9, False, "Checking in ahead of the 50% activation milestone"),
+    (8, 15, True, "Re: Checking in ahead of the 50% activation milestone"),
+    (22, 9, False, "Legacy dispatch integration — timeout errors"),
+    (23, 15, True, "Re: Legacy dispatch integration — timeout errors"),
+    (32, 9, False, "Following up — integration timeout case still open"),
+    (34, 11, True, "Re: Following up — integration timeout case still open"),
+    (60, 9, False, "Third integration issue this month — can we get time this week?"),
+    (63, 15, True, "Re: Third integration issue this month — can we get time this week?"),
+    (85, 9, False, "Dispatch connector still dropping events — need to escalate"),
+    (87, 21, True, "Re: Dispatch connector still dropping events — need to escalate"),
+    (275, 9, False, "Quarterly check-in — integration holding steady"),
+    (275, 15, True, "Re: Quarterly check-in — integration holding steady"),
+    (295, 9, False, "Steady-state review prep"),
+    (295, 14, True, "Re: Steady-state review prep"),
+    (305, 9, False, "Great news — integration fully stable"),
+    (306, 12, True, "Re: Great news — integration fully stable"),
 )
 
 
@@ -96,18 +79,19 @@ def pinehill_email_thread(as_of_day: int) -> dict:
 
     thread_id = det_id("email-thread", PINEHILL_ACCOUNT_ID, "legacy-dispatch-integration")
     messages = []
-    for day_offset, hour, from_champion, subject, snippet in _MESSAGE_SCHEDULE:
+    for day_offset, hour, from_champion, subject in _MESSAGE_SCHEDULE:
         if day_offset > as_of_day:
             break
         sender = _CHAMPION_EMAIL if from_champion else _CSM_EMAIL
         recipient = _CSM_EMAIL if from_champion else _CHAMPION_EMAIL
         msg_id = det_id("email-msg", PINEHILL_ACCOUNT_ID, day_offset, hour)
+        body = _BODIES[(day_offset, hour)]
         messages.append(
             {
                 "id": msg_id,
                 "threadId": thread_id,
                 "labelIds": ["INBOX"] if from_champion else ["SENT"],
-                "snippet": snippet,
+                "snippet": derive_snippet(body),
                 "internalDate": str(
                     int(datetime.fromisoformat(_rfc3339(day_offset, hour).replace("Z", "+00:00")).timestamp() * 1000)
                 ),
@@ -118,7 +102,7 @@ def pinehill_email_thread(as_of_day: int) -> dict:
                         {"name": "Date", "value": _rfc3339(day_offset, hour)},
                         {"name": "Subject", "value": subject},
                     ],
-                    "body": {"data": snippet},
+                    "body": {"data": body},
                 },
             }
         )
