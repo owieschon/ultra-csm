@@ -228,12 +228,21 @@ class CommunicationSignal:
     """A single communication event between CSM and customer contact.
 
     Reserved for live connector integration — simulation deferred.
+
+    ``channel`` additively widened to include ``"chat"`` (Universe v2,
+    WS-Tenant-Loopway, Wave 3) for Loopway's Intercom-ish in-app support
+    chat class — sanctioned by ``docs/UNIVERSE_V2_CONVENTIONS.md`` §7
+    ("frozen contracts stay frozen unless explicitly sanctioned here");
+    no existing consumer (``signal_extractor.py``, any tenant's
+    ``*_comms.py`` module) exhaustively switches over this field's value,
+    so the widening is purely additive. See
+    ``docs/TENANT_LOOPWAY_BIBLE.md``'s "Chat class" section.
     """
 
     signal_id: str
     account_id: str
     contact_id: str
-    channel: Literal["email", "call", "meeting"]
+    channel: Literal["email", "call", "meeting", "chat"]
     direction: Literal["inbound", "outbound"]
     timestamp: str
     response_time_hours: float | None = None  # for email

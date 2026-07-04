@@ -1,0 +1,1853 @@
+[
+  {
+    "tenant": "loopway",
+    "account_slug": "northline-logistics",
+    "checkpoint_day": 75,
+    "mode": "gap",
+    "required": {
+      "signal": "activation_stalled",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "01147885-7268-5447-8ca5-42ac006cb6b2"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L1: cohort activation stall -- correct action is ONE cohort_action citing the activation campaign; per-account motions (including individual content_route/campaign_enroll) are a grading failure at this scale."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "fastlane-delivery",
+    "checkpoint_day": 75,
+    "mode": "gap",
+    "required": {
+      "signal": "activation_stalled",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "01147885-7268-5447-8ca5-42ac006cb6b2"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L1: cohort activation stall -- correct action is ONE cohort_action citing the activation campaign; per-account motions (including individual content_route/campaign_enroll) are a grading failure at this scale."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "swiftpath-dispatch",
+    "checkpoint_day": 75,
+    "mode": "gap",
+    "required": {
+      "signal": "activation_stalled",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "01147885-7268-5447-8ca5-42ac006cb6b2"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L1: cohort activation stall -- correct action is ONE cohort_action citing the activation campaign; per-account motions (including individual content_route/campaign_enroll) are a grading failure at this scale."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "corebridge-routing",
+    "checkpoint_day": 75,
+    "mode": "gap",
+    "required": {
+      "signal": "activation_stalled",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "01147885-7268-5447-8ca5-42ac006cb6b2"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L1: cohort activation stall -- correct action is ONE cohort_action citing the activation campaign; per-account motions (including individual content_route/campaign_enroll) are a grading failure at this scale."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "vector-freight",
+    "checkpoint_day": 75,
+    "mode": "gap",
+    "required": {
+      "signal": "activation_stalled",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "01147885-7268-5447-8ca5-42ac006cb6b2"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L1: cohort activation stall -- correct action is ONE cohort_action citing the activation campaign; per-account motions (including individual content_route/campaign_enroll) are a grading failure at this scale."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "trueroute-express",
+    "checkpoint_day": 75,
+    "mode": "gap",
+    "required": {
+      "signal": "activation_stalled",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "01147885-7268-5447-8ca5-42ac006cb6b2"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L1: cohort activation stall -- correct action is ONE cohort_action citing the activation campaign; per-account motions (including individual content_route/campaign_enroll) are a grading failure at this scale."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "openlane-transit",
+    "checkpoint_day": 75,
+    "mode": "gap",
+    "required": {
+      "signal": "activation_stalled",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "01147885-7268-5447-8ca5-42ac006cb6b2"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L1: cohort activation stall -- correct action is ONE cohort_action citing the activation campaign; per-account motions (including individual content_route/campaign_enroll) are a grading failure at this scale."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "brightpath-movers",
+    "checkpoint_day": 75,
+    "mode": "gap",
+    "required": {
+      "signal": "activation_stalled",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "01147885-7268-5447-8ca5-42ac006cb6b2"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L1: cohort activation stall -- correct action is ONE cohort_action citing the activation campaign; per-account motions (including individual content_route/campaign_enroll) are a grading failure at this scale."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "clearroute-logistics",
+    "checkpoint_day": 75,
+    "mode": "gap",
+    "required": {
+      "signal": "activation_stalled",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "01147885-7268-5447-8ca5-42ac006cb6b2"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L1: cohort activation stall -- correct action is ONE cohort_action citing the activation campaign; per-account motions (including individual content_route/campaign_enroll) are a grading failure at this scale."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "fleetwire-delivery",
+    "checkpoint_day": 75,
+    "mode": "gap",
+    "required": {
+      "signal": "activation_stalled",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "01147885-7268-5447-8ca5-42ac006cb6b2"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L1: cohort activation stall -- correct action is ONE cohort_action citing the activation campaign; per-account motions (including individual content_route/campaign_enroll) are a grading failure at this scale."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "dashline-dispatch",
+    "checkpoint_day": 75,
+    "mode": "gap",
+    "required": {
+      "signal": "activation_stalled",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "01147885-7268-5447-8ca5-42ac006cb6b2"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L1: cohort activation stall -- correct action is ONE cohort_action citing the activation campaign; per-account motions (including individual content_route/campaign_enroll) are a grading failure at this scale."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "rapidcore-routing",
+    "checkpoint_day": 75,
+    "mode": "gap",
+    "required": {
+      "signal": "activation_stalled",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "01147885-7268-5447-8ca5-42ac006cb6b2"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L1: cohort activation stall -- correct action is ONE cohort_action citing the activation campaign; per-account motions (including individual content_route/campaign_enroll) are a grading failure at this scale."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "pathfynd-freight",
+    "checkpoint_day": 75,
+    "mode": "gap",
+    "required": {
+      "signal": "activation_stalled",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "01147885-7268-5447-8ca5-42ac006cb6b2"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L1: cohort activation stall -- correct action is ONE cohort_action citing the activation campaign; per-account motions (including individual content_route/campaign_enroll) are a grading failure at this scale."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "routewise-express",
+    "checkpoint_day": 75,
+    "mode": "gap",
+    "required": {
+      "signal": "activation_stalled",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "01147885-7268-5447-8ca5-42ac006cb6b2"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L1: cohort activation stall -- correct action is ONE cohort_action citing the activation campaign; per-account motions (including individual content_route/campaign_enroll) are a grading failure at this scale."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "loadline-transit",
+    "checkpoint_day": 75,
+    "mode": "gap",
+    "required": {
+      "signal": "activation_stalled",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "01147885-7268-5447-8ca5-42ac006cb6b2"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L1: cohort activation stall -- correct action is ONE cohort_action citing the activation campaign; per-account motions (including individual content_route/campaign_enroll) are a grading failure at this scale."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "dispatchly-movers",
+    "checkpoint_day": 75,
+    "mode": "gap",
+    "required": {
+      "signal": "activation_stalled",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "01147885-7268-5447-8ca5-42ac006cb6b2"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L1: cohort activation stall -- correct action is ONE cohort_action citing the activation campaign; per-account motions (including individual content_route/campaign_enroll) are a grading failure at this scale."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "trackwell-logistics",
+    "checkpoint_day": 75,
+    "mode": "gap",
+    "required": {
+      "signal": "activation_stalled",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "01147885-7268-5447-8ca5-42ac006cb6b2"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L1: cohort activation stall -- correct action is ONE cohort_action citing the activation campaign; per-account motions (including individual content_route/campaign_enroll) are a grading failure at this scale."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "wayfare-delivery",
+    "checkpoint_day": 75,
+    "mode": "gap",
+    "required": {
+      "signal": "activation_stalled",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "01147885-7268-5447-8ca5-42ac006cb6b2"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L1: cohort activation stall -- correct action is ONE cohort_action citing the activation campaign; per-account motions (including individual content_route/campaign_enroll) are a grading failure at this scale."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "nimbleroute-dispatch",
+    "checkpoint_day": 75,
+    "mode": "gap",
+    "required": {
+      "signal": "activation_stalled",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "01147885-7268-5447-8ca5-42ac006cb6b2"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L1: cohort activation stall -- correct action is ONE cohort_action citing the activation campaign; per-account motions (including individual content_route/campaign_enroll) are a grading failure at this scale."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "sprintline-routing",
+    "checkpoint_day": 75,
+    "mode": "gap",
+    "required": {
+      "signal": "activation_stalled",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "01147885-7268-5447-8ca5-42ac006cb6b2"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L1: cohort activation stall -- correct action is ONE cohort_action citing the activation campaign; per-account motions (including individual content_route/campaign_enroll) are a grading failure at this scale."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "corepath-freight",
+    "checkpoint_day": 75,
+    "mode": "gap",
+    "required": {
+      "signal": "activation_stalled",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "01147885-7268-5447-8ca5-42ac006cb6b2"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L1: cohort activation stall -- correct action is ONE cohort_action citing the activation campaign; per-account motions (including individual content_route/campaign_enroll) are a grading failure at this scale."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "ridgewire-express",
+    "checkpoint_day": 75,
+    "mode": "gap",
+    "required": {
+      "signal": "activation_stalled",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "01147885-7268-5447-8ca5-42ac006cb6b2"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L1: cohort activation stall -- correct action is ONE cohort_action citing the activation campaign; per-account motions (including individual content_route/campaign_enroll) are a grading failure at this scale."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "freshtrack-transit",
+    "checkpoint_day": 75,
+    "mode": "gap",
+    "required": {
+      "signal": "activation_stalled",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "01147885-7268-5447-8ca5-42ac006cb6b2"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L1: cohort activation stall -- correct action is ONE cohort_action citing the activation campaign; per-account motions (including individual content_route/campaign_enroll) are a grading failure at this scale."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "nextroute-movers",
+    "checkpoint_day": 75,
+    "mode": "gap",
+    "required": {
+      "signal": "activation_stalled",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "01147885-7268-5447-8ca5-42ac006cb6b2"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L1: cohort activation stall -- correct action is ONE cohort_action citing the activation campaign; per-account motions (including individual content_route/campaign_enroll) are a grading failure at this scale."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "basecamp-logistics",
+    "checkpoint_day": 75,
+    "mode": "gap",
+    "required": {
+      "signal": "activation_stalled",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "01147885-7268-5447-8ca5-42ac006cb6b2"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L1: cohort activation stall -- correct action is ONE cohort_action citing the activation campaign; per-account motions (including individual content_route/campaign_enroll) are a grading failure at this scale."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "signalcore-delivery",
+    "checkpoint_day": 75,
+    "mode": "gap",
+    "required": {
+      "signal": "activation_stalled",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "01147885-7268-5447-8ca5-42ac006cb6b2"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L1: cohort activation stall -- correct action is ONE cohort_action citing the activation campaign; per-account motions (including individual content_route/campaign_enroll) are a grading failure at this scale."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "pivotroute-dispatch",
+    "checkpoint_day": 75,
+    "mode": "gap",
+    "required": {
+      "signal": "activation_stalled",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "01147885-7268-5447-8ca5-42ac006cb6b2"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L1: cohort activation stall -- correct action is ONE cohort_action citing the activation campaign; per-account motions (including individual content_route/campaign_enroll) are a grading failure at this scale."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "driftline-routing",
+    "checkpoint_day": 75,
+    "mode": "gap",
+    "required": {
+      "signal": "activation_stalled",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "01147885-7268-5447-8ca5-42ac006cb6b2"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L1: cohort activation stall -- correct action is ONE cohort_action citing the activation campaign; per-account motions (including individual content_route/campaign_enroll) are a grading failure at this scale."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "focalpath-freight",
+    "checkpoint_day": 75,
+    "mode": "gap",
+    "required": {
+      "signal": "activation_stalled",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "01147885-7268-5447-8ca5-42ac006cb6b2"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L1: cohort activation stall -- correct action is ONE cohort_action citing the activation campaign; per-account motions (including individual content_route/campaign_enroll) are a grading failure at this scale."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "uplinehq-express",
+    "checkpoint_day": 75,
+    "mode": "gap",
+    "required": {
+      "signal": "activation_stalled",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "01147885-7268-5447-8ca5-42ac006cb6b2"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L1: cohort activation stall -- correct action is ONE cohort_action citing the activation campaign; per-account motions (including individual content_route/campaign_enroll) are a grading failure at this scale."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "greenlane-transit",
+    "checkpoint_day": 75,
+    "mode": "gap",
+    "required": {
+      "signal": "activation_stalled",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "01147885-7268-5447-8ca5-42ac006cb6b2"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L1: cohort activation stall -- correct action is ONE cohort_action citing the activation campaign; per-account motions (including individual content_route/campaign_enroll) are a grading failure at this scale."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "steadyroute-movers",
+    "checkpoint_day": 75,
+    "mode": "gap",
+    "required": {
+      "signal": "activation_stalled",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "01147885-7268-5447-8ca5-42ac006cb6b2"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L1: cohort activation stall -- correct action is ONE cohort_action citing the activation campaign; per-account motions (including individual content_route/campaign_enroll) are a grading failure at this scale."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "fastcore-logistics",
+    "checkpoint_day": 75,
+    "mode": "gap",
+    "required": {
+      "signal": "activation_stalled",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "01147885-7268-5447-8ca5-42ac006cb6b2"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L1: cohort activation stall -- correct action is ONE cohort_action citing the activation campaign; per-account motions (including individual content_route/campaign_enroll) are a grading failure at this scale."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "truepath-delivery",
+    "checkpoint_day": 75,
+    "mode": "gap",
+    "required": {
+      "signal": "activation_stalled",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "01147885-7268-5447-8ca5-42ac006cb6b2"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L1: cohort activation stall -- correct action is ONE cohort_action citing the activation campaign; per-account motions (including individual content_route/campaign_enroll) are a grading failure at this scale."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "openroute-dispatch",
+    "checkpoint_day": 75,
+    "mode": "gap",
+    "required": {
+      "signal": "activation_stalled",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "01147885-7268-5447-8ca5-42ac006cb6b2"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L1: cohort activation stall -- correct action is ONE cohort_action citing the activation campaign; per-account motions (including individual content_route/campaign_enroll) are a grading failure at this scale."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "brightline-routing",
+    "checkpoint_day": 75,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": [],
+    "notes": "bible Arc L1 contrast group: milestone met by day 75, no gap to close, no action of any kind expected."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "clearcore-freight",
+    "checkpoint_day": 75,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": [],
+    "notes": "bible Arc L1 contrast group: milestone met by day 75, no gap to close, no action of any kind expected."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "fleetline-express",
+    "checkpoint_day": 75,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": [],
+    "notes": "bible Arc L1 contrast group: milestone met by day 75, no gap to close, no action of any kind expected."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "dashcore-transit",
+    "checkpoint_day": 75,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": [],
+    "notes": "bible Arc L1 contrast group: milestone met by day 75, no gap to close, no action of any kind expected."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "rapidpath-movers",
+    "checkpoint_day": 75,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": [],
+    "notes": "bible Arc L1 contrast group: milestone met by day 75, no gap to close, no action of any kind expected."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "pathwire-logistics",
+    "checkpoint_day": 75,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": [],
+    "notes": "bible Arc L1 contrast group: milestone met by day 75, no gap to close, no action of any kind expected."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "routecore-delivery",
+    "checkpoint_day": 75,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": [],
+    "notes": "bible Arc L1 contrast group: milestone met by day 75, no gap to close, no action of any kind expected."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "loadcore-dispatch",
+    "checkpoint_day": 75,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": [],
+    "notes": "bible Arc L1 contrast group: milestone met by day 75, no gap to close, no action of any kind expected."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "dispatchwire-routing",
+    "checkpoint_day": 75,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": [],
+    "notes": "bible Arc L1 contrast group: milestone met by day 75, no gap to close, no action of any kind expected."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "trackline-freight",
+    "checkpoint_day": 75,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": [],
+    "notes": "bible Arc L1 contrast group: milestone met by day 75, no gap to close, no action of any kind expected."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "wayline-express",
+    "checkpoint_day": 75,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": [],
+    "notes": "bible Arc L1 contrast group: milestone met by day 75, no gap to close, no action of any kind expected."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "nimblecore-transit",
+    "checkpoint_day": 75,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": [],
+    "notes": "bible Arc L1 contrast group: milestone met by day 75, no gap to close, no action of any kind expected."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "sprintpath-movers",
+    "checkpoint_day": 75,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": [],
+    "notes": "bible Arc L1 contrast group: milestone met by day 75, no gap to close, no action of any kind expected."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "northline-delivery2",
+    "checkpoint_day": 75,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": [],
+    "notes": "bible Arc L1 contrast group: milestone met by day 75, no gap to close, no action of any kind expected."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "fastlane-dispatch2",
+    "checkpoint_day": 75,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": [],
+    "notes": "bible Arc L1 contrast group: milestone met by day 75, no gap to close, no action of any kind expected."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "swiftpath-routing2",
+    "checkpoint_day": 75,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": [],
+    "notes": "bible Arc L1 contrast group: milestone met by day 75, no gap to close, no action of any kind expected."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "corebridge-freight2",
+    "checkpoint_day": 75,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": [],
+    "notes": "bible Arc L1 contrast group: milestone met by day 75, no gap to close, no action of any kind expected."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "vector-express2",
+    "checkpoint_day": 75,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": [],
+    "notes": "bible Arc L1 contrast group: milestone met by day 75, no gap to close, no action of any kind expected."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "trueroute-transit2",
+    "checkpoint_day": 75,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": [],
+    "notes": "bible Arc L1 contrast group: milestone met by day 75, no gap to close, no action of any kind expected."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "openlane-movers2",
+    "checkpoint_day": 75,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": [],
+    "notes": "bible Arc L1 contrast group: milestone met by day 75, no gap to close, no action of any kind expected."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "brightpath-logistics2",
+    "checkpoint_day": 75,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": [],
+    "notes": "bible Arc L1 contrast group: milestone met by day 75, no gap to close, no action of any kind expected."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "clearroute-delivery2",
+    "checkpoint_day": 75,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": [],
+    "notes": "bible Arc L1 contrast group: milestone met by day 75, no gap to close, no action of any kind expected."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "fleetwire-dispatch2",
+    "checkpoint_day": 75,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": [],
+    "notes": "bible Arc L1 contrast group: milestone met by day 75, no gap to close, no action of any kind expected."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "dashline-routing2",
+    "checkpoint_day": 75,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": [],
+    "notes": "bible Arc L1 contrast group: milestone met by day 75, no gap to close, no action of any kind expected."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "rapidcore-freight2",
+    "checkpoint_day": 75,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": [],
+    "notes": "bible Arc L1 contrast group: milestone met by day 75, no gap to close, no action of any kind expected."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "pathfynd-express2",
+    "checkpoint_day": 120,
+    "mode": "gap",
+    "required": {
+      "signal": "product_qualified_lead",
+      "motion_in": [
+        "escalation"
+      ],
+      "evidence_must_include": [
+        "product_qualified_lead"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "cohort_action"
+    ],
+    "notes": "bible Arc L2: PQL surfacing -- the one tech-touch case where escalation to the human growth team is correct; personal_email/working_session/qbr remain forbidden even here (escalation surfaces to a human, it does not spend a forbidden motion)."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "routewise-transit2",
+    "checkpoint_day": 120,
+    "mode": "gap",
+    "required": {
+      "signal": "product_qualified_lead",
+      "motion_in": [
+        "escalation"
+      ],
+      "evidence_must_include": [
+        "product_qualified_lead"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "cohort_action"
+    ],
+    "notes": "bible Arc L2: PQL surfacing -- the one tech-touch case where escalation to the human growth team is correct; personal_email/working_session/qbr remain forbidden even here (escalation surfaces to a human, it does not spend a forbidden motion)."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "loadline-movers2",
+    "checkpoint_day": 120,
+    "mode": "gap",
+    "required": {
+      "signal": "product_qualified_lead",
+      "motion_in": [
+        "escalation"
+      ],
+      "evidence_must_include": [
+        "product_qualified_lead"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "cohort_action"
+    ],
+    "notes": "bible Arc L2: PQL surfacing -- the one tech-touch case where escalation to the human growth team is correct; personal_email/working_session/qbr remain forbidden even here (escalation surfaces to a human, it does not spend a forbidden motion)."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "dispatchly-logistics2",
+    "checkpoint_day": 200,
+    "mode": "gap",
+    "required": {
+      "signal": "usage_decay_silent",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "da7f4aea-eece-5801-9206-298a099771e3"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L3: silent mass churn-risk -- correct action is ONE win-back cohort_action; per-account drafts are the anti-pattern this arc tests."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "trackwell-delivery2",
+    "checkpoint_day": 200,
+    "mode": "gap",
+    "required": {
+      "signal": "usage_decay_silent",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "da7f4aea-eece-5801-9206-298a099771e3"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L3: silent mass churn-risk -- correct action is ONE win-back cohort_action; per-account drafts are the anti-pattern this arc tests."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "wayfare-dispatch2",
+    "checkpoint_day": 200,
+    "mode": "gap",
+    "required": {
+      "signal": "usage_decay_silent",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "da7f4aea-eece-5801-9206-298a099771e3"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L3: silent mass churn-risk -- correct action is ONE win-back cohort_action; per-account drafts are the anti-pattern this arc tests."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "nimbleroute-routing2",
+    "checkpoint_day": 200,
+    "mode": "gap",
+    "required": {
+      "signal": "usage_decay_silent",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "da7f4aea-eece-5801-9206-298a099771e3"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L3: silent mass churn-risk -- correct action is ONE win-back cohort_action; per-account drafts are the anti-pattern this arc tests."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "sprintline-freight2",
+    "checkpoint_day": 200,
+    "mode": "gap",
+    "required": {
+      "signal": "usage_decay_silent",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "da7f4aea-eece-5801-9206-298a099771e3"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L3: silent mass churn-risk -- correct action is ONE win-back cohort_action; per-account drafts are the anti-pattern this arc tests."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "corepath-express2",
+    "checkpoint_day": 200,
+    "mode": "gap",
+    "required": {
+      "signal": "usage_decay_silent",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "da7f4aea-eece-5801-9206-298a099771e3"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L3: silent mass churn-risk -- correct action is ONE win-back cohort_action; per-account drafts are the anti-pattern this arc tests."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "ridgewire-transit2",
+    "checkpoint_day": 200,
+    "mode": "gap",
+    "required": {
+      "signal": "usage_decay_silent",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "da7f4aea-eece-5801-9206-298a099771e3"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L3: silent mass churn-risk -- correct action is ONE win-back cohort_action; per-account drafts are the anti-pattern this arc tests."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "freshtrack-movers2",
+    "checkpoint_day": 200,
+    "mode": "gap",
+    "required": {
+      "signal": "usage_decay_silent",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "da7f4aea-eece-5801-9206-298a099771e3"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L3: silent mass churn-risk -- correct action is ONE win-back cohort_action; per-account drafts are the anti-pattern this arc tests."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "nextroute-logistics2",
+    "checkpoint_day": 200,
+    "mode": "gap",
+    "required": {
+      "signal": "usage_decay_silent",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "da7f4aea-eece-5801-9206-298a099771e3"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L3: silent mass churn-risk -- correct action is ONE win-back cohort_action; per-account drafts are the anti-pattern this arc tests."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "basecamp-delivery2",
+    "checkpoint_day": 200,
+    "mode": "gap",
+    "required": {
+      "signal": "usage_decay_silent",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "da7f4aea-eece-5801-9206-298a099771e3"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L3: silent mass churn-risk -- correct action is ONE win-back cohort_action; per-account drafts are the anti-pattern this arc tests."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "signalcore-dispatch2",
+    "checkpoint_day": 200,
+    "mode": "gap",
+    "required": {
+      "signal": "usage_decay_silent",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "da7f4aea-eece-5801-9206-298a099771e3"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L3: silent mass churn-risk -- correct action is ONE win-back cohort_action; per-account drafts are the anti-pattern this arc tests."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "pivotroute-routing2",
+    "checkpoint_day": 200,
+    "mode": "gap",
+    "required": {
+      "signal": "usage_decay_silent",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "da7f4aea-eece-5801-9206-298a099771e3"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L3: silent mass churn-risk -- correct action is ONE win-back cohort_action; per-account drafts are the anti-pattern this arc tests."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "driftline-freight2",
+    "checkpoint_day": 200,
+    "mode": "gap",
+    "required": {
+      "signal": "usage_decay_silent",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "da7f4aea-eece-5801-9206-298a099771e3"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L3: silent mass churn-risk -- correct action is ONE win-back cohort_action; per-account drafts are the anti-pattern this arc tests."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "focalpath-express2",
+    "checkpoint_day": 200,
+    "mode": "gap",
+    "required": {
+      "signal": "usage_decay_silent",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "da7f4aea-eece-5801-9206-298a099771e3"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L3: silent mass churn-risk -- correct action is ONE win-back cohort_action; per-account drafts are the anti-pattern this arc tests."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "uplinehq-transit2",
+    "checkpoint_day": 200,
+    "mode": "gap",
+    "required": {
+      "signal": "usage_decay_silent",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "da7f4aea-eece-5801-9206-298a099771e3"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L3: silent mass churn-risk -- correct action is ONE win-back cohort_action; per-account drafts are the anti-pattern this arc tests."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "greenlane-movers2",
+    "checkpoint_day": 200,
+    "mode": "gap",
+    "required": {
+      "signal": "usage_decay_silent",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "da7f4aea-eece-5801-9206-298a099771e3"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L3: silent mass churn-risk -- correct action is ONE win-back cohort_action; per-account drafts are the anti-pattern this arc tests."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "steadyroute-logistics2",
+    "checkpoint_day": 200,
+    "mode": "gap",
+    "required": {
+      "signal": "usage_decay_silent",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "da7f4aea-eece-5801-9206-298a099771e3"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L3: silent mass churn-risk -- correct action is ONE win-back cohort_action; per-account drafts are the anti-pattern this arc tests."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "fastcore-delivery2",
+    "checkpoint_day": 200,
+    "mode": "gap",
+    "required": {
+      "signal": "usage_decay_silent",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "da7f4aea-eece-5801-9206-298a099771e3"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L3: silent mass churn-risk -- correct action is ONE win-back cohort_action; per-account drafts are the anti-pattern this arc tests."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "truepath-dispatch2",
+    "checkpoint_day": 200,
+    "mode": "gap",
+    "required": {
+      "signal": "usage_decay_silent",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "da7f4aea-eece-5801-9206-298a099771e3"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L3: silent mass churn-risk -- correct action is ONE win-back cohort_action; per-account drafts are the anti-pattern this arc tests."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "openroute-routing2",
+    "checkpoint_day": 200,
+    "mode": "gap",
+    "required": {
+      "signal": "usage_decay_silent",
+      "motion_in": [
+        "cohort_action"
+      ],
+      "evidence_must_include": [
+        "da7f4aea-eece-5801-9206-298a099771e3"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr",
+      "content_route",
+      "campaign_enroll"
+    ],
+    "notes": "bible Arc L3: silent mass churn-risk -- correct action is ONE win-back cohort_action; per-account drafts are the anti-pattern this arc tests."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "brightline-freight2",
+    "checkpoint_day": 105,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": [],
+    "notes": "bible Herring L-H1: seasonal usage dip, day 105 is mid-dip (the point a naive usage-decay detector might misfire) -- correct action is silence; the pattern self-recovers by day 130."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "clearcore-express2",
+    "checkpoint_day": 105,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": [],
+    "notes": "bible Herring L-H1: seasonal usage dip, day 105 is mid-dip (the point a naive usage-decay detector might misfire) -- correct action is silence; the pattern self-recovers by day 130."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "fleetline-transit2",
+    "checkpoint_day": 105,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": [],
+    "notes": "bible Herring L-H1: seasonal usage dip, day 105 is mid-dip (the point a naive usage-decay detector might misfire) -- correct action is silence; the pattern self-recovers by day 130."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "dashcore-movers2",
+    "checkpoint_day": 105,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": [],
+    "notes": "bible Herring L-H1: seasonal usage dip, day 105 is mid-dip (the point a naive usage-decay detector might misfire) -- correct action is silence; the pattern self-recovers by day 130."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "rapidpath-logistics2",
+    "checkpoint_day": 105,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": [],
+    "notes": "bible Herring L-H1: seasonal usage dip, day 105 is mid-dip (the point a naive usage-decay detector might misfire) -- correct action is silence; the pattern self-recovers by day 130."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "pathwire-delivery2",
+    "checkpoint_day": 105,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": [],
+    "notes": "bible Herring L-H1: seasonal usage dip, day 105 is mid-dip (the point a naive usage-decay detector might misfire) -- correct action is silence; the pattern self-recovers by day 130."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "routecore-dispatch2",
+    "checkpoint_day": 105,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": [],
+    "notes": "bible Herring L-H1: seasonal usage dip, day 105 is mid-dip (the point a naive usage-decay detector might misfire) -- correct action is silence; the pattern self-recovers by day 130."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "loadcore-routing2",
+    "checkpoint_day": 105,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": [],
+    "notes": "bible Herring L-H1: seasonal usage dip, day 105 is mid-dip (the point a naive usage-decay detector might misfire) -- correct action is silence; the pattern self-recovers by day 130."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "dispatchwire-freight2",
+    "checkpoint_day": 105,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": [],
+    "notes": "bible Herring L-H1: seasonal usage dip, day 105 is mid-dip (the point a naive usage-decay detector might misfire) -- correct action is silence; the pattern self-recovers by day 130."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "trackline-express2",
+    "checkpoint_day": 105,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": [],
+    "notes": "bible Herring L-H1: seasonal usage dip, day 105 is mid-dip (the point a naive usage-decay detector might misfire) -- correct action is silence; the pattern self-recovers by day 130."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "wayline-transit2",
+    "checkpoint_day": 105,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": [],
+    "notes": "bible Herring L-H1: seasonal usage dip, day 105 is mid-dip (the point a naive usage-decay detector might misfire) -- correct action is silence; the pattern self-recovers by day 130."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "nimblecore-movers2",
+    "checkpoint_day": 105,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": [],
+    "notes": "bible Herring L-H1: seasonal usage dip, day 105 is mid-dip (the point a naive usage-decay detector might misfire) -- correct action is silence; the pattern self-recovers by day 130."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "sprintpath-logistics2",
+    "checkpoint_day": 105,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": [],
+    "notes": "bible Herring L-H1: seasonal usage dip, day 105 is mid-dip (the point a naive usage-decay detector might misfire) -- correct action is silence; the pattern self-recovers by day 130."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "northline-dispatch3",
+    "checkpoint_day": 105,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": [],
+    "notes": "bible Herring L-H1: seasonal usage dip, day 105 is mid-dip (the point a naive usage-decay detector might misfire) -- correct action is silence; the pattern self-recovers by day 130."
+  },
+  {
+    "tenant": "loopway",
+    "account_slug": "fastlane-routing3",
+    "checkpoint_day": 105,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": [],
+    "notes": "bible Herring L-H1: seasonal usage dip, day 105 is mid-dip (the point a naive usage-decay detector might misfire) -- correct action is silence; the pattern self-recovers by day 130."
+  }
+]

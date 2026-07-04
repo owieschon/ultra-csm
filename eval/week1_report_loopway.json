@@ -1,0 +1,127 @@
+{
+  "account_count": 162,
+  "artifact": "week1_protocol_report",
+  "by_install_day": {
+    "14": {
+      "cold_start_honesty": {
+        "computed_count": 0,
+        "install_day": 14,
+        "insufficient_history_count": 12,
+        "l1_chat_accounts_total": 4,
+        "ok": true
+      },
+      "false_alarm_rate": {
+        "detail": {
+          "cohort_size": 15
+        },
+        "ok": true,
+        "problems": []
+      },
+      "feedback_persistence": {
+        "ok": true,
+        "persistence_mechanism_used": false,
+        "skip_reason": "SKIP (loud, by design): ultra_csm.agent1.run_time_to_value_sweep's divergence-heuristic value model (health-band/success-plan/threshold triggers) returns zero work items against Loopway's 400-account book -- verified empirically, not assumed. Loopway's tech-touch tail has no SuccessPlan rows by design (no named CSM to author one), so this sweep engine's trigger surface does not apply here. See docs/PROGRAM_REPORT_17.md STOP Conditions."
+      },
+      "install_day": 14,
+      "ok": true
+    },
+    "3": {
+      "cold_start_honesty": {
+        "computed_count": 0,
+        "install_day": 3,
+        "insufficient_history_count": 12,
+        "l1_chat_accounts_total": 4,
+        "ok": true
+      },
+      "false_alarm_rate": {
+        "detail": {
+          "cohort_size": 15
+        },
+        "ok": true,
+        "problems": []
+      },
+      "feedback_persistence": {
+        "ok": true,
+        "persistence_mechanism_used": false,
+        "skip_reason": "SKIP (loud, by design): ultra_csm.agent1.run_time_to_value_sweep's divergence-heuristic value model (health-band/success-plan/threshold triggers) returns zero work items against Loopway's 400-account book -- verified empirically, not assumed. Loopway's tech-touch tail has no SuccessPlan rows by design (no named CSM to author one), so this sweep engine's trigger surface does not apply here. See docs/PROGRAM_REPORT_17.md STOP Conditions."
+      },
+      "install_day": 3,
+      "ok": true
+    },
+    "7": {
+      "cold_start_honesty": {
+        "computed_count": 0,
+        "install_day": 7,
+        "insufficient_history_count": 12,
+        "l1_chat_accounts_total": 4,
+        "ok": true
+      },
+      "false_alarm_rate": {
+        "detail": {
+          "cohort_size": 15
+        },
+        "ok": true,
+        "problems": []
+      },
+      "feedback_persistence": {
+        "ok": true,
+        "persistence_mechanism_used": false,
+        "skip_reason": "SKIP (loud, by design): ultra_csm.agent1.run_time_to_value_sweep's divergence-heuristic value model (health-band/success-plan/threshold triggers) returns zero work items against Loopway's 400-account book -- verified empirically, not assumed. Loopway's tech-touch tail has no SuccessPlan rows by design (no named CSM to author one), so this sweep engine's trigger surface does not apply here. See docs/PROGRAM_REPORT_17.md STOP Conditions."
+      },
+      "install_day": 7,
+      "ok": true
+    }
+  },
+  "claim_boundary": {
+    "live": false,
+    "n_tenants": 1,
+    "sim": true
+  },
+  "economics": {
+    "account_count_by_tier": {
+      "high_touch": 4,
+      "mid_touch": 20,
+      "tech_touch": 376
+    },
+    "budgets_usd_per_account_day": {
+      "high_touch": 0.5,
+      "mid_touch": 0.1,
+      "tech_touch": 0.02
+    },
+    "cost_usd_per_account_day_by_tier": {
+      "high_touch": 0.0,
+      "mid_touch": 0.0,
+      "tech_touch": 0.0
+    },
+    "credentialed_lane_ran": false,
+    "credentialed_lane_skip_reason": "SKIP (loud): ANTHROPIC_API_KEY not set -- credentialed Slot B economics lane not run. Deterministic $0 lane above still holds.",
+    "false_alarm_rate_ok_at_scale": true
+  },
+  "install_days": [
+    3,
+    7,
+    14
+  ],
+  "loopway_battery": {
+    "cases": 9,
+    "failed_cases": [],
+    "hard_ok": true
+  },
+  "ok": true,
+  "onboarding_cost": {
+    "baseline_ceiling": 8,
+    "questions_asked": [
+      "CRMAccount.account_id",
+      "CRMAccount.owner_id",
+      "CRMContact.contact_id",
+      "CRMContact.title"
+    ],
+    "questions_asked_count": 4,
+    "wall_clock_seconds": 0.037998,
+    "within_ceiling": true
+  },
+  "repeatability": {
+    "note": "checked by --repeatability-check at the CLI layer, not embedded here"
+  },
+  "tenant": "loopway"
+}

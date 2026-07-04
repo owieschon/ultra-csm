@@ -249,3 +249,48 @@ tenant demonstrates is not "the mapper breaks" but "the identity layer
 downstream of a clean ingest still cannot tell two duplicate contact rows
 apart" (Arc C1's day-100 finding) — the SHAPE of degradation the bible
 asks this workstream to measure, not a low-vs-high question count.
+
+## Loopway baseline (measured 2026-07-04, WS-Tenant-Loopway, Wave 3)
+
+`--tenant loopway` dispatches (a minimal, additive 3-line branch in
+`run_full_protocol`) to `eval/loopway_week1.py`, which implements
+sections 1/2(analog)/3/5/6 against Loopway's own 400-account book and
+arcs (`docs/TENANT_LOOPWAY_BIBLE.md`). Section 4 (`feedback_persistence`)
+is an honest, stated SKIP — see below.
+
+| Metric | K=3 | K=7 | K=14 |
+| --- | --- | --- | --- |
+| Onboarding questions asked | 4 (constant; onboarding is a function of schema-shape diversity, not account count or K — 400 accounts, 2 tables (Account/Contact, no Opportunity in this tenant's CRM shape), fewer ambiguous fields than fleetops' 3-table shape) | | |
+| Onboarding baseline ceiling | 8 | | |
+| Loopway battery (`eval/loopway_battery.py`) `hard_ok` | true (9/9 cases) | true | true |
+| Cold-start analog: chat signals computed (of 12 chat accounts) | day-dependent (0 before day 32, growing as L1's 4 chat accounts' scripted questions come due) | | |
+| False-alarm `ok` (herring L-H1 silence at day 105, mid-dip) | true | true | true |
+| Feedback persistence | SKIP (loud, by design) — see note below | SKIP | SKIP |
+| Economics: cost_usd_per_account_day (all tiers, deterministic lane) | 0.0 / 0.0 / 0.0 (high/mid/tech) | | |
+| Economics: account_count_by_tier | high=4, mid=20, tech=376 | | |
+| Repeatability (`--repeatability-check`) | true (canonicalized) | -- | -- |
+
+**Onboarding cost is the third data point** across the three vendor
+dialects this workstream set now spans: fleetops (Salesforce-shaped, 5
+questions), loopway (Attio-shaped, 4 questions via
+`eval/loopway_attio_simulated_onboarding.py`'s Attio explorer path, 5
+ambiguous mapping questions there; the in-process ingest_table/confirm_book
+driver above counts 4 for its narrower 2-table Account/Contact shape).
+Neither scales with account count — both are a function of schema-shape
+ambiguity, confirming Program 14's finding generalizes across vendor
+dialects, not just within one.
+
+**Feedback persistence SKIP, stated honestly.**
+`ultra_csm.agent1.run_time_to_value_sweep`'s divergence-heuristic value
+model (health-band/success-plan/threshold triggers) returns **zero work
+items** against Loopway's book — verified empirically, not assumed.
+Loopway's tech-touch tail has no `SuccessPlan` rows by design (no named
+CSM exists to author one — see the bible's "no named CSMs" canon), so
+this sweep engine's trigger surface does not apply to this tenant's
+shape. Rather than force-fit fleetops' sweep engine or silently report a
+vacuous pass, `eval/loopway_week1.py` records this as an explicit SKIP
+with the reason above. A future program wiring a playbook-driven
+proposal path for Loopway (per `eval/tier_policy_battery.py`'s Owner
+Ask #1, which already disclosed no lens/sweep consumes `playbooks.json`
+motions yet) would need its own recurrence-suppression test, not an
+extension of this one.

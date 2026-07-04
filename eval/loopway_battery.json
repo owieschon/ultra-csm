@@ -1,0 +1,91 @@
+{
+  "artifact": "loopway_battery",
+  "cases": [
+    {
+      "case": "l1-cohort-singularity",
+      "detail": {
+        "cohort_actions_found": 1,
+        "contrast_count": 25,
+        "stalled_count": 35
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "l2-pql-escalation",
+      "detail": {
+        "pql_count": 3,
+        "tail_median_active_users": 2.0
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "l3-cohort-singularity",
+      "detail": {
+        "cohort_actions_found": 1,
+        "cohort_size": 20
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "herring-silence",
+      "detail": {
+        "cohort_size": 15
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "no-tier-forbidden-motion-sampled",
+      "detail": {
+        "days_checked": [
+          75,
+          120,
+          200
+        ],
+        "sample_size": 162
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "chat-signal-integration",
+      "detail": {
+        "l1_chat_accounts": [
+          "corebridge-routing",
+          "fastlane-delivery",
+          "northline-logistics",
+          "swiftpath-dispatch"
+        ]
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "gold-rows-valid",
+      "detail": {
+        "rows": 98
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "canary-integrity",
+      "detail": {
+        "accounts_with_canary": 64
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "repeatability",
+      "detail": {},
+      "ok": true,
+      "problems": []
+    }
+  ],
+  "failed_cases": [],
+  "hard_ok": true
+}
