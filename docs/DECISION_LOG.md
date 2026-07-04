@@ -119,3 +119,12 @@ positives (judge stricter than gold, fail-closed direction) are accepted as an h
 recorded disagreement — not a defect to chase to zero. If a future prompt revision
 resolves it, revalidate under the same N-run methodology (decision 3 above); do not
 special-case it in the judge prompt.
+
+**Rejection ledger added for feedback persistence (Universe v2 Wave 1, WS-Week1-Harness,
+2026-07-04).** `eval/week1_protocol.py`'s feedback-persistence check found that
+`ActionGate.record_verdict`'s `deny` status is terminal but nothing consults it before the
+next sweep — a denied recurring-eligible proposal reappears unchanged the next day.
+Mechanism: `src/ultra_csm/rejection_ledger.py` adds a flat, file-backed
+`RejectionLedger` keyed by `(tenant_id, account_id, factor_name, motion)` that a caller
+consults after a `deny` verdict and before treating a new sweep's matching work item as a
+genuinely new ask, rather than encoding any suppression rule into the sweep itself.
