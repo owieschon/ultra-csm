@@ -56,6 +56,7 @@ class Thresholds:
     milestone_overdue_points: int
     days_overdue_points: int
     days_overdue_cap: int
+    onboarding_activation_gap_points: int
     success_plan_overdue_points: int
     health_red_points: int
     health_yellow_points: int
@@ -311,6 +312,7 @@ def project_ttv_lens(
     overdue_success_plans: tuple[SuccessPlan, ...] = (),
     as_of: str | None = None,
     onboarding_evidence_ids: frozenset[str] = frozenset(),
+    onboarding_activation_gap_ids: tuple[str, ...] = (),
 ) -> ProjectedPriority:
     """``onboarding_evidence_ids`` are Rocketlane phase/task ids among
     ``open_milestone_gaps``' evidence_signal_ids -- used only to attribute
@@ -318,6 +320,12 @@ def project_ttv_lens(
     default ``"telemetry"``. Passing none is the honest default: an id not
     listed here is attributed to telemetry, matching pre-Program-4 behavior
     exactly.
+
+    ``onboarding_activation_gap_ids`` are Rocketlane phase/task ids carrying
+    delivery-rail activation-gap evidence (RUNNING_LATE progress, an at-risk
+    task, or an overdue phase) that ``open_milestone_gaps`` does not already
+    cover -- see ``_ttv_base_factors`` for why this is scored only during
+    the onboarding lifecycle stage.
     """
 
     factors = (
@@ -329,6 +337,7 @@ def project_ttv_lens(
             overdue_success_plans=overdue_success_plans,
             as_of=as_of,
             onboarding_evidence_ids=onboarding_evidence_ids,
+            onboarding_activation_gap_ids=onboarding_activation_gap_ids,
         ),
         *model.ttv_factors,
     )
@@ -496,10 +505,32 @@ def _ttv_base_factors(
     overdue_success_plans: tuple[SuccessPlan, ...],
     as_of: str | None,
     onboarding_evidence_ids: frozenset[str] = frozenset(),
+    onboarding_activation_gap_ids: tuple[str, ...] = (),
 ) -> tuple[ValueFactor, ...]:
     resolved = model.resolved_thresholds
     thresholds = resolved.thresholds
     factors: list[ValueFactor] = []
+
+    # Lifecycle-aware weighting, not a global loosening of the score>0 gate:
+    # during onboarding, a delivery-rail activation gap (RUNNING_LATE
+    # progress, an at-risk task, or an overdue phase) is itself positive
+    # evidence of a Time-to-Value risk, even when it hasn't yet cleared the
+    # date-based ``open_milestone_gaps`` filter above. Outside onboarding
+    # this signal is not scored -- an at-risk task on a steady-state account
+    # is not the blind spot this closes.
+    if model.lifecycle_stage == "onboarding" and onboarding_activation_gap_ids:
+        factors.append(_factor(
+            "onboarding_activation_gap",
+            float(len(onboarding_activation_gap_ids)),
+            len(onboarding_activation_gap_ids) * thresholds.onboarding_activation_gap_points,
+            tuple(
+                EvidenceRef("rocketlane", signal_id, "activation_gap", as_of or "")
+                for signal_id in onboarding_activation_gap_ids
+            ),
+            resolved,
+            "onboarding_activation_gap_points",
+            thresholds.onboarding_activation_gap_points,
+        ))
 
     if open_milestone_gaps:
         evidence = tuple(

@@ -177,6 +177,77 @@ def _status(
     }
 
 
+LIVE_SEMANTIC_QUALITY_PATH = REPO / "eval" / "gold" / "live_semantic_quality.json"
+MIN_LIVE_RUNS_PER_CANDIDATE = 3
+
+
+def live_semantic_quality_status(
+    live_path: Path = LIVE_SEMANTIC_QUALITY_PATH,
+    *,
+    judge_status: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Derive whether live semantic quality has been proven, from the live
+    evidence artifact on disk -- never a hand-set boolean, same discipline as
+    ``judge_validation_status`` above. Requires (1) the judge itself already
+    validated and (2) every live candidate's N-run (>=3) modal-aggregated
+    vector to pass the gate. A mediocre or failing live result is reported
+    as-is (``proven=False`` with the failing candidate ids), not hidden."""
+
+    failures: list[str] = []
+    judge_status = judge_status if judge_status is not None else judge_validation_status()
+    if not judge_status.get("validated"):
+        failures.append("judge is not validated (judge_validation_status.validated is false)")
+
+    live = _load(live_path, failures)
+    if not isinstance(live, dict):
+        return _live_status(False, failures, live, live_path)
+
+    candidates = live.get("candidates")
+    if not isinstance(candidates, list) or not candidates:
+        failures.append("live evidence artifact has no candidates")
+        return _live_status(False, failures, live, live_path)
+
+    runs_per_candidate = live.get("runs_per_candidate")
+    if not isinstance(runs_per_candidate, int) or runs_per_candidate < MIN_LIVE_RUNS_PER_CANDIDATE:
+        failures.append(
+            f"runs_per_candidate {runs_per_candidate} < {MIN_LIVE_RUNS_PER_CANDIDATE}"
+        )
+
+    failing_ids: list[str] = []
+    for candidate in candidates:
+        agg = candidate.get("agg") if isinstance(candidate, dict) else None
+        if not isinstance(agg, dict) or not agg.get("aggregate_pass"):
+            failing_ids.append(str(candidate.get("candidate_id")))
+    if failing_ids:
+        failures.append(f"candidates failed the N-run aggregate gate: {sorted(failing_ids)}")
+
+    return _live_status(not failures, failures, live, live_path)
+
+
+def _live_status(
+    proven: bool,
+    failures: list[str],
+    live: Any,
+    live_path: Path,
+) -> dict[str, Any]:
+    candidates = live.get("candidates") if isinstance(live, dict) else None
+    return {
+        "proven": proven,
+        "failures": sorted(failures),
+        "method": {
+            "draft_model_id": live.get("draft_model_id") if isinstance(live, dict) else None,
+            "judge_model_id": live.get("judge_model_id") if isinstance(live, dict) else None,
+            "judge_prompt_version": live.get("judge_prompt_version") if isinstance(live, dict) else None,
+            "runs_per_candidate": live.get("runs_per_candidate") if isinstance(live, dict) else None,
+            "aggregation": "modal per-dimension, fail-closed safety_boundary (eval/judge_nrun.py)",
+            "single_run_of_draft_generation": True,
+            "book_source": live.get("book_source") if isinstance(live, dict) else None,
+        },
+        "candidate_count": len(candidates) if isinstance(candidates, list) else 0,
+        "evidence": _rel(live_path),
+    }
+
+
 def _load(path: Path, failures: list[str]) -> Any:
     try:
         return json.loads(path.read_text(encoding="utf-8"))

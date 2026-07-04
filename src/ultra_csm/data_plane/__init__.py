@@ -103,6 +103,10 @@ from ultra_csm.data_plane.salesforce_live import (
     preflight_salesforce_versions,
     run_salesforce_onboarding,
 )
+from ultra_csm.data_plane.salesforce_writeback import (
+    LiveSalesforceActivityCommitter,
+    SalesforceWriteError,
+)
 from ultra_csm.data_plane.source_maps import (
     ALL_SOURCE_MAPS,
     EXTERNAL_BOOK_SOURCE_MAPS,
@@ -126,6 +130,7 @@ from ultra_csm.data_plane.rocketlane_fixtures import (
     derive_ttv_milestones,
     det_rocketlane_id,
     has_activation_gap,
+    onboarding_activation_gap_ids,
 )
 
 __all__ = [
@@ -196,10 +201,12 @@ __all__ = [
     "freeze_confirmed_source_map",
     "propose_source_mapping",
     "DEFAULT_ROW_CAP",
+    "LiveSalesforceActivityCommitter",
     "SalesforceBookResult",
     "SalesforceObjectFetch",
     "SalesforceOnboardingResult",
     "SalesforceReadError",
+    "SalesforceWriteError",
     "audit_distinct_identity_paths",
     "fetch_salesforce_book",
     "preflight_salesforce_versions",
@@ -236,4 +243,5 @@ __all__ = [
     "derive_ttv_milestones",
     "det_rocketlane_id",
     "has_activation_gap",
+    "onboarding_activation_gap_ids",
 ]
