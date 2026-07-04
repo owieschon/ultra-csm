@@ -1,0 +1,2731 @@
+{
+  "arcs": {
+    "aspenridge-supply": {
+      "200": {
+        "cadence": {
+          "account_id": "15eb8dd9-b1bc-5093-a208-49526f8d5650",
+          "as_of": "2027-01-07",
+          "detail": "insufficient confirmed-event history in one or both windows",
+          "evidence": [],
+          "metric_name": "meeting_cadence_shift_days",
+          "unit": "days_delta",
+          "value": null
+        },
+        "case_count": 0,
+        "case_subjects": [],
+        "latency": {
+          "account_id": "15eb8dd9-b1bc-5093-a208-49526f8d5650",
+          "as_of": "2027-01-07",
+          "detail": "insufficient reply history in one or both windows",
+          "evidence": [
+            {
+              "field": "response_time_hours",
+              "observed_at": "2026-12-19T05:00:00Z",
+              "source": "communications",
+              "source_id": "f21b02b9-f048-5e12-9cec-6c5a21658392"
+            }
+          ],
+          "metric_name": "reply_latency_trend_hours",
+          "unit": "hours_delta",
+          "value": null
+        },
+        "relationship_strengths": [
+          {
+            "contact_id": "22d2efe4-95af-529d-9041-184528ce1d18",
+            "multi_thread_depth": 1,
+            "strength": "strong"
+          }
+        ],
+        "tickets": {
+          "account_id": "15eb8dd9-b1bc-5093-a208-49526f8d5650",
+          "as_of": "2027-01-07",
+          "detail": "0 case(s) opened in trailing 90d as of 2027-01-07",
+          "evidence": [],
+          "metric_name": "ticket_frequency_window",
+          "unit": "cases_opened",
+          "value": 0.0
+        },
+        "width": {
+          "account_id": "15eb8dd9-b1bc-5093-a208-49526f8d5650",
+          "as_of": "2027-01-07",
+          "detail": "1 active stakeholder relationship(s) as of 2027-01-07",
+          "evidence": [
+            {
+              "field": "relationship_type",
+              "observed_at": "2026-12-19T05:00:00Z",
+              "source": "communications",
+              "source_id": "22d2efe4-95af-529d-9041-184528ce1d18"
+            }
+          ],
+          "metric_name": "thread_participation_width",
+          "unit": "distinct_contacts",
+          "value": 1.0
+        }
+      },
+      "340": {
+        "cadence": {
+          "account_id": "15eb8dd9-b1bc-5093-a208-49526f8d5650",
+          "as_of": "2027-05-27",
+          "detail": "insufficient confirmed-event history in one or both windows",
+          "evidence": [],
+          "metric_name": "meeting_cadence_shift_days",
+          "unit": "days_delta",
+          "value": null
+        },
+        "case_count": 0,
+        "case_subjects": [],
+        "latency": {
+          "account_id": "15eb8dd9-b1bc-5093-a208-49526f8d5650",
+          "as_of": "2027-05-27",
+          "detail": "insufficient reply history in one or both windows",
+          "evidence": [],
+          "metric_name": "reply_latency_trend_hours",
+          "unit": "hours_delta",
+          "value": null
+        },
+        "relationship_strengths": [
+          {
+            "contact_id": "22d2efe4-95af-529d-9041-184528ce1d18",
+            "multi_thread_depth": 1,
+            "strength": "strong"
+          }
+        ],
+        "tickets": {
+          "account_id": "15eb8dd9-b1bc-5093-a208-49526f8d5650",
+          "as_of": "2027-05-27",
+          "detail": "0 case(s) opened in trailing 90d as of 2027-05-27",
+          "evidence": [],
+          "metric_name": "ticket_frequency_window",
+          "unit": "cases_opened",
+          "value": 0.0
+        },
+        "width": {
+          "account_id": "15eb8dd9-b1bc-5093-a208-49526f8d5650",
+          "as_of": "2027-05-27",
+          "detail": "1 active stakeholder relationship(s) as of 2027-05-27",
+          "evidence": [
+            {
+              "field": "relationship_type",
+              "observed_at": "2027-03-19T02:00:00Z",
+              "source": "communications",
+              "source_id": "22d2efe4-95af-529d-9041-184528ce1d18"
+            }
+          ],
+          "metric_name": "thread_participation_width",
+          "unit": "distinct_contacts",
+          "value": 1.0
+        }
+      },
+      "90": {
+        "cadence": {
+          "account_id": "15eb8dd9-b1bc-5093-a208-49526f8d5650",
+          "as_of": "2026-09-19",
+          "detail": "insufficient confirmed-event history in one or both windows",
+          "evidence": [],
+          "metric_name": "meeting_cadence_shift_days",
+          "unit": "days_delta",
+          "value": null
+        },
+        "case_count": 0,
+        "case_subjects": [],
+        "latency": {
+          "account_id": "15eb8dd9-b1bc-5093-a208-49526f8d5650",
+          "as_of": "2026-09-19",
+          "detail": "insufficient reply history in one or both windows",
+          "evidence": [],
+          "metric_name": "reply_latency_trend_hours",
+          "unit": "hours_delta",
+          "value": null
+        },
+        "relationship_strengths": [
+          {
+            "contact_id": "22d2efe4-95af-529d-9041-184528ce1d18",
+            "multi_thread_depth": 1,
+            "strength": "strong"
+          }
+        ],
+        "tickets": {
+          "account_id": "15eb8dd9-b1bc-5093-a208-49526f8d5650",
+          "as_of": "2026-09-19",
+          "detail": "0 case(s) opened in trailing 90d as of 2026-09-19",
+          "evidence": [],
+          "metric_name": "ticket_frequency_window",
+          "unit": "cases_opened",
+          "value": 0.0
+        },
+        "width": {
+          "account_id": "15eb8dd9-b1bc-5093-a208-49526f8d5650",
+          "as_of": "2026-09-19",
+          "detail": "1 active stakeholder relationship(s) as of 2026-09-19",
+          "evidence": [
+            {
+              "field": "relationship_type",
+              "observed_at": "2026-06-22T04:00:00Z",
+              "source": "communications",
+              "source_id": "22d2efe4-95af-529d-9041-184528ce1d18"
+            }
+          ],
+          "metric_name": "thread_participation_width",
+          "unit": "distinct_contacts",
+          "value": 1.0
+        }
+      }
+    },
+    "meridian-fleet": {
+      "170": {
+        "cadence": {
+          "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+          "as_of": "2026-12-08",
+          "detail": "trailing 30d median gap 1.0d vs prior window 3.5d",
+          "evidence": [
+            {
+              "field": "status",
+              "observed_at": "2026-06-24T01:00:00Z",
+              "source": "communications",
+              "source_id": "c87502b6-2b70-51be-9757-e1decf912077"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-07-01T01:00:00Z",
+              "source": "communications",
+              "source_id": "638cdf80-dd15-522a-b9db-d96955484b2a"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-07-03T01:00:00Z",
+              "source": "communications",
+              "source_id": "f4e6149c-47b6-5833-a23d-f386fbac1303"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-07-08T01:00:00Z",
+              "source": "communications",
+              "source_id": "43df0caf-6359-5e65-8d00-aef31a121879"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-07-10T01:00:00Z",
+              "source": "communications",
+              "source_id": "043fa77e-460c-58c5-83ac-671b2ee9d4f0"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-07-15T01:00:00Z",
+              "source": "communications",
+              "source_id": "8f62a2a8-8cf8-5313-a734-bb4f6ad62aff"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-07-17T01:00:00Z",
+              "source": "communications",
+              "source_id": "e90b5a23-41ad-5c9c-9c0e-e5cfcede5182"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-07-22T01:00:00Z",
+              "source": "communications",
+              "source_id": "fb6ea0c6-01fd-5e84-9620-269a12e2f78c"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-07-24T01:00:00Z",
+              "source": "communications",
+              "source_id": "59312d69-3b62-59bc-877c-34a7d3a671ba"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-07-29T01:00:00Z",
+              "source": "communications",
+              "source_id": "479a56a8-a16f-567c-a50c-e2669a7b3d7a"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-07-31T01:00:00Z",
+              "source": "communications",
+              "source_id": "2de89892-58b5-5079-a84a-4b1d79f71dd0"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-08-05T01:00:00Z",
+              "source": "communications",
+              "source_id": "b5e20251-e8a1-5f53-bac1-bd1e596e4848"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-08-07T01:00:00Z",
+              "source": "communications",
+              "source_id": "78e23f83-4558-5319-8165-6da50dec5bf3"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-08-12T01:00:00Z",
+              "source": "communications",
+              "source_id": "d13d6661-af94-54d8-92d9-43ad5786cf81"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-08-14T01:00:00Z",
+              "source": "communications",
+              "source_id": "67b40458-1432-5ce8-9acd-9f0f76dcfb56"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-08-19T01:00:00Z",
+              "source": "communications",
+              "source_id": "4574f513-21e6-5e76-8968-0dd8d562ddde"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-08-21T01:00:00Z",
+              "source": "communications",
+              "source_id": "ab51f6fd-8c4e-5ee6-8c89-624b5ba44cb3"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-08-26T01:00:00Z",
+              "source": "communications",
+              "source_id": "a72f2f3e-cec0-574b-850f-6640925eea52"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-08-28T01:00:00Z",
+              "source": "communications",
+              "source_id": "97992250-bf42-549c-96b5-3f617defbe34"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-09-02T01:00:00Z",
+              "source": "communications",
+              "source_id": "bfafd5ba-39d4-594c-9fd0-17be7e02f5fa"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-09-04T01:00:00Z",
+              "source": "communications",
+              "source_id": "2dfd47ff-7b7c-544e-9db2-dad7644fc849"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-09-09T01:00:00Z",
+              "source": "communications",
+              "source_id": "4f7b76d2-f53d-5fe3-816e-b03f3f3941a3"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-09-11T01:00:00Z",
+              "source": "communications",
+              "source_id": "3c0884e6-fcdb-582c-aa51-6f0b84791ac3"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-09-16T01:00:00Z",
+              "source": "communications",
+              "source_id": "4530fbc4-d76a-509a-ace8-79e1f99a3458"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-09-18T01:00:00Z",
+              "source": "communications",
+              "source_id": "566b0986-5f23-5eef-b4e4-60e760f00ee5"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-09-23T01:00:00Z",
+              "source": "communications",
+              "source_id": "1ddb9d65-d775-5516-b699-86d0764b729a"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-09-25T01:00:00Z",
+              "source": "communications",
+              "source_id": "950ea85d-bb8d-54a3-8c11-13d101cca2e6"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-09-30T01:00:00Z",
+              "source": "communications",
+              "source_id": "a2db69a5-0b2e-5ab3-9663-01651d4bf06f"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-10-02T01:00:00Z",
+              "source": "communications",
+              "source_id": "52a9c7fa-926a-58f3-980f-9878b94f3f92"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-10-07T01:00:00Z",
+              "source": "communications",
+              "source_id": "7d57bdc6-2e09-5fe5-9d19-e2200bc082d0"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-10-09T01:00:00Z",
+              "source": "communications",
+              "source_id": "a4155fee-2421-5160-8a26-20f2251d3914"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-10-14T01:00:00Z",
+              "source": "communications",
+              "source_id": "ea54ef60-ccab-52d1-a2a5-81b1902212a2"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-10-16T01:00:00Z",
+              "source": "communications",
+              "source_id": "1f98423b-4dff-5401-b057-234982609f34"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-10-21T01:00:00Z",
+              "source": "communications",
+              "source_id": "413a486c-0f22-599b-bdb1-52210cc3a108"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-10-23T01:00:00Z",
+              "source": "communications",
+              "source_id": "5c26e60f-9041-5ad3-ba6d-c3d19b7b5b82"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-10-28T01:00:00Z",
+              "source": "communications",
+              "source_id": "367c5dbb-23a5-5c50-b180-53a13972f545"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-10-30T01:00:00Z",
+              "source": "communications",
+              "source_id": "86e9feae-3db0-5f21-adcb-7ec7943b1cdf"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-11-04T01:00:00Z",
+              "source": "communications",
+              "source_id": "d5a8f279-d4e7-5ffd-b863-08d0e3b7d62f"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-11-05T01:00:00Z",
+              "source": "communications",
+              "source_id": "ace07b20-d3c9-533d-a39f-8b38bc17766b"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-11-08T01:00:00Z",
+              "source": "communications",
+              "source_id": "13594415-baa8-5637-914d-a4a02fbf1a02"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-11-09T01:00:00Z",
+              "source": "communications",
+              "source_id": "4705b522-37c4-523a-a398-e89ef4e46325"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-11-11T01:00:00Z",
+              "source": "communications",
+              "source_id": "671d50ea-51e7-5525-916a-cbebcd70c76e"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-11-12T01:00:00Z",
+              "source": "communications",
+              "source_id": "db6a0ae8-0ca4-57e8-98e6-9dee07939764"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-11-15T01:00:00Z",
+              "source": "communications",
+              "source_id": "abc6f740-d06e-5e43-b306-fabe88387474"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-11-16T01:00:00Z",
+              "source": "communications",
+              "source_id": "35333942-c705-569f-af47-258fbfcceaf4"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-11-18T01:00:00Z",
+              "source": "communications",
+              "source_id": "5ba74922-7f1b-52b5-8d61-ac9489db1ef4"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-11-19T01:00:00Z",
+              "source": "communications",
+              "source_id": "899d45b0-eaca-5457-819f-cc799432d07f"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-11-22T01:00:00Z",
+              "source": "communications",
+              "source_id": "f7798a0b-0ce6-5f43-9abd-278a77fa9d68"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-11-23T01:00:00Z",
+              "source": "communications",
+              "source_id": "4b69629a-c75b-5ee2-a577-42b70fee493e"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-11-25T01:00:00Z",
+              "source": "communications",
+              "source_id": "3eb7b689-49e9-5ff4-a363-70e93be26f39"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-11-26T01:00:00Z",
+              "source": "communications",
+              "source_id": "b2beb6ad-d08d-5b9c-9070-1b7ccbc494e2"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-11-29T01:00:00Z",
+              "source": "communications",
+              "source_id": "20d528c5-2dc8-58ba-94a0-d2066c70d707"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-11-30T01:00:00Z",
+              "source": "communications",
+              "source_id": "615d2479-903f-55ae-a631-b5416183d8f6"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-12-02T01:00:00Z",
+              "source": "communications",
+              "source_id": "9295f56e-c613-540c-9561-999e21ed59f4"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-12-03T01:00:00Z",
+              "source": "communications",
+              "source_id": "3a1256a9-4e54-5fe4-9580-e6c2670a2075"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-12-06T01:00:00Z",
+              "source": "communications",
+              "source_id": "c5cbc2c8-c27a-5ccf-9c44-e82e1a425100"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-12-07T01:00:00Z",
+              "source": "communications",
+              "source_id": "47cb9eec-0bdd-55f6-bc9e-ef3319b58fd8"
+            }
+          ],
+          "metric_name": "meeting_cadence_shift_days",
+          "unit": "days_delta",
+          "value": -2.5
+        },
+        "case_count": 0,
+        "case_subjects": [],
+        "latency": {
+          "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+          "as_of": "2026-12-08",
+          "detail": "trailing 21d mean reply latency 1.2h vs prior window 2.0h",
+          "evidence": [
+            {
+              "field": "response_time_hours",
+              "observed_at": "2026-10-29T02:00:00Z",
+              "source": "communications",
+              "source_id": "02367460-4908-51f0-9a05-a5fef158390d"
+            },
+            {
+              "field": "response_time_hours",
+              "observed_at": "2026-11-18T01:00:00Z",
+              "source": "communications",
+              "source_id": "81c9f8ed-3224-5873-8f17-754b2a7bede2"
+            },
+            {
+              "field": "response_time_hours",
+              "observed_at": "2026-12-03T01:00:00Z",
+              "source": "communications",
+              "source_id": "8594dafe-a087-5150-8d09-7db573f97d7d"
+            },
+            {
+              "field": "response_time_hours",
+              "observed_at": "2026-11-23T02:00:00Z",
+              "source": "communications",
+              "source_id": "6f28178d-4a90-54c8-84ea-1874b0bf5240"
+            },
+            {
+              "field": "response_time_hours",
+              "observed_at": "2026-12-06T01:00:00Z",
+              "source": "communications",
+              "source_id": "feab872f-b47d-5dec-b61d-ce866940e564"
+            }
+          ],
+          "metric_name": "reply_latency_trend_hours",
+          "unit": "hours_delta",
+          "value": -0.8
+        },
+        "relationship_strengths": [
+          {
+            "contact_id": "34212b95-2e23-590a-b94f-2775cdb9d58e",
+            "multi_thread_depth": 2,
+            "strength": "strong"
+          },
+          {
+            "contact_id": "b2d52039-fa63-5981-8b9b-e08ee50e8a14",
+            "multi_thread_depth": 1,
+            "strength": "strong"
+          }
+        ],
+        "tickets": {
+          "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+          "as_of": "2026-12-08",
+          "detail": "0 case(s) opened in trailing 90d as of 2026-12-08",
+          "evidence": [],
+          "metric_name": "ticket_frequency_window",
+          "unit": "cases_opened",
+          "value": 0.0
+        },
+        "width": {
+          "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+          "as_of": "2026-12-08",
+          "detail": "2 active stakeholder relationship(s) as of 2026-12-08",
+          "evidence": [
+            {
+              "field": "relationship_type",
+              "observed_at": "2026-12-03T01:00:00Z",
+              "source": "communications",
+              "source_id": "b2d52039-fa63-5981-8b9b-e08ee50e8a14"
+            },
+            {
+              "field": "relationship_type",
+              "observed_at": "2026-12-06T01:00:00Z",
+              "source": "communications",
+              "source_id": "34212b95-2e23-590a-b94f-2775cdb9d58e"
+            }
+          ],
+          "metric_name": "thread_participation_width",
+          "unit": "distinct_contacts",
+          "value": 2.0
+        }
+      },
+      "20": {
+        "cadence": {
+          "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+          "as_of": "2026-07-11",
+          "detail": "insufficient confirmed-event history in one or both windows",
+          "evidence": [],
+          "metric_name": "meeting_cadence_shift_days",
+          "unit": "days_delta",
+          "value": null
+        },
+        "case_count": 0,
+        "case_subjects": [],
+        "latency": {
+          "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+          "as_of": "2026-07-11",
+          "detail": "insufficient reply history in one or both windows",
+          "evidence": [
+            {
+              "field": "response_time_hours",
+              "observed_at": "2026-06-23T05:00:00Z",
+              "source": "communications",
+              "source_id": "2d1275fe-510f-5ba4-89f5-6ac86e03ad01"
+            },
+            {
+              "field": "response_time_hours",
+              "observed_at": "2026-07-10T02:00:00Z",
+              "source": "communications",
+              "source_id": "d41a8fbe-80b5-5829-ad4f-bf50ca5cb71b"
+            },
+            {
+              "field": "response_time_hours",
+              "observed_at": "2026-07-01T06:00:00Z",
+              "source": "communications",
+              "source_id": "107cd603-43a2-5a6c-8a77-daccf299cc70"
+            },
+            {
+              "field": "response_time_hours",
+              "observed_at": "2026-07-08T03:00:00Z",
+              "source": "communications",
+              "source_id": "a607eccf-126b-52b7-aa85-4c73faf6d59f"
+            }
+          ],
+          "metric_name": "reply_latency_trend_hours",
+          "unit": "hours_delta",
+          "value": null
+        },
+        "relationship_strengths": [
+          {
+            "contact_id": "34212b95-2e23-590a-b94f-2775cdb9d58e",
+            "multi_thread_depth": 2,
+            "strength": "strong"
+          },
+          {
+            "contact_id": "b2d52039-fa63-5981-8b9b-e08ee50e8a14",
+            "multi_thread_depth": 1,
+            "strength": "strong"
+          }
+        ],
+        "tickets": {
+          "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+          "as_of": "2026-07-11",
+          "detail": "0 case(s) opened in trailing 90d as of 2026-07-11",
+          "evidence": [],
+          "metric_name": "ticket_frequency_window",
+          "unit": "cases_opened",
+          "value": 0.0
+        },
+        "width": {
+          "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+          "as_of": "2026-07-11",
+          "detail": "2 active stakeholder relationship(s) as of 2026-07-11",
+          "evidence": [
+            {
+              "field": "relationship_type",
+              "observed_at": "2026-07-10T02:00:00Z",
+              "source": "communications",
+              "source_id": "b2d52039-fa63-5981-8b9b-e08ee50e8a14"
+            },
+            {
+              "field": "relationship_type",
+              "observed_at": "2026-07-08T03:00:00Z",
+              "source": "communications",
+              "source_id": "34212b95-2e23-590a-b94f-2775cdb9d58e"
+            }
+          ],
+          "metric_name": "thread_participation_width",
+          "unit": "distinct_contacts",
+          "value": 2.0
+        }
+      },
+      "280": {
+        "cadence": {
+          "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+          "as_of": "2027-03-28",
+          "detail": "trailing 30d median gap 1.0d vs prior window 1.0d",
+          "evidence": [
+            {
+              "field": "status",
+              "observed_at": "2026-06-24T01:00:00Z",
+              "source": "communications",
+              "source_id": "c87502b6-2b70-51be-9757-e1decf912077"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-07-01T01:00:00Z",
+              "source": "communications",
+              "source_id": "638cdf80-dd15-522a-b9db-d96955484b2a"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-07-03T01:00:00Z",
+              "source": "communications",
+              "source_id": "f4e6149c-47b6-5833-a23d-f386fbac1303"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-07-08T01:00:00Z",
+              "source": "communications",
+              "source_id": "43df0caf-6359-5e65-8d00-aef31a121879"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-07-10T01:00:00Z",
+              "source": "communications",
+              "source_id": "043fa77e-460c-58c5-83ac-671b2ee9d4f0"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-07-15T01:00:00Z",
+              "source": "communications",
+              "source_id": "8f62a2a8-8cf8-5313-a734-bb4f6ad62aff"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-07-17T01:00:00Z",
+              "source": "communications",
+              "source_id": "e90b5a23-41ad-5c9c-9c0e-e5cfcede5182"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-07-22T01:00:00Z",
+              "source": "communications",
+              "source_id": "fb6ea0c6-01fd-5e84-9620-269a12e2f78c"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-07-24T01:00:00Z",
+              "source": "communications",
+              "source_id": "59312d69-3b62-59bc-877c-34a7d3a671ba"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-07-29T01:00:00Z",
+              "source": "communications",
+              "source_id": "479a56a8-a16f-567c-a50c-e2669a7b3d7a"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-07-31T01:00:00Z",
+              "source": "communications",
+              "source_id": "2de89892-58b5-5079-a84a-4b1d79f71dd0"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-08-05T01:00:00Z",
+              "source": "communications",
+              "source_id": "b5e20251-e8a1-5f53-bac1-bd1e596e4848"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-08-07T01:00:00Z",
+              "source": "communications",
+              "source_id": "78e23f83-4558-5319-8165-6da50dec5bf3"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-08-12T01:00:00Z",
+              "source": "communications",
+              "source_id": "d13d6661-af94-54d8-92d9-43ad5786cf81"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-08-14T01:00:00Z",
+              "source": "communications",
+              "source_id": "67b40458-1432-5ce8-9acd-9f0f76dcfb56"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-08-19T01:00:00Z",
+              "source": "communications",
+              "source_id": "4574f513-21e6-5e76-8968-0dd8d562ddde"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-08-21T01:00:00Z",
+              "source": "communications",
+              "source_id": "ab51f6fd-8c4e-5ee6-8c89-624b5ba44cb3"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-08-26T01:00:00Z",
+              "source": "communications",
+              "source_id": "a72f2f3e-cec0-574b-850f-6640925eea52"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-08-28T01:00:00Z",
+              "source": "communications",
+              "source_id": "97992250-bf42-549c-96b5-3f617defbe34"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-09-02T01:00:00Z",
+              "source": "communications",
+              "source_id": "bfafd5ba-39d4-594c-9fd0-17be7e02f5fa"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-09-04T01:00:00Z",
+              "source": "communications",
+              "source_id": "2dfd47ff-7b7c-544e-9db2-dad7644fc849"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-09-09T01:00:00Z",
+              "source": "communications",
+              "source_id": "4f7b76d2-f53d-5fe3-816e-b03f3f3941a3"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-09-11T01:00:00Z",
+              "source": "communications",
+              "source_id": "3c0884e6-fcdb-582c-aa51-6f0b84791ac3"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-09-16T01:00:00Z",
+              "source": "communications",
+              "source_id": "4530fbc4-d76a-509a-ace8-79e1f99a3458"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-09-18T01:00:00Z",
+              "source": "communications",
+              "source_id": "566b0986-5f23-5eef-b4e4-60e760f00ee5"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-09-23T01:00:00Z",
+              "source": "communications",
+              "source_id": "1ddb9d65-d775-5516-b699-86d0764b729a"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-09-25T01:00:00Z",
+              "source": "communications",
+              "source_id": "950ea85d-bb8d-54a3-8c11-13d101cca2e6"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-09-30T01:00:00Z",
+              "source": "communications",
+              "source_id": "a2db69a5-0b2e-5ab3-9663-01651d4bf06f"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-10-02T01:00:00Z",
+              "source": "communications",
+              "source_id": "52a9c7fa-926a-58f3-980f-9878b94f3f92"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-10-07T01:00:00Z",
+              "source": "communications",
+              "source_id": "7d57bdc6-2e09-5fe5-9d19-e2200bc082d0"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-10-09T01:00:00Z",
+              "source": "communications",
+              "source_id": "a4155fee-2421-5160-8a26-20f2251d3914"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-10-14T01:00:00Z",
+              "source": "communications",
+              "source_id": "ea54ef60-ccab-52d1-a2a5-81b1902212a2"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-10-16T01:00:00Z",
+              "source": "communications",
+              "source_id": "1f98423b-4dff-5401-b057-234982609f34"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-10-21T01:00:00Z",
+              "source": "communications",
+              "source_id": "413a486c-0f22-599b-bdb1-52210cc3a108"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-10-23T01:00:00Z",
+              "source": "communications",
+              "source_id": "5c26e60f-9041-5ad3-ba6d-c3d19b7b5b82"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-10-28T01:00:00Z",
+              "source": "communications",
+              "source_id": "367c5dbb-23a5-5c50-b180-53a13972f545"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-10-30T01:00:00Z",
+              "source": "communications",
+              "source_id": "86e9feae-3db0-5f21-adcb-7ec7943b1cdf"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-11-04T01:00:00Z",
+              "source": "communications",
+              "source_id": "d5a8f279-d4e7-5ffd-b863-08d0e3b7d62f"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-11-05T01:00:00Z",
+              "source": "communications",
+              "source_id": "ace07b20-d3c9-533d-a39f-8b38bc17766b"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-11-08T01:00:00Z",
+              "source": "communications",
+              "source_id": "13594415-baa8-5637-914d-a4a02fbf1a02"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-11-09T01:00:00Z",
+              "source": "communications",
+              "source_id": "4705b522-37c4-523a-a398-e89ef4e46325"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-11-11T01:00:00Z",
+              "source": "communications",
+              "source_id": "671d50ea-51e7-5525-916a-cbebcd70c76e"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-11-12T01:00:00Z",
+              "source": "communications",
+              "source_id": "db6a0ae8-0ca4-57e8-98e6-9dee07939764"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-11-15T01:00:00Z",
+              "source": "communications",
+              "source_id": "abc6f740-d06e-5e43-b306-fabe88387474"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-11-16T01:00:00Z",
+              "source": "communications",
+              "source_id": "35333942-c705-569f-af47-258fbfcceaf4"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-11-18T01:00:00Z",
+              "source": "communications",
+              "source_id": "5ba74922-7f1b-52b5-8d61-ac9489db1ef4"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-11-19T01:00:00Z",
+              "source": "communications",
+              "source_id": "899d45b0-eaca-5457-819f-cc799432d07f"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-11-22T01:00:00Z",
+              "source": "communications",
+              "source_id": "f7798a0b-0ce6-5f43-9abd-278a77fa9d68"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-11-23T01:00:00Z",
+              "source": "communications",
+              "source_id": "4b69629a-c75b-5ee2-a577-42b70fee493e"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-11-25T01:00:00Z",
+              "source": "communications",
+              "source_id": "3eb7b689-49e9-5ff4-a363-70e93be26f39"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-11-26T01:00:00Z",
+              "source": "communications",
+              "source_id": "b2beb6ad-d08d-5b9c-9070-1b7ccbc494e2"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-11-29T01:00:00Z",
+              "source": "communications",
+              "source_id": "20d528c5-2dc8-58ba-94a0-d2066c70d707"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-11-30T01:00:00Z",
+              "source": "communications",
+              "source_id": "615d2479-903f-55ae-a631-b5416183d8f6"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-12-02T01:00:00Z",
+              "source": "communications",
+              "source_id": "9295f56e-c613-540c-9561-999e21ed59f4"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-12-03T01:00:00Z",
+              "source": "communications",
+              "source_id": "3a1256a9-4e54-5fe4-9580-e6c2670a2075"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-12-06T01:00:00Z",
+              "source": "communications",
+              "source_id": "c5cbc2c8-c27a-5ccf-9c44-e82e1a425100"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-12-07T01:00:00Z",
+              "source": "communications",
+              "source_id": "47cb9eec-0bdd-55f6-bc9e-ef3319b58fd8"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-12-09T01:00:00Z",
+              "source": "communications",
+              "source_id": "56068a4b-e668-5ae2-b9d0-4687a38b4c82"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-12-10T01:00:00Z",
+              "source": "communications",
+              "source_id": "d5c05257-9bae-5703-bd29-3e0445d13e24"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-12-13T01:00:00Z",
+              "source": "communications",
+              "source_id": "e668abff-1a46-580a-9268-e0881f92f5c5"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-12-14T01:00:00Z",
+              "source": "communications",
+              "source_id": "60e53f4a-5677-534c-a858-d95e27b67dcc"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-12-16T01:00:00Z",
+              "source": "communications",
+              "source_id": "93ae529c-5417-51c1-86d7-7e932a1369ac"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-12-17T01:00:00Z",
+              "source": "communications",
+              "source_id": "aa3396b8-1fba-5684-b2ba-1f62c9073e6b"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-12-20T01:00:00Z",
+              "source": "communications",
+              "source_id": "dd9d285b-f940-5a7a-8ee6-7c0806b5a4a8"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-12-21T01:00:00Z",
+              "source": "communications",
+              "source_id": "432667d1-d420-57a3-a0fc-6ac09ef61d8c"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-12-23T01:00:00Z",
+              "source": "communications",
+              "source_id": "e0eaa510-a8d8-5a8f-9322-ced41bac8ffb"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-12-24T01:00:00Z",
+              "source": "communications",
+              "source_id": "872333aa-f713-51b1-a48d-9e03c40eeb0c"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-12-27T01:00:00Z",
+              "source": "communications",
+              "source_id": "80758cf7-4d3a-5c68-93b7-1418b28d1ce4"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-12-28T01:00:00Z",
+              "source": "communications",
+              "source_id": "2b0ffff2-29ab-5866-96f9-20fc8eb2fc8b"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-12-30T01:00:00Z",
+              "source": "communications",
+              "source_id": "e2804752-ad08-5e37-9c50-e78a6446f516"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-12-31T01:00:00Z",
+              "source": "communications",
+              "source_id": "ed5c8dd5-7d84-54b3-8f69-c2e3756599a1"
+            },
+            {
+              "field": "status",
+              "observed_at": "2027-01-03T01:00:00Z",
+              "source": "communications",
+              "source_id": "28ab5e5d-4c26-57ee-8d40-2dd452c254c2"
+            },
+            {
+              "field": "status",
+              "observed_at": "2027-01-04T01:00:00Z",
+              "source": "communications",
+              "source_id": "d39846e8-3323-5520-8406-8ef0a4986980"
+            },
+            {
+              "field": "status",
+              "observed_at": "2027-01-06T01:00:00Z",
+              "source": "communications",
+              "source_id": "fd2c97b0-1309-521a-a78c-b310c984839d"
+            },
+            {
+              "field": "status",
+              "observed_at": "2027-01-07T01:00:00Z",
+              "source": "communications",
+              "source_id": "8c0045f7-cf9a-5644-bd4e-f8365a4dddbe"
+            },
+            {
+              "field": "status",
+              "observed_at": "2027-01-27T01:00:00Z",
+              "source": "communications",
+              "source_id": "baaa7a35-7c0f-505d-96db-bc352b45951f"
+            },
+            {
+              "field": "status",
+              "observed_at": "2027-01-28T01:00:00Z",
+              "source": "communications",
+              "source_id": "2a5f283f-d7ba-5e2b-8a6f-a18dca130b20"
+            },
+            {
+              "field": "status",
+              "observed_at": "2027-02-03T01:00:00Z",
+              "source": "communications",
+              "source_id": "0af9b6dc-2edb-541c-a6ce-642425ea5541"
+            },
+            {
+              "field": "status",
+              "observed_at": "2027-02-04T01:00:00Z",
+              "source": "communications",
+              "source_id": "49ba982d-b5a1-54f6-8f66-1c88ea83cfc6"
+            },
+            {
+              "field": "status",
+              "observed_at": "2027-02-10T01:00:00Z",
+              "source": "communications",
+              "source_id": "1f4542d9-1a8f-5c72-b1e9-36805f383d90"
+            },
+            {
+              "field": "status",
+              "observed_at": "2027-02-11T01:00:00Z",
+              "source": "communications",
+              "source_id": "3f95eaa7-c30b-5f67-9555-a7effe99cefc"
+            },
+            {
+              "field": "status",
+              "observed_at": "2027-02-17T01:00:00Z",
+              "source": "communications",
+              "source_id": "3830898d-7a55-547b-8f31-fe6488aeabb5"
+            },
+            {
+              "field": "status",
+              "observed_at": "2027-02-18T01:00:00Z",
+              "source": "communications",
+              "source_id": "0d800ecb-d552-5790-bb40-315876805869"
+            },
+            {
+              "field": "status",
+              "observed_at": "2027-02-24T01:00:00Z",
+              "source": "communications",
+              "source_id": "bca2e2c7-e0f3-541f-8351-f0c04ac94c8d"
+            },
+            {
+              "field": "status",
+              "observed_at": "2027-02-25T01:00:00Z",
+              "source": "communications",
+              "source_id": "1b6d835c-b584-5399-82d1-045c348766d5"
+            },
+            {
+              "field": "status",
+              "observed_at": "2027-03-03T01:00:00Z",
+              "source": "communications",
+              "source_id": "d56e3715-6db1-5c4e-ade5-3054d421759e"
+            },
+            {
+              "field": "status",
+              "observed_at": "2027-03-04T01:00:00Z",
+              "source": "communications",
+              "source_id": "1e059c1f-9639-5921-abf6-150c9713eb51"
+            },
+            {
+              "field": "status",
+              "observed_at": "2027-03-10T01:00:00Z",
+              "source": "communications",
+              "source_id": "e512c9cf-ab2e-5f05-9f0c-5992593feb2e"
+            },
+            {
+              "field": "status",
+              "observed_at": "2027-03-11T01:00:00Z",
+              "source": "communications",
+              "source_id": "fb65c622-0e2e-57cb-a233-cad7a12f06bf"
+            },
+            {
+              "field": "status",
+              "observed_at": "2027-03-17T01:00:00Z",
+              "source": "communications",
+              "source_id": "872a435b-0874-5c19-8a70-2bd48b1358fc"
+            },
+            {
+              "field": "status",
+              "observed_at": "2027-03-18T01:00:00Z",
+              "source": "communications",
+              "source_id": "68217eea-b0df-5317-8040-f24e71dc17f3"
+            },
+            {
+              "field": "status",
+              "observed_at": "2027-03-20T01:00:00Z",
+              "source": "communications",
+              "source_id": "0f38f984-ea24-5838-b2d3-977ab815c03b"
+            },
+            {
+              "field": "status",
+              "observed_at": "2027-03-21T01:00:00Z",
+              "source": "communications",
+              "source_id": "6203aee0-f53c-5d83-96bb-8813ef983627"
+            },
+            {
+              "field": "status",
+              "observed_at": "2027-03-24T01:00:00Z",
+              "source": "communications",
+              "source_id": "039579f9-2e73-5e63-a4a3-32754e011344"
+            },
+            {
+              "field": "status",
+              "observed_at": "2027-03-25T01:00:00Z",
+              "source": "communications",
+              "source_id": "24bff14d-fc6f-5456-b6d7-a7104f66287b"
+            },
+            {
+              "field": "status",
+              "observed_at": "2027-03-27T01:00:00Z",
+              "source": "communications",
+              "source_id": "330288a7-a9e4-555e-88b5-1da6b65b5e67"
+            },
+            {
+              "field": "status",
+              "observed_at": "2027-03-28T01:00:00Z",
+              "source": "communications",
+              "source_id": "2dbc6505-bac6-5ab5-ba29-a159752c59da"
+            }
+          ],
+          "metric_name": "meeting_cadence_shift_days",
+          "unit": "days_delta",
+          "value": 0.0
+        },
+        "case_count": 0,
+        "case_subjects": [],
+        "latency": {
+          "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+          "as_of": "2027-03-28",
+          "detail": "insufficient reply history in one or both windows",
+          "evidence": [
+            {
+              "field": "response_time_hours",
+              "observed_at": "2027-03-20T03:00:00Z",
+              "source": "communications",
+              "source_id": "6db3a3bf-e469-5c87-b60f-50f34a2b84fb"
+            },
+            {
+              "field": "response_time_hours",
+              "observed_at": "2027-03-22T02:00:00Z",
+              "source": "communications",
+              "source_id": "3d18884e-5991-51ec-9db2-99e2c77946e8"
+            }
+          ],
+          "metric_name": "reply_latency_trend_hours",
+          "unit": "hours_delta",
+          "value": null
+        },
+        "relationship_strengths": [
+          {
+            "contact_id": "34212b95-2e23-590a-b94f-2775cdb9d58e",
+            "multi_thread_depth": 2,
+            "strength": "strong"
+          },
+          {
+            "contact_id": "b2d52039-fa63-5981-8b9b-e08ee50e8a14",
+            "multi_thread_depth": 1,
+            "strength": "strong"
+          }
+        ],
+        "tickets": {
+          "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+          "as_of": "2027-03-28",
+          "detail": "0 case(s) opened in trailing 90d as of 2027-03-28",
+          "evidence": [],
+          "metric_name": "ticket_frequency_window",
+          "unit": "cases_opened",
+          "value": 0.0
+        },
+        "width": {
+          "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+          "as_of": "2027-03-28",
+          "detail": "2 active stakeholder relationship(s) as of 2027-03-28",
+          "evidence": [
+            {
+              "field": "relationship_type",
+              "observed_at": "2027-03-20T03:00:00Z",
+              "source": "communications",
+              "source_id": "b2d52039-fa63-5981-8b9b-e08ee50e8a14"
+            },
+            {
+              "field": "relationship_type",
+              "observed_at": "2027-03-22T02:00:00Z",
+              "source": "communications",
+              "source_id": "34212b95-2e23-590a-b94f-2775cdb9d58e"
+            }
+          ],
+          "metric_name": "thread_participation_width",
+          "unit": "distinct_contacts",
+          "value": 2.0
+        }
+      }
+    },
+    "pinehill-transport": {
+      "20": {
+        "cadence": {
+          "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
+          "as_of": "2026-07-11",
+          "detail": "insufficient confirmed-event history in one or both windows",
+          "evidence": [],
+          "metric_name": "meeting_cadence_shift_days",
+          "unit": "days_delta",
+          "value": null
+        },
+        "case_count": 1,
+        "case_subjects": [
+          "Integration with legacy dispatch system failing"
+        ],
+        "latency": {
+          "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
+          "as_of": "2026-07-11",
+          "detail": "insufficient reply history in one or both windows",
+          "evidence": [
+            {
+              "field": "response_time_hours",
+              "observed_at": "2026-06-22T05:00:00Z",
+              "source": "communications",
+              "source_id": "8cc10c40-f40f-577b-8c39-eca16f1ec542"
+            },
+            {
+              "field": "response_time_hours",
+              "observed_at": "2026-06-29T06:00:00Z",
+              "source": "communications",
+              "source_id": "6f4261e6-47bb-5bbd-8641-09ede170369b"
+            }
+          ],
+          "metric_name": "reply_latency_trend_hours",
+          "unit": "hours_delta",
+          "value": null
+        },
+        "relationship_strengths": [
+          {
+            "contact_id": "fdd4645a-e0b6-53d8-ba03-249f260574d8",
+            "multi_thread_depth": 1,
+            "strength": "strong"
+          }
+        ],
+        "rocketlane": {
+          "activation_gaps": {
+            "Kickoff": false,
+            "Legacy Dispatch Integration": false
+          }
+        },
+        "tickets": {
+          "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
+          "as_of": "2026-07-11",
+          "detail": "1 case(s) opened in trailing 90d as of 2026-07-11",
+          "evidence": [
+            {
+              "field": "created_at",
+              "observed_at": "2026-06-21T00:00:00Z",
+              "source": "crm",
+              "source_id": "7b7fe426-01f6-529e-a65b-3240e6ddc058"
+            }
+          ],
+          "metric_name": "ticket_frequency_window",
+          "unit": "cases_opened",
+          "value": 1.0
+        },
+        "width": {
+          "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
+          "as_of": "2026-07-11",
+          "detail": "1 active stakeholder relationship(s) as of 2026-07-11",
+          "evidence": [
+            {
+              "field": "relationship_type",
+              "observed_at": "2026-06-29T06:00:00Z",
+              "source": "communications",
+              "source_id": "fdd4645a-e0b6-53d8-ba03-249f260574d8"
+            }
+          ],
+          "metric_name": "thread_participation_width",
+          "unit": "distinct_contacts",
+          "value": 1.0
+        }
+      },
+      "310": {
+        "cadence": {
+          "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
+          "as_of": "2027-04-27",
+          "detail": "trailing 30d median gap 7.0d vs prior window 20.0d",
+          "evidence": [
+            {
+              "field": "status",
+              "observed_at": "2026-06-22T01:00:00Z",
+              "source": "communications",
+              "source_id": "400b618e-20d9-5355-ba7a-4b492381ad8b"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-06-29T01:00:00Z",
+              "source": "communications",
+              "source_id": "ab6df1c1-6b5b-5e2d-8ae4-f977246bf9cc"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-07-06T01:00:00Z",
+              "source": "communications",
+              "source_id": "db51b2dd-b16a-511f-9774-21b1fdc5b05a"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-07-13T01:00:00Z",
+              "source": "communications",
+              "source_id": "a79d8ae0-22fd-544f-8fac-25a7012616b1"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-07-20T01:00:00Z",
+              "source": "communications",
+              "source_id": "e2daff42-08aa-58b4-b927-425c691d811c"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-07-27T01:00:00Z",
+              "source": "communications",
+              "source_id": "f055bc5a-7722-5a33-809e-9fe0519071e2"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-08-17T01:00:00Z",
+              "source": "communications",
+              "source_id": "10924d48-92b6-5635-b721-9bc3d8f07e18"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-09-14T01:00:00Z",
+              "source": "communications",
+              "source_id": "cc32ae11-b9d5-59f9-bc89-80efa436d491"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-09-28T01:00:00Z",
+              "source": "communications",
+              "source_id": "c50d5629-8e47-526a-bb12-02103de9a927"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-10-29T01:00:00Z",
+              "source": "communications",
+              "source_id": "eeb49c1b-d7ec-52a8-aeaf-e1ab4b864f29"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-11-28T01:00:00Z",
+              "source": "communications",
+              "source_id": "b3992c25-e0a4-58a2-a0d4-bb76f3f0eab2"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-12-28T01:00:00Z",
+              "source": "communications",
+              "source_id": "d809aaa6-31c7-5b82-a6c0-3e9489a6580c"
+            },
+            {
+              "field": "status",
+              "observed_at": "2027-01-27T01:00:00Z",
+              "source": "communications",
+              "source_id": "ee83a475-d453-5748-ad79-fb038eb1d11e"
+            },
+            {
+              "field": "status",
+              "observed_at": "2027-02-26T01:00:00Z",
+              "source": "communications",
+              "source_id": "755940d6-d1e3-5a9b-ac4f-c6c870c53114"
+            },
+            {
+              "field": "status",
+              "observed_at": "2027-03-18T01:00:00Z",
+              "source": "communications",
+              "source_id": "7837d4b4-4f3c-54de-9edd-549a79441f2d"
+            },
+            {
+              "field": "status",
+              "observed_at": "2027-04-06T01:00:00Z",
+              "source": "communications",
+              "source_id": "987412cf-2be8-56a7-9c39-4cab588f1001"
+            },
+            {
+              "field": "status",
+              "observed_at": "2027-04-13T01:00:00Z",
+              "source": "communications",
+              "source_id": "995a605e-b924-52f4-bcaa-ca924d9e0424"
+            },
+            {
+              "field": "status",
+              "observed_at": "2027-04-20T01:00:00Z",
+              "source": "communications",
+              "source_id": "b4f7456a-91ee-5f36-a9c6-0f1132207fb3"
+            },
+            {
+              "field": "status",
+              "observed_at": "2027-04-27T01:00:00Z",
+              "source": "communications",
+              "source_id": "dc6990e8-445e-55c8-ae25-0bcd3c6721b2"
+            }
+          ],
+          "metric_name": "meeting_cadence_shift_days",
+          "unit": "days_delta",
+          "value": -13.0
+        },
+        "case_count": 3,
+        "case_subjects": [
+          "Integration timeout errors persist",
+          "Integration with legacy dispatch system failing",
+          "Legacy dispatch connector still dropping events"
+        ],
+        "latency": {
+          "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
+          "as_of": "2027-04-27",
+          "detail": "trailing 21d mean reply latency 16.0h vs prior window 6.0h",
+          "evidence": [
+            {
+              "field": "response_time_hours",
+              "observed_at": "2027-03-23T06:00:00Z",
+              "source": "communications",
+              "source_id": "1f1bcbef-cd88-5791-936f-eaf20bea45b3"
+            },
+            {
+              "field": "response_time_hours",
+              "observed_at": "2027-04-12T05:00:00Z",
+              "source": "communications",
+              "source_id": "b7180170-5c4e-5bc4-8d52-fa0a3cb55b9d"
+            },
+            {
+              "field": "response_time_hours",
+              "observed_at": "2027-04-23T03:00:00Z",
+              "source": "communications",
+              "source_id": "103ba1af-53ef-51d4-81a3-8a3674843177"
+            }
+          ],
+          "metric_name": "reply_latency_trend_hours",
+          "unit": "hours_delta",
+          "value": 10.0
+        },
+        "relationship_strengths": [
+          {
+            "contact_id": "fdd4645a-e0b6-53d8-ba03-249f260574d8",
+            "multi_thread_depth": 1,
+            "strength": "strong"
+          }
+        ],
+        "rocketlane": {
+          "activation_gaps": {
+            "Kickoff": false,
+            "Legacy Dispatch Integration": false
+          }
+        },
+        "tickets": {
+          "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
+          "as_of": "2027-04-27",
+          "detail": "0 case(s) opened in trailing 90d as of 2027-04-27",
+          "evidence": [],
+          "metric_name": "ticket_frequency_window",
+          "unit": "cases_opened",
+          "value": 0.0
+        },
+        "width": {
+          "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
+          "as_of": "2027-04-27",
+          "detail": "1 active stakeholder relationship(s) as of 2027-04-27",
+          "evidence": [
+            {
+              "field": "relationship_type",
+              "observed_at": "2027-04-23T03:00:00Z",
+              "source": "communications",
+              "source_id": "fdd4645a-e0b6-53d8-ba03-249f260574d8"
+            }
+          ],
+          "metric_name": "thread_participation_width",
+          "unit": "distinct_contacts",
+          "value": 1.0
+        }
+      },
+      "50": {
+        "cadence": {
+          "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
+          "as_of": "2026-08-10",
+          "detail": "trailing 30d median gap 7.0d vs prior window 7.0d",
+          "evidence": [
+            {
+              "field": "status",
+              "observed_at": "2026-06-22T01:00:00Z",
+              "source": "communications",
+              "source_id": "400b618e-20d9-5355-ba7a-4b492381ad8b"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-06-29T01:00:00Z",
+              "source": "communications",
+              "source_id": "ab6df1c1-6b5b-5e2d-8ae4-f977246bf9cc"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-07-06T01:00:00Z",
+              "source": "communications",
+              "source_id": "db51b2dd-b16a-511f-9774-21b1fdc5b05a"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-07-13T01:00:00Z",
+              "source": "communications",
+              "source_id": "a79d8ae0-22fd-544f-8fac-25a7012616b1"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-07-20T01:00:00Z",
+              "source": "communications",
+              "source_id": "e2daff42-08aa-58b4-b927-425c691d811c"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-07-27T01:00:00Z",
+              "source": "communications",
+              "source_id": "f055bc5a-7722-5a33-809e-9fe0519071e2"
+            }
+          ],
+          "metric_name": "meeting_cadence_shift_days",
+          "unit": "days_delta",
+          "value": 0.0
+        },
+        "case_count": 2,
+        "case_subjects": [
+          "Integration timeout errors persist",
+          "Integration with legacy dispatch system failing"
+        ],
+        "latency": {
+          "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
+          "as_of": "2026-08-10",
+          "detail": "trailing 21d mean reply latency 50.0h vs prior window 18.0h",
+          "evidence": [
+            {
+              "field": "response_time_hours",
+              "observed_at": "2026-06-29T06:00:00Z",
+              "source": "communications",
+              "source_id": "6f4261e6-47bb-5bbd-8641-09ede170369b"
+            },
+            {
+              "field": "response_time_hours",
+              "observed_at": "2026-07-14T06:00:00Z",
+              "source": "communications",
+              "source_id": "a6e5f561-81bd-5c6f-b58f-025315cf0bf5"
+            },
+            {
+              "field": "response_time_hours",
+              "observed_at": "2026-07-25T02:00:00Z",
+              "source": "communications",
+              "source_id": "c84b06ee-e286-508f-8612-93378f0df2a2"
+            }
+          ],
+          "metric_name": "reply_latency_trend_hours",
+          "unit": "hours_delta",
+          "value": 32.0
+        },
+        "relationship_strengths": [
+          {
+            "contact_id": "fdd4645a-e0b6-53d8-ba03-249f260574d8",
+            "multi_thread_depth": 1,
+            "strength": "strong"
+          }
+        ],
+        "rocketlane": {
+          "activation_gaps": {
+            "Kickoff": true,
+            "Legacy Dispatch Integration": true
+          }
+        },
+        "tickets": {
+          "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
+          "as_of": "2026-08-10",
+          "detail": "2 case(s) opened in trailing 90d as of 2026-08-10",
+          "evidence": [
+            {
+              "field": "created_at",
+              "observed_at": "2026-06-21T00:00:00Z",
+              "source": "crm",
+              "source_id": "7b7fe426-01f6-529e-a65b-3240e6ddc058"
+            },
+            {
+              "field": "created_at",
+              "observed_at": "2026-07-21T00:00:00Z",
+              "source": "crm",
+              "source_id": "90c96b52-a603-51b0-aa5a-024f9d5d90fc"
+            }
+          ],
+          "metric_name": "ticket_frequency_window",
+          "unit": "cases_opened",
+          "value": 2.0
+        },
+        "width": {
+          "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
+          "as_of": "2026-08-10",
+          "detail": "1 active stakeholder relationship(s) as of 2026-08-10",
+          "evidence": [
+            {
+              "field": "relationship_type",
+              "observed_at": "2026-07-25T02:00:00Z",
+              "source": "communications",
+              "source_id": "fdd4645a-e0b6-53d8-ba03-249f260574d8"
+            }
+          ],
+          "metric_name": "thread_participation_width",
+          "unit": "distinct_contacts",
+          "value": 1.0
+        }
+      }
+    },
+    "pinnacle-supply": {
+      "10": {
+        "cadence": {
+          "account_id": "91330ede-650a-5015-856d-c685a83807b4",
+          "as_of": "2026-07-01",
+          "detail": "insufficient confirmed-event history in one or both windows",
+          "evidence": [],
+          "metric_name": "meeting_cadence_shift_days",
+          "unit": "days_delta",
+          "value": null
+        },
+        "case_count": 0,
+        "case_subjects": [],
+        "latency": {
+          "account_id": "91330ede-650a-5015-856d-c685a83807b4",
+          "as_of": "2026-07-01",
+          "detail": "insufficient reply history in one or both windows",
+          "evidence": [
+            {
+              "field": "response_time_hours",
+              "observed_at": "2026-06-22T04:00:00Z",
+              "source": "communications",
+              "source_id": "7c452f5a-412c-5042-b1f0-c0e63f94c578"
+            }
+          ],
+          "metric_name": "reply_latency_trend_hours",
+          "unit": "hours_delta",
+          "value": null
+        },
+        "relationship_strengths": [
+          {
+            "contact_id": "7d31c110-b419-56eb-afa1-8496bf066887",
+            "multi_thread_depth": 1,
+            "strength": "weak"
+          }
+        ],
+        "tickets": {
+          "account_id": "91330ede-650a-5015-856d-c685a83807b4",
+          "as_of": "2026-07-01",
+          "detail": "0 case(s) opened in trailing 90d as of 2026-07-01",
+          "evidence": [],
+          "metric_name": "ticket_frequency_window",
+          "unit": "cases_opened",
+          "value": 0.0
+        },
+        "width": {
+          "account_id": "91330ede-650a-5015-856d-c685a83807b4",
+          "as_of": "2026-07-01",
+          "detail": "1 active stakeholder relationship(s) as of 2026-07-01",
+          "evidence": [
+            {
+              "field": "relationship_type",
+              "observed_at": "2026-06-22T04:00:00Z",
+              "source": "communications",
+              "source_id": "7d31c110-b419-56eb-afa1-8496bf066887"
+            }
+          ],
+          "metric_name": "thread_participation_width",
+          "unit": "distinct_contacts",
+          "value": 1.0
+        }
+      },
+      "120": {
+        "cadence": {
+          "account_id": "91330ede-650a-5015-856d-c685a83807b4",
+          "as_of": "2026-10-19",
+          "detail": "insufficient confirmed-event history in one or both windows",
+          "evidence": [],
+          "metric_name": "meeting_cadence_shift_days",
+          "unit": "days_delta",
+          "value": null
+        },
+        "case_count": 0,
+        "case_subjects": [],
+        "latency": {
+          "account_id": "91330ede-650a-5015-856d-c685a83807b4",
+          "as_of": "2026-10-19",
+          "detail": "insufficient reply history in one or both windows",
+          "evidence": [
+            {
+              "field": "response_time_hours",
+              "observed_at": "2026-10-11T11:00:00Z",
+              "source": "communications",
+              "source_id": "d4dbfde6-8152-51dc-b306-3258f3a43f38"
+            }
+          ],
+          "metric_name": "reply_latency_trend_hours",
+          "unit": "hours_delta",
+          "value": null
+        },
+        "relationship_strengths": [
+          {
+            "contact_id": "7d31c110-b419-56eb-afa1-8496bf066887",
+            "multi_thread_depth": 1,
+            "strength": "weak"
+          },
+          {
+            "contact_id": "fec5c2f0-ae14-5630-8412-bfa1e791b0d4",
+            "multi_thread_depth": 2,
+            "strength": "weak"
+          }
+        ],
+        "tickets": {
+          "account_id": "91330ede-650a-5015-856d-c685a83807b4",
+          "as_of": "2026-10-19",
+          "detail": "0 case(s) opened in trailing 90d as of 2026-10-19",
+          "evidence": [],
+          "metric_name": "ticket_frequency_window",
+          "unit": "cases_opened",
+          "value": 0.0
+        },
+        "width": {
+          "account_id": "91330ede-650a-5015-856d-c685a83807b4",
+          "as_of": "2026-10-19",
+          "detail": "2 active stakeholder relationship(s) as of 2026-10-19",
+          "evidence": [
+            {
+              "field": "relationship_type",
+              "observed_at": "2026-06-22T04:00:00Z",
+              "source": "communications",
+              "source_id": "7d31c110-b419-56eb-afa1-8496bf066887"
+            },
+            {
+              "field": "relationship_type",
+              "observed_at": "2026-10-11T11:00:00Z",
+              "source": "communications",
+              "source_id": "fec5c2f0-ae14-5630-8412-bfa1e791b0d4"
+            }
+          ],
+          "metric_name": "thread_participation_width",
+          "unit": "distinct_contacts",
+          "value": 2.0
+        }
+      },
+      "250": {
+        "cadence": {
+          "account_id": "91330ede-650a-5015-856d-c685a83807b4",
+          "as_of": "2027-02-26",
+          "detail": "trailing 30d median gap 15.0d vs prior window 15.0d",
+          "evidence": [
+            {
+              "field": "status",
+              "observed_at": "2026-06-22T01:00:00Z",
+              "source": "communications",
+              "source_id": "4d4de6a0-2cd0-577e-a3fc-a74db6359679"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-10-11T01:00:00Z",
+              "source": "communications",
+              "source_id": "e3f4aaea-86ea-5f80-adf2-9a41130ee46f"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-11-08T01:00:00Z",
+              "source": "communications",
+              "source_id": "1392bd17-a420-53ee-8a31-6214b9b3fa45"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-12-08T01:00:00Z",
+              "source": "communications",
+              "source_id": "b8e29991-35d1-51eb-bdf8-324750a4a9f4"
+            },
+            {
+              "field": "status",
+              "observed_at": "2027-01-07T01:00:00Z",
+              "source": "communications",
+              "source_id": "39b03267-6266-52e9-ad67-d3b89f4e47ed"
+            },
+            {
+              "field": "status",
+              "observed_at": "2027-01-22T01:00:00Z",
+              "source": "communications",
+              "source_id": "db7770dc-4ea9-5e42-a44f-3572b6476db9"
+            },
+            {
+              "field": "status",
+              "observed_at": "2027-02-06T01:00:00Z",
+              "source": "communications",
+              "source_id": "0d7a98eb-4101-51be-9890-079f4bd1b3a3"
+            },
+            {
+              "field": "status",
+              "observed_at": "2027-02-21T01:00:00Z",
+              "source": "communications",
+              "source_id": "e8924f98-e8f2-53f0-b16f-a8084759c05b"
+            }
+          ],
+          "metric_name": "meeting_cadence_shift_days",
+          "unit": "days_delta",
+          "value": 0.0
+        },
+        "case_count": 0,
+        "case_subjects": [],
+        "latency": {
+          "account_id": "91330ede-650a-5015-856d-c685a83807b4",
+          "as_of": "2027-02-26",
+          "detail": "trailing 21d mean reply latency 3.0h vs prior window 3.0h",
+          "evidence": [
+            {
+              "field": "response_time_hours",
+              "observed_at": "2027-01-17T03:00:00Z",
+              "source": "communications",
+              "source_id": "84a67b8d-d60e-5cbf-9dd3-970a1c37de92"
+            },
+            {
+              "field": "response_time_hours",
+              "observed_at": "2027-02-21T03:00:00Z",
+              "source": "communications",
+              "source_id": "834793cb-1c70-544f-8548-432047f8dc68"
+            }
+          ],
+          "metric_name": "reply_latency_trend_hours",
+          "unit": "hours_delta",
+          "value": 0.0
+        },
+        "relationship_strengths": [
+          {
+            "contact_id": "7d31c110-b419-56eb-afa1-8496bf066887",
+            "multi_thread_depth": 1,
+            "strength": "weak"
+          },
+          {
+            "contact_id": "fec5c2f0-ae14-5630-8412-bfa1e791b0d4",
+            "multi_thread_depth": 2,
+            "strength": "strong"
+          }
+        ],
+        "tickets": {
+          "account_id": "91330ede-650a-5015-856d-c685a83807b4",
+          "as_of": "2027-02-26",
+          "detail": "0 case(s) opened in trailing 90d as of 2027-02-26",
+          "evidence": [],
+          "metric_name": "ticket_frequency_window",
+          "unit": "cases_opened",
+          "value": 0.0
+        },
+        "width": {
+          "account_id": "91330ede-650a-5015-856d-c685a83807b4",
+          "as_of": "2027-02-26",
+          "detail": "2 active stakeholder relationship(s) as of 2027-02-26",
+          "evidence": [
+            {
+              "field": "relationship_type",
+              "observed_at": "2026-06-22T04:00:00Z",
+              "source": "communications",
+              "source_id": "7d31c110-b419-56eb-afa1-8496bf066887"
+            },
+            {
+              "field": "relationship_type",
+              "observed_at": "2027-02-21T03:00:00Z",
+              "source": "communications",
+              "source_id": "fec5c2f0-ae14-5630-8412-bfa1e791b0d4"
+            }
+          ],
+          "metric_name": "thread_participation_width",
+          "unit": "distinct_contacts",
+          "value": 2.0
+        }
+      }
+    },
+    "quarrystone-logistics": {
+      "190": {
+        "cadence": {
+          "account_id": "c79ad97e-e2ad-5b6a-beeb-800e4755adca",
+          "as_of": "2026-12-28",
+          "detail": "insufficient confirmed-event history in one or both windows",
+          "evidence": [],
+          "metric_name": "meeting_cadence_shift_days",
+          "unit": "days_delta",
+          "value": null
+        },
+        "case_count": 2,
+        "case_subjects": [
+          "Need to transfer admin access to new contact",
+          "Renewal terms discussion \u2014 no response"
+        ],
+        "latency": {
+          "account_id": "c79ad97e-e2ad-5b6a-beeb-800e4755adca",
+          "as_of": "2026-12-28",
+          "detail": "insufficient reply history in one or both windows",
+          "evidence": [],
+          "metric_name": "reply_latency_trend_hours",
+          "unit": "hours_delta",
+          "value": null
+        },
+        "relationship_strengths": [
+          {
+            "contact_id": "0cde8be1-1ecf-5092-96ec-411f8f8a40c9",
+            "multi_thread_depth": 1,
+            "strength": "weak"
+          }
+        ],
+        "tickets": {
+          "account_id": "c79ad97e-e2ad-5b6a-beeb-800e4755adca",
+          "as_of": "2026-12-28",
+          "detail": "1 case(s) opened in trailing 90d as of 2026-12-28",
+          "evidence": [
+            {
+              "field": "created_at",
+              "observed_at": "2026-11-28T00:00:00Z",
+              "source": "crm",
+              "source_id": "dc01b971-1f4f-57dc-9f7a-afc2ddbbd239"
+            }
+          ],
+          "metric_name": "ticket_frequency_window",
+          "unit": "cases_opened",
+          "value": 1.0
+        },
+        "width": {
+          "account_id": "c79ad97e-e2ad-5b6a-beeb-800e4755adca",
+          "as_of": "2026-12-28",
+          "detail": "1 active stakeholder relationship(s) as of 2026-12-28",
+          "evidence": [
+            {
+              "field": "relationship_type",
+              "observed_at": "2026-06-21T07:00:00Z",
+              "source": "communications",
+              "source_id": "0cde8be1-1ecf-5092-96ec-411f8f8a40c9"
+            }
+          ],
+          "metric_name": "thread_participation_width",
+          "unit": "distinct_contacts",
+          "value": 1.0
+        }
+      },
+      "225": {
+        "cadence": {
+          "account_id": "c79ad97e-e2ad-5b6a-beeb-800e4755adca",
+          "as_of": "2027-02-01",
+          "detail": "insufficient confirmed-event history in one or both windows",
+          "evidence": [],
+          "metric_name": "meeting_cadence_shift_days",
+          "unit": "days_delta",
+          "value": null
+        },
+        "case_count": 2,
+        "case_subjects": [
+          "Need to transfer admin access to new contact",
+          "Renewal terms discussion \u2014 no response"
+        ],
+        "latency": {
+          "account_id": "c79ad97e-e2ad-5b6a-beeb-800e4755adca",
+          "as_of": "2027-02-01",
+          "detail": "insufficient reply history in one or both windows",
+          "evidence": [],
+          "metric_name": "reply_latency_trend_hours",
+          "unit": "hours_delta",
+          "value": null
+        },
+        "relationship_strengths": [
+          {
+            "contact_id": "0cde8be1-1ecf-5092-96ec-411f8f8a40c9",
+            "multi_thread_depth": 1,
+            "strength": "weak"
+          }
+        ],
+        "tickets": {
+          "account_id": "c79ad97e-e2ad-5b6a-beeb-800e4755adca",
+          "as_of": "2027-02-01",
+          "detail": "1 case(s) opened in trailing 90d as of 2027-02-01",
+          "evidence": [
+            {
+              "field": "created_at",
+              "observed_at": "2026-11-28T00:00:00Z",
+              "source": "crm",
+              "source_id": "dc01b971-1f4f-57dc-9f7a-afc2ddbbd239"
+            }
+          ],
+          "metric_name": "ticket_frequency_window",
+          "unit": "cases_opened",
+          "value": 1.0
+        },
+        "width": {
+          "account_id": "c79ad97e-e2ad-5b6a-beeb-800e4755adca",
+          "as_of": "2027-02-01",
+          "detail": "1 active stakeholder relationship(s) as of 2027-02-01",
+          "evidence": [
+            {
+              "field": "relationship_type",
+              "observed_at": "2026-06-21T07:00:00Z",
+              "source": "communications",
+              "source_id": "0cde8be1-1ecf-5092-96ec-411f8f8a40c9"
+            }
+          ],
+          "metric_name": "thread_participation_width",
+          "unit": "distinct_contacts",
+          "value": 1.0
+        }
+      },
+      "30": {
+        "cadence": {
+          "account_id": "c79ad97e-e2ad-5b6a-beeb-800e4755adca",
+          "as_of": "2026-07-21",
+          "detail": "insufficient confirmed-event history in one or both windows",
+          "evidence": [],
+          "metric_name": "meeting_cadence_shift_days",
+          "unit": "days_delta",
+          "value": null
+        },
+        "case_count": 1,
+        "case_subjects": [
+          "Need to transfer admin access to new contact"
+        ],
+        "latency": {
+          "account_id": "c79ad97e-e2ad-5b6a-beeb-800e4755adca",
+          "as_of": "2026-07-21",
+          "detail": "insufficient reply history in one or both windows",
+          "evidence": [],
+          "metric_name": "reply_latency_trend_hours",
+          "unit": "hours_delta",
+          "value": null
+        },
+        "relationship_strengths": [
+          {
+            "contact_id": "0cde8be1-1ecf-5092-96ec-411f8f8a40c9",
+            "multi_thread_depth": 1,
+            "strength": "weak"
+          }
+        ],
+        "tickets": {
+          "account_id": "c79ad97e-e2ad-5b6a-beeb-800e4755adca",
+          "as_of": "2026-07-21",
+          "detail": "1 case(s) opened in trailing 90d as of 2026-07-21",
+          "evidence": [
+            {
+              "field": "created_at",
+              "observed_at": "2026-06-21T00:00:00Z",
+              "source": "crm",
+              "source_id": "4d9be931-5c9c-56ad-9ea7-6ef39b9acd0e"
+            }
+          ],
+          "metric_name": "ticket_frequency_window",
+          "unit": "cases_opened",
+          "value": 1.0
+        },
+        "width": {
+          "account_id": "c79ad97e-e2ad-5b6a-beeb-800e4755adca",
+          "as_of": "2026-07-21",
+          "detail": "1 active stakeholder relationship(s) as of 2026-07-21",
+          "evidence": [
+            {
+              "field": "relationship_type",
+              "observed_at": "2026-06-21T07:00:00Z",
+              "source": "communications",
+              "source_id": "0cde8be1-1ecf-5092-96ec-411f8f8a40c9"
+            }
+          ],
+          "metric_name": "thread_participation_width",
+          "unit": "distinct_contacts",
+          "value": 1.0
+        }
+      }
+    },
+    "trailhead-logistics": {
+      "180": {
+        "cadence": {
+          "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+          "as_of": "2026-12-18",
+          "detail": "trailing 30d median gap 14.0d vs prior window 14.0d",
+          "evidence": [
+            {
+              "field": "status",
+              "observed_at": "2026-07-01T01:00:00Z",
+              "source": "communications",
+              "source_id": "6f2b634a-7ce1-5675-bb77-97f708879e2e"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-07-15T01:00:00Z",
+              "source": "communications",
+              "source_id": "0cb9db3a-8deb-5b92-a5e0-58548c7c47f1"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-07-29T01:00:00Z",
+              "source": "communications",
+              "source_id": "3e3fda5d-19fb-58ad-a25f-af3e3b670cf9"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-08-12T01:00:00Z",
+              "source": "communications",
+              "source_id": "82e883f1-2ab8-56ee-aa1d-ace79b9b109c"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-08-26T01:00:00Z",
+              "source": "communications",
+              "source_id": "2a5ec966-7a7d-5a3b-bc72-5930ce29ff15"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-09-09T01:00:00Z",
+              "source": "communications",
+              "source_id": "6fe0458e-d889-510d-b2d7-39a25ade591a"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-09-23T01:00:00Z",
+              "source": "communications",
+              "source_id": "551320ba-32b5-5436-9e2a-0d44635001be"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-10-07T01:00:00Z",
+              "source": "communications",
+              "source_id": "dbdbc8ab-999b-5f43-ae58-dc0533775152"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-10-21T01:00:00Z",
+              "source": "communications",
+              "source_id": "8556686e-ebb6-5036-a500-6af3a44afc65"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-11-04T01:00:00Z",
+              "source": "communications",
+              "source_id": "b13f6aac-c2e5-5ec2-9b21-33158b813b15"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-11-18T01:00:00Z",
+              "source": "communications",
+              "source_id": "41d7f3c3-d513-544c-8128-f9498bcfc8b0"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-12-02T01:00:00Z",
+              "source": "communications",
+              "source_id": "340011b2-ff43-5615-a2b9-314fbfb5a506"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-12-16T01:00:00Z",
+              "source": "communications",
+              "source_id": "4404d2c1-bdf4-5dfa-b115-19c688ec59e5"
+            }
+          ],
+          "metric_name": "meeting_cadence_shift_days",
+          "unit": "days_delta",
+          "value": 0.0
+        },
+        "case_count": 2,
+        "case_subjects": [
+          "Feature request: custom compliance report template",
+          "Request for API webhook for new asset alerts"
+        ],
+        "latency": {
+          "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+          "as_of": "2026-12-18",
+          "detail": "trailing 21d mean reply latency 4.5h vs prior window 4.0h",
+          "evidence": [
+            {
+              "field": "response_time_hours",
+              "observed_at": "2026-11-08T04:00:00Z",
+              "source": "communications",
+              "source_id": "05912246-f640-58c8-bddd-e538272b46ac"
+            },
+            {
+              "field": "response_time_hours",
+              "observed_at": "2026-12-13T03:00:00Z",
+              "source": "communications",
+              "source_id": "114b44b3-dcc9-52d4-92f3-1ed1ee755684"
+            },
+            {
+              "field": "response_time_hours",
+              "observed_at": "2026-12-13T06:00:00Z",
+              "source": "communications",
+              "source_id": "f153693f-f1f4-549f-b994-3cac0777b28c"
+            }
+          ],
+          "metric_name": "reply_latency_trend_hours",
+          "unit": "hours_delta",
+          "value": 0.5
+        },
+        "relationship_strengths": [
+          {
+            "contact_id": "5ba7aa51-a5eb-5220-9d3b-71bbe67377a1",
+            "multi_thread_depth": 2,
+            "strength": "strong"
+          },
+          {
+            "contact_id": "c8836191-bc7e-54ac-ac00-d010e2adb93b",
+            "multi_thread_depth": 2,
+            "strength": "strong"
+          }
+        ],
+        "tickets": {
+          "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+          "as_of": "2026-12-18",
+          "detail": "1 case(s) opened in trailing 90d as of 2026-12-18",
+          "evidence": [
+            {
+              "field": "created_at",
+              "observed_at": "2026-10-19T00:00:00Z",
+              "source": "crm",
+              "source_id": "badfdd75-9630-5572-9bfe-953363e95fd9"
+            }
+          ],
+          "metric_name": "ticket_frequency_window",
+          "unit": "cases_opened",
+          "value": 1.0
+        },
+        "width": {
+          "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+          "as_of": "2026-12-18",
+          "detail": "2 active stakeholder relationship(s) as of 2026-12-18",
+          "evidence": [
+            {
+              "field": "relationship_type",
+              "observed_at": "2026-12-13T03:00:00Z",
+              "source": "communications",
+              "source_id": "5ba7aa51-a5eb-5220-9d3b-71bbe67377a1"
+            },
+            {
+              "field": "relationship_type",
+              "observed_at": "2026-12-13T06:00:00Z",
+              "source": "communications",
+              "source_id": "c8836191-bc7e-54ac-ac00-d010e2adb93b"
+            }
+          ],
+          "metric_name": "thread_participation_width",
+          "unit": "distinct_contacts",
+          "value": 2.0
+        }
+      },
+      "300": {
+        "cadence": {
+          "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+          "as_of": "2027-04-17",
+          "detail": "trailing 30d median gap 14.0d vs prior window 14.0d",
+          "evidence": [
+            {
+              "field": "status",
+              "observed_at": "2026-07-01T01:00:00Z",
+              "source": "communications",
+              "source_id": "6f2b634a-7ce1-5675-bb77-97f708879e2e"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-07-15T01:00:00Z",
+              "source": "communications",
+              "source_id": "0cb9db3a-8deb-5b92-a5e0-58548c7c47f1"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-07-29T01:00:00Z",
+              "source": "communications",
+              "source_id": "3e3fda5d-19fb-58ad-a25f-af3e3b670cf9"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-08-12T01:00:00Z",
+              "source": "communications",
+              "source_id": "82e883f1-2ab8-56ee-aa1d-ace79b9b109c"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-08-26T01:00:00Z",
+              "source": "communications",
+              "source_id": "2a5ec966-7a7d-5a3b-bc72-5930ce29ff15"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-09-09T01:00:00Z",
+              "source": "communications",
+              "source_id": "6fe0458e-d889-510d-b2d7-39a25ade591a"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-09-23T01:00:00Z",
+              "source": "communications",
+              "source_id": "551320ba-32b5-5436-9e2a-0d44635001be"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-10-07T01:00:00Z",
+              "source": "communications",
+              "source_id": "dbdbc8ab-999b-5f43-ae58-dc0533775152"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-10-21T01:00:00Z",
+              "source": "communications",
+              "source_id": "8556686e-ebb6-5036-a500-6af3a44afc65"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-11-04T01:00:00Z",
+              "source": "communications",
+              "source_id": "b13f6aac-c2e5-5ec2-9b21-33158b813b15"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-11-18T01:00:00Z",
+              "source": "communications",
+              "source_id": "41d7f3c3-d513-544c-8128-f9498bcfc8b0"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-12-02T01:00:00Z",
+              "source": "communications",
+              "source_id": "340011b2-ff43-5615-a2b9-314fbfb5a506"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-12-16T01:00:00Z",
+              "source": "communications",
+              "source_id": "4404d2c1-bdf4-5dfa-b115-19c688ec59e5"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-12-30T01:00:00Z",
+              "source": "communications",
+              "source_id": "76ad9365-b67c-5361-9150-a23bb53edff0"
+            },
+            {
+              "field": "status",
+              "observed_at": "2027-01-13T01:00:00Z",
+              "source": "communications",
+              "source_id": "3ff4c58f-feed-59cd-a50e-adb919603fbc"
+            },
+            {
+              "field": "status",
+              "observed_at": "2027-01-27T01:00:00Z",
+              "source": "communications",
+              "source_id": "7a0a658a-d577-51fe-b58b-28a8b33e4171"
+            },
+            {
+              "field": "status",
+              "observed_at": "2027-02-10T01:00:00Z",
+              "source": "communications",
+              "source_id": "404f431a-67e8-599e-af0e-ddbdd630d04d"
+            },
+            {
+              "field": "status",
+              "observed_at": "2027-02-24T01:00:00Z",
+              "source": "communications",
+              "source_id": "721c0b53-2000-592d-9dff-b80d9ff2157c"
+            },
+            {
+              "field": "status",
+              "observed_at": "2027-03-10T01:00:00Z",
+              "source": "communications",
+              "source_id": "8c1586e9-a534-5b13-8aca-91e5e6013914"
+            },
+            {
+              "field": "status",
+              "observed_at": "2027-03-24T01:00:00Z",
+              "source": "communications",
+              "source_id": "de19719c-a018-5dc8-85f5-d58d1244e32f"
+            },
+            {
+              "field": "status",
+              "observed_at": "2027-04-07T01:00:00Z",
+              "source": "communications",
+              "source_id": "924a637b-26f5-50d9-ae5d-9427377acc81"
+            }
+          ],
+          "metric_name": "meeting_cadence_shift_days",
+          "unit": "days_delta",
+          "value": 0.0
+        },
+        "case_count": 2,
+        "case_subjects": [
+          "Feature request: custom compliance report template",
+          "Request for API webhook for new asset alerts"
+        ],
+        "latency": {
+          "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+          "as_of": "2027-04-17",
+          "detail": "insufficient reply history in one or both windows",
+          "evidence": [
+            {
+              "field": "response_time_hours",
+              "observed_at": "2027-04-02T04:00:00Z",
+              "source": "communications",
+              "source_id": "1290ea4e-d978-55db-b373-8f23b02ea566"
+            },
+            {
+              "field": "response_time_hours",
+              "observed_at": "2027-04-12T03:00:00Z",
+              "source": "communications",
+              "source_id": "9d1a7e30-8cde-5ce7-8702-e9eb3c679ea9"
+            }
+          ],
+          "metric_name": "reply_latency_trend_hours",
+          "unit": "hours_delta",
+          "value": null
+        },
+        "relationship_strengths": [
+          {
+            "contact_id": "5ba7aa51-a5eb-5220-9d3b-71bbe67377a1",
+            "multi_thread_depth": 2,
+            "strength": "strong"
+          },
+          {
+            "contact_id": "c8836191-bc7e-54ac-ac00-d010e2adb93b",
+            "multi_thread_depth": 2,
+            "strength": "strong"
+          }
+        ],
+        "tickets": {
+          "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+          "as_of": "2027-04-17",
+          "detail": "0 case(s) opened in trailing 90d as of 2027-04-17",
+          "evidence": [],
+          "metric_name": "ticket_frequency_window",
+          "unit": "cases_opened",
+          "value": 0.0
+        },
+        "width": {
+          "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+          "as_of": "2027-04-17",
+          "detail": "2 active stakeholder relationship(s) as of 2027-04-17",
+          "evidence": [
+            {
+              "field": "relationship_type",
+              "observed_at": "2027-04-12T03:00:00Z",
+              "source": "communications",
+              "source_id": "5ba7aa51-a5eb-5220-9d3b-71bbe67377a1"
+            },
+            {
+              "field": "relationship_type",
+              "observed_at": "2027-04-02T04:00:00Z",
+              "source": "communications",
+              "source_id": "c8836191-bc7e-54ac-ac00-d010e2adb93b"
+            }
+          ],
+          "metric_name": "thread_participation_width",
+          "unit": "distinct_contacts",
+          "value": 2.0
+        }
+      },
+      "60": {
+        "cadence": {
+          "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+          "as_of": "2026-08-20",
+          "detail": "trailing 30d median gap 14.0d vs prior window 14.0d",
+          "evidence": [
+            {
+              "field": "status",
+              "observed_at": "2026-07-01T01:00:00Z",
+              "source": "communications",
+              "source_id": "6f2b634a-7ce1-5675-bb77-97f708879e2e"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-07-15T01:00:00Z",
+              "source": "communications",
+              "source_id": "0cb9db3a-8deb-5b92-a5e0-58548c7c47f1"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-07-29T01:00:00Z",
+              "source": "communications",
+              "source_id": "3e3fda5d-19fb-58ad-a25f-af3e3b670cf9"
+            },
+            {
+              "field": "status",
+              "observed_at": "2026-08-12T01:00:00Z",
+              "source": "communications",
+              "source_id": "82e883f1-2ab8-56ee-aa1d-ace79b9b109c"
+            }
+          ],
+          "metric_name": "meeting_cadence_shift_days",
+          "unit": "days_delta",
+          "value": 0.0
+        },
+        "case_count": 1,
+        "case_subjects": [
+          "Feature request: custom compliance report template"
+        ],
+        "latency": {
+          "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+          "as_of": "2026-08-20",
+          "detail": "insufficient reply history in one or both windows",
+          "evidence": [
+            {
+              "field": "response_time_hours",
+              "observed_at": "2026-08-05T03:00:00Z",
+              "source": "communications",
+              "source_id": "986c5613-cbb5-52e4-869d-d8adf5e58cc1"
+            },
+            {
+              "field": "response_time_hours",
+              "observed_at": "2026-08-15T04:00:00Z",
+              "source": "communications",
+              "source_id": "d30930a9-4ccd-5ec5-9ee2-cb41dd358bda"
+            }
+          ],
+          "metric_name": "reply_latency_trend_hours",
+          "unit": "hours_delta",
+          "value": null
+        },
+        "relationship_strengths": [
+          {
+            "contact_id": "5ba7aa51-a5eb-5220-9d3b-71bbe67377a1",
+            "multi_thread_depth": 2,
+            "strength": "strong"
+          },
+          {
+            "contact_id": "c8836191-bc7e-54ac-ac00-d010e2adb93b",
+            "multi_thread_depth": 2,
+            "strength": "strong"
+          }
+        ],
+        "tickets": {
+          "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+          "as_of": "2026-08-20",
+          "detail": "1 case(s) opened in trailing 90d as of 2026-08-20",
+          "evidence": [
+            {
+              "field": "created_at",
+              "observed_at": "2026-06-21T00:00:00Z",
+              "source": "crm",
+              "source_id": "6ee1311a-6031-57ad-a6b4-a5ae8ed32418"
+            }
+          ],
+          "metric_name": "ticket_frequency_window",
+          "unit": "cases_opened",
+          "value": 1.0
+        },
+        "width": {
+          "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+          "as_of": "2026-08-20",
+          "detail": "2 active stakeholder relationship(s) as of 2026-08-20",
+          "evidence": [
+            {
+              "field": "relationship_type",
+              "observed_at": "2026-08-05T03:00:00Z",
+              "source": "communications",
+              "source_id": "5ba7aa51-a5eb-5220-9d3b-71bbe67377a1"
+            },
+            {
+              "field": "relationship_type",
+              "observed_at": "2026-08-15T04:00:00Z",
+              "source": "communications",
+              "source_id": "c8836191-bc7e-54ac-ac00-d010e2adb93b"
+            }
+          ],
+          "metric_name": "thread_participation_width",
+          "unit": "distinct_contacts",
+          "value": 2.0
+        }
+      }
+    }
+  }
+}
