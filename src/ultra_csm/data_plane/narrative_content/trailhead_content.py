@@ -28,6 +28,17 @@ BODIES: dict[tuple[int, int], str] = {
         "Vanessa Torres\n"
         "VP Operations, Trailhead Logistics"
     ),
+    (25, 9): (
+        "Vanessa,\n\n"
+        "Quick FYI -- noticed a new asset came online in Live Map this week. Nothing needed on "
+        "your end, just flagging it since it's outside the usual onboarding batch.\n\n"
+        "Priya"
+    ),
+    (25, 12): (
+        "Thanks for the heads up, appreciate it -- that's one of the yard trucks we added "
+        "mid-quarter.\n\n"
+        "Vanessa"
+    ),
     (45, 9): (
         "Vanessa,\n\n"
         "Curious how the new Compliance Center report template is landing with your team now "
@@ -59,6 +70,16 @@ BODIES: dict[tuple[int, int], str] = {
     ),
     (95, 11): (
         "Quote looks great, approved to publish as-is.\n\n"
+        "Vanessa"
+    ),
+    (120, 9): (
+        "Vanessa,\n\n"
+        "Quick recap from our call earlier today -- nothing new to track, just confirming the Q3 "
+        "planning notes from last time still hold.\n\n"
+        "Priya"
+    ),
+    (120, 13): (
+        "Matches my notes too, thanks for closing the loop.\n\n"
         "Vanessa"
     ),
     (140, 9): (
@@ -98,6 +119,15 @@ BODIES: dict[tuple[int, int], str] = {
     (210, 12): (
         "Working great, exactly what the fleet team asked for when we filed that request.\n\n"
         "Vanessa"
+    ),
+    (240, 9): (
+        "Vanessa,\n\n"
+        "Quick status check before next sync -- anything new on the fleet-utilization side?\n\n"
+        "Priya"
+    ),
+    (240, 12): (
+        "Nothing new to flag, steady as always.\n\n"
+        "Mike"
     ),
     (250, 9): (
         "Vanessa,\n\n"
