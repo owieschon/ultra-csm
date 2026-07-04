@@ -1,0 +1,131 @@
+{
+  "artifact": "drift_battery",
+  "cases": [
+    {
+      "case": "schema-field-rename-before-at-after",
+      "detail": {
+        "115": {
+          "confirmation_questions": [
+            "CRMAccount.account_id",
+            "CRMAccount.owner_id",
+            "CRMContact.contact_id",
+            "CRMOpportunity.opportunity_id",
+            "CRMOpportunity.stage_name"
+          ],
+          "renamed_fields_still_auto_mapped": []
+        },
+        "125": {
+          "confirmation_questions": [
+            "CRMAccount.account_id",
+            "CRMAccount.owner_id",
+            "CRMContact.contact_id",
+            "CRMContact.title",
+            "CRMOpportunity.opportunity_id",
+            "CRMOpportunity.stage_name"
+          ],
+          "renamed_fields_still_auto_mapped": []
+        },
+        "155": {
+          "confirmation_questions": [
+            "CRMAccount.account_id",
+            "CRMAccount.owner_id",
+            "CRMContact.contact_id",
+            "CRMContact.title",
+            "CRMOpportunity.opportunity_id",
+            "CRMOpportunity.stage_name"
+          ],
+          "renamed_fields_still_auto_mapped": []
+        }
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "junk-contacts-present-after-day150",
+      "detail": {
+        "aspenridge-supply": {
+          "junk_after_day150": 7,
+          "junk_before_day150": 0
+        },
+        "meridian-fleet": {
+          "junk_after_day150": 7,
+          "junk_before_day150": 0
+        },
+        "pinehill-transport": {
+          "junk_after_day150": 7,
+          "junk_before_day150": 0
+        },
+        "pinnacle-supply": {
+          "junk_after_day150": 7,
+          "junk_before_day150": 0
+        },
+        "quarrystone-logistics": {
+          "junk_after_day150": 6,
+          "junk_before_day150": 0
+        },
+        "total_junk_after_day150": 40,
+        "trailhead-logistics": {
+          "junk_after_day150": 6,
+          "junk_before_day150": 0
+        }
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "width-signals-unaffected-by-junk-import",
+      "detail": {
+        "aspenridge-supply": {
+          "115": 1.0,
+          "155": 1.0,
+          "before_after_delta": 0.0
+        },
+        "meridian-fleet": {
+          "115": 2.0,
+          "155": 2.0,
+          "before_after_delta": 0.0
+        },
+        "pinehill-transport": {
+          "115": 1.0,
+          "155": 1.0,
+          "before_after_delta": 0.0
+        },
+        "pinnacle-supply": {
+          "115": 2.0,
+          "155": 2.0,
+          "before_after_delta": 0.0
+        },
+        "quarrystone-logistics": {
+          "115": 1.0,
+          "155": 1.0,
+          "before_after_delta": 0.0
+        },
+        "trailhead-logistics": {
+          "115": 2.0,
+          "155": 2.0,
+          "before_after_delta": 0.0
+        }
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "narrative-battery-still-green-post-drift",
+      "detail": {
+        "cases": 8,
+        "failed_cases": [],
+        "hard_ok": true
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "content-invariance-isolation",
+      "detail": {},
+      "ok": true,
+      "problems": []
+    }
+  ],
+  "failed_cases": [],
+  "hard_ok": true
+}

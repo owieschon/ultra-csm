@@ -1,0 +1,81 @@
+{
+  "artifact": "perturbation_battery",
+  "cases": [
+    {
+      "case": "latency-uniform-no-new-flags",
+      "detail": {
+        "baseline_trend": 0.5,
+        "perturbed_trend": 1.5
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "latency-recent-window-flags-real-stretch",
+      "detail": {
+        "perturbed_trend": 23.0
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "volume-down-degrades-honestly",
+      "detail": {
+        "original_count": 8,
+        "perturbed_trend": null,
+        "thinned_count": 0
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "hygiene-drop-no-crash",
+      "detail": {
+        "contacts": 4,
+        "crashed": false,
+        "nulled": 1
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "schema-rename-asks-or-refuses",
+      "detail": {
+        "confirmation_questions_after_rename": [
+          "CRMAccount.account_id",
+          "CRMAccount.name",
+          "CRMAccount.owner_id",
+          "CRMContact.contact_id",
+          "CRMContact.title",
+          "CRMOpportunity.amount_cents",
+          "CRMOpportunity.close_date",
+          "CRMOpportunity.opportunity_id"
+        ],
+        "refused_or_new_question_for_every_renamed_field": true,
+        "renamed_field_count": 10
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "arr-shift-moves-tier-and-forbidden-motions",
+      "detail": {
+        "account": "aspenridge-supply",
+        "arr_after_cents": 1600000,
+        "arr_before_cents": 4000000,
+        "forbidden_motions_after": [
+          "personal_email",
+          "qbr",
+          "working_session"
+        ],
+        "forbidden_motions_before": [],
+        "tier_after": "tech_touch",
+        "tier_before": "mid_touch"
+      },
+      "ok": true,
+      "problems": []
+    }
+  ],
+  "failed_cases": [],
+  "hard_ok": true
+}
