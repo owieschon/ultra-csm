@@ -1,0 +1,31 @@
+{
+  "rejections": [
+    {
+      "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
+      "factor_name": "milestones_overdue",
+      "motion": "draft_customer_outreach",
+      "proposal_id": "93f37e6d-aaa7-4c6c-b43d-31b6011c13d6",
+      "reason": "week1-protocol: rejecting to test recurring-eligible suppression",
+      "rejected_on_day": 3,
+      "tenant_id": "ultra-demo"
+    },
+    {
+      "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
+      "factor_name": "milestones_overdue",
+      "motion": "draft_customer_outreach",
+      "proposal_id": "a2613aeb-4cfe-4616-8ccd-6d5a87983ef4",
+      "reason": "week1-protocol: rejecting to test recurring-eligible suppression",
+      "rejected_on_day": 7,
+      "tenant_id": "ultra-demo"
+    },
+    {
+      "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
+      "factor_name": "days_overdue",
+      "motion": "draft_customer_outreach",
+      "proposal_id": "a6b8df4c-b569-49fa-8cca-4ce09b2caa4f",
+      "reason": "week1-protocol: rejecting to test recurring-eligible suppression",
+      "rejected_on_day": 14,
+      "tenant_id": "ultra-demo"
+    }
+  ]
+}
