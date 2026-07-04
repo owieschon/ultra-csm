@@ -58,3 +58,34 @@ def test_unknown_csm_action_fails_closed():
         csm_action_spec("confirm_order")
     with pytest.raises(UnknownCSMActionError):
         proposal_fields_for("send_email")
+
+
+def test_scale_motion_actions_have_defined_gate_fields():
+    """Test parity for the Universe v2 scale-motion action types
+    (campaign_enroll/content_route/cohort_action) with the pre-existing six."""
+
+    assert proposal_fields_for("campaign_enroll") == {
+        "action": "campaign_enroll",
+        "autonomy_tier": 2,
+        "required_permission": "campaign.enroll",
+    }
+    assert proposal_fields_for("content_route") == {
+        "action": "content_route",
+        "autonomy_tier": 2,
+        "required_permission": "content.route",
+    }
+    assert proposal_fields_for("cohort_action") == {
+        "action": "cohort_action",
+        "autonomy_tier": 3,
+        "required_permission": "cohort.action.initiate",
+    }
+
+
+def test_cohort_action_has_strictest_release_condition():
+    cohort_action = csm_action_spec("cohort_action")
+    assert cohort_action.autonomy_tier == 3
+    assert cohort_action.release_condition == "human_approve_with_dual_control"
+
+
+def test_csm_action_specs_has_nine_actions():
+    assert len(CSM_ACTION_SPECS) == 9

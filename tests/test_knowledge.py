@@ -6,7 +6,7 @@ import json
 
 import pytest
 
-from ultra_csm.knowledge import OrgPackError, load_org_pack
+from ultra_csm.knowledge import OrgPackError, PlaybookError, load_org_pack, load_playbooks
 
 
 def test_default_org_pack_loads_slot_b_context():
@@ -81,6 +81,81 @@ def test_org_pack_rejects_unsafe_customer_asks(tmp_path):
 
     with pytest.raises(OrgPackError, match="unsafe authority language"):
         load_org_pack(path)
+
+
+def test_fleetops_playbooks_load():
+    playbooks = load_playbooks("fleetops")
+
+    assert playbooks.tenant == "fleetops"
+    assert {t.tier for t in playbooks.service_tiers} == {"high_touch", "mid_touch", "tech_touch"}
+    tech_touch = playbooks.tier_for("tech_touch")
+    assert "personal_email" in tech_touch.forbidden_motions
+    assert playbooks.plays
+    for play in playbooks.plays:
+        assert play.motion
+
+
+def test_playbooks_reject_unknown_motion(tmp_path):
+    tenants_dir = tmp_path / "tenants"
+    (tenants_dir / "acme").mkdir(parents=True)
+    (tenants_dir / "acme" / "playbooks.json").write_text(
+        json.dumps(_playbooks(motion="send_carrier_pigeon")), encoding="utf-8"
+    )
+
+    with pytest.raises(PlaybookError, match="unknown motion"):
+        load_playbooks("acme", tenants_dir=tenants_dir)
+
+
+def test_playbooks_reject_play_with_undefined_tier(tmp_path):
+    tenants_dir = tmp_path / "tenants"
+    (tenants_dir / "acme").mkdir(parents=True)
+    (tenants_dir / "acme" / "playbooks.json").write_text(
+        json.dumps(_playbooks(play_tier="ghost_tier")), encoding="utf-8"
+    )
+
+    with pytest.raises(PlaybookError, match="undefined service tier"):
+        load_playbooks("acme", tenants_dir=tenants_dir)
+
+
+def test_playbooks_require_fictional_flag(tmp_path):
+    tenants_dir = tmp_path / "tenants"
+    (tenants_dir / "acme").mkdir(parents=True)
+    (tenants_dir / "acme" / "playbooks.json").write_text(
+        json.dumps(_playbooks(fictional=False)), encoding="utf-8"
+    )
+
+    with pytest.raises(PlaybookError, match="must be marked fictional"):
+        load_playbooks("acme", tenants_dir=tenants_dir)
+
+
+def _playbooks(
+    *,
+    fictional: bool = True,
+    motion: str = "content_route",
+    play_tier: str = "tech_touch",
+) -> dict:
+    return {
+        "schema_version": 1,
+        "fictional": fictional,
+        "tenant": "acme",
+        "service_tiers": [
+            {
+                "tier": "tech_touch",
+                "rule": {"default": True},
+                "allowed_motions": ["campaign_enroll", "content_route", "cohort_action"],
+                "forbidden_motions": ["personal_email", "working_session", "qbr"],
+            }
+        ],
+        "plays": [
+            {
+                "id": "test-play",
+                "trigger_factor": "feature_shallow_depth",
+                "motion": motion,
+                "tiers": [play_tier],
+                "content_refs": [],
+            }
+        ],
+    }
 
 
 def _pack(
