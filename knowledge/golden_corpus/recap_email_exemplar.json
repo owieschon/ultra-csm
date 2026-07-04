@@ -1,0 +1,6 @@
+{
+  "fictional": true,
+  "kind": "recap_email",
+  "title": "Post-meeting recap — the FleetOps house style",
+  "content": "Subject: Recap — Integration & Data Setup sync, Sept 12\n\nThe Dispatch Bridge connector is still failing to acknowledge about 12% of outbound dispatch events; that's the one blocker holding this phase up.\n\nWhat we covered:\n- Reviewed the acknowledgement-rate numbers from the last 7 days (88% steady state, target is 99%+ before we call Integration & Data Setup done).\n- Walked through the three retry-timeout settings on your side that are the likely cause.\n- Agreed the fastest path is a joint session with your IT team rather than another round of one-off tickets.\n\nAction items:\n- Northgate: confirm IT availability for a 45-minute working session — owner Teresa Kwan (your side), needed by Sept 16.\n- FleetOps: Grace Okafor to prepare a connector-log export isolating the failed acknowledgements — owner Grace Okafor, due Sept 15.\n- FleetOps: send the updated retry-timeout recommendation in writing ahead of the working session — owner Marcus Webb, due Sept 15.\n\nOnce the working session happens we'll have a clear owner and date for closing this out. Let me know if Sept 16 doesn't work and we'll find another day this week.\n\nMarcus Webb\nCustomer Success Manager, FleetOps Platform"
+}

@@ -36,7 +36,8 @@ from datetime import datetime
 
 from ultra_csm.data_plane.contracts import CommunicationSignal, CRMCase, StakeholderRelationship
 from ultra_csm.data_plane.fixtures import account_id_for, det_id
-from ultra_csm.data_plane.narrative_shared import cases_as_of, rfc3339 as _rfc3339
+from ultra_csm.data_plane.narrative_content.quarrystone_content import BODIES as _BODIES
+from ultra_csm.data_plane.narrative_shared import cases_as_of, derive_snippet, rfc3339 as _rfc3339
 
 QUARRYSTONE_ACCOUNT_ID = account_id_for("quarrystone-logistics")
 QUARRYSTONE_CHAMPION_CONTACT_ID = det_id(
@@ -57,11 +58,9 @@ _CHAMPION_EMAIL = "tim.kowalczyk@quarrystone.example"
 # the thread simply stops.
 # ---------------------------------------------------------------------------
 
-_MESSAGE_SCHEDULE: tuple[tuple[int, int, bool, str, str], ...] = (
-    (0, 9, False, "Admin access transfer — please confirm new point of contact",
-     "Following up on the admin access transfer case, can you confirm who should take over?"),
-    (0, 16, True, "Re: Admin access transfer — please confirm new point of contact",
-     "Still sorting out the transition on our end, will follow up soon."),
+_MESSAGE_SCHEDULE: tuple[tuple[int, int, bool, str], ...] = (
+    (0, 9, False, "Admin access transfer — please confirm new point of contact"),
+    (0, 16, True, "Re: Admin access transfer — please confirm new point of contact"),
 )
 
 
@@ -72,18 +71,19 @@ def quarrystone_email_thread(as_of_day: int) -> dict:
 
     thread_id = det_id("email-thread", QUARRYSTONE_ACCOUNT_ID, "admin-access-transfer")
     messages = []
-    for day_offset, hour, from_champion, subject, snippet in _MESSAGE_SCHEDULE:
+    for day_offset, hour, from_champion, subject in _MESSAGE_SCHEDULE:
         if day_offset > as_of_day:
             break
         sender = _CHAMPION_EMAIL if from_champion else _CSM_EMAIL
         recipient = _CSM_EMAIL if from_champion else _CHAMPION_EMAIL
         msg_id = det_id("email-msg", QUARRYSTONE_ACCOUNT_ID, day_offset, hour)
+        body = _BODIES[(day_offset, hour)]
         messages.append(
             {
                 "id": msg_id,
                 "threadId": thread_id,
                 "labelIds": ["INBOX"] if from_champion else ["SENT"],
-                "snippet": snippet,
+                "snippet": derive_snippet(body),
                 "internalDate": str(
                     int(datetime.fromisoformat(_rfc3339(day_offset, hour).replace("Z", "+00:00")).timestamp() * 1000)
                 ),
@@ -94,7 +94,7 @@ def quarrystone_email_thread(as_of_day: int) -> dict:
                         {"name": "Date", "value": _rfc3339(day_offset, hour)},
                         {"name": "Subject", "value": subject},
                     ],
-                    "body": {"data": snippet},
+                    "body": {"data": body},
                 },
             }
         )
