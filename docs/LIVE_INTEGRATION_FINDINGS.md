@@ -370,3 +370,89 @@ Legacy Dispatch Integration genuinely open with an at-risk task — which
   comparison (their extraction functions attribute signals across two
   contacts sharing one email domain, which the generic live reader merges
   into one thread) — a real, disclosed simplification, not a silent gap.
+
+# Live Integration Findings — Program 9, Anchor-Translated Re-seed
+
+Program 8 enriched all six arcs' content offline; Program 7's live seed
+still carried the old one-line-snippet bodies and a fixed calendar that
+put most of the story in the unreachable future. This program re-seeded
+the live world under **anchor translation**: `SEED_DATE` stays 2026-06-21
+in code forever; a frozen, run-directory `anchor.json` maps story day 0 to
+a real calendar date (anchor = seed-run date − 50, so story day 50 = the
+day the backfill ran — the bible's own "during the stall" checkpoint for
+Pinehill). All seeding tooling translates at the boundary; no fixture, no
+battery, no test changed a single date. Run artifacts:
+`~/ultra-csm-corpus-runs/live-reseed-20260704/`.
+
+## What the anchor design bought, verified live
+
+| Claim | Program 7 result | Program 9 result |
+| --- | --- | --- |
+| Gmail `INTERNALDATE` matches the `Date:` header | 16/113 correct (future-dated APPENDs silently reset to "now") | **33/33 correct** — the day≤50 backfill is entirely past-dated, and drip-seeded messages land on their real day by construction |
+| Email bodies | one-line snippets | full enriched bodies; per-arc round-trip byte-identical after CRLF normalization, all six arcs |
+| Reply-latency fidelity (Pinehill, day 50) | 32.9h vs fixture 32.0h | **32.9h vs fixture 32.0h** — same value, now computed across two calendars (live as_of = anchor+50, fixture as_of = seed+50), proving the extractors' translation invariance live |
+| Per-arc message counts | exact | exact (8/2/2/6/2/12 = 32), derived from the fixtures at check time, never hardcoded |
+| Calendar | not seeded (credential missing) | **159 events live, full 365-day year** (Calendar has no date wall; future meetings are realistic). 2 cancelled fixture events skipped — create-only forbids the create-then-cancel dance, and `meeting_cadence_shift` only reads confirmed events anyway |
+
+## The OOO guard, proven end to end
+
+New in this program (commit `Reseed R1`): `live_gmail_reader` excludes
+messages carrying an RFC 3834 `Auto-Submitted` header (value ≠ `no`). The
+threat is concrete: a real out-of-office auto-reply quotes the tagged
+subject and comes from the contact's real domain, so it passes the
+tag+domain search and would register as a near-instant customer reply,
+deflating `reply_latency_trend` and hiding a genuine responsiveness-risk
+signal. The live proof is a deliberately seeded OOO from the Pinehill
+champion, 2 minutes after the CSM's day-22 outbound: the battery asserts
+it (a) exists in the raw mailbox, (b) is absent from the extracted
+thread, and (c) leaves Pinehill's day-50 latency at 32.9h — without the
+guard, that number would have collapsed toward zero. Six unit tests
+cover the guard offline, including a demonstration that the unguarded
+reading is deflated.
+
+## Noise layer (live-mailbox-only, never in fixtures)
+
+Three distractor artifacts seeded alongside the signal: the OOO above, a
+fictional "FleetOps Platform Digest" newsletter (untagged sender — the
+tag filter must and does exclude it), and a Rocketlane-style transactional
+notification referencing Pinehill's real seeded Kickoff phase. Fixtures
+stay 100% signal by design; the mailbox no longer does — which is what
+makes the reader's filtering a tested claim instead of an untested one.
+
+## The drip-seeder (the story now unfolds in real time)
+
+`drip_seed.py` + `com.ultracsm.narrative-drip` (launchd, daily 07:00,
+owner-authorized explicitly after an auto-mode safety stop — a standing
+job that writes to a live mailbox is not something "execute the dispatch"
+covers on its own). Each morning it computes the current story day from
+the frozen anchor and appends exactly the messages that have come due —
+idempotent via ledger, resumable, clean no-op verified via a manual
+`launchctl kickstart` on install day (story day 50, nothing new due).
+Next scheduled beats: story day 60 (Pinehill's "third integration issue"
+email) lands 2026-07-14; the day-80–87 escalation window lands
+2026-08-03–10; Monica Reeves first emails from Pinnacle on 2026-09-02.
+At story day 100 the job logs a loud reminder that Pinehill's Rocketlane
+"Validate dispatch event delivery" task should be completed live that day
+(it cannot do this itself; see below).
+
+## Rocketlane REST: still down, re-diagnosed
+
+The key in `~/ultra-csm-live-creds.env` returns 401 `NOT_AUTHORIZED` on
+`GET /projects`, persisting across a 60s retry and a curl retry (ruling
+out the local Python cert issue that surfaced separately). The fresh key
+verified working on 2026-07-03 either was never written to the env file
+or has been invalidated — undiagnosable further without the owner's
+Rocketlane console. The capability probe (`POST /projects`) and any
+per-arc project seeding remain blocked; carried forward as the same open
+ask from Programs 4 and 7.
+
+## Scope not covered
+
+- Salesforce Cases: unchanged walls (CreatedDate not writable, no live
+  CRMCase parser) — case evidence reaches the agent via the fixture
+  adapter on the same story clock.
+- A live calendar reader (mirroring `live_gmail_reader`) is not built;
+  the battery records the fixture's day-50 Pinehill cadence value (0.0,
+  steady) as the target a future reader must reproduce.
+- Meridian/Pinnacle per-contact latency comparison: same disclosed
+  merged-thread simplification as Program 7; counts are exact.
