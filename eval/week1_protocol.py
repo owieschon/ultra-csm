@@ -910,6 +910,35 @@ def run_full_protocol_crateworks(
     return report
 
 
+def _run_full_protocol_fieldstone(
+    *, install_days: tuple[int, ...],
+) -> dict[str, Any]:
+    """Universe v2 WS-Tenant-Fieldstone (Wave 3): additive per-tenant
+    branch, mirroring the fleetops report shape above but sourced from
+    ``ultra_csm.data_plane.tenants.fieldstone.week1`` -- see that module's
+    docstring for why ``feedback_persistence``/``economics`` are honestly
+    ``not_applicable`` for this tenant rather than fabricated."""
+
+    from ultra_csm.data_plane.tenants.fieldstone.week1 import (
+        run_fieldstone_onboarding_cost,
+        run_protocol_for_day_fieldstone,
+    )
+
+    onboarding = run_fieldstone_onboarding_cost()
+    per_day = {str(day): run_protocol_for_day_fieldstone(day) for day in install_days}
+    report = {
+        "artifact": "week1_protocol_report",
+        "tenant": "fieldstone",
+        "install_days": list(install_days),
+        "claim_boundary": {"sim": True, "live": False, "n_tenants": 1},
+        "onboarding_cost": onboarding,
+        "by_install_day": per_day,
+        "repeatability": {"note": "checked by --repeatability-check at the CLI layer, not embedded here"},
+    }
+    report["ok"] = all(entry["ok"] for entry in per_day.values())
+    return report
+
+
 def run_full_protocol(
     *,
     tenant: str = "fleetops",
@@ -928,11 +957,14 @@ def run_full_protocol(
         from eval.loopway_week1 import run_loopway_protocol
 
         return run_loopway_protocol(install_days=install_days)
+    if tenant == "fieldstone":
+        return _run_full_protocol_fieldstone(install_days=install_days)
 
     if tenant != "fleetops":
         raise NotImplementedError(
             f"week1_protocol is tenant-parameterized by design but only fleetops, "
-            f"crateworks, and loopway fixtures exist as of Wave 3; got tenant={tenant!r}"
+            f"crateworks, loopway, and fieldstone fixtures exist as of Wave 3; "
+            f"got tenant={tenant!r}"
         )
 
     onboarding = run_onboarding_cost_driver()
