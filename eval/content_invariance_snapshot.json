@@ -2656,8 +2656,14 @@
         "latency": {
           "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
           "as_of": "2026-08-20",
-          "detail": "insufficient reply history in one or both windows",
+          "detail": "trailing 21d mean reply latency 3.0h vs prior window 3.0h",
           "evidence": [
+            {
+              "field": "response_time_hours",
+              "observed_at": "2026-07-16T03:00:00Z",
+              "source": "communications",
+              "source_id": "3dd4c81e-f2c3-5a98-9ece-dad921af0c03"
+            },
             {
               "field": "response_time_hours",
               "observed_at": "2026-08-05T03:00:00Z",
@@ -2673,7 +2679,7 @@
           ],
           "metric_name": "reply_latency_trend_hours",
           "unit": "hours_delta",
-          "value": null
+          "value": 0.0
         },
         "relationship_strengths": [
           {

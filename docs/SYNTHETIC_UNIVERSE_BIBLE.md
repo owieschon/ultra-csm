@@ -211,6 +211,29 @@ Briefing-level truth: no risk, no expansion trigger, no onboarding gap —
 steady exemplary adoption throughout. This is the baseline every other
 arc's briefing is judged against.
 
+**Phase U5.F density extension (Program 8).** Three new email exchanges,
+placed strictly between existing message days so no scripted checkpoint
+window's inputs change shape: day 25 (a one-line FYI acknowledgment,
+between the day-10 and day-45 exchanges), day 120 (a short recap after an
+informal check-in, between day-95 and day-140), and day 240 (a quick
+status check-in, between day-210 and day-250). All three are same-day fast
+replies (a few hours), the same "boringly fine" cadence as every existing
+exchange in this arc, and involve no new participant (Vanessa or Mike
+only). This raises Trailhead from 21 to 27 messages. Full 2-3x density
+across all six arcs was scoped down to this single, hand-verified arc for
+Program 8 (see docs/PROGRAM_REPORT_8.md's IF/THEN section for why); the
+other five arcs' density expansion remains explicitly future work, not
+silently dropped.
+
+Verified effect on checkpoint truth: at day 60, `reply_latency_trend` moves
+from `None` ("insufficient reply history" -- too few messages existed in
+both trailing windows before this extension) to a real computed `0.0`
+(flat, still calm) once the day-25 exchange fills out the prior window.
+This is a genuine, disclosed consequence of adding density, not a defect:
+the checkpoint's *truth* ("no risk, unambiguously fine") is unchanged and
+`check_healthy_control`'s assertion (`latency is None or <= 10`) already
+tolerates either reading. Days 180 and 300 are unaffected.
+
 ## Red herrings
 
 Both look concerning in exactly one artifact class; every other artifact

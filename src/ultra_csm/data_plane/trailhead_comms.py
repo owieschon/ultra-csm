@@ -61,12 +61,19 @@ _SECONDARY_EMAIL = "mike.lindgren@trailhead-logistics.example"
 _MESSAGE_SCHEDULE: tuple[tuple[int, int, bool, bool, str], ...] = (
     (10, 9, False, False, "Quarterly check-in — Q3 planning"),
     (10, 13, True, False, "Re: Quarterly check-in — Q3 planning"),
+    # Phase U5.F density extension (Program 8, bible-first): a same-day FYI
+    # exchange, strictly between the day-10 and day-45 checkpoints' windows.
+    (25, 9, False, False, "Quick FYI — new asset onboarded this week"),
+    (25, 12, True, False, "Re: Quick FYI — new asset onboarded this week"),
     (45, 9, False, False, "Compliance reporting — any feedback on the new template?"),
     (45, 12, True, False, "Re: Compliance reporting — any feedback on the new template?"),
     (55, 10, False, False, "Ahead of next week's sync"),
     (55, 13, False, True, "Re: Ahead of next week's sync"),
     (95, 9, False, False, "Case study — quote check"),
     (95, 11, True, False, "Re: Case study — quote check"),
+    # Phase U5.F density extension: a short recap after an informal call.
+    (120, 9, False, False, "Recap — quick call earlier today"),
+    (120, 13, True, False, "Re: Recap — quick call earlier today"),
     (140, 9, False, False, "Mid-year usage recap"),
     (140, 13, True, False, "Re: Mid-year usage recap"),
     (175, 9, False, False, "Ahead of the quarterly business review"),
@@ -74,6 +81,9 @@ _MESSAGE_SCHEDULE: tuple[tuple[int, int, bool, bool, str], ...] = (
     (175, 15, False, True, "Re: Ahead of the quarterly business review"),
     (210, 9, False, False, "Webhook rollout — how's it working for your team?"),
     (210, 12, True, False, "Re: Webhook rollout — how's it working for your team?"),
+    # Phase U5.F density extension: a quick fleet-utilization status check.
+    (240, 9, False, False, "Quick status check before next sync"),
+    (240, 12, False, True, "Re: Quick status check before next sync"),
     (250, 9, False, False, "Year-end planning check-in"),
     (250, 13, True, False, "Re: Year-end planning check-in"),
     (285, 9, False, False, "Ahead of the year-end review"),
