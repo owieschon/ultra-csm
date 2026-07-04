@@ -29,7 +29,11 @@ from datetime import datetime
 
 from ultra_csm.data_plane.contracts import CommunicationSignal, CRMCase, StakeholderRelationship
 from ultra_csm.data_plane.fixtures import account_id_for, det_id
-from ultra_csm.data_plane.narrative_shared import cases_as_of, rfc3339 as _rfc3339
+from ultra_csm.data_plane.narrative_content.meridian_content import (
+    ALICIA_BODIES as _ALICIA_BODIES,
+    SARAH_BODIES as _SARAH_BODIES,
+)
+from ultra_csm.data_plane.narrative_shared import cases_as_of, derive_snippet, rfc3339 as _rfc3339
 
 MERIDIAN_ACCOUNT_ID = account_id_for("meridian-fleet")
 MERIDIAN_ALICIA_CONTACT_ID = det_id(
@@ -54,110 +58,60 @@ _SARAH_THREAD_KEY = "facilities-onboarding"
 # approaches, and stay active through the day-270 year-end uptick.
 # ---------------------------------------------------------------------------
 
-_ALICIA_MESSAGE_SCHEDULE: tuple[tuple[int, int, bool, str, str], ...] = (
-    (2, 9, False, "Kickoff — fleet ops rollout",
-     "Excited to get the telematics rollout underway across your fleet."),
-    (2, 14, True, "Re: Kickoff — fleet ops rollout",
-     "Great, our dispatch team is ready whenever you are."),
-    (18, 9, False, "Usage check-in — adoption trending up",
-     "Adoption numbers are looking strong this month, wanted to flag it."),
-    (19, 11, True, "Re: Usage check-in — adoption trending up",
-     "Yep, our drivers have taken to it faster than expected."),
-    (45, 9, False, "Route optimization — early results",
-     "Early route optimization numbers are in, worth a look before next sync."),
-    (45, 16, True, "Re: Route optimization — early results",
-     "These are great, sharing with the regional managers."),
-    (75, 9, False, "Expansion conversation — facilities interest",
-     "Heard facilities is interested in the platform too, happy to loop in."),
-    (75, 13, True, "Re: Expansion conversation — facilities interest",
-     "Yes, I've already connected Sarah Chen with your team."),
-    (100, 9, False, "Q3 planning — fleet ops usage trajectory",
-     "Usage trajectory looks strong heading into Q3, let's talk expansion scope."),
-    (100, 12, True, "Re: Q3 planning — fleet ops usage trajectory",
-     "Agreed, let's put expansion on the agenda for our next sync."),
-    (130, 9, False, "Expansion scoping — draft terms",
-     "Sending over draft terms for the fleet ops + facilities expansion."),
-    (130, 11, True, "Re: Expansion scoping — draft terms",
-     "Reviewed, this looks right, routing to finance for sign-off."),
-    (150, 9, False, "Expansion — finance sign-off timeline",
-     "Checking in on finance sign-off timeline ahead of the close."),
-    (150, 10, True, "Re: Expansion — finance sign-off timeline",
-     "On track, expect sign-off this week."),
-    (165, 9, False, "Expansion — final review before close",
-     "Final review doc attached ahead of closing the expansion."),
-    (165, 10, True, "Re: Expansion — final review before close",
-     "Approved on our end, ready to close."),
-    (178, 9, False, "Expansion — closing this week",
-     "Everything's set to close the expansion this week, thank you for driving this."),
-    (178, 10, True, "Re: Expansion — closing this week",
-     "Thrilled to expand the partnership, talk soon."),
-    (185, 9, False, "Expansion closed — next steps",
-     "Expansion is officially closed, sending over the rollout plan for the new scope."),
-    (185, 11, True, "Re: Expansion closed — next steps",
-     "Fantastic, let's get the new modules rolled out quickly."),
-    (220, 9, False, "Expanded scope — rollout progress",
-     "Rollout on the expanded scope is going smoothly, adoption climbing fast."),
-    (220, 13, True, "Re: Expanded scope — rollout progress",
-     "Great to hear, drivers are picking it up quickly."),
-    (272, 9, False, "Year-end push — usage climbing again",
-     "Seeing another usage climb heading into year-end, great trajectory."),
-    (272, 12, True, "Re: Year-end push — usage climbing again",
-     "Yes, we're leaning in hard before year-end close."),
-    (285, 9, False, "Year-end review prep",
-     "Sending the year-end review agenda, usage trend looks excellent."),
-    (285, 10, True, "Re: Year-end review prep",
-     "Looks good, see you at the review."),
+_ALICIA_MESSAGE_SCHEDULE: tuple[tuple[int, int, bool, str], ...] = (
+    (2, 9, False, "Kickoff — fleet ops rollout"),
+    (2, 14, True, "Re: Kickoff — fleet ops rollout"),
+    (18, 9, False, "Usage check-in — adoption trending up"),
+    (19, 11, True, "Re: Usage check-in — adoption trending up"),
+    (45, 9, False, "Route optimization — early results"),
+    (45, 16, True, "Re: Route optimization — early results"),
+    (75, 9, False, "Expansion conversation — facilities interest"),
+    (75, 13, True, "Re: Expansion conversation — facilities interest"),
+    (100, 9, False, "Q3 planning — fleet ops usage trajectory"),
+    (100, 12, True, "Re: Q3 planning — fleet ops usage trajectory"),
+    (130, 9, False, "Expansion scoping — draft terms"),
+    (130, 11, True, "Re: Expansion scoping — draft terms"),
+    (150, 9, False, "Expansion — finance sign-off timeline"),
+    (150, 10, True, "Re: Expansion — finance sign-off timeline"),
+    (165, 9, False, "Expansion — final review before close"),
+    (165, 10, True, "Re: Expansion — final review before close"),
+    (178, 9, False, "Expansion — closing this week"),
+    (178, 10, True, "Re: Expansion — closing this week"),
+    (185, 9, False, "Expansion closed — next steps"),
+    (185, 11, True, "Re: Expansion closed — next steps"),
+    (220, 9, False, "Expanded scope — rollout progress"),
+    (220, 13, True, "Re: Expanded scope — rollout progress"),
+    (272, 9, False, "Year-end push — usage climbing again"),
+    (272, 12, True, "Re: Year-end push — usage climbing again"),
+    (285, 9, False, "Year-end review prep"),
+    (285, 10, True, "Re: Year-end review prep"),
 )
 
-_SARAH_MESSAGE_SCHEDULE: tuple[tuple[int, int, bool, str, str], ...] = (
-    (10, 9, False, "Welcome — facilities onboarding",
-     "Welcome aboard, looking forward to getting facilities set up on the platform."),
-    (10, 15, True, "Re: Welcome — facilities onboarding",
-     "Thanks, excited to get started, when can we schedule training?"),
-    (17, 9, False, "Facilities onboarding — training scheduled",
-     "Training is scheduled for this week, sending the agenda now."),
-    (17, 12, True, "Re: Facilities onboarding — training scheduled",
-     "Perfect, my team is ready."),
-    (40, 9, False, "Facilities usage — first month results",
-     "First month of facilities usage data is in, adoption is strong."),
-    (40, 14, True, "Re: Facilities usage — first month results",
-     "Great to see, our maintenance team loves the alerts."),
-    (70, 9, False, "Facilities — expansion interest",
-     "Wanted to check whether facilities would want to formalize the expanded scope."),
-    (70, 11, True, "Re: Facilities — expansion interest",
-     "Yes, very interested, let's get budget approval moving."),
-    (95, 9, False, "Facilities — budget approval check-in",
-     "Checking in on budget approval for the facilities expansion."),
-    (95, 13, True, "Re: Facilities — budget approval check-in",
-     "Approved on our side, coordinating with Alicia's team on terms."),
-    (125, 9, False, "Facilities — expansion scope alignment",
-     "Aligning facilities scope with the broader fleet ops expansion terms."),
-    (125, 10, True, "Re: Facilities — expansion scope alignment",
-     "Looks aligned, ready to sign off with fleet ops."),
-    (155, 9, False, "Facilities — pre-close readiness",
-     "Getting facilities ready for the expansion close next month."),
-    (155, 11, True, "Re: Facilities — pre-close readiness",
-     "All set, my team is ready to onboard the new modules."),
-    (168, 9, False, "Facilities — expansion close next week",
-     "Expansion closes next week, sending final facilities rollout plan."),
-    (168, 10, True, "Re: Facilities — expansion close next week",
-     "Reviewed, looks great, excited to get going."),
-    (182, 9, False, "Facilities expansion closed — rollout kickoff",
-     "Facilities expansion is closed, kicking off the new module rollout."),
-    (182, 12, True, "Re: Facilities expansion closed — rollout kickoff",
-     "Team is ready, let's get started this week."),
-    (225, 9, False, "Facilities — expanded module adoption",
-     "Adoption on the new facilities modules is climbing quickly."),
-    (225, 14, True, "Re: Facilities — expanded module adoption",
-     "Yes, maintenance alerts have cut response time significantly."),
-    (274, 9, False, "Facilities — year-end usage climbing",
-     "Facilities usage is climbing again heading into year-end, strong trend."),
-    (274, 11, True, "Re: Facilities — year-end usage climbing",
-     "Agreed, we're pushing hard to close out the year strong."),
-    (288, 9, False, "Facilities — year-end review prep",
-     "Sending the facilities year-end review agenda ahead of next week."),
-    (288, 13, True, "Re: Facilities — year-end review prep",
-     "Looks good, see you then."),
+_SARAH_MESSAGE_SCHEDULE: tuple[tuple[int, int, bool, str], ...] = (
+    (10, 9, False, "Welcome — facilities onboarding"),
+    (10, 15, True, "Re: Welcome — facilities onboarding"),
+    (17, 9, False, "Facilities onboarding — training scheduled"),
+    (17, 12, True, "Re: Facilities onboarding — training scheduled"),
+    (40, 9, False, "Facilities usage — first month results"),
+    (40, 14, True, "Re: Facilities usage — first month results"),
+    (70, 9, False, "Facilities — expansion interest"),
+    (70, 11, True, "Re: Facilities — expansion interest"),
+    (95, 9, False, "Facilities — budget approval check-in"),
+    (95, 13, True, "Re: Facilities — budget approval check-in"),
+    (125, 9, False, "Facilities — expansion scope alignment"),
+    (125, 10, True, "Re: Facilities — expansion scope alignment"),
+    (155, 9, False, "Facilities — pre-close readiness"),
+    (155, 11, True, "Re: Facilities — pre-close readiness"),
+    (168, 9, False, "Facilities — expansion close next week"),
+    (168, 10, True, "Re: Facilities — expansion close next week"),
+    (182, 9, False, "Facilities expansion closed — rollout kickoff"),
+    (182, 12, True, "Re: Facilities expansion closed — rollout kickoff"),
+    (225, 9, False, "Facilities — expanded module adoption"),
+    (225, 14, True, "Re: Facilities — expanded module adoption"),
+    (274, 9, False, "Facilities — year-end usage climbing"),
+    (274, 11, True, "Re: Facilities — year-end usage climbing"),
+    (288, 9, False, "Facilities — year-end review prep"),
+    (288, 13, True, "Re: Facilities — year-end review prep"),
 )
 
 
@@ -166,24 +120,26 @@ def _thread_id(key: str) -> str:
 
 
 def _build_messages(
-    schedule: tuple[tuple[int, int, bool, str, str], ...],
+    schedule: tuple[tuple[int, int, bool, str], ...],
+    bodies: dict[tuple[int, int], str],
     contact_email: str,
     thread_id: str,
     as_of_day: int,
 ) -> list[dict]:
     messages = []
-    for day_offset, hour, from_contact, subject, snippet in schedule:
+    for day_offset, hour, from_contact, subject in schedule:
         if day_offset > as_of_day:
             break
         sender = contact_email if from_contact else _CSM_EMAIL
         recipient = _CSM_EMAIL if from_contact else contact_email
         msg_id = det_id("email-msg", MERIDIAN_ACCOUNT_ID, thread_id, day_offset, hour)
+        body = bodies[(day_offset, hour)]
         messages.append(
             {
                 "id": msg_id,
                 "threadId": thread_id,
                 "labelIds": ["INBOX"] if from_contact else ["SENT"],
-                "snippet": snippet,
+                "snippet": derive_snippet(body),
                 "internalDate": str(
                     int(
                         datetime.fromisoformat(
@@ -199,7 +155,7 @@ def _build_messages(
                         {"name": "Date", "value": _rfc3339(day_offset, hour)},
                         {"name": "Subject", "value": subject},
                     ],
-                    "body": {"data": snippet},
+                    "body": {"data": body},
                 },
             }
         )
@@ -221,14 +177,14 @@ def meridian_email_thread(as_of_day: int) -> dict:
             "id": alicia_thread_id,
             "historyId": str(1000 + as_of_day),
             "messages": _build_messages(
-                _ALICIA_MESSAGE_SCHEDULE, _ALICIA_EMAIL, alicia_thread_id, as_of_day
+                _ALICIA_MESSAGE_SCHEDULE, _ALICIA_BODIES, _ALICIA_EMAIL, alicia_thread_id, as_of_day
             ),
         },
         {
             "id": sarah_thread_id,
             "historyId": str(2000 + as_of_day),
             "messages": _build_messages(
-                _SARAH_MESSAGE_SCHEDULE, _SARAH_EMAIL, sarah_thread_id, as_of_day
+                _SARAH_MESSAGE_SCHEDULE, _SARAH_BODIES, _SARAH_EMAIL, sarah_thread_id, as_of_day
             ),
         },
     ]
