@@ -1,0 +1,143 @@
+{
+  "artifact": "content_consistency_battery",
+  "cases": [
+    {
+      "case": "error_string_cross_references",
+      "detail": {
+        "ironridge_day40": {
+          "in_verbatim": true
+        },
+        "pinehill_day0": {
+          "in_email": true,
+          "in_verbatim": true
+        },
+        "pinehill_day30": {
+          "in_email": true,
+          "in_verbatim": true
+        },
+        "pinehill_day80": {
+          "in_email": true,
+          "in_verbatim": true
+        }
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "no_error_string_leakage",
+      "detail": {
+        "ironridge_leaked_into": []
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "module_tier_consistency",
+      "detail": {
+        "aspenridge": {
+          "entitled": [
+            "Live Map",
+            "Route Optimizer"
+          ],
+          "found_forbidden": []
+        },
+        "meridian-alicia": {
+          "entitled": [
+            "Driver Scorecards",
+            "Live Map",
+            "Maintenance Radar",
+            "Route Optimizer"
+          ],
+          "found_forbidden": []
+        },
+        "meridian-sarah": {
+          "entitled": [
+            "Driver Scorecards",
+            "Live Map",
+            "Maintenance Radar",
+            "Route Optimizer"
+          ],
+          "found_forbidden": []
+        },
+        "pinehill": {
+          "entitled": [
+            "Live Map",
+            "Route Optimizer"
+          ],
+          "found_forbidden": []
+        },
+        "pinnacle": {
+          "entitled": [
+            "Dispatch Automation",
+            "Fuel Analytics",
+            "Insights Hub",
+            "Live Map",
+            "Route Optimizer"
+          ],
+          "found_forbidden": []
+        },
+        "quarrystone": {
+          "entitled": [
+            "Live Map"
+          ],
+          "found_forbidden": []
+        },
+        "trailhead": {
+          "entitled": [
+            "Compliance Center",
+            "Fuel Analytics",
+            "Insights Hub",
+            "Live Map",
+            "Route Optimizer"
+          ],
+          "found_forbidden": []
+        }
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "reply_continuity",
+      "detail": {
+        "meridian-alicia(75, 13)": true,
+        "meridian-sarah(40, 14)": true,
+        "pinehill(306, 12)": true,
+        "pinehill(34, 11)": true,
+        "pinehill(8, 15)": true,
+        "pinehill(87, 21)": true,
+        "pinnacle(136, 15)": true,
+        "pinnacle(170, 13)": true,
+        "trailhead(175, 15)": true
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "persona_length_bounds",
+      "detail": {
+        "dennis_lengths": [
+          160,
+          84,
+          117,
+          127,
+          120,
+          194,
+          112,
+          33,
+          129
+        ],
+        "marcus_lengths": [
+          751,
+          787,
+          581,
+          646,
+          835
+        ]
+      },
+      "ok": true,
+      "problems": []
+    }
+  ],
+  "failed_cases": [],
+  "hard_ok": true
+}
