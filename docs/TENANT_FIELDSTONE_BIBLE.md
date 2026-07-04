@@ -148,18 +148,19 @@ as fleetops):
   above) — there is nothing to read as "green," and no code path may
   invent one.
 
-**Checkpoint truths:**
-- **Day 60**: latency trend `None` (insufficient two full trailing
-  windows yet at day 60 given a ~40h-per-message, sparse-message cadence
-  — fail-closed, not a defect) or, if computable, a delta near zero.
-  Cadence shift: insufficient history (only one confirmed meeting by day
-  60). Zero risk flags.
-- **Day 180**: latency trend computable, delta near zero (38-42h band,
-  never stretching). Cadence shift: two meetings now visible (day 15,
-  105); delta near zero (both ~90 days apart, matching the account's own
-  established cadence). Zero risk flags.
-- **Day 300**: latency and cadence both flat throughout. Zero cases ever.
-  Zero risk flags.
+**Checkpoint truths (verified against `signal_extractor.reply_latency_trend`
+computed over the actual fixture, not estimated):**
+- **Day 60**: latency trend `None` — insufficient reply history in one or
+  both trailing 21-day windows this early (sparse, quarterly-adjacent
+  messaging means the two-full-window precondition isn't met yet) —
+  fail-closed, not a defect. Cadence shift: insufficient history (only
+  one confirmed meeting by day 60, `meeting_cadence_shift` needs two
+  gaps). Zero risk flags either way.
+- **Day 180**: latency trend computable: delta -0.5h (37.5h trailing-21d
+  mean vs. 38.0h prior-21d mean) — a flat, near-zero delta, exactly the
+  "no risk" signature. Zero risk flags.
+- **Day 300**: latency stays flat throughout (same 37-42h band every
+  exchange all year); zero cases ever. Zero risk flags.
 
 Briefing-level truth: this account is not a signal of anything. An ideal
 agent reading it with FleetOps' absolute thresholds (`latency > 10h`,
@@ -177,38 +178,46 @@ recommendation is the only correct action).
 Timeline:
 - Champion: Marcus Oduya (ops manager). One email thread.
 - Days 1-89: reply latency holding at the account's own healthy baseline,
-  38-44 hours (statistically indistinguishable from Masonry's baseline —
-  this account's "before" state IS a Fieldstone-normal account).
-- Days 90-150: latency stretches steadily across four messages — 65h
-  (day 95), 88h (day 112), 110h (day 130), 128h (day 149) — a real,
-  monotonic delta from the account's OWN 40h baseline, not merely "high
-  in absolute terms" (which would misfire on Masonry too, since Masonry
-  also sits in the 38-42h band).
+  36-38 hours (statistically indistinguishable from Masonry's baseline —
+  this account's "before" state IS a Fieldstone-normal account; verified:
+  at day 80 the computed trend is delta -0.5h, 37.5h trailing-21d mean vs.
+  38.0h prior-21d mean — the identical delta Masonry shows at day 180).
+- Days 90-150: latency stretches steadily — 77h (day 95), 78h (day 103),
+  102h (day 123), 102h (day 130), 132h (day 140) — a real delta from the
+  account's OWN ~37h baseline, not merely "high in absolute terms" (which
+  would also have to indict Masonry, whose own absolute band overlaps
+  Culvert-Mechanical's pre-day-90 numbers exactly). Verified: at day 140
+  the computed trend is delta +26h (104.0h trailing-21d mean vs. 78.0h
+  prior-21d mean) atop an absolute level already well above the tenant's
+  ~37-40h healthy band.
 - One case opens day 100 (quote-to-invoice billing dispute, unresolved
   through day 150) — support pressure compounding the comms signal.
 - Calendar: the day-90 quarterly meeting (due ~day 105 per the account's
   own cadence) is never scheduled — a missed beat against the account's
   own established rhythm, not an absolute "too few meetings" judgment.
 
-**Checkpoint truths:**
-- **Day 80**: latency ~40h, matching baseline. NO FLAG — 40h is this
-  tenant's (and this account's own) normal, exactly like Masonry.
-  Grading mode `none` here: any flag at day 80 is a false alarm.
-- **Day 140**: latency has stretched from the account's 40h baseline to
-  110h+ (a delta of 70h+, computed the same way
-  `signal_extractor.reply_latency_trend` already computes deltas —
-  trailing-21d-mean vs. prior-21d-mean), the day-100 case is still open
-  50 days later, and the day-90 quarterly meeting never happened. Grading
-  mode `gap`: a correct agent must flag this by day 140; silence is a
-  failure. The flag's evidence must cite the DELTA (not "over 40 hours,"
+**Checkpoint truths (verified against the actual fixture):**
+- **Day 80**: latency delta -0.5h (37.5h vs 38.0h prior window) — matching
+  baseline exactly. NO FLAG — this is this tenant's (and this account's
+  own) normal, exactly like Masonry. Grading mode `none` here: any flag
+  at day 80 is a false alarm.
+- **Day 140**: latency delta +26h (104.0h trailing-21d mean vs 78.0h
+  prior-21d mean), computed the same way
+  `signal_extractor.reply_latency_trend` already computes deltas, atop an
+  absolute level (100h+) far outside the tenant's healthy band; the
+  day-100 case is still open 40 days later; and the day-90 quarterly
+  meeting never happened. Grading mode `gap`: a correct agent must flag
+  this by day 140; silence is a failure. The flag's evidence must cite
+  the DELTA and the account's own baseline (not a bare "over 40 hours,"
   which would also indict Masonry) — the missing quarterly meeting, and
   the open case.
 
 Briefing-level truth: this is the tenant's proof that "risk = delta from
 tenant baseline" is a real, gradeable distinction, not a rhetorical one —
-Masonry and Culvert-Mechanical's day-80/day-1 latency numbers are
-statistically indistinguishable (both ~40h), and only one of them is
-actually at risk. The correct discriminator is trajectory, not level.
+Masonry's day-180 delta (-0.5h) and Culvert-Mechanical's own day-80 delta
+(-0.5h) are computed identically from the same signal family, and only
+one of the two accounts later develops a real, large delta. The correct
+discriminator is trajectory, not level.
 
 ## Herring F-H1 — the loud-looking non-event (`wrenhouse-hvac`)
 
