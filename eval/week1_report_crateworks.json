@@ -1,0 +1,140 @@
+{
+  "artifact": "week1_protocol_report",
+  "by_install_day": {
+    "14": {
+      "arc_c1_checkpoint": {},
+      "economics": {
+        "ran": false,
+        "skip_reason": "SKIP (loud): tier resolution for this tenant is derived directly from the CRM Opportunity's amount_cents (book.py), not a CSCompany/health-score record; the sweep-driven per-tier cost ledger this section normally reports has nothing to sweep for a tenant with no CS platform."
+      },
+      "feedback_persistence": {
+        "ran": false,
+        "skip_reason": "SKIP (loud): crateworks has no CS platform/product telemetry, so the sweep engine (agent1.sweep._slot_b_inputs_for_account) fails closed for every account -- there is no proposal to reject/regenerate. This is the correct degraded outcome for this tenant's vendor-stack gap, not an omission."
+      },
+      "install_day": 14,
+      "ok": true
+    },
+    "3": {
+      "arc_c1_checkpoint": {},
+      "economics": {
+        "ran": false,
+        "skip_reason": "SKIP (loud): tier resolution for this tenant is derived directly from the CRM Opportunity's amount_cents (book.py), not a CSCompany/health-score record; the sweep-driven per-tier cost ledger this section normally reports has nothing to sweep for a tenant with no CS platform."
+      },
+      "feedback_persistence": {
+        "ran": false,
+        "skip_reason": "SKIP (loud): crateworks has no CS platform/product telemetry, so the sweep engine (agent1.sweep._slot_b_inputs_for_account) fails closed for every account -- there is no proposal to reject/regenerate. This is the correct degraded outcome for this tenant's vendor-stack gap, not an omission."
+      },
+      "install_day": 3,
+      "ok": true
+    },
+    "7": {
+      "arc_c1_checkpoint": {},
+      "economics": {
+        "ran": false,
+        "skip_reason": "SKIP (loud): tier resolution for this tenant is derived directly from the CRM Opportunity's amount_cents (book.py), not a CSCompany/health-score record; the sweep-driven per-tier cost ledger this section normally reports has nothing to sweep for a tenant with no CS platform."
+      },
+      "feedback_persistence": {
+        "ran": false,
+        "skip_reason": "SKIP (loud): crateworks has no CS platform/product telemetry, so the sweep engine (agent1.sweep._slot_b_inputs_for_account) fails closed for every account -- there is no proposal to reject/regenerate. This is the correct degraded outcome for this tenant's vendor-stack gap, not an omission."
+      },
+      "install_day": 7,
+      "ok": true
+    }
+  },
+  "claim_boundary": {
+    "live": false,
+    "n_tenants": 1,
+    "sim": true
+  },
+  "degradation_battery": {
+    "cases": [
+      "arc-c1-checkpoints",
+      "mess-integrity",
+      "degradation-honesty",
+      "controls-zero-flag",
+      "canary-presence",
+      "repeatability"
+    ],
+    "failed_cases": [],
+    "hard_ok": true
+  },
+  "install_days": [
+    3,
+    7,
+    14
+  ],
+  "ok": true,
+  "onboarding_cost": {
+    "auto_mapped_by_tier": {
+      "other": 0,
+      "tier_a_source_declared": 0,
+      "tier_b_exact_alias": 7
+    },
+    "confirmed_ingest": {
+      "auto_mapped_by_tier": {
+        "other": 0,
+        "tier_a_source_declared": 0,
+        "tier_b_exact_alias": 7
+      },
+      "book_has_parent": true,
+      "declared_not_mappable": {
+        "accounts": [
+          "CRMContact.account_id",
+          "CRMContact.contact_id",
+          "CRMContact.email",
+          "CRMContact.name",
+          "CRMOpportunity.account_id",
+          "CRMOpportunity.opportunity_id",
+          "__tenant_custom__.onboarding_owner",
+          "__tenant_custom__.renewal_notes"
+        ],
+        "contacts": [
+          "CRMAccount.account_id",
+          "CRMAccount.name",
+          "CRMAccount.owner_id",
+          "CRMOpportunity.account_id",
+          "CRMOpportunity.close_date",
+          "CRMOpportunity.opportunity_id"
+        ],
+        "opportunities": [
+          "CRMAccount.account_id",
+          "CRMAccount.owner_id",
+          "CRMContact.account_id",
+          "CRMContact.contact_id"
+        ]
+      },
+      "expected_counts": {
+        "CRMAccount": 10,
+        "CRMContact": 30,
+        "CRMOpportunity": 10
+      },
+      "fabricated_mappings": [],
+      "questions_asked_count": 6,
+      "refused": [],
+      "refused_count": 0,
+      "rejection_counts": {},
+      "typed_counts": {
+        "CRMAccount": 10,
+        "CRMContact": 30,
+        "CRMOpportunity": 10
+      },
+      "zero_fabricated_mappings": true,
+      "zero_hollow_records": true
+    },
+    "fleetops_baseline_ceiling": 8,
+    "note": "crateworks is graded on the SHAPE of degradation, not a low count (docs/TENANT_CRATEWORKS_BIBLE.md section 7) -- no within_ceiling gate here.",
+    "questions_asked": [
+      "CRMAccount.account_id",
+      "CRMAccount.owner_id",
+      "CRMContact.account_id",
+      "CRMContact.contact_id",
+      "CRMOpportunity.account_id",
+      "CRMOpportunity.opportunity_id"
+    ],
+    "questions_asked_count": 6
+  },
+  "repeatability": {
+    "note": "checked by --repeatability-check at the CLI layer, not embedded here"
+  },
+  "tenant": "crateworks"
+}

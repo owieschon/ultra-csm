@@ -1,4 +1,4 @@
-"""Arc C1 comms/relationship fixtures for `crateworks-dockside-fulfillment`
+"""Arc C1 comms/relationship fixtures for `crateworks-dockside-storage`
 (``docs/TENANT_CRATEWORKS_BIBLE.md`` section 2): the fading champion, read
 through the identity mess.
 

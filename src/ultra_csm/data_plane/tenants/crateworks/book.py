@@ -44,12 +44,12 @@ TENANT = "crateworks"
 SEED_DATE = "2026-06-21"  # aligned with fleetops' SEED_DATE for cross-tenant day-offset parity
 STALE_DATE = "2023-06-21"  # exactly 3 years before SEED_DATE, per bible section 3.4
 
-DOCKSIDE_SLUG = "crateworks-dockside-fulfillment"
+DOCKSIDE_SLUG = "crateworks-dockside-storage"
 BOOK_ID = "crateworks-book"
 
 # (slug, display name, arr_cents, csm_owner_id) -- bible section 1's ten-account table.
 ACCOUNTS: tuple[tuple[str, str, int, str], ...] = (
-    (DOCKSIDE_SLUG, "Dockside Fulfillment", 18_000_000, "csm-cw-01"),
+    (DOCKSIDE_SLUG, "Dockside Storage", 18_000_000, "csm-cw-01"),
     ("crateworks-northgate-3pl", "Northgate 3PL", 6_000_000, "csm-cw-01"),
     ("crateworks-portline-logistics", "Portline Logistics", 4_200_000, "csm-cw-01"),
     ("crateworks-summitcrate-storage", "Summitcrate Storage", 3_000_000, "csm-cw-01"),
@@ -57,7 +57,7 @@ ACCOUNTS: tuple[tuple[str, str, int, str], ...] = (
     ("crateworks-drydock-warehousing", "Drydock Warehousing", 700_000, "csm-cw-01"),
     ("crateworks-fernbridge-distro", "Fernbridge Distro", 650_000, "csm-cw-01"),
     ("crateworks-ledgerport-storage", "Ledgerport Storage", 500_000, "csm-cw-01"),
-    ("crateworks-mossway-fulfillment", "Mossway Fulfillment", 400_000, "csm-cw-01"),
+    ("crateworks-mossway-crating", "Mossway Crating", 400_000, "csm-cw-01"),
     ("crateworks-quillstack-3pl", "Quillstack 3PL", 350_000, "csm-cw-01"),
 )
 
@@ -76,9 +76,9 @@ _CONTROL_DUPLICATE_NAMES: dict[str, str] = {
     "crateworks-summitcrate-storage": "Whitney Voss",
     "crateworks-basinwood-supply": "Marcus Iglehart",
     "crateworks-drydock-warehousing": "Renata Cho",
-    "crateworks-fernbridge-distro": "Owen Bramlett",
+    "crateworks-fernbridge-distro": "Aiden Bramlett",
     "crateworks-ledgerport-storage": "Ida Marchetti",
-    "crateworks-mossway-fulfillment": "Colton Rasmussen",
+    "crateworks-mossway-crating": "Colton Rasmussen",
     "crateworks-quillstack-3pl": "Grace Delacroix",
 }
 
@@ -179,7 +179,7 @@ def _dockside_contact_rows(account_id: str) -> tuple[dict[str, Any], ...]:
             contact_id=det_id("contact", account_id, "dana-okafor-1"),
             account_id=account_id,
             name="Dana Okafor",
-            email="dana.okafor@crateworks-dockside-fulfillment.example",
+            email="dana.okafor@crateworks-dockside-storage.example",
             title="VP Warehouse Ops",
             last_touch="2026-08-19",  # ~day 59, last healthy pre-fade touch
         ),
@@ -187,7 +187,7 @@ def _dockside_contact_rows(account_id: str) -> tuple[dict[str, Any], ...]:
             contact_id=det_id("contact", account_id, "dana-okafor-2"),
             account_id=account_id,
             name="DANA OKAFOR",
-            email="dana.okafor@crateworks-dockside-fulfillment.example",
+            email="dana.okafor@crateworks-dockside-storage.example",
             title="VP Warehouse Ops",
             last_touch="2026-08-19",
         ),
@@ -196,7 +196,7 @@ def _dockside_contact_rows(account_id: str) -> tuple[dict[str, Any], ...]:
             contact_id=det_id("contact", account_id, "stale-legacy-contact"),
             account_id=account_id,
             name="Harlan Voss",
-            email="harlan.voss@crateworks-dockside-fulfillment.example",
+            email="harlan.voss@crateworks-dockside-storage.example",
             title="Former Ops Coordinator",
             last_touch=STALE_DATE,
         ),

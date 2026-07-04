@@ -1,0 +1,300 @@
+{
+  "artifact": "crateworks_battery",
+  "cases": [
+    {
+      "case": "arc-c1-checkpoints",
+      "detail": {
+        "100": {
+          "gold_mode": "gap",
+          "gold_motion_in": [
+            "escalation"
+          ],
+          "latency_trend_hours": 16.0,
+          "width": 2.0
+        },
+        "200": {
+          "gold_mode": "gap",
+          "gold_motion_in": [
+            "escalation"
+          ],
+          "latency_trend_hours": 7.0,
+          "width": 2.0
+        },
+        "60": {
+          "gold_mode": "gap",
+          "gold_motion_in": [
+            "escalation"
+          ],
+          "latency_trend_hours": 3.5,
+          "width": 2.0
+        }
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "mess-integrity",
+      "detail": {
+        "empty_ratio_by_account": {
+          "crateworks-basinwood-supply": 1.0,
+          "crateworks-dockside-storage": 0.8,
+          "crateworks-drydock-warehousing": 1.0,
+          "crateworks-fernbridge-distro": 0.9,
+          "crateworks-ledgerport-storage": 1.0,
+          "crateworks-mossway-crating": 1.0,
+          "crateworks-northgate-3pl": 1.0,
+          "crateworks-portline-logistics": 1.0,
+          "crateworks-quillstack-3pl": 0.9,
+          "crateworks-summitcrate-storage": 0.9
+        },
+        "status_variants": [
+          "ACTIVE",
+          "active ",
+          "kinda active?"
+        ]
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "degradation-honesty",
+      "detail": {
+        "crateworks-basinwood-supply@100": {
+          "latency_value": null,
+          "width_value": 0.0
+        },
+        "crateworks-basinwood-supply@200": {
+          "latency_value": null,
+          "width_value": 0.0
+        },
+        "crateworks-basinwood-supply@60": {
+          "latency_value": null,
+          "width_value": 0.0
+        },
+        "crateworks-dockside-storage@100": {
+          "latency_value": 16.0,
+          "width_value": 2.0
+        },
+        "crateworks-dockside-storage@200": {
+          "latency_value": 7.0,
+          "width_value": 2.0
+        },
+        "crateworks-dockside-storage@60": {
+          "latency_value": 3.5,
+          "width_value": 2.0
+        },
+        "crateworks-drydock-warehousing@100": {
+          "latency_value": null,
+          "width_value": 0.0
+        },
+        "crateworks-drydock-warehousing@200": {
+          "latency_value": null,
+          "width_value": 0.0
+        },
+        "crateworks-drydock-warehousing@60": {
+          "latency_value": null,
+          "width_value": 0.0
+        },
+        "crateworks-fernbridge-distro@100": {
+          "latency_value": null,
+          "width_value": 0.0
+        },
+        "crateworks-fernbridge-distro@200": {
+          "latency_value": null,
+          "width_value": 0.0
+        },
+        "crateworks-fernbridge-distro@60": {
+          "latency_value": null,
+          "width_value": 0.0
+        },
+        "crateworks-ledgerport-storage@100": {
+          "latency_value": null,
+          "width_value": 0.0
+        },
+        "crateworks-ledgerport-storage@200": {
+          "latency_value": null,
+          "width_value": 0.0
+        },
+        "crateworks-ledgerport-storage@60": {
+          "latency_value": null,
+          "width_value": 0.0
+        },
+        "crateworks-mossway-crating@100": {
+          "latency_value": null,
+          "width_value": 0.0
+        },
+        "crateworks-mossway-crating@200": {
+          "latency_value": null,
+          "width_value": 0.0
+        },
+        "crateworks-mossway-crating@60": {
+          "latency_value": null,
+          "width_value": 0.0
+        },
+        "crateworks-northgate-3pl@100": {
+          "latency_value": null,
+          "width_value": 0.0
+        },
+        "crateworks-northgate-3pl@200": {
+          "latency_value": null,
+          "width_value": 0.0
+        },
+        "crateworks-northgate-3pl@60": {
+          "latency_value": null,
+          "width_value": 0.0
+        },
+        "crateworks-portline-logistics@100": {
+          "latency_value": null,
+          "width_value": 0.0
+        },
+        "crateworks-portline-logistics@200": {
+          "latency_value": null,
+          "width_value": 0.0
+        },
+        "crateworks-portline-logistics@60": {
+          "latency_value": null,
+          "width_value": 0.0
+        },
+        "crateworks-quillstack-3pl@100": {
+          "latency_value": null,
+          "width_value": 0.0
+        },
+        "crateworks-quillstack-3pl@200": {
+          "latency_value": null,
+          "width_value": 0.0
+        },
+        "crateworks-quillstack-3pl@60": {
+          "latency_value": null,
+          "width_value": 0.0
+        },
+        "crateworks-summitcrate-storage@100": {
+          "latency_value": null,
+          "width_value": 0.0
+        },
+        "crateworks-summitcrate-storage@200": {
+          "latency_value": null,
+          "width_value": 0.0
+        },
+        "crateworks-summitcrate-storage@60": {
+          "latency_value": null,
+          "width_value": 0.0
+        }
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "controls-zero-flag",
+      "detail": {
+        "crateworks-basinwood-supply@100": {
+          "flagged": false
+        },
+        "crateworks-basinwood-supply@200": {
+          "flagged": false
+        },
+        "crateworks-basinwood-supply@60": {
+          "flagged": false
+        },
+        "crateworks-drydock-warehousing@100": {
+          "flagged": false
+        },
+        "crateworks-drydock-warehousing@200": {
+          "flagged": false
+        },
+        "crateworks-drydock-warehousing@60": {
+          "flagged": false
+        },
+        "crateworks-fernbridge-distro@100": {
+          "flagged": false
+        },
+        "crateworks-fernbridge-distro@200": {
+          "flagged": false
+        },
+        "crateworks-fernbridge-distro@60": {
+          "flagged": false
+        },
+        "crateworks-ledgerport-storage@100": {
+          "flagged": false
+        },
+        "crateworks-ledgerport-storage@200": {
+          "flagged": false
+        },
+        "crateworks-ledgerport-storage@60": {
+          "flagged": false
+        },
+        "crateworks-mossway-crating@100": {
+          "flagged": false
+        },
+        "crateworks-mossway-crating@200": {
+          "flagged": false
+        },
+        "crateworks-mossway-crating@60": {
+          "flagged": false
+        },
+        "crateworks-northgate-3pl@100": {
+          "flagged": false
+        },
+        "crateworks-northgate-3pl@200": {
+          "flagged": false
+        },
+        "crateworks-northgate-3pl@60": {
+          "flagged": false
+        },
+        "crateworks-portline-logistics@100": {
+          "flagged": false
+        },
+        "crateworks-portline-logistics@200": {
+          "flagged": false
+        },
+        "crateworks-portline-logistics@60": {
+          "flagged": false
+        },
+        "crateworks-quillstack-3pl@100": {
+          "flagged": false
+        },
+        "crateworks-quillstack-3pl@200": {
+          "flagged": false
+        },
+        "crateworks-quillstack-3pl@60": {
+          "flagged": false
+        },
+        "crateworks-summitcrate-storage@100": {
+          "flagged": false
+        },
+        "crateworks-summitcrate-storage@200": {
+          "flagged": false
+        },
+        "crateworks-summitcrate-storage@60": {
+          "flagged": false
+        }
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "canary-presence",
+      "detail": {
+        "crateworks-basinwood-supply": "CANARY-crateworks-crateworks-basinwood-supply-8e5d2517",
+        "crateworks-dockside-storage": "CANARY-crateworks-crateworks-dockside-storage-03c77a8b",
+        "crateworks-drydock-warehousing": "CANARY-crateworks-crateworks-drydock-warehousing-ede922f7",
+        "crateworks-fernbridge-distro": "CANARY-crateworks-crateworks-fernbridge-distro-76ae5f94",
+        "crateworks-ledgerport-storage": "CANARY-crateworks-crateworks-ledgerport-storage-d07ed508",
+        "crateworks-mossway-crating": "CANARY-crateworks-crateworks-mossway-crating-80aece5a",
+        "crateworks-northgate-3pl": "CANARY-crateworks-crateworks-northgate-3pl-cbc41fa3",
+        "crateworks-portline-logistics": "CANARY-crateworks-crateworks-portline-logistics-4322a597",
+        "crateworks-quillstack-3pl": "CANARY-crateworks-crateworks-quillstack-3pl-1ad75818",
+        "crateworks-summitcrate-storage": "CANARY-crateworks-crateworks-summitcrate-storage-1229fce1"
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "repeatability",
+      "detail": {},
+      "ok": true,
+      "problems": []
+    }
+  ],
+  "failed_cases": [],
+  "hard_ok": true
+}

@@ -45,7 +45,7 @@ resolution (`arr_cents >= $100K` high, `>= $25K` mid, else tech).
 
 | Slug | Tier | ARR (cents) | Role |
 | --- | --- | --- | --- |
-| `crateworks-dockside-fulfillment` | high_touch | 18,000,000 | Arc C1 host account (see section 2) |
+| `crateworks-dockside-storage` | high_touch | 18,000,000 | Arc C1 host account (see section 2) |
 | `crateworks-northgate-3pl` | mid_touch | 6,000,000 | control |
 | `crateworks-portline-logistics` | mid_touch | 4,200,000 | control |
 | `crateworks-summitcrate-storage` | mid_touch | 3,000,000 | control |
@@ -53,7 +53,7 @@ resolution (`arr_cents >= $100K` high, `>= $25K` mid, else tech).
 | `crateworks-drydock-warehousing` | tech_touch | 700,000 | control |
 | `crateworks-fernbridge-distro` | tech_touch | 650,000 | control |
 | `crateworks-ledgerport-storage` | tech_touch | 500,000 | control |
-| `crateworks-mossway-fulfillment` | tech_touch | 400,000 | control |
+| `crateworks-mossway-crating` | tech_touch | 400,000 | control |
 | `crateworks-quillstack-3pl` | tech_touch | 350,000 | control |
 
 All ten accounts carry the mess spec (section 3) at their full authored
@@ -63,7 +63,7 @@ be uniformly bad across every row.
 
 ## 2. Arc C1 — the fading champion, read through the mess (`gap` mode)
 
-**Host account:** `crateworks-dockside-fulfillment`.
+**Host account:** `crateworks-dockside-storage`.
 
 **World truth.** Dana Okafor (VP Warehouse Ops) is Dockside's champion.
 Her engagement genuinely fades across days 60–200: reply cadence and
@@ -76,7 +76,7 @@ two people, never a handoff to a genuinely new stakeholder.
 **The identity mess (deliberately, causally entangled with the world
 truth, not decorative):**
 
-- **Day 0–90:** Dana replies from `dana.okafor@crateworks-dockside-fulfillment.example`.
+- **Day 0–90:** Dana replies from `dana.okafor@crateworks-dockside-storage.example`.
   Reply latency in this window is healthy (~8–14h), consistent with an
   engaged champion.
 - **Day 60–200:** the fade begins. Reply latency on the
@@ -165,7 +165,7 @@ not a confident wrong resolution either.
 
 Applied per account, all ten accounts, authored directly into the flat book
 builder (`src/ultra_csm/data_plane/tenants/crateworks/book.py`) so the
-quotas below are load-bearing fixture facts a battery can check, not sampled
+quotas below are asserted fixture facts a battery can check, not sampled
 randomness (CONVENTIONS section 7: deterministic fixtures, no `random`):
 
 1. **≥40% of optional fields empty per account row.** The homegrown export's
@@ -210,7 +210,7 @@ The seven non-arc, non-Dockside accounts —
 `crateworks-summitcrate-storage`, `crateworks-basinwood-supply`,
 `crateworks-drydock-warehousing`, `crateworks-fernbridge-distro`,
 `crateworks-ledgerport-storage` — plus the two remaining tech-touch
-accounts `crateworks-mossway-fulfillment` and `crateworks-quillstack-3pl`
+accounts `crateworks-mossway-crating` and `crateworks-quillstack-3pl`
 carry the full mess spec (section 3) but no arc content: their duplicate
 contact pair, stale record, and free-text status field are all
 un-narrated — present because the mess spec demands it of every account,

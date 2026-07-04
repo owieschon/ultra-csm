@@ -1,0 +1,295 @@
+[
+  {
+    "tenant": "crateworks",
+    "account_slug": "crateworks-dockside-storage",
+    "checkpoint_day": 60,
+    "mode": "gap",
+    "required": {
+      "signal": "reply_latency_trend",
+      "motion_in": ["escalation"],
+      "evidence_must_include": [
+        "0b5f5667-d7c5-5825-9972-0c1089e82c81",
+        "161b9ad4-edc2-589c-b9cc-3a5d6faa4131",
+        "c75cece4-f593-5bf8-9b7b-dd733afc1f1a"
+      ]
+    },
+    "forbidden_motions": [],
+    "notes": "bible arc C1, day-60 baseline checkpoint: reply latency mild uptick (+3.5h) but the duplicate-contact width-2 mess is already present here too -- the gold requires the same escalation-with-named-ambiguity read as day 100, not silence, because the identity ambiguity itself is not a day-100-only fact."
+  },
+  {
+    "tenant": "crateworks",
+    "account_slug": "crateworks-dockside-storage",
+    "checkpoint_day": 100,
+    "mode": "gap",
+    "required": {
+      "signal": "reply_latency_trend",
+      "motion_in": ["escalation"],
+      "evidence_must_include": [
+        "0263d3e1-4971-5bc1-b74a-7b625fb5107c",
+        "0d941b4b-4834-5cbd-949c-d89d2c5d6021",
+        "bc98cf47-1e41-5a03-a2c0-5330b5f3dd5f"
+      ]
+    },
+    "forbidden_motions": [],
+    "notes": "bible arc C1 FINAL ground truth (section 2): thread_participation_width reads 2 at day 100 without identity resolution -- FORBIDDEN to report this as two engaged stakeholders / multi-threaded health. REQUIRED: escalation citing (a) the reply-latency stretch (+16h) and (b) the duplicate-contact ambiguity itself named as evidence, not resolved in either direction."
+  },
+  {
+    "tenant": "crateworks",
+    "account_slug": "crateworks-dockside-storage",
+    "checkpoint_day": 200,
+    "mode": "gap",
+    "required": {
+      "signal": "reply_latency_trend",
+      "motion_in": ["escalation"],
+      "evidence_must_include": [
+        "4437c3c7-7a6e-54d2-bc40-0f494ed6060f",
+        "f4fbdcbd-0790-5f3b-a69e-1e60a972d0f6"
+      ]
+    },
+    "forbidden_motions": [],
+    "notes": "bible arc C1, day-200 post-transition checkpoint: no new dana.okafor@... email for 70+ days (a comms-level fact distinct from thread_participation_width, which has no staleness decay and still reads 2). Required: escalation flagging the parent-domain address change as needing confirmation before treating the account as re-engaged, not a silent 'recovered' read."
+  },
+  {
+    "tenant": "crateworks",
+    "account_slug": "crateworks-northgate-3pl",
+    "checkpoint_day": 60,
+    "mode": "none",
+    "required": {"signal": null, "motion_in": []},
+    "forbidden_motions": [],
+    "notes": "control account (bible section 4): mess spec present (duplicate contacts, stale record, free-text status) but no arc -- must not manufacture a flag."
+  },
+  {
+    "tenant": "crateworks",
+    "account_slug": "crateworks-northgate-3pl",
+    "checkpoint_day": 100,
+    "mode": "none",
+    "required": {"signal": null, "motion_in": []},
+    "forbidden_motions": [],
+    "notes": "control account, day-100 checkpoint."
+  },
+  {
+    "tenant": "crateworks",
+    "account_slug": "crateworks-northgate-3pl",
+    "checkpoint_day": 200,
+    "mode": "none",
+    "required": {"signal": null, "motion_in": []},
+    "forbidden_motions": [],
+    "notes": "control account, day-200 checkpoint."
+  },
+  {
+    "tenant": "crateworks",
+    "account_slug": "crateworks-portline-logistics",
+    "checkpoint_day": 60,
+    "mode": "none",
+    "required": {"signal": null, "motion_in": []},
+    "forbidden_motions": [],
+    "notes": "control account (bible section 4)."
+  },
+  {
+    "tenant": "crateworks",
+    "account_slug": "crateworks-portline-logistics",
+    "checkpoint_day": 100,
+    "mode": "none",
+    "required": {"signal": null, "motion_in": []},
+    "forbidden_motions": [],
+    "notes": "control account, day-100 checkpoint."
+  },
+  {
+    "tenant": "crateworks",
+    "account_slug": "crateworks-portline-logistics",
+    "checkpoint_day": 200,
+    "mode": "none",
+    "required": {"signal": null, "motion_in": []},
+    "forbidden_motions": [],
+    "notes": "control account, day-200 checkpoint."
+  },
+  {
+    "tenant": "crateworks",
+    "account_slug": "crateworks-summitcrate-storage",
+    "checkpoint_day": 60,
+    "mode": "none",
+    "required": {"signal": null, "motion_in": []},
+    "forbidden_motions": [],
+    "notes": "control account (bible section 4)."
+  },
+  {
+    "tenant": "crateworks",
+    "account_slug": "crateworks-summitcrate-storage",
+    "checkpoint_day": 100,
+    "mode": "none",
+    "required": {"signal": null, "motion_in": []},
+    "forbidden_motions": [],
+    "notes": "control account, day-100 checkpoint."
+  },
+  {
+    "tenant": "crateworks",
+    "account_slug": "crateworks-summitcrate-storage",
+    "checkpoint_day": 200,
+    "mode": "none",
+    "required": {"signal": null, "motion_in": []},
+    "forbidden_motions": [],
+    "notes": "control account, day-200 checkpoint."
+  },
+  {
+    "tenant": "crateworks",
+    "account_slug": "crateworks-basinwood-supply",
+    "checkpoint_day": 60,
+    "mode": "none",
+    "required": {"signal": null, "motion_in": []},
+    "forbidden_motions": [],
+    "notes": "control account (bible section 4)."
+  },
+  {
+    "tenant": "crateworks",
+    "account_slug": "crateworks-basinwood-supply",
+    "checkpoint_day": 100,
+    "mode": "none",
+    "required": {"signal": null, "motion_in": []},
+    "forbidden_motions": [],
+    "notes": "control account, day-100 checkpoint."
+  },
+  {
+    "tenant": "crateworks",
+    "account_slug": "crateworks-basinwood-supply",
+    "checkpoint_day": 200,
+    "mode": "none",
+    "required": {"signal": null, "motion_in": []},
+    "forbidden_motions": [],
+    "notes": "control account, day-200 checkpoint."
+  },
+  {
+    "tenant": "crateworks",
+    "account_slug": "crateworks-drydock-warehousing",
+    "checkpoint_day": 60,
+    "mode": "none",
+    "required": {"signal": null, "motion_in": []},
+    "forbidden_motions": [],
+    "notes": "control account (bible section 4)."
+  },
+  {
+    "tenant": "crateworks",
+    "account_slug": "crateworks-drydock-warehousing",
+    "checkpoint_day": 100,
+    "mode": "none",
+    "required": {"signal": null, "motion_in": []},
+    "forbidden_motions": [],
+    "notes": "control account, day-100 checkpoint."
+  },
+  {
+    "tenant": "crateworks",
+    "account_slug": "crateworks-drydock-warehousing",
+    "checkpoint_day": 200,
+    "mode": "none",
+    "required": {"signal": null, "motion_in": []},
+    "forbidden_motions": [],
+    "notes": "control account, day-200 checkpoint."
+  },
+  {
+    "tenant": "crateworks",
+    "account_slug": "crateworks-fernbridge-distro",
+    "checkpoint_day": 60,
+    "mode": "none",
+    "required": {"signal": null, "motion_in": []},
+    "forbidden_motions": [],
+    "notes": "control account (bible section 4)."
+  },
+  {
+    "tenant": "crateworks",
+    "account_slug": "crateworks-fernbridge-distro",
+    "checkpoint_day": 100,
+    "mode": "none",
+    "required": {"signal": null, "motion_in": []},
+    "forbidden_motions": [],
+    "notes": "control account, day-100 checkpoint."
+  },
+  {
+    "tenant": "crateworks",
+    "account_slug": "crateworks-fernbridge-distro",
+    "checkpoint_day": 200,
+    "mode": "none",
+    "required": {"signal": null, "motion_in": []},
+    "forbidden_motions": [],
+    "notes": "control account, day-200 checkpoint."
+  },
+  {
+    "tenant": "crateworks",
+    "account_slug": "crateworks-ledgerport-storage",
+    "checkpoint_day": 60,
+    "mode": "none",
+    "required": {"signal": null, "motion_in": []},
+    "forbidden_motions": [],
+    "notes": "control account (bible section 4)."
+  },
+  {
+    "tenant": "crateworks",
+    "account_slug": "crateworks-ledgerport-storage",
+    "checkpoint_day": 100,
+    "mode": "none",
+    "required": {"signal": null, "motion_in": []},
+    "forbidden_motions": [],
+    "notes": "control account, day-100 checkpoint."
+  },
+  {
+    "tenant": "crateworks",
+    "account_slug": "crateworks-ledgerport-storage",
+    "checkpoint_day": 200,
+    "mode": "none",
+    "required": {"signal": null, "motion_in": []},
+    "forbidden_motions": [],
+    "notes": "control account, day-200 checkpoint."
+  },
+  {
+    "tenant": "crateworks",
+    "account_slug": "crateworks-mossway-crating",
+    "checkpoint_day": 60,
+    "mode": "none",
+    "required": {"signal": null, "motion_in": []},
+    "forbidden_motions": [],
+    "notes": "control account (bible section 4)."
+  },
+  {
+    "tenant": "crateworks",
+    "account_slug": "crateworks-mossway-crating",
+    "checkpoint_day": 100,
+    "mode": "none",
+    "required": {"signal": null, "motion_in": []},
+    "forbidden_motions": [],
+    "notes": "control account, day-100 checkpoint."
+  },
+  {
+    "tenant": "crateworks",
+    "account_slug": "crateworks-mossway-crating",
+    "checkpoint_day": 200,
+    "mode": "none",
+    "required": {"signal": null, "motion_in": []},
+    "forbidden_motions": [],
+    "notes": "control account, day-200 checkpoint."
+  },
+  {
+    "tenant": "crateworks",
+    "account_slug": "crateworks-quillstack-3pl",
+    "checkpoint_day": 60,
+    "mode": "none",
+    "required": {"signal": null, "motion_in": []},
+    "forbidden_motions": [],
+    "notes": "control account (bible section 4)."
+  },
+  {
+    "tenant": "crateworks",
+    "account_slug": "crateworks-quillstack-3pl",
+    "checkpoint_day": 100,
+    "mode": "none",
+    "required": {"signal": null, "motion_in": []},
+    "forbidden_motions": [],
+    "notes": "control account, day-100 checkpoint."
+  },
+  {
+    "tenant": "crateworks",
+    "account_slug": "crateworks-quillstack-3pl",
+    "checkpoint_day": 200,
+    "mode": "none",
+    "required": {"signal": null, "motion_in": []},
+    "forbidden_motions": [],
+    "notes": "control account, day-200 checkpoint."
+  }
+]
