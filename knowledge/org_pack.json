@@ -1,13 +1,16 @@
 {
   "schema_version": 1,
-  "pack_version": "org-pack-ttv-demo-v2",
+  "pack_version": "org-pack-ttv-demo-v3",
   "fictional": true,
   "product_name": "FleetOps Platform",
   "terminology": {
     "activation": "the customer reaches the first stable week of data-backed operations",
     "asset": "a vehicle or tracked field unit",
     "capability": "a product workflow the customer purchased and can adopt",
-    "play": "a recommended CSM motion, not a commitment or approval"
+    "play": "a recommended CSM motion, not a commitment or approval",
+    "module": "one of FleetOps' eight purchased capabilities: Live Map, Route Optimizer, Driver Scorecards, Maintenance Radar, Insights Hub, Compliance Center, Fuel Analytics, or Dispatch Automation",
+    "dispatch_bridge": "the professional-services integration workstream that connects a customer's own pre-existing dispatch system to FleetOps during onboarding -- not a purchased module, and never confused with the Dispatch Automation module",
+    "launch_plan": "FleetOps' four-phase onboarding methodology: Kickoff, Integration & Data Setup, Activation, Steady-State Handoff"
   },
   "voice_rules": [
     "Professional, direct, and specific.",
@@ -35,18 +38,18 @@
   "gap_plays": [
     {
       "factor": "milestones_overdue",
-      "play": "review the overdue activation milestones and assign owners",
+      "play": "review the overdue Launch Plan milestones (Kickoff, Integration & Data Setup, Activation, or Steady-State Handoff) and assign owners",
       "customer_ask": "review the overdue activation steps and agree on owners"
     },
     {
       "factor": "low_seat_penetration",
-      "play": "identify which buyer, admin, or operator role is missing from the value loop",
+      "play": "identify which buyer, admin, or operator role is missing from the value loop for the account's licensed modules",
       "customer_ask": "map the missing users needed for a complete rollout"
     },
     {
       "factor": "feature_shallow_depth",
-      "play": "choose one purchased capability and unblock the next adoption step",
-      "customer_ask": "pick the next workflow to activate and remove the blocker"
+      "play": "choose one entitled module -- Live Map, Route Optimizer, Driver Scorecards, Maintenance Radar, Insights Hub, Compliance Center, Fuel Analytics, or Dispatch Automation -- and unblock its next adoption step",
+      "customer_ask": "pick the next module to activate and remove the blocker"
     },
     {
       "factor": "outcome_unknown",
@@ -55,12 +58,12 @@
     },
     {
       "factor": "health_red",
-      "play": "separate the operational activation blocker from broader account health",
+      "play": "separate the operational activation or Dispatch Bridge integration blocker from broader account health",
       "customer_ask": "review the blocker behind the red health signal"
     },
     {
       "factor": "health_yellow",
-      "play": "verify whether the risk is trending toward a timeline slip",
+      "play": "verify whether the risk is trending toward a Launch Plan timeline slip",
       "customer_ask": "check whether the current adoption gap is putting launch timing at risk"
     }
   ],

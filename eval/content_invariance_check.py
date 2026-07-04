@@ -157,7 +157,7 @@ def main(argv: list[str] | None = None) -> int:
             return 1
         committed_text = SNAPSHOT_PATH.read_text(encoding="utf-8")
         if current_text != committed_text:
-            print(f"FAIL: content_invariance_snapshot.json does not match current extractor output.")
+            print("FAIL: content_invariance_snapshot.json does not match current extractor output.")
             print("A content change altered a scored signal. Revert the content change --")
             print("do NOT regenerate this snapshot except in Phase F, in the same commit as a")
             print("bible change explaining why the world changed.")
