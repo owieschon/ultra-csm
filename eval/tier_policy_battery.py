@@ -34,19 +34,19 @@ from ultra_csm.data_plane.book_simulator import simulate_book
 from ultra_csm.data_plane.fixtures import account_id_for
 from ultra_csm.data_plane.synthetic_book import build_synthetic_book
 from ultra_csm.knowledge import load_playbooks
+from ultra_csm.motion_resolver import COHORT_THRESHOLD, resolve_motions
 from ultra_csm.value_model import account_attributes, load_value_model_config, resolve_tenant_tier
 
 ARTIFACT_PATH = Path(__file__).with_name("tier_policy_battery.json")
 
-# Below this many same-day, same-tier, same-capability accounts, each gets
-# its own per-account play motion. At or above it, the cohort collapses to
+# COHORT_THRESHOLD (imported from motion_resolver, shared with loopway):
+# below this many same-day, same-tier, same-capability accounts, each gets
+# its own per-account play motion; at or above it, the cohort collapses to
 # one cohort_action -- the anti-pattern assertion tier-mirror 3 exists to
-# test. 25 (the bible's authored cohort size) safely clears this floor;
-# 10 is small enough that no other incidental cluster in the 180-account
-# book crosses it by accident (verified empirically in this module's own
-# tests, not assumed).
-COHORT_THRESHOLD = 10
-
+# test. 25 (the bible's authored cohort size) safely clears this floor; 10
+# is small enough that no other incidental cluster in the 180-account book
+# crosses it by accident (verified empirically in this module's own tests,
+# not assumed).
 CHECKPOINT_DAYS = (90, 130, 140)
 
 # The tier-mirror accounts this battery grades (bible "Tier-mirror 1/2/3").
@@ -114,44 +114,7 @@ def resolve_motions_for_day(day: int) -> dict[str, Any]:
             entitlements_by_id.get(account.account_id, ()),
         )
 
-    # Group accounts by (trigger_factor, tier) to detect cohort-sized clusters.
-    groups: dict[tuple[str, str], list[str]] = defaultdict(list)
-    for account_id, triggers in triggers_by_id.items():
-        tier = tier_by_id[account_id]
-        for trigger in triggers:
-            groups[(trigger, tier)].append(account_id)
-
-    per_account: dict[str, list[dict[str, str]]] = defaultdict(list)
-    cohort_actions: list[dict[str, Any]] = []
-
-    for (trigger, tier), account_ids in sorted(groups.items()):
-        matching_plays = [
-            play for play in playbooks.plays
-            if play.trigger_factor == trigger and tier in play.tiers
-        ]
-        if not matching_plays:
-            continue
-        cohort_plays = [p for p in matching_plays if p.motion == "cohort_action"]
-        if len(account_ids) >= COHORT_THRESHOLD and cohort_plays:
-            play = cohort_plays[0]
-            cohort_actions.append({
-                "play_id": play.id,
-                "motion": "cohort_action",
-                "trigger_factor": trigger,
-                "tier": tier,
-                "account_ids": sorted(account_ids),
-            })
-            continue
-        non_cohort_plays = [p for p in matching_plays if p.motion != "cohort_action"]
-        for play in non_cohort_plays:
-            for account_id in account_ids:
-                per_account[account_id].append({
-                    "play_id": play.id,
-                    "motion": play.motion,
-                    "trigger_factor": trigger,
-                })
-
-    return {"per_account": dict(per_account), "cohort_actions": cohort_actions}
+    return resolve_motions(tier_by_id, triggers_by_id, playbooks)
 
 
 def _tier_for_account(account_id: str, day: int) -> str:
