@@ -1,0 +1,61 @@
+{
+  "artifact": "crateworks_perturbation_battery",
+  "axes_not_applicable": [
+    {
+      "applicable": false,
+      "axis": "schema-rename",
+      "reason": "crateworks's mapping layer already gets a PERMANENT schema-mapping stress test (header-casing mess, bible section 3.5) baked into every ingest run, not just a perturbation cell"
+    },
+    {
+      "applicable": false,
+      "axis": "arr-shift",
+      "reason": "tier resolution reuses the same generic, tenant-agnostic mechanism fleetops' own perturbation cell 6 already calibration-tests; no crateworks-specific arc turns on an ARR change"
+    }
+  ],
+  "cases": [
+    {
+      "case": "hygiene-drop-stress-no-crash",
+      "detail": {
+        "contacts": 27,
+        "crashed": false,
+        "nulled": 14
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "identity-collision-width-isolated-from-comms-noise",
+      "detail": {
+        "baseline_evidence_ids": [
+          "4437c3c7-7a6e-54d2-bc40-0f494ed6060f",
+          "f4fbdcbd-0790-5f3b-a69e-1e60a972d0f6"
+        ],
+        "baseline_latency": 7.0,
+        "baseline_width": 2.0,
+        "evidence_superset_note": "holds vacuously -- see IF/THEN in this case's docstring: volume_scale's k>=1 fillers never land inside this arc's checkpoint windows",
+        "injected_filler_count": 6,
+        "noise_entered_checkpoint_window": false,
+        "noisy_evidence_ids": [
+          "4437c3c7-7a6e-54d2-bc40-0f494ed6060f",
+          "f4fbdcbd-0790-5f3b-a69e-1e60a972d0f6"
+        ],
+        "noisy_latency": 7.0,
+        "noisy_width": 2.0
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "volume-down-degrades-honestly",
+      "detail": {
+        "original_count": 12,
+        "perturbed_trend": null,
+        "thinned_count": 0
+      },
+      "ok": true,
+      "problems": []
+    }
+  ],
+  "failed_cases": [],
+  "hard_ok": true
+}

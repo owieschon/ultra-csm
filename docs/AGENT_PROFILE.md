@@ -129,7 +129,7 @@ Branch prefix `codex/` or `claude/` + kebab slug. Program reports:
 `~/ultra-csm-dispatches/harvest/00_HARVEST_PLAN.md` (19=density
 expansion, 21=operating cadence, 22=Act3 curation); 24–26 pinned by the
 Waves C/D/E roadmap extension (24=tick motion adoption, 25=Act 1
-knowledge+judge, 26=Act 2 Gmail write-back). **Next unassigned: 28** (27 = operations-surface UI, pinned in `harvest/09_OPERATIONS_SURFACE_UI.md`).
+knowledge+judge, 26=Act 2 Gmail write-back). **Next unassigned: 34.** Pinned: 27=ops-surface UI (PR #39), 28=booking-link (merged), 29=robustness-grid (PR #40), 30=runtime-chaos (PR #41), 31=judge-validation-resolve (harvest/13), 32=person-signal-wiring (harvest/14), 33=person-ui-depth (harvest/15).
 Dispatch output dir: `~/ultra-csm-dispatches/` (harvest-phase dispatches
 under `harvest/`).
 
