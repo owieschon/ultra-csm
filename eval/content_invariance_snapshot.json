@@ -1919,7 +1919,7 @@
             },
             {
               "field": "relationship_type",
-              "observed_at": "2026-10-11T11:00:00Z",
+              "observed_at": "2026-10-17T05:00:00Z",
               "source": "communications",
               "source_id": "fec5c2f0-ae14-5630-8412-bfa1e791b0d4"
             }
@@ -1993,7 +1993,7 @@
         "latency": {
           "account_id": "91330ede-650a-5015-856d-c685a83807b4",
           "as_of": "2027-02-26",
-          "detail": "trailing 21d mean reply latency 3.0h vs prior window 3.0h",
+          "detail": "trailing 21d mean reply latency 4.0h vs prior window 3.0h",
           "evidence": [
             {
               "field": "response_time_hours",
@@ -2003,14 +2003,26 @@
             },
             {
               "field": "response_time_hours",
+              "observed_at": "2027-02-01T03:00:00Z",
+              "source": "communications",
+              "source_id": "604f73ae-1dc5-599c-b99c-3526d81cee3d"
+            },
+            {
+              "field": "response_time_hours",
               "observed_at": "2027-02-21T03:00:00Z",
               "source": "communications",
               "source_id": "834793cb-1c70-544f-8548-432047f8dc68"
+            },
+            {
+              "field": "response_time_hours",
+              "observed_at": "2027-02-14T05:00:00Z",
+              "source": "communications",
+              "source_id": "ea0e7e16-53a5-52b1-bb01-f774f9c5325c"
             }
           ],
           "metric_name": "reply_latency_trend_hours",
           "unit": "hours_delta",
-          "value": 0.0
+          "value": 1.0
         },
         "relationship_strengths": [
           {
@@ -2046,7 +2058,7 @@
             },
             {
               "field": "relationship_type",
-              "observed_at": "2027-02-21T03:00:00Z",
+              "observed_at": "2027-02-14T05:00:00Z",
               "source": "communications",
               "source_id": "fec5c2f0-ae14-5630-8412-bfa1e791b0d4"
             }

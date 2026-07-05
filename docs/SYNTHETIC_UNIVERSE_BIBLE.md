@@ -145,6 +145,26 @@ silence is a failure. From day 110 onward the scripted CSM (Priya Nandan)
 is engaging Monica Reeves and the agent is graded against that reference
 behavior.
 
+**Density subsection (Program 19).** Seven new email pairs, all on the
+Monica Reeves thread (day 118, 145, 160, 185, 200, 225, 238 — scheduling
+confirmations, recaps, and FYIs, matching Monica's established
+"methodical, always restates next steps" voice), no new Derek Vaughn
+message at any point (his silence after day 3 is the arc's defining fact
+and is untouched). This raises Pinnacle from 12 to 26 messages. Placement
+risk: none — `thread_participation_width` is presence-based (unaffected
+by adding more Monica-thread messages) and `StakeholderRelationship`
+strength is day-gated only (`as_of_day>=240`/`>=135`, verified by direct
+inspection of `pinnacle_comms.py`), not message-count- or latency-driven,
+so width (1/2/2) and strength (weak/weak/strong) at day 10/120/250 are
+unchanged by construction — verified after authoring. One legitimate,
+disclosed re-derivation: day 250's (unasserted) `reply_latency_trend`
+moved from `0.0` to `1.0` (Monica's recent-vs-prior trailing-21d mean
+reply latency stayed calm, just shifted from an exact tie to a 1-hour
+delta) once the new day-238 pair filled the trailing window differently
+-- `check_single_threaded_risk` never asserts `latency` for this arc (only
+`width`/`strengths`), so no battery assertion is affected; recorded here
+per the anti-Goodhart disclosure norm, not because any gate required it.
+
 ### 3. Churn-brewing — `quarrystone-logistics`
 
 Persona: `at_risk_champion`. Industry: logistics, CSM `csm-104`. **Correction
