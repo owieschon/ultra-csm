@@ -25,6 +25,17 @@ exactly when it should, not just when it's convenient to demo. This is the accou
 opens with, not a health-score dashboard: green-but-quiet accounts, stalling onboardings, and
 single-threaded relationships all surface with cited evidence and a drafted next move.
 
+This is not only a scripted transcript. `docs/PROGRAM_REPORT_21.md` documents a real daily-run
+execution over the live 181-account fleetops book (story day 51): the actual `ucsm tick` sweep
+resolved 12 work items across 5 distinct motions (`working_session` x2, `campaign_enroll` x2,
+`content_route` x4, `personal_email` x3, `cohort_action` x1), including Ironhorse Freight Co at
+Time-to-Value score 143 with cited telemetry/CS-platform evidence, then ran the validated judge
+over 3 of the day's drafts for $0.231 against a $2.00 cap, all passing. `docs/PROGRAM_REPORT_24.md`
+is where those motions became live in the first place — the tick loop's daily production path, not
+a standalone resolver, verified against a fresh `make tick-demo-csm` run (19 non-null-`motion`
+work items in one day's file). Both reports state their own boundary plainly: one verified manual
+run proves the mechanism, not unattended operation across weeks (`docs/OPERATING_PROOF.md`).
+
 For the zero-setup version of this same evidence-grounded question-answering (no Postgres, no
 `make setup`), talk to the book directly:
 
@@ -80,6 +91,14 @@ NOT instrumented — the report would rather admit a gap than imply coverage.
 
 The other receipts a skeptical reviewer would want:
 
+- `docs/DEPLOYMENT_READINESS.md` — rendered, never hand-edited: four distributionally distinct
+  tenants (fleetops/fieldstone/crateworks/loopway) tested from cold start, every battery
+  `hard_ok: true`, zero ad-hoc per-tenant rules in code.
+- `docs/PROGRAM_REPORT_21.md` / `docs/OPERATING_PROOF.md` — the daily operating job, one verified
+  manual run over the live book, with the claim boundary stated plainly (mechanism proven, not
+  unattended operation).
+- `docs/PROGRAM_REPORT_24.md` — tick motion resolution made live in the production sweep, plus the
+  full fleetops trigger-detector coverage (all 7 playbook trigger factors).
 - `docs/PROGRAM_REPORT_6.md` — the live connector and live-judged-quality run, with claim
   boundaries and deviations stated.
 - `docs/LIVE_INTEGRATION_FINDINGS.md` — the full live battery matrix (Salesforce D1-D6,
