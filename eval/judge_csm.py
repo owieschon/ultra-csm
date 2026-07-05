@@ -387,6 +387,52 @@ def weighted_cohen_kappa(
     return 1.0 - (observed_disagreement / expected_disagreement)
 
 
+def gwet_ac1(
+    human_scores: Sequence[int],
+    judge_scores: Sequence[int],
+    *,
+    labels: Sequence[int] = ORDINAL_SCORES,
+) -> float:
+    """Gwet's AC1 -- an agreement coefficient robust to the prevalence paradox
+    that makes weighted Cohen's kappa unstable (wide CI) when one category
+    dominates a small sample, as happens on this repo's n=36 hard layer.
+    REPORTED alongside kappa when kappa's CI is wide; never a gate substitute
+    for kappa (harvest/13_JUDGE_VALIDATION_RESOLVE.md)."""
+
+    if len(human_scores) != len(judge_scores):
+        raise ValueError("score sequences must have the same length")
+    if not human_scores:
+        raise ValueError("at least one scored example is required")
+
+    label_to_index = {label: index for index, label in enumerate(labels)}
+    for score in (*human_scores, *judge_scores):
+        if score not in label_to_index:
+            raise ValueError(f"score {score!r} is outside the rubric scale")
+
+    size = len(labels)
+    total = float(len(human_scores))
+    agree = sum(
+        1.0
+        for h, j in zip(human_scores, judge_scores, strict=True)
+        if h == j
+    )
+    observed_agreement = agree / total
+
+    # Pooled per-category proportion across BOTH raters' ratings (Gwet's own
+    # definition), not each rater's marginal separately.
+    category_counts = [0.0 for _ in range(size)]
+    for score in (*human_scores, *judge_scores):
+        category_counts[label_to_index[score]] += 1.0
+    pooled_total = 2.0 * total
+    category_props = [count / pooled_total for count in category_counts]
+
+    expected_agreement = sum(prop * (1.0 - prop) for prop in category_props) / (size - 1)
+
+    if math.isclose(expected_agreement, 1.0):
+        return 1.0 if math.isclose(observed_agreement, 1.0) else 0.0
+    return (observed_agreement - expected_agreement) / (1.0 - expected_agreement)
+
+
 class LabelReplayJudge:
     """Fixture judge for calibration tests; it only replays supplied labels."""
 

@@ -24,7 +24,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from eval.judge_csm import PASSING_SCORE, QUALITY_DIMENSIONS, weighted_cohen_kappa
+from eval.judge_csm import PASSING_SCORE, QUALITY_DIMENSIONS, gwet_ac1, weighted_cohen_kappa
 
 REPO = Path(__file__).resolve().parents[1]
 AGREEMENT_PATH = REPO / "eval" / "gold" / "judge_agreement.json"
@@ -65,6 +65,7 @@ def judge_validation_status(
             failures.append("clean_layer has no cases")
 
     hard_kappas: dict[str, float] = {}
+    hard_ac1: dict[str, float] = {}
     hard_false_neg: list[str] = []
     hard_n = 0
     runs = compare.get("runs_per_case") if isinstance(compare, dict) else None
@@ -74,6 +75,18 @@ def judge_validation_status(
         else None
     )
     cases = arm.get("cases") if isinstance(arm, dict) else None
+    # Fragility fallback (owner-ratified 2026-07-05, harvest/13): when a
+    # dimension's single-run bootstrap CI floor (from the agreement
+    # artifact's diagnostic hard_layer) is below GATE_KAPPA even though the
+    # N-run-aggregated kappa point estimate passes, report Gwet's AC1
+    # alongside kappa as an honest second lens -- REPORTED ONLY, never a
+    # gate substitute; GATE_KAPPA and the kappa-based pass logic above are
+    # unchanged.
+    agreement_hard_ci = (
+        agreement.get("hard_layer", {}).get("per_dimension_kappa_ci_95", {})
+        if isinstance(agreement, dict)
+        else {}
+    )
     if not isinstance(runs, int) or runs < MIN_RUNS_PER_CASE:
         failures.append(f"compare runs_per_case {runs} < {MIN_RUNS_PER_CASE}")
     if not isinstance(cases, list) or not cases:
@@ -87,6 +100,10 @@ def judge_validation_status(
                 hard_kappas[dim] = round(weighted_cohen_kappa(judge_col, ref_col), 3)
                 if hard_kappas[dim] < GATE_KAPPA:
                     failures.append(f"hard {dim} kappa {hard_kappas[dim]} < {GATE_KAPPA}")
+                ci = agreement_hard_ci.get(dim) if isinstance(agreement_hard_ci, dict) else None
+                ci_floor = ci.get("low") if isinstance(ci, dict) else None
+                if isinstance(ci_floor, (int, float)) and ci_floor < GATE_KAPPA:
+                    hard_ac1[dim] = round(gwet_ac1(ref_col, judge_col), 3)
             for case in cases:
                 ref_pass = all(
                     case["reference"][d] >= PASSING_SCORE for d in QUALITY_DIMENSIONS
@@ -119,6 +136,7 @@ def judge_validation_status(
         agreement,
         compare,
         hard_kappas=hard_kappas,
+        hard_ac1=hard_ac1,
         hard_n=hard_n,
         agreement_path=agreement_path,
         compare_path=compare_path,
@@ -132,6 +150,7 @@ def _status(
     compare: Any,
     *,
     hard_kappas: dict[str, float] | None = None,
+    hard_ac1: dict[str, float] | None = None,
     hard_n: int = 0,
     agreement_path: Path | None = None,
     compare_path: Path | None = None,
@@ -165,6 +184,11 @@ def _status(
         "hard": {
             "n": hard_n,
             "per_dimension_kappa_aggregated": hard_kappas or {},
+            # Reported only, per dimension whose single-run bootstrap CI floor
+            # (in the agreement artifact) fell below GATE_KAPPA even though
+            # kappa's point estimate passed -- never a gate, never replaces
+            # kappa (K14 anti-Goodhart; harvest/13).
+            "gwet_ac1_reported": hard_ac1 or {},
             "false_neg_aggregated": 0 if validated else None,
             "false_pos_aggregated": arm.get("false_pos"),
             "gate_repeatability": arm.get("gate_repeatability"),
