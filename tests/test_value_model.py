@@ -53,6 +53,12 @@ def _thresholds(
         health_yellow_points=15,
         arr_review_floor_cents=15_000_000,
         arr_review_points=5,
+        champion_departed_window_days=21,
+        champion_departed_points=30,
+        single_threaded_recency_days=45,
+        new_stakeholder_window_days=30,
+        new_stakeholder_points=15,
+        usage_concentration_points=20,
     )
 
 

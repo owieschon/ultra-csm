@@ -41,6 +41,7 @@ from ultra_csm.quality_breaker import (
     QualityBreakerDecision,
     evaluate_quality_breaker,
 )
+from ultra_csm.recipient_resolver import resolve_recipient
 from ultra_csm.snapshot_store import SnapshotStore
 from ultra_csm.value_model import (
     CustomerValueModel,
@@ -55,6 +56,8 @@ from ultra_csm.value_model import (
 
 if TYPE_CHECKING:
     from ultra_csm.cost_tracker import CostBudget, CostTracker
+    from ultra_csm.data_plane.contracts import StakeholderRelationship
+    from ultra_csm.data_plane.relationship_signals import JobChangeSignal
 
 log = logging.getLogger(__name__)
 
@@ -109,6 +112,7 @@ class CSMWorkItem:
     draft_mode: DraftMode = "none"
     customer_draft: str | None = None
     motion: str | None = None
+    recipient_resolution: str | None = None
 
 
 @dataclass
@@ -126,6 +130,7 @@ class _SlotBInputs:
     cases: tuple
     evidence: tuple[EvidenceRef, ...]
     priority: Priority
+    stakeholders: tuple = ()
 
 
 @dataclass(frozen=True)
@@ -388,6 +393,27 @@ def build_reason_draft_request_for_account(
     )
 
 
+def _person_layer_inputs(
+    data_plane: CustomerDataPlane,
+    account_id: str,
+) -> tuple[tuple["StakeholderRelationship", ...], tuple["JobChangeSignal", ...]]:
+    """Additive person-layer fetch (Harvest 16): stakeholders + job-change
+    signals for *account_id*, in the same per-account data_plane pass
+    ``_slot_b_inputs_for_account`` already makes -- never a second fetch
+    pass. ``list_stakeholders``/``list_job_changes`` are NOT part of the
+    ``CRMDataConnector`` Protocol (only ``FixtureCRMDataConnector``
+    implements them for the fleetops fixture book); connectors that lack
+    them degrade to an empty tuple rather than raising, so this is fail-safe
+    for every other connector (Sim/Fieldstone) unchanged.
+    """
+
+    list_stakeholders = getattr(data_plane.crm, "list_stakeholders", None)
+    list_job_changes = getattr(data_plane.crm, "list_job_changes", None)
+    stakeholders = tuple(list_stakeholders(account_id)) if list_stakeholders else ()
+    job_changes = tuple(list_job_changes(account_id)) if list_job_changes else ()
+    return stakeholders, job_changes
+
+
 def _slot_b_inputs_for_account(
     data_plane: CustomerDataPlane,
     account: CRMAccount,
@@ -407,6 +433,7 @@ def _slot_b_inputs_for_account(
     cases = tuple(data_plane.crm.list_cases(account.account_id))
     signals = tuple(data_plane.telemetry.list_usage_signals(account.account_id))
     entitlements = tuple(data_plane.telemetry.list_entitlements(account.account_id))
+    stakeholders, job_changes = _person_layer_inputs(data_plane, account.account_id)
     signal_ids = {signal.signal_id for signal in signals}
     onboarding_projects, onboarding_phases, onboarding_tasks = _onboarding_evidence(
         data_plane, account.account_id
@@ -477,6 +504,9 @@ def _slot_b_inputs_for_account(
         usage_signals=signals,
         success_plans=plans,
         onboarding_milestones=onboarding_milestones,
+        stakeholders=stakeholders,
+        job_changes=job_changes,
+        as_of=as_of,
     )
     trajectory = _trajectory_decline_evaluation(
         snapshot_store,
@@ -496,7 +526,7 @@ def _slot_b_inputs_for_account(
     )
     if priority.score <= 0:
         return None
-    return _SlotBInputs(cases=cases, evidence=evidence, priority=priority)
+    return _SlotBInputs(cases=cases, evidence=evidence, priority=priority, stakeholders=stakeholders)
 
 
 def _proposal_contact(
@@ -866,7 +896,7 @@ def _work_item_for_account(
     tier = tier_and_motion[0] if tier_and_motion is not None else None
     motion = tier_and_motion[1] if tier_and_motion is not None else None
 
-    contact = next((contact for contact in contacts if contact.consent_to_contact), None)
+    contact, recipient_resolution = resolve_recipient(motion, inputs.stakeholders, contacts)
     customer_contact_allowed = contact is not None
     # Tier-forbidden-motion guard: narrows customer_contact_allowed exactly
     # like the quality breaker already does -- it never touches
@@ -964,6 +994,7 @@ def _work_item_for_account(
         draft_mode=draft_mode,
         customer_draft=slot_b.customer_draft,
         motion=motion,
+        recipient_resolution=recipient_resolution,
     )
 
 

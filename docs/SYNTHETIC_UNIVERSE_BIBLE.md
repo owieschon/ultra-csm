@@ -869,6 +869,36 @@ enrichment consumer reads them:
 | Pinnacle Supply Chain | Derek Vaughn | 5 | departure | Two days after the existing `ChampionGoesQuiet("pinnacle-supply", 3)` mutation, and 9 days before the existing day-14 `HealthBandChange`. This is the signal an enrichment-feed-aware lens could have used to flag the single-threaded-risk arc's root cause 9 days earlier than the health band does — exactly the "beats silence-detection to the punch" framing this class exists to test. |
 | Trailhead Logistics | Mike Lindgren | 200 | promotion (same-company) | Benign red herring — a title change with no risk, consistent with the healthy-control arc never surfacing a real signal at any checkpoint (day 60/180/300). |
 
+### New-stakeholder-unengaged — `oakmont-logistics` (Harvest 16)
+
+Persona: unchanged (`steady_state`, green, `high_usage` — one of the 27
+boring controls). `check_boring_controls` (eval/narrative_battery.py) only
+asserts no authored *case* content leaks onto boring controls, so adding a
+`StakeholderRelationship` row here does not perturb that or any other
+existing assertion; this account was chosen specifically because adding a
+new stakeholder row to any of the six named arcs would change an existing
+assertion (Pinnacle/Quarrystone's stakeholder counts ARE the
+single-threaded-risk and churn-brewing evidence itself; Meridian's two
+champions ARE the expansion-ready width evidence).
+
+New minimal module `src/ultra_csm/data_plane/oakmont_comms.py` (no
+email/calendar reader authored — the story IS the absence of engagement,
+so there is no comms exhaust to model): `oakmont_stakeholder_relationships(as_of_day)`
+adds one frozen row from day 70 onward — Priya Subramaniam, `relationship_type="admin"`,
+`last_interaction` fixed at day 70 (a CRM sync date, not a real interaction)
+for the rest of the simulation. No `CommunicationSignal` ever exists for
+this contact (or this account at all).
+
+Checkpoint: day 90 (inside the `new_stakeholder_window_days=30` config
+default's window from day 70) — `new_stakeholder_unengaged` fires with
+evidence citing only the `StakeholderRelationship` row (no comms to cite,
+by construction). Verified boundary: fires day 70–100 inclusive, silent at
+day 69 and day 101+ (`(as_of - last_interaction).days > window_days`).
+
+**Grading mode:** unchanged from boring-control (`none` for narrative/case
+grading) — this arc exists solely to exercise the new value-model factor,
+not to add a new narrative beat the briefing/extractor layer is graded on.
+
 ## Segmented book (Universe v2, WS-Segmented-Book, Wave 2)
 
 Expands the book from 35 to 180 accounts: ~7 new high-touch (`arr_cents >=
