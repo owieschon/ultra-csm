@@ -18,7 +18,7 @@ from typing import Any
 
 import psycopg
 
-from ultra_csm.agent1 import SweepResult, run_time_to_value_sweep
+from ultra_csm.agent1 import SweepResult, collapse_cohorts, run_time_to_value_sweep
 from ultra_csm.data_plane import (
     DEFAULT_DEMO_STATE_DIR,
     DEFAULT_TENANT,
@@ -37,6 +37,7 @@ from ultra_csm.governance import (
     make_principal,
     seed_roster,
 )
+from ultra_csm.knowledge import load_playbooks
 from ultra_csm.platform import boot_seeded_cluster, session
 from ultra_csm.platform.seed import SEED_CLOCK
 from ultra_csm.snapshot_store import SnapshotStore
@@ -52,7 +53,12 @@ from ultra_csm.triggers import (
     load_trigger_config,
     parse_trigger_config,
 )
-from ultra_csm.value_model import build_customer_value_model, project_ttv_lens
+from ultra_csm.value_model import build_customer_value_model, load_value_model_config, project_ttv_lens
+
+# tick is fleetops/ultra-demo-only by construction (verified Report 23):
+# fleetops' own book IS the fixture book tick.py drives, and no other
+# tenant has a tick.py-equivalent daily driver. Unconditional per Decisions.
+TICK_PLAYBOOK_TENANT_SLUG = "fleetops"
 
 REPO = Path(__file__).resolve().parents[2]
 MIGRATIONS = REPO / "migrations"
@@ -206,6 +212,8 @@ def run_tick_with_config(
     gate_context = gate_context or setup_tick_roster(conn)
     gate = gate_context.gate()
     snapshot_store = _snapshot_store(prev_snapshot, observed)
+    playbooks = load_playbooks(TICK_PLAYBOOK_TENANT_SLUG)
+    value_model_config = load_value_model_config()
 
     fired_runs: list[dict[str, Any]] = []
     fired_for_ledger: list[dict[str, Any]] = []
@@ -222,6 +230,19 @@ def run_tick_with_config(
             sweep_principal_id=gate_context.actor_principal_id,
             as_of=observed.as_of,
             snapshot_store=snapshot_store,
+            playbook_tenant_slug=TICK_PLAYBOOK_TENANT_SLUG,
+        )
+        # Cohort collapse needs the whole book (not the per-trigger
+        # restricted sweep_data) to see every account's tier+triggers, per
+        # collapse_cohorts' own docstring -- same tenant_id/playbooks/config
+        # as the sweep above, just an unrestricted data_plane for detection.
+        sweep = collapse_cohorts(
+            sweep,
+            observed.data_plane,
+            tenant_id=DEFAULT_TENANT,
+            playbooks=playbooks,
+            value_model_config=value_model_config,
+            as_of=observed.as_of,
         )
         run_payload = _sweep_payload_for_trigger(sweep, fired)
         fired_runs.append(run_payload)
