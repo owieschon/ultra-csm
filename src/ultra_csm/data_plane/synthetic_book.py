@@ -225,6 +225,13 @@ _ACCT_DATA: list[tuple[str, str, str, str]] = [
     ("woodbine-transport-co", "Woodbine Transport Co", "logistics", "csm-103"),  # tech
     ("yorkfield-industrial-supply", "Yorkfield Industrial Supply", "field_services", "csm-104"),  # tech
     ("ironclad-logistics", "Ironclad Logistics", "transportation", "csm-101"),  # tech
+    # Harvest 6 (Report 24): the ONE fixture account proving the
+    # tier-forbidden-motion guard's real-sweep case non-vacuous --
+    # tech_touch (ARR < $25K), fires feature_shallow_depth (one entitled
+    # capability underused), one consenting contact, steady_state
+    # lifecycle (never onboarding, so it can't perturb Phase 4's
+    # onboarding-visibility proof). Present from day 0, no arc events.
+    ("quietvale-trucking", "Quietvale Trucking", "transportation", "csm-101"),  # tech
 ]
 
 # Pre-compute account IDs
@@ -421,6 +428,7 @@ _COMPANY: dict[str, tuple[int, str, str, str, str, float]] = {
     "woodbine-transport-co": (500000, "steady_state", "Active", "2025-06-01", "2027-06-01", 83.0),
     "yorkfield-industrial-supply": (800000, "steady_state", "Active", "2025-06-01", "2027-06-01", 78.0),
     "ironclad-logistics": (1300000, "steady_state", "Active", "2025-06-01", "2027-06-01", 85.0),
+    "quietvale-trucking": (1800000, "steady_state", "Active", "2025-06-01", "2027-06-01", 81.0),
 }
 
 # ---------------------------------------------------------------------------
@@ -607,6 +615,7 @@ _HEALTH: dict[str, tuple[float, str, tuple[str, ...]]] = {
     "woodbine-transport-co": (83.0, "green", ("stable_usage",)),
     "yorkfield-industrial-supply": (78.0, "green", ("stable_usage",)),
     "ironclad-logistics": (85.0, "green", ("stable_usage",)),
+    "quietvale-trucking": (81.0, "green", ("stable_usage",)),
 }
 
 # ---------------------------------------------------------------------------
@@ -795,6 +804,7 @@ _ADOPTION: dict[str, tuple[int, int, int, int, float, tuple[str, ...]]] = {
     "woodbine-transport-co": (6, 8, 4, 6, 0.67, ()),
     "yorkfield-industrial-supply": (2, 3, 7, 11, 0.64, ()),
     "ironclad-logistics": (4, 6, 7, 8, 0.88, ()),
+    "quietvale-trucking": (5, 7, 6, 9, 0.83, ("driver_coaching",)),
 }
 
 # ---------------------------------------------------------------------------
@@ -1083,6 +1093,7 @@ _CONTACTS: dict[str, list[tuple[str, str, str, str, bool]]] = {
     "woodbine-transport-co": [("Jordan Bennett", "operations", "Fleet Manager", "jordan.bennett@woodbine-transport-co.example", True)],
     "yorkfield-industrial-supply": [("Sam Turner", "operations", "Operations Manager", "sam.turner@yorkfield-industrial-supply.example", True)],
     "ironclad-logistics": [("Jordan Cole", "operations", "Logistics Coordinator", "jordan.cole@ironclad-logistics.example", True)],
+    "quietvale-trucking": [("Morgan Reyes", "operations", "Fleet Coordinator", "morgan.reyes@quietvale-trucking.example", True)],
 }
 
 # ---------------------------------------------------------------------------
@@ -1267,6 +1278,7 @@ _ENTITLEMENTS: dict[str, list[tuple[str, int, str]]] = {
     "woodbine-transport-co": [("core_telematics", 14, "assets")],
     "yorkfield-industrial-supply": [("core_telematics", 3, "assets")],
     "ironclad-logistics": [("core_telematics", 4, "assets")],
+    "quietvale-trucking": [("core_telematics", 7, "assets"), ("driver_coaching", 7, "assets")],
     # churned accounts have no active entitlements
 }
 
@@ -1309,6 +1321,11 @@ _CTAS: list[tuple[str, str, str, str, str, str]] = [
     ("cypress-field",        "Multiple support escalations - review account health",           "High", "open", "2026-06-28", "csm-103"),
     ("quarrystone-logistics","Champion departed - identify new stakeholder",                   "High", "open", "2026-07-01", "csm-104"),
     ("harborview-fleet",     "Renewal risk - address declining satisfaction before renewal",   "High", "open", "2026-07-15", "csm-102"),
+    # Static, always-open from day 0 (no book_simulator mutation resolves
+    # it) -- the grounding evidence Quietvale Trucking needs to reach
+    # sweep.work_items at all (Harvest 6, tier-forbidden-motion guard
+    # fixture account; see _ACCT_DATA's comment).
+    ("quietvale-trucking",   "Driver Coaching entitled but underused - feature depth gap",     "Medium", "open", "2026-07-01", "csm-101"),
 ]
 
 # ---------------------------------------------------------------------------
