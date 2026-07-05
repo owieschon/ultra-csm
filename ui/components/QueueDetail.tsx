@@ -333,7 +333,7 @@ function StakeholderPersonRow({ row }: { row: StakeholderRow }) {
         {row.consent_to_contact ? (
           "consent ✓"
         ) : (
-          <span style={{ color: "var(--danger)" }}>consent ✗ — no outreach</span>
+          <span style={{ color: "var(--danger)" }}>consent ✗ — no outreach permitted</span>
         )}
       </span>
       {row.departed && (
