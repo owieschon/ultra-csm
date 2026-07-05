@@ -27,15 +27,17 @@ Time-to-Value rail end-to-end.
 
 **The differentiator: a validated judge, not an impression.** The Slot B drafts the agent proposes
 are scored by an LLM judge that was itself measured against human-labeled gold data before being
-trusted, and the selection was evidence-driven rather than assumed: a 20x determinism probe found
-Opus 4.8 flips its own pass/fail gate run-to-run on two of six boundary archetypes
-(vector-repeatability 0.167) while Sonnet 4.6 terse holds zero gate flips across the same six
-(vector-repeatability 0.5) — so the cheaper model was chosen as gate judge specifically because it
-is the more stable one, and CoT reasoning was kept OUT of the gate because it helped the noisy
-model but measurably degraded the already-stable one (`docs/DECISION_LOG.md`). Non-determinism in
-the judge itself is measured before the judge is trusted to gate anything — a discipline most
-"AI judges quality" pitches skip. Every draft stays propose-only — a human approves before
-anything reaches a customer.
+trusted, and the choice of instrument was revised twice on evidence, not picked once and assumed
+final: a single-run comparison first favored Sonnet-terse for stability, but a 5-run modal
+aggregation study then found terse@5 fails the hard adversarial layer even after aggregation
+(`on_task_relevance` κ 0.479, 3 aggregated false negatives) while `cot@5` clears all six dimensions
+(κ ≥ 0.661, zero aggregated false negatives) — so the validated gate judge today is Sonnet 4.6 with
+chain-of-thought reasoning, under 5-run aggregation, exactly because that is the arm the
+adversarial gold data says is trustworthy, not the one that looked best on a smaller sample
+(`docs/DECISION_LOG.md`). The doc also states the judge's own rare, honest disagreement rather than
+forcing it to zero — one boundary case (H6b, warm-but-generic drafts) draws 4 accepted hard false
+positives, recorded as a defensible disagreement, not chased away with a rubric rewrite. Every draft
+stays propose-only — a human approves before anything reaches a customer.
 
 **The receipts.** `docs/LIVE_INTEGRATION_FINDINGS.md` and `docs/PROGRAM_REPORT_6.md` are the live
 runs against real Salesforce/Rocketlane orgs; `eval/gold/live_semantic_quality.json` is the judged
