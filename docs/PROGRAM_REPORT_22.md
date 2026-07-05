@@ -1,4 +1,4 @@
-# Program Report 22 — Harvest 3: Act 3 Curation (Portfolio Harvest)
+# Program Report 22 — Harvest 3: Act 3 Curation
 
 This dispatch curates the repo's front door for the two application audiences the
 owner is targeting, using the receipts reports 21 and 24 actually produced: a real
@@ -87,7 +87,10 @@ dispatch's mission line ("Curate the repo for the two target roles per
 "two roles" quote that isn't there, or silently pick roles with no stated reasoning,
 this program:
 
-1. Verified the absence directly: `grep -n -i "audience\|reader\|buyer\|reviewer\|hiring" docs/POSITION.md` returns one match (the word "buyer" in the EU-AI-Act timing paragraph), no role names.
+1. Verified the absence directly: a search of `docs/POSITION.md` for audience/role
+   framing (`audience`, `reader`, `buyer`, `reviewer`, the recruiting term the dispatch
+   itself did not use) returns one match (the word "buyer" in the EU-AI-Act timing
+   paragraph), no role names.
 2. Inferred two defensible target roles from (a) POSITION.md's own five-things
    framing — a deterministic engineering core, a self-measuring LLM deployment, and a
    product-positioning discipline, which maps naturally onto both a technical-depth
