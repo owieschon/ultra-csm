@@ -1,0 +1,98 @@
+{
+  "artifact": "person_factor_battery",
+  "cases": [
+    {
+      "account": "pinnacle-supply",
+      "case": "champion-departed",
+      "detail": {
+        "evidence": [
+          "EvidenceRef(source='crm', source_id='19999391-7629-59a8-b4b8-0252bcc81748', field='change_type', observed_at='2026-06-25T23:00:00Z')",
+          "EvidenceRef(source='crm', source_id='7d31c110-b419-56eb-afa1-8496bf066887', field='relationship_type', observed_at='2026-06-22T04:00:00Z')"
+        ],
+        "factors": [
+          "single_threaded_risk",
+          "champion_departed",
+          "usage_concentration"
+        ],
+        "value": 5.0
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "account": "quarrystone-logistics",
+      "case": "single-threaded-real-graph",
+      "detail": {
+        "evidence": [
+          "EvidenceRef(source='crm', source_id='0cde8be1-1ecf-5092-96ec-411f8f8a40c9', field='last_interaction', observed_at='2026-06-21T07:00:00Z')"
+        ],
+        "factors": [
+          "single_threaded_risk"
+        ],
+        "threshold_name": "min_threaded_persons",
+        "value": 1.0
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "account": "oakmont-logistics",
+      "case": "new-stakeholder-unengaged",
+      "detail": {
+        "day100": {
+          "fired": true,
+          "value": 1.0
+        },
+        "day101": {
+          "fired": false,
+          "value": null
+        },
+        "day69": {
+          "fired": false,
+          "value": null
+        },
+        "day70": {
+          "fired": true,
+          "value": 1.0
+        }
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "account": "pinnacle-supply",
+      "case": "usage-concentration",
+      "detail": {
+        "evidence": [
+          "EvidenceRef(source='telemetry', source_id='21bd1ae9-6174-5f55-891e-34c7b84d58e0', field='person_active_days', observed_at='2026-06-21T00:00:00Z')"
+        ],
+        "factors": [
+          "single_threaded_risk",
+          "champion_departed",
+          "usage_concentration"
+        ],
+        "value": 1.0
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "account": "acme-logistics",
+      "case": "proxy-fallback-zero-drift",
+      "detail": {
+        "evidence_source_id": "person-signal-1",
+        "threshold_name": "concentration_ceiling",
+        "value": 1.0
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "repeatability",
+      "ok": true,
+      "problems": []
+    }
+  ],
+  "failed_cases": [],
+  "hard_ok": true
+}
