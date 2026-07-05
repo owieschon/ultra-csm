@@ -18,6 +18,10 @@
     "Use plain language; avoid hype, discounts, pressure, or escalation language.",
     "Ask for a concrete working session with the right customer owner."
   ],
+  "booking": {
+    "url": "https://calendar.example/schedule/fleetops-csm-working-session",
+    "label": "Schedule a working session"
+  },
   "value_props": [
     {
       "id": "activation_visibility",
