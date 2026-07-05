@@ -52,7 +52,7 @@ def test_salesforce_simulated_onboarding_runs_full_pipeline_without_live_claims(
     assert artifact["readiness_report"]["sources"] == {"salesforce_crm": "fixture_verified"}
     assert artifact["coverage"]["records_typed"]["CRMAccount"] == 5
     assert artifact["coverage"]["truncated"] is True
-    assert artifact["coverage"]["source_totals"]["CRMAccount"]["totalSize"] == 180
+    assert artifact["coverage"]["source_totals"]["CRMAccount"]["totalSize"] == 181
     assert artifact["coverage"]["source_totals"]["CRMAccount"]["fetched_count"] == 5
 
 

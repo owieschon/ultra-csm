@@ -244,7 +244,7 @@
     {
       "case": "no-tier-forbidden-motion",
       "detail": {
-        "accounts_swept_per_day": 180
+        "accounts_swept_per_day": 181
       },
       "ok": true,
       "problems": []

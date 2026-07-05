@@ -24,7 +24,8 @@ def test_every_fleetops_account_has_a_canary_description():
     # Universe v2 Stream 5 expanded the book from 35 to 180 accounts;
     # canary_registry.ACCOUNT_DESCRIPTIONS derives from _ACCT_DATA directly,
     # so every new account already has a canary with no code change here.
-    assert len(ACCOUNT_DESCRIPTIONS) == len(_ACCT_DATA) == 180
+    # Harvest 6 (Report 24) added one more (quietvale-trucking), 180 -> 181.
+    assert len(ACCOUNT_DESCRIPTIONS) == len(_ACCT_DATA) == 181
     for slug, *_rest in _ACCT_DATA:
         assert slug in ACCOUNT_DESCRIPTIONS
         assert canary_token(TENANT, slug) in ACCOUNT_DESCRIPTIONS[slug]
