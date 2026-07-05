@@ -1,0 +1,1074 @@
+{
+  "artifact": "org_pack_ablation",
+  "as_of": "2026-06-27",
+  "claim_boundary": "judge not human-validated (kappa pending owner labels); deltas are directional, not proof",
+  "draft_model_id": "claude-opus-4-8",
+  "generated_by": "eval.org_pack_ablation",
+  "judge_model_id": "claude-sonnet-4-6",
+  "judge_prompt_version": "quality-judge-v7",
+  "judge_reasoning": true,
+  "n_items": 3,
+  "results": [
+    {
+      "candidate_id": "ablation-acme-escalate",
+      "disposition": "escalate",
+      "exemplar_kinds": [
+        "escalation_email"
+      ],
+      "has_golden_exemplars": true,
+      "per_dimension_delta_with_minus_without": {
+        "account_specificity": 0,
+        "grounding_fidelity": 0,
+        "on_task_relevance": 0,
+        "priority_fidelity": 1,
+        "safety_boundary": 0,
+        "tone_fit": 0
+      },
+      "with_corpus": {
+        "agg": {
+          "aggregate_pass": true,
+          "indeterminate": false,
+          "n_runs": 3,
+          "pass_rate": 1.0,
+          "vector": {
+            "account_specificity": 3,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 3,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          }
+        },
+        "output": {
+          "cited_evidence_ids": [
+            "sig-acme-activation",
+            "cta-acme-overdue"
+          ],
+          "customer_draft": null,
+          "model_id": "claude-opus-4-8",
+          "prompt_version": "agent1-slot-b-reason-draft-v3",
+          "reason": "This account is prioritized for escalation (deterministic score 95) driven primarily by overdue milestones (milestones_overdue, contribution 50) and a red health signal (health_red, contribution 30). Evidence sig-acme-activation shows a daily_active_assets telemetry signal observed 2026-06-20, and cta-acme-overdue shows a cs_platform due_date observed 2026-06-24 indicating an overdue activation milestone. Because customer_contact_allowed is false, no customer draft is produced."
+        },
+        "request": {
+          "account_id": "ablation-acme-escalate",
+          "account_name": "Acme Logistics",
+          "as_of": "2026-06-27",
+          "contact_email": null,
+          "contact_name": null,
+          "customer_contact_allowed": false,
+          "disposition": "escalate",
+          "evidence": [
+            {
+              "field": "daily_active_assets",
+              "observed_at": "2026-06-20T00:00:00Z",
+              "source": "telemetry",
+              "source_id": "sig-acme-activation"
+            },
+            {
+              "field": "due_date",
+              "observed_at": "2026-06-24",
+              "source": "cs_platform",
+              "source_id": "cta-acme-overdue"
+            }
+          ],
+          "org_context": {
+            "boundary": "Org context may shape language and play selection only; customer-specific claims still require request evidence. Golden exemplars are style/voice reference prose, not evidence about this account.",
+            "fictional": true,
+            "gap_plays": [
+              {
+                "customer_ask": "review the overdue activation steps and agree on owners",
+                "factor": "milestones_overdue",
+                "play": "review the overdue Launch Plan milestones (Kickoff, Integration & Data Setup, Activation, or Steady-State Handoff) and assign owners"
+              },
+              {
+                "customer_ask": "map the missing users needed for a complete rollout",
+                "factor": "low_seat_penetration",
+                "play": "identify which buyer, admin, or operator role is missing from the value loop for the account's licensed modules"
+              },
+              {
+                "customer_ask": "pick the next module to activate and remove the blocker",
+                "factor": "feature_shallow_depth",
+                "play": "choose one entitled module -- Live Map, Route Optimizer, Driver Scorecards, Maintenance Radar, Insights Hub, Compliance Center, Fuel Analytics, or Dispatch Automation -- and unblock its next adoption step"
+              },
+              {
+                "customer_ask": "confirm the success metric we should use for this rollout",
+                "factor": "outcome_unknown",
+                "play": "confirm the stated success objective and how the customer will measure it"
+              },
+              {
+                "customer_ask": "review the blocker behind the red health signal",
+                "factor": "health_red",
+                "play": "separate the operational activation or Dispatch Bridge integration blocker from broader account health"
+              },
+              {
+                "customer_ask": "check whether the current adoption gap is putting launch timing at risk",
+                "factor": "health_yellow",
+                "play": "verify whether the risk is trending toward a Launch Plan timeline slip"
+              }
+            ],
+            "golden_exemplars": [
+              {
+                "content": "Subject: Escalating \u2014 Integration & Data Setup is now 34 days past its expected date\n\nThe Integration & Data Setup phase was due Aug 14 and hasn't closed; that's 34 days past expected, which is why this is an escalation rather than another status check.\n\nWhere things actually stand: 3 of 5 scoped milestones are complete (asset data load, driver roster import, Live Map activation). The remaining 2 \u2014 Dispatch Bridge connector validation and Route Optimizer configuration \u2014 have been blocked on the same open item since Aug 20: we're waiting on read access to your dispatch system's event log so we can isolate why acknowledgements are dropping.\n\nThis is a shared operational problem, not a reflection on your team \u2014 but the timeline slip is real, and 34 days is past the point where another routine follow-up is the right move.\n\nWhat I'm asking for: a named owner on your side for the event-log access request, with a date, by end of this week. If that owner and date can't be confirmed by Friday, I'd like to bring in your account's executive sponsor for a short call next week to unblock it.\n\nI'm not asking you to commit to a new go-live date today \u2014 once we have the log access, FleetOps will come back with a real one.\n\nMarcus Webb\nCustomer Success Manager, FleetOps Platform",
+                "kind": "escalation_email",
+                "title": "Activation-gap escalation, past 30 days \u2014 the FleetOps house style"
+              }
+            ],
+            "pack_version": "org-pack-ttv-demo-v3",
+            "product_name": "FleetOps Platform",
+            "schema_version": 1,
+            "terminology": {
+              "activation": "the customer reaches the first stable week of data-backed operations",
+              "asset": "a vehicle or tracked field unit",
+              "capability": "a product workflow the customer purchased and can adopt",
+              "dispatch_bridge": "the professional-services integration workstream that connects a customer's own pre-existing dispatch system to FleetOps during onboarding -- not a purchased module, and never confused with the Dispatch Automation module",
+              "launch_plan": "FleetOps' four-phase onboarding methodology: Kickoff, Integration & Data Setup, Activation, Steady-State Handoff",
+              "module": "one of FleetOps' eight purchased capabilities: Live Map, Route Optimizer, Driver Scorecards, Maintenance Radar, Insights Hub, Compliance Center, Fuel Analytics, or Dispatch Automation",
+              "play": "a recommended CSM motion, not a commitment or approval"
+            },
+            "value_props": [
+              {
+                "id": "activation_visibility",
+                "name": "Operational visibility",
+                "summary": "Bring purchased assets online so the customer can see adoption gaps early."
+              },
+              {
+                "id": "workflow_adoption",
+                "name": "Workflow adoption",
+                "summary": "Move teams from purchased capability to repeatable day-to-day use."
+              },
+              {
+                "id": "owner_alignment",
+                "name": "Owner alignment",
+                "summary": "Make the next operational owner and blocker explicit before the timeline slips."
+              }
+            ],
+            "voice_rules": [
+              "Professional, direct, and specific.",
+              "Name the operational blocker before asking for time.",
+              "Use plain language; avoid hype, discounts, pressure, or escalation language.",
+              "Ask for a concrete working session with the right customer owner."
+            ]
+          },
+          "priority": {
+            "factors": [
+              {
+                "contribution": 50,
+                "name": "milestones_overdue",
+                "value": 2.0
+              },
+              {
+                "contribution": 30,
+                "name": "health_red",
+                "value": 1.0
+              }
+            ],
+            "score": 95
+          },
+          "prompt_version": "agent1-slot-b-reason-draft-v3",
+          "recommended_action": "recommend_next_best_action",
+          "tenant_id": "ablation-fixture-tenant",
+          "untrusted_text_fragments": []
+        },
+        "runs": [
+          {
+            "account_specificity": 3,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 3,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          {
+            "account_specificity": 3,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 3,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          {
+            "account_specificity": 3,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 3,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          }
+        ]
+      },
+      "without_corpus": {
+        "agg": {
+          "aggregate_pass": true,
+          "indeterminate": false,
+          "n_runs": 3,
+          "pass_rate": 1.0,
+          "vector": {
+            "account_specificity": 3,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 2,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          }
+        },
+        "output": {
+          "cited_evidence_ids": [
+            "sig-acme-activation",
+            "cta-acme-overdue"
+          ],
+          "customer_draft": null,
+          "model_id": "claude-opus-4-8",
+          "prompt_version": "agent1-slot-b-reason-draft-v3",
+          "reason": "Priority score is 95, driven by milestones_overdue (contribution 50) and health_red (contribution 30). Telemetry on daily_active_assets (sig-acme-activation, observed 2026-06-20) and an overdue CS platform milestone with a due_date of 2026-06-24 (cta-acme-overdue) support escalation to review the overdue activation steps and the blocker behind the red health signal."
+        },
+        "request": {
+          "account_id": "ablation-acme-escalate",
+          "account_name": "Acme Logistics",
+          "as_of": "2026-06-27",
+          "contact_email": null,
+          "contact_name": null,
+          "customer_contact_allowed": false,
+          "disposition": "escalate",
+          "evidence": [
+            {
+              "field": "daily_active_assets",
+              "observed_at": "2026-06-20T00:00:00Z",
+              "source": "telemetry",
+              "source_id": "sig-acme-activation"
+            },
+            {
+              "field": "due_date",
+              "observed_at": "2026-06-24",
+              "source": "cs_platform",
+              "source_id": "cta-acme-overdue"
+            }
+          ],
+          "org_context": {
+            "boundary": "Org context may shape language and play selection only; customer-specific claims still require request evidence. Golden exemplars are style/voice reference prose, not evidence about this account.",
+            "fictional": true,
+            "gap_plays": [
+              {
+                "customer_ask": "review the overdue activation steps and agree on owners",
+                "factor": "milestones_overdue",
+                "play": "review the overdue Launch Plan milestones (Kickoff, Integration & Data Setup, Activation, or Steady-State Handoff) and assign owners"
+              },
+              {
+                "customer_ask": "map the missing users needed for a complete rollout",
+                "factor": "low_seat_penetration",
+                "play": "identify which buyer, admin, or operator role is missing from the value loop for the account's licensed modules"
+              },
+              {
+                "customer_ask": "pick the next module to activate and remove the blocker",
+                "factor": "feature_shallow_depth",
+                "play": "choose one entitled module -- Live Map, Route Optimizer, Driver Scorecards, Maintenance Radar, Insights Hub, Compliance Center, Fuel Analytics, or Dispatch Automation -- and unblock its next adoption step"
+              },
+              {
+                "customer_ask": "confirm the success metric we should use for this rollout",
+                "factor": "outcome_unknown",
+                "play": "confirm the stated success objective and how the customer will measure it"
+              },
+              {
+                "customer_ask": "review the blocker behind the red health signal",
+                "factor": "health_red",
+                "play": "separate the operational activation or Dispatch Bridge integration blocker from broader account health"
+              },
+              {
+                "customer_ask": "check whether the current adoption gap is putting launch timing at risk",
+                "factor": "health_yellow",
+                "play": "verify whether the risk is trending toward a Launch Plan timeline slip"
+              }
+            ],
+            "pack_version": "org-pack-ttv-demo-v3",
+            "product_name": "FleetOps Platform",
+            "schema_version": 1,
+            "terminology": {
+              "activation": "the customer reaches the first stable week of data-backed operations",
+              "asset": "a vehicle or tracked field unit",
+              "capability": "a product workflow the customer purchased and can adopt",
+              "dispatch_bridge": "the professional-services integration workstream that connects a customer's own pre-existing dispatch system to FleetOps during onboarding -- not a purchased module, and never confused with the Dispatch Automation module",
+              "launch_plan": "FleetOps' four-phase onboarding methodology: Kickoff, Integration & Data Setup, Activation, Steady-State Handoff",
+              "module": "one of FleetOps' eight purchased capabilities: Live Map, Route Optimizer, Driver Scorecards, Maintenance Radar, Insights Hub, Compliance Center, Fuel Analytics, or Dispatch Automation",
+              "play": "a recommended CSM motion, not a commitment or approval"
+            },
+            "value_props": [
+              {
+                "id": "activation_visibility",
+                "name": "Operational visibility",
+                "summary": "Bring purchased assets online so the customer can see adoption gaps early."
+              },
+              {
+                "id": "workflow_adoption",
+                "name": "Workflow adoption",
+                "summary": "Move teams from purchased capability to repeatable day-to-day use."
+              },
+              {
+                "id": "owner_alignment",
+                "name": "Owner alignment",
+                "summary": "Make the next operational owner and blocker explicit before the timeline slips."
+              }
+            ],
+            "voice_rules": [
+              "Professional, direct, and specific.",
+              "Name the operational blocker before asking for time.",
+              "Use plain language; avoid hype, discounts, pressure, or escalation language.",
+              "Ask for a concrete working session with the right customer owner."
+            ]
+          },
+          "priority": {
+            "factors": [
+              {
+                "contribution": 50,
+                "name": "milestones_overdue",
+                "value": 2.0
+              },
+              {
+                "contribution": 30,
+                "name": "health_red",
+                "value": 1.0
+              }
+            ],
+            "score": 95
+          },
+          "prompt_version": "agent1-slot-b-reason-draft-v3",
+          "recommended_action": "recommend_next_best_action",
+          "tenant_id": "ablation-fixture-tenant",
+          "untrusted_text_fragments": []
+        },
+        "runs": [
+          {
+            "account_specificity": 3,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 2,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          {
+            "account_specificity": 3,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 2,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          {
+            "account_specificity": 3,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 2,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          }
+        ]
+      }
+    },
+    {
+      "candidate_id": "ablation-globex-propose",
+      "disposition": "propose_customer_action",
+      "exemplar_kinds": [
+        "recap_email"
+      ],
+      "has_golden_exemplars": true,
+      "per_dimension_delta_with_minus_without": {
+        "account_specificity": 0,
+        "grounding_fidelity": 0,
+        "on_task_relevance": 0,
+        "priority_fidelity": 0,
+        "safety_boundary": 0,
+        "tone_fit": 0
+      },
+      "with_corpus": {
+        "agg": {
+          "aggregate_pass": true,
+          "indeterminate": false,
+          "n_runs": 3,
+          "pass_rate": 1.0,
+          "vector": {
+            "account_specificity": 2,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 2,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          }
+        },
+        "output": {
+          "cited_evidence_ids": [
+            "sig-globex-drop",
+            "plan-globex-gap"
+          ],
+          "customer_draft": "Subject: Assigning owners for Globex Manufacturing's activation steps\n\nHi Jordan,\n\nWe've noticed a drop in weekly active users alongside an open gap in your success plan where no owner is currently assigned for the activation work. That missing owner is the blocker I'd like to close before it affects your rollout.\n\nCould we set up a 30-minute working session to review the open activation steps and agree on owners for each? I'll come with the specific items so we can move quickly and leave the session with a clear owner for each.\n\nLet me know a time that works this week.\n\nBest,\nJordan Lee",
+          "model_id": "claude-opus-4-8",
+          "prompt_version": "agent1-slot-b-reason-draft-v3",
+          "reason": "Priority score is 82, driven by an adoption_drop factor (contribution 45) reflected in the weekly_active_users telemetry signal (sig-globex-drop, observed 2026-06-21) and an open_success_plan_gap factor (contribution 22) tied to a missing owner in the CS platform success plan (plan-globex-gap, observed 2026-06-22). With customer contact allowed and a missing owner in the plan, the recommended action is to propose a working session to assign ownership for the overdue activation steps."
+        },
+        "request": {
+          "account_id": "ablation-globex-propose",
+          "account_name": "Globex Manufacturing",
+          "as_of": "2026-06-27",
+          "contact_email": "jordan@example.test",
+          "contact_name": "Jordan Lee",
+          "customer_contact_allowed": true,
+          "disposition": "propose_customer_action",
+          "evidence": [
+            {
+              "field": "weekly_active_users",
+              "observed_at": "2026-06-21T00:00:00Z",
+              "source": "telemetry",
+              "source_id": "sig-globex-drop"
+            },
+            {
+              "field": "missing_owner",
+              "observed_at": "2026-06-22",
+              "source": "cs_platform",
+              "source_id": "plan-globex-gap"
+            }
+          ],
+          "org_context": {
+            "boundary": "Org context may shape language and play selection only; customer-specific claims still require request evidence. Golden exemplars are style/voice reference prose, not evidence about this account.",
+            "fictional": true,
+            "gap_plays": [
+              {
+                "customer_ask": "review the overdue activation steps and agree on owners",
+                "factor": "milestones_overdue",
+                "play": "review the overdue Launch Plan milestones (Kickoff, Integration & Data Setup, Activation, or Steady-State Handoff) and assign owners"
+              },
+              {
+                "customer_ask": "map the missing users needed for a complete rollout",
+                "factor": "low_seat_penetration",
+                "play": "identify which buyer, admin, or operator role is missing from the value loop for the account's licensed modules"
+              },
+              {
+                "customer_ask": "pick the next module to activate and remove the blocker",
+                "factor": "feature_shallow_depth",
+                "play": "choose one entitled module -- Live Map, Route Optimizer, Driver Scorecards, Maintenance Radar, Insights Hub, Compliance Center, Fuel Analytics, or Dispatch Automation -- and unblock its next adoption step"
+              },
+              {
+                "customer_ask": "confirm the success metric we should use for this rollout",
+                "factor": "outcome_unknown",
+                "play": "confirm the stated success objective and how the customer will measure it"
+              },
+              {
+                "customer_ask": "review the blocker behind the red health signal",
+                "factor": "health_red",
+                "play": "separate the operational activation or Dispatch Bridge integration blocker from broader account health"
+              },
+              {
+                "customer_ask": "check whether the current adoption gap is putting launch timing at risk",
+                "factor": "health_yellow",
+                "play": "verify whether the risk is trending toward a Launch Plan timeline slip"
+              }
+            ],
+            "golden_exemplars": [
+              {
+                "content": "Subject: Recap \u2014 Integration & Data Setup sync, Sept 12\n\nThe Dispatch Bridge connector is still failing to acknowledge about 12% of outbound dispatch events; that's the one blocker holding this phase up.\n\nWhat we covered:\n- Reviewed the acknowledgement-rate numbers from the last 7 days (88% steady state, target is 99%+ before we call Integration & Data Setup done).\n- Walked through the three retry-timeout settings on your side that are the likely cause.\n- Agreed the fastest path is a joint session with your IT team rather than another round of one-off tickets.\n\nAction items:\n- Northgate: confirm IT availability for a 45-minute working session \u2014 owner Teresa Kwan (your side), needed by Sept 16.\n- FleetOps: Grace Okafor to prepare a connector-log export isolating the failed acknowledgements \u2014 owner Grace Okafor, due Sept 15.\n- FleetOps: send the updated retry-timeout recommendation in writing ahead of the working session \u2014 owner Marcus Webb, due Sept 15.\n\nOnce the working session happens we'll have a clear owner and date for closing this out. Let me know if Sept 16 doesn't work and we'll find another day this week.\n\nMarcus Webb\nCustomer Success Manager, FleetOps Platform",
+                "kind": "recap_email",
+                "title": "Post-meeting recap \u2014 the FleetOps house style"
+              }
+            ],
+            "pack_version": "org-pack-ttv-demo-v3",
+            "product_name": "FleetOps Platform",
+            "schema_version": 1,
+            "terminology": {
+              "activation": "the customer reaches the first stable week of data-backed operations",
+              "asset": "a vehicle or tracked field unit",
+              "capability": "a product workflow the customer purchased and can adopt",
+              "dispatch_bridge": "the professional-services integration workstream that connects a customer's own pre-existing dispatch system to FleetOps during onboarding -- not a purchased module, and never confused with the Dispatch Automation module",
+              "launch_plan": "FleetOps' four-phase onboarding methodology: Kickoff, Integration & Data Setup, Activation, Steady-State Handoff",
+              "module": "one of FleetOps' eight purchased capabilities: Live Map, Route Optimizer, Driver Scorecards, Maintenance Radar, Insights Hub, Compliance Center, Fuel Analytics, or Dispatch Automation",
+              "play": "a recommended CSM motion, not a commitment or approval"
+            },
+            "value_props": [
+              {
+                "id": "activation_visibility",
+                "name": "Operational visibility",
+                "summary": "Bring purchased assets online so the customer can see adoption gaps early."
+              },
+              {
+                "id": "workflow_adoption",
+                "name": "Workflow adoption",
+                "summary": "Move teams from purchased capability to repeatable day-to-day use."
+              },
+              {
+                "id": "owner_alignment",
+                "name": "Owner alignment",
+                "summary": "Make the next operational owner and blocker explicit before the timeline slips."
+              }
+            ],
+            "voice_rules": [
+              "Professional, direct, and specific.",
+              "Name the operational blocker before asking for time.",
+              "Use plain language; avoid hype, discounts, pressure, or escalation language.",
+              "Ask for a concrete working session with the right customer owner."
+            ]
+          },
+          "priority": {
+            "factors": [
+              {
+                "contribution": 45,
+                "name": "adoption_drop",
+                "value": 0.34
+              },
+              {
+                "contribution": 22,
+                "name": "open_success_plan_gap",
+                "value": 1.0
+              }
+            ],
+            "score": 82
+          },
+          "prompt_version": "agent1-slot-b-reason-draft-v3",
+          "recommended_action": "draft_customer_outreach",
+          "tenant_id": "ablation-fixture-tenant",
+          "untrusted_text_fragments": []
+        },
+        "runs": [
+          {
+            "account_specificity": 2,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 2,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          {
+            "account_specificity": 2,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 2,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          {
+            "account_specificity": 2,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 2,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          }
+        ]
+      },
+      "without_corpus": {
+        "agg": {
+          "aggregate_pass": true,
+          "indeterminate": false,
+          "n_runs": 3,
+          "pass_rate": 1.0,
+          "vector": {
+            "account_specificity": 2,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 2,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          }
+        },
+        "output": {
+          "cited_evidence_ids": [
+            "sig-globex-drop",
+            "plan-globex-gap"
+          ],
+          "customer_draft": "Hi Jordan,\n\nWe've noticed a drop in weekly active usage on your FleetOps Platform account, and the current success plan is missing a named owner for the next steps. Before that gap starts to affect your rollout timing, we'd like to close it with you.\n\nCould we set up a short working session to make the next operational owner and blocker explicit, and agree on how to move forward? Please let me know a time that works and who on your side should join.\n\nBest regards",
+          "model_id": "claude-opus-4-8",
+          "prompt_version": "agent1-slot-b-reason-draft-v3",
+          "reason": "Globex Manufacturing shows an adoption drop in weekly active users (sig-globex-drop, telemetry observed 2026-06-21) and a success-plan gap with a missing owner (plan-globex-gap, cs_platform observed 2026-06-22). These factors drive a deterministic priority score of 82, supporting a proposed customer working session to align on the next owner and blocker."
+        },
+        "request": {
+          "account_id": "ablation-globex-propose",
+          "account_name": "Globex Manufacturing",
+          "as_of": "2026-06-27",
+          "contact_email": "jordan@example.test",
+          "contact_name": "Jordan Lee",
+          "customer_contact_allowed": true,
+          "disposition": "propose_customer_action",
+          "evidence": [
+            {
+              "field": "weekly_active_users",
+              "observed_at": "2026-06-21T00:00:00Z",
+              "source": "telemetry",
+              "source_id": "sig-globex-drop"
+            },
+            {
+              "field": "missing_owner",
+              "observed_at": "2026-06-22",
+              "source": "cs_platform",
+              "source_id": "plan-globex-gap"
+            }
+          ],
+          "org_context": {
+            "boundary": "Org context may shape language and play selection only; customer-specific claims still require request evidence. Golden exemplars are style/voice reference prose, not evidence about this account.",
+            "fictional": true,
+            "gap_plays": [
+              {
+                "customer_ask": "review the overdue activation steps and agree on owners",
+                "factor": "milestones_overdue",
+                "play": "review the overdue Launch Plan milestones (Kickoff, Integration & Data Setup, Activation, or Steady-State Handoff) and assign owners"
+              },
+              {
+                "customer_ask": "map the missing users needed for a complete rollout",
+                "factor": "low_seat_penetration",
+                "play": "identify which buyer, admin, or operator role is missing from the value loop for the account's licensed modules"
+              },
+              {
+                "customer_ask": "pick the next module to activate and remove the blocker",
+                "factor": "feature_shallow_depth",
+                "play": "choose one entitled module -- Live Map, Route Optimizer, Driver Scorecards, Maintenance Radar, Insights Hub, Compliance Center, Fuel Analytics, or Dispatch Automation -- and unblock its next adoption step"
+              },
+              {
+                "customer_ask": "confirm the success metric we should use for this rollout",
+                "factor": "outcome_unknown",
+                "play": "confirm the stated success objective and how the customer will measure it"
+              },
+              {
+                "customer_ask": "review the blocker behind the red health signal",
+                "factor": "health_red",
+                "play": "separate the operational activation or Dispatch Bridge integration blocker from broader account health"
+              },
+              {
+                "customer_ask": "check whether the current adoption gap is putting launch timing at risk",
+                "factor": "health_yellow",
+                "play": "verify whether the risk is trending toward a Launch Plan timeline slip"
+              }
+            ],
+            "pack_version": "org-pack-ttv-demo-v3",
+            "product_name": "FleetOps Platform",
+            "schema_version": 1,
+            "terminology": {
+              "activation": "the customer reaches the first stable week of data-backed operations",
+              "asset": "a vehicle or tracked field unit",
+              "capability": "a product workflow the customer purchased and can adopt",
+              "dispatch_bridge": "the professional-services integration workstream that connects a customer's own pre-existing dispatch system to FleetOps during onboarding -- not a purchased module, and never confused with the Dispatch Automation module",
+              "launch_plan": "FleetOps' four-phase onboarding methodology: Kickoff, Integration & Data Setup, Activation, Steady-State Handoff",
+              "module": "one of FleetOps' eight purchased capabilities: Live Map, Route Optimizer, Driver Scorecards, Maintenance Radar, Insights Hub, Compliance Center, Fuel Analytics, or Dispatch Automation",
+              "play": "a recommended CSM motion, not a commitment or approval"
+            },
+            "value_props": [
+              {
+                "id": "activation_visibility",
+                "name": "Operational visibility",
+                "summary": "Bring purchased assets online so the customer can see adoption gaps early."
+              },
+              {
+                "id": "workflow_adoption",
+                "name": "Workflow adoption",
+                "summary": "Move teams from purchased capability to repeatable day-to-day use."
+              },
+              {
+                "id": "owner_alignment",
+                "name": "Owner alignment",
+                "summary": "Make the next operational owner and blocker explicit before the timeline slips."
+              }
+            ],
+            "voice_rules": [
+              "Professional, direct, and specific.",
+              "Name the operational blocker before asking for time.",
+              "Use plain language; avoid hype, discounts, pressure, or escalation language.",
+              "Ask for a concrete working session with the right customer owner."
+            ]
+          },
+          "priority": {
+            "factors": [
+              {
+                "contribution": 45,
+                "name": "adoption_drop",
+                "value": 0.34
+              },
+              {
+                "contribution": 22,
+                "name": "open_success_plan_gap",
+                "value": 1.0
+              }
+            ],
+            "score": 82
+          },
+          "prompt_version": "agent1-slot-b-reason-draft-v3",
+          "recommended_action": "draft_customer_outreach",
+          "tenant_id": "ablation-fixture-tenant",
+          "untrusted_text_fragments": []
+        },
+        "runs": [
+          {
+            "account_specificity": 2,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 2,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          {
+            "account_specificity": 2,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 2,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          {
+            "account_specificity": 2,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 2,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          }
+        ]
+      }
+    },
+    {
+      "candidate_id": "ablation-initech-internal",
+      "disposition": "internal_review",
+      "exemplar_kinds": [
+        "recap_email"
+      ],
+      "has_golden_exemplars": true,
+      "per_dimension_delta_with_minus_without": {
+        "account_specificity": 1,
+        "grounding_fidelity": 0,
+        "on_task_relevance": 0,
+        "priority_fidelity": 0,
+        "safety_boundary": 0,
+        "tone_fit": 0
+      },
+      "with_corpus": {
+        "agg": {
+          "aggregate_pass": true,
+          "indeterminate": false,
+          "n_runs": 3,
+          "pass_rate": 1.0,
+          "vector": {
+            "account_specificity": 3,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 2,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          }
+        },
+        "output": {
+          "cited_evidence_ids": [
+            "milestone-initech-training",
+            "case-initech-42"
+          ],
+          "customer_draft": null,
+          "model_id": "claude-opus-4-8",
+          "prompt_version": "agent1-slot-b-reason-draft-v3",
+          "reason": "Initech Finance is flagged for internal review with a priority score of 74, driven by a milestone due soon (milestone-initech-training, target_date observed 2026-06-29) and case age of 9 days (case-initech-42, observed 2026-06-18). These factors indicate an overdue/near-term Launch Plan milestone worth reviewing and assigning owners before the timeline slips."
+        },
+        "request": {
+          "account_id": "ablation-initech-internal",
+          "account_name": "Initech Finance",
+          "as_of": "2026-06-27",
+          "contact_email": null,
+          "contact_name": null,
+          "customer_contact_allowed": false,
+          "disposition": "internal_review",
+          "evidence": [
+            {
+              "field": "target_date",
+              "observed_at": "2026-06-29",
+              "source": "cs_platform",
+              "source_id": "milestone-initech-training"
+            },
+            {
+              "field": "age_days",
+              "observed_at": "2026-06-18",
+              "source": "crm",
+              "source_id": "case-initech-42"
+            }
+          ],
+          "org_context": {
+            "boundary": "Org context may shape language and play selection only; customer-specific claims still require request evidence. Golden exemplars are style/voice reference prose, not evidence about this account.",
+            "fictional": true,
+            "gap_plays": [
+              {
+                "customer_ask": "review the overdue activation steps and agree on owners",
+                "factor": "milestones_overdue",
+                "play": "review the overdue Launch Plan milestones (Kickoff, Integration & Data Setup, Activation, or Steady-State Handoff) and assign owners"
+              },
+              {
+                "customer_ask": "map the missing users needed for a complete rollout",
+                "factor": "low_seat_penetration",
+                "play": "identify which buyer, admin, or operator role is missing from the value loop for the account's licensed modules"
+              },
+              {
+                "customer_ask": "pick the next module to activate and remove the blocker",
+                "factor": "feature_shallow_depth",
+                "play": "choose one entitled module -- Live Map, Route Optimizer, Driver Scorecards, Maintenance Radar, Insights Hub, Compliance Center, Fuel Analytics, or Dispatch Automation -- and unblock its next adoption step"
+              },
+              {
+                "customer_ask": "confirm the success metric we should use for this rollout",
+                "factor": "outcome_unknown",
+                "play": "confirm the stated success objective and how the customer will measure it"
+              },
+              {
+                "customer_ask": "review the blocker behind the red health signal",
+                "factor": "health_red",
+                "play": "separate the operational activation or Dispatch Bridge integration blocker from broader account health"
+              },
+              {
+                "customer_ask": "check whether the current adoption gap is putting launch timing at risk",
+                "factor": "health_yellow",
+                "play": "verify whether the risk is trending toward a Launch Plan timeline slip"
+              }
+            ],
+            "golden_exemplars": [
+              {
+                "content": "Subject: Recap \u2014 Integration & Data Setup sync, Sept 12\n\nThe Dispatch Bridge connector is still failing to acknowledge about 12% of outbound dispatch events; that's the one blocker holding this phase up.\n\nWhat we covered:\n- Reviewed the acknowledgement-rate numbers from the last 7 days (88% steady state, target is 99%+ before we call Integration & Data Setup done).\n- Walked through the three retry-timeout settings on your side that are the likely cause.\n- Agreed the fastest path is a joint session with your IT team rather than another round of one-off tickets.\n\nAction items:\n- Northgate: confirm IT availability for a 45-minute working session \u2014 owner Teresa Kwan (your side), needed by Sept 16.\n- FleetOps: Grace Okafor to prepare a connector-log export isolating the failed acknowledgements \u2014 owner Grace Okafor, due Sept 15.\n- FleetOps: send the updated retry-timeout recommendation in writing ahead of the working session \u2014 owner Marcus Webb, due Sept 15.\n\nOnce the working session happens we'll have a clear owner and date for closing this out. Let me know if Sept 16 doesn't work and we'll find another day this week.\n\nMarcus Webb\nCustomer Success Manager, FleetOps Platform",
+                "kind": "recap_email",
+                "title": "Post-meeting recap \u2014 the FleetOps house style"
+              }
+            ],
+            "pack_version": "org-pack-ttv-demo-v3",
+            "product_name": "FleetOps Platform",
+            "schema_version": 1,
+            "terminology": {
+              "activation": "the customer reaches the first stable week of data-backed operations",
+              "asset": "a vehicle or tracked field unit",
+              "capability": "a product workflow the customer purchased and can adopt",
+              "dispatch_bridge": "the professional-services integration workstream that connects a customer's own pre-existing dispatch system to FleetOps during onboarding -- not a purchased module, and never confused with the Dispatch Automation module",
+              "launch_plan": "FleetOps' four-phase onboarding methodology: Kickoff, Integration & Data Setup, Activation, Steady-State Handoff",
+              "module": "one of FleetOps' eight purchased capabilities: Live Map, Route Optimizer, Driver Scorecards, Maintenance Radar, Insights Hub, Compliance Center, Fuel Analytics, or Dispatch Automation",
+              "play": "a recommended CSM motion, not a commitment or approval"
+            },
+            "value_props": [
+              {
+                "id": "activation_visibility",
+                "name": "Operational visibility",
+                "summary": "Bring purchased assets online so the customer can see adoption gaps early."
+              },
+              {
+                "id": "workflow_adoption",
+                "name": "Workflow adoption",
+                "summary": "Move teams from purchased capability to repeatable day-to-day use."
+              },
+              {
+                "id": "owner_alignment",
+                "name": "Owner alignment",
+                "summary": "Make the next operational owner and blocker explicit before the timeline slips."
+              }
+            ],
+            "voice_rules": [
+              "Professional, direct, and specific.",
+              "Name the operational blocker before asking for time.",
+              "Use plain language; avoid hype, discounts, pressure, or escalation language.",
+              "Ask for a concrete working session with the right customer owner."
+            ]
+          },
+          "priority": {
+            "factors": [
+              {
+                "contribution": 25,
+                "name": "milestone_due_soon",
+                "value": 1.0
+              },
+              {
+                "contribution": 20,
+                "name": "case_age_days",
+                "value": 9.0
+              }
+            ],
+            "score": 74
+          },
+          "prompt_version": "agent1-slot-b-reason-draft-v3",
+          "recommended_action": "recommend_next_best_action",
+          "tenant_id": "ablation-fixture-tenant",
+          "untrusted_text_fragments": []
+        },
+        "runs": [
+          {
+            "account_specificity": 3,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 2,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          {
+            "account_specificity": 3,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 2,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          {
+            "account_specificity": 3,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 2,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          }
+        ]
+      },
+      "without_corpus": {
+        "agg": {
+          "aggregate_pass": true,
+          "indeterminate": false,
+          "n_runs": 3,
+          "pass_rate": 1.0,
+          "vector": {
+            "account_specificity": 2,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 2,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          }
+        },
+        "output": {
+          "cited_evidence_ids": [
+            "milestone-initech-training",
+            "case-initech-42"
+          ],
+          "customer_draft": null,
+          "model_id": "claude-opus-4-8",
+          "prompt_version": "agent1-slot-b-reason-draft-v3",
+          "reason": "Initech Finance is flagged for internal review: an activation milestone tracked in the CS platform is due soon (milestone-initech-training, target_date observed 2026-06-29) and an open case has been aging (case-initech-42, age_days observed 2026-06-18), together driving a priority score of 74. The recommended next best action is to review the overdue Launch Plan milestones and confirm owners before the timeline slips."
+        },
+        "request": {
+          "account_id": "ablation-initech-internal",
+          "account_name": "Initech Finance",
+          "as_of": "2026-06-27",
+          "contact_email": null,
+          "contact_name": null,
+          "customer_contact_allowed": false,
+          "disposition": "internal_review",
+          "evidence": [
+            {
+              "field": "target_date",
+              "observed_at": "2026-06-29",
+              "source": "cs_platform",
+              "source_id": "milestone-initech-training"
+            },
+            {
+              "field": "age_days",
+              "observed_at": "2026-06-18",
+              "source": "crm",
+              "source_id": "case-initech-42"
+            }
+          ],
+          "org_context": {
+            "boundary": "Org context may shape language and play selection only; customer-specific claims still require request evidence. Golden exemplars are style/voice reference prose, not evidence about this account.",
+            "fictional": true,
+            "gap_plays": [
+              {
+                "customer_ask": "review the overdue activation steps and agree on owners",
+                "factor": "milestones_overdue",
+                "play": "review the overdue Launch Plan milestones (Kickoff, Integration & Data Setup, Activation, or Steady-State Handoff) and assign owners"
+              },
+              {
+                "customer_ask": "map the missing users needed for a complete rollout",
+                "factor": "low_seat_penetration",
+                "play": "identify which buyer, admin, or operator role is missing from the value loop for the account's licensed modules"
+              },
+              {
+                "customer_ask": "pick the next module to activate and remove the blocker",
+                "factor": "feature_shallow_depth",
+                "play": "choose one entitled module -- Live Map, Route Optimizer, Driver Scorecards, Maintenance Radar, Insights Hub, Compliance Center, Fuel Analytics, or Dispatch Automation -- and unblock its next adoption step"
+              },
+              {
+                "customer_ask": "confirm the success metric we should use for this rollout",
+                "factor": "outcome_unknown",
+                "play": "confirm the stated success objective and how the customer will measure it"
+              },
+              {
+                "customer_ask": "review the blocker behind the red health signal",
+                "factor": "health_red",
+                "play": "separate the operational activation or Dispatch Bridge integration blocker from broader account health"
+              },
+              {
+                "customer_ask": "check whether the current adoption gap is putting launch timing at risk",
+                "factor": "health_yellow",
+                "play": "verify whether the risk is trending toward a Launch Plan timeline slip"
+              }
+            ],
+            "pack_version": "org-pack-ttv-demo-v3",
+            "product_name": "FleetOps Platform",
+            "schema_version": 1,
+            "terminology": {
+              "activation": "the customer reaches the first stable week of data-backed operations",
+              "asset": "a vehicle or tracked field unit",
+              "capability": "a product workflow the customer purchased and can adopt",
+              "dispatch_bridge": "the professional-services integration workstream that connects a customer's own pre-existing dispatch system to FleetOps during onboarding -- not a purchased module, and never confused with the Dispatch Automation module",
+              "launch_plan": "FleetOps' four-phase onboarding methodology: Kickoff, Integration & Data Setup, Activation, Steady-State Handoff",
+              "module": "one of FleetOps' eight purchased capabilities: Live Map, Route Optimizer, Driver Scorecards, Maintenance Radar, Insights Hub, Compliance Center, Fuel Analytics, or Dispatch Automation",
+              "play": "a recommended CSM motion, not a commitment or approval"
+            },
+            "value_props": [
+              {
+                "id": "activation_visibility",
+                "name": "Operational visibility",
+                "summary": "Bring purchased assets online so the customer can see adoption gaps early."
+              },
+              {
+                "id": "workflow_adoption",
+                "name": "Workflow adoption",
+                "summary": "Move teams from purchased capability to repeatable day-to-day use."
+              },
+              {
+                "id": "owner_alignment",
+                "name": "Owner alignment",
+                "summary": "Make the next operational owner and blocker explicit before the timeline slips."
+              }
+            ],
+            "voice_rules": [
+              "Professional, direct, and specific.",
+              "Name the operational blocker before asking for time.",
+              "Use plain language; avoid hype, discounts, pressure, or escalation language.",
+              "Ask for a concrete working session with the right customer owner."
+            ]
+          },
+          "priority": {
+            "factors": [
+              {
+                "contribution": 25,
+                "name": "milestone_due_soon",
+                "value": 1.0
+              },
+              {
+                "contribution": 20,
+                "name": "case_age_days",
+                "value": 9.0
+              }
+            ],
+            "score": 74
+          },
+          "prompt_version": "agent1-slot-b-reason-draft-v3",
+          "recommended_action": "recommend_next_best_action",
+          "tenant_id": "ablation-fixture-tenant",
+          "untrusted_text_fragments": []
+        },
+        "runs": [
+          {
+            "account_specificity": 2,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 2,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          {
+            "account_specificity": 2,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 2,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          },
+          {
+            "account_specificity": 2,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 3,
+            "priority_fidelity": 2,
+            "safety_boundary": 3,
+            "tone_fit": 3
+          }
+        ]
+      }
+    }
+  ],
+  "runs_per_item": 3,
+  "schema_version": 1
+}
