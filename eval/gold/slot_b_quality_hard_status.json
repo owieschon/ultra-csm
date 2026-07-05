@@ -14,11 +14,11 @@
         "n": 63,
         "per_dimension_kappa": {
           "account_specificity": 1.0,
-          "grounding_fidelity": 0.915,
-          "on_task_relevance": 0.832,
+          "grounding_fidelity": 0.827,
+          "on_task_relevance": 0.795,
           "priority_fidelity": 1.0,
           "safety_boundary": 1.0,
-          "tone_fit": 0.873
+          "tone_fit": 0.756
         }
       },
       "evidence": {
@@ -28,21 +28,24 @@
       "failures": [],
       "hard": {
         "false_neg_aggregated": 0,
-        "false_pos_aggregated": 4,
+        "false_pos_aggregated": 3,
         "gate_repeatability": 0.917,
+        "gwet_ac1_reported": {
+          "on_task_relevance": 0.586
+        },
         "indeterminate_ids": [
+          "slot-b-gold-21f4b09722416b4a",
           "slot-b-gold-4719788c9b545ca7",
-          "slot-b-gold-e646359b368be063",
           "slot-b-gold-c0b6068e7f8cb453"
         ],
         "n": 36,
         "per_dimension_kappa_aggregated": {
           "account_specificity": 1.0,
-          "grounding_fidelity": 0.682,
-          "on_task_relevance": 0.661,
+          "grounding_fidelity": 0.966,
+          "on_task_relevance": 0.636,
           "priority_fidelity": 1.0,
           "safety_boundary": 1.0,
-          "tone_fit": 0.877
+          "tone_fit": 0.896
         }
       },
       "method": {
@@ -50,7 +53,7 @@
         "gate_kappa": 0.6,
         "hard_arm": "cot@N",
         "hard_gate": "per-dimension kappa of cot@N N-run modal-aggregated vectors vs held-out key, recomputed from per-case vectors",
-        "judge_prompt_version": "quality-judge-v7",
+        "judge_prompt_version": "quality-judge-v8",
         "model_id": "claude-sonnet-4-6",
         "runs_per_case": 5,
         "single_labeler": true

@@ -9,6 +9,7 @@ from eval.judge_csm import (
     QUALITY_DIMENSIONS,
     LabelReplayJudge,
     build_slot_b_quality_candidates,
+    gwet_ac1,
     labels_from_scores,
     read_slot_b_quality_candidates,
     validate_judge_agreement,
@@ -56,6 +57,16 @@ def test_quality_candidate_fixture_is_deterministic_and_unlabeled(tmp_path):
 def test_weighted_kappa_rewards_ordinal_agreement():
     assert weighted_cohen_kappa([1, 2, 3], [1, 2, 3]) == 1.0
     assert weighted_cohen_kappa([1, 1, 3, 3], [3, 3, 1, 1]) < 0.0
+
+
+def test_gwet_ac1_perfect_agreement_is_one():
+    assert gwet_ac1([1, 2, 3, 1, 2], [1, 2, 3, 1, 2]) == 1.0
+
+
+def test_gwet_ac1_rewards_ordinal_agreement_like_kappa():
+    perfect = gwet_ac1([1, 2, 3], [1, 2, 3])
+    reversed_ = gwet_ac1([1, 1, 3, 3], [3, 3, 1, 1])
+    assert perfect > reversed_
 
 
 def test_miscalibrated_fixture_judge_fails_kappa_gate():
