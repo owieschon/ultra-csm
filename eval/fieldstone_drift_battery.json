@@ -1,0 +1,57 @@
+{
+  "artifact": "fieldstone_drift_battery",
+  "axes_not_applicable": [
+    {
+      "applicable": false,
+      "axis": "junk-contact-import",
+      "reason": "fieldstone's checkpoint signals never read the contact roster (thread_participation_width is not used for this tenant); a junk-contact injection would perturb a signal family this tenant's bible never reads"
+    }
+  ],
+  "cases": [
+    {
+      "case": "schema-field-rename-before-at-after",
+      "detail": {
+        "100": {
+          "confirmation_questions": [
+            "CRMAccount.account_id",
+            "CRMAccount.owner_id",
+            "CRMContact.contact_id"
+          ],
+          "renamed_fields_still_auto_mapped": []
+        },
+        "160": {
+          "confirmation_questions": [
+            "CRMAccount.account_id",
+            "CRMAccount.owner_id",
+            "CRMContact.contact_id",
+            "CRMContact.title"
+          ],
+          "renamed_fields_still_auto_mapped": []
+        },
+        "250": {
+          "confirmation_questions": [
+            "CRMAccount.account_id",
+            "CRMAccount.owner_id",
+            "CRMContact.contact_id",
+            "CRMContact.title"
+          ],
+          "renamed_fields_still_auto_mapped": []
+        }
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "narrative-battery-still-green-post-drift",
+      "detail": {
+        "cases": 6,
+        "failed_cases": [],
+        "hard_ok": true
+      },
+      "ok": true,
+      "problems": []
+    }
+  ],
+  "failed_cases": [],
+  "hard_ok": true
+}
