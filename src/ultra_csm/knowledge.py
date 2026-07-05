@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -61,11 +62,26 @@ class GapPlay:
     customer_ask: str
 
 
+_BOOKING_URL_ENV = "ULTRA_CSM_BOOKING_URL"
+
+
 @dataclass(frozen=True)
 class ValueProp:
     id: str
     name: str
     summary: str
+
+
+@dataclass(frozen=True)
+class Booking:
+    """A Google Calendar appointment-schedule URL, created by a HUMAN in the
+    calendar UI -- to this codebase it is one PRE-APPROVED config string the
+    LLM may place but never invent (enforced by the URL-allowlist rule in
+    ``validate_reason_draft_output``). ``url`` is the value Slot B is allowed
+    to place verbatim; ``label`` is display text only, never itself a URL."""
+
+    url: str
+    label: str
 
 
 @dataclass(frozen=True)
@@ -155,6 +171,7 @@ class OrgPack:
     value_props: tuple[ValueProp, ...]
     gap_plays: tuple[GapPlay, ...]
     golden_corpus: tuple[GoldenExample, ...] = ()
+    booking: Booking | None = None
 
     def slot_b_context(
         self,
@@ -205,11 +222,14 @@ class OrgPack:
                     {"kind": example.kind, "title": example.title, "content": example.content}
                     for example in exemplars
                 ]
+        if self.booking is not None:
+            context["booking"] = {"url": self.booking.url, "label": self.booking.label}
         context["boundary"] = (
             "Org context may shape language and play selection only; "
             "customer-specific claims still require request evidence. Golden "
             "exemplars are style/voice reference prose, not evidence about "
-            "this account."
+            "this account. The booking URL, if present, is pre-approved "
+            "content Slot B may place verbatim but never alter or invent."
         )
         return context
 
@@ -236,6 +256,7 @@ def load_org_pack(
         value_props=tuple(_value_prop(item) for item in _required_list(raw, "value_props")),
         gap_plays=tuple(_gap_play(item) for item in _required_list(raw, "gap_plays")),
         golden_corpus=_load_golden_corpus(Path(corpus_dir)),
+        booking=_booking(raw.get("booking")),
     )
     if not pack.fictional:
         raise OrgPackError("default demo org pack must be marked fictional")
@@ -408,6 +429,30 @@ def _value_prop(raw: Any) -> ValueProp:
         name=_required_str(raw, "name"),
         summary=_required_str(raw, "summary"),
     )
+
+
+def _booking(raw: Any) -> Booking | None:
+    """Parse the optional ``booking`` object. Absent -> ``None`` (feature
+    dormant, no error). Present-but-malformed fails closed. The
+    ``ULTRA_CSM_BOOKING_URL`` env var, if set, overrides the config url at
+    runtime (name-only handling: this reads the env var's presence/value
+    directly, never logs it, never reads it from any other credential
+    source) -- the real Google appointment-schedule URL is an owner-minted
+    act, not something this loader constructs."""
+
+    if raw is None:
+        return None
+    if not isinstance(raw, dict):
+        raise OrgPackError("booking must be an object")
+    _reject_forbidden_keys(raw)
+    url = _required_str(raw, "url")
+    label = _required_str(raw, "label")
+    if not (url.startswith("http://") or url.startswith("https://")):
+        raise OrgPackError("booking.url must be an http(s) URL")
+    live_url = os.environ.get(_BOOKING_URL_ENV)
+    if live_url:
+        url = live_url
+    return Booking(url=url, label=label)
 
 
 def _gap_play(raw: Any) -> GapPlay:

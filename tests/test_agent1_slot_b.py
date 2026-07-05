@@ -172,6 +172,125 @@ def test_slot_b_validator_requires_customer_draft_when_contact_allowed():
         validate_reason_draft_output(request, output)
 
 
+_BOOKING_ORG_CONTEXT = {
+    "booking": {
+        "url": "https://calendar.example/schedule/fleetops-csm-working-session",
+        "label": "Schedule a working session",
+    },
+}
+
+
+def test_slot_b_validator_allows_allowlisted_booking_url():
+    request = _request(org_context=_BOOKING_ORG_CONTEXT)
+    output = ReasonDraftOutput(
+        reason="Score 95 from evidence [evidence:sig-1].",
+        cited_evidence_ids=("sig-1",),
+        customer_draft=(
+            "Hi Jordan, could we grab time? "
+            "https://calendar.example/schedule/fleetops-csm-working-session"
+        ),
+        model_id="test",
+        prompt_version=SLOT_B_PROMPT_VERSION,
+    )
+
+    validate_reason_draft_output(request, output)  # must not raise
+
+
+def test_slot_b_validator_rejects_smuggled_lookalike_url():
+    """Adversarial case: hostile org-context/request text tries to smuggle a
+    lookalike URL past the allowlist -- the validator must fail closed."""
+    request = _request(org_context=_BOOKING_ORG_CONTEXT)
+    output = ReasonDraftOutput(
+        reason="Score 95 from evidence [evidence:sig-1].",
+        cited_evidence_ids=("sig-1",),
+        customer_draft=(
+            "Hi Jordan, click here instead: "
+            "https://calendar.example.evil.com/schedule/fleetops-csm-working-session"
+        ),
+        model_id="test",
+        prompt_version=SLOT_B_PROMPT_VERSION,
+    )
+
+    with pytest.raises(SlotBContractError, match="non-allowlisted URL"):
+        validate_reason_draft_output(request, output)
+
+
+def test_slot_b_validator_rejects_any_url_when_no_booking_configured():
+    request = _request(org_context={"terminology": {}})
+    output = ReasonDraftOutput(
+        reason="Score 95 from evidence [evidence:sig-1].",
+        cited_evidence_ids=("sig-1",),
+        customer_draft="Hi Jordan, see https://totally-legit-scheduling.example/x",
+        model_id="test",
+        prompt_version=SLOT_B_PROMPT_VERSION,
+    )
+
+    with pytest.raises(SlotBContractError, match="non-allowlisted URL"):
+        validate_reason_draft_output(request, output)
+
+
+def _meeting_request(*, org_context: dict | None) -> ReasonDraftRequest:
+    """A meeting-shaped request (recommended_action=initiate_customer_call) --
+    _request() only ever produces draft_customer_outreach/recommend_next_best_
+    action, so this is built directly rather than extending that shared
+    helper (surgical: no other test relies on _request growing this knob)."""
+
+    return ReasonDraftRequest(
+        tenant_id="ultra-demo",
+        account_id="acct-1",
+        account_name="Acme Logistics",
+        disposition="propose_customer_action",
+        recommended_action="initiate_customer_call",
+        customer_contact_allowed=True,
+        priority=SlotBPriority(
+            score=95,
+            factors=(
+                SlotBPriorityFactor("milestones_overdue", 2.0, 50),
+                SlotBPriorityFactor("health_red", 1.0, 30),
+            ),
+        ),
+        evidence=(
+            SlotBEvidence("telemetry", "sig-1", "daily_active_assets", "2026-06-20T00:00:00Z"),
+            SlotBEvidence("cs_platform", "cta-1", "due_date", "2026-06-24"),
+        ),
+        as_of="2026-06-27",
+        contact_name="Jordan Lee",
+        contact_email="jordan@example.test",
+        org_context=org_context,
+    )
+
+
+def test_fixture_slot_b_meeting_shaped_draft_includes_booking_link_exactly_once():
+    request = _meeting_request(org_context=_BOOKING_ORG_CONTEXT)
+
+    output = FixtureReasonDraftWriter().write(request)
+
+    assert output.customer_draft is not None
+    url = _BOOKING_ORG_CONTEXT["booking"]["url"]
+    assert output.customer_draft.count(url) == 1
+    validate_reason_draft_output(request, output)  # must not raise
+
+
+def test_fixture_slot_b_non_meeting_draft_never_includes_booking_link():
+    request = _request(contact_allowed=True, org_context=_BOOKING_ORG_CONTEXT)
+    assert request.recommended_action != "initiate_customer_call"
+
+    output = FixtureReasonDraftWriter().write(request)
+
+    assert output.customer_draft is not None
+    assert _BOOKING_ORG_CONTEXT["booking"]["url"] not in output.customer_draft
+
+
+def test_fixture_slot_b_meeting_shaped_draft_omits_link_when_booking_absent():
+    request = _meeting_request(org_context=None)
+
+    output = FixtureReasonDraftWriter().write(request)
+
+    assert output.customer_draft is not None
+    assert "http://" not in output.customer_draft
+    assert "https://" not in output.customer_draft
+
+
 class _FakeMessages:
     def __init__(self, text: str):
         self.text = text

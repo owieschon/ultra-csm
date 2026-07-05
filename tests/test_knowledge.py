@@ -7,6 +7,7 @@ import json
 import pytest
 
 from ultra_csm.knowledge import (
+    Booking,
     GoldenExample,
     GOLDEN_EXEMPLAR_MAX_COUNT,
     GOLDEN_EXEMPLAR_TOKEN_BUDGET,
@@ -275,3 +276,69 @@ def _pack(
         ],
         "gap_plays": [gap_play],
     }
+
+
+def test_default_org_pack_booking_is_the_sim_fictional_url():
+    pack = load_org_pack()
+
+    assert pack.booking is not None
+    assert pack.booking.url.startswith("https://calendar.example/")
+    assert pack.booking.label
+
+
+def test_default_org_pack_slot_b_context_carries_booking():
+    context = load_org_pack().slot_b_context()
+
+    assert context["booking"]["url"].startswith("https://calendar.example/")
+    assert context["booking"]["label"]
+
+
+def test_org_pack_booking_absent_is_dormant_not_an_error(tmp_path):
+    path = tmp_path / "org_pack.json"
+    path.write_text(json.dumps(_pack()), encoding="utf-8")
+
+    pack = load_org_pack(path)
+
+    assert pack.booking is None
+    assert "booking" not in pack.slot_b_context()
+
+
+def test_org_pack_booking_malformed_missing_url_fails_closed(tmp_path):
+    path = tmp_path / "org_pack.json"
+    raw = _pack()
+    raw["booking"] = {"label": "Book time"}
+    path.write_text(json.dumps(raw), encoding="utf-8")
+
+    with pytest.raises(OrgPackError):
+        load_org_pack(path)
+
+
+def test_org_pack_booking_rejects_non_http_url(tmp_path):
+    path = tmp_path / "org_pack.json"
+    raw = _pack()
+    raw["booking"] = {"url": "not-a-url", "label": "Book time"}
+    path.write_text(json.dumps(raw), encoding="utf-8")
+
+    with pytest.raises(OrgPackError, match="http"):
+        load_org_pack(path)
+
+
+def test_org_pack_booking_url_env_override(tmp_path, monkeypatch):
+    monkeypatch.setenv(
+        "ULTRA_CSM_BOOKING_URL",
+        "https://calendar.google.com/calendar/appointments/real-live-url",
+    )
+    path = tmp_path / "org_pack.json"
+    raw = _pack()
+    raw["booking"] = {
+        "url": "https://calendar.example/schedule/sim",
+        "label": "Book time",
+    }
+    path.write_text(json.dumps(raw), encoding="utf-8")
+
+    pack = load_org_pack(path)
+
+    assert pack.booking == Booking(
+        url="https://calendar.google.com/calendar/appointments/real-live-url",
+        label="Book time",
+    )
