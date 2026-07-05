@@ -30,6 +30,9 @@
         "false_neg_aggregated": 0,
         "false_pos_aggregated": 3,
         "gate_repeatability": 0.917,
+        "gwet_ac1_reported": {
+          "on_task_relevance": 0.586
+        },
         "indeterminate_ids": [
           "slot-b-gold-21f4b09722416b4a",
           "slot-b-gold-4719788c9b545ca7",

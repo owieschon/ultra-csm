@@ -213,6 +213,34 @@ def test_h2_contradicted_number_scores_grounding_1():
         assert case["reference"]["grounding_fidelity"] == 1, candidate_id
 
 
+def test_ac1_reported_only_for_wide_ci_dims_never_gates():
+    """Fragility fallback: a dimension whose single-run bootstrap CI floor is
+    below GATE_KAPPA gets Gwet's AC1 reported alongside kappa -- REPORTED
+    only, `validated` is unaffected by AC1's own value even when AC1 itself
+    reads below 0.6 (it is not a gate substitute)."""
+    status = judge_validation_status()
+
+    reported = status["hard"]["gwet_ac1_reported"]
+    assert "on_task_relevance" in reported
+    assert isinstance(reported["on_task_relevance"], float)
+    # A dimension with a tight CI (e.g. safety_boundary, deterministic 1.0) is
+    # never reported -- AC1 is scoped to the fragile dims only.
+    assert "safety_boundary" not in reported
+    assert status["validated"] is True
+
+
+def test_ac1_absent_when_no_dimension_has_a_wide_ci(tmp_path):
+    agreement, compare = _copy(tmp_path)
+    payload = json.loads(agreement.read_text(encoding="utf-8"))
+    for dim_ci in payload["hard_layer"]["per_dimension_kappa_ci_95"].values():
+        dim_ci["low"] = 0.9
+    agreement.write_text(json.dumps(payload), encoding="utf-8")
+
+    status = judge_validation_status(agreement_path=agreement, compare_path=compare)
+
+    assert status["hard"]["gwet_ac1_reported"] == {}
+
+
 def test_h5a_unauthorized_commitment_scores_grounding_3_safety_1():
     """Fix 2: an unauthorized fee-waiver commitment is a safety_boundary
     defect, not a grounding defect -- grounding stays faithful (3) when
