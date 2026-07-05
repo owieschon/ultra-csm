@@ -128,3 +128,171 @@ year-end) intact and adding no new participant.
 
 `test -f docs/PROGRAM_REPORT_19.md` → present, contains the four per-arc
 derivation tables above. PASS.
+
+## Phase 2 — Per-arc expansion (execution log)
+
+All four arcs executed in the derivation sheet's stated order (Aspenridge,
+Pinnacle, Pinehill, Meridian — simplest first), one commit per arc, each
+containing (a) the bible density subsection, (b) the schedule tuple +
+content-module additions, (c) a sanctioned snapshot regen (Pinehill needed
+none — see below), (d) any legitimate re-derivation disclosed inline.
+
+| Arc | Commit | Before → after | Gates |
+| --- | --- | --- | --- |
+| Aspenridge | `6ffa80c` | 10 → 24 | narrative hard_ok:true 8/8; content hard_ok:true 5/5; invariance PASS (post-regen; only evidence timestamps moved, zero value drift) |
+| Pinnacle | `8441002` | 12 → 26 | narrative hard_ok:true 8/8; content hard_ok:true 5/5; invariance PASS (post-regen; one *unasserted* latency value moved 0.0→1.0, disclosed in bible) |
+| Pinehill | `181e9d3` | 19 → 29 | narrative hard_ok:true 8/8; content hard_ok:true 5/5; invariance PASS with **zero diff** — the day51-219 safe-zone placement needed no regen at all, confirming the derivation held exactly |
+| Meridian | `4942aec` | 52 → 104 | narrative hard_ok:true 8/8; content hard_ok:true 5/5; invariance PASS (post-regen; two *unasserted* latency values moved, disclosed in bible) |
+
+Total: +90 messages across four arcs (114 → 183 total messages across all
+six scored arcs, Trailhead's 27 and Quarrystone's 2 unchanged). Every
+addition is bible-first: the density subsection for each arc was written
+before the corresponding code commit, in the same commit, per the K14-
+compatible sanctioned-exception protocol.
+
+Sample bodies (three per arc, read directly for the residual — prose
+quality is gate-unverified, this is the human glance the routing table
+calls for):
+
+**Aspenridge** (day 45, Marcus→Christine): "No urgent items, just checking
+in on scheduling -- want to keep the Q2 review on the calendar for the
+usual week, or is there a better slot with your team's spring routing
+changes?"
+
+**Pinnacle** (day 160, Priya→Monica): "Checking in ahead of our next sync
+-- anything you want added to the agenda on the Fuel Analytics adoption
+front?"
+
+**Pinehill** (day 130, Marcus→Dennis): "Quick FYI -- Grace's team is still
+monitoring the ack-timeout fix from a few weeks back, no new incidents
+since. Will flag immediately if anything changes."
+
+**Meridian** (day 90, Priya→Alicia): "Checking in ahead of the Q3 planning
+conversation -- anything you want added to the agenda?"; (day 85, Priya→
+Sarah): "Checking in ahead of the budget conversation -- anything you
+need from us before then?"
+
+## Phase 3 — Full verification
+
+| Check | Command | Observed result |
+| --- | --- | --- |
+| Suite | `LC_ALL=en_US.UTF-8 make eval` | `606 passed, 1 skipped` — same count as the pre-program baseline (this program adds fixture content, not new tests) |
+| Lint | `make lint` | `All checks passed!` |
+| Hygiene | `make hygiene` | exit 0 |
+| Narrative | `make narrative-battery-csm` | `hard_ok: true`, 8/8 |
+| Content | `make content-battery-csm` | `hard_ok: true`, 5/5 |
+| Invariance | `python3 -m eval.content_invariance_check --check` | PASS (post all four regens) |
+| Canary | `make canary-battery-csm` | `hard_ok: true`, 6/6 |
+| Tier policy | `make tier-policy-battery-csm` | `hard_ok: true`, 4/4 |
+| Quantity/transcript | `make quantity-battery-csm transcript-battery-csm` | both `hard_ok: true` (3/3, 4/4) |
+| Drift check | `git diff --check` | exit 0 |
+| Status | `make status` | `STATUS.md is current` |
+| Density delta | `git log --oneline` | 4 arc commits (`6ffa80c`, `8441002`, `181e9d3`, `4942aec`) plus the D1 derivation commit (`187c422`) |
+
+Diff budget: 11 files changed (`docs/SYNTHETIC_UNIVERSE_BIBLE.md`,
+`docs/PROGRAM_REPORT_19.md`, four `*_comms.py`, four
+`narrative_content/*_content.py`, `eval/content_invariance_snapshot.json`),
+844 insertions / 12 deletions across the whole program — within the
+15-file/1,200-line budget. Zero IF/THEN tripwires fired (well under the
+8-item threshold — the only fork-like decisions were the two legitimate,
+disclosed latency re-derivations, both pre-covered by Program 8's
+anti-Goodhart disclosure norm, not genuine forks).
+
+## IF/THEN Branches Taken
+
+- Two arcs (Pinnacle, Meridian) produced a changed `reply_latency_trend`
+  value in the invariance snapshot after their density commit, even
+  though `check_single_threaded_risk`/`check_expansion_ready` never assert
+  `latency` for these arcs → verified this is unasserted by direct
+  inspection of `eval/narrative_battery.py` before treating it as safe,
+  disclosed both moves inline in the bible's density subsections (per
+  Program 8's anti-Goodhart norm) rather than silently letting the
+  snapshot diff be the only record.
+- Pinehill's safe-zone placement (day51-219) turned out to require *zero*
+  snapshot regeneration at all (the three checkpoint days' trailing
+  windows never touch that range) → rather than force a no-op regen to
+  satisfy "one sanctioned regen per arc phase" literally, left the
+  snapshot untouched for this arc's commit and stated why; the sanctioned-
+  exception count (four regens allowed) is a ceiling, not a quota, and
+  three of four arcs used it.
+
+## Consolidated Owner Ask
+
+1. **Live catch-up seeding run for this program's new messages.** This
+   program is offline-only by design (fixtures only, no credentials, no
+   live-org access). Verified at runtime before writing this ask: the
+   live drip-seeder (`~/ultra-csm-corpus-runs/live-reseed-20260704/drip_seed.py`,
+   installed by Program 9, `docs/LIVE_INTEGRATION_FINDINGS.md`) reads
+   `anchor.json`'s `seeded_through_day` and only ever seeds messages where
+   `seeded_through_day < story_day <= current_story_day` (lines 146/161) —
+   strictly forward-looking, one-way advance, never backward. The current
+   `anchor.json` (`seeded_through_day: 50`, anchor_date 2026-05-15) means
+   most of this program's new messages (placed at story days 5-288 across
+   the four arcs, many below the already-advanced `seeded_through_day`)
+   will **never** be picked up by the daily drip job once it advances past
+   them. A small, explicitly-authorized one-time catch-up seeding run
+   (append the 90 new messages at their correct historical dates, then
+   resume the normal forward drip) is needed before the live mailbox
+   matches the enriched fixtures — not done here, recorded as this
+   program's required live-integration follow-up per the dispatch's own
+   instruction.
+2. **Prose-quality/believability of the new filler content is
+   gate-unverified.** No battery reads email body text for tone or
+   naturalness (by design — the extractors are metadata-only). The three
+   sample bodies per arc above are a human glance, not an automated proof
+   that all 90 new messages read equally well; a reviewer should spot-
+   check a larger sample before treating this as demo-ready prose.
+
+## STOP Conditions
+
+None fired. No credential or live-system access was used anywhere in this
+program (verified: every command run was local — pytest, the battery
+modules, `git`, no network call). No battery/threshold/expected value was
+edited to pass (K14) — every gate passed on the first attempt per arc, no
+retries needed. The fleetops fixture fence held: `synthetic_book.py`,
+`quietvale-trucking`, and the 181-account book table were never touched
+(verified: `git diff --stat` for this program's commits shows zero
+changes to `synthetic_book.py` or any file under `tenants/`).
+`signal_extractor.py`, `contracts.py`, `quarrystone_comms.py`,
+`trailhead_comms.py` were never touched (ownership map honored).
+
+## Skeptical Reviewer Paragraph
+
+A skeptical reviewer should weigh three limits. First, filler prose
+quality is gate-unverified — density (message count) is proven and
+checkpoint-safe by hand-derivation and battery, but "reads like a real
+onboarding thread" is asserted only by this report's 3-sample-per-arc
+human glance, not by any automated check; a reader should not conflate
+"density expanded" with "content quality independently verified." Second,
+two of four arcs (Pinnacle, Meridian) shifted an *unasserted*
+`reply_latency_trend` value in the invariance snapshot — this is
+disclosed and verified harmless against the actual battery assertions,
+but a reader relying on "byte-identical snapshot" as a blanket invariant
+should know two of four arcs' snapshots did change, just not in a scored
+dimension. Third, this program is fixture-only; the live mailbox now
+diverges further from the fixtures than before (90 more messages exist
+in fixtures than in the live org), and that gap will not self-heal via
+the existing drip job without the catch-up run named in Owner Ask #1 —
+a reader should not assume the live demo environment reflects this
+program's density increase until that run happens.
+
+## Receipts Appendix
+
+- Worktree: `~/dev/ultra-csm-density-expansion`, branch `codex/density-expansion`.
+- Base: `8a86806` (main, includes PR #31 report-24 tick-motion-adoption,
+  PR #32 Act 1 golden-corpus).
+- Fixture fence check: `build_synthetic_book()` → 181 accounts (report
+  24's addition confirmed present, untouched throughout this program).
+- Commits: `187c422` (D1 derivation sheet), `6ffa80c` (D2.1 Aspenridge),
+  `8441002` (D2.2 Pinnacle), `181e9d3` (D2.3 Pinehill), `4942aec` (D2.4
+  Meridian).
+- `git log --oneline -6`:
+  ```
+  4942aec Density D2.4: meridian-fleet +52 messages (bible-first)
+  181e9d3 Density D2.3: pinehill-transport +10 messages (bible-first)
+  8441002 Density D2.2: pinnacle-supply +14 messages (bible-first)
+  6ffa80c Density D2.1: aspenridge-supply +14 messages (bible-first)
+  187c422 Density D1: derivation sheet
+  8a86806 Harvest 7: Act 1 -- golden corpus into Slot B + judge-on-live (Wave C) (#32)
+  ```
+- Full DoD table results: see Phase 3 section above, all rows PASS.
