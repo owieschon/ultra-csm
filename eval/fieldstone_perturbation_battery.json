@@ -1,0 +1,60 @@
+{
+  "artifact": "fieldstone_perturbation_battery",
+  "axes_not_applicable": [
+    {
+      "applicable": false,
+      "axis": "cs-platform-health-band-cta-adoption",
+      "reason": "fieldstone has no CS platform substrate at all (bible: 'No-CS-platform discipline') -- verified: get_company/get_health_score/get_adoption_summary all return None for this tenant, so there is no health band/CTA/adoption value to perturb",
+      "verified": {
+        "adoption_is_none": true,
+        "company_is_none": true,
+        "health_is_none": true
+      }
+    }
+  ],
+  "cases": [
+    {
+      "case": "latency-uniform-no-new-flags",
+      "detail": {
+        "baseline_trend": -0.5,
+        "flagged": false,
+        "perturbed_trend": -1.5,
+        "reason": "delta -1.5 < tenant baseline floor 20.0: within normal variance"
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "latency-recent-window-flags-real-stretch",
+      "detail": {
+        "flagged": true,
+        "perturbed_trend": 74.5,
+        "reason": "delta 74.5 >= tenant baseline floor 20.0: flagged"
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "volume-down-degrades-honestly",
+      "detail": {
+        "original_count": 14,
+        "perturbed_trend": null,
+        "thinned_count": 0
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "hygiene-drop-no-crash",
+      "detail": {
+        "contacts": 12,
+        "crashed": false,
+        "nulled": 4
+      },
+      "ok": true,
+      "problems": []
+    }
+  ],
+  "failed_cases": [],
+  "hard_ok": true
+}
