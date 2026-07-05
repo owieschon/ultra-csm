@@ -41,6 +41,7 @@ from ultra_csm.quality_breaker import (
     QualityBreakerDecision,
     evaluate_quality_breaker,
 )
+from ultra_csm.recipient_resolver import resolve_recipient
 from ultra_csm.snapshot_store import SnapshotStore
 from ultra_csm.value_model import (
     CustomerValueModel,
@@ -111,6 +112,7 @@ class CSMWorkItem:
     draft_mode: DraftMode = "none"
     customer_draft: str | None = None
     motion: str | None = None
+    recipient_resolution: str | None = None
 
 
 @dataclass
@@ -128,6 +130,7 @@ class _SlotBInputs:
     cases: tuple
     evidence: tuple[EvidenceRef, ...]
     priority: Priority
+    stakeholders: tuple = ()
 
 
 @dataclass(frozen=True)
@@ -523,7 +526,7 @@ def _slot_b_inputs_for_account(
     )
     if priority.score <= 0:
         return None
-    return _SlotBInputs(cases=cases, evidence=evidence, priority=priority)
+    return _SlotBInputs(cases=cases, evidence=evidence, priority=priority, stakeholders=stakeholders)
 
 
 def _proposal_contact(
@@ -893,7 +896,7 @@ def _work_item_for_account(
     tier = tier_and_motion[0] if tier_and_motion is not None else None
     motion = tier_and_motion[1] if tier_and_motion is not None else None
 
-    contact = next((contact for contact in contacts if contact.consent_to_contact), None)
+    contact, recipient_resolution = resolve_recipient(motion, inputs.stakeholders, contacts)
     customer_contact_allowed = contact is not None
     # Tier-forbidden-motion guard: narrows customer_contact_allowed exactly
     # like the quality breaker already does -- it never touches
@@ -991,6 +994,7 @@ def _work_item_for_account(
         draft_mode=draft_mode,
         customer_draft=slot_b.customer_draft,
         motion=motion,
+        recipient_resolution=recipient_resolution,
     )
 
 
