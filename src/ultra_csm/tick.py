@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import logging
 import shutil
 import uuid
 from dataclasses import asdict, dataclass
@@ -54,6 +55,8 @@ from ultra_csm.triggers import (
     parse_trigger_config,
 )
 from ultra_csm.value_model import build_customer_value_model, load_value_model_config, project_ttv_lens
+
+log = logging.getLogger(__name__)
 
 # tick is fleetops/ultra-demo-only by construction (verified Report 23):
 # fleetops' own book IS the fixture book tick.py drives, and no other
@@ -645,12 +648,21 @@ def _data_plane_from_fixture(data: FixtureCustomerData) -> CustomerDataPlane:
 
 
 def _read_ledger(path: Path) -> tuple[dict[str, Any], ...]:
+    """Parse the append-only ledger, skipping (never crashing on) a
+    corrupted or truncated line -- e.g. from an abrupt process kill mid-
+    append. A bad line is logged and dropped; every well-formed line
+    before and after it is still returned."""
+
     if not path.exists():
         return ()
     entries = []
-    for line in path.read_text(encoding="utf-8").splitlines():
-        if line.strip():
+    for line_no, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
+        if not line.strip():
+            continue
+        try:
             entries.append(json.loads(line))
+        except json.JSONDecodeError as exc:
+            log.warning("skipping corrupted ledger line %s:%d: %s", path, line_no, exc)
     return tuple(entries)
 
 
