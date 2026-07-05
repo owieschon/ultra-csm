@@ -43,6 +43,17 @@ flow; scoreboard is append-only.
   REST key 401 (down) as of 2026-07-04; MCP lane works.
 - Google Calendar API rate-limits batch inserts (~50); ledger-resume +
   backoff + ~0.3s pacing from the first attempt.
+- `run_time_to_value_sweep`'s `tenant_id` (data-plane identity,
+  "ultra-demo") and a `knowledge/tenants/<slug>` playbook slug are
+  SEPARATE namespaces — never conflate; motion resolution is opt-in via
+  `playbook_tenant_slug` (report 23).
+- ruff's unused-import check cannot see cross-file re-export usage: a
+  battery module constant imported by tests/ needs `# noqa: F401` + a
+  comment naming the consumer, not deletion (report 23 caught this
+  live).
+- User-visible work carries an OBSERVED-BEHAVIOR DoD row (open the real
+  surface, assert on what is seen); artifact gates cannot see a broken
+  page (owner-ratified 2026-07-05).
 - Battery runtime budget: ≤90s each; `make eval` ≤3 min (sample the
   account tail deterministically, state sampling in docstrings) — not
   every dispatch states this ceiling explicitly (Perturbation-Drift
@@ -113,11 +124,14 @@ Customer Value Model (no LLM in provable core).
 ## Identifier scheme
 
 Branch prefix `codex/` or `claude/` + kebab slug. Program reports:
-10–18 assigned to Universe v2 streams 1–9 (merged); 19–23 pinned in
-`~/ultra-csm-dispatches/harvest/00_HARVEST_PLAN.md` (19=loop pilot,
-20=this retro, 21=operating cadence, 22=Act3 curation, 23=motion-path
-wiring). **Next unassigned: 24.** Dispatch output dir:
-`~/ultra-csm-dispatches/` (harvest-phase dispatches under `harvest/`).
+10–18 assigned to Universe v2 streams 1–9 (merged); 20 (retro) and 23
+(motion-path wiring) merged; 19/21/22 pinned in
+`~/ultra-csm-dispatches/harvest/00_HARVEST_PLAN.md` (19=density
+expansion, 21=operating cadence, 22=Act3 curation); 24–26 pinned by the
+Waves C/D/E roadmap extension (24=tick motion adoption, 25=Act 1
+knowledge+judge, 26=Act 2 Gmail write-back). **Next unassigned: 27.**
+Dispatch output dir: `~/ultra-csm-dispatches/` (harvest-phase dispatches
+under `harvest/`).
 
 ## Risk posture
 
@@ -169,4 +183,7 @@ recurring forks (that would be the improvement signal this scoreboard
 exists to measure), or does it stay flat because each new tenant/feature
 genuinely introduces its own new ambiguity.
 
-Last retro: 2026-07-04 (this program, Harvest 1 / Program Report 20).
+| 2026-07-05 | Report 23 (Harvest 5, motion-path wiring) | 8 | 0 | 1 (lint-cleanup import regression, self-caught) | left open per K11 (mechanics unconfigured); owner merged manually |
+
+Last retro: 2026-07-05 (mini-retro of report 23 during Waves C/D/E
+roadmap emission).
