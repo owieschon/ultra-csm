@@ -25,12 +25,12 @@ if TYPE_CHECKING:
 
 log = logging.getLogger(__name__)
 
-SLOT_B_PROMPT_VERSION = "agent1-slot-b-reason-draft-v3"
+SLOT_B_PROMPT_VERSION = "agent1-slot-b-reason-draft-v4"
 SLOT_B_PROMPT_PATH = (
     Path(__file__).resolve().parents[3]
     / "docs"
     / "prompts"
-    / "agent1_slot_b_reason_draft_v3.md"
+    / "agent1_slot_b_reason_draft_v4.md"
 )
 
 FIXTURE_SLOT_B_MODEL_ID = "fixture-agent1-slot-b-v1"
@@ -47,6 +47,28 @@ LIVE_USD_PER_MTOK_OUTPUT = 25.00
 # fails closed, so a hostile prompt cannot smuggle a lookalike URL past this
 # validator regardless of how it's phrased.
 _URL_RE = re.compile(r"https?://[^\s<>\"']+")
+
+
+# Meeting-shaped = motions mapping to `initiate_customer_call` (working_session,
+# qbr) per the CONVENTIONS motion->action mapping (docs/UNIVERSE_V2_CONVENTIONS.md
+# §2) -- verified via request.recommended_action, the CSMActionType field
+# ReasonDraftRequest actually carries (this request shape has no separate
+# `motion` field). The booking link is CONTENT: no playbook/motion/action-type
+# change, just a deterministic instruction for the fixture path below.
+_MEETING_SHAPED_ACTION = "initiate_customer_call"
+
+
+def _booking_link_line(request: "ReasonDraftRequest") -> str | None:
+    """The single sentence offering the configured booking link, or None if
+    no booking is configured (dormant feature -- see knowledge.py). Always
+    the SAME url/label from org_context; the fixture writer decides only
+    whether to include it, never what url to use."""
+
+    org_context = request.org_context or {}
+    booking = org_context.get("booking")
+    if not isinstance(booking, dict) or not booking.get("url"):
+        return None
+    return f"You can grab time directly here: {booking['label']} — {booking['url']}"
 
 
 def _allowed_urls(request: "ReasonDraftRequest") -> set[str]:
@@ -158,6 +180,10 @@ class FixtureReasonDraftWriter:
                 f"Hi {contact}, {request.account_name} is showing an onboarding "
                 f"risk tied to {factor_names}. Can we {ask}?"
             )
+            if request.recommended_action == _MEETING_SHAPED_ACTION:
+                link_line = _booking_link_line(request)
+                if link_line:
+                    draft = f"{draft} {link_line}"
         output = ReasonDraftOutput(
             reason=reason,
             cited_evidence_ids=cited,
