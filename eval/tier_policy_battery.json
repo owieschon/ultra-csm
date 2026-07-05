@@ -252,8 +252,9 @@
     {
       "case": "cohort-collapses-to-one-action",
       "detail": {
-        "cohort_actions_found": 1,
-        "cohort_size": 25
+        "cohort_items_found": 1,
+        "cohort_size": 25,
+        "real_pipeline": true
       },
       "ok": true,
       "problems": []
