@@ -1,24 +1,56 @@
 # Ultra CSM
 
-**What it does to a book of business.** Points at a CSM's accounts and finds the revenue quietly
-leaking — green-but-quiet accounts nobody's watching, onboardings stalling before they hit value,
-single-threaded relationships one departure from churn — with evidence attached to every finding
-and a drafted next move ready for a human to approve. Not a health-score dashboard: a triage queue
-with receipts.
+**What a morning with it looks like.** One real work item from a live daily run over a 181-account
+book (story day 51, `docs/PROGRAM_REPORT_21.md`): Ironhorse Freight Co, deterministic Time-to-Value
+score 143 (`milestones_overdue=50`, `days_overdue=40`, `success_plan_overdue=20`), motion
+`working_session`, evidence cited to real telemetry/CS-platform sources. That same run resolved 12
+work items across 5 distinct motions (`working_session`, `campaign_enroll`, `content_route`,
+`personal_email`, `cohort_action`) and ran the validated quality judge over 3 drafts for $0.231
+against a $2.00 cap, all `pass=true` — not a mocked demo path, the actual `ucsm tick` sweep. This is
+the account triage a CSM opens with: green-but-quiet accounts, stalling onboardings, and
+single-threaded relationships surfaced with cited evidence and a drafted next move — not a
+health-score dashboard.
 
-**Why you can point it at real customers.** Two live vendors — Salesforce and Rocketlane — onboard
-into the same value model in one conversation, five questions, no custom integration work. The
-resulting drafts are scored by a judge that was itself validated against human-labeled gold data
-before being trusted (`docs/DECISION_LOG.md`), and every draft is propose-only: a human approves
-before anything reaches a customer. `docs/PROGRAM_REPORT_6.md` has the live run and the judge's
-actual scores.
+**Why you can trust the claim at this scale.** `docs/DEPLOYMENT_READINESS.md` (rendered, never
+hand-edited, from committed battery artifacts) is the evidence a skeptical buyer would ask for
+first: agents tested from cold start across **four distributionally distinct tenants** (fleetops
+180 accounts / fieldstone 12 / crateworks 10 / loopway 400) spanning enterprise-touch to
+self-serve scale, over four different vendor-CRM shapes (Salesforce-shaped, HubSpot-shaped, flat
+CSV, Attio-shaped), with measured onboarding cost (3-6 questions per tenant, no monotonic
+relationship to account count), adversarial-content safety with cross-account canaries, tier-
+appropriate action economics, and drift resilience — all batteries `hard_ok: true`, zero ad-hoc
+per-tenant rules in code (every tenant resolves through the same `resolve_tenant_tier` +
+`load_playbooks` pair). Two of those four tenants — Salesforce and Rocketlane — onboard live: real
+read-only CRM fetch and a real, create-only write-back against a seeded corpus B account
+(`docs/PROGRAM_REPORT_6.md`), plus real Rocketlane onboarding-phase evidence lighting up the
+Time-to-Value rail end-to-end.
+
+**The differentiator: a validated judge, not an impression.** The Slot B drafts the agent proposes
+are scored by an LLM judge that was itself measured against human-labeled gold data before being
+trusted, and the choice of instrument was revised twice on evidence, not picked once and assumed
+final: a single-run comparison first favored Sonnet-terse for stability, but a 5-run modal
+aggregation study then found terse@5 fails the hard adversarial layer even after aggregation
+(`on_task_relevance` κ 0.479, 3 aggregated false negatives) while `cot@5` clears all six dimensions
+(κ ≥ 0.661, zero aggregated false negatives) — so the validated gate judge today is Sonnet 4.6 with
+chain-of-thought reasoning, under 5-run aggregation, exactly because that is the arm the
+adversarial gold data says is trustworthy, not the one that looked best on a smaller sample
+(`docs/DECISION_LOG.md`). The doc also states the judge's own rare, honest disagreement rather than
+forcing it to zero — one boundary case (H6b, warm-but-generic drafts) draws 4 accepted hard false
+positives, recorded as a defensible disagreement, not chased away with a rubric rewrite. Every draft
+stays propose-only — a human approves before anything reaches a customer.
 
 **The receipts.** `docs/LIVE_INTEGRATION_FINDINGS.md` and `docs/PROGRAM_REPORT_6.md` are the live
 runs against real Salesforce/Rocketlane orgs; `eval/gold/live_semantic_quality.json` is the judged
 output; `eval/scorecard_csm.json` and the regression batteries are the deterministic proof the
-spine holds. Every artifact here carries a `claim_boundary` — what it does and does not prove —
-because the mechanics of *how* this works (a deterministic value model, a proposal-only action
-gate, a validated LLM judge) are the objection-handler, not the pitch.
+spine holds; `docs/DEPLOYMENT_READINESS.md` is the four-tenant table above, rendered not hand-set.
+Every artifact here carries a `claim_boundary` — what it does and does not prove — because the
+mechanics of *how* this works (a deterministic value model, a proposal-only action gate, a
+validated LLM judge) are the objection-handler, not the pitch.
+
+*What this does NOT yet claim:* one verified manual run of the daily operating job proves the
+mechanism works end to end for one real day (`docs/OPERATING_PROOF.md`); it does not yet prove
+unattended operation across weeks — the standing schedule is built and validated but intentionally
+not started, pending the owner's own go-ahead.
 
 One spine: `CustomerDataPlane → value_model → ActionGate → Agent 1 (Slot B)`. The current agent
 is a Time-to-Value accelerator: it reads CRM / CS-platform / product-telemetry data, computes a
@@ -164,3 +196,4 @@ The working plan lives in `docs/NEXT_DISPATCH.md`.
 - **Eval & judge:** `docs/DECISION_LOG.md`, `docs/QUALITY_REGRESSION_EVAL_SPEC.md`, `docs/NONDETERMINISM_EVAL_HARDENING_SPEC.md`, `docs/QUALITY_LABELING_PROTOCOL.md`
 - **Ops & security:** `docs/OBSERVABILITY.md`, `docs/SECURITY.md`
 - **Connectors & roadmap:** `docs/ROCKETLANE_ONBOARDING_CONNECTOR_SPEC.md`, `docs/NEXT_DISPATCH.md`, `docs/DEMO_EXECUTION_PLAN.md` (the binding demo plan)
+- **Operating proof:** `docs/PROGRAM_REPORT_21.md`, `docs/PROGRAM_REPORT_24.md`, `docs/OPERATING_PROOF.md` (the daily-run job and the tick motions it depends on)
