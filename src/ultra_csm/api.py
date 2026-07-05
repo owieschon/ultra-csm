@@ -17,6 +17,7 @@ from typing import Any, Literal
 
 import psycopg
 from fastapi import FastAPI, HTTPException, Query, Request, Response
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 
@@ -40,8 +41,15 @@ from ultra_csm.governance import (
     make_principal,
     ROLE_CS_ORCHESTRATOR,
 )
-from ultra_csm.value_model import build_customer_value_model, project_ttv_lens
-from ultra_csm.agent1 import run_time_to_value_sweep
+from ultra_csm.value_model import (
+    account_attributes,
+    build_customer_value_model,
+    load_value_model_config,
+    project_ttv_lens,
+    resolve_tenant_tier,
+)
+from ultra_csm.agent1 import collapse_cohorts, run_time_to_value_sweep
+from ultra_csm.knowledge import load_playbooks
 from ultra_csm.agent1.precedence import (
     ActionPacket,
     FindingPacket,
@@ -93,6 +101,9 @@ _orch_principal: str | None = None
 _cost_tracker = CostTracker()
 _api_metrics = APIMetrics()
 _cost_budget = CostBudget(max_cost_per_sweep_usd=1.00, max_cost_per_day_usd=10.00)
+_value_model_config = load_value_model_config()
+_FLEETOPS_PLAYBOOK_SLUG = "fleetops"
+_fleetops_playbooks = load_playbooks(_FLEETOPS_PLAYBOOK_SLUG)
 
 
 # ---------------------------------------------------------------------------
@@ -141,6 +152,7 @@ class AccountSummarySchema(BaseModel):
     arr_cents: int | None = None
     priority_score: int | None = None
     priority_score_error: str | None = None
+    tier: str | None = None
 
 
 class AccountListResponse(BaseModel):
@@ -242,6 +254,20 @@ class DigestResponse(BaseModel):
     pending_proposals: int
     commitments: list[dict[str, Any]]
     manager_rollup: dict[str, Any]
+
+
+class LedgerEventSchema(BaseModel):
+    ts: str
+    event: str
+    label: str
+    proposal_id: str
+    detail: str
+
+
+class LedgerResponse(BaseModel):
+    tenant_id: str
+    events: list[LedgerEventSchema]
+    ledger_gap: list[str]
 
 
 class DelegationResponse(BaseModel):
@@ -346,6 +372,16 @@ app = FastAPI(
     ),
     version="0.1.0",
     lifespan=lifespan,
+)
+
+# Ops surface (ui/) runs `next dev` on :3000 against this API on :8000 in
+# dev mode; the built static export is served same-origin via StaticFiles
+# in demo/prod, where this middleware is a no-op.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_methods=["GET", "POST"],
+    allow_headers=["Authorization", "Content-Type"],
 )
 
 
@@ -860,6 +896,20 @@ async def list_accounts(
         if company:
             entry["arr_cents"] = company.arr_cents
             entry["lifecycle_stage"] = company.lifecycle_stage
+            try:
+                resolved = resolve_tenant_tier(
+                    account_attributes(account, company), _value_model_config
+                )
+                entry["tier"] = resolved.tier
+            except Exception as exc:
+                log.warning(
+                    "tier_resolution_failed",
+                    extra={
+                        "surface": "api.list_accounts",
+                        "account_id": account.account_id,
+                        "error_type": exc.__class__.__name__,
+                    },
+                )
 
         if health:
             entry["health_band"] = health.band
@@ -1210,6 +1260,21 @@ async def trigger_sweep(
         as_of=as_of,
         cost_tracker=_cost_tracker,
         cost_budget=_cost_budget,
+        # DEFAULT_TENANT ("ultra-demo") is fleetops-only by construction
+        # (verified report 23/24) — this opts the API's sweep into the same
+        # live motion resolution tick.py already uses; work_items carry a
+        # real `motion` value instead of staying None.
+        playbook_tenant_slug=_FLEETOPS_PLAYBOOK_SLUG,
+    )
+    # Cohort collapse needs the whole book, not the per-trigger restricted
+    # sweep data plane — same pattern as tick.py's own collapse_cohorts call.
+    sweep = collapse_cohorts(
+        sweep,
+        dp,
+        tenant_id=DEFAULT_TENANT,
+        playbooks=_fleetops_playbooks,
+        value_model_config=_value_model_config,
+        as_of=as_of,
     )
     sweep_elapsed_ms = (time.monotonic() - sweep_start) * 1000.0
 
@@ -1285,6 +1350,74 @@ async def list_proposals():
         tenant_id=_TENANT_ID,
         pending_count=len(proposals),
         proposals=proposals,
+    )
+
+
+# Two-register rule (UI_DESIGN_BRIEF.md): plain-English label for the primary
+# UI text; the raw event name rides along in `event` for a mono/tooltip
+# receipt. Mirrors ui-mockup.html's LEDGER_HUMAN table exactly.
+_LEDGER_HUMAN = {
+    "gate.propose": "Proposed",
+    "gate.approve": "Approved",
+    "gate.deny": "Denied",
+    "gate.revise": "Edit saved",
+}
+# Event types the mockup's ledger shows (sweep.fired, value_model,
+# slot_b.draft, judge.score, gmail.commit, reobserve.queue) are NOT
+# persisted anywhere this endpoint can read from — action_proposal/
+# action_verdict only carry the propose/approve/deny/revise lifecycle.
+# Honest ledger gap (UI_DESIGN_BRIEF.md: "anything the surface cannot show
+# live exposes a LEDGER GAP"), not something this endpoint papers over.
+_LEDGER_GAP = [
+    "sweep.fired", "value_model", "slot_b.draft", "judge.score",
+    "gmail.commit", "reobserve.queue",
+]
+
+
+@app.get("/ledger", response_model=LedgerResponse)
+async def get_ledger(limit: int = Query(50, ge=1, le=500)):
+    """Append-only ledger tail: proposal + verdict lifecycle events, most
+    recent first. Read-only view over `action_proposal`/`action_verdict` —
+    computes nothing, mirrors DB state exactly."""
+    assert _conn is not None
+
+    with session(
+        _conn,
+        tenant_id=_TENANT_ID,
+        actor_id=_orch_principal or _SEED_AGENT,
+        now=_CLOCK,
+    ) as cur:
+        cur.execute(
+            "SELECT proposal_id, 'gate.propose' AS event, created_ts AS ts, "
+            "       intent, action, NULL::text AS verdict "
+            "FROM action_proposal "
+            "UNION ALL "
+            "SELECT p.proposal_id, "
+            "       CASE v.verdict WHEN 'approve' THEN 'gate.approve' "
+            "                      WHEN 'deny' THEN 'gate.deny' "
+            "                      ELSE 'gate.revise' END AS event, "
+            "       v.decided_ts AS ts, p.intent, p.action, v.verdict "
+            "FROM action_verdict v JOIN action_proposal p "
+            "  ON p.proposal_id = v.proposal_id "
+            "ORDER BY ts DESC LIMIT %s",
+            (limit,),
+        )
+        rows = cur.fetchall()
+
+    events = [
+        LedgerEventSchema(
+            ts=row[2].isoformat() if row[2] else "",
+            event=row[1],
+            label=_LEDGER_HUMAN.get(row[1], row[1]),
+            proposal_id=str(row[0]),
+            detail=f"{row[3]} · {row[4]}",
+        )
+        for row in rows
+    ]
+    return LedgerResponse(
+        tenant_id=_TENANT_ID,
+        events=events,
+        ledger_gap=_LEDGER_GAP,
     )
 
 
