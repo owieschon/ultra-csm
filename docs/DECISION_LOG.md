@@ -128,3 +128,56 @@ Mechanism: `src/ultra_csm/rejection_ledger.py` adds a flat, file-backed
 `RejectionLedger` keyed by `(tenant_id, account_id, factor_name, motion)` that a caller
 consults after a `deny` verdict and before treating a new sweep's matching work item as a
 genuinely new ask, rather than encoding any suppression rule into the sweep itself.
+
+---
+
+## Notion authoring edge: render target, loader-as-oracle, two-tier isolation (Stream 34)
+
+**Context.** A CSM needs a friendlier authoring surface than hand-edited JSON for the
+org-agnostic (`org_pack.json`, `golden_corpus/*`, tenant `playbooks.json`) and
+account-specific (`content_catalog.json`, `handoff_notes/*.json`) knowledge the agent
+already consumes. Adding Notion could have meant a live read path in the runtime, or a
+repo-side build step; it could have proven acceptance by editing the loaders to accept a
+new shape, or by pointing the unmodified loaders at new output.
+
+**Decisions.**
+1. **Render target is `knowledge/_generated/`, never the curated demo artifacts.**
+   `scripts/notion_render.py` writes there; `load_org_pack`/`load_playbooks` are pointed at
+   the generated path to prove acceptance. The curated `knowledge/org_pack.json` and
+   `knowledge/tenants/fleetops/*` stay owned by the fictional-universe bibles, untouched.
+   Making the curated artifacts the render target was explicitly rejected — it would
+   couple an authoring-tooling change to the demo universe's content, and risk a bad
+   render silently corrupting the fixtures every other eval depends on.
+2. **Loader-as-oracle: the unmodified existing loader/schema test is the acceptance
+   check, never a loader edited to fit the renderer.** Agnostic tier: `load_org_pack` /
+   `load_playbooks`, called against `knowledge/_generated/`. Account-specific tier: the
+   schema assertions imported (not replicated, not edited) from
+   `tests/test_content_catalog.py` / `tests/test_handoff_notes.py`, applied to generated
+   output via `tests/test_notion_render.py`. If the render doesn't pass unmodified
+   acceptance code, the render is wrong — never the reverse.
+3. **Two-tier isolation is enforced by the loader's `_reject_forbidden_keys`, not by
+   renderer-side stripping.** The renderer must carry an account-specific fact placed
+   into an agnostic field straight through into the emitted JSON and let `load_org_pack`
+   raise `OrgPackError`. Silent stripping was rejected: it would hide the author's mistake
+   instead of surfacing it, and would require the renderer to maintain its own copy of
+   the forbidden-key list, a second source of truth `knowledge.py` doesn't need.
+4. **One-directional, build-time only.** Notion → captured payload → rendered JSON →
+   committed via PR. No runtime code path reads Notion; `src/ultra_csm/tick.py` and
+   `src/ultra_csm/agent1/sweep.py` are verified (negative grep) to never import
+   `notion_reader`. A live-read-at-runtime design was rejected as unnecessary scope: the
+   agent already has a validated JSON contract; Notion only needed a friendlier way to
+   produce files matching it.
+5. **Notion API response shapes are grounded in the documented API, not invented.**
+   `tests/fixtures/notion/authoring_payload.json` mirrors Notion's documented
+   data-source-query (`object: "list"`, `results`, `has_more`, `next_cursor`) and
+   block-children response shapes, with doc URLs cited in the fixture's `_doc_refs` and
+   in `notion_reader.py`'s module docstring (accessed 2026-07-05). The credential
+   env-var name (`ULTRA_CSM_NOTION_TOKEN`, internal-integration Bearer-token pattern) is
+   flagged verify-at-runtime — the offline parse/render path does not depend on it.
+
+**What this does NOT prove.** Schema-valid, loader-accepted output is not the same as
+semantically faithful output: a rendered exemplar can pass every gate while drifting from
+what the CSM actually meant in the source Notion block, and a mislabeled `addresses_gap`
+still passes the account-specific schema check. Live Notion auth is untested — no
+`NOTION_*` credential exists in `~/ultra-csm-live-creds.env` as of 2026-07-05, so the live
+pull is an Owner Ask, not a claimed capability.

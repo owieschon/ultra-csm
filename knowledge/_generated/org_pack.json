@@ -1,0 +1,27 @@
+{
+  "fictional": true,
+  "gap_plays": [
+    {
+      "customer_ask": "review the overdue activation steps and agree on owners",
+      "factor": "milestones_overdue",
+      "play": "review the overdue Launch Plan milestones and assign owners"
+    }
+  ],
+  "pack_version": "notion-pack-v1",
+  "product_name": "Notion-Authored Platform",
+  "schema_version": 1,
+  "terminology": {
+    "activation": "the customer reaches the first stable week of data-backed operations"
+  },
+  "value_props": [
+    {
+      "id": "notion_authoring",
+      "name": "Notion-authored knowledge",
+      "summary": "Org-agnostic voice and play guidance authored by the CSM team in Notion."
+    }
+  ],
+  "voice_rules": [
+    "Professional, direct, and specific -- authored in Notion.",
+    "Name the operational blocker before asking for time."
+  ]
+}

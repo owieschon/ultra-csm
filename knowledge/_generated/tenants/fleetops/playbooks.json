@@ -1,0 +1,63 @@
+{
+  "fictional": true,
+  "plays": [
+    {
+      "content_refs": [],
+      "id": "reactivate-stalled-module-notion",
+      "motion": "content_route",
+      "tiers": [
+        "tech_touch",
+        "mid_touch"
+      ],
+      "trigger_factor": "feature_shallow_depth"
+    }
+  ],
+  "schema_version": 1,
+  "service_tiers": [
+    {
+      "allowed_motions": [
+        "personal_email",
+        "working_session",
+        "qbr",
+        "escalation",
+        "campaign_enroll",
+        "content_route",
+        "cohort_action"
+      ],
+      "rule": {
+        "arr_cents_gte": 10000000
+      },
+      "tier": "high_touch"
+    },
+    {
+      "allowed_motions": [
+        "personal_email",
+        "escalation",
+        "campaign_enroll",
+        "content_route",
+        "cohort_action"
+      ],
+      "rule": {
+        "arr_cents_gte": 2500000
+      },
+      "tier": "mid_touch"
+    },
+    {
+      "allowed_motions": [
+        "campaign_enroll",
+        "content_route",
+        "cohort_action"
+      ],
+      "forbidden_motions": [
+        "personal_email",
+        "working_session",
+        "qbr"
+      ],
+      "rule": {
+        "default": true
+      },
+      "tier": "tech_touch"
+    }
+  ],
+  "tenant": "fleetops"
+}
