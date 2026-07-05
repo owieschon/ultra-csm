@@ -113,6 +113,11 @@ class CSMWorkItem:
     customer_draft: str | None = None
     motion: str | None = None
     recipient_resolution: str | None = None
+    # Person UI depth (Harvest 17), additive: the resolved recipient's
+    # identity, discarded before this (resolve_recipient's CRMContact was
+    # checked for truthiness only) -- captured here for the recipient chip.
+    recipient_name: str | None = None
+    recipient_role: str | None = None
 
 
 @dataclass
@@ -898,6 +903,13 @@ def _work_item_for_account(
 
     contact, recipient_resolution = resolve_recipient(motion, inputs.stakeholders, contacts)
     customer_contact_allowed = contact is not None
+    recipient_name = contact.name if contact else None
+    recipient_role = None
+    if contact:
+        recipient_role = next(
+            (s.relationship_type for s in inputs.stakeholders if s.contact_id == contact.contact_id),
+            contact.role,
+        )
     # Tier-forbidden-motion guard: narrows customer_contact_allowed exactly
     # like the quality breaker already does -- it never touches
     # recommended_action's derivation below, only whether this item is
@@ -995,6 +1007,8 @@ def _work_item_for_account(
         customer_draft=slot_b.customer_draft,
         motion=motion,
         recipient_resolution=recipient_resolution,
+        recipient_name=recipient_name,
+        recipient_role=recipient_role,
     )
 
 
