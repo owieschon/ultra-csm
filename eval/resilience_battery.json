@@ -1,0 +1,34 @@
+{
+  "artifact": "resilience_battery",
+  "cases": [
+    {
+      "case": "db-kill-mid-sweep",
+      "detail": {
+        "error_repr": "OperationalError('consuming input failed: server closed the connection unexpectedly\\n\\tThis probably means the server terminated abnormally\\n\\tbefore or while processing the request.')",
+        "ledger_entries_after_resume": 1,
+        "ledger_existed_after_kill": false,
+        "raised_on_kill": true,
+        "resume_ledger_entry_present": true
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "corrupt-ledger-line-skipped-with-log",
+      "detail": {
+        "as_of_values": [
+          "2026-06-21",
+          "2026-06-22"
+        ],
+        "entries_returned": 2
+      },
+      "ok": true,
+      "problems": []
+    }
+  ],
+  "failed_cases": [],
+  "hard_ok": true,
+  "runtime_budget_seconds": 90.0,
+  "runtime_seconds": 2.446,
+  "within_runtime_budget": true
+}
