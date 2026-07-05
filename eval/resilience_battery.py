@@ -27,6 +27,8 @@ from typing import Any
 
 import psycopg
 
+from ultra_csm.drip_liveness import check_drip_liveness
+from ultra_csm.governance import ActionGate, FixtureVerdictSource, Verdict
 from ultra_csm.platform import boot_seeded_cluster
 from ultra_csm.tick import _read_ledger, run_tick_with_config, setup_tick_roster
 from ultra_csm.triggers import parse_trigger_config
@@ -163,9 +165,99 @@ def check_corrupt_ledger_line_skipped_with_log() -> dict[str, Any]:
     return {"case": "corrupt-ledger-line-skipped-with-log", "ok": not problems, "problems": problems, "detail": detail}
 
 
+def check_dead_drip_detection() -> dict[str, Any]:
+    """No liveness check for the drip existed before this dispatch
+    (verified: zero matches for ``drip`` anywhere in ``scripts/``/``src/``)
+    -- a minimal, pure detector (``ultra_csm.drip_liveness.check_drip_liveness``)
+    now reads a drip log's last-timestamp against a staleness threshold and
+    flags loudly when it is stale. Never touches the actual launchd job."""
+
+    problems: list[str] = []
+    with tempfile.TemporaryDirectory() as tmp:
+        log_path = Path(tmp) / "drip.log"
+        log_path.write_text("2026-06-21T00:00:00+00:00 drip ok\n", encoding="utf-8")
+
+        fresh = check_drip_liveness(
+            log_path, now="2026-06-21T02:00:00+00:00", staleness_threshold_hours=24.0
+        )
+        stale = check_drip_liveness(
+            log_path, now="2026-06-25T00:00:00+00:00", staleness_threshold_hours=24.0
+        )
+        missing = check_drip_liveness(
+            Path(tmp) / "does-not-exist.log", now="2026-06-21T00:00:00+00:00", staleness_threshold_hours=24.0
+        )
+
+        detail = {
+            "fresh": {"flagged": fresh.flagged, "reason": fresh.reason},
+            "stale": {"flagged": stale.flagged, "reason": stale.reason},
+            "missing": {"flagged": missing.flagged, "reason": missing.reason},
+        }
+        check(not fresh.flagged, problems, "a drip log updated 2h ago (under the 24h threshold) must not be flagged", detail)
+        check(stale.flagged, problems, "a drip log stale for 4 days (over the 24h threshold) must be flagged loudly", detail)
+        check(missing.flagged, problems, "a missing drip log must be flagged (never silently treated as healthy)", detail)
+    return {"case": "dead-drip-detection", "ok": not problems, "problems": problems, "detail": detail}
+
+
+def check_gate_verdict_outage_fails_closed() -> dict[str, Any]:
+    """Recording a verdict against a dead gate/DB connection must raise --
+    no ``GateOutcome`` with ``authorized=True`` may ever be returned when
+    the gate itself is unreachable; the caller must see a clear error,
+    never a silent "proceed as if approved."""
+
+    problems: list[str] = []
+    with boot_seeded_cluster(MIGRATIONS, limit=50) as (cluster, dsn):
+        conn = psycopg.connect(**dsn)
+        context = setup_tick_roster(conn)
+        # A real gate, not context.gate()'s bare FixtureVerdictSource() --
+        # that raises "no verdict for intent" before ever touching the DB,
+        # which would falsely pass this case for the wrong reason (K7: an
+        # injected fault must be the one actually asserted, never a
+        # harness flake masquerading as the fault under test).
+        gate = ActionGate(
+            conn,
+            tenant_id=context.tenant_id,
+            actor_principal_id=context.actor_principal_id,
+            verdict_source=FixtureVerdictSource(
+                default=Verdict("approve", human_principal_id=context.actor_principal_id)
+            ),
+        )
+        proposal = gate.propose(
+            intent="send_email", action="email.send",
+            payload={"to": "buyer@acme-diesel.example", "body": "hi"},
+            autonomy_tier=2, required_permission="email.send",
+        )
+        cluster.stop()  # the outage: kill before the verdict is recorded
+
+        raised = False
+        error_repr = None
+        outcome = None
+        try:
+            outcome = gate.record_verdict(proposal)
+        except Exception as exc:  # noqa: BLE001 - this case's whole point is "did it raise"
+            raised = True
+            error_repr = repr(exc)
+        finally:
+            try:
+                conn.close()
+            except Exception:  # noqa: BLE001 - conn is already dead, closing it may also raise
+                pass
+
+        detail = {
+            "raised": raised,
+            "error_repr": error_repr,
+            "outcome_returned": outcome is not None,
+            "outcome_authorized": getattr(outcome, "authorized", None),
+        }
+        check(raised, problems, "record_verdict against a dead gate/DB must raise, never return silently", detail)
+        check(outcome is None, problems, "no GateOutcome may be returned when the gate/DB is unavailable", detail)
+    return {"case": "gate-verdict-outage-fails-closed", "ok": not problems, "problems": problems, "detail": detail}
+
+
 CASES = (
     check_db_kill_mid_sweep,
     check_corrupt_ledger_line_skipped_with_log,
+    check_dead_drip_detection,
+    check_gate_verdict_outage_fails_closed,
 )
 
 

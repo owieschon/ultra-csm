@@ -14,5 +14,5 @@ from eval.resilience_battery import run_battery
 def test_resilience_battery_hard_ok_within_budget():
     report = run_battery()
     assert report["hard_ok"], report["failed_cases"]
-    assert len(report["cases"]) == 2
+    assert len(report["cases"]) == 4
     assert report["within_runtime_budget"]
