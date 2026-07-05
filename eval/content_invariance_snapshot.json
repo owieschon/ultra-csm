@@ -23,6 +23,12 @@
               "observed_at": "2026-12-19T05:00:00Z",
               "source": "communications",
               "source_id": "f21b02b9-f048-5e12-9cec-6c5a21658392"
+            },
+            {
+              "field": "response_time_hours",
+              "observed_at": "2026-12-23T04:00:00Z",
+              "source": "communications",
+              "source_id": "f2b71b65-8138-52ed-afd3-25b8fdcb989a"
             }
           ],
           "metric_name": "reply_latency_trend_hours",
@@ -52,7 +58,7 @@
           "evidence": [
             {
               "field": "relationship_type",
-              "observed_at": "2026-12-19T05:00:00Z",
+              "observed_at": "2026-12-23T04:00:00Z",
               "source": "communications",
               "source_id": "22d2efe4-95af-529d-9041-184528ce1d18"
             }
@@ -106,7 +112,7 @@
           "evidence": [
             {
               "field": "relationship_type",
-              "observed_at": "2027-03-19T02:00:00Z",
+              "observed_at": "2027-03-23T05:00:00Z",
               "source": "communications",
               "source_id": "22d2efe4-95af-529d-9041-184528ce1d18"
             }
@@ -160,7 +166,7 @@
           "evidence": [
             {
               "field": "relationship_type",
-              "observed_at": "2026-06-22T04:00:00Z",
+              "observed_at": "2026-08-05T04:00:00Z",
               "source": "communications",
               "source_id": "22d2efe4-95af-529d-9041-184528ce1d18"
             }

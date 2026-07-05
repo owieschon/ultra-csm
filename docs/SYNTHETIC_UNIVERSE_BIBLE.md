@@ -216,6 +216,19 @@ visible only in telemetry — comms stay deliberately calm and the CSM
 relationship never surfaces the risk — so the agent's recommendation is
 the only correct action at every checkpoint; silence is a failure.
 
+**Density subsection (Program 19).** Seven new email pairs, all on the
+existing Christine Yoder thread, no new participant: a recap/FYI a few
+days after each of the five existing QBRs (day 5, 95, 185, 275, 363 —
+same-day fast replies, a few hours, matching the arc's established calm
+cadence) plus two scheduling-confirmation pairs between QBRs (day 45,
+135). This raises Aspenridge from 10 to 24 messages. Placement risk: none
+— `check_silent_decline`'s only comms-derived assertion is
+`ticket_frequency_window==0` at every checkpoint, and benign email pairs
+never add a `CRMCase`, so this holds regardless of placement (verified:
+zero new `_CASE_SCHEDULE` entries added). Band/adoption-rate assertions
+are driven entirely by `book_simulator.py`'s `UsageDecline`, untouched by
+this program.
+
 ### 5. Expansion-ready — `meridian-fleet`
 
 Persona: `expanding`. Industry: fleet_management, CSM `csm-101`. Existing
