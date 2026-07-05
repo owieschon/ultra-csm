@@ -153,6 +153,131 @@ ALICIA_BODIES: dict[tuple[int, int], str] = {
         "Looks good, see you at the review.\n\n"
         "Alicia"
     ),
+    # Density D2.4 (Program 19): benign recap/FYI/scheduling filler
+    # interleaved between existing exchanges, no new module reference, no
+    # new participant. See docs/PROGRAM_REPORT_19.md.
+    (10, 9): (
+        "Alicia,\n\n"
+        "Quick FYI -- rollout's tracking well one week in, nothing to flag.\n\n"
+        "Priya"
+    ),
+    (10, 13): (
+        "Good to hear, team's settling in fine.\n\n"
+        "Alicia"
+    ),
+    (30, 9): (
+        "Alicia,\n\n"
+        "No action needed, just confirming next sync is still on for the usual time.\n\n"
+        "Priya"
+    ),
+    (30, 14): (
+        "Confirmed on our end.\n\n"
+        "Alicia"
+    ),
+    (60, 9): (
+        "Alicia,\n\n"
+        "Recap from this week's sync -- Route Optimizer numbers continue to track ahead of "
+        "benchmark.\n\n"
+        "Priya"
+    ),
+    (60, 12): (
+        "Great, sharing with the team again.\n\n"
+        "Alicia"
+    ),
+    (90, 9): (
+        "Alicia,\n\n"
+        "Checking in ahead of the Q3 planning conversation -- anything you want added to the "
+        "agenda?\n\n"
+        "Priya"
+    ),
+    (90, 11): (
+        "Nothing to add yet, will bring it to the sync.\n\n"
+        "Alicia"
+    ),
+    (115, 9): (
+        "Alicia,\n\n"
+        "Quick recap from Q3 planning -- expansion scope is next on the agenda, as discussed.\n\n"
+        "Priya"
+    ),
+    (115, 13): (
+        "Agreed, looking forward to it.\n\n"
+        "Alicia"
+    ),
+    (140, 9): (
+        "Alicia,\n\n"
+        "FYI, draft terms are with finance now per your last note -- will keep you posted.\n\n"
+        "Priya"
+    ),
+    (140, 10): (
+        "Appreciate the update.\n\n"
+        "Alicia"
+    ),
+    (158, 9): (
+        "Alicia,\n\n"
+        "No new items, just confirming finance sign-off is still tracking for this week.\n\n"
+        "Priya"
+    ),
+    (158, 11): (
+        "Still on track, will confirm once it's through.\n\n"
+        "Alicia"
+    ),
+    (172, 9): (
+        "Alicia,\n\n"
+        "Quick check-in ahead of the close -- anything you need from our side before then?\n\n"
+        "Priya"
+    ),
+    (172, 10): (
+        "Nothing needed, we're ready.\n\n"
+        "Alicia"
+    ),
+    (182, 9): (
+        "Alicia,\n\n"
+        "Quick FYI, rollout kickoff materials are being finalized on our end.\n\n"
+        "Priya"
+    ),
+    (182, 11): (
+        "Perfect, looking forward to it.\n\n"
+        "Alicia"
+    ),
+    (200, 9): (
+        "Alicia,\n\n"
+        "Recap from this week's rollout check-in -- adoption on the expanded assets is tracking "
+        "well.\n\n"
+        "Priya"
+    ),
+    (200, 13): (
+        "Good to hear, team's happy with how smooth it's been.\n\n"
+        "Alicia"
+    ),
+    (245, 9): (
+        "Alicia,\n\n"
+        "No action needed, just a quick note that usage across the expanded fleet has stayed "
+        "strong since rollout.\n\n"
+        "Priya"
+    ),
+    (245, 12): (
+        "Great to hear, appreciate the update.\n\n"
+        "Alicia"
+    ),
+    (260, 9): (
+        "Alicia,\n\n"
+        "Checking in ahead of year-end push -- anything on your side to flag before we ramp?\n\n"
+        "Priya"
+    ),
+    (260, 14): (
+        "Nothing yet, will flag if anything comes up.\n\n"
+        "Alicia"
+    ),
+    (278, 9): (
+        "Alicia,\n\n"
+        "Quick recap -- year-end usage climb is holding steady across all four modules, full "
+        "fleet.\n\n"
+        "Priya"
+    ),
+    (278, 11): (
+        "Great trajectory, see you at the review.\n\n"
+        "Alicia"
+    ),
 }
 
 SARAH_BODIES: dict[tuple[int, int], str] = {
@@ -289,6 +414,128 @@ SARAH_BODIES: dict[tuple[int, int], str] = {
     ),
     (288, 13): (
         "Looks good, see you then.\n\n"
+        "Sarah"
+    ),
+    # Density D2.4 (Program 19): benign recap/FYI/scheduling filler
+    # interleaved between existing exchanges, no new module reference, no
+    # new participant. See docs/PROGRAM_REPORT_19.md.
+    (25, 9): (
+        "Sarah,\n\n"
+        "Quick FYI -- training feedback has been positive across the board so far.\n\n"
+        "Priya"
+    ),
+    (25, 12): (
+        "Great to hear, team's picking it up fast.\n\n"
+        "Sarah"
+    ),
+    (50, 9): (
+        "Sarah,\n\n"
+        "No action needed, just confirming next check-in is still on for the usual time.\n\n"
+        "Priya"
+    ),
+    (50, 13): (
+        "Confirmed on our end.\n\n"
+        "Sarah"
+    ),
+    (60, 9): (
+        "Sarah,\n\n"
+        "Recap from this week's check-in -- Maintenance Radar adoption continues to trend well.\n\n"
+        "Priya"
+    ),
+    (60, 14): (
+        "Agreed, catching issues early has been the biggest win so far.\n\n"
+        "Sarah"
+    ),
+    (85, 9): (
+        "Sarah,\n\n"
+        "Checking in ahead of the budget conversation -- anything you need from us before then?\n\n"
+        "Priya"
+    ),
+    (85, 11): (
+        "Nothing needed yet, will let you know.\n\n"
+        "Sarah"
+    ),
+    (110, 9): (
+        "Sarah,\n\n"
+        "Quick FYI, coordinating the facilities scope with Alicia's team as discussed.\n\n"
+        "Priya"
+    ),
+    (110, 13): (
+        "Sounds good, appreciate you keeping it aligned.\n\n"
+        "Sarah"
+    ),
+    (120, 9): (
+        "Sarah,\n\n"
+        "No new items, just confirming scope alignment is still on track for this week.\n\n"
+        "Priya"
+    ),
+    (120, 10): (
+        "Still on track from our side.\n\n"
+        "Sarah"
+    ),
+    (140, 9): (
+        "Sarah,\n\n"
+        "Quick check-in ahead of the close -- team still on track for the additional assets?\n\n"
+        "Priya"
+    ),
+    (140, 14): (
+        "Yes, all set on our end.\n\n"
+        "Sarah"
+    ),
+    (160, 9): (
+        "Sarah,\n\n"
+        "FYI, rollout materials for the facilities close are being finalized now.\n\n"
+        "Priya"
+    ),
+    (160, 11): (
+        "Looking forward to seeing them.\n\n"
+        "Sarah"
+    ),
+    (175, 9): (
+        "Sarah,\n\n"
+        "Quick recap ahead of the close -- everything's tracking for next week as planned.\n\n"
+        "Priya"
+    ),
+    (175, 10): (
+        "Confirmed, we're ready.\n\n"
+        "Sarah"
+    ),
+    (195, 9): (
+        "Sarah,\n\n"
+        "Recap from this week's rollout check-in -- newly covered assets are onboarding smoothly.\n\n"
+        "Priya"
+    ),
+    (195, 13): (
+        "Great, team's happy with the pace.\n\n"
+        "Sarah"
+    ),
+    (240, 9): (
+        "Sarah,\n\n"
+        "No action needed, just a quick note that adoption on the expanded coverage has stayed "
+        "strong.\n\n"
+        "Priya"
+    ),
+    (240, 14): (
+        "Good to hear, appreciate the update.\n\n"
+        "Sarah"
+    ),
+    (265, 9): (
+        "Sarah,\n\n"
+        "Checking in ahead of year-end -- anything to flag before we ramp reporting?\n\n"
+        "Priya"
+    ),
+    (265, 11): (
+        "Nothing yet, will flag if anything comes up.\n\n"
+        "Sarah"
+    ),
+    (282, 9): (
+        "Sarah,\n\n"
+        "Quick recap -- year-end usage climb is holding steady across the expanded facilities "
+        "coverage too.\n\n"
+        "Priya"
+    ),
+    (282, 13): (
+        "Great trajectory, see you at the review.\n\n"
         "Sarah"
     ),
 }

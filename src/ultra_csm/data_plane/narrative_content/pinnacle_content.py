@@ -89,4 +89,82 @@ BODIES: dict[tuple[int, int], str] = {
         "the Insights Hub dashboard changes we discussed before next quarter's review.\n\n"
         "Monica"
     ),
+    # Density D2.2 (Program 19): benign scheduling/recap/FYI filler, Monica
+    # thread only (Derek never replies again -- no Derek message added). See
+    # docs/PROGRAM_REPORT_19.md and the bible's density subsection.
+    (118, 9): (
+        "Monica,\n\n"
+        "No action needed, just confirming the activation review slot is still good for next "
+        "week on your calendar.\n\n"
+        "Priya"
+    ),
+    (118, 14): (
+        "Still good on my end, see you then.\n\n"
+        "Monica"
+    ),
+    (145, 9): (
+        "Monica,\n\n"
+        "Quick recap from last week's activation review -- appreciate you and your team getting "
+        "up to speed so fast on the entitled modules.\n\n"
+        "Priya"
+    ),
+    (145, 13): (
+        "Thanks, appreciate the recap. Next step on my end: still confirming the Dispatch "
+        "Automation owner, will follow up once I have a name.\n\n"
+        "Monica"
+    ),
+    (160, 9): (
+        "Monica,\n\n"
+        "Checking in ahead of our next sync -- anything you want added to the agenda on the "
+        "Fuel Analytics adoption front?\n\n"
+        "Priya"
+    ),
+    (160, 12): (
+        "Nothing to add yet, still tracking it internally. Next step on my end: bring numbers to "
+        "the next sync.\n\n"
+        "Monica"
+    ),
+    (185, 9): (
+        "Monica,\n\n"
+        "Recap from today's sync -- Fuel Analytics adoption is trending the right direction, "
+        "nothing else to flag.\n\n"
+        "Priya"
+    ),
+    (185, 11): (
+        "Good to hear. Next step on my end: keep monitoring and report back at the renewal-prep "
+        "conversation.\n\n"
+        "Monica"
+    ),
+    (200, 9): (
+        "Monica,\n\n"
+        "No urgent items, just a quick FYI that we're starting to pull together renewal-prep "
+        "materials ahead of the conversation we scheduled.\n\n"
+        "Priya"
+    ),
+    (200, 13): (
+        "Appreciate the heads up, will do the same on my side.\n\n"
+        "Monica"
+    ),
+    (225, 9): (
+        "Monica,\n\n"
+        "Quick recap from the renewal-prep conversation -- usage read looked strong across the "
+        "board, nothing that changes our approach heading into the QBR.\n\n"
+        "Priya"
+    ),
+    (225, 12): (
+        "Agreed, matches what I saw on my end too. Next step on my end: finalize the usage numbers "
+        "before the QBR.\n\n"
+        "Monica"
+    ),
+    (238, 9): (
+        "Monica,\n\n"
+        "Sending over the QBR agenda for next week -- same format as last quarter, all five "
+        "modules.\n\n"
+        "Priya"
+    ),
+    (238, 14): (
+        "Looks good, see you then. Next step on my end: loop in my team lead for the Insights Hub "
+        "portion.\n\n"
+        "Monica"
+    ),
 }

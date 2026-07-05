@@ -56,14 +56,31 @@ _CHAMPION_EMAIL = "christine.yoder@aspenridge-sc.example"
 _MESSAGE_SCHEDULE: tuple[tuple[int, int, bool, str], ...] = (
     (1, 9, False, "Q1 business review — agenda attached"),
     (1, 13, True, "Re: Q1 business review — agenda attached"),
+    # Density D2.1 (Program 19): benign recap/FYI/scheduling filler between
+    # QBRs, same calm/prompt/one-contact cadence as the existing pairs. See
+    # docs/PROGRAM_REPORT_19.md and the bible's density subsection.
+    (5, 10, False, "Recap — Q1 business review"),
+    (5, 14, True, "Re: Recap — Q1 business review"),
+    (45, 9, False, "Scheduling check — Q2 review slot"),
+    (45, 13, True, "Re: Scheduling check — Q2 review slot"),
     (91, 9, False, "Q2 business review — agenda attached"),
     (91, 12, True, "Re: Q2 business review — agenda attached"),
+    (95, 10, False, "Recap — Q2 business review"),
+    (95, 15, True, "Re: Recap — Q2 business review"),
+    (135, 9, False, "Scheduling check — Q3 review slot"),
+    (135, 12, True, "Re: Scheduling check — Q3 review slot"),
     (181, 9, False, "Q3 business review — agenda attached"),
     (181, 14, True, "Re: Q3 business review — agenda attached"),
+    (185, 9, False, "Recap — Q3 business review"),
+    (185, 13, True, "Re: Recap — Q3 business review"),
     (271, 9, False, "Q4 business review — agenda attached"),
     (271, 11, True, "Re: Q4 business review — agenda attached"),
+    (275, 10, False, "Recap — Q4 business review"),
+    (275, 14, True, "Re: Recap — Q4 business review"),
     (361, 9, False, "Year-end check-in — agenda attached"),
     (361, 15, True, "Re: Year-end check-in — agenda attached"),
+    (363, 9, False, "Recap — year-end review"),
+    (363, 12, True, "Re: Recap — year-end review"),
 )
 
 
