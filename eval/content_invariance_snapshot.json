@@ -536,7 +536,7 @@
         "latency": {
           "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
           "as_of": "2026-12-08",
-          "detail": "trailing 21d mean reply latency 1.2h vs prior window 3.5h",
+          "detail": "trailing 21d mean reply latency 1.5h vs prior window 3.2h",
           "evidence": [
             {
               "field": "response_time_hours",
@@ -546,15 +546,33 @@
             },
             {
               "field": "response_time_hours",
+              "observed_at": "2026-11-08T01:00:00Z",
+              "source": "communications",
+              "source_id": "569b8115-462c-5c28-a5cd-585cd6decc41"
+            },
+            {
+              "field": "response_time_hours",
               "observed_at": "2026-10-29T05:00:00Z",
               "source": "communications",
               "source_id": "19638425-02f5-5403-88ed-46025c1230b9"
             },
             {
               "field": "response_time_hours",
+              "observed_at": "2026-11-08T05:00:00Z",
+              "source": "communications",
+              "source_id": "f373d8c8-a88c-5937-b2d7-97790f0f199f"
+            },
+            {
+              "field": "response_time_hours",
               "observed_at": "2026-11-18T01:00:00Z",
               "source": "communications",
               "source_id": "81c9f8ed-3224-5873-8f17-754b2a7bede2"
+            },
+            {
+              "field": "response_time_hours",
+              "observed_at": "2026-11-26T02:00:00Z",
+              "source": "communications",
+              "source_id": "4521f76f-605c-568c-a3e8-3324403de5d4"
             },
             {
               "field": "response_time_hours",
@@ -570,6 +588,12 @@
             },
             {
               "field": "response_time_hours",
+              "observed_at": "2026-11-28T02:00:00Z",
+              "source": "communications",
+              "source_id": "25cbb13b-3d26-581c-b854-df1d3fd7661c"
+            },
+            {
+              "field": "response_time_hours",
               "observed_at": "2026-12-06T01:00:00Z",
               "source": "communications",
               "source_id": "feab872f-b47d-5dec-b61d-ce866940e564"
@@ -577,7 +601,7 @@
           ],
           "metric_name": "reply_latency_trend_hours",
           "unit": "hours_delta",
-          "value": -2.2
+          "value": -1.8
         },
         "relationship_strengths": [
           {
@@ -645,6 +669,12 @@
               "observed_at": "2026-06-23T05:00:00Z",
               "source": "communications",
               "source_id": "2d1275fe-510f-5ba4-89f5-6ac86e03ad01"
+            },
+            {
+              "field": "response_time_hours",
+              "observed_at": "2026-07-01T04:00:00Z",
+              "source": "communications",
+              "source_id": "d113eff3-a786-5081-9392-d2953391e0cc"
             },
             {
               "field": "response_time_hours",
@@ -1311,13 +1341,43 @@
         "latency": {
           "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
           "as_of": "2027-03-28",
-          "detail": "insufficient reply history in one or both windows",
+          "detail": "trailing 21d mean reply latency 2.8h vs prior window 4.0h",
           "evidence": [
+            {
+              "field": "response_time_hours",
+              "observed_at": "2027-02-21T03:00:00Z",
+              "source": "communications",
+              "source_id": "f011c6f1-1de0-55c5-9440-565511876804"
+            },
+            {
+              "field": "response_time_hours",
+              "observed_at": "2027-02-16T05:00:00Z",
+              "source": "communications",
+              "source_id": "2a6ffae7-66c5-5674-a620-041e8bd10cde"
+            },
+            {
+              "field": "response_time_hours",
+              "observed_at": "2027-03-08T05:00:00Z",
+              "source": "communications",
+              "source_id": "8c032a51-841d-50e5-9ae0-aee4330458e9"
+            },
             {
               "field": "response_time_hours",
               "observed_at": "2027-03-20T03:00:00Z",
               "source": "communications",
               "source_id": "6db3a3bf-e469-5c87-b60f-50f34a2b84fb"
+            },
+            {
+              "field": "response_time_hours",
+              "observed_at": "2027-03-26T02:00:00Z",
+              "source": "communications",
+              "source_id": "d502afbb-fe49-56f8-96c5-8b28d79b2da3"
+            },
+            {
+              "field": "response_time_hours",
+              "observed_at": "2027-03-13T02:00:00Z",
+              "source": "communications",
+              "source_id": "3db2415f-b4d6-5a9f-ac2e-e83236ef0e7c"
             },
             {
               "field": "response_time_hours",
@@ -1328,7 +1388,7 @@
           ],
           "metric_name": "reply_latency_trend_hours",
           "unit": "hours_delta",
-          "value": null
+          "value": -1.2
         },
         "relationship_strengths": [
           {
@@ -1358,7 +1418,7 @@
           "evidence": [
             {
               "field": "relationship_type",
-              "observed_at": "2027-03-20T03:00:00Z",
+              "observed_at": "2027-03-26T02:00:00Z",
               "source": "communications",
               "source_id": "b2d52039-fa63-5981-8b9b-e08ee50e8a14"
             },

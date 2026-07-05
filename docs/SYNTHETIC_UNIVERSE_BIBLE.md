@@ -299,6 +299,28 @@ is unchanged. Disclosed effect: day 130 falls in the day-170 checkpoint's
 of which this message's latency contribution touches, so the checkpoint
 assertion is unaffected -- verified after adding the message.
 
+**Density subsection (Program 19).** 26 new email pairs (13 per thread),
+interleaved between existing exchanges on both the Alicia fleet-ops
+thread and the Sarah facilities thread — recap/FYI/scheduling filler
+matching each contact's established voice (Alicia: direct, warm, short;
+Sarah: enthusiastic), no new module reference, no new participant. This
+raises Meridian from 52 to 104 messages (the low end of the 2-3x target,
+per the dispatch's decision that an already-dense arc targets ~2x).
+Placement risk: none — `check_expansion_ready` asserts `width` (presence-
+based, unaffected by adding more messages on already-active threads) and
+`cadence` (read from *calendar* events only, per `meeting_cadence_shift`'s
+signature — this expansion adds zero new calendar events, only email, so
+cadence arithmetic is untouched by construction). Verified after
+authoring: width (2.0/2.0/2.0) and cadence (`None`/-2.5/0.0) at day
+20/170/280 are byte-identical to the pre-extension baseline. Two
+legitimate, disclosed re-derivations, both unasserted by
+`check_expansion_ready` (which reads only `width`/`cadence`): day 170's
+`reply_latency_trend` moved from `-2.2` to `-1.8` and day 280's moved from
+`None` to `-1.2` (both new interleaved pairs shifted the trailing-window
+mean reply latency, day280 now having enough recent+prior inbound
+messages to compute a trend where before there weren't) — recorded per
+the anti-Goodhart disclosure norm, not because any gate required it.
+
 ### 6. Healthy-control — `trailhead-logistics`
 
 Persona: `exemplary`. Industry: logistics, CSM `csm-101`. Existing spine:
