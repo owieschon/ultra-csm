@@ -1,7 +1,7 @@
 {
   "access_mode": "demo_operator",
   "artifact": "mcp_operator_transcript",
-  "artifact_sha256": "49ee68c4402b521f01fc4987d549cea8620bd777aca7338e284fbdb65a092db7",
+  "artifact_sha256": "f4dfad58cb1e54a997e2f07246258b0f28b736346fb21a05a8a02da99e83545e",
   "beats": [
     "briefing",
     "queue",
@@ -393,7 +393,9 @@
               "status": "pending"
             },
             "reason": "Acme Logistics has deterministic Time-to-Value score 162 from milestones_overdue=50, days_overdue=30, success_plan_overdue=20; draft customer outreach. Evidence [evidence:<uuid:62178814388a>], [evidence:<uuid:ae159c35aabe>], [evidence:<uuid:0089d3c5a0bd>].",
+            "recipient_name": "Jordan Lee",
             "recipient_resolution": "first_consenting_fallback",
+            "recipient_role": "operations",
             "recommended_action": "draft_customer_outreach",
             "swept_at": "2026-06-27",
             "tenant_id": "ultra-demo"
@@ -548,7 +550,9 @@
             },
             "proposal": null,
             "reason": "Cyberdyne Transport has deterministic Time-to-Value score 109 from milestones_overdue=25, days_overdue=22, success_plan_overdue=20; route for internal review. Evidence [evidence:<uuid:640ecfe1d199>], [evidence:<uuid:7a0c9bc8fed0>], [evidence:<uuid:2e6685ab1c12>].",
+            "recipient_name": null,
             "recipient_resolution": "first_consenting_fallback",
+            "recipient_role": null,
             "recommended_action": "recommend_next_best_action",
             "swept_at": "2026-06-27",
             "tenant_id": "ultra-demo"
@@ -715,7 +719,9 @@
               "status": "pending"
             },
             "reason": "Soylent Distribution has deterministic Time-to-Value score 105 from milestones_overdue=25, days_overdue=18, success_plan_overdue=20; draft customer outreach. Evidence [evidence:<uuid:ae6f47477ef5>], [evidence:<uuid:58d94b1d7301>], [evidence:<uuid:b750bb15c8d1>].",
+            "recipient_name": "Avery Kim",
             "recipient_resolution": "first_consenting_fallback",
+            "recipient_role": "operations",
             "recommended_action": "draft_customer_outreach",
             "swept_at": "2026-06-27",
             "tenant_id": "ultra-demo"
@@ -853,7 +859,9 @@
               "status": "pending"
             },
             "reason": "Globex Fleet has deterministic Time-to-Value score 91 from milestones_overdue=25, days_overdue=24, health_yellow=15; draft customer outreach. Evidence [evidence:<uuid:74f750862834>], [evidence:<uuid:3f7c5138347a>], [evidence:<uuid:a6f8626603b0>].",
+            "recipient_name": "Alex Rivers",
             "recipient_resolution": "first_consenting_fallback",
+            "recipient_role": "operations",
             "recommended_action": "draft_customer_outreach",
             "swept_at": "2026-06-27",
             "tenant_id": "ultra-demo"
@@ -968,14 +976,16 @@
               "status": "pending"
             },
             "reason": "Initech Services has deterministic Time-to-Value score 62 from success_plan_overdue=20, health_yellow=15, low_seat_penetration=12; draft customer outreach. Evidence [evidence:<uuid:bee041bb3f66>], [evidence:<uuid:0a23d4ee0b68>].",
+            "recipient_name": "Samir Rao",
             "recipient_resolution": "first_consenting_fallback",
+            "recipient_role": "operations",
             "recommended_action": "draft_customer_outreach",
             "swept_at": "2026-06-27",
             "tenant_id": "ultra-demo"
           }
         ]
       },
-      "output_sha256": "b5dbe1cca3f0fec9ddeec033fd73741e7824d95900a9bc843c6f902b16acef2d",
+      "output_sha256": "17cc482ca9e3b19fd917990b7c0fec60e3fc070fbd1958a10e999cd8ea9ee776",
       "tool": "get_morning_briefing"
     },
     {
@@ -1832,6 +1842,19 @@
             "value": 10.0
           }
         ],
+        "stakeholders": [
+          {
+            "champion": false,
+            "consent_to_contact": true,
+            "contact_id": "<uuid:933db59555d8>",
+            "days_since_interaction": null,
+            "departed": false,
+            "name": "Jordan Lee",
+            "new_unengaged": false,
+            "relationship_type": null,
+            "title": "Operations Lead"
+          }
+        ],
         "success_plans": [
           {
             "account_id": "<uuid:f924336b2db5>",
@@ -1862,7 +1885,7 @@
           "Overdue milestone: first_driver_workflow (expected by 2026-06-22)"
         ]
       },
-      "output_sha256": "674d72376c56708c7ff3c54340c8f69fee39950f3fa0eab6c6152634ab8ac652",
+      "output_sha256": "7156b98ab6494f3d93e4022631748f2e9164bb0abba23c75e2763fb17de7a720",
       "tool": "get_account_brief"
     },
     {
