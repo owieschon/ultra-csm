@@ -19,6 +19,7 @@ import psycopg
 from fastapi import FastAPI, HTTPException, Query, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from ultra_csm.logging_config import setup_logging
@@ -383,6 +384,13 @@ app.add_middleware(
     allow_methods=["GET", "POST"],
     allow_headers=["Authorization", "Content-Type"],
 )
+
+# Demo/prod: `make ui-build` writes ui/out (Next static export); mount it at
+# /ui same-origin, one process for the demo (Decisions). Absent until built
+# — mounting is skipped, not an error, so `make serve` alone still works.
+_UI_OUT_DIR = Path(__file__).resolve().parents[2] / "ui" / "out"
+if _UI_OUT_DIR.is_dir():
+    app.mount("/ui", StaticFiles(directory=_UI_OUT_DIR, html=True), name="ui")
 
 
 # ---------------------------------------------------------------------------

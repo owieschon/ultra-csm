@@ -2,7 +2,7 @@ PYTHON := .venv/bin/python
 
 # One-time reviewer setup. Requires Python 3.10+ and local PostgreSQL 16 tooling
 # (`initdb`/`pg_ctl`) available on PATH or through the platform package.
-.PHONY: setup eval lint scorecard-csm csm-work-queue demo-loop year-in-life-csm tick-demo-csm mcp-readonly-demo-csm mcp-operator-demo-csm mcp-relay-demo-csm mcp-relational-demo-csm mcp-stdio-replay-csm slot-a-scorecard-csm autonomy-report-csm attio-simulated-onboarding-csm gainsight-simulated-onboarding-csm product-telemetry-simulated-onboarding-csm telemetry-simulated-live-csm salesforce-simulated-onboarding-csm hubspot-simulated-onboarding-csm relay-battery-csm relational-battery-csm narrative-battery-csm content-battery-csm content-invariance-csm canary-battery-csm week1-protocol-csm week1-protocol-fieldstone-csm quantity-battery-csm transcript-battery-csm tier-policy-battery-csm tier-gating-battery-csm perturbation-battery-csm drift-battery-csm deployment-readiness fieldstone-battery-csm crateworks-battery-csm crateworks-onboarding-csm week1-protocol-crateworks-csm loopway-battery-csm loopway-attio-simulated-onboarding-csm week1-protocol-loopway-csm demo clean outcome-simulation-csm stochastic-csm regression-csm regression-csm-live oversight-report doctor quality-regression-csm quality-gold-csm quality-gold-label-csm quality-gold-status-csm quality-gold-validate-csm quality-gold-hard-csm quality-gold-hard-label-csm quality-gold-hard-status-csm quality-gold-hard-validate-csm judge-agreement-csm judge-diagnosis-csm judge-reference-review-csm judge-reference-recheck-csm judge-reference-apply-csm judge-live-csm status hygiene serve mcp
+.PHONY: setup eval lint scorecard-csm csm-work-queue demo-loop year-in-life-csm tick-demo-csm mcp-readonly-demo-csm mcp-operator-demo-csm mcp-relay-demo-csm mcp-relational-demo-csm mcp-stdio-replay-csm slot-a-scorecard-csm autonomy-report-csm attio-simulated-onboarding-csm gainsight-simulated-onboarding-csm product-telemetry-simulated-onboarding-csm telemetry-simulated-live-csm salesforce-simulated-onboarding-csm hubspot-simulated-onboarding-csm relay-battery-csm relational-battery-csm narrative-battery-csm content-battery-csm content-invariance-csm canary-battery-csm week1-protocol-csm week1-protocol-fieldstone-csm quantity-battery-csm transcript-battery-csm tier-policy-battery-csm tier-gating-battery-csm perturbation-battery-csm drift-battery-csm deployment-readiness fieldstone-battery-csm crateworks-battery-csm crateworks-onboarding-csm week1-protocol-crateworks-csm loopway-battery-csm loopway-attio-simulated-onboarding-csm week1-protocol-loopway-csm demo clean outcome-simulation-csm stochastic-csm regression-csm regression-csm-live oversight-report doctor quality-regression-csm quality-gold-csm quality-gold-label-csm quality-gold-status-csm quality-gold-validate-csm quality-gold-hard-csm quality-gold-hard-label-csm quality-gold-hard-status-csm quality-gold-hard-validate-csm judge-agreement-csm judge-diagnosis-csm judge-reference-review-csm judge-reference-recheck-csm judge-reference-apply-csm judge-live-csm status hygiene serve mcp ui-dev ui-build ui-check
 setup:
 	python3 -m venv .venv
 	$(PYTHON) -m pip install --upgrade pip
@@ -13,6 +13,19 @@ serve:
 
 mcp:
 	PYTHONPATH=src:. $(PYTHON) -m ultra_csm.mcp_server
+
+# Operations surface UI (Harvest 9). Dev: `make serve` in one shell (adds
+# CORS for :3000), `make ui-dev` in another. Demo/prod: `make ui-build` then
+# `make serve` mounts ui/out at /ui same-origin (set ULTRA_CSM_DEMO_NOAUTH=1
+# to exercise approve/edit/deny without a mapped API token).
+ui-dev:
+	cd ui && npm run dev
+
+ui-build:
+	cd ui && npm ci && npm run build
+
+ui-check:
+	cd ui && npm ci && npm run lint && npm run build
 
 eval:
 	$(PYTHON) -m pytest tests/ -q
