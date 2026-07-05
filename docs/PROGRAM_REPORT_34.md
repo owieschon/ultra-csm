@@ -7,9 +7,11 @@ report-slot line names `docs/PROGRAM_REPORT_28.md`; that slot is occupied
 (booking-link, merged) and an open, mergeable reconciliation PR (#42) names
 34 as the true next-unassigned slot — see IF/THEN Branch 1.
 
-**Tripwires: 1 crossed (K12, diff budget).** Diff vs the true branch point is
-10 files / 1,390 insertions — file count is at the ~10-file budget; line
-count is **more than 2x the ~600-line budget**, driven by a real Notion
+**Tripwires: 1 crossed (K12, diff budget).** Final diff vs the true branch
+point (`git merge-base HEAD origin/main` = `5aec1b2`) is **13 files /
+1,746 insertions** — file count is slightly over the ~10-file budget (13,
+including 3 docs files: DECISION_LOG append, the ADR, this report); line
+count is **nearly 3x the ~600-line budget**, driven by a real Notion
 API-shaped JSON fixture (491 lines) and the reader module (328 lines, live +
 offline + dataclasses). Judged necessary content, not padding, but the
 ceiling is the ceiling — this demotes the merge per Merge Policy (PR left open, not
@@ -151,7 +153,7 @@ dispatch was asked to close.
 | `make notion-render && make notion-render-check` | both exit 0; `knowledge/_generated is current (byte-identical)` |
 | `! grep -rin notion src/ultra_csm/tick.py src/ultra_csm/agent1/sweep.py && echo NONE` | `NONE` |
 | `git diff --stat origin/main -- src/ultra_csm/knowledge.py tests/test_content_catalog.py tests/test_handoff_notes.py tests/test_knowledge.py` | empty |
-| `git diff --stat $(git merge-base HEAD origin/main)..HEAD` | `10 files changed, 1390 insertions(+)` |
+| `git diff --stat $(git merge-base HEAD origin/main)..HEAD` | `13 files changed, 1746 insertions(+)` (final, post-docs-commit) |
 | `gh api repos/owieschon/ultra-csm --jq .allow_auto_merge` | `true` |
 | `gh api repos/owieschon/ultra-csm/branches/main/protection` | 200 (not 404); required check `eval + CSM scorecard` |
 | `git status --short` | clean (after final commit) |
@@ -175,12 +177,13 @@ dispatch was asked to close.
 - `09549a4` — `test(notion): two-tier isolation enforced by loader` (Phase 3)
 - `fe998ad` — `feat(notion): account-specific-tier renderer, schema-accepted` (Phase 4)
 - `65e476d` — `feat(notion): read-only live reader + make targets + runtime isolation` (Phase 5)
-- (Phase 6 docs commit follows this file's addition)
+- `7b618bf` — `docs(notion): decision log, ADR, program report 34` (Phase 6)
 
 **Diff vs true branch point** (`git merge-base HEAD origin/main` = `5aec1b2`,
-see IF/THEN Branch 3): 10 files changed, 1,390 insertions(+), 0 deletions —
-before this Phase 6 docs commit. **K12 tripwire: line count exceeds the
-~600-line diff budget by >2x** (file count is at the ~10-file budget).
+see IF/THEN Branch 3): final count 13 files changed, 1,746 insertions(+), 0
+deletions. **K12 tripwire: both budgets exceeded** — file count (13) is
+slightly over the ~10-file budget, line count (1,746) is nearly 3x the
+~600-line budget.
 
 **Credential check performed** (existence-only, no value read/printed):
 `grep -qi '^NOTION_' ~/ultra-csm-live-creds.env` → `NOTION_ABSENT`, confirmed
