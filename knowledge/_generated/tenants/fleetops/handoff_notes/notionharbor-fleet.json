@@ -1,0 +1,12 @@
+{
+  "account_slug": "notionharbor-fleet",
+  "fictional": true,
+  "legacy_system": null,
+  "schema_version": 1,
+  "stakeholders": [],
+  "success_criteria": [
+    "Why they bought: replaced a spreadsheet-based dispatch process ahead of a fleet expansion. Legacy system: NotionHarbor Spreadsheets. Stakeholder: Dana Ruiz, Fleet Manager, champion. Success criteria: consolidate dispatch logging into one system of record within 90 days."
+  ],
+  "tenant": "fleetops",
+  "why_they_bought": "Why they bought: replaced a spreadsheet-based dispatch process ahead of a fleet expansion. Legacy system: NotionHarbor Spreadsheets. Stakeholder: Dana Ruiz, Fleet Manager, champion. Success criteria: consolidate dispatch logging into one system of record within 90 days."
+}
