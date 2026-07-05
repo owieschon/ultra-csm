@@ -18,7 +18,11 @@ import pytest
 from scripts.notion_render import render_all, render_org_pack
 from tests.test_content_catalog import _CANON_MODULES, _REQUIRED_FIELDS as _CATALOG_REQUIRED_FIELDS
 from tests.test_handoff_notes import _REQUIRED_FIELDS as _HANDOFF_REQUIRED_FIELDS
-from ultra_csm.data_plane.notion_reader import load_captured_payload
+from ultra_csm.data_plane.notion_reader import (
+    NotionReadError,
+    live_authoring_payload,
+    load_captured_payload,
+)
 from ultra_csm.knowledge import OrgPackError, load_org_pack, load_playbooks
 
 FIXTURE_PATH = str(
@@ -145,3 +149,25 @@ def test_account_specific_render_is_schema_accepted(tmp_path):
     assert note["fictional"] is True
     assert note["tenant"] == TENANT
     assert note["success_criteria"]
+
+
+def test_live_reader_fails_closed_without_credentials(tmp_path):
+    """Decision 4 / K8: absent a NOTION_* credential entry, the live pull
+    must raise rather than silently no-op or fabricate a payload. This is
+    the offline-testable half of the live reader; the live-network half is
+    the Owner Ask documented in the program report and cannot be exercised
+    here (Decision 5, verify-at-runtime)."""
+
+    empty_creds = tmp_path / "empty-creds.env"
+    empty_creds.write_text("", encoding="utf-8")
+
+    with pytest.raises(NotionReadError, match="ULTRA_CSM_NOTION_TOKEN"):
+        live_authoring_payload(
+            org_pack_database_id="x",
+            playbooks_database_id="x",
+            content_catalog_database_id="x",
+            voice_rules_page_id="x",
+            exemplar_email_page_id="x",
+            handoff_narrative_page_id="x",
+            creds_path=str(empty_creds),
+        )

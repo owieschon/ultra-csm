@@ -1,0 +1,14 @@
+{
+  "entries": [
+    {
+      "addresses_gap": "feature_shallow_depth",
+      "format": "guide",
+      "id": "content-route-optimizer-notion-primer",
+      "module": "route_optimization",
+      "title": "Route Optimizer: A Notion-Authored Primer"
+    }
+  ],
+  "fictional": true,
+  "schema_version": 1,
+  "tenant": "fleetops"
+}

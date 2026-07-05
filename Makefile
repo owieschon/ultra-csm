@@ -205,6 +205,12 @@ status:
 	PYTHONPATH=src:. $(PYTHON) scripts/render_status.py
 	PYTHONPATH=src:. $(PYTHON) scripts/render_status.py --check
 
+notion-render:
+	PYTHONPATH=src:. $(PYTHON) scripts/notion_render.py
+
+notion-render-check:
+	PYTHONPATH=src:. $(PYTHON) scripts/notion_render.py --check
+
 deployment-readiness:
 	PYTHONPATH=src:. $(PYTHON) scripts/render_deployment_readiness.py
 	PYTHONPATH=src:. $(PYTHON) scripts/render_deployment_readiness.py --check
