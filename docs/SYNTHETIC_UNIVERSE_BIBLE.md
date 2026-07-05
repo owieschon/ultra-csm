@@ -108,6 +108,17 @@ than before this extension — `check_onboarding_stall`'s assertion
 (`latency > 15`) already tolerates this, verified after adding the
 message, not assumed.
 
+**Density subsection (Program 19).** Five new email pairs (day 100, 130,
+160, 190, 205 — quiet-stretch recap/FYI exchanges, Marcus-verbose/
+Dennis-terse voice matching every existing pair), all placed in the
+day51-219 safe zone: verified by direct interval arithmetic that none of
+the three checkpoints' trailing windows (`reply_latency_trend` 21d at day
+20/50/310, `ticket_frequency_window` 90d at day 50/310) reach into that
+range (day50's windows end at day50 itself; day310's start at day268/220
+respectively). This raises Pinehill from 19 to 29 messages. Verified after
+authoring: `latency`/`tickets` at day 20/50/310 are byte-identical to the
+pre-extension baseline (`None`/`1.0`, `115.5`/`2.0`, `10.0`/`0.0`).
+
 ### 2. Single-threaded-risk — `pinnacle-supply`
 
 Persona: `at_risk_champion`. Industry: logistics, CSM `csm-101`.
