@@ -14,6 +14,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from uuid import NAMESPACE_URL, uuid5
 
+from typing import TYPE_CHECKING
+
 from ultra_csm.data_plane.contracts import (
     AccountResolution,
     AdoptionSummary,
@@ -28,11 +30,19 @@ from ultra_csm.data_plane.contracts import (
     CustomerDataPlane,
     Entitlement,
     HealthScore,
+    StakeholderRelationship,
     SuccessPlan,
     TimeToValueMilestone,
     UsageSignal,
     resolve_candidates,
 )
+
+if TYPE_CHECKING:
+    # Deferred: relationship_signals imports fixtures.det_id (and, via
+    # pinnacle_comms/trailhead_comms, fixtures.account_id_for), so a
+    # module-level import here would cycle. Type-only import is safe;
+    # runtime construction sites pass JobChangeSignal instances in.
+    from ultra_csm.data_plane.relationship_signals import JobChangeSignal
 
 DEFAULT_TENANT = "ultra-demo"
 
@@ -73,6 +83,12 @@ class FixtureCustomerData:
     usage_signals: tuple[UsageSignal, ...]
     milestones: tuple[TimeToValueMilestone, ...]
     tenant_accounts: dict[str, tuple[str, ...]] | None = None
+    # Person layer (Harvest 16): additive, defaulted empty so every existing
+    # FixtureCustomerData(...) construction site is unaffected. Reserved for
+    # live connector integration (StakeholderRelationship, contracts.py:253);
+    # simulation deferred until wired here.
+    stakeholder_relationships: tuple[StakeholderRelationship, ...] = ()
+    job_change_signals: "tuple[JobChangeSignal, ...]" = ()
 
 
 def default_fixture_data() -> FixtureCustomerData:
@@ -391,6 +407,27 @@ class FixtureCRMDataConnector:
 
     def list_opportunities(self, account_id: str) -> list[CRMOpportunity]:
         return [o for o in self._data.opportunities if o.account_id == account_id]
+
+    def list_stakeholders(self, account_id: str) -> list[StakeholderRelationship]:
+        """Read-only person-layer seam (Harvest 16, additive).
+
+        Not part of the ``CRMDataConnector`` Protocol -- callers reach it via
+        ``getattr(data_plane.crm, "list_stakeholders", None)`` so connectors
+        that do not implement it (Sim/Fieldstone) degrade to an empty list
+        rather than an AttributeError.
+        """
+        return [
+            s for s in self._data.stakeholder_relationships
+            if s.account_id == account_id
+        ]
+
+    def list_job_changes(self, account_id: str) -> list["JobChangeSignal"]:
+        """Read-only person-layer seam (Harvest 16, additive). See
+        ``list_stakeholders`` docstring for the getattr-fallback contract."""
+        return [
+            j for j in self._data.job_change_signals
+            if j.account_id == account_id
+        ]
 
     def log_activity(
         self,

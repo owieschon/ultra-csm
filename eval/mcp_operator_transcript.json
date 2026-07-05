@@ -1,7 +1,7 @@
 {
   "access_mode": "demo_operator",
   "artifact": "mcp_operator_transcript",
-  "artifact_sha256": "eae0a4c669417cf59df940fabae41cf17f75a8a066725189feb20b0564106760",
+  "artifact_sha256": "49ee68c4402b521f01fc4987d549cea8620bd777aca7338e284fbdb65a092db7",
   "beats": [
     "briefing",
     "queue",
@@ -393,6 +393,7 @@
               "status": "pending"
             },
             "reason": "Acme Logistics has deterministic Time-to-Value score 162 from milestones_overdue=50, days_overdue=30, success_plan_overdue=20; draft customer outreach. Evidence [evidence:<uuid:62178814388a>], [evidence:<uuid:ae159c35aabe>], [evidence:<uuid:0089d3c5a0bd>].",
+            "recipient_resolution": "first_consenting_fallback",
             "recommended_action": "draft_customer_outreach",
             "swept_at": "2026-06-27",
             "tenant_id": "ultra-demo"
@@ -547,6 +548,7 @@
             },
             "proposal": null,
             "reason": "Cyberdyne Transport has deterministic Time-to-Value score 109 from milestones_overdue=25, days_overdue=22, success_plan_overdue=20; route for internal review. Evidence [evidence:<uuid:640ecfe1d199>], [evidence:<uuid:7a0c9bc8fed0>], [evidence:<uuid:2e6685ab1c12>].",
+            "recipient_resolution": "first_consenting_fallback",
             "recommended_action": "recommend_next_best_action",
             "swept_at": "2026-06-27",
             "tenant_id": "ultra-demo"
@@ -713,6 +715,7 @@
               "status": "pending"
             },
             "reason": "Soylent Distribution has deterministic Time-to-Value score 105 from milestones_overdue=25, days_overdue=18, success_plan_overdue=20; draft customer outreach. Evidence [evidence:<uuid:ae6f47477ef5>], [evidence:<uuid:58d94b1d7301>], [evidence:<uuid:b750bb15c8d1>].",
+            "recipient_resolution": "first_consenting_fallback",
             "recommended_action": "draft_customer_outreach",
             "swept_at": "2026-06-27",
             "tenant_id": "ultra-demo"
@@ -850,6 +853,7 @@
               "status": "pending"
             },
             "reason": "Globex Fleet has deterministic Time-to-Value score 91 from milestones_overdue=25, days_overdue=24, health_yellow=15; draft customer outreach. Evidence [evidence:<uuid:74f750862834>], [evidence:<uuid:3f7c5138347a>], [evidence:<uuid:a6f8626603b0>].",
+            "recipient_resolution": "first_consenting_fallback",
             "recommended_action": "draft_customer_outreach",
             "swept_at": "2026-06-27",
             "tenant_id": "ultra-demo"
@@ -964,13 +968,14 @@
               "status": "pending"
             },
             "reason": "Initech Services has deterministic Time-to-Value score 62 from success_plan_overdue=20, health_yellow=15, low_seat_penetration=12; draft customer outreach. Evidence [evidence:<uuid:bee041bb3f66>], [evidence:<uuid:0a23d4ee0b68>].",
+            "recipient_resolution": "first_consenting_fallback",
             "recommended_action": "draft_customer_outreach",
             "swept_at": "2026-06-27",
             "tenant_id": "ultra-demo"
           }
         ]
       },
-      "output_sha256": "2e0e396c573f6259d3b0aafc6c52a95eeddd3351d6e1e53fee3c7ae5130fadd9",
+      "output_sha256": "b5dbe1cca3f0fec9ddeec033fd73741e7824d95900a9bc843c6f902b16acef2d",
       "tool": "get_morning_briefing"
     },
     {

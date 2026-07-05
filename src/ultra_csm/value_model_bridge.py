@@ -38,6 +38,7 @@ from ultra_csm.data_plane.data_simulator import (
     AccountDataBundle,
     SimulatedDataBundle,
 )
+from ultra_csm.person_factors import top_user_share
 from ultra_csm.value_model import (
     CustomerValueModel,
     FeatureDepthRail,
@@ -395,6 +396,10 @@ def _compute_divergences(
             ))
 
     # --- Single-threaded risk ---
+    # top_user_share is the promoted concentration helper (person_factors.py,
+    # Harvest 16) shared with the sweep-path value model's
+    # usage_concentration factor -- one computation, not two parallel
+    # copies (the motion-wiring lesson this dispatch's Reading list names).
     if licensed_users >= thresholds.min_seats_for_risk:
         totals: dict[str, float] = {}
         evidence: list[EvidenceRef] = []
@@ -405,9 +410,8 @@ def _compute_divergences(
                 evidence.append(
                     EvidenceRef("telemetry", lh.contact_id, "login_count", as_of),
                 )
-        total = sum(totals.values())
-        if total > 0:
-            top_share = max(totals.values()) / total
+        top_share = top_user_share(totals)
+        if top_share is not None:
             if (
                 top_share >= thresholds.concentration_ceiling
                 and len(totals) <= thresholds.min_threaded_persons

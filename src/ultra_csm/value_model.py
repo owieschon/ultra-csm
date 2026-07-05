@@ -8,19 +8,23 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Literal
 
+from ultra_csm import person_factors
 from ultra_csm._util import iso_date
 from ultra_csm.data_plane.contracts import (
     AdoptionSummary,
+    CommunicationSignal,
     CRMAccount,
     CSCompany,
     Entitlement,
     EvidenceRef,
     HealthScore,
     LifecycleStage,
+    StakeholderRelationship,
     SuccessPlan,
     TimeToValueMilestone,
     UsageSignal,
 )
+from ultra_csm.data_plane.relationship_signals import JobChangeSignal
 
 REPO = Path(__file__).resolve().parents[2]
 DEFAULT_CONFIG_PATH = REPO / "config" / "value_model_config.json"
@@ -65,6 +69,13 @@ class Thresholds:
     health_yellow_points: int
     arr_review_floor_cents: int
     arr_review_points: int
+    # Person-derived factors (Harvest 16), additive.
+    champion_departed_window_days: int
+    champion_departed_points: int
+    single_threaded_recency_days: int
+    new_stakeholder_window_days: int
+    new_stakeholder_points: int
+    usage_concentration_points: int
 
 
 @dataclass(frozen=True)
@@ -309,6 +320,10 @@ def build_customer_value_model(
     usage_signals: tuple[UsageSignal, ...],
     success_plans: tuple[SuccessPlan, ...],
     onboarding_milestones: tuple[TimeToValueMilestone, ...] = (),
+    stakeholders: tuple[StakeholderRelationship, ...] = (),
+    job_changes: tuple[JobChangeSignal, ...] = (),
+    communication_signals: tuple[CommunicationSignal, ...] = (),
+    as_of: str | None = None,
     config: ValueModelConfig | None = None,
 ) -> CustomerValueModel:
     """Build the four-rail value model.
@@ -318,6 +333,15 @@ def build_customer_value_model(
     empty -- no onboarding source mapped for this account, or a connector
     outage that fails closed upstream -- the outcome rail degrades exactly as
     it always has (success-plan-only), never fabricating a milestone.
+
+    ``stakeholders``/``job_changes``/``communication_signals`` are optional
+    person-layer inputs (Harvest 16, additive -- default empty so every
+    pre-existing caller is unaffected). When empty, the person-derived
+    factors below simply do not fire and ``_single_threaded_risk`` falls
+    back to its original telemetry-usage-signal proxy unchanged -- see that
+    function's docstring for why this keeps zero-drift. ``as_of`` is
+    required only for the two window-based person factors (champion_departed,
+    new_stakeholder_unengaged); when ``None``, they are skipped (fail-safe).
     """
 
     cfg = config or load_value_model_config()
@@ -352,12 +376,26 @@ def build_customer_value_model(
                 thresholds.adoption_floor,
             ))
 
-    threaded = _single_threaded_risk(usage_signals, adoption, resolved)
+    threaded = _single_threaded_risk(usage_signals, adoption, resolved, stakeholders=stakeholders)
     if threaded is not None:
         divergences.append(threaded)
     usage_outcome = _usage_outcome_divergence(adoption, outcome, resolved)
     if usage_outcome is not None:
         divergences.append(usage_outcome)
+
+    if as_of is not None:
+        champion_factor = _champion_departed_factor(stakeholders, job_changes, resolved, as_of=as_of)
+        if champion_factor is not None:
+            divergences.append(champion_factor)
+        new_stakeholder_factor = _new_stakeholder_unengaged_factor(
+            stakeholders, communication_signals, resolved, as_of=as_of
+        )
+        if new_stakeholder_factor is not None:
+            divergences.append(new_stakeholder_factor)
+
+    concentration_factor = _usage_concentration_factor(usage_signals, adoption, resolved)
+    if concentration_factor is not None:
+        divergences.append(concentration_factor)
 
     return CustomerValueModel(
         account_id=account.account_id,
@@ -730,9 +768,46 @@ def _single_threaded_risk(
     signals: tuple[UsageSignal, ...],
     adoption: AdoptionSummary | None,
     resolved: ResolvedThresholds,
+    *,
+    stakeholders: tuple[StakeholderRelationship, ...] = (),
 ) -> ValueFactor | None:
+    """Single-threaded-risk factor: real-graph-when-available, telemetry-
+    usage-signal-proxy-fallback (Harvest 16).
+
+    Zero-drift argument: every pre-existing caller passes no ``stakeholders``
+    (default ``()``), so they take the untouched proxy branch below with
+    byte-identical evidence/value to before this dispatch --
+    ``tests/test_value_model.py::test_single_threaded_risk_requires_person_grain_usage``
+    asserts ``evidence[0].source_id == "person-signal-1"`` (a UsageSignal id),
+    which only the proxy branch produces. The real graph is consulted ONLY
+    when stakeholder data is threaded in by the caller (the sweep, once Phase
+    1 wires the fetch) -- this is the "graph-when-available, proxy-fallback"
+    resolution recorded in PROGRESS.md's zero-drift analysis.
+    """
+
     if adoption is None or adoption.licensed_users < resolved.thresholds.min_seats_for_risk:
         return None
+
+    if stakeholders:
+        count, engaged = person_factors.engaged_contact_count(
+            stakeholders,
+            as_of=adoption.measured_at,
+            recency_days=resolved.thresholds.single_threaded_recency_days,
+        )
+        if count == 0:
+            return None
+        if count <= resolved.thresholds.min_threaded_persons:
+            return _factor(
+                "single_threaded_risk",
+                float(count),
+                20,
+                person_factors.evidence_for_single_threaded_graph(engaged),
+                resolved,
+                "min_threaded_persons",
+                resolved.thresholds.min_threaded_persons,
+            )
+        return None
+
     person_signals = [
         signal for signal in signals
         if signal.grain == "person" and signal.subject_id and signal.value > 0
@@ -762,6 +837,115 @@ def _single_threaded_risk(
             resolved.thresholds.concentration_ceiling,
         )
     return None
+
+
+def _champion_departed_factor(
+    stakeholders: tuple[StakeholderRelationship, ...],
+    job_changes: tuple[JobChangeSignal, ...],
+    resolved: ResolvedThresholds,
+    *,
+    as_of: str,
+) -> ValueFactor | None:
+    """``champion_departed`` (RISK lens): a JobChangeSignal departure for a
+    contact holding the ``champion`` StakeholderRelationship role, within
+    ``champion_departed_window_days``. Additive -- returns None (never
+    fires) when either input is empty, so pre-existing callers (which pass
+    neither) are unaffected."""
+
+    if not stakeholders or not job_changes:
+        return None
+    found = person_factors.champion_departed(
+        stakeholders,
+        job_changes,
+        as_of=as_of,
+        window_days=resolved.thresholds.champion_departed_window_days,
+    )
+    if found is None:
+        return None
+    change, role = found
+    return _factor(
+        "champion_departed",
+        float(change.day_offset),
+        resolved.thresholds.champion_departed_points,
+        person_factors.evidence_for_champion_departed(change, role),
+        resolved,
+        "champion_departed_window_days",
+        resolved.thresholds.champion_departed_window_days,
+    )
+
+
+def _new_stakeholder_unengaged_factor(
+    stakeholders: tuple[StakeholderRelationship, ...],
+    communication_signals: tuple[CommunicationSignal, ...],
+    resolved: ResolvedThresholds,
+    *,
+    as_of: str,
+) -> ValueFactor | None:
+    """``new_stakeholder_unengaged`` (RISK lens): an admin/executive_sponsor
+    StakeholderRelationship added within ``new_stakeholder_window_days`` with
+    no matching CommunicationSignal. Additive -- returns None when there are
+    no stakeholder rows to inspect."""
+
+    if not stakeholders:
+        return None
+    found = person_factors.new_stakeholder_unengaged(
+        stakeholders,
+        communication_signals,
+        as_of=as_of,
+        window_days=resolved.thresholds.new_stakeholder_window_days,
+    )
+    if found is None:
+        return None
+    return _factor(
+        "new_stakeholder_unengaged",
+        1.0,
+        resolved.thresholds.new_stakeholder_points,
+        person_factors.evidence_for_new_stakeholder_unengaged(found),
+        resolved,
+        "new_stakeholder_window_days",
+        resolved.thresholds.new_stakeholder_window_days,
+    )
+
+
+def _usage_concentration_factor(
+    signals: tuple[UsageSignal, ...],
+    adoption: AdoptionSummary | None,
+    resolved: ResolvedThresholds,
+) -> ValueFactor | None:
+    """``usage_concentration`` (ADOPTION lens): top-user share of person-grain
+    usage >= ``concentration_ceiling``, via the promoted
+    :func:`ultra_csm.person_factors.top_user_share` helper shared with
+    ``value_model_bridge.build_deep_value_model`` (one concentration
+    computation, not two). Additive -- distinct ValueFactor name from
+    ``single_threaded_risk`` so it never perturbs that factor's existing
+    assertions; fires alongside it when both conditions independently hold.
+    """
+
+    if adoption is None or adoption.licensed_users < resolved.thresholds.min_seats_for_risk:
+        return None
+    person_signals = [
+        signal for signal in signals
+        if signal.grain == "person" and signal.subject_id and signal.value > 0
+    ]
+    if not person_signals:
+        return None
+    totals: dict[str, float] = {}
+    evidence: list[EvidenceRef] = []
+    for signal in person_signals:
+        totals[signal.subject_id or ""] = totals.get(signal.subject_id or "", 0.0) + signal.value
+        evidence.append(EvidenceRef("telemetry", signal.signal_id, signal.metric_name, signal.observed_at))
+    share = person_factors.top_user_share(totals)
+    if share is None or share < resolved.thresholds.concentration_ceiling:
+        return None
+    return _factor(
+        "usage_concentration",
+        share,
+        resolved.thresholds.usage_concentration_points,
+        tuple(evidence),
+        resolved,
+        "concentration_ceiling",
+        resolved.thresholds.concentration_ceiling,
+    )
 
 
 def _factor(
