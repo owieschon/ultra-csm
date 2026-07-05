@@ -592,13 +592,36 @@ def unsafe_placeholder_sweep(
     )
 
 
-def _account_triggers_for_motion(health, adoption, entitlements) -> set[str]:
-    """Mirrors eval/tier_policy_battery.py's ``_account_triggers`` -- the
-    only trigger_factor detection this dispatch proved offline. Fleetops'
-    remaining playbook triggers (health_red/health_yellow/
-    low_seat_penetration/milestones_overdue/outcome_unknown) have no live
-    detector anywhere in this codebase yet; that gap is a follow-on Owner
-    Ask, not invented here."""
+def _account_triggers_for_motion(
+    health,
+    adoption,
+    entitlements,
+    *,
+    value_model: CustomerValueModel | None = None,
+    open_milestone_gaps: tuple[TimeToValueMilestone, ...] = (),
+) -> set[str]:
+    """Mirrors eval/tier_policy_battery.py's ``_account_triggers`` for the
+    first two (health/adoption-only) triggers, then extends with the
+    fleetops playbook's remaining five, each reusing an EXISTING computed
+    signal rather than inventing a threshold (per this dispatch's
+    Decisions section):
+
+    - ``health_red``/``health_yellow``: ``health.band``, the exact band
+      ``value_model.py``'s ``_ttv_base_factors`` already keys off.
+    - ``low_seat_penetration``: ``value_model.penetration.factors``, whose
+      factor name is literally ``"low_seat_penetration"``
+      (``_penetration_rail``, ``seat_penetration_floor`` threshold).
+    - ``milestones_overdue``: an achieved-null milestone whose
+      ``expected_by`` is on/before *as_of* -- the same
+      ``open_milestone_gaps`` shape ``_slot_b_inputs_for_account`` already
+      computes for priority scoring.
+    - ``outcome_unknown``: ``value_model.outcome.realized_state ==
+      "not_instrumented"`` (``_outcome_rail``): no success plan realized
+      and no onboarding milestone achieved.
+
+    ``value_model``/``open_milestone_gaps`` are optional so existing
+    single-signal callers (none currently pass them) keep working
+    unchanged; callers that want the full 7-trigger set pass both."""
 
     triggers: set[str] = set()
     if health is not None and "champion_inactive" in health.drivers:
@@ -607,6 +630,15 @@ def _account_triggers_for_motion(health, adoption, entitlements) -> set[str]:
         entitled_caps = {e.capability for e in entitlements}
         if any(cap in entitled_caps for cap in adoption.underused_capabilities):
             triggers.add("feature_shallow_depth")
+    if health is not None and health.band in {"red", "yellow"}:
+        triggers.add("health_red" if health.band == "red" else "health_yellow")
+    if open_milestone_gaps:
+        triggers.add("milestones_overdue")
+    if value_model is not None:
+        if value_model.penetration.factors:
+            triggers.add("low_seat_penetration")
+        if value_model.outcome.realized_state == "not_instrumented":
+            triggers.add("outcome_unknown")
     return triggers
 
 
@@ -615,12 +647,23 @@ def _account_tier_and_triggers(
     account: CRMAccount,
     *,
     value_model_config: ValueModelConfig,
+    as_of: str | None = None,
 ) -> tuple[str, set[str]] | None:
     """This account's tier and fired trigger_factor set (one data_plane
     pass). Returns None if the account has no CS-platform company record;
     in practice callers only reach this after ``_slot_b_inputs_for_account``
     already required one, so this branch mirrors that check rather than
-    adding a new failure mode."""
+    adding a new failure mode.
+
+    Widened (Phase 2, full 7-trigger coverage) to additionally fetch
+    ``success_plans``/``usage_signals``/onboarding milestones in this SAME
+    single per-account pass -- never a second fetch pass -- and build the
+    same ``CustomerValueModel`` ``_slot_b_inputs_for_account`` builds, so
+    the remaining 5 detectors reuse its penetration/outcome rails rather
+    than re-deriving them. ``milestones_overdue`` needs *as_of*; omitting
+    it (existing callers before Phase 2) simply skips that one trigger,
+    never raises.
+    """
 
     company = data_plane.cs.get_company(account.account_id)
     if company is None:
@@ -629,7 +672,42 @@ def _account_tier_and_triggers(
     adoption = data_plane.cs.get_adoption_summary(account.account_id)
     entitlements = tuple(data_plane.telemetry.list_entitlements(account.account_id))
     tier = resolve_tenant_tier(account_attributes(account, company), value_model_config).tier
-    triggers = _account_triggers_for_motion(health, adoption, entitlements)
+
+    if health is None or adoption is None:
+        triggers = _account_triggers_for_motion(health, adoption, entitlements)
+        return tier, triggers
+
+    success_plans = tuple(data_plane.cs.list_success_plans(account.account_id))
+    usage_signals = tuple(data_plane.telemetry.list_usage_signals(account.account_id))
+    onboarding_milestones = _onboarding_milestones(data_plane, account.account_id)
+    value_model = build_customer_value_model(
+        account=account,
+        company=company,
+        health=health,
+        adoption=adoption,
+        entitlements=entitlements,
+        usage_signals=usage_signals,
+        success_plans=success_plans,
+        onboarding_milestones=onboarding_milestones,
+        config=value_model_config,
+    )
+    open_milestone_gaps: tuple[TimeToValueMilestone, ...] = ()
+    if as_of is not None:
+        milestones = tuple(data_plane.telemetry.list_ttv_milestones(account.account_id))
+        all_milestones = milestones + tuple(
+            m for m in onboarding_milestones if m not in milestones
+        )
+        open_milestone_gaps = tuple(
+            m for m in all_milestones
+            if m.achieved_at is None and iso_date(m.expected_by) <= iso_date(as_of)
+        )
+    triggers = _account_triggers_for_motion(
+        health,
+        adoption,
+        entitlements,
+        value_model=value_model,
+        open_milestone_gaps=open_milestone_gaps,
+    )
     return tier, triggers
 
 
@@ -639,14 +717,20 @@ def _account_tier_and_motion(
     *,
     playbooks: PlaybookSet,
     value_model_config: ValueModelConfig,
+    as_of: str | None = None,
 ) -> tuple[str, str | None] | None:
     """Resolve this one account's tier and tier-appropriate motion together
     via the promoted ``motion_resolver.resolve_motions`` -- a single-account
     map naturally never reaches cohort-collapse threshold, so this yields
     the same per-account motion a whole-book sweep would (see
-    motion_resolver's docstring)."""
+    motion_resolver's docstring). *as_of* is optional (default None) so
+    existing callers that predate Phase 2's ``milestones_overdue``
+    detector keep working unchanged; it just skips that one date-based
+    trigger."""
 
-    tier_and_triggers = _account_tier_and_triggers(data_plane, account, value_model_config=value_model_config)
+    tier_and_triggers = _account_tier_and_triggers(
+        data_plane, account, value_model_config=value_model_config, as_of=as_of
+    )
     if tier_and_triggers is None:
         return None
     tier, triggers = tier_and_triggers
@@ -695,7 +779,7 @@ def collapse_cohorts(
     triggers_by_account_id: dict[str, set[str]] = {}
     for account in accounts:
         tier_and_triggers = _account_tier_and_triggers(
-            data_plane, account, value_model_config=value_model_config
+            data_plane, account, value_model_config=value_model_config, as_of=as_of
         )
         if tier_and_triggers is None:
             continue
