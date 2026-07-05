@@ -16,6 +16,8 @@ from pathlib import Path
 import pytest
 
 from scripts.notion_render import render_all, render_org_pack
+from tests.test_content_catalog import _CANON_MODULES, _REQUIRED_FIELDS as _CATALOG_REQUIRED_FIELDS
+from tests.test_handoff_notes import _REQUIRED_FIELDS as _HANDOFF_REQUIRED_FIELDS
 from ultra_csm.data_plane.notion_reader import load_captured_payload
 from ultra_csm.knowledge import OrgPackError, load_org_pack, load_playbooks
 
@@ -100,3 +102,46 @@ def test_two_tier_isolation_enforced_by_loader_not_renderer(tmp_path):
     # The unmodified loader -- not the renderer -- is what rejects it.
     with pytest.raises(OrgPackError, match="runtime field: account_id"):
         load_org_pack(output_root / "org_pack.json", corpus_dir=output_root / "golden_corpus")
+
+
+def test_account_specific_render_is_schema_accepted(tmp_path):
+    """Acceptance oracle for the account-specific tier: the schema
+    assertions lifted verbatim from ``test_content_catalog.py``/
+    ``test_handoff_notes.py`` (Decision 2), applied to generated output
+    instead of the curated demo fixtures. Those test files are imported,
+    never edited."""
+
+    payload = load_captured_payload(FIXTURE_PATH, pack_version="notion-pack-v1")
+    output_root = tmp_path / "_generated"
+
+    written = render_all(
+        payload,
+        output_root=output_root,
+        tenant=TENANT,
+        pack_version="notion-pack-v1",
+        account_slug=ACCOUNT_SLUG,
+    )
+
+    catalog_path = output_root / "tenants" / TENANT / "content_catalog.json"
+    assert catalog_path in written
+    catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
+    assert catalog["fictional"] is True
+    assert catalog["tenant"] == TENANT
+    ids = [entry["id"] for entry in catalog["entries"]]
+    assert len(ids) == len(set(ids))
+    for entry in catalog["entries"]:
+        assert _CATALOG_REQUIRED_FIELDS <= set(entry)
+        assert "addresses_gap" in entry and entry["addresses_gap"]
+    # The fixture's one content-catalog row uses a real canon module; this
+    # does not assert full 8-module coverage (that is the curated demo
+    # catalog's job, per test_content_catalog.py's own fixed-path test).
+    assert {entry["module"] for entry in catalog["entries"]} <= _CANON_MODULES
+
+    note_path = output_root / "tenants" / TENANT / "handoff_notes" / f"{ACCOUNT_SLUG}.json"
+    assert note_path in written
+    note = json.loads(note_path.read_text(encoding="utf-8"))
+    assert _HANDOFF_REQUIRED_FIELDS <= set(note)
+    assert note["account_slug"] == ACCOUNT_SLUG
+    assert note["fictional"] is True
+    assert note["tenant"] == TENANT
+    assert note["success_criteria"]
