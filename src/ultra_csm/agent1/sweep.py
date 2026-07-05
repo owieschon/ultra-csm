@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 import time
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 from typing import TYPE_CHECKING, Literal
 
 from ultra_csm._util import compact_asdict, iso_date
@@ -33,8 +33,9 @@ from ultra_csm.data_plane import (
 )
 from ultra_csm.data_plane.contracts import ResolutionState
 from ultra_csm.governance import ActionGate, ActionProposal, proposal_fields_for
-from ultra_csm.governance.csm_actions import CSMActionType
-from ultra_csm.knowledge import load_org_pack
+from ultra_csm.governance.csm_actions import CSMActionType, implied_motion_for_action
+from ultra_csm.knowledge import PlaybookSet, load_org_pack, load_playbooks
+from ultra_csm.motion_resolver import resolve_motions
 from ultra_csm.quality_breaker import (
     QualityBreakerConfig,
     QualityBreakerDecision,
@@ -44,8 +45,12 @@ from ultra_csm.snapshot_store import SnapshotStore
 from ultra_csm.value_model import (
     CustomerValueModel,
     ValueFactor,
+    ValueModelConfig,
+    account_attributes,
     build_customer_value_model,
+    load_value_model_config,
     project_ttv_lens,
+    resolve_tenant_tier,
 )
 
 if TYPE_CHECKING:
@@ -103,6 +108,7 @@ class CSMWorkItem:
     swept_at: str
     draft_mode: DraftMode = "none"
     customer_draft: str | None = None
+    motion: str | None = None
 
 
 @dataclass
@@ -149,8 +155,21 @@ def run_time_to_value_sweep(
     cost_budget: "CostBudget | None" = None,
     org_context: dict | None = None,
     snapshot_store: SnapshotStore | None = None,
+    playbooks: PlaybookSet | None = None,
+    playbook_tenant_slug: str | None = None,
+    value_model_config: ValueModelConfig | None = None,
 ) -> SweepResult:
-    """Run Agent 1 across a tenant book and emit a deterministic work queue."""
+    """Run Agent 1 across a tenant book and emit a deterministic work queue.
+
+    *tenant_id* is the data-plane/CRM tenant identity (e.g. ``"ultra-demo"``)
+    and is NOT assumed to match a ``knowledge/tenants/<slug>/playbooks.json``
+    slug -- those are two separate identity namespaces in this codebase
+    today (verified: no existing caller passes a knowledge-tenant slug as
+    *tenant_id*). Pass *playbooks* directly, or *playbook_tenant_slug* to
+    auto-load one, to opt a caller into motion resolution; without either,
+    every emitted ``CSMWorkItem.motion`` stays ``None`` (unchanged
+    pre-existing behavior).
+    """
 
     from ultra_csm.cost_tracker import estimate_call_cost
 
@@ -166,6 +185,10 @@ def run_time_to_value_sweep(
         if quality_breaker is not None
         else None
     )
+    if playbooks is None and playbook_tenant_slug is not None:
+        playbooks = load_playbooks(playbook_tenant_slug)
+    if value_model_config is None:
+        value_model_config = load_value_model_config()
 
     if cost_tracker is not None:
         cost_tracker.reset_sweep()
@@ -245,6 +268,8 @@ def run_time_to_value_sweep(
             org_context=slot_b_org_context,
             timing=timing,
             snapshot_store=snapshot_store,
+            playbooks=playbooks,
+            value_model_config=value_model_config,
         )
         if built is not None:
             if budget_exceeded:
@@ -567,6 +592,150 @@ def unsafe_placeholder_sweep(
     )
 
 
+def _account_triggers_for_motion(health, adoption, entitlements) -> set[str]:
+    """Mirrors eval/tier_policy_battery.py's ``_account_triggers`` -- the
+    only trigger_factor detection this dispatch proved offline. Fleetops'
+    remaining playbook triggers (health_red/health_yellow/
+    low_seat_penetration/milestones_overdue/outcome_unknown) have no live
+    detector anywhere in this codebase yet; that gap is a follow-on Owner
+    Ask, not invented here."""
+
+    triggers: set[str] = set()
+    if health is not None and "champion_inactive" in health.drivers:
+        triggers.add("champion_inactive")
+    if adoption is not None and adoption.underused_capabilities:
+        entitled_caps = {e.capability for e in entitlements}
+        if any(cap in entitled_caps for cap in adoption.underused_capabilities):
+            triggers.add("feature_shallow_depth")
+    return triggers
+
+
+def _account_tier_and_triggers(
+    data_plane: CustomerDataPlane,
+    account: CRMAccount,
+    *,
+    value_model_config: ValueModelConfig,
+) -> tuple[str, set[str]] | None:
+    """This account's tier and fired trigger_factor set (one data_plane
+    pass). Returns None if the account has no CS-platform company record;
+    in practice callers only reach this after ``_slot_b_inputs_for_account``
+    already required one, so this branch mirrors that check rather than
+    adding a new failure mode."""
+
+    company = data_plane.cs.get_company(account.account_id)
+    if company is None:
+        return None
+    health = data_plane.cs.get_health_score(account.account_id)
+    adoption = data_plane.cs.get_adoption_summary(account.account_id)
+    entitlements = tuple(data_plane.telemetry.list_entitlements(account.account_id))
+    tier = resolve_tenant_tier(account_attributes(account, company), value_model_config).tier
+    triggers = _account_triggers_for_motion(health, adoption, entitlements)
+    return tier, triggers
+
+
+def _account_tier_and_motion(
+    data_plane: CustomerDataPlane,
+    account: CRMAccount,
+    *,
+    playbooks: PlaybookSet,
+    value_model_config: ValueModelConfig,
+) -> tuple[str, str | None] | None:
+    """Resolve this one account's tier and tier-appropriate motion together
+    via the promoted ``motion_resolver.resolve_motions`` -- a single-account
+    map naturally never reaches cohort-collapse threshold, so this yields
+    the same per-account motion a whole-book sweep would (see
+    motion_resolver's docstring)."""
+
+    tier_and_triggers = _account_tier_and_triggers(data_plane, account, value_model_config=value_model_config)
+    if tier_and_triggers is None:
+        return None
+    tier, triggers = tier_and_triggers
+    resolved = resolve_motions({account.account_id: tier}, {account.account_id: triggers}, playbooks)
+    plays = resolved["per_account"].get(account.account_id, ())
+    motion = plays[0]["motion"] if plays else None
+    return tier, motion
+
+
+def collapse_cohorts(
+    sweep: SweepResult,
+    data_plane: CustomerDataPlane,
+    *,
+    tenant_id: str,
+    playbooks: PlaybookSet,
+    value_model_config: ValueModelConfig,
+    as_of: str,
+) -> SweepResult:
+    """Post-sweep pass, additive and SEPARATE from per-account work-item
+    construction: collapse per-account items sharing a (trigger_factor,
+    tier) pair at or above cohort threshold into ONE cohort_action work
+    item, exactly mirroring ``motion_resolver.resolve_motions``'s
+    cohort-collapse branch -- a single account's work-item construction
+    cannot see its siblings, so this runs over *tenant_id*'s whole book at
+    *as_of* instead, the same way ``eval/tier_policy_battery.py``'s battery
+    already proves offline. Collapsed per-account items are DROPPED from
+    ``work_items`` (not flagged) -- this matches ``resolve_motions``'s own
+    precedent of simply omitting collapsed accounts from ``per_account``
+    rather than marking them, so no new suppression concept is introduced.
+
+    A cohort item has no single ``account_id`` (it covers many), which
+    ``CSMWorkItem.account_resolution`` has no dedicated value for --
+    ``"ambiguous"`` (account_id=None + candidate_account_ids=many) is the
+    closest existing fit, reused here NOT because identity is uncertain
+    (every member account is known) but because it is the only existing
+    state shaped like "no single account_id, see candidate_account_ids".
+    Nothing in this codebase currently branches on ``account_resolution``
+    (verified), so this reuse carries no known behavioral risk; a
+    dedicated value is a follow-on Owner Ask, not added here (would touch
+    ``data_plane/contracts.py``'s shared ``ResolutionState``, outside this
+    dispatch's ownership map).
+    """
+
+    accounts = tuple(data_plane.crm.list_accounts(tenant_id=tenant_id))
+    tier_by_account_id: dict[str, str] = {}
+    triggers_by_account_id: dict[str, set[str]] = {}
+    for account in accounts:
+        tier_and_triggers = _account_tier_and_triggers(
+            data_plane, account, value_model_config=value_model_config
+        )
+        if tier_and_triggers is None:
+            continue
+        tier_by_account_id[account.account_id] = tier_and_triggers[0]
+        triggers_by_account_id[account.account_id] = tier_and_triggers[1]
+
+    resolved = resolve_motions(tier_by_account_id, triggers_by_account_id, playbooks)
+    cohort_actions = resolved["cohort_actions"]
+    if not cohort_actions:
+        return sweep
+
+    cohort_account_ids: set[str] = set()
+    cohort_items: list[CSMWorkItem] = []
+    for cohort in cohort_actions:
+        cohort_account_ids.update(cohort["account_ids"])
+        cohort_items.append(CSMWorkItem(
+            tenant_id=tenant_id,
+            account_resolution="ambiguous",
+            account_id=None,
+            candidate_account_ids=tuple(cohort["account_ids"]),
+            disposition="propose_customer_action",
+            recommended_action="cohort_action",
+            reason=(
+                f"Cohort collapse: {cohort['trigger_factor']} affects "
+                f"{len(cohort['account_ids'])} {cohort['tier']} accounts via play "
+                f"{cohort['play_id']!r} -- one cohort_action covers all, not "
+                f"{len(cohort['account_ids'])} individual motions."
+            ),
+            priority=None,
+            evidence=(),
+            customer_contact_allowed=False,
+            proposal=None,
+            swept_at=as_of,
+            motion="cohort_action",
+        ))
+
+    kept_items = tuple(item for item in sweep.work_items if item.account_id not in cohort_account_ids)
+    return replace(sweep, work_items=kept_items + tuple(cohort_items))
+
+
 def _work_item_for_account(
     data_plane: CustomerDataPlane,
     account: CRMAccount,
@@ -581,6 +750,8 @@ def _work_item_for_account(
     org_context: dict | None = None,
     timing: _SweepTimingAccum | None = None,
     snapshot_store: SnapshotStore | None = None,
+    playbooks: PlaybookSet | None = None,
+    value_model_config: ValueModelConfig | None = None,
 ) -> CSMWorkItem | None:
     value_start = time.perf_counter()
     inputs = _slot_b_inputs_for_account(
@@ -594,12 +765,37 @@ def _work_item_for_account(
     if inputs is None:
         return None
 
+    tier_and_motion = (
+        _account_tier_and_motion(
+            data_plane, account, playbooks=playbooks, value_model_config=value_model_config
+        )
+        if playbooks is not None
+        else None
+    )
+    tier = tier_and_motion[0] if tier_and_motion is not None else None
+    motion = tier_and_motion[1] if tier_and_motion is not None else None
+
     contact = next((contact for contact in contacts if contact.consent_to_contact), None)
     customer_contact_allowed = contact is not None
+    # Tier-forbidden-motion guard: narrows customer_contact_allowed exactly
+    # like the quality breaker already does -- it never touches
+    # recommended_action's derivation below, only whether this item is
+    # allowed to proceed as a customer-facing draft. Fail-open when tier
+    # can't be resolved or motion resolution wasn't requested (playbooks
+    # is None); fail-closed only when a resolved tier actively forbids the
+    # action's implied motion.
+    tier_forbids_motion = (
+        customer_contact_allowed
+        and tier is not None
+        and playbooks is not None
+        and implied_motion_for_action("draft_customer_outreach") in playbooks.tier_for(tier).forbidden_motions
+    )
     customer_action_blocked = (
         customer_contact_allowed
-        and quality_breaker is not None
-        and quality_breaker.triggered
+        and (
+            (quality_breaker is not None and quality_breaker.triggered)
+            or tier_forbids_motion
+        )
     )
     disposition: Disposition = (
         "propose_customer_action"
@@ -663,6 +859,7 @@ def _work_item_for_account(
         swept_at=as_of,
         draft_mode=draft_mode,
         customer_draft=slot_b.customer_draft,
+        motion=motion,
     )
 
 

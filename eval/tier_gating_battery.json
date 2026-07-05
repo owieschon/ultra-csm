@@ -1,0 +1,72 @@
+{
+  "artifact": "tier_gating_battery",
+  "cases": [
+    {
+      "case": "no-play-targets-a-forbidden-tier",
+      "detail": {
+        "crateworks": {
+          "plays_checked": 3,
+          "violations": []
+        },
+        "fieldstone": {
+          "plays_checked": 3,
+          "violations": []
+        },
+        "fleetops": {
+          "plays_checked": 10,
+          "violations": []
+        },
+        "loopway": {
+          "plays_checked": 7,
+          "violations": []
+        }
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "dynamic-sweep-fleetops-loopway",
+      "detail": {
+        "fleetops": {
+          "case": "no-tier-forbidden-motion",
+          "detail": {
+            "accounts_swept_per_day": 180
+          },
+          "ok": true,
+          "problems": []
+        },
+        "loopway": {
+          "case": "no-tier-forbidden-motion-sampled",
+          "detail": {
+            "days_checked": [
+              75,
+              120,
+              200
+            ],
+            "sample_size": 162
+          },
+          "ok": true,
+          "problems": []
+        }
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "real-sweep-guard-fleetops",
+      "detail": {
+        "accounts_checked": 0,
+        "accounts_swept_per_day": {
+          "90": 180,
+          "130": 180,
+          "140": 180
+        },
+        "vacuous_pass": "no account across any checkpoint day was BOTH tech_touch AND had fired priority evidence AND a consenting contact -- this case's ok:true does not demonstrate the guard fired on a real account; see check_no_play_targets_a_forbidden_tier and check_dynamic_sweep_fleetops_loopway for this dispatch's actual coverage of the underlying property"
+      },
+      "ok": true,
+      "problems": []
+    }
+  ],
+  "failed_cases": [],
+  "hard_ok": true
+}

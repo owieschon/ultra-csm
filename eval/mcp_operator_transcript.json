@@ -1,7 +1,7 @@
 {
   "access_mode": "demo_operator",
   "artifact": "mcp_operator_transcript",
-  "artifact_sha256": "6e408889d8bc48f3abd0042d5bfecbb563c753c0effc69583023a411596ab031",
+  "artifact_sha256": "eae0a4c669417cf59df940fabae41cf17f75a8a066725189feb20b0564106760",
   "beats": [
     "briefing",
     "queue",
@@ -242,6 +242,7 @@
                 "source_id": "a317f5e7-575e-5879-8256-9082e40ef19f"
               }
             ],
+            "motion": null,
             "priority": {
               "factors": [
                 {
@@ -430,6 +431,7 @@
                 "source_id": "9bbdd7b2-55b0-5257-acf8-808ad224e276"
               }
             ],
+            "motion": null,
             "priority": {
               "factors": [
                 {
@@ -589,6 +591,7 @@
                 "source_id": "ac5ddaea-764f-57ef-866d-593d57a20a00"
               }
             ],
+            "motion": null,
             "priority": {
               "factors": [
                 {
@@ -742,6 +745,7 @@
                 "source_id": "b2178254-7d72-55e3-84af-27846a0cb7d5"
               }
             ],
+            "motion": null,
             "priority": {
               "factors": [
                 {
@@ -872,6 +876,7 @@
                 "source_id": "efe1d86f-af21-5ca6-8719-3ba8b4429292"
               }
             ],
+            "motion": null,
             "priority": {
               "factors": [
                 {
@@ -965,7 +970,7 @@
           }
         ]
       },
-      "output_sha256": "18188192201e75bc711ea9b41dfcb7a142ef75d16ae6cd6cab778a6122cba04a",
+      "output_sha256": "2e0e396c573f6259d3b0aafc6c52a95eeddd3351d6e1e53fee3c7ae5130fadd9",
       "tool": "get_morning_briefing"
     },
     {

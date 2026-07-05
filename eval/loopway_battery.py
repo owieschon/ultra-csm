@@ -26,7 +26,6 @@ from __future__ import annotations
 
 import argparse
 import json
-from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
@@ -47,12 +46,11 @@ from ultra_csm.data_plane.tenants.loopway.synthetic_book import (
     NAMED_ACCOUNTS,
 )
 from ultra_csm.knowledge import load_playbooks
+from ultra_csm.motion_resolver import resolve_motions
 from ultra_csm.value_model import account_attributes, load_value_model_config, resolve_tenant_tier
 
 ARTIFACT_PATH = Path(__file__).with_name("loopway_battery.json")
 GOLD_PATH = Path(__file__).parent / "gold" / "loopway_expected_actions.json"
-
-COHORT_THRESHOLD = 10  # same constant/precedent as eval/tier_policy_battery.py
 
 
 # ---------------------------------------------------------------------------
@@ -146,45 +144,21 @@ def resolve_motions_for_day(day: int) -> dict[str, Any]:
         slug: _account_triggers(slug, day) for slug in NAMED_ACCOUNTS
     }
 
-    groups: dict[tuple[str, str], list[str]] = defaultdict(list)
+    tier_by_account_id: dict[str, str] = {}
+    triggers_by_account_id: dict[str, set[str]] = {}
+    slug_by_account_id: dict[str, str] = {}
     for slug, triggers in triggers_by_slug.items():
         account_id = account_id_for(slug)
-        tier = tier_by_slug.get(account_id, "tech_touch")
-        for trigger in triggers:
-            groups[(trigger, tier)].append(slug)
+        tier_by_account_id[account_id] = tier_by_slug.get(account_id, "tech_touch")
+        triggers_by_account_id[account_id] = triggers
+        slug_by_account_id[account_id] = slug
 
-    per_account: dict[str, list[dict[str, str]]] = defaultdict(list)
-    cohort_actions: list[dict[str, Any]] = []
-
-    for (trigger, tier), slugs in sorted(groups.items()):
-        matching_plays = [
-            play for play in playbooks.plays
-            if play.trigger_factor == trigger and tier in play.tiers
-        ]
-        if not matching_plays:
-            continue
-        cohort_plays = [p for p in matching_plays if p.motion == "cohort_action"]
-        if len(slugs) >= COHORT_THRESHOLD and cohort_plays:
-            play = cohort_plays[0]
-            cohort_actions.append({
-                "play_id": play.id,
-                "motion": "cohort_action",
-                "trigger_factor": trigger,
-                "tier": tier,
-                "account_ids": sorted(account_id_for(s) for s in slugs),
-                "account_slugs": sorted(slugs),
-            })
-            continue
-        non_cohort_plays = [p for p in matching_plays if p.motion != "cohort_action"]
-        for play in non_cohort_plays:
-            for slug in slugs:
-                per_account[account_id_for(slug)].append({
-                    "play_id": play.id,
-                    "motion": play.motion,
-                    "trigger_factor": trigger,
-                })
-
-    return {"per_account": dict(per_account), "cohort_actions": cohort_actions}
+    return resolve_motions(
+        tier_by_account_id,
+        triggers_by_account_id,
+        playbooks,
+        slug_by_account_id=slug_by_account_id,
+    )
 
 
 # ---------------------------------------------------------------------------

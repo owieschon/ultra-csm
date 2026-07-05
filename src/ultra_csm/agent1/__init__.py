@@ -14,6 +14,7 @@ from ultra_csm.agent1.sweep import (
     ProposalRef,
     SweepResult,
     build_reason_draft_request_for_account,
+    collapse_cohorts,
     run_time_to_value_sweep,
     unsafe_placeholder_sweep,
 )
@@ -87,6 +88,7 @@ __all__ = [
     "UnsafeGuessingCaseNoteClassifier",
     "UnsafeReasonDraftWriter",
     "build_reason_draft_request_for_account",
+    "collapse_cohorts",
     "prompt_metadata",
     "run_time_to_value_sweep",
     "unsafe_placeholder_sweep",
