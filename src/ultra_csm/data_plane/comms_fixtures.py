@@ -69,6 +69,19 @@ _MESSAGE_SCHEDULE: tuple[tuple[int, int, bool, str], ...] = (
     (63, 15, True, "Re: Third integration issue this month — can we get time this week?"),
     (85, 9, False, "Dispatch connector still dropping events — need to escalate"),
     (87, 21, True, "Re: Dispatch connector still dropping events — need to escalate"),
+    # Density D2.3 (Program 19): benign recap/FYI filler in the day51-219
+    # safe zone (outside every checkpoint's trailing latency/ticket
+    # windows -- see docs/PROGRAM_REPORT_19.md's derivation).
+    (100, 9, False, "Check-in — connector stability update"),
+    (100, 15, True, "Re: Check-in — connector stability update"),
+    (130, 9, False, "FYI — ack-timeout fix holding steady"),
+    (130, 14, True, "Re: FYI — ack-timeout fix holding steady"),
+    (160, 9, False, "Checking in ahead of next sync"),
+    (160, 13, True, "Re: Checking in ahead of next sync"),
+    (190, 9, False, "Quick note — connector steady heading into year-end"),
+    (190, 12, True, "Re: Quick note — connector steady heading into year-end"),
+    (205, 9, False, "Recap — this week's sync"),
+    (205, 14, True, "Re: Recap — this week's sync"),
     (275, 9, False, "Quarterly check-in — integration holding steady"),
     (275, 15, True, "Re: Quarterly check-in — integration holding steady"),
     (295, 9, False, "Steady-state review prep"),

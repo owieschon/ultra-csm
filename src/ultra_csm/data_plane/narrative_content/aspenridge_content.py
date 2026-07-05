@@ -69,4 +69,79 @@ BODIES: dict[tuple[int, int], str] = {
         "Christine Yoder\n"
         "Fleet Administrator, Aspenridge Supply Chain"
     ),
+    # Density D2.1 (Program 19): benign recap/FYI/scheduling filler, same
+    # "calm, prompt, one contact" cadence as the existing QBR pairs -- no
+    # new plot beat, no new participant. See docs/PROGRAM_REPORT_19.md and
+    # docs/SYNTHETIC_UNIVERSE_BIBLE.md's density subsection for placement.
+    (5, 10): (
+        "Christine,\n\n"
+        "Quick recap from Tuesday's Q1 review -- Live Map coverage and Route Optimizer usage both "
+        "holding steady, nothing on our end needs follow-up. Thanks for the time.\n\n"
+        "Marcus"
+    ),
+    (5, 14): (
+        "Thanks for the recap, matches what we discussed.\n\n"
+        "Christine"
+    ),
+    (45, 9): (
+        "Christine,\n\n"
+        "No urgent items, just checking in on scheduling -- want to keep the Q2 review on the "
+        "calendar for the usual week, or is there a better slot with your team's spring routing "
+        "changes?\n\n"
+        "Marcus"
+    ),
+    (45, 13): (
+        "Usual week works fine, no changes needed on our end.\n\n"
+        "Christine"
+    ),
+    (95, 10): (
+        "Christine,\n\n"
+        "Quick recap from the Q2 review -- same steady picture as last quarter, no open items on "
+        "either side.\n\n"
+        "Marcus"
+    ),
+    (95, 15): (
+        "Agreed, appreciate the recap.\n\n"
+        "Christine"
+    ),
+    (135, 9): (
+        "Christine,\n\n"
+        "Just confirming the Q3 review slot is still good for you -- no agenda changes on our end.\n\n"
+        "Marcus"
+    ),
+    (135, 12): (
+        "Still good, thanks for confirming.\n\n"
+        "Christine"
+    ),
+    (185, 9): (
+        "Christine,\n\n"
+        "Recap from Tuesday's Q3 review -- steady quarter, Live Map and Route Optimizer usage both "
+        "in line with prior quarters, nothing flagged on either side.\n\n"
+        "Marcus"
+    ),
+    (185, 13): (
+        "Thanks Marcus, all good from our end too.\n\n"
+        "Christine"
+    ),
+    (275, 10): (
+        "Christine,\n\n"
+        "Recap from the Q4 review -- another steady quarter, no open items. Appreciate the "
+        "consistency on your team's side.\n\n"
+        "Marcus"
+    ),
+    (275, 14): (
+        "Likewise, appreciate you keeping these efficient.\n\n"
+        "Christine"
+    ),
+    (363, 9): (
+        "Christine,\n\n"
+        "Quick recap from the year-end review -- thanks again for the time, and for a genuinely "
+        "low-drama year on the account side. Looking forward to next year's planning.\n\n"
+        "Marcus"
+    ),
+    (363, 12): (
+        "Likewise, thanks for a smooth year, Marcus.\n\n"
+        "Christine Yoder\n"
+        "Fleet Administrator, Aspenridge Supply Chain"
+    ),
 }

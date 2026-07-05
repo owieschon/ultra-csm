@@ -108,6 +108,17 @@ than before this extension — `check_onboarding_stall`'s assertion
 (`latency > 15`) already tolerates this, verified after adding the
 message, not assumed.
 
+**Density subsection (Program 19).** Five new email pairs (day 100, 130,
+160, 190, 205 — quiet-stretch recap/FYI exchanges, Marcus-verbose/
+Dennis-terse voice matching every existing pair), all placed in the
+day51-219 safe zone: verified by direct interval arithmetic that none of
+the three checkpoints' trailing windows (`reply_latency_trend` 21d at day
+20/50/310, `ticket_frequency_window` 90d at day 50/310) reach into that
+range (day50's windows end at day50 itself; day310's start at day268/220
+respectively). This raises Pinehill from 19 to 29 messages. Verified after
+authoring: `latency`/`tickets` at day 20/50/310 are byte-identical to the
+pre-extension baseline (`None`/`1.0`, `115.5`/`2.0`, `10.0`/`0.0`).
+
 ### 2. Single-threaded-risk — `pinnacle-supply`
 
 Persona: `at_risk_champion`. Industry: logistics, CSM `csm-101`.
@@ -144,6 +155,26 @@ correct action during days 3–109 is the agent's recommendation alone;
 silence is a failure. From day 110 onward the scripted CSM (Priya Nandan)
 is engaging Monica Reeves and the agent is graded against that reference
 behavior.
+
+**Density subsection (Program 19).** Seven new email pairs, all on the
+Monica Reeves thread (day 118, 145, 160, 185, 200, 225, 238 — scheduling
+confirmations, recaps, and FYIs, matching Monica's established
+"methodical, always restates next steps" voice), no new Derek Vaughn
+message at any point (his silence after day 3 is the arc's defining fact
+and is untouched). This raises Pinnacle from 12 to 26 messages. Placement
+risk: none — `thread_participation_width` is presence-based (unaffected
+by adding more Monica-thread messages) and `StakeholderRelationship`
+strength is day-gated only (`as_of_day>=240`/`>=135`, verified by direct
+inspection of `pinnacle_comms.py`), not message-count- or latency-driven,
+so width (1/2/2) and strength (weak/weak/strong) at day 10/120/250 are
+unchanged by construction — verified after authoring. One legitimate,
+disclosed re-derivation: day 250's (unasserted) `reply_latency_trend`
+moved from `0.0` to `1.0` (Monica's recent-vs-prior trailing-21d mean
+reply latency stayed calm, just shifted from an exact tie to a 1-hour
+delta) once the new day-238 pair filled the trailing window differently
+-- `check_single_threaded_risk` never asserts `latency` for this arc (only
+`width`/`strengths`), so no battery assertion is affected; recorded here
+per the anti-Goodhart disclosure norm, not because any gate required it.
 
 ### 3. Churn-brewing — `quarrystone-logistics`
 
@@ -216,6 +247,19 @@ visible only in telemetry — comms stay deliberately calm and the CSM
 relationship never surfaces the risk — so the agent's recommendation is
 the only correct action at every checkpoint; silence is a failure.
 
+**Density subsection (Program 19).** Seven new email pairs, all on the
+existing Christine Yoder thread, no new participant: a recap/FYI a few
+days after each of the five existing QBRs (day 5, 95, 185, 275, 363 —
+same-day fast replies, a few hours, matching the arc's established calm
+cadence) plus two scheduling-confirmation pairs between QBRs (day 45,
+135). This raises Aspenridge from 10 to 24 messages. Placement risk: none
+— `check_silent_decline`'s only comms-derived assertion is
+`ticket_frequency_window==0` at every checkpoint, and benign email pairs
+never add a `CRMCase`, so this holds regardless of placement (verified:
+zero new `_CASE_SCHEDULE` entries added). Band/adoption-rate assertions
+are driven entirely by `book_simulator.py`'s `UsageDecline`, untouched by
+this program.
+
 ### 5. Expansion-ready — `meridian-fleet`
 
 Persona: `expanding`. Industry: fleet_management, CSM `csm-101`. Existing
@@ -254,6 +298,28 @@ is unchanged. Disclosed effect: day 130 falls in the day-170 checkpoint's
 `check_expansion_ready` asserts only `width`/`cadence` at day170, neither
 of which this message's latency contribution touches, so the checkpoint
 assertion is unaffected -- verified after adding the message.
+
+**Density subsection (Program 19).** 26 new email pairs (13 per thread),
+interleaved between existing exchanges on both the Alicia fleet-ops
+thread and the Sarah facilities thread — recap/FYI/scheduling filler
+matching each contact's established voice (Alicia: direct, warm, short;
+Sarah: enthusiastic), no new module reference, no new participant. This
+raises Meridian from 52 to 104 messages (the low end of the 2-3x target,
+per the dispatch's decision that an already-dense arc targets ~2x).
+Placement risk: none — `check_expansion_ready` asserts `width` (presence-
+based, unaffected by adding more messages on already-active threads) and
+`cadence` (read from *calendar* events only, per `meeting_cadence_shift`'s
+signature — this expansion adds zero new calendar events, only email, so
+cadence arithmetic is untouched by construction). Verified after
+authoring: width (2.0/2.0/2.0) and cadence (`None`/-2.5/0.0) at day
+20/170/280 are byte-identical to the pre-extension baseline. Two
+legitimate, disclosed re-derivations, both unasserted by
+`check_expansion_ready` (which reads only `width`/`cadence`): day 170's
+`reply_latency_trend` moved from `-2.2` to `-1.8` and day 280's moved from
+`None` to `-1.2` (both new interleaved pairs shifted the trailing-window
+mean reply latency, day280 now having enough recent+prior inbound
+messages to compute a trend where before there weren't) — recorded per
+the anti-Goodhart disclosure norm, not because any gate required it.
 
 ### 6. Healthy-control — `trailhead-logistics`
 

@@ -40,6 +40,23 @@ _MESSAGE_SCHEDULE: tuple[tuple[int, int, str, bool, str], ...] = (
     (210, 12, _MONICA_EMAIL, True, "Re: Renewal prep kickoff"),
     (245, 9, _MONICA_EMAIL, False, "Quarterly business review — recap"),
     (245, 12, _MONICA_EMAIL, True, "Re: Quarterly business review — recap"),
+    # Density D2.2 (Program 19): benign scheduling/recap/FYI filler on the
+    # Monica thread only (Derek's silence after day 3 is untouched). See
+    # docs/PROGRAM_REPORT_19.md and the bible's density subsection.
+    (118, 9, _MONICA_EMAIL, False, "Scheduling check — activation review"),
+    (118, 14, _MONICA_EMAIL, True, "Re: Scheduling check — activation review"),
+    (145, 9, _MONICA_EMAIL, False, "Recap — activation review"),
+    (145, 13, _MONICA_EMAIL, True, "Re: Recap — activation review"),
+    (160, 9, _MONICA_EMAIL, False, "Checking in — Fuel Analytics adoption"),
+    (160, 12, _MONICA_EMAIL, True, "Re: Checking in — Fuel Analytics adoption"),
+    (185, 9, _MONICA_EMAIL, False, "Recap — sync on Fuel Analytics adoption"),
+    (185, 11, _MONICA_EMAIL, True, "Re: Recap — sync on Fuel Analytics adoption"),
+    (200, 9, _MONICA_EMAIL, False, "FYI — renewal-prep materials starting"),
+    (200, 13, _MONICA_EMAIL, True, "Re: FYI — renewal-prep materials starting"),
+    (225, 9, _MONICA_EMAIL, False, "Recap — renewal-prep conversation"),
+    (225, 12, _MONICA_EMAIL, True, "Re: Recap — renewal-prep conversation"),
+    (238, 9, _MONICA_EMAIL, False, "Quarterly business review — agenda"),
+    (238, 14, _MONICA_EMAIL, True, "Re: Quarterly business review — agenda"),
 )
 
 
