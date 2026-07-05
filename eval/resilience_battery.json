@@ -34,7 +34,7 @@
         },
         "missing": {
           "flagged": true,
-          "reason": "drip log missing: /var/folders/vr/_zhjkqrs0vd1_y_775mkztkm0000gn/T/tmpvsjt3vvr/does-not-exist.log"
+          "reason": "drip log missing: /var/folders/vr/_zhjkqrs0vd1_y_775mkztkm0000gn/T/tmp1rnlj621/does-not-exist.log"
         },
         "stale": {
           "flagged": true,
@@ -59,6 +59,6 @@
   "failed_cases": [],
   "hard_ok": true,
   "runtime_budget_seconds": 90.0,
-  "runtime_seconds": 3.739,
+  "runtime_seconds": 3.555,
   "within_runtime_budget": true
 }
