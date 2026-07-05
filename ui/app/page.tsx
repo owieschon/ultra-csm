@@ -2,9 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { TopBar } from "@/components/TopBar";
+import { BookView } from "@/components/BookView";
 import { QueueView } from "@/components/QueueView";
 import { ActionRail } from "@/components/ActionRail";
 import { api, AccountSummary, WorkItem } from "@/lib/api";
+import { useSweep } from "@/lib/useSweep";
 
 export default function Home() {
   const [view, setView] = useState<"book" | "queue">("book");
@@ -19,6 +21,7 @@ export default function Home() {
   );
   const [selectedItem, setSelectedItem] = useState<WorkItem | null>(null);
   const [refreshToken, setRefreshToken] = useState(0);
+  const { sweep, error: sweepError } = useSweep(day, refreshToken);
 
   useEffect(() => {
     api
@@ -35,13 +38,17 @@ export default function Home() {
       .catch((e) => setError(String(e)));
   }, [day]);
 
+  const needsCount = (sweep?.work_items ?? []).filter(
+    (i) => i.proposal?.status === "pending"
+  ).length;
+
   return (
     <div className="app">
       <TopBar
         view={view}
         onViewChange={setView}
         accountCount={accounts?.length ?? null}
-        queueCount={0}
+        queueCount={needsCount}
         day={day}
         onDayChange={setDay}
         health={health}
@@ -50,20 +57,28 @@ export default function Home() {
         <div className="stage">
           {error && <div className="placeholder-view">Error: {error}</div>}
           {view === "book" && (
-            <div className="placeholder-view" data-testid="book-view">
-              Book view — {accounts?.length ?? "…"} accounts loaded from{" "}
-              <code className="mono">GET /accounts?day={day}</code>. Tier
-              bands land in Phase 4.
-            </div>
+            <BookView
+              accounts={accounts}
+              sweep={sweep}
+              day={day}
+              onWorkQueue={() => setView("queue")}
+              onSelectAccount={(accountId) => {
+                const item = (sweep?.work_items ?? []).find(
+                  (i) => i.account_id === accountId
+                );
+                if (item?.proposal) setSelectedProposalId(item.proposal.proposal_id);
+              }}
+            />
           )}
           {view === "queue" && (
             <QueueView
               day={day}
               accounts={accounts}
+              sweep={sweep}
+              sweepError={sweepError}
               selectedProposalId={selectedProposalId}
               onSelect={setSelectedProposalId}
               onSelectedItemChange={setSelectedItem}
-              refreshToken={refreshToken}
             />
           )}
         </div>

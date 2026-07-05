@@ -1,46 +1,28 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { api, AccountSummary, WorkItem } from "@/lib/api";
+import { useEffect, useMemo } from "react";
+import { AccountSummary, WorkItem } from "@/lib/api";
+import { SweepData } from "@/lib/useSweep";
 import { QueueLanes, LaneItem } from "@/components/QueueLanes";
 import { QueueDetail } from "@/components/QueueDetail";
 
 export function QueueView({
   day,
   accounts,
+  sweep,
+  sweepError,
   selectedProposalId,
   onSelect,
   onSelectedItemChange,
-  refreshToken,
 }: {
   day: number;
   accounts: AccountSummary[] | null;
+  sweep: SweepData | null;
+  sweepError: string | null;
   selectedProposalId: string | null;
   onSelect: (proposalId: string) => void;
   onSelectedItemChange: (item: WorkItem | null) => void;
-  refreshToken: number;
 }) {
-  const [sweep, setSweep] = useState<{
-    work_items: WorkItem[];
-    escalations: Record<string, unknown>[];
-    swept_accounts: string[];
-  } | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    setError(null);
-    api
-      .sweep(day)
-      .then((r) =>
-        setSweep({
-          work_items: r.work_items,
-          escalations: r.escalations,
-          swept_accounts: r.swept_accounts,
-        })
-      )
-      .catch((e) => setError(String(e)));
-  }, [day, refreshToken]);
-
   const tierByAccount = useMemo(() => {
     const map = new Map<string, string | null>();
     (accounts ?? []).forEach((a) => map.set(a.account_id, a.tier));
@@ -73,8 +55,8 @@ export function QueueView({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedItem]);
 
-  if (error) {
-    return <div className="placeholder-view">Error: {error}</div>;
+  if (sweepError) {
+    return <div className="placeholder-view">Error: {sweepError}</div>;
   }
 
   return (

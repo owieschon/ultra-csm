@@ -76,6 +76,32 @@ svg { display: block; }
 .rail { border-left: 1px solid var(--hair); background: var(--chrome); min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
 .placeholder-view { padding: 22px 26px; color: var(--fg-2); font-size: 13px; }
 
+/* ===== BOOK VIEW ===== */
+.book { overflow-y: auto; flex: 1; padding: 22px 26px 60px; }
+.bb { display: flex; align-items: center; gap: 16px; padding: 16px 18px; border: 1px solid var(--hair); border-radius: 12px; background: var(--card); margin-bottom: 18px; }
+.bb .txt { flex: 1; }
+.bb h2 { font-size: 16px; font-weight: 650; letter-spacing: -.02em; margin-bottom: 3px; }
+.bb .sub { font-size: 12.5px; color: var(--fg-2); }
+.bb .cta { display: flex; align-items: center; gap: 8px; background: var(--accent); color: var(--accent-fg); border-radius: 8px; padding: 8px 15px; font-size: 12.5px; font-weight: 600; flex: 0 0 auto; }
+.bb .cta:disabled { opacity: .45; }
+.band-h { display: flex; align-items: baseline; gap: 12px; padding: 0 2px 9px; }
+.band-h .bt { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+.band-h .bstats { font-size: 12px; color: var(--fg-2); }
+.band-h .bneeds { margin-left: auto; font-size: 11.5px; font-weight: 650; color: var(--warn); }
+.band-h .bneeds.zero { color: var(--ok); }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(158px, 1fr)); gap: 8px; }
+.tile { border: 1px solid var(--hair-soft); border-radius: 9px; background: transparent; padding: 10px 11px; min-height: 62px; display: flex; flex-direction: column; gap: 3px; text-align: left; }
+.tile .tname { font-size: 12px; font-weight: 550; color: var(--fg-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tile .tsub { font-size: 10.5px; color: var(--fg-3); }
+.tile.hot { background: var(--card); border: 1px solid var(--hair); cursor: pointer; }
+.tile.hot .tname { color: var(--fg); font-weight: 600; font-size: 12.5px; }
+.tile.hot .tsub { color: var(--fg-2); font-size: 11px; }
+.tile.handled .tname { color: var(--fg-2); font-weight: 500; }
+.tile .tdone { display: inline-flex; align-items: center; gap: 4px; font-size: 10.5px; color: var(--ok); margin-top: auto; font-weight: 600; }
+.tile.more { align-items: center; justify-content: center; border-style: dashed; color: var(--fg-3); font-size: 12px; font-weight: 550; cursor: pointer; flex-direction: row; gap: 7px; }
+.tile.more:hover { color: var(--fg-2); border-color: var(--hair); }
+.lens { font-size: 10px; font-weight: 650; letter-spacing: .03em; padding: 1px 6px; border-radius: 4px; border: 1px solid var(--hair); color: var(--fg-2); text-transform: uppercase; }
+
 /* ===== QUEUE VIEW ===== */
 .queue { flex: 1; min-height: 0; display: grid; grid-template-columns: 316px 1fr; }
 .lanes { border-right: 1px solid var(--hair); background: var(--chrome); overflow-y: auto; }
