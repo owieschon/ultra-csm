@@ -87,6 +87,9 @@ export interface WorkItem {
   draft_mode: string;
   customer_draft: string | null;
   motion: string | null;
+  recipient_resolution: string | null;
+  recipient_name: string | null;
+  recipient_role: string | null;
 }
 
 export interface SweepResponse {
