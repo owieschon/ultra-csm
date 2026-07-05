@@ -1,8 +1,10 @@
 # Operating Proof (v2)
 
-Date: 2026-07-05. Supersedes the v1 note (see git history for this file) --
-that version proved local operation against `run_verification.sh`'s core
-gates; this version proves the daily operating run built for
+Date: 2026-07-05.
+
+Supersedes the v1 note (see git history for this file) -- that version
+proved local operation against `run_verification.sh`'s core gates; this
+version proves the daily operating run built for
 `docs/PROGRAM_REPORT_21.md`.
 
 ## Claim Boundary
@@ -115,5 +117,4 @@ launchctl unload ~/Library/LaunchAgents/com.ultracsm.operating-daily.plist
 
 ## Open Drift
 
-None new. `eval/deep_vs_shallow_detection.json`'s missing `claim_boundary`
-(noted in v1) is untouched by this dispatch -- out of ownership map.
+None new. `eval/deep_vs_shallow_detection.json` currently lacks a `claim_boundary` (noted in v1, unchanged) -- out of ownership map for this dispatch.
