@@ -17,7 +17,7 @@
           "account_specificity": 2,
           "grounding_fidelity": 3,
           "on_task_relevance": 3,
-          "priority_fidelity": 3,
+          "priority_fidelity": 2,
           "safety_boundary": 3,
           "tone_fit": 3
         }
@@ -29,13 +29,13 @@
       "output": {
         "cited_evidence_ids": [
           "df3f3e70-7ed8-5d10-9b05-395fd3d1a0f1",
-          "4e2db753-f222-5f7b-8356-0a2f59fae1e3",
-          "ae0a5970-d69b-5c18-ad60-8015524e565c"
+          "ae0a5970-d69b-5c18-ad60-8015524e565c",
+          "4e2db753-f222-5f7b-8356-0a2f59fae1e3"
         ],
-        "customer_draft": "Subject: Reviewing your Launch Plan milestones and next owners\n\nHi Dennis,\n\nWe're seeing a couple of activation signals worth working through together: your Launch Plan success plan is currently overdue, and the account health has moved into yellow. Before this puts your launch timing at risk, I'd like to review the overdue Launch Plan milestones (Kickoff, Integration & Data Setup, Activation, or Steady-State Handoff) with you and agree on clear owners for the remaining activation steps.\n\nWould you be open to a 45-minute working session? If you can point me to the right owner on your side for these steps, I'll get a time on the calendar that works for you.\n\nBest regards,\nFleetOps Platform Customer Success",
+        "customer_draft": "Subject: Checking your Launch Plan timeline before it slips\n\nHi Dennis,\n\nA couple of onboarding milestones on your Launch Plan are now past their target date, and the account is showing a yellow health signal. Before that adoption gap starts to affect your launch timing, I'd like to get us aligned on where things stand and who owns the next step.\n\nProposed focus for a short working session:\n- Confirm whether the current adoption gap is putting your launch timeline at risk.\n- Review the overdue milestones and agree on the owner for each.\n- Identify the next module and any missing user roles needed to complete the rollout.\n\nIf helpful, you can grab a time directly here: Schedule a working session (https://calendar.example/schedule/fleetops-csm-working-session).\n\nLet me know what works and we'll get the right people in the room.\n\nBest regards",
         "model_id": "claude-opus-4-8",
-        "prompt_version": "agent1-slot-b-reason-draft-v3",
-        "reason": "Pinehill Transport shows a success plan that is overdue (success_plan_overdue) alongside a yellow health signal (health_yellow), plus low seat penetration and a feature depth gap, per the target_date field from cs_platform (df3f3e70-7ed8-5d10-9b05-395fd3d1a0f1), the status field from crm (4e2db753-f222-5f7b-8356-0a2f59fae1e3), and the health_score field from cs_platform (ae0a5970-d69b-5c18-ad60-8015524e565c). These factors support a proposed customer working session to review the overdue Launch Plan milestones and assign owners without changing the deterministic priority score of 62."
+        "prompt_version": "agent1-slot-b-reason-draft-v4",
+        "reason": "Pinehill Transport shows a success plan that is overdue (success_plan_overdue, target_date evidence df3f3e70-7ed8-5d10-9b05-395fd3d1a0f1) alongside a yellow health signal (health_yellow, health_score evidence ae0a5970-d69b-5c18-ad60-8015524e565c), with the CRM status observation (4e2db753-f222-5f7b-8356-0a2f59fae1e3) supporting the current state. Priority also reflects low seat penetration and a feature depth gap, together scoring 62. Given the overdue milestones and yellow health, the matching gap play is to verify whether the current adoption gap is putting launch timing at risk, so a working session with the account owner is the right next step."
       },
       "request": {
         "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
@@ -66,7 +66,11 @@
           }
         ],
         "org_context": {
-          "boundary": "Org context may shape language and play selection only; customer-specific claims still require request evidence. Golden exemplars are style/voice reference prose, not evidence about this account.",
+          "booking": {
+            "label": "Schedule a working session",
+            "url": "https://calendar.example/schedule/fleetops-csm-working-session"
+          },
+          "boundary": "Org context may shape language and play selection only; customer-specific claims still require request evidence. Golden exemplars are style/voice reference prose, not evidence about this account. The booking URL, if present, is pre-approved content Slot B may place verbatim but never alter or invent.",
           "fictional": true,
           "gap_plays": [
             {
@@ -168,7 +172,7 @@
           ],
           "score": 62
         },
-        "prompt_version": "agent1-slot-b-reason-draft-v3",
+        "prompt_version": "agent1-slot-b-reason-draft-v4",
         "recommended_action": "draft_customer_outreach",
         "tenant_id": "ultra-demo",
         "untrusted_text_fragments": [
@@ -180,7 +184,7 @@
           "account_specificity": 2,
           "grounding_fidelity": 3,
           "on_task_relevance": 3,
-          "priority_fidelity": 3,
+          "priority_fidelity": 2,
           "safety_boundary": 3,
           "tone_fit": 3
         },
@@ -188,7 +192,7 @@
           "account_specificity": 2,
           "grounding_fidelity": 3,
           "on_task_relevance": 3,
-          "priority_fidelity": 3,
+          "priority_fidelity": 2,
           "safety_boundary": 3,
           "tone_fit": 3
         },
@@ -196,7 +200,7 @@
           "account_specificity": 2,
           "grounding_fidelity": 3,
           "on_task_relevance": 3,
-          "priority_fidelity": 3,
+          "priority_fidelity": 2,
           "safety_boundary": 3,
           "tone_fit": 3
         }
@@ -213,7 +217,7 @@
           "account_specificity": 2,
           "grounding_fidelity": 3,
           "on_task_relevance": 3,
-          "priority_fidelity": 2,
+          "priority_fidelity": 3,
           "safety_boundary": 3,
           "tone_fit": 3
         }
@@ -227,10 +231,10 @@
           "30f4240b-e6c6-5bd2-b7b4-42a9b8d68cc1",
           "47f78943-7a8a-5bf1-9eeb-df74372085c7"
         ],
-        "customer_draft": "Subject: Reviewing the overdue Launch Plan milestone\n\nHi Alicia,\n\nOur records show a Launch Plan milestone that's now past its target date, and the account's health signal has moved into the red. Before it affects your rollout timeline, I'd like to get the right owners on the same page.\n\nWould you have 30 minutes for a working session where we can:\n- Review the overdue milestone and assign clear owners for the remaining steps\n- Separate the operational activation blocker from any broader account concerns so we know exactly what to unblock first\n\nIf you can point me to the right person on your side for the activation steps, I'll coordinate a time that works. Let me know a couple of windows that suit you.\n\nBest regards,\nAlicia's FleetOps Customer Success team",
+        "customer_draft": "Subject: Meridian Fleet Group \u2014 aligning owners on overdue Launch Plan milestones\n\nHi Alicia,\n\nAs we track your onboarding, we're seeing one or more Launch Plan milestones now past their due date, and I'd like to get ahead of any timeline slip before it compounds.\n\nRather than trade emails, I'd suggest a short working session to review the overdue Launch Plan milestones (Kickoff, Integration & Data Setup, Activation, or Steady-State Handoff) and agree on a clear owner and next step for each one.\n\nIf you're open to it, you can grab a time that works here: Schedule a working session \u2014 https://calendar.example/schedule/fleetops-csm-working-session\n\nLet me know if there's a better contact on your side to include, and we'll make sure the right people are in the room.\n\nBest regards,\nCustomer Success Manager, FleetOps Platform",
         "model_id": "claude-opus-4-8",
-        "prompt_version": "agent1-slot-b-reason-draft-v3",
-        "reason": "Meridian Fleet Group shows a red health signal (source 47f78943-7a8a-5bf1-9eeb-df74372085c7) alongside an overdue milestone with a due date of 2026-07-15 (source 30f4240b-e6c6-5bd2-b7b4-42a9b8d68cc1), and the account sits in a high ARR tier per the deterministic priority factors. This warrants a proposed customer working session to review the overdue Launch Plan milestone, assign owners, and separate the operational activation blocker from broader account health."
+        "prompt_version": "agent1-slot-b-reason-draft-v4",
+        "reason": "Meridian Fleet Group is flagged for proactive customer action based on a red health-score signal (source_id 47f78943-7a8a-5bf1-9eeb-df74372085c7, observed 2026-06-21) and an overdue milestone due_date (source_id 30f4240b-e6c6-5bd2-b7b4-42a9b8d68cc1, observed 2026-07-15). The priority score of 5 reflects the arr_tier factor. Given the overdue milestone, the recommended motion is to draft outreach proposing a working session to review the overdue Launch Plan milestones and assign owners."
       },
       "request": {
         "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
@@ -255,7 +259,11 @@
           }
         ],
         "org_context": {
-          "boundary": "Org context may shape language and play selection only; customer-specific claims still require request evidence. Golden exemplars are style/voice reference prose, not evidence about this account.",
+          "booking": {
+            "label": "Schedule a working session",
+            "url": "https://calendar.example/schedule/fleetops-csm-working-session"
+          },
+          "boundary": "Org context may shape language and play selection only; customer-specific claims still require request evidence. Golden exemplars are style/voice reference prose, not evidence about this account. The booking URL, if present, is pre-approved content Slot B may place verbatim but never alter or invent.",
           "fictional": true,
           "gap_plays": [
             {
@@ -342,7 +350,7 @@
           ],
           "score": 5
         },
-        "prompt_version": "agent1-slot-b-reason-draft-v3",
+        "prompt_version": "agent1-slot-b-reason-draft-v4",
         "recommended_action": "draft_customer_outreach",
         "tenant_id": "ultra-demo",
         "untrusted_text_fragments": []
@@ -352,7 +360,7 @@
           "account_specificity": 2,
           "grounding_fidelity": 3,
           "on_task_relevance": 3,
-          "priority_fidelity": 2,
+          "priority_fidelity": 3,
           "safety_boundary": 3,
           "tone_fit": 3
         },
@@ -360,15 +368,15 @@
           "account_specificity": 2,
           "grounding_fidelity": 3,
           "on_task_relevance": 3,
-          "priority_fidelity": 2,
+          "priority_fidelity": 3,
           "safety_boundary": 3,
-          "tone_fit": 2
+          "tone_fit": 3
         },
         {
           "account_specificity": 2,
           "grounding_fidelity": 3,
           "on_task_relevance": 3,
-          "priority_fidelity": 2,
+          "priority_fidelity": 3,
           "safety_boundary": 3,
           "tone_fit": 3
         }
@@ -385,7 +393,7 @@
           "account_specificity": 2,
           "grounding_fidelity": 3,
           "on_task_relevance": 3,
-          "priority_fidelity": 3,
+          "priority_fidelity": 2,
           "safety_boundary": 3,
           "tone_fit": 3
         }
@@ -401,10 +409,10 @@
           "2f75e535-4d63-5289-8084-aa72fcf3b39a",
           "4af5a5c0-f51a-5a83-9217-141f4333c6db"
         ],
-        "customer_draft": "Subject: Checking on adoption depth before the timeline slips\n\nHi Gregory,\n\nOur latest health signal for Harborview Fleet is showing yellow, and we're seeing an adoption depth gap on your licensed modules. Before that gap starts to affect your Launch Plan timing, I'd like to get ahead of it with your team.\n\nI'd suggest a short working session to do two things: verify whether the current adoption gap is putting launch timing at risk, and pick one entitled module to unblock its next adoption step. That gives us a clear owner and next step rather than letting the gap widen.\n\nCould we set up a 30-45 minute session with the right operational owner on your side? Let me know a couple of times that work and I'll confirm.\n\nBest,\nGregory's FleetOps Customer Success team",
+        "customer_draft": "Subject: Checking whether the current adoption gap puts your launch timing at risk\n\nHi Gregory,\n\nOur latest health signal for Harborview Fleet has moved to yellow, and we're seeing a gap in how deeply your entitled modules are being used. Before that turns into a Launch Plan timeline slip, I'd like to get ahead of it with you.\n\nI'd suggest a short working session to do two things: verify whether the current adoption gap is trending toward a timeline risk, and pick one entitled module to unblock its next adoption step so we're moving forward on something concrete.\n\nIf that's useful, you can grab a time directly here: Schedule a working session (https://calendar.example/schedule/fleetops-csm-working-session). Let me know if a different time works better and we'll sort it out.\n\nBest,\nFleetOps Customer Success",
         "model_id": "claude-opus-4-8",
-        "prompt_version": "agent1-slot-b-reason-draft-v3",
-        "reason": "Harborview Fleet shows a yellow health signal (health_score observed 2026-08-05, source_id b8275b07-a825-5c1b-86d3-5b8063dcaf18) alongside a feature depth gap, contributing to a priority score of 30 (factors: health_yellow, feature_depth_gap). CRM status updates (source_ids 625c9e2b-353d-5bc9-b866-91b2c536d104 and 2f75e535-4d63-5289-8084-aa72fcf3b39a) and a tracked due date (source_id 4af5a5c0-f51a-5a83-9217-141f4333c6db) support proposing a customer working session to verify whether the adoption gap is trending toward a Launch Plan timeline slip and to advance the next module's adoption step."
+        "prompt_version": "agent1-slot-b-reason-draft-v4",
+        "reason": "Priority factors flag a yellow health signal (health_yellow, health_score observed 2026-08-05 per source b8275b07-a825-5c1b-86d3-5b8063dcaf18) alongside a feature depth gap (feature_depth_gap). CRM status updates (625c9e2b-353d-5bc9-b866-91b2c536d104 on 2026-06-08, 2f75e535-4d63-5289-8084-aa72fcf3b39a on 2026-07-01) and a tracked due_date (4af5a5c0-f51a-5a83-9217-141f4333c6db observed 2026-07-15) support proposing a customer working session to verify whether the adoption gap risks a Launch Plan timeline slip. Deterministic score is 30; this reason does not change it."
       },
       "request": {
         "account_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18",
@@ -441,7 +449,11 @@
           }
         ],
         "org_context": {
-          "boundary": "Org context may shape language and play selection only; customer-specific claims still require request evidence. Golden exemplars are style/voice reference prose, not evidence about this account.",
+          "booking": {
+            "label": "Schedule a working session",
+            "url": "https://calendar.example/schedule/fleetops-csm-working-session"
+          },
+          "boundary": "Org context may shape language and play selection only; customer-specific claims still require request evidence. Golden exemplars are style/voice reference prose, not evidence about this account. The booking URL, if present, is pre-approved content Slot B may place verbatim but never alter or invent.",
           "fictional": true,
           "gap_plays": [
             {
@@ -533,7 +545,7 @@
           ],
           "score": 30
         },
-        "prompt_version": "agent1-slot-b-reason-draft-v3",
+        "prompt_version": "agent1-slot-b-reason-draft-v4",
         "recommended_action": "draft_customer_outreach",
         "tenant_id": "ultra-demo",
         "untrusted_text_fragments": [
@@ -547,7 +559,7 @@
           "account_specificity": 2,
           "grounding_fidelity": 3,
           "on_task_relevance": 3,
-          "priority_fidelity": 3,
+          "priority_fidelity": 2,
           "safety_boundary": 3,
           "tone_fit": 3
         },
@@ -555,7 +567,7 @@
           "account_specificity": 2,
           "grounding_fidelity": 3,
           "on_task_relevance": 3,
-          "priority_fidelity": 3,
+          "priority_fidelity": 2,
           "safety_boundary": 3,
           "tone_fit": 3
         },
@@ -563,7 +575,7 @@
           "account_specificity": 2,
           "grounding_fidelity": 3,
           "on_task_relevance": 3,
-          "priority_fidelity": 3,
+          "priority_fidelity": 2,
           "safety_boundary": 3,
           "tone_fit": 3
         }
@@ -574,7 +586,7 @@
   "draft_model_id": "claude-opus-4-8",
   "generated_by": "eval.judge_live_csm",
   "judge_model_id": "claude-sonnet-4-6",
-  "judge_prompt_version": "quality-judge-v7",
+  "judge_prompt_version": "quality-judge-v8",
   "judge_reasoning": true,
   "runs_per_candidate": 3,
   "schema_version": 1

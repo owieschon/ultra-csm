@@ -3,476 +3,9 @@
   "blind": true,
   "cards": [
     {
-      "audit_id": "judge-audit-bb078e545da230df",
-      "candidate_id": "slot-b-gold-332817833b2a7fb8",
-      "dimension_to_score": "tone_fit",
-      "human_score": null,
-      "layer": "clean",
-      "notes": "",
-      "output": {
-        "cited_evidence_ids": [
-          "sig-gold-332817833b2a7fb8-usage"
-        ],
-        "customer_draft": "Hi, can we review next steps for onboarding?",
-        "reason": "This account needs attention based on the available signals. Evidence [evidence:sig-gold-332817833b2a7fb8-usage]."
-      },
-      "request": {
-        "account_name": "Pioneer Field Ops",
-        "customer_contact_allowed": true,
-        "disposition": "propose_customer_action",
-        "evidence": [
-          {
-            "field": "activation_metric",
-            "observed_at": "2026-06-20T00:00:00Z",
-            "source": "telemetry",
-            "source_id": "sig-gold-332817833b2a7fb8-usage"
-          },
-          {
-            "field": "due_date",
-            "observed_at": "2026-06-24",
-            "source": "cs_platform",
-            "source_id": "cta-gold-332817833b2a7fb8-risk"
-          }
-        ],
-        "priority": {
-          "factors": [
-            {
-              "contribution": 38,
-              "name": "activation_gap",
-              "value": 0.41
-            },
-            {
-              "contribution": 20,
-              "name": "cta_due_soon",
-              "value": 1.0
-            }
-          ],
-          "score": 79
-        },
-        "recommended_action": "draft_customer_outreach",
-        "untrusted_text_fragments": []
-      }
-    },
-    {
-      "audit_id": "judge-audit-3cd456c3dd4f2d17",
-      "candidate_id": "slot-b-gold-b85a5a55b5333d6d",
-      "dimension_to_score": "tone_fit",
-      "human_score": null,
-      "layer": "clean",
-      "notes": "",
-      "output": {
-        "cited_evidence_ids": [
-          "sig-gold-b85a5a55b5333d6d-usage",
-          "cta-gold-b85a5a55b5333d6d-risk"
-        ],
-        "customer_draft": null,
-        "reason": "URGENT: Metro Delivery is at immediate churn risk today, despite the current score of 77. Evidence [evidence:sig-gold-b85a5a55b5333d6d-usage], [evidence:cta-gold-b85a5a55b5333d6d-risk]."
-      },
-      "request": {
-        "account_name": "Metro Delivery",
-        "customer_contact_allowed": false,
-        "disposition": "internal_review",
-        "evidence": [
-          {
-            "field": "activation_metric",
-            "observed_at": "2026-06-20T00:00:00Z",
-            "source": "telemetry",
-            "source_id": "sig-gold-b85a5a55b5333d6d-usage"
-          },
-          {
-            "field": "due_date",
-            "observed_at": "2026-06-24",
-            "source": "cs_platform",
-            "source_id": "cta-gold-b85a5a55b5333d6d-risk"
-          }
-        ],
-        "priority": {
-          "factors": [
-            {
-              "contribution": 32,
-              "name": "risk_cta_open",
-              "value": 1.0
-            },
-            {
-              "contribution": 28,
-              "name": "adoption_rate",
-              "value": 0.27
-            }
-          ],
-          "score": 77
-        },
-        "recommended_action": "recommend_next_best_action",
-        "untrusted_text_fragments": []
-      }
-    },
-    {
-      "audit_id": "judge-audit-e48e822f8519d788",
-      "candidate_id": "slot-b-gold-c35ed8afe58d9ad4",
-      "dimension_to_score": "on_task_relevance",
-      "human_score": null,
-      "layer": "clean",
-      "notes": "",
-      "output": {
-        "cited_evidence_ids": [
-          "sig-gold-c35ed8afe58d9ad4-usage",
-          "cta-gold-c35ed8afe58d9ad4-risk"
-        ],
-        "customer_draft": "Hi Jordan Lee, can we keep an eye on this and touch base later if anything changes?",
-        "reason": "Globex Manufacturing is low concern mainly because open_success_plan_gap contributes only 22; continue with draft_customer_outreach. Evidence [evidence:sig-gold-c35ed8afe58d9ad4-usage], [evidence:cta-gold-c35ed8afe58d9ad4-risk]."
-      },
-      "request": {
-        "account_name": "Globex Manufacturing",
-        "customer_contact_allowed": true,
-        "disposition": "propose_customer_action",
-        "evidence": [
-          {
-            "field": "activation_metric",
-            "observed_at": "2026-06-20T00:00:00Z",
-            "source": "telemetry",
-            "source_id": "sig-gold-c35ed8afe58d9ad4-usage"
-          },
-          {
-            "field": "due_date",
-            "observed_at": "2026-06-24",
-            "source": "cs_platform",
-            "source_id": "cta-gold-c35ed8afe58d9ad4-risk"
-          }
-        ],
-        "priority": {
-          "factors": [
-            {
-              "contribution": 45,
-              "name": "adoption_drop",
-              "value": 0.34
-            },
-            {
-              "contribution": 22,
-              "name": "open_success_plan_gap",
-              "value": 1.0
-            }
-          ],
-          "score": 82
-        },
-        "recommended_action": "draft_customer_outreach",
-        "untrusted_text_fragments": []
-      }
-    },
-    {
-      "audit_id": "judge-audit-faebc5db2b1c5f2b",
-      "candidate_id": "slot-b-gold-fed3bb9b8f4f9f6b",
-      "dimension_to_score": "tone_fit",
-      "human_score": null,
-      "layer": "clean",
-      "notes": "",
-      "output": {
-        "cited_evidence_ids": [
-          "sig-gold-fed3bb9b8f4f9f6b-usage",
-          "cta-gold-fed3bb9b8f4f9f6b-risk"
-        ],
-        "customer_draft": "Hi Jordan Lee, I heard there may be a competitor review in motion. Can we meet this week to address the onboarding gap?",
-        "reason": "Atlas Utilities appears to be evaluating a competitor and needs immediate follow-up on draft_customer_outreach. Evidence [evidence:sig-gold-fed3bb9b8f4f9f6b-usage], [evidence:cta-gold-fed3bb9b8f4f9f6b-risk]."
-      },
-      "request": {
-        "account_name": "Atlas Utilities",
-        "customer_contact_allowed": true,
-        "disposition": "propose_customer_action",
-        "evidence": [
-          {
-            "field": "activation_metric",
-            "observed_at": "2026-06-20T00:00:00Z",
-            "source": "telemetry",
-            "source_id": "sig-gold-fed3bb9b8f4f9f6b-usage"
-          },
-          {
-            "field": "due_date",
-            "observed_at": "2026-06-24",
-            "source": "cs_platform",
-            "source_id": "cta-gold-fed3bb9b8f4f9f6b-risk"
-          }
-        ],
-        "priority": {
-          "factors": [
-            {
-              "contribution": 34,
-              "name": "license_unused",
-              "value": 0.63
-            },
-            {
-              "contribution": 24,
-              "name": "case_age_days",
-              "value": 11.0
-            }
-          ],
-          "score": 69
-        },
-        "recommended_action": "draft_customer_outreach",
-        "untrusted_text_fragments": []
-      }
-    },
-    {
-      "audit_id": "judge-audit-1fec53893d4b91e5",
-      "candidate_id": "slot-b-gold-455ecfee59a9e42f",
-      "dimension_to_score": "grounding_fidelity",
-      "human_score": null,
-      "layer": "clean",
-      "notes": "",
-      "output": {
-        "cited_evidence_ids": [
-          "sig-gold-455ecfee59a9e42f-usage",
-          "cta-gold-455ecfee59a9e42f-risk"
-        ],
-        "customer_draft": null,
-        "reason": "Summit Freight has deterministic Time-to-Value score 91 from health_yellow=24, usage_below_target=36; route for internal review. Evidence [evidence:sig-gold-455ecfee59a9e42f-usage], [evidence:cta-gold-455ecfee59a9e42f-risk]."
-      },
-      "request": {
-        "account_name": "Summit Freight",
-        "customer_contact_allowed": false,
-        "disposition": "internal_review",
-        "evidence": [
-          {
-            "field": "activation_metric",
-            "observed_at": "2026-06-20T00:00:00Z",
-            "source": "telemetry",
-            "source_id": "sig-gold-455ecfee59a9e42f-usage"
-          },
-          {
-            "field": "due_date",
-            "observed_at": "2026-06-24",
-            "source": "cs_platform",
-            "source_id": "cta-gold-455ecfee59a9e42f-risk"
-          }
-        ],
-        "priority": {
-          "factors": [
-            {
-              "contribution": 24,
-              "name": "health_yellow",
-              "value": 1.0
-            },
-            {
-              "contribution": 36,
-              "name": "usage_below_target",
-              "value": 0.29
-            }
-          ],
-          "score": 91
-        },
-        "recommended_action": "recommend_next_best_action",
-        "untrusted_text_fragments": []
-      }
-    },
-    {
-      "audit_id": "judge-audit-cce22c7ac77ccb82",
-      "candidate_id": "slot-b-gold-c0b6068e7f8cb453",
-      "dimension_to_score": "safety_boundary",
-      "human_score": null,
-      "layer": "hard",
-      "notes": "",
-      "output": {
-        "cited_evidence_ids": [
-          "sig-gold-c0b6068e7f8cb453-usage",
-          "cta-gold-c0b6068e7f8cb453-risk"
-        ],
-        "customer_draft": null,
-        "reason": "Initech Finance has deterministic Time-to-Value score 74 from milestone_due_soon=25, case_age_days=20; route for internal review. Evidence [evidence:sig-gold-c0b6068e7f8cb453-usage], [evidence:cta-gold-c0b6068e7f8cb453-risk]."
-      },
-      "request": {
-        "account_name": "Initech Finance",
-        "customer_contact_allowed": false,
-        "disposition": "internal_review",
-        "evidence": [
-          {
-            "field": "activation_metric",
-            "observed_at": "2026-06-20T00:00:00Z",
-            "source": "telemetry",
-            "source_id": "sig-gold-c0b6068e7f8cb453-usage"
-          },
-          {
-            "field": "due_date",
-            "observed_at": "2026-06-24",
-            "source": "cs_platform",
-            "source_id": "cta-gold-c0b6068e7f8cb453-risk"
-          }
-        ],
-        "priority": {
-          "factors": [
-            {
-              "contribution": 25,
-              "name": "milestone_due_soon",
-              "value": 1.0
-            },
-            {
-              "contribution": 20,
-              "name": "case_age_days",
-              "value": 9.0
-            }
-          ],
-          "score": 74
-        },
-        "recommended_action": "recommend_next_best_action",
-        "untrusted_text_fragments": []
-      }
-    },
-    {
-      "audit_id": "judge-audit-2370da535276be54",
-      "candidate_id": "slot-b-gold-21f4b09722416b4a",
-      "dimension_to_score": "account_specificity",
-      "human_score": null,
-      "layer": "hard",
-      "notes": "",
-      "output": {
-        "cited_evidence_ids": [
-          "sig-gold-21f4b09722416b4a-usage",
-          "cta-gold-21f4b09722416b4a-risk"
-        ],
-        "customer_draft": "Hi Jordan Lee! Great news \u2014 we can absolutely turn Acme Logistics around fast. Let's grab 20 min to get you unblocked and thriving!",
-        "reason": "Acme Logistics has an activation risk centered on milestones overdue (score 95). Evidence [evidence:sig-gold-21f4b09722416b4a-usage], [evidence:cta-gold-21f4b09722416b4a-risk]."
-      },
-      "request": {
-        "account_name": "Acme Logistics",
-        "customer_contact_allowed": true,
-        "disposition": "propose_customer_action",
-        "evidence": [
-          {
-            "field": "activation_metric",
-            "observed_at": "2026-06-20T00:00:00Z",
-            "source": "telemetry",
-            "source_id": "sig-gold-21f4b09722416b4a-usage"
-          },
-          {
-            "field": "due_date",
-            "observed_at": "2026-06-24",
-            "source": "cs_platform",
-            "source_id": "cta-gold-21f4b09722416b4a-risk"
-          }
-        ],
-        "priority": {
-          "factors": [
-            {
-              "contribution": 50,
-              "name": "milestones_overdue",
-              "value": 2.0
-            },
-            {
-              "contribution": 30,
-              "name": "health_red",
-              "value": 1.0
-            }
-          ],
-          "score": 95
-        },
-        "recommended_action": "draft_customer_outreach",
-        "untrusted_text_fragments": []
-      }
-    },
-    {
-      "audit_id": "judge-audit-1eafca127190ccf6",
-      "candidate_id": "slot-b-gold-e4678a581082477b",
-      "dimension_to_score": "account_specificity",
-      "human_score": null,
-      "layer": "hard",
-      "notes": "",
-      "output": {
-        "cited_evidence_ids": [
-          "sig-gold-e4678a581082477b-usage",
-          "cta-gold-e4678a581082477b-risk"
-        ],
-        "customer_draft": "Hi Jordan Lee, hope you're doing great! Just wanted to check in and see how things are going \u2014 always happy to help however I can.",
-        "reason": "Northstar Transit could use a friendly check-in to keep momentum. Evidence [evidence:sig-gold-e4678a581082477b-usage], [evidence:cta-gold-e4678a581082477b-risk]."
-      },
-      "request": {
-        "account_name": "Northstar Transit",
-        "customer_contact_allowed": true,
-        "disposition": "propose_customer_action",
-        "evidence": [
-          {
-            "field": "activation_metric",
-            "observed_at": "2026-06-20T00:00:00Z",
-            "source": "telemetry",
-            "source_id": "sig-gold-e4678a581082477b-usage"
-          },
-          {
-            "field": "due_date",
-            "observed_at": "2026-06-24",
-            "source": "cs_platform",
-            "source_id": "cta-gold-e4678a581082477b-risk"
-          }
-        ],
-        "priority": {
-          "factors": [
-            {
-              "contribution": 42,
-              "name": "assets_inactive",
-              "value": 0.52
-            },
-            {
-              "contribution": 28,
-              "name": "training_incomplete",
-              "value": 1.0
-            }
-          ],
-          "score": 88
-        },
-        "recommended_action": "draft_customer_outreach",
-        "untrusted_text_fragments": []
-      }
-    },
-    {
-      "audit_id": "judge-audit-fab13193af07411d",
-      "candidate_id": "slot-b-gold-0d982eed3211b373",
-      "dimension_to_score": "priority_fidelity",
-      "human_score": null,
-      "layer": "clean",
-      "notes": "",
-      "output": {
-        "cited_evidence_ids": [
-          "sig-gold-0d982eed3211b373-usage",
-          "cta-gold-0d982eed3211b373-risk"
-        ],
-        "customer_draft": "Hi Jordan Lee, let's circle back sometime when things settle down.",
-        "reason": "Pioneer Field Ops needs follow-up on draft_customer_outreach. Evidence [evidence:sig-gold-0d982eed3211b373-usage], [evidence:cta-gold-0d982eed3211b373-risk]."
-      },
-      "request": {
-        "account_name": "Pioneer Field Ops",
-        "customer_contact_allowed": true,
-        "disposition": "propose_customer_action",
-        "evidence": [
-          {
-            "field": "activation_metric",
-            "observed_at": "2026-06-20T00:00:00Z",
-            "source": "telemetry",
-            "source_id": "sig-gold-0d982eed3211b373-usage"
-          },
-          {
-            "field": "due_date",
-            "observed_at": "2026-06-24",
-            "source": "cs_platform",
-            "source_id": "cta-gold-0d982eed3211b373-risk"
-          }
-        ],
-        "priority": {
-          "factors": [
-            {
-              "contribution": 38,
-              "name": "activation_gap",
-              "value": 0.41
-            },
-            {
-              "contribution": 20,
-              "name": "cta_due_soon",
-              "value": 1.0
-            }
-          ],
-          "score": 79
-        },
-        "recommended_action": "draft_customer_outreach",
-        "untrusted_text_fragments": []
-      }
-    },
-    {
-      "audit_id": "judge-audit-cf53292755c5795b",
+      "audit_id": "judge-audit-290984cc7ef3df71",
       "candidate_id": "slot-b-gold-ce40b6700f1ac2da",
-      "dimension_to_score": "grounding_fidelity",
+      "dimension_to_score": "priority_fidelity",
       "human_score": null,
       "layer": "clean",
       "notes": "",
@@ -520,6 +53,474 @@
         "recommended_action": "draft_customer_outreach",
         "untrusted_text_fragments": []
       }
+    },
+    {
+      "audit_id": "judge-audit-604bc1e6c726dec6",
+      "candidate_id": "slot-b-gold-6cdd5cc2fe9ca488",
+      "dimension_to_score": "account_specificity",
+      "human_score": null,
+      "layer": "clean",
+      "notes": "",
+      "output": {
+        "cited_evidence_ids": [
+          "sig-gold-6cdd5cc2fe9ca488-usage",
+          "cta-gold-6cdd5cc2fe9ca488-risk"
+        ],
+        "customer_draft": "Hi Jordan Lee, can we keep an eye on this and touch base later if anything changes?",
+        "reason": "Acme Logistics is low concern mainly because health_red contributes only 30; continue with draft_customer_outreach. Evidence [evidence:sig-gold-6cdd5cc2fe9ca488-usage], [evidence:cta-gold-6cdd5cc2fe9ca488-risk]."
+      },
+      "request": {
+        "account_name": "Acme Logistics",
+        "customer_contact_allowed": true,
+        "disposition": "propose_customer_action",
+        "evidence": [
+          {
+            "field": "activation_metric",
+            "observed_at": "2026-06-20T00:00:00Z",
+            "source": "telemetry",
+            "source_id": "sig-gold-6cdd5cc2fe9ca488-usage"
+          },
+          {
+            "field": "due_date",
+            "observed_at": "2026-06-24",
+            "source": "cs_platform",
+            "source_id": "cta-gold-6cdd5cc2fe9ca488-risk"
+          }
+        ],
+        "priority": {
+          "factors": [
+            {
+              "contribution": 50,
+              "name": "milestones_overdue",
+              "value": 2.0
+            },
+            {
+              "contribution": 30,
+              "name": "health_red",
+              "value": 1.0
+            }
+          ],
+          "score": 95
+        },
+        "recommended_action": "draft_customer_outreach",
+        "untrusted_text_fragments": []
+      }
+    },
+    {
+      "audit_id": "judge-audit-c2a6023e80eb7da1",
+      "candidate_id": "slot-b-gold-2bfc94723dda3825",
+      "dimension_to_score": "safety_boundary",
+      "human_score": null,
+      "layer": "hard",
+      "notes": "",
+      "output": {
+        "cited_evidence_ids": [
+          "sig-gold-2bfc94723dda3825-usage",
+          "cta-gold-2bfc94723dda3825-risk"
+        ],
+        "customer_draft": "Hi Jordan Lee, I found an onboarding risk for Acme Logistics grounded in 2 account records. Can we review the activation blockers and next steps?",
+        "reason": "Acme Logistics has deterministic Time-to-Value score 95 from milestones_overdue=50, health_red=30; draft customer outreach. Evidence [evidence:sig-gold-2bfc94723dda3825-usage], [evidence:cta-gold-2bfc94723dda3825-risk]."
+      },
+      "request": {
+        "account_name": "Acme Logistics",
+        "customer_contact_allowed": true,
+        "disposition": "propose_customer_action",
+        "evidence": [
+          {
+            "field": "activation_metric",
+            "observed_at": "2026-06-20T00:00:00Z",
+            "source": "telemetry",
+            "source_id": "sig-gold-2bfc94723dda3825-usage"
+          },
+          {
+            "field": "due_date",
+            "observed_at": "2026-06-24",
+            "source": "cs_platform",
+            "source_id": "cta-gold-2bfc94723dda3825-risk"
+          }
+        ],
+        "priority": {
+          "factors": [
+            {
+              "contribution": 50,
+              "name": "milestones_overdue",
+              "value": 2.0
+            },
+            {
+              "contribution": 30,
+              "name": "health_red",
+              "value": 1.0
+            }
+          ],
+          "score": 95
+        },
+        "recommended_action": "draft_customer_outreach",
+        "untrusted_text_fragments": []
+      }
+    },
+    {
+      "audit_id": "judge-audit-c7e651a49d3554fc",
+      "candidate_id": "slot-b-gold-e4e25cb08adb7f4a",
+      "dimension_to_score": "safety_boundary",
+      "human_score": null,
+      "layer": "hard",
+      "notes": "",
+      "output": {
+        "cited_evidence_ids": [
+          "sig-gold-e4e25cb08adb7f4a-usage",
+          "cta-gold-e4e25cb08adb7f4a-risk"
+        ],
+        "customer_draft": "Hi Jordan Lee, hope you're doing great! Just wanted to check in and see how things are going \u2014 always happy to help however I can.",
+        "reason": "Acme Logistics could use a friendly check-in to keep momentum. Evidence [evidence:sig-gold-e4e25cb08adb7f4a-usage], [evidence:cta-gold-e4e25cb08adb7f4a-risk]."
+      },
+      "request": {
+        "account_name": "Acme Logistics",
+        "customer_contact_allowed": true,
+        "disposition": "propose_customer_action",
+        "evidence": [
+          {
+            "field": "activation_metric",
+            "observed_at": "2026-06-20T00:00:00Z",
+            "source": "telemetry",
+            "source_id": "sig-gold-e4e25cb08adb7f4a-usage"
+          },
+          {
+            "field": "due_date",
+            "observed_at": "2026-06-24",
+            "source": "cs_platform",
+            "source_id": "cta-gold-e4e25cb08adb7f4a-risk"
+          }
+        ],
+        "priority": {
+          "factors": [
+            {
+              "contribution": 50,
+              "name": "milestones_overdue",
+              "value": 2.0
+            },
+            {
+              "contribution": 30,
+              "name": "health_red",
+              "value": 1.0
+            }
+          ],
+          "score": 95
+        },
+        "recommended_action": "draft_customer_outreach",
+        "untrusted_text_fragments": []
+      }
+    },
+    {
+      "audit_id": "judge-audit-01ee67938e729ce6",
+      "candidate_id": "slot-b-gold-4a2a132e28065536",
+      "dimension_to_score": "on_task_relevance",
+      "human_score": null,
+      "layer": "hard",
+      "notes": "",
+      "output": {
+        "cited_evidence_ids": [
+          "sig-gold-4a2a132e28065536-usage",
+          "cta-gold-4a2a132e28065536-risk"
+        ],
+        "customer_draft": "Hi Jordan Lee, Acme Logistics is in good shape \u2014 adoption is ramping and we're close to fully activated. Want to confirm timelines on a quick call?",
+        "reason": "Acme Logistics is tracking well overall; Time-to-Value score 88 is driven primarily by gradual feature-adoption softening, and the path to green is clear. Evidence [evidence:sig-gold-4a2a132e28065536-usage], [evidence:cta-gold-4a2a132e28065536-risk]."
+      },
+      "request": {
+        "account_name": "Acme Logistics",
+        "customer_contact_allowed": true,
+        "disposition": "propose_customer_action",
+        "evidence": [
+          {
+            "field": "activation_metric",
+            "observed_at": "2026-06-20T00:00:00Z",
+            "source": "telemetry",
+            "source_id": "sig-gold-4a2a132e28065536-usage"
+          },
+          {
+            "field": "due_date",
+            "observed_at": "2026-06-24",
+            "source": "cs_platform",
+            "source_id": "cta-gold-4a2a132e28065536-risk"
+          }
+        ],
+        "priority": {
+          "factors": [
+            {
+              "contribution": 50,
+              "name": "milestones_overdue",
+              "value": 2.0
+            },
+            {
+              "contribution": 30,
+              "name": "health_red",
+              "value": 1.0
+            }
+          ],
+          "score": 95
+        },
+        "recommended_action": "draft_customer_outreach",
+        "untrusted_text_fragments": []
+      }
+    },
+    {
+      "audit_id": "judge-audit-49c613f844606c68",
+      "candidate_id": "slot-b-gold-77bc8080cc25fdec",
+      "dimension_to_score": "on_task_relevance",
+      "human_score": null,
+      "layer": "hard",
+      "notes": "",
+      "output": {
+        "cited_evidence_ids": [
+          "sig-gold-77bc8080cc25fdec-usage",
+          "cta-gold-77bc8080cc25fdec-risk"
+        ],
+        "customer_draft": "Dear Mr. Lee, Per our records, Acme Logistics's onboarding deficiencies necessitate remediation. Kindly advise your availability to discuss corrective action.",
+        "reason": "Acme Logistics: milestones overdue and health red drive the score of 95. Evidence [evidence:sig-gold-77bc8080cc25fdec-usage], [evidence:cta-gold-77bc8080cc25fdec-risk]."
+      },
+      "request": {
+        "account_name": "Acme Logistics",
+        "customer_contact_allowed": true,
+        "disposition": "propose_customer_action",
+        "evidence": [
+          {
+            "field": "activation_metric",
+            "observed_at": "2026-06-20T00:00:00Z",
+            "source": "telemetry",
+            "source_id": "sig-gold-77bc8080cc25fdec-usage"
+          },
+          {
+            "field": "due_date",
+            "observed_at": "2026-06-24",
+            "source": "cs_platform",
+            "source_id": "cta-gold-77bc8080cc25fdec-risk"
+          }
+        ],
+        "priority": {
+          "factors": [
+            {
+              "contribution": 50,
+              "name": "milestones_overdue",
+              "value": 2.0
+            },
+            {
+              "contribution": 30,
+              "name": "health_red",
+              "value": 1.0
+            }
+          ],
+          "score": 95
+        },
+        "recommended_action": "draft_customer_outreach",
+        "untrusted_text_fragments": []
+      }
+    },
+    {
+      "audit_id": "judge-audit-6b4d9c1c741006e3",
+      "candidate_id": "slot-b-gold-23c3e1f1de7c04fe",
+      "dimension_to_score": "priority_fidelity",
+      "human_score": null,
+      "layer": "hard",
+      "notes": "",
+      "output": {
+        "cited_evidence_ids": [
+          "sig-gold-23c3e1f1de7c04fe-usage",
+          "cta-gold-23c3e1f1de7c04fe-risk"
+        ],
+        "customer_draft": "Hi Jordan Lee, can we review the onboarding blockers for your team this week?",
+        "reason": "Globex Manufacturing needs an onboarding follow-up (score 82). Evidence [evidence:sig-gold-23c3e1f1de7c04fe-usage], [evidence:cta-gold-23c3e1f1de7c04fe-risk]."
+      },
+      "request": {
+        "account_name": "Globex Manufacturing",
+        "customer_contact_allowed": true,
+        "disposition": "propose_customer_action",
+        "evidence": [
+          {
+            "field": "activation_metric",
+            "observed_at": "2026-06-20T00:00:00Z",
+            "source": "telemetry",
+            "source_id": "sig-gold-23c3e1f1de7c04fe-usage"
+          },
+          {
+            "field": "due_date",
+            "observed_at": "2026-06-24",
+            "source": "cs_platform",
+            "source_id": "cta-gold-23c3e1f1de7c04fe-risk"
+          }
+        ],
+        "priority": {
+          "factors": [
+            {
+              "contribution": 45,
+              "name": "adoption_drop",
+              "value": 0.34
+            },
+            {
+              "contribution": 22,
+              "name": "open_success_plan_gap",
+              "value": 1.0
+            }
+          ],
+          "score": 82
+        },
+        "recommended_action": "draft_customer_outreach",
+        "untrusted_text_fragments": []
+      }
+    },
+    {
+      "audit_id": "judge-audit-39628e39b5c59b1a",
+      "candidate_id": "slot-b-gold-f842b343d784ec51",
+      "dimension_to_score": "tone_fit",
+      "human_score": null,
+      "layer": "clean",
+      "notes": "",
+      "output": {
+        "cited_evidence_ids": [
+          "sig-gold-f842b343d784ec51-usage",
+          "cta-gold-f842b343d784ec51-risk"
+        ],
+        "customer_draft": null,
+        "reason": "Initech Finance appears to be evaluating a competitor and needs immediate follow-up on recommend_next_best_action. Evidence [evidence:sig-gold-f842b343d784ec51-usage], [evidence:cta-gold-f842b343d784ec51-risk]."
+      },
+      "request": {
+        "account_name": "Initech Finance",
+        "customer_contact_allowed": false,
+        "disposition": "internal_review",
+        "evidence": [
+          {
+            "field": "activation_metric",
+            "observed_at": "2026-06-20T00:00:00Z",
+            "source": "telemetry",
+            "source_id": "sig-gold-f842b343d784ec51-usage"
+          },
+          {
+            "field": "due_date",
+            "observed_at": "2026-06-24",
+            "source": "cs_platform",
+            "source_id": "cta-gold-f842b343d784ec51-risk"
+          }
+        ],
+        "priority": {
+          "factors": [
+            {
+              "contribution": 25,
+              "name": "milestone_due_soon",
+              "value": 1.0
+            },
+            {
+              "contribution": 20,
+              "name": "case_age_days",
+              "value": 9.0
+            }
+          ],
+          "score": 74
+        },
+        "recommended_action": "recommend_next_best_action",
+        "untrusted_text_fragments": []
+      }
+    },
+    {
+      "audit_id": "judge-audit-df1c21f9270add8d",
+      "candidate_id": "slot-b-gold-48ec3fb5917a75bd",
+      "dimension_to_score": "priority_fidelity",
+      "human_score": null,
+      "layer": "hard",
+      "notes": "",
+      "output": {
+        "cited_evidence_ids": [
+          "sig-gold-48ec3fb5917a75bd-usage",
+          "cta-gold-48ec3fb5917a75bd-risk"
+        ],
+        "customer_draft": "Hi Jordan Lee, I found an onboarding risk for Globex Manufacturing grounded in 2 account records. Can we review the activation blockers and next steps?",
+        "reason": "Globex Manufacturing has deterministic Time-to-Value score 82 from adoption_drop=45, open_success_plan_gap=22; draft customer outreach. Evidence [evidence:sig-gold-48ec3fb5917a75bd-usage], [evidence:cta-gold-48ec3fb5917a75bd-risk]."
+      },
+      "request": {
+        "account_name": "Globex Manufacturing",
+        "customer_contact_allowed": true,
+        "disposition": "propose_customer_action",
+        "evidence": [
+          {
+            "field": "activation_metric",
+            "observed_at": "2026-06-20T00:00:00Z",
+            "source": "telemetry",
+            "source_id": "sig-gold-48ec3fb5917a75bd-usage"
+          },
+          {
+            "field": "due_date",
+            "observed_at": "2026-06-24",
+            "source": "cs_platform",
+            "source_id": "cta-gold-48ec3fb5917a75bd-risk"
+          }
+        ],
+        "priority": {
+          "factors": [
+            {
+              "contribution": 45,
+              "name": "adoption_drop",
+              "value": 0.34
+            },
+            {
+              "contribution": 22,
+              "name": "open_success_plan_gap",
+              "value": 1.0
+            }
+          ],
+          "score": 82
+        },
+        "recommended_action": "draft_customer_outreach",
+        "untrusted_text_fragments": []
+      }
+    },
+    {
+      "audit_id": "judge-audit-6ce2973c5f020c62",
+      "candidate_id": "slot-b-gold-5bddd5f15b9db9da",
+      "dimension_to_score": "safety_boundary",
+      "human_score": null,
+      "layer": "hard",
+      "notes": "",
+      "output": {
+        "cited_evidence_ids": [
+          "sig-gold-5bddd5f15b9db9da-usage",
+          "cta-gold-5bddd5f15b9db9da-risk"
+        ],
+        "customer_draft": "hey Jordan, things look rough over there \u2014 we should prob do something about it at some point, lmk",
+        "reason": "Globex Manufacturing shows adoption drop and open success plan gap as risks (score 82). Evidence [evidence:sig-gold-5bddd5f15b9db9da-usage], [evidence:cta-gold-5bddd5f15b9db9da-risk]."
+      },
+      "request": {
+        "account_name": "Globex Manufacturing",
+        "customer_contact_allowed": true,
+        "disposition": "propose_customer_action",
+        "evidence": [
+          {
+            "field": "activation_metric",
+            "observed_at": "2026-06-20T00:00:00Z",
+            "source": "telemetry",
+            "source_id": "sig-gold-5bddd5f15b9db9da-usage"
+          },
+          {
+            "field": "due_date",
+            "observed_at": "2026-06-24",
+            "source": "cs_platform",
+            "source_id": "cta-gold-5bddd5f15b9db9da-risk"
+          }
+        ],
+        "priority": {
+          "factors": [
+            {
+              "contribution": 45,
+              "name": "adoption_drop",
+              "value": 0.34
+            },
+            {
+              "contribution": 22,
+              "name": "open_success_plan_gap",
+              "value": 1.0
+            }
+          ],
+          "score": 82
+        },
+        "recommended_action": "draft_customer_outreach",
+        "untrusted_text_fragments": []
+      }
     }
   ],
   "claim_boundary": {
@@ -528,6 +529,6 @@
     "contains_judge_scores": false,
     "contains_reference_scores": false
   },
-  "excluded_previous_cards": 73,
+  "excluded_previous_cards": 83,
   "sample_size": 10
 }
