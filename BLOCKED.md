@@ -1,64 +1,128 @@
-# BLOCKED — Harvest 7: Act 1 Knowledge + Judge
+# BLOCKED — Harvest 8: Act 2 — Gmail write-back (Wave D)
 
-## What's blocked
+Dispatch: `/Users/owieschon/ultra-csm-dispatches/harvest/08_ACT2_GMAIL_WRITEBACK.md`
+Worktree: `~/dev/ultra-csm-act2-gmail-writeback`, branch `codex/act2-gmail-writeback`
+Blocked at: Phase 0 (Preconditions), before any code was written for the
+committer itself.
 
-Phases 2 (judge-scored ablation) and 3 (judge-on-live plumbing) require a live call to the
-Anthropic API. `ANTHROPIC_API_KEY` is not present in this session's process environment.
+(Note: `BLOCKED.md` was already a tracked file on `main` at HEAD (commit
+8a86806, PR #32) — content from an earlier, unrelated Report 25/Act 1 STOP
+that was evidently committed as part of that PR's history. That block was
+for a missing `ANTHROPIC_API_KEY` and is unrelated to this dispatch;
+Report 25/PR #32 itself is confirmed merged on origin/main, so that
+episode is resolved. Per K8 convention this dispatch reuses the same
+`BLOCKED.md` path for its own STOP state, overwriting the stale content
+below.)
 
-Verified by reading source, not by guessing: both credential-gated call sites --
-`eval/judge_anthropic.py`'s `AnthropicQualityJudge.__init__` (line 108-112) and
-`src/ultra_csm/agent1/slot_b.py`'s `AnthropicReasonDraftWriter.__init__` (line 174-187) --
-construct `anthropic.Anthropic()` with no explicit `api_key=` argument. The Anthropic Python
-SDK's documented default behavior is to read `ANTHROPIC_API_KEY` from the process environment
-when no key is passed explicitly. Confirmed absent via `env | grep -c "^ANTHROPIC_API_KEY="` ->
-`0` (no value inspected or printed, per the no-credential-hunting instruction).
+## STOP condition hit (verbatim from the dispatch)
 
-Per this dispatch's own precondition text (07_ACT1_KNOWLEDGE_JUDGE.md, "Preconditions" section):
+Preconditions section: "Gmail API send scope actually authorized: a
+scope/token check that does NOT send (e.g. fetch the account's profile via
+the API) -> 200. Scope missing = STOP (credential changes are owner-only)."
 
-> Anthropic key present BY NAME ONLY ... If absent: judge/live phases run fixture-only and say
-> so; ablation becomes a STOP (it needs the real judge).
+Also listed under "## STOP conditions": "Send scope not authorized on the
+burner account (credential/scope changes are owner-only)."
 
-And per the dispatch's own STOP conditions:
+## What was checked and what it showed
 
-> ANTHROPIC key absent/invalid (ablation and judge-live cannot run honestly; fixture-judging is
-> meaningless -- surface, don't fake).
+1. Confirmed `~/ultra-csm-live-creds.env` exists and carries Gmail-related
+   vars by name/count only (9 matches for `GMAIL|GOOGLE`):
+   `ULTRA_CSM_GMAIL_CLIENT_ID`, `ULTRA_CSM_GMAIL_CLIENT_SECRET`,
+   `ULTRA_CSM_GMAIL_REFRESH_TOKEN`, `ULTRA_CSM_GMAIL_SENDER`,
+   `ULTRA_CSM_GMAIL_APP_PASSWORD`, `ULTRA_CSM_GMAIL_OAUTH_CLIENT_ID`,
+   `ULTRA_CSM_GMAIL_OAUTH_CLIENT_SECRET`,
+   `ULTRA_CSM_GMAIL_OAUTH_REFRESH_TOKEN`, `ULTRA_CSM_GMAIL_OAUTH_ACCOUNT`.
+   Only one distinct burner account identity is present by name (no second
+   recipient identity), so self-addressed send would have been the
+   fallback per the dispatch's own precondition text — moot given the
+   scope block below.
 
-Per the task's own explicit instruction, I did not attempt to locate or retrieve the key from
-`~/ultra-csm-live-creds.env`, keychains, other files, or shell profiles -- only what is already
-present in the normal process environment was checked, and it is not there.
+2. Performed the dispatch's own prescribed non-sending scope check:
+   exchanged the OAuth refresh token for an access token (standard OAuth2
+   token endpoint, `https://oauth2.googleapis.com/token`), then called
+   Google's `tokeninfo` introspection endpoint (`https://oauth2.
+   googleapis.com/tokeninfo?access_token=...`) — pure introspection, does
+   not call any Gmail or Calendar API method, sends nothing. Script:
+   `scripts/operating/_scope_check.py` in this worktree (reads creds by
+   name only from `~/ultra-csm-live-creds.env`, never logs values; deleted
+   its one scratch temp file after use).
 
-## What is NOT blocked, and was completed
+   Result:
+   - Token exchange: OK.
+   - `tokeninfo` HTTP status: **200**.
+   - Scopes granted: `calendar.events`, `gmail.insert`, `gmail.readonly`.
+   - `gmail.send` scope present: **False**. (Checked both the specific
+     `gmail.send` scope and the broad `https://mail.google.com/` scope —
+     neither is present.)
 
-Phase 0 (bootstrap + baseline) and Phase 1 (deterministic exemplar selection + wiring) have no
-judge/live-API dependency and were completed and committed green, per K8 ("commit green work").
-See PROGRESS.md (excluded from git, present at worktree root) for the full ledger.
+3. Cross-checked against the original OAuth setup script that minted this
+   token: `~/ultra-csm-corpus-runs/gmail-calendar-oauth-setup/
+   setup_gmail_calendar_oauth.py`. Its own docstring is explicit and
+   consistent with the empirical result: "Scopes requested: gmail.insert
+   (import backdated messages into the mailbox without sending them),
+   gmail.readonly (read them back live), and calendar.events (create +
+   read events). Nothing here can send outbound email or modify anyone
+   else's calendar." This was a deliberate, documented design choice from
+   Program 9 — the burner's live-seeding tooling (IMAP APPEND via a
+   separate app-password credential, used for backdated message creation)
+   was built specifically to avoid ever needing send capability.
 
-- Commit `cffaaf6` — "Wire golden corpus into Slot B context (deterministic selection)" on
-  branch `codex/act1-knowledge-judge`.
-- Full suite: 597 passed (+8 new tests), 1 skipped, 0 failed.
-- Authority-invariance and hostile-pack gates specifically re-run and green
-  (`test_org_context_cannot_change_sweep_authority_or_priority`,
-  `test_hostile_edit_instruction_is_refused_without_commitment`,
-  `test_revise_verdict_refuses_hostile_edit`).
-- Lint (`ruff check`) and hygiene scan both clean.
+4. The only other Gmail credential present is
+   `ULTRA_CSM_GMAIL_APP_PASSWORD` / `ULTRA_CSM_GMAIL_SENDER`, used
+   exclusively for IMAP (both APPEND for seeding and readonly IMAP for
+   `live_gmail_reader.py`, per `src/ultra_csm/data_plane/
+   live_gmail_reader.py`'s own docstring: "Read-only: this module only
+   ever opens the mailbox with readonly=True"). IMAP APPEND is not
+   equivalent to a "send" — it creates a message directly in a mailbox
+   without it ever transiting SMTP/relay, which is why Program 9 chose it
+   specifically for backdated, non-deliverable seeding. Using it (or SMTP
+   with this app password) to send this dispatch's live message would not
+   be reusing an authorized send capability — it would be routing around
+   the absence of one, which K7 and this dispatch's STOP conditions both
+   name as never permitted: "a permission/scope denial is a decision, not
+   an obstacle — never route around it."
 
-## What remains once the key is available
+## Why this stops here rather than proceeding
 
-- Phase 2: build `eval/org_pack_ablation.py` per the dispatch's ratified Decisions section
-  (same fixture request set, with/without corpus, judge scores both sides N=3 per item,
-  claim-labeled artifact with 3 side-by-side samples pulled into the report).
-- Phase 3: judge-live runner + Makefile target, one manual run against the current story day
-  from `~/ultra-csm-corpus-runs/live-reseed-20260704/anchor.json`.
-- Phase 4: full regression + `docs/PROGRAM_REPORT_25.md` with spend receipt (budget: $5 total,
-  not yet touched -- $0.00 spent) and the kappa Owner Ask.
+- The dispatch's own gate for this precondition is unambiguous: scope
+  missing = STOP, and credential/scope changes are owner-only.
+- The task instructions given for this run are equally explicit: if a
+  needed credential/scope is not present, STOP per K8 and do not go
+  looking for a workaround in other files, keychains, or other repos, and
+  do not attempt to route around a missing scope even if some other
+  transport path could technically move a message.
+- No committer code, no send-manifest, and no live sends were built or
+  attempted. Nothing was sent. The worktree contains only this BLOCKED.md,
+  PROGRESS.md (excluded from git per the shared `.git/info/exclude`), and
+  the read-only scope-check script, which itself performed zero Gmail or
+  Calendar API calls (only OAuth token-endpoint and tokeninfo-endpoint
+  calls, both introspection-only).
 
-## Unblock
+## What the owner needs to do to unblock
 
-Set `ANTHROPIC_API_KEY` in the environment this dispatch runs in, then resume from Phase 2. No
-other precondition is unmet; Phase 1's wiring is ready for the ablation to consume immediately.
+Mint (or re-mint) an OAuth token for the burner account
+(`ULTRA_CSM_GMAIL_OAUTH_ACCOUNT`) that includes the `gmail.send` scope
+(minimally `https://www.googleapis.com/auth/gmail.send`; the existing
+`gmail.insert` + `gmail.readonly` + `calendar.events` scopes can stay
+alongside it), and write the refreshed
+`ULTRA_CSM_GMAIL_OAUTH_REFRESH_TOKEN` (and same client id/secret unless
+rotated) into `~/ultra-csm-live-creds.env`.
+
+Once `gmail.send` (or equivalent) is confirmed present via the same
+non-sending `tokeninfo` check, this dispatch can resume from Phase 0 with
+the scope precondition satisfied — the committer build, allowlist guard,
+manifest, and mailbox-observation work in Phases 1-4 are otherwise ready
+to start (sim committer pattern at `src/ultra_csm/committers.py`,
+ActionGate at `src/ultra_csm/governance/gate.py`, Program 9's ledger/tag
+conventions and `anchor.json` at
+`~/ultra-csm-corpus-runs/live-reseed-20260704/` were all located and are
+reusable, as documented in PROGRESS.md).
 
 ## Tree state
 
-Working tree is clean (`git status --short` empty) as of this file's writing. No PR opened --
-Phase 1 alone is not the dispatch's done-sentence (ablation + judge-live artifacts are required),
-so per the task's instruction this stops at BLOCKED.md rather than opening a partial PR.
+Clean. No commits made in this worktree beyond what is captured here (no
+code beyond the read-only scope-check script and the two process files,
+neither committed). Nothing sent, nothing mutated on the Gmail side beyond
+one OAuth token refresh + one tokeninfo introspection call (both
+read-only, no Gmail/Calendar API method invoked). No PR opened — nothing
+passes any phase gate, so per K8 this stops at BLOCKED.md.
