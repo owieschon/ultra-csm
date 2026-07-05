@@ -1,0 +1,66 @@
+{
+  "artifact": "crateworks_drift_battery",
+  "axes_not_applicable": [
+    {
+      "applicable": false,
+      "axis": "junk-contact-import",
+      "reason": "every crateworks account already carries a permanent, fixed-quota duplicate-contact pair and stale record (bible section 3) -- there is no before/after timeline to script a NEW junk-contact event against; the identity-collision axis this would probe is already covered by the perturbation grid's width-isolation cell"
+    }
+  ],
+  "cases": [
+    {
+      "case": "schema-field-rename-before-at-after",
+      "detail": {
+        "120": {
+          "confirmation_questions": [
+            "CRMAccount.account_id",
+            "CRMAccount.owner_id",
+            "CRMContact.account_id",
+            "CRMContact.contact_id",
+            "CRMContact.title",
+            "CRMOpportunity.account_id",
+            "CRMOpportunity.opportunity_id"
+          ],
+          "renamed_fields_still_auto_mapped": []
+        },
+        "180": {
+          "confirmation_questions": [
+            "CRMAccount.account_id",
+            "CRMAccount.owner_id",
+            "CRMContact.account_id",
+            "CRMContact.contact_id",
+            "CRMContact.title",
+            "CRMOpportunity.account_id",
+            "CRMOpportunity.opportunity_id"
+          ],
+          "renamed_fields_still_auto_mapped": []
+        },
+        "50": {
+          "confirmation_questions": [
+            "CRMAccount.account_id",
+            "CRMAccount.owner_id",
+            "CRMContact.account_id",
+            "CRMContact.contact_id",
+            "CRMOpportunity.account_id",
+            "CRMOpportunity.opportunity_id"
+          ],
+          "renamed_fields_still_auto_mapped": []
+        }
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "crateworks-battery-still-green-post-drift",
+      "detail": {
+        "cases": 6,
+        "failed_cases": [],
+        "hard_ok": true
+      },
+      "ok": true,
+      "problems": []
+    }
+  ],
+  "failed_cases": [],
+  "hard_ok": true
+}

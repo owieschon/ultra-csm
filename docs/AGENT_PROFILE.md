@@ -129,7 +129,7 @@ Branch prefix `codex/` or `claude/` + kebab slug. Program reports:
 `~/ultra-csm-dispatches/harvest/00_HARVEST_PLAN.md` (19=density
 expansion, 21=operating cadence, 22=Act3 curation); 24–26 pinned by the
 Waves C/D/E roadmap extension (24=tick motion adoption, 25=Act 1
-knowledge+judge, 26=Act 2 Gmail write-back). **Next unassigned: 27.**
+knowledge+judge, 26=Act 2 Gmail write-back). **Next unassigned: 34.** Pinned: 27=ops-surface UI (PR #39), 28=booking-link (merged), 29=robustness-grid (PR #40), 30=runtime-chaos (PR #41), 31=judge-validation-resolve (harvest/13), 32=person-signal-wiring (harvest/14), 33=person-ui-depth (harvest/15).
 Dispatch output dir: `~/ultra-csm-dispatches/` (harvest-phase dispatches
 under `harvest/`).
 
@@ -150,9 +150,9 @@ under `harvest/`).
 
 Earned auto-merge adopted (kernel K11): clean run → `gh pr merge --auto
 --merge`; noisy run → PR left for human review. Repo `allow_auto_merge`
-and branch protection requiring check `eval + CSM scorecard`: **pending
-one-time owner setup** — until then, auto-merge commands fail gracefully;
-leave the PR open and note it.
+and branch protection requiring check `eval + CSM scorecard`:
+**CONFIGURED 2026-07-05** (owner ran the one-time setup). Earned
+auto-merge is live — first successful armed merges: PRs #33-#35.
 
 ## Target models
 
@@ -184,6 +184,12 @@ exists to measure), or does it stay flat because each new tenant/feature
 genuinely introduces its own new ambiguity.
 
 | 2026-07-05 | Report 23 (Harvest 5, motion-path wiring) | 8 | 0 | 1 (lint-cleanup import regression, self-caught) | left open per K11 (mechanics unconfigured); owner merged manually |
+| 2026-07-05 | Report 24 (tick motion adoption) | 8 | 0 | 0 | left open (pre-setup), owner merged |
+| 2026-07-05 | Report 25 (Act 1 knowledge+judge) | 6 | 0 | 0 | left open (pre-setup), owner merged |
+| 2026-07-05 | Report 19 (density expansion) | 4 | 0 | 0 | auto-merge armed (#33) |
+| 2026-07-05 | Report 21 (operating cadence) | 7 | 0 | 0 | auto-merge armed (#34) |
+| 2026-07-05 | Report 22 (Act3 curation) | 6 | 0 | 1 (hygiene-flagged terms in report, fixed) | auto-merge armed (#35) |
+| 2026-07-05 | Report 26 (Act 2 Gmail writeback) | — | 1 (self-approval denied by classifier; agent concurred — gate held from inside) | 0 | BLOCKED pending owner submit_verdict; committer+tests merged-ready |
 
 Last retro: 2026-07-05 (mini-retro of report 23 during Waves C/D/E
 roadmap emission).

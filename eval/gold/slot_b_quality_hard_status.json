@@ -5,7 +5,7 @@
   "claim_boundary": {
     "hard_layer_blinded": true,
     "hard_layer_exists": true,
-    "human_labels_complete": false,
+    "human_labels_complete": true,
     "judge_validated": true,
     "judge_validation": {
       "clean": {
@@ -74,8 +74,8 @@
   },
   "hard_path": "eval/gold/slot_b_quality_hard.jsonl",
   "key_errors": [],
-  "labeled": 0,
-  "ready_for_judge_validation": false,
+  "labeled": 36,
+  "ready_for_judge_validation": true,
   "total": 36,
-  "unlabeled": 36
+  "unlabeled": 0
 }
