@@ -10,11 +10,14 @@ a render pass.
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
-from scripts.notion_render import render_all
+import pytest
+
+from scripts.notion_render import render_all, render_org_pack
 from ultra_csm.data_plane.notion_reader import load_captured_payload
-from ultra_csm.knowledge import load_org_pack, load_playbooks
+from ultra_csm.knowledge import OrgPackError, load_org_pack, load_playbooks
 
 FIXTURE_PATH = str(
     Path(__file__).resolve().parent / "fixtures" / "notion" / "authoring_payload.json"
@@ -67,3 +70,33 @@ def test_agnostic_render_is_loader_accepted(tmp_path):
     assert playbooks.plays
     for play in playbooks.plays:
         assert play.motion
+
+
+def test_two_tier_isolation_enforced_by_loader_not_renderer(tmp_path):
+    """An author mistake -- an account-specific fact (``account_id``) placed
+    into an agnostic-tier field via a stray Notion database column -- must
+    be caught by ``load_org_pack``'s ``_reject_forbidden_keys``, not stripped
+    by the renderer (Decision 3). This asserts BOTH halves: the raise, and
+    that the forbidden key actually reached the generated file untouched --
+    proof the loader, not renderer cleverness, is what enforces the
+    boundary."""
+
+    payload = load_captured_payload(FIXTURE_PATH, pack_version="notion-pack-v1")
+    org_pack = render_org_pack(payload, pack_version="notion-pack-v1")
+
+    # Simulate a Notion author's stray "Account ID" column leaking into a
+    # gap_play row -- an account-specific fact authored into the agnostic
+    # gap_plays tier. The renderer must carry it through verbatim.
+    org_pack["gap_plays"][0]["account_id"] = "acct-notionharbor-0001"
+
+    output_root = tmp_path / "_generated"
+    output_root.mkdir(parents=True)
+    (output_root / "org_pack.json").write_text(json.dumps(org_pack), encoding="utf-8")
+
+    # Renderer did NOT strip the forbidden key: it is still on disk.
+    on_disk = json.loads((output_root / "org_pack.json").read_text(encoding="utf-8"))
+    assert on_disk["gap_plays"][0]["account_id"] == "acct-notionharbor-0001"
+
+    # The unmodified loader -- not the renderer -- is what rejects it.
+    with pytest.raises(OrgPackError, match="runtime field: account_id"):
+        load_org_pack(output_root / "org_pack.json", corpus_dir=output_root / "golden_corpus")
