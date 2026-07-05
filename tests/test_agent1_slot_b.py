@@ -196,6 +196,27 @@ def test_slot_b_validator_allows_allowlisted_booking_url():
     validate_reason_draft_output(request, output)  # must not raise
 
 
+def test_slot_b_validator_allows_allowlisted_url_with_trailing_punctuation():
+    """Regression: report 31's org_pack_ablation.json regen surfaced a real
+    bug -- a legitimately allowlisted URL immediately followed by sentence
+    punctuation ("...working-session).") failed the allowlist check because
+    the greedy URL regex captured the trailing ")." as part of the URL. A
+    real, safe URL in ordinary prose must still pass."""
+    request = _request(org_context=_BOOKING_ORG_CONTEXT)
+    output = ReasonDraftOutput(
+        reason="Score 95 from evidence [evidence:sig-1].",
+        cited_evidence_ids=("sig-1",),
+        customer_draft=(
+            "Hi Jordan, you can grab time directly here "
+            "(https://calendar.example/schedule/fleetops-csm-working-session)."
+        ),
+        model_id="test",
+        prompt_version=SLOT_B_PROMPT_VERSION,
+    )
+
+    validate_reason_draft_output(request, output)  # must not raise
+
+
 def test_slot_b_validator_rejects_smuggled_lookalike_url():
     """Adversarial case: hostile org-context/request text tries to smuggle a
     lookalike URL past the allowlist -- the validator must fail closed."""
