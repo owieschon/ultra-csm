@@ -71,15 +71,77 @@ class ValueProp:
 @dataclass(frozen=True)
 class GoldenExample:
     """One reference artifact from ``knowledge/golden_corpus/`` -- exemplar
-    prose an author or reviewer can compare drafted content against. Not
-    yet wired into ``slot_b_context()``: doing so needs more than a
-    pass-through (which exemplar is relevant to a given draft, token
-    budget), so it is surfaced on ``OrgPack`` and left for a future wiring
-    decision rather than half-wired here."""
+    prose an author or reviewer can compare drafted content against.
+    Selected deterministically by :func:`select_golden_exemplars` and fenced
+    into ``slot_b_context()`` as language/style guidance only -- never a
+    source of customer-specific facts (see ``_FORBIDDEN_KEYS``)."""
 
     kind: str
     title: str
     content: str
+
+
+# Deterministic disposition -> exemplar-kind mapping. ``Disposition`` only has
+# three values (see agent1/sweep.py); only "escalate" has an unambiguous
+# corresponding exemplar kind on disk. The other golden-corpus kinds
+# (kickoff_agenda, qbr_narrative, renewal_brief) describe onboarding-stage,
+# meeting-cadence, or renewal-proximity context that ReasonDraftRequest does
+# not carry today (no live detector populates those signals -- see
+# agent1/sweep.py's _account_triggers_for_motion docstring), so they are not
+# reachable from this mapping; recap_email is the tone-neutral default for
+# every other disposition rather than fabricating a signal the request can't
+# support. Extending this map is an additive follow-on once those factor
+# signals exist.
+_DISPOSITION_EXEMPLAR_KIND: dict[str, str] = {
+    "escalate": "escalation_email",
+}
+_DEFAULT_EXEMPLAR_KIND = "recap_email"
+GOLDEN_EXEMPLAR_MAX_COUNT = 2
+GOLDEN_EXEMPLAR_TOKEN_BUDGET = 1200
+
+
+def _estimate_tokens(text: str) -> int:
+    """chars/4 estimator, per this dispatch's ratified budget convention."""
+
+    return len(text) // 4
+
+
+def select_golden_exemplars(
+    golden_corpus: tuple[GoldenExample, ...],
+    *,
+    disposition: str,
+    recommended_action: str | None = None,
+) -> tuple[GoldenExample, ...]:
+    """Deterministically select up to :data:`GOLDEN_EXEMPLAR_MAX_COUNT`
+    exemplars for *disposition* under :data:`GOLDEN_EXEMPLAR_TOKEN_BUDGET`
+    (chars/4 estimate). No LLM selects exemplars (ADR-005): this is pure
+    config-time matching on ``kind``, tie-broken by title sort, same inputs
+    always producing the same (byte-identical) output.
+
+    ``recommended_action`` is accepted for interface stability -- Slot B
+    always has it available -- but is not yet part of the matching key; it
+    is reserved for a future kind (e.g. a call-prep exemplar) rather than
+    silently ignored-forever.
+    """
+
+    del recommended_action  # reserved, not yet part of the matching key
+    kind = _DISPOSITION_EXEMPLAR_KIND.get(disposition, _DEFAULT_EXEMPLAR_KIND)
+    candidates = sorted(
+        (example for example in golden_corpus if example.kind == kind),
+        key=lambda example: example.title,
+    )
+
+    selected: list[GoldenExample] = []
+    budget_used = 0
+    for example in candidates:
+        if len(selected) >= GOLDEN_EXEMPLAR_MAX_COUNT:
+            break
+        cost = _estimate_tokens(example.content)
+        if budget_used + cost > GOLDEN_EXEMPLAR_TOKEN_BUDGET:
+            continue
+        selected.append(example)
+        budget_used += cost
+    return tuple(selected)
 
 
 @dataclass(frozen=True)
@@ -94,10 +156,25 @@ class OrgPack:
     gap_plays: tuple[GapPlay, ...]
     golden_corpus: tuple[GoldenExample, ...] = ()
 
-    def slot_b_context(self) -> dict[str, Any]:
-        """Return the compact context included in Slot B requests."""
+    def slot_b_context(
+        self,
+        *,
+        disposition: str | None = None,
+        recommended_action: str | None = None,
+    ) -> dict[str, Any]:
+        """Return the compact context included in Slot B requests.
 
-        return {
+        *disposition*/*recommended_action* are optional and additive: passing
+        neither reproduces the exact context this method always returned
+        (existing zero-arg call sites are unaffected). Passing *disposition*
+        additionally selects up to :data:`GOLDEN_EXEMPLAR_MAX_COUNT` golden
+        exemplars (see :func:`select_golden_exemplars`) under
+        :data:`GOLDEN_EXEMPLAR_TOKEN_BUDGET` and fences them as
+        ``golden_exemplars`` -- language/style guidance only, same authority
+        boundary as the rest of this context.
+        """
+
+        context: dict[str, Any] = {
             "schema_version": ORG_CONTEXT_SCHEMA_VERSION,
             "pack_version": self.pack_version,
             "fictional": self.fictional,
@@ -116,11 +193,25 @@ class OrgPack:
                 }
                 for play in self.gap_plays
             ],
-            "boundary": (
-                "Org context may shape language and play selection only; "
-                "customer-specific claims still require request evidence."
-            ),
         }
+        if disposition is not None:
+            exemplars = select_golden_exemplars(
+                self.golden_corpus,
+                disposition=disposition,
+                recommended_action=recommended_action,
+            )
+            if exemplars:
+                context["golden_exemplars"] = [
+                    {"kind": example.kind, "title": example.title, "content": example.content}
+                    for example in exemplars
+                ]
+        context["boundary"] = (
+            "Org context may shape language and play selection only; "
+            "customer-specific claims still require request evidence. Golden "
+            "exemplars are style/voice reference prose, not evidence about "
+            "this account."
+        )
+        return context
 
 
 def load_org_pack(
