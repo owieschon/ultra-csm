@@ -129,13 +129,27 @@ PYSCRIPT
     JUDGE_STATUS="aborted_over_cap"
   else
     echo "-- running eval.judge_live_csm (day $STORY_DAY new Slot B drafts) --"
+    # set -e is repo-wide for this script; the judge lane's own failure must
+    # abort the LANE, not the run (Decisions section), so its exit status is
+    # captured explicitly rather than left to trip the script-wide trap.
+    set +e
     PYTHONPATH=src:. .venv/bin/python -m eval.judge_live_csm \
       --anchor "$ANCHOR_PATH" \
       --output-dir "$OUT_DIR/judge_gold" \
       > "$OUT_DIR/judge_live.log" 2>&1
-    JUDGE_COST_USD="$PROJECTED_COST"
-    JUDGE_STATUS="ran"
-    cp "$OUT_DIR"/judge_gold/judge_live_*.json "$OUT_DIR/judge_live.json" 2>/dev/null || true
+    JUDGE_EXIT=$?
+    set -e
+    if [ "$JUDGE_EXIT" -eq 0 ]; then
+      JUDGE_COST_USD="$PROJECTED_COST"
+      JUDGE_STATUS="ran"
+      cp "$OUT_DIR"/judge_gold/judge_live_*.json "$OUT_DIR/judge_live.json" 2>/dev/null || true
+    else
+      echo "############################################"
+      echo "# JUDGE LANE FAILED (exit $JUDGE_EXIT) -- see $OUT_DIR/judge_live.log"
+      echo "# (lane failure only, not the run -- deterministic artifacts above are unaffected)"
+      echo "############################################"
+      JUDGE_STATUS="failed"
+    fi
   fi
 fi
 
