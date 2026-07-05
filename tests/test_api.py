@@ -166,6 +166,26 @@ class TestAccountBriefEndpoint:
         resp = client.get("/accounts/00000000-0000-0000-0000-000000000000/brief")
         assert resp.status_code == 404
 
+    def test_brief_stakeholders_field(self, client: TestClient):
+        """Person UI depth (Harvest 17): the additive ``stakeholders`` field
+        on the brief carries the per-person role-graph rows the Stakeholders
+        drawer needs -- verified against pinnacle-supply's frozen champion
+        arc (report 32/eval/person_factor_battery.py), not a guess."""
+        from ultra_csm.data_plane.fixtures import account_id_for
+
+        account_id = account_id_for("pinnacle-supply")
+        resp = client.get(f"/accounts/{account_id}/brief?day=10")
+        assert resp.status_code == 200
+        body = resp.json()
+        assert "stakeholders" in body
+        rows = {r["name"]: r for r in body["stakeholders"]}
+        assert "Derek Vaughn" in rows
+        derek = rows["Derek Vaughn"]
+        assert derek["relationship_type"] == "champion"
+        assert derek["champion"] is True
+        assert derek["departed"] is True
+        assert isinstance(derek["days_since_interaction"], int)
+
 
 # ---------------------------------------------------------------------------
 # POST /sweep
@@ -211,6 +231,39 @@ class TestSweepEndpoint:
         body = client.post("/sweep", headers=AUTH_HEADERS).json()
         # The fixture data should produce at least one work item.
         assert len(body["work_items"]) > 0
+
+    def test_sweep_person_cited_evidence(self, client: TestClient):
+        """Person UI depth (Harvest 17): a fired person-derived factor's
+        ``crm``-sourced evidence carries an additive ``person_name`` so the
+        UI can cite the person without a client-side join (K13). Verified
+        against quarrystone-logistics' frozen single-threaded-risk arc
+        (report 32/eval/person_factor_battery.py)."""
+        body = client.post("/sweep?day=10", headers=AUTH_HEADERS).json()
+        from ultra_csm.data_plane.fixtures import account_id_for
+
+        quarrystone_id = account_id_for("quarrystone-logistics")
+        item = next(
+            wi for wi in body["work_items"] if wi["account_id"] == quarrystone_id
+        )
+        factor = next(
+            f for f in item["priority"]["factors"]
+            if f["name"] == "single_threaded_risk"
+        )
+        person_evidence = [ev for ev in factor["evidence"] if ev["source"] == "crm"]
+        assert person_evidence, "expected crm-sourced evidence on single_threaded_risk"
+        assert any(ev.get("person_name") for ev in person_evidence)
+
+    def test_sweep_recipient_chip_fields(self, client: TestClient):
+        """Person UI depth (Harvest 17): a role-graph-resolved work item
+        carries the resolved recipient's name + role (additive on
+        ``CSMWorkItem``) for the proposed-action recipient chip."""
+        body = client.post("/sweep?day=10", headers=AUTH_HEADERS).json()
+        item = next(
+            wi for wi in body["work_items"]
+            if wi.get("recipient_resolution") == "role_graph"
+        )
+        assert item["recipient_name"]
+        assert item["recipient_role"]
 
 
 # ---------------------------------------------------------------------------

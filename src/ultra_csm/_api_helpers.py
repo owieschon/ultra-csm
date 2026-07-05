@@ -8,12 +8,21 @@ import os
 from dataclasses import asdict, dataclass
 from typing import Any
 
+from ultra_csm._util import iso_date
+from ultra_csm.agent1.sweep import _person_layer_inputs
 from ultra_csm.data_plane import CustomerDataPlane
 from ultra_csm.governance import ROLE_ORDER_CONFIRM_AUTHORITY as CSM_APPROVAL_ROLE
 from ultra_csm.governance import role_id
+from ultra_csm.person_factors import new_stakeholder_unengaged
 from ultra_csm.platform.db import session
 from ultra_csm.platform.seed import det_uuid
-from ultra_csm.value_model import build_customer_value_model, project_ttv_lens
+from ultra_csm.value_model import (
+    account_attributes,
+    build_customer_value_model,
+    load_value_model_config,
+    project_ttv_lens,
+    resolve_thresholds,
+)
 
 log = logging.getLogger(__name__)
 
@@ -262,6 +271,96 @@ def score_account_priority(
     return int(scored["priority"]["score"]), list(scored["divergences"])
 
 
+def _stakeholder_rows(
+    account,
+    company,
+    contacts,
+    stakeholders,
+    job_changes,
+    *,
+    as_of: str,
+) -> list[dict[str, Any]]:
+    """Person UI depth (Harvest 17): per-person role-graph rows for the
+    Stakeholders drawer. Server-side only -- the UI renders what's served,
+    it does not compute (K13) -- ``days_since_interaction`` is precomputed
+    here, and ``new_unengaged`` reuses report 32's own pure detection
+    function (config-window resolved) rather than re-deriving that window
+    logic in the API layer. ``departed`` is a plain presence check (any
+    departure signal, no window) since a person who left is honestly
+    "departed" regardless of whether that departure currently fires the
+    champion_departed priority factor.
+    """
+
+    cfg = load_value_model_config()
+    resolved = resolve_thresholds(account_attributes(account, company), cfg)
+    thresholds = resolved.thresholds
+
+    departed_contact_ids = {
+        jc.contact_id for jc in job_changes if jc.change_type == "departure"
+    }
+    new_unengaged = new_stakeholder_unengaged(
+        stakeholders, (), as_of=as_of,
+        window_days=thresholds.new_stakeholder_window_days,
+    )
+    new_unengaged_contact_id = new_unengaged.contact_id if new_unengaged else None
+
+    stakeholders_by_contact = {s.contact_id: s for s in stakeholders}
+    as_of_date = iso_date(as_of)
+
+    rows: list[dict[str, Any]] = []
+    for c in contacts:
+        stake = stakeholders_by_contact.get(c.contact_id)
+        rows.append({
+            "contact_id": c.contact_id,
+            "name": c.name,
+            "relationship_type": stake.relationship_type if stake else None,
+            "title": c.title,
+            "consent_to_contact": c.consent_to_contact,
+            "days_since_interaction": (
+                (as_of_date - iso_date(stake.last_interaction)).days if stake else None
+            ),
+            "champion": bool(stake and stake.relationship_type == "champion"),
+            "departed": c.contact_id in departed_contact_ids,
+            "new_unengaged": c.contact_id == new_unengaged_contact_id,
+        })
+    return rows
+
+
+def _enrich_person_evidence(
+    work_items: list[dict[str, Any]], *, data_plane: CustomerDataPlane,
+) -> None:
+    """Person UI depth (Harvest 17): attach a plain ``person_name`` to any
+    factor-evidence entry sourced from a person record (report 32's person
+    factors file evidence under source ``"crm"`` with a contact or
+    job-change-signal id) so the UI can cite the person without joining
+    evidence ids client-side (K13: the UI renders, it does not compute).
+    Mutates ``work_items`` in place; read-only lookups, no sweep/value-model
+    logic touched.
+    """
+
+    cache: dict[str, dict[str, str]] = {}
+    for item in work_items:
+        account_id = item.get("account_id")
+        if not account_id:
+            continue
+        factors = (item.get("priority") or {}).get("factors") or []
+        if not any(f.get("evidence") for f in factors):
+            continue
+        name_by_id = cache.get(account_id)
+        if name_by_id is None:
+            contacts = data_plane.crm.list_contacts(account_id)
+            _, job_changes = _person_layer_inputs(data_plane, account_id)
+            name_by_id = {c.contact_id: c.name for c in contacts}
+            name_by_id.update({jc.signal_id: jc.contact_name for jc in job_changes})
+            cache[account_id] = name_by_id
+        for factor in factors:
+            for ev in factor.get("evidence") or ():
+                if ev.get("source") == "crm":
+                    name = name_by_id.get(ev.get("source_id"))
+                    if name:
+                        ev["person_name"] = name
+
+
 def _build_account_brief(
     account_id: str,
     *,
@@ -286,6 +385,7 @@ def _build_account_brief(
     cases = data_plane.crm.list_cases(account_id)
     contacts = data_plane.crm.list_contacts(account_id)
     opportunities = data_plane.crm.list_opportunities(account_id)
+    stakeholders, job_changes = _person_layer_inputs(data_plane, account_id)
 
     model = build_customer_value_model(
         account=account,
@@ -378,6 +478,9 @@ def _build_account_brief(
             }
             for c in contacts
         ],
+        "stakeholders": _stakeholder_rows(
+            account, company, contacts, stakeholders, job_changes, as_of=as_of,
+        ),
         "opportunities": [asdict(o) for o in opportunities],
         "entitlements": [asdict(e) for e in entitlements],
         "recent_usage_signals": [asdict(s) for s in signals[:20]],

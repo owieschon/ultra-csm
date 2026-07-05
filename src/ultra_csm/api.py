@@ -66,6 +66,7 @@ from ultra_csm._api_helpers import (
     AccountDataError,
     AuthError,
     _build_account_brief,
+    _enrich_person_evidence,
     _score_one_account,
     auth_marker,
     demo_noauth_enabled,
@@ -190,6 +191,7 @@ class AccountBriefResponse(BaseModel):
     success_plans: list[dict[str, Any]]
     open_cases: list[dict[str, Any]]
     contacts: list[dict[str, Any]]
+    stakeholders: list[dict[str, Any]]
     opportunities: list[dict[str, Any]]
     entitlements: list[dict[str, Any]]
     recent_usage_signals: list[dict[str, Any]]
@@ -1308,6 +1310,7 @@ async def trigger_sweep(
     )
 
     result = sweep.to_dict()
+    _enrich_person_evidence(list(result.get("work_items", ())), data_plane=dp)
     # Ensure the top-level keys match the SweepResponse model.
     return SweepResponse(
         tenant_id=result["tenant_id"],
