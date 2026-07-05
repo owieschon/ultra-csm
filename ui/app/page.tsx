@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { TopBar } from "@/components/TopBar";
-import { api, AccountSummary } from "@/lib/api";
+import { QueueView } from "@/components/QueueView";
+import { ActionRail } from "@/components/ActionRail";
+import { api, AccountSummary, WorkItem } from "@/lib/api";
 
 export default function Home() {
   const [view, setView] = useState<"book" | "queue">("book");
@@ -12,6 +14,11 @@ export default function Home() {
   );
   const [accounts, setAccounts] = useState<AccountSummary[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [selectedProposalId, setSelectedProposalId] = useState<string | null>(
+    null
+  );
+  const [selectedItem, setSelectedItem] = useState<WorkItem | null>(null);
+  const [refreshToken, setRefreshToken] = useState(0);
 
   useEffect(() => {
     api
@@ -50,12 +57,24 @@ export default function Home() {
             </div>
           )}
           {view === "queue" && (
-            <div className="placeholder-view" data-testid="queue-view">
-              Queue view — wired in Phase 3.
-            </div>
+            <QueueView
+              day={day}
+              accounts={accounts}
+              selectedProposalId={selectedProposalId}
+              onSelect={setSelectedProposalId}
+              onSelectedItemChange={setSelectedItem}
+              refreshToken={refreshToken}
+            />
           )}
         </div>
-        <aside className="rail" />
+        <aside className="rail">
+          {view === "queue" && (
+            <ActionRail
+              item={selectedItem}
+              onVerdict={() => setRefreshToken((t) => t + 1)}
+            />
+          )}
+        </aside>
       </div>
     </div>
   );

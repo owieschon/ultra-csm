@@ -63,6 +63,14 @@ export interface ValueFactor {
   threshold_value: number | string | null;
 }
 
+export interface WorkItemProposalRef {
+  proposal_id: string;
+  status: "pending" | "approved" | "denied";
+  action_type: string;
+  channel: string;
+  created_by_principal: string;
+}
+
 export interface WorkItem {
   tenant_id: string;
   account_resolution: string;
@@ -74,7 +82,7 @@ export interface WorkItem {
   priority: { score: number; factors: ValueFactor[] } | null;
   evidence: Record<string, unknown>[];
   customer_contact_allowed: boolean;
-  proposal: Record<string, unknown> | null;
+  proposal: WorkItemProposalRef | null;
   swept_at: string;
   draft_mode: string;
   customer_draft: string | null;
