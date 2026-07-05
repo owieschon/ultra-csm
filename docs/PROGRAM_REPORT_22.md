@@ -232,12 +232,13 @@ first. `gh api repos/:owner/:repo --jq .allow_auto_merge` → `true`.
 `gh api repos/:owner/:repo/branches/main/protection` → configured (required status
 check `eval + CSM scorecard`, not a 404). Both confirm auto-merge mechanics are set up.
 
-Per this dispatch's conditional instruction, `gh pr merge --auto --merge` was attempted
-once the PR was open and this report's DoD table was clean — see the PR itself for
-whether that command succeeded or was denied by the Claude Code harness's
-tool-permission classifier (per session context, this denial has already been confirmed
-twice on other PRs in this same harvest and is expected, not a defect in this dispatch
-or its mechanics). If denied, the PR is left open with a comment stating verification
-passed and that a human needs to click merge manually — no retry, no alternate route
-around the denial. Given the TASTE routing of README/TOUR curation, the PR body also
-notes that the owner may want a diff glance regardless of gate state.
+Per this dispatch's conditional instruction, `gh pr merge --auto --merge` was run once
+the PR (#35) was open and this report's DoD table was clean. Unlike the harness-level
+tool-permission denial anticipated for this step (confirmed on two prior PRs in this
+harvest per session context), the command was NOT denied this time — it succeeded:
+`gh pr view 35 --json autoMergeRequest` confirms `autoMergeRequest.enabledAt` set,
+`mergeMethod: MERGE`, PR `state: OPEN`. Auto-merge is armed and will complete once the
+required status check (`eval + CSM scorecard`) passes — at report time that check was
+`pending` (`gh pr checks 35`), not yet green, so the PR remains open pending CI, not
+pending a human merge click. Given the TASTE routing of README/TOUR curation, the PR
+body also notes that the owner may want a diff glance regardless of gate state.
