@@ -284,6 +284,28 @@ def _notion_get(url: str, *, token: str) -> dict[str, Any]:
         return json.loads(resp.read().decode("utf-8"))
 
 
+def _notion_post(url: str, *, token: str, body: dict[str, Any]) -> dict[str, Any]:
+    """Query a data source is documented as POST with a JSON body
+    (https://developers.notion.com/reference/query-a-data-source, verified
+    2026-07-05) -- unlike get-block-children, which really is GET. An empty
+    body means "no filter": per the same docs, non-archived pages are
+    returned with pagination when no filter is supplied."""
+
+    req = urllib_request.Request(
+        url,
+        data=json.dumps(body).encode("utf-8"),
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Notion-Version": _NOTION_VERSION,
+            "accept": "application/json",
+            "content-type": "application/json",
+        },
+        method="POST",
+    )
+    with urllib_request.urlopen(req, timeout=30) as resp:  # noqa: S310 - fixed https host, read-only query.
+        return json.loads(resp.read().decode("utf-8"))
+
+
 def live_authoring_payload(
     *,
     org_pack_database_id: str,
@@ -312,7 +334,7 @@ def live_authoring_payload(
     token = _env(env, _TOKEN_KEY)
 
     def query_database(database_id: str) -> dict[str, Any]:
-        return _notion_get(f"{_NOTION_API_BASE}/data_sources/{database_id}/query", token=token)
+        return _notion_post(f"{_NOTION_API_BASE}/data_sources/{database_id}/query", token=token, body={})
 
     def block_children(page_id: str) -> dict[str, Any]:
         return _notion_get(f"{_NOTION_API_BASE}/blocks/{page_id}/children", token=token)
