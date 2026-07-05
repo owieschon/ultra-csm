@@ -991,6 +991,7 @@ def simulate_book(
     from ultra_csm.data_plane.aspenridge_comms import aspenridge_stakeholder_relationships
     from ultra_csm.data_plane.comms_fixtures import pinehill_stakeholder_relationships
     from ultra_csm.data_plane.meridian_comms import meridian_stakeholder_relationships
+    from ultra_csm.data_plane.oakmont_comms import oakmont_stakeholder_relationships
     from ultra_csm.data_plane.pinnacle_comms import pinnacle_stakeholder_relationships
     from ultra_csm.data_plane.quarrystone_comms import quarrystone_stakeholder_relationships
     from ultra_csm.data_plane.relationship_signals import job_change_signals_as_of
@@ -1002,6 +1003,7 @@ def simulate_book(
             aspenridge_stakeholder_relationships,
             pinehill_stakeholder_relationships,
             meridian_stakeholder_relationships,
+            oakmont_stakeholder_relationships,
             pinnacle_stakeholder_relationships,
             quarrystone_stakeholder_relationships,
             trailhead_stakeholder_relationships,
