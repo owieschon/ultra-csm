@@ -58,6 +58,10 @@ svg { display: block; }
 .seg { display: flex; border: 1px solid var(--hair); border-radius: 8px; overflow: hidden; background: var(--canvas); }
 .seg button { padding: 6px 14px; font-size: 12.5px; font-weight: 600; color: var(--fg-2); display: flex; align-items: center; gap: 7px; transition: all .12s; }
 .seg button.on { background: var(--card-2); color: var(--fg); }
+.search { display: flex; align-items: center; gap: 9px; height: 33px; padding: 0 11px; min-width: 200px; background: var(--canvas); border: 1px solid var(--hair); border-radius: 8px; color: var(--fg-2); }
+.search:hover { border-color: var(--accent-line); }
+.search .ph { font-size: 12.5px; flex: 1; color: var(--fg-3); }
+.search .k { font-family: ui-monospace, monospace; font-size: 11px; border: 1px solid var(--hair); border-radius: 4px; padding: 1px 6px; color: var(--fg-2); }
 .seg button:not(.on):hover { color: var(--fg); }
 .seg .cnt { font-size: 10.5px; font-weight: 700; color: var(--warn); border-radius: 9px; padding: 0 2px; line-height: 16px; }
 
@@ -193,3 +197,23 @@ svg { display: block; }
 .lg .ts { color: var(--fg-3); flex: 0 0 auto; }
 .lg .ev { color: var(--fg); flex: 0 0 106px; font-weight: 600; font-family: -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif; }
 .lg .rest { color: var(--fg-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ===== PALETTE + SHORTCUTS (ported as-is per Decisions) ===== */
+.scrim { position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 100; display: none; align-items: flex-start; justify-content: center; padding-top: 14vh; }
+[data-theme="light"] .scrim { background: rgba(30,32,42,.35); }
+.scrim.open { display: flex; }
+.palette { width: 560px; max-width: 90vw; background: var(--card); border: 1px solid var(--hair); border-radius: 12px; box-shadow: var(--shadow); overflow: hidden; }
+.pal-in { display: flex; align-items: center; gap: 11px; padding: 15px 17px; border-bottom: 1px solid var(--hair); }
+.pal-in input { flex: 1; background: none; border: none; outline: none; color: var(--fg); font-size: 15px; font-family: inherit; }
+.pal-in .esc { font-family: ui-monospace, monospace; font-size: 11px; color: var(--fg-2); border: 1px solid var(--hair); border-radius: 4px; padding: 2px 7px; }
+.pal-list { max-height: 340px; overflow-y: auto; padding: 7px; }
+.pal-grp { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--fg-2); padding: 10px 11px 6px; }
+.pal-item { display: flex; align-items: center; gap: 12px; padding: 10px 11px; border-radius: 7px; cursor: pointer; font-size: 13.5px; }
+.pal-item .meta { margin-left: auto; font-size: 11.5px; color: var(--fg-2); }
+.pal-item.active { background: var(--accent-dim); }
+.pal-empty { padding: 26px; text-align: center; color: var(--fg-2); font-size: 13px; }
+.help-card { width: 440px; background: var(--card); border: 1px solid var(--hair); border-radius: 12px; box-shadow: var(--shadow); padding: 22px 24px; }
+.help-card h3 { font-size: 15px; font-weight: 650; margin-bottom: 16px; }
+.help-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 28px; }
+.help-row { display: flex; align-items: center; justify-content: space-between; font-size: 13px; color: var(--fg-2); }
+.help-row kbd { font-family: ui-monospace, monospace; font-size: 11px; border: 1px solid var(--hair); border-radius: 4px; padding: 1px 7px; color: var(--fg); background: var(--canvas); }

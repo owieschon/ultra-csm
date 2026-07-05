@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { toggleTheme as toggleThemeUtil } from "@/lib/theme";
 
 type View = "book" | "queue";
 
@@ -12,6 +13,8 @@ export function TopBar({
   day,
   onDayChange,
   health,
+  onOpenPalette,
+  onOpenHelp,
 }: {
   view: View;
   onViewChange: (v: View) => void;
@@ -20,6 +23,8 @@ export function TopBar({
   day: number;
   onDayChange: (day: number) => void;
   health: "ok" | "degraded" | "checking";
+  onOpenPalette: () => void;
+  onOpenHelp: () => void;
 }) {
   const [theme, setTheme] = useState<"dark" | "light">("dark");
 
@@ -31,11 +36,8 @@ export function TopBar({
     }
   }, []);
 
-  function toggleTheme() {
-    const next = theme === "dark" ? "light" : "dark";
-    setTheme(next);
-    document.documentElement.setAttribute("data-theme", next);
-    window.localStorage.setItem("ucsm-theme", next);
+  function handleToggleTheme() {
+    setTheme(toggleThemeUtil());
   }
 
   return (
@@ -76,6 +78,11 @@ export function TopBar({
         </button>
       </div>
 
+      <div className="search" onClick={onOpenPalette} style={{ cursor: "pointer" }}>
+        <span className="ph">Search accounts…</span>
+        <span className="k">⌘K</span>
+      </div>
+
       <div className="scrub">
         <span className="lbl">
           day <b className="num">{day}</b>
@@ -90,7 +97,10 @@ export function TopBar({
       </div>
 
       <div className="topright">
-        <button className="iconbtn" onClick={toggleTheme} title="Theme (t)">
+        <button className="iconbtn" onClick={onOpenHelp} title="Shortcuts (?)">
+          ?
+        </button>
+        <button className="iconbtn" onClick={handleToggleTheme} title="Theme (t)">
           {theme === "dark" ? "☾" : "☀"}
         </button>
         <div className="live">

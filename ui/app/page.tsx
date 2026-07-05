@@ -1,12 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { TopBar } from "@/components/TopBar";
 import { BookView } from "@/components/BookView";
 import { QueueView } from "@/components/QueueView";
-import { ActionRail } from "@/components/ActionRail";
+import { ActionRail, ActionRailHandle } from "@/components/ActionRail";
+import { CommandPalette } from "@/components/CommandPalette";
+import { ShortcutsOverlay } from "@/components/ShortcutsOverlay";
 import { api, AccountSummary, WorkItem } from "@/lib/api";
 import { useSweep } from "@/lib/useSweep";
+import { toggleTheme } from "@/lib/theme";
 
 export default function Home() {
   const [view, setView] = useState<"book" | "queue">("book");
@@ -21,7 +24,10 @@ export default function Home() {
   );
   const [selectedItem, setSelectedItem] = useState<WorkItem | null>(null);
   const [refreshToken, setRefreshToken] = useState(0);
+  const [paletteOpen, setPaletteOpen] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
   const { sweep, error: sweepError } = useSweep(day, refreshToken);
+  const railRef = useRef<ActionRailHandle>(null);
 
   useEffect(() => {
     api
@@ -38,9 +44,57 @@ export default function Home() {
       .catch((e) => setError(String(e)));
   }, [day]);
 
-  const needsCount = (sweep?.work_items ?? []).filter(
-    (i) => i.proposal?.status === "pending"
-  ).length;
+  const pendingProposalIds = (sweep?.work_items ?? [])
+    .filter((i) => i.proposal?.status === "pending")
+    .map((i) => i.proposal!.proposal_id);
+  const needsCount = pendingProposalIds.length;
+
+  function jumpToAccount(accountId: string) {
+    const item = (sweep?.work_items ?? []).find((i) => i.account_id === accountId);
+    if (item?.proposal) setSelectedProposalId(item.proposal.proposal_id);
+    setView("queue");
+  }
+
+  // Keyboard map (Decisions: "ported as-is from the mockup").
+  useEffect(() => {
+    function onKeyDown(e: KeyboardEvent) {
+      const meta = e.metaKey || e.ctrlKey;
+      if (meta && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setPaletteOpen((o) => !o);
+        return;
+      }
+      if (helpOpen) {
+        if (e.key === "Escape") setHelpOpen(false);
+        return;
+      }
+      if (paletteOpen) return; // CommandPalette's own input owns Escape/arrows/Enter
+      if (e.key === "v") {
+        setView((v) => (v === "book" ? "queue" : "book"));
+      } else if (e.key === "?") {
+        setHelpOpen(true);
+      } else if (e.key === "t") {
+        toggleTheme();
+      } else if (view === "queue") {
+        if (e.key === "j" || e.key === "k") {
+          e.preventDefault();
+          const idx = pendingProposalIds.indexOf(selectedProposalId ?? "");
+          const delta = e.key === "j" ? 1 : -1;
+          const nextIdx = Math.min(
+            Math.max(idx + delta, 0),
+            pendingProposalIds.length - 1
+          );
+          if (pendingProposalIds[nextIdx]) setSelectedProposalId(pendingProposalIds[nextIdx]);
+        } else if (e.key === "a") {
+          railRef.current?.approve();
+        } else if (e.key === "d") {
+          railRef.current?.deny();
+        }
+      }
+    }
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [view, paletteOpen, helpOpen, pendingProposalIds, selectedProposalId]);
 
   return (
     <div className="app">
@@ -52,6 +106,8 @@ export default function Home() {
         day={day}
         onDayChange={setDay}
         health={health}
+        onOpenPalette={() => setPaletteOpen(true)}
+        onOpenHelp={() => setHelpOpen(true)}
       />
       <div className="main">
         <div className="stage">
@@ -62,12 +118,7 @@ export default function Home() {
               sweep={sweep}
               day={day}
               onWorkQueue={() => setView("queue")}
-              onSelectAccount={(accountId) => {
-                const item = (sweep?.work_items ?? []).find(
-                  (i) => i.account_id === accountId
-                );
-                if (item?.proposal) setSelectedProposalId(item.proposal.proposal_id);
-              }}
+              onSelectAccount={jumpToAccount}
             />
           )}
           {view === "queue" && (
@@ -85,12 +136,26 @@ export default function Home() {
         <aside className="rail">
           {view === "queue" && (
             <ActionRail
+              ref={railRef}
               item={selectedItem}
               onVerdict={() => setRefreshToken((t) => t + 1)}
             />
           )}
         </aside>
       </div>
+      <CommandPalette
+        open={paletteOpen}
+        onClose={() => setPaletteOpen(false)}
+        accounts={accounts}
+        onJumpToAccount={jumpToAccount}
+        commands={[
+          { label: "Switch to Book view", action: () => setView("book") },
+          { label: "Switch to Queue view", action: () => setView("queue") },
+          { label: "Toggle theme", action: () => toggleTheme() },
+          { label: "Show shortcuts", action: () => setHelpOpen(true) },
+        ]}
+      />
+      <ShortcutsOverlay open={helpOpen} onClose={() => setHelpOpen(false)} />
     </div>
   );
 }

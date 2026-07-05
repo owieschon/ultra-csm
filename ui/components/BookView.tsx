@@ -147,6 +147,14 @@ function BandView({
     const status = workItemByAccount.get(a.account_id)?.proposal?.status;
     return status === "approved" || status === "denied";
   });
+  // internal_review work items have no gate proposal at all (nothing for a
+  // human to approve/deny) -- distinct from "quiet" (no work item fired at
+  // all): rendering these as quiet would silently drop a real finding from
+  // the wall entirely.
+  const internal = band.accounts.filter((a) => {
+    const item = workItemByAccount.get(a.account_id);
+    return item && !item.proposal;
+  });
   const quiet = band.accounts.filter((a) => !workItemByAccount.has(a.account_id));
   const shownQuiet = expanded ? quiet : quiet.slice(0, QUIET_VISIBLE);
 
@@ -183,6 +191,16 @@ function BandView({
                 ? "denied"
                 : "sent"}
             </span>
+          </div>
+        ))}
+        {internal.map((a) => (
+          <div
+            key={a.account_id}
+            className="tile handled"
+            title={workItemByAccount.get(a.account_id)?.reason}
+          >
+            <span className="tname">{a.account_name}</span>
+            <span className="tsub">internal review · no customer action</span>
           </div>
         ))}
         {shownQuiet.map((a) => (

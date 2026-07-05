@@ -99,7 +99,7 @@ class TestLedgerEndpoint:
         assert body["ledger_gap"], "ledger gap must be disclosed, not silently empty"
 
     def test_ledger_reflects_a_real_verdict(self, client: TestClient):
-        sweep_resp = client.post("/sweep", headers=AUTH_HEADERS)
+        client.post("/sweep", headers=AUTH_HEADERS)
         proposals = client.get("/proposals").json()["proposals"]
         proposal = next(
             (p for p in proposals if p["action"] == "draft_customer_outreach"),

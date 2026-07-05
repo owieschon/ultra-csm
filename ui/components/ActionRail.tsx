@@ -1,16 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { api, LedgerEvent, WorkItem } from "@/lib/api";
 import { PROPOSAL_STATUS_LABELS, label } from "@/lib/labels";
 
-export function ActionRail({
-  item,
-  onVerdict,
-}: {
-  item: WorkItem | null;
-  onVerdict: (proposalId: string) => void;
-}) {
+export interface ActionRailHandle {
+  approve: () => void;
+  deny: () => void;
+}
+
+export const ActionRail = forwardRef<
+  ActionRailHandle,
+  { item: WorkItem | null; onVerdict: (proposalId: string) => void }
+>(function ActionRail({ item, onVerdict }, ref) {
   const [ledger, setLedger] = useState<LedgerEvent[]>([]);
   const [ledgerGap, setLedgerGap] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
@@ -37,7 +39,7 @@ export function ActionRail({
   const canAct = proposalId != null && status === "pending";
 
   async function act(verdict: "approve" | "deny") {
-    if (!proposalId) return;
+    if (!proposalId || !canAct || busy) return;
     setBusy(true);
     setError(null);
     try {
@@ -50,6 +52,11 @@ export function ActionRail({
       setBusy(false);
     }
   }
+
+  useImperativeHandle(ref, () => ({
+    approve: () => act("approve"),
+    deny: () => act("deny"),
+  }));
 
   return (
     <>
@@ -122,4 +129,4 @@ export function ActionRail({
       </div>
     </>
   );
-}
+});
