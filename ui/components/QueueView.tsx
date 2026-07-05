@@ -1,0 +1,91 @@
+"use client";
+
+import { useEffect, useMemo } from "react";
+import { AccountSummary, WorkItem } from "@/lib/api";
+import { SweepData } from "@/lib/useSweep";
+import { QueueLanes, LaneItem } from "@/components/QueueLanes";
+import { QueueDetail } from "@/components/QueueDetail";
+
+export function QueueView({
+  day,
+  accounts,
+  sweep,
+  sweepError,
+  selectedProposalId,
+  onSelect,
+  onSelectedItemChange,
+}: {
+  day: number;
+  accounts: AccountSummary[] | null;
+  sweep: SweepData | null;
+  sweepError: string | null;
+  selectedProposalId: string | null;
+  onSelect: (proposalId: string) => void;
+  onSelectedItemChange: (item: WorkItem | null) => void;
+}) {
+  const tierByAccount = useMemo(() => {
+    const map = new Map<string, string | null>();
+    (accounts ?? []).forEach((a) => map.set(a.account_id, a.tier));
+    return map;
+  }, [accounts]);
+
+  const withProposal = (sweep?.work_items ?? []).filter((i) => i.proposal);
+  const needsDecision: LaneItem[] = withProposal
+    .filter((i) => i.proposal!.status === "pending")
+    .map((item) => ({ item, tier: item.account_id ? tierByAccount.get(item.account_id) ?? null : null }));
+  const resolved: LaneItem[] = withProposal
+    .filter((i) => i.proposal!.status !== "pending")
+    .map((item) => ({ item, tier: item.account_id ? tierByAccount.get(item.account_id) ?? null : null }));
+
+  const coveredCount = Math.max(
+    0,
+    (sweep?.swept_accounts.length ?? 0) -
+      new Set((sweep?.work_items ?? []).map((i) => i.account_id).filter(Boolean)).size
+  );
+
+  const selectedItem =
+    (sweep?.work_items ?? []).find(
+      (i) => i.proposal?.proposal_id === selectedProposalId
+    ) ?? null;
+
+  useEffect(() => {
+    onSelectedItemChange(selectedItem);
+    // onSelectedItemChange is a setState setter passed from the parent
+    // (stable identity); only the derived item itself should retrigger this.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedItem]);
+
+  if (sweepError) {
+    return <div className="placeholder-view">Error: {sweepError}</div>;
+  }
+
+  return (
+    <div className="queue">
+      <QueueLanes
+        needsDecision={needsDecision}
+        resolved={resolved}
+        escalations={sweep?.escalations ?? []}
+        coveredCount={coveredCount}
+        selectedId={selectedProposalId}
+        onSelect={onSelect}
+      />
+      <main className="col detail">
+        {selectedItem ? (
+          <QueueDetail item={selectedItem} day={day} />
+        ) : (
+          <div className="empty">
+            <h2>
+              {sweep ? "Select an item from the queue" : "Loading sweep…"}
+            </h2>
+            {sweep && (
+              <div className="sub">
+                {needsDecision.length} need you · {coveredCount} covered, no
+                action needed
+              </div>
+            )}
+          </div>
+        )}
+      </main>
+    </div>
+  );
+}
