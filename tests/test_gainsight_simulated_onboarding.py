@@ -19,7 +19,7 @@ def test_gainsight_simulated_onboarding_runs_full_pipeline_without_live_claims(t
         "ULTRA_CSM_GAINSIGHT_DOMAIN",
         "ULTRA_CSM_GAINSIGHT_TOKEN",
     ]
-    assert artifact["source_book"]["accounts"] == 180
+    assert artifact["source_book"]["accounts"] == 181
     assert artifact["discovery"]["ok"] is True
     assert artifact["discovery"]["requests_on_fake_transport"] == 6
     assert artifact["readiness"]["mode"] == "fixture"

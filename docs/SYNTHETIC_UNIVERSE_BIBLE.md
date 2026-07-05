@@ -895,6 +895,34 @@ every checkpoint — no scripted CSM acts on any of these new accounts;
 the agent's recommendation is the only correct action, silence (or the
 wrong-tier motion) is a failure.
 
+### Tier-gating proof account — `quietvale-trucking` (Harvest 6, Report 24)
+
+Before this account, `eval/tier_gating_battery.py`'s real-sweep case
+(`real-sweep-guard-fleetops`) passed vacuously: no fleetops account was
+simultaneously `tech_touch`, had fired priority evidence, AND had a
+consenting contact, so the tier-forbidden-motion guard's real-pipeline
+proof never actually exercised on a live account. Quietvale Trucking
+closes that gap — a quiet, present-from-day-0 tech-touch account (no
+scripted arc), $18K ARR, entitled to `driver_coaching` (deliberately NOT
+`route_optimization`, to avoid joining the existing 25-account
+Route-Optimizer cohort or `campaigns.py`'s `TARGET_COHORT`) but never
+using it, one consenting contact (Morgan Reyes, Fleet Coordinator), and
+one static always-open CTA ("Driver Coaching entitled but underused")
+providing the grounding evidence `_slot_b_inputs_for_account` requires to
+reach `sweep.work_items` at all. Fires `feature_shallow_depth`; its
+tier-appropriate motion is `content_route`/`cohort_action`, never the
+`personal_email` its tech_touch tier forbids — so the guard now narrows
+`customer_contact_allowed`'s consuming action correctly on a genuine
+account instead of an empty set. Lifecycle stage is `steady_state` (never
+`onboarding`), so it cannot interfere with Phase 4's onboarding-visibility
+proof. Book size: 180 → 181 (Segmented Book's own count above is now
+superseded by this one account; all other 180 remain untouched).
+
+**Grading mode:** not a grading fixture (existing gold rows for the other
+180 accounts are untouched) — this account exists purely to make the
+tier-gating battery's dynamic real-sweep case non-vacuous, per
+`eval/gold/fleetops_expected_actions.json`'s new entry for it.
+
 ## Anti-Goodhart note
 
 This bible is authored once, before any extractor or battery code exists.

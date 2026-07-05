@@ -7,6 +7,7 @@ import pytest
 from tests._govhelpers import CLOCK, T1, setup_roster
 from ultra_csm.agent1 import run_time_to_value_sweep
 from ultra_csm.agent1.slot_b import SLOT_B_PROMPT_VERSION
+from ultra_csm.agent1.sweep import _account_triggers_for_motion
 from ultra_csm.data_plane import (
     ACME_LOGISTICS,
     CYBERDYNE_NO_CONSENT,
@@ -21,8 +22,17 @@ from ultra_csm.data_plane import (
     WAYNE_SOUTH,
     build_sweep_fixture_data_plane,
 )
+from ultra_csm.data_plane.contracts import (
+    AdoptionSummary,
+    CRMAccount,
+    CSCompany,
+    HealthScore,
+    SuccessPlan,
+    TimeToValueMilestone,
+)
 from ultra_csm.governance import ActionGate, FixtureVerdictSource
 from ultra_csm.quality_breaker import QualityBreakerConfig, record_quality_breaker_reset
+from ultra_csm.value_model import build_customer_value_model, load_value_model_config
 
 AS_OF = "2026-06-27"
 
@@ -346,3 +356,151 @@ def _sweep_signature(sweep):
         )
         for item in sweep.work_items
     )
+
+
+# ---------------------------------------------------------------------------
+# Phase 2 (Harvest 6): full fleetops playbook trigger_factor coverage.
+# ``_account_triggers_for_motion`` extends beyond champion_inactive/
+# feature_shallow_depth to health_red, health_yellow, low_seat_penetration,
+# milestones_overdue, outcome_unknown -- each reusing an existing computed
+# signal (health.band, value_model.penetration/outcome rails, the same
+# open_milestone_gaps shape _slot_b_inputs_for_account already builds).
+# One fixture that fires each trigger, one that doesn't.
+# ---------------------------------------------------------------------------
+
+_ACCOUNT = CRMAccount(account_id="acct-trig", name="Trigger Test Co", owner_id="owner-1", industry="logistics")
+_COMPANY = CSCompany(
+    company_id="acct-trig",
+    name="Trigger Test Co",
+    industry="logistics",
+    arr_cents=5_000_000,
+    lifecycle_stage="steady_state",
+    status="active",
+    original_contract_date="2024-01-01",
+    renewal_date="2027-01-01",
+    csm_owner_id="owner-1",
+    current_score=80.0,
+)
+_VMC = load_value_model_config()
+
+
+def _health(band: str, drivers: tuple[str, ...] = ()) -> HealthScore:
+    return HealthScore(account_id="acct-trig", score=50.0, band=band, drivers=drivers, measured_at="2026-06-01")
+
+
+def _adoption(*, active: int = 8, licensed: int = 10, underused: tuple[str, ...] = ()) -> AdoptionSummary:
+    return AdoptionSummary(
+        account_id="acct-trig",
+        active_users=active,
+        licensed_users=licensed,
+        active_assets=active,
+        entitled_assets=licensed,
+        adoption_rate=active / licensed,
+        underused_capabilities=underused,
+        measured_at="2026-06-01",
+    )
+
+
+def _value_model(*, health, adoption, entitlements=(), success_plans=(), onboarding_milestones=()):
+    return build_customer_value_model(
+        account=_ACCOUNT,
+        company=_COMPANY,
+        health=health,
+        adoption=adoption,
+        entitlements=entitlements,
+        usage_signals=(),
+        success_plans=success_plans,
+        onboarding_milestones=onboarding_milestones,
+        config=_VMC,
+    )
+
+
+def test_health_red_trigger_fires_on_red_band():
+    health = _health("red")
+    adoption = _adoption()
+    triggers = _account_triggers_for_motion(
+        health, adoption, (), value_model=_value_model(health=health, adoption=adoption)
+    )
+    assert "health_red" in triggers
+
+
+def test_health_red_trigger_absent_on_green_band():
+    health = _health("green")
+    adoption = _adoption()
+    triggers = _account_triggers_for_motion(
+        health, adoption, (), value_model=_value_model(health=health, adoption=adoption)
+    )
+    assert "health_red" not in triggers
+    assert "health_yellow" not in triggers
+
+
+def test_health_yellow_trigger_fires_on_yellow_band():
+    health = _health("yellow")
+    adoption = _adoption()
+    triggers = _account_triggers_for_motion(
+        health, adoption, (), value_model=_value_model(health=health, adoption=adoption)
+    )
+    assert "health_yellow" in triggers
+
+
+def test_low_seat_penetration_trigger_fires_below_floor():
+    # seat_penetration_floor = 0.5; 2/10 = 0.2 < floor.
+    health = _health("green")
+    adoption = _adoption(active=2, licensed=10)
+    triggers = _account_triggers_for_motion(
+        health, adoption, (), value_model=_value_model(health=health, adoption=adoption)
+    )
+    assert "low_seat_penetration" in triggers
+
+
+def test_low_seat_penetration_trigger_absent_above_floor():
+    # 9/10 = 0.9 >= floor.
+    health = _health("green")
+    adoption = _adoption(active=9, licensed=10)
+    triggers = _account_triggers_for_motion(
+        health, adoption, (), value_model=_value_model(health=health, adoption=adoption)
+    )
+    assert "low_seat_penetration" not in triggers
+
+
+def test_outcome_unknown_trigger_fires_with_no_realized_outcome():
+    health = _health("green")
+    adoption = _adoption()
+    plans = (SuccessPlan(plan_id="p1", account_id="acct-trig", status="active", objectives=("grow",), target_date="2027-01-01"),)
+    triggers = _account_triggers_for_motion(
+        health, adoption, (),
+        value_model=_value_model(health=health, adoption=adoption, success_plans=plans),
+    )
+    assert "outcome_unknown" in triggers
+
+
+def test_outcome_unknown_trigger_absent_when_outcome_realized():
+    health = _health("green")
+    adoption = _adoption()
+    plans = (SuccessPlan(plan_id="p1", account_id="acct-trig", status="realized", objectives=("grow",), target_date="2026-01-01"),)
+    triggers = _account_triggers_for_motion(
+        health, adoption, (),
+        value_model=_value_model(health=health, adoption=adoption, success_plans=plans),
+    )
+    assert "outcome_unknown" not in triggers
+
+
+def test_milestones_overdue_trigger_fires_on_past_due_unachieved_milestone():
+    milestone = TimeToValueMilestone(
+        account_id="acct-trig",
+        milestone="first_value",
+        expected_by="2026-01-01",
+        achieved_at=None,
+        evidence_signal_ids=("sig-1",),
+    )
+    triggers = _account_triggers_for_motion(
+        _health("green"), _adoption(), (), open_milestone_gaps=(milestone,)
+    )
+    assert "milestones_overdue" in triggers
+
+
+def test_milestones_overdue_trigger_absent_with_no_open_gaps():
+    triggers = _account_triggers_for_motion(
+        _health("green"), _adoption(), (), open_milestone_gaps=()
+    )
+    assert "milestones_overdue" not in triggers

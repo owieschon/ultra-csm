@@ -945,5 +945,26 @@
       "campaign_enroll"
     ],
     "notes": "tier-mirror 3 (cohort truth): one of 25 tech-touch accounts sharing the identical Route Optimizer shallow-adoption pattern by day 140 -- eval/tier_policy_battery.py asserts the whole cohort together yields exactly ONE cohort_action, never 25 individual per-account motions."
+  },
+  {
+    "tenant": "fleetops",
+    "account_slug": "quietvale-trucking",
+    "checkpoint_day": 140,
+    "mode": "gap",
+    "required": {
+      "signal": "underused_capabilities",
+      "motion_in": [
+        "content_route"
+      ],
+      "evidence_must_include": [
+        "8fa09998-518a-576e-a1ce-21da0e8e7edc"
+      ]
+    },
+    "forbidden_motions": [
+      "personal_email",
+      "working_session",
+      "qbr"
+    ],
+    "notes": "Harvest 6 (Report 24): the tier-gating proof account -- tech_touch, Driver Coaching entitled but underused (deliberately not Route Optimizer, to stay out of tier-mirror 3's 25-account cohort and campaigns.py's TARGET_COHORT), one consenting contact, quiet/no-arc. Its own resolved motion is content_route, never personal_email its tier forbids -- this is what makes eval/tier_gating_battery.py's real-sweep-guard-fleetops case non-vacuous (accounts_checked >= 1, no vacuous_pass key)."
   }
 ]

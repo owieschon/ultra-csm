@@ -30,7 +30,7 @@
         "fleetops": {
           "case": "no-tier-forbidden-motion",
           "detail": {
-            "accounts_swept_per_day": 180
+            "accounts_swept_per_day": 181
           },
           "ok": true,
           "problems": []
@@ -55,13 +55,12 @@
     {
       "case": "real-sweep-guard-fleetops",
       "detail": {
-        "accounts_checked": 0,
+        "accounts_checked": 3,
         "accounts_swept_per_day": {
-          "90": 180,
-          "130": 180,
-          "140": 180
-        },
-        "vacuous_pass": "no account across any checkpoint day was BOTH tech_touch AND had fired priority evidence AND a consenting contact -- this case's ok:true does not demonstrate the guard fired on a real account; see check_no_play_targets_a_forbidden_tier and check_dynamic_sweep_fleetops_loopway for this dispatch's actual coverage of the underlying property"
+          "90": 181,
+          "130": 181,
+          "140": 181
+        }
       },
       "ok": true,
       "problems": []
