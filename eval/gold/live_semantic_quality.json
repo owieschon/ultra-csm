@@ -26,10 +26,10 @@
           "corpus-b-live-1",
           "corpus-b-live-1-cta-1"
         ],
-        "customer_draft": "Hi Ops Lead,\n\nWe're seeing an adoption gap on your FleetOps Platform rollout: seat penetration is still low, which limits how much of the purchased workflow your team can put into day-to-day use. With an activation step dated for July 10, I'd like to check whether this gap is putting your timeline at risk before it slips.\n\nCould we set up a short working session to identify which buyer, admin, or operator role is still missing from the value loop, and confirm the next step to close that gap?\n\nLet me know a time that works and who on your side should join.\n\nBest regards",
+        "customer_draft": "Subject: Working session \u2014 mapping the rollout before the July 10 due date\n\nHi Ops Lead,\n\nAs we head toward the July 10 milestone, two things stand out: the account's health signal is currently trending yellow, and seat penetration is still low enough that some of the buyer, admin, or operator roles needed for a complete rollout may not yet be in the value loop.\n\nI'd like to set up a short working session to do two concrete things: identify which roles are missing from the licensed modules, and confirm whether the current adoption gap puts the launch timing at risk. That gives us a clear owner for each next step rather than another round of one-off follow-ups.\n\nIf you can grab a time that works for you, you can pick a slot here: Schedule a working session (https://calendar.example/schedule/fleetops-csm-working-session).\n\nHappy to work around your team's availability if none of those windows fit.\n\nBest regards,\nCustomer Success",
         "model_id": "claude-opus-4-8",
-        "prompt_version": "agent1-slot-b-reason-draft-v2",
-        "reason": "Priority factors indicate a yellow health signal (health_yellow, contribution 15) alongside low seat penetration (low_seat_penetration, contribution 12), for a combined score of 27. The cs_platform health_score observed 2026-07-03 (corpus-b-live-1) and an activation due_date observed 2026-07-10 (corpus-b-live-1-cta-1) support proposing a working session to verify whether the adoption gap is trending toward a timeline slip and to identify which missing role is needed for a complete rollout."
+        "prompt_version": "agent1-slot-b-reason-draft-v4",
+        "reason": "Priority score 27 is driven by a yellow health signal (health_yellow, +15) observed on 2026-07-03 (corpus-b-live-1) and low seat penetration (low_seat_penetration, +12, value 0.25) alongside an open due date of 2026-07-10 (corpus-b-live-1-cta-1). The low_seat_penetration factor maps to the gap play of mapping the missing users needed for a complete rollout, and the health_yellow factor supports verifying whether the current adoption gap risks a Launch Plan timeline slip. This supports proposing a customer working session while keeping the deterministic disposition and score unchanged."
       },
       "request": {
         "account_id": "corpus-b-live-1",
@@ -54,23 +54,27 @@
           }
         ],
         "org_context": {
-          "boundary": "Org context may shape language and play selection only; customer-specific claims still require request evidence.",
+          "booking": {
+            "label": "Schedule a working session",
+            "url": "https://calendar.example/schedule/fleetops-csm-working-session"
+          },
+          "boundary": "Org context may shape language and play selection only; customer-specific claims still require request evidence. Golden exemplars are style/voice reference prose, not evidence about this account. The booking URL, if present, is pre-approved content Slot B may place verbatim but never alter or invent.",
           "fictional": true,
           "gap_plays": [
             {
               "customer_ask": "review the overdue activation steps and agree on owners",
               "factor": "milestones_overdue",
-              "play": "review the overdue activation milestones and assign owners"
+              "play": "review the overdue Launch Plan milestones (Kickoff, Integration & Data Setup, Activation, or Steady-State Handoff) and assign owners"
             },
             {
               "customer_ask": "map the missing users needed for a complete rollout",
               "factor": "low_seat_penetration",
-              "play": "identify which buyer, admin, or operator role is missing from the value loop"
+              "play": "identify which buyer, admin, or operator role is missing from the value loop for the account's licensed modules"
             },
             {
-              "customer_ask": "pick the next workflow to activate and remove the blocker",
+              "customer_ask": "pick the next module to activate and remove the blocker",
               "factor": "feature_shallow_depth",
-              "play": "choose one purchased capability and unblock the next adoption step"
+              "play": "choose one entitled module -- Live Map, Route Optimizer, Driver Scorecards, Maintenance Radar, Insights Hub, Compliance Center, Fuel Analytics, or Dispatch Automation -- and unblock its next adoption step"
             },
             {
               "customer_ask": "confirm the success metric we should use for this rollout",
@@ -80,21 +84,31 @@
             {
               "customer_ask": "review the blocker behind the red health signal",
               "factor": "health_red",
-              "play": "separate the operational activation blocker from broader account health"
+              "play": "separate the operational activation or Dispatch Bridge integration blocker from broader account health"
             },
             {
               "customer_ask": "check whether the current adoption gap is putting launch timing at risk",
               "factor": "health_yellow",
-              "play": "verify whether the risk is trending toward a timeline slip"
+              "play": "verify whether the risk is trending toward a Launch Plan timeline slip"
             }
           ],
-          "pack_version": "org-pack-ttv-demo-v1",
+          "golden_exemplars": [
+            {
+              "content": "Subject: Recap \u2014 Integration & Data Setup sync, Sept 12\n\nThe Dispatch Bridge connector is still failing to acknowledge about 12% of outbound dispatch events; that's the one blocker holding this phase up.\n\nWhat we covered:\n- Reviewed the acknowledgement-rate numbers from the last 7 days (88% steady state, target is 99%+ before we call Integration & Data Setup done).\n- Walked through the three retry-timeout settings on your side that are the likely cause.\n- Agreed the fastest path is a joint session with your IT team rather than another round of one-off tickets.\n\nAction items:\n- Northgate: confirm IT availability for a 45-minute working session \u2014 owner Teresa Kwan (your side), needed by Sept 16.\n- FleetOps: Grace Okafor to prepare a connector-log export isolating the failed acknowledgements \u2014 owner Grace Okafor, due Sept 15.\n- FleetOps: send the updated retry-timeout recommendation in writing ahead of the working session \u2014 owner Marcus Webb, due Sept 15.\n\nOnce the working session happens we'll have a clear owner and date for closing this out. Let me know if Sept 16 doesn't work and we'll find another day this week.\n\nMarcus Webb\nCustomer Success Manager, FleetOps Platform",
+              "kind": "recap_email",
+              "title": "Post-meeting recap \u2014 the FleetOps house style"
+            }
+          ],
+          "pack_version": "org-pack-ttv-demo-v3",
           "product_name": "FleetOps Platform",
           "schema_version": 1,
           "terminology": {
             "activation": "the customer reaches the first stable week of data-backed operations",
             "asset": "a vehicle or tracked field unit",
             "capability": "a product workflow the customer purchased and can adopt",
+            "dispatch_bridge": "the professional-services integration workstream that connects a customer's own pre-existing dispatch system to FleetOps during onboarding -- not a purchased module, and never confused with the Dispatch Automation module",
+            "launch_plan": "FleetOps' four-phase onboarding methodology: Kickoff, Integration & Data Setup, Activation, Steady-State Handoff",
+            "module": "one of FleetOps' eight purchased capabilities: Live Map, Route Optimizer, Driver Scorecards, Maintenance Radar, Insights Hub, Compliance Center, Fuel Analytics, or Dispatch Automation",
             "play": "a recommended CSM motion, not a commitment or approval"
           },
           "value_props": [
@@ -136,7 +150,7 @@
           ],
           "score": 27
         },
-        "prompt_version": "agent1-slot-b-reason-draft-v2",
+        "prompt_version": "agent1-slot-b-reason-draft-v4",
         "recommended_action": "draft_customer_outreach",
         "tenant_id": "live-semantic-quality-tenant",
         "untrusted_text_fragments": []
@@ -209,8 +223,8 @@
         ],
         "customer_draft": null,
         "model_id": "claude-opus-4-8",
-        "prompt_version": "agent1-slot-b-reason-draft-v2",
-        "reason": "This account is set for internal review. The priority score of 27 is driven by a yellow health signal (health_yellow, contribution 15) observed on 2026-07-03 per corpus-b-live-2, and by low seat penetration (low_seat_penetration, contribution 12). There is also an activation-related milestone with a due date of 2026-07-10 per corpus-b-live-2-cta-1. The yellow health signal suggests verifying whether the adoption gap is trending toward a timeline slip, and the low seat penetration suggests identifying which buyer, admin, or operator role is missing from the value loop."
+        "prompt_version": "agent1-slot-b-reason-draft-v4",
+        "reason": "Priority score of 27 is driven by a yellow health signal (health_yellow, +15) observed on 2026-07-03 (source: corpus-b-live-2) and low seat penetration (low_seat_penetration, +12) suggesting an incomplete rollout. There is also an overdue activation milestone with a due date of 2026-07-10 (source: corpus-b-live-2-cta-1). This account warrants internal review to verify whether the adoption gap is trending toward a Launch Plan timeline slip and to map which buyer, admin, or operator role is missing from the value loop before proposing customer outreach."
       },
       "request": {
         "account_id": "corpus-b-live-2",
@@ -235,23 +249,27 @@
           }
         ],
         "org_context": {
-          "boundary": "Org context may shape language and play selection only; customer-specific claims still require request evidence.",
+          "booking": {
+            "label": "Schedule a working session",
+            "url": "https://calendar.example/schedule/fleetops-csm-working-session"
+          },
+          "boundary": "Org context may shape language and play selection only; customer-specific claims still require request evidence. Golden exemplars are style/voice reference prose, not evidence about this account. The booking URL, if present, is pre-approved content Slot B may place verbatim but never alter or invent.",
           "fictional": true,
           "gap_plays": [
             {
               "customer_ask": "review the overdue activation steps and agree on owners",
               "factor": "milestones_overdue",
-              "play": "review the overdue activation milestones and assign owners"
+              "play": "review the overdue Launch Plan milestones (Kickoff, Integration & Data Setup, Activation, or Steady-State Handoff) and assign owners"
             },
             {
               "customer_ask": "map the missing users needed for a complete rollout",
               "factor": "low_seat_penetration",
-              "play": "identify which buyer, admin, or operator role is missing from the value loop"
+              "play": "identify which buyer, admin, or operator role is missing from the value loop for the account's licensed modules"
             },
             {
-              "customer_ask": "pick the next workflow to activate and remove the blocker",
+              "customer_ask": "pick the next module to activate and remove the blocker",
               "factor": "feature_shallow_depth",
-              "play": "choose one purchased capability and unblock the next adoption step"
+              "play": "choose one entitled module -- Live Map, Route Optimizer, Driver Scorecards, Maintenance Radar, Insights Hub, Compliance Center, Fuel Analytics, or Dispatch Automation -- and unblock its next adoption step"
             },
             {
               "customer_ask": "confirm the success metric we should use for this rollout",
@@ -261,21 +279,31 @@
             {
               "customer_ask": "review the blocker behind the red health signal",
               "factor": "health_red",
-              "play": "separate the operational activation blocker from broader account health"
+              "play": "separate the operational activation or Dispatch Bridge integration blocker from broader account health"
             },
             {
               "customer_ask": "check whether the current adoption gap is putting launch timing at risk",
               "factor": "health_yellow",
-              "play": "verify whether the risk is trending toward a timeline slip"
+              "play": "verify whether the risk is trending toward a Launch Plan timeline slip"
             }
           ],
-          "pack_version": "org-pack-ttv-demo-v1",
+          "golden_exemplars": [
+            {
+              "content": "Subject: Recap \u2014 Integration & Data Setup sync, Sept 12\n\nThe Dispatch Bridge connector is still failing to acknowledge about 12% of outbound dispatch events; that's the one blocker holding this phase up.\n\nWhat we covered:\n- Reviewed the acknowledgement-rate numbers from the last 7 days (88% steady state, target is 99%+ before we call Integration & Data Setup done).\n- Walked through the three retry-timeout settings on your side that are the likely cause.\n- Agreed the fastest path is a joint session with your IT team rather than another round of one-off tickets.\n\nAction items:\n- Northgate: confirm IT availability for a 45-minute working session \u2014 owner Teresa Kwan (your side), needed by Sept 16.\n- FleetOps: Grace Okafor to prepare a connector-log export isolating the failed acknowledgements \u2014 owner Grace Okafor, due Sept 15.\n- FleetOps: send the updated retry-timeout recommendation in writing ahead of the working session \u2014 owner Marcus Webb, due Sept 15.\n\nOnce the working session happens we'll have a clear owner and date for closing this out. Let me know if Sept 16 doesn't work and we'll find another day this week.\n\nMarcus Webb\nCustomer Success Manager, FleetOps Platform",
+              "kind": "recap_email",
+              "title": "Post-meeting recap \u2014 the FleetOps house style"
+            }
+          ],
+          "pack_version": "org-pack-ttv-demo-v3",
           "product_name": "FleetOps Platform",
           "schema_version": 1,
           "terminology": {
             "activation": "the customer reaches the first stable week of data-backed operations",
             "asset": "a vehicle or tracked field unit",
             "capability": "a product workflow the customer purchased and can adopt",
+            "dispatch_bridge": "the professional-services integration workstream that connects a customer's own pre-existing dispatch system to FleetOps during onboarding -- not a purchased module, and never confused with the Dispatch Automation module",
+            "launch_plan": "FleetOps' four-phase onboarding methodology: Kickoff, Integration & Data Setup, Activation, Steady-State Handoff",
+            "module": "one of FleetOps' eight purchased capabilities: Live Map, Route Optimizer, Driver Scorecards, Maintenance Radar, Insights Hub, Compliance Center, Fuel Analytics, or Dispatch Automation",
             "play": "a recommended CSM motion, not a commitment or approval"
           },
           "value_props": [
@@ -317,7 +345,7 @@
           ],
           "score": 27
         },
-        "prompt_version": "agent1-slot-b-reason-draft-v2",
+        "prompt_version": "agent1-slot-b-reason-draft-v4",
         "recommended_action": "recommend_next_best_action",
         "tenant_id": "live-semantic-quality-tenant",
         "untrusted_text_fragments": []
@@ -375,7 +403,7 @@
       "book_source": "Real corpus B (Salesforce) account NAMES fetched live (UCSM-P3E seed corpus); CS-platform/telemetry evidence is synthetic (no live CS-platform/telemetry connector exists in this architecture, matching Program 4's cross-system-beat precedent). Real Salesforce numeric ids are never persisted -- opaque ids are the join key.",
       "draft_model_id": "claude-opus-4-8",
       "judge_model_id": "claude-sonnet-4-6",
-      "judge_prompt_version": "quality-judge-v7",
+      "judge_prompt_version": "quality-judge-v8",
       "runs_per_candidate": 5,
       "single_run_of_draft_generation": true
     },
@@ -384,7 +412,7 @@
   "draft_model_id": "claude-opus-4-8",
   "generated_by": "eval.live_semantic_quality_csm",
   "judge_model_id": "claude-sonnet-4-6",
-  "judge_prompt_version": "quality-judge-v7",
+  "judge_prompt_version": "quality-judge-v8",
   "judge_reasoning": true,
   "runs_per_candidate": 5,
   "schema_version": 1
