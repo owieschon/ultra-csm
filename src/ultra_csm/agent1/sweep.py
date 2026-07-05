@@ -34,7 +34,7 @@ from ultra_csm.data_plane import (
 from ultra_csm.data_plane.contracts import ResolutionState
 from ultra_csm.governance import ActionGate, ActionProposal, proposal_fields_for
 from ultra_csm.governance.csm_actions import CSMActionType, implied_motion_for_action
-from ultra_csm.knowledge import PlaybookSet, load_org_pack, load_playbooks
+from ultra_csm.knowledge import OrgPack, PlaybookSet, load_org_pack, load_playbooks
 from ultra_csm.motion_resolver import resolve_motions
 from ultra_csm.quality_breaker import (
     QualityBreakerConfig,
@@ -175,11 +175,12 @@ def run_time_to_value_sweep(
 
     sweep_start = time.perf_counter()
     writer = reason_draft_writer or FixtureReasonDraftWriter()
-    slot_b_org_context = (
-        org_context
-        if org_context is not None
-        else load_org_pack().slot_b_context()
-    )
+    # When the caller supplies org_context explicitly (e.g. a hostile-pack
+    # test fixture), use it verbatim for every account -- same
+    # authority-invariance contract as before this dispatch. Only the
+    # caller-absent default path resolves org context per account, so
+    # golden-exemplar selection (disposition-keyed) can vary per work item.
+    default_org_pack = load_org_pack() if org_context is None else None
     breaker_decision = (
         evaluate_quality_breaker(quality_breaker)
         if quality_breaker is not None
@@ -265,7 +266,8 @@ def run_time_to_value_sweep(
             contacts=contacts,
             reason_draft_writer=current_writer,
             quality_breaker=breaker_decision,
-            org_context=slot_b_org_context,
+            org_context=org_context,
+            default_org_pack=default_org_pack,
             timing=timing,
             snapshot_store=snapshot_store,
             playbooks=playbooks,
@@ -377,7 +379,11 @@ def build_reason_draft_request_for_account(
         contact=contact,
         cases=inputs.cases,
         org_context=(
-            org_context if org_context is not None else load_org_pack().slot_b_context()
+            org_context
+            if org_context is not None
+            else load_org_pack().slot_b_context(
+                disposition=disposition, recommended_action=action
+            )
         ),
     )
 
@@ -832,6 +838,7 @@ def _work_item_for_account(
     reason_draft_writer: ReasonDraftWriter,
     quality_breaker: QualityBreakerDecision | None = None,
     org_context: dict | None = None,
+    default_org_pack: OrgPack | None = None,
     timing: _SweepTimingAccum | None = None,
     snapshot_store: SnapshotStore | None = None,
     playbooks: PlaybookSet | None = None,
@@ -891,6 +898,19 @@ def _work_item_for_account(
         if customer_contact_allowed and not customer_action_blocked
         else "recommend_next_best_action"
     )
+    # Caller-supplied org_context (e.g. a hostile-pack test fixture) is used
+    # verbatim, unchanged from before this dispatch. Only the default org
+    # pack path is disposition-aware, so golden-exemplar selection can vary
+    # per work item within one sweep.
+    resolved_org_context = (
+        org_context
+        if org_context is not None
+        else default_org_pack.slot_b_context(
+            disposition=disposition, recommended_action=action
+        )
+        if default_org_pack is not None
+        else None
+    )
     slot_b_request = _slot_b_request(
         tenant_id=tenant_id,
         account=account,
@@ -902,7 +922,7 @@ def _work_item_for_account(
         as_of=as_of,
         contact=contact if not customer_action_blocked else None,
         cases=inputs.cases,
-        org_context=org_context,
+        org_context=resolved_org_context,
     )
     slot_start = time.perf_counter()
     slot_b, draft_mode = _write_slot_b_with_fallback(slot_b_request, reason_draft_writer)

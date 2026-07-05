@@ -6,7 +6,16 @@ import json
 
 import pytest
 
-from ultra_csm.knowledge import OrgPackError, PlaybookError, load_org_pack, load_playbooks
+from ultra_csm.knowledge import (
+    GoldenExample,
+    GOLDEN_EXEMPLAR_MAX_COUNT,
+    GOLDEN_EXEMPLAR_TOKEN_BUDGET,
+    OrgPackError,
+    PlaybookError,
+    load_org_pack,
+    load_playbooks,
+    select_golden_exemplars,
+)
 
 
 def test_default_org_pack_loads_slot_b_context():
@@ -81,6 +90,85 @@ def test_org_pack_rejects_unsafe_customer_asks(tmp_path):
 
     with pytest.raises(OrgPackError, match="unsafe authority language"):
         load_org_pack(path)
+
+
+def test_select_golden_exemplars_matches_kind_for_escalate_disposition():
+    pack = load_org_pack()
+
+    selected = select_golden_exemplars(
+        pack.golden_corpus, disposition="escalate", recommended_action="recommend_next_best_action"
+    )
+
+    assert len(selected) == 1
+    assert selected[0].kind == "escalation_email"
+
+
+def test_select_golden_exemplars_defaults_to_recap_for_other_dispositions():
+    pack = load_org_pack()
+
+    for disposition in ("propose_customer_action", "internal_review"):
+        selected = select_golden_exemplars(
+            pack.golden_corpus, disposition=disposition, recommended_action="draft_customer_outreach"
+        )
+        assert len(selected) == 1
+        assert selected[0].kind == "recap_email"
+
+
+def test_select_golden_exemplars_is_deterministic():
+    pack = load_org_pack()
+
+    first = select_golden_exemplars(pack.golden_corpus, disposition="escalate")
+    second = select_golden_exemplars(pack.golden_corpus, disposition="escalate")
+
+    assert first == second
+
+
+def test_select_golden_exemplars_respects_cap():
+    examples = tuple(
+        GoldenExample(kind="recap_email", title=f"Recap {i}", content="word " * 10)
+        for i in range(5)
+    )
+
+    selected = select_golden_exemplars(examples, disposition="internal_review")
+
+    assert len(selected) == GOLDEN_EXEMPLAR_MAX_COUNT
+    assert [example.title for example in selected] == ["Recap 0", "Recap 1"]
+
+
+def test_select_golden_exemplars_respects_token_budget():
+    # Each exemplar is ~ (chars // 4) tokens; force a single oversized entry
+    # past the budget to prove it is excluded rather than silently truncated.
+    oversized_content = "x" * ((GOLDEN_EXEMPLAR_TOKEN_BUDGET + 100) * 4)
+    examples = (
+        GoldenExample(kind="recap_email", title="Fits", content="short recap body"),
+        GoldenExample(kind="recap_email", title="Oversized", content=oversized_content),
+    )
+
+    selected = select_golden_exemplars(examples, disposition="internal_review")
+
+    assert [example.title for example in selected] == ["Fits"]
+
+
+def test_select_golden_exemplars_empty_corpus_returns_empty():
+    assert select_golden_exemplars((), disposition="escalate") == ()
+
+
+def test_slot_b_context_without_disposition_is_unchanged():
+    pack = load_org_pack()
+
+    context = pack.slot_b_context()
+
+    assert "golden_exemplars" not in context
+
+
+def test_slot_b_context_with_disposition_adds_golden_exemplars():
+    pack = load_org_pack()
+
+    context = pack.slot_b_context(disposition="escalate", recommended_action="recommend_next_best_action")
+
+    assert "golden_exemplars" in context
+    assert context["golden_exemplars"][0]["kind"] == "escalation_email"
+    assert "account_id" not in json.dumps(context)
 
 
 def test_fleetops_playbooks_load():
