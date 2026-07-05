@@ -20,6 +20,7 @@
           "source_id": "dd638660-a13a-595c-a117-72a1ed5f15d0"
         }
       ],
+      "motion": null,
       "priority": null,
       "proposal": null,
       "reason": "Ambiguous contact identity; no account was auto-selected.",
@@ -84,6 +85,7 @@
           "source_id": "a317f5e7-575e-5879-8256-9082e40ef19f"
         }
       ],
+      "motion": null,
       "priority": {
         "factors": [
           {
@@ -272,6 +274,7 @@
           "source_id": "9bbdd7b2-55b0-5257-acf8-808ad224e276"
         }
       ],
+      "motion": null,
       "priority": {
         "factors": [
           {
@@ -431,6 +434,7 @@
           "source_id": "ac5ddaea-764f-57ef-866d-593d57a20a00"
         }
       ],
+      "motion": null,
       "priority": {
         "factors": [
           {
@@ -584,6 +588,7 @@
           "source_id": "b2178254-7d72-55e3-84af-27846a0cb7d5"
         }
       ],
+      "motion": null,
       "priority": {
         "factors": [
           {
@@ -714,6 +719,7 @@
           "source_id": "efe1d86f-af21-5ca6-8719-3ba8b4429292"
         }
       ],
+      "motion": null,
       "priority": {
         "factors": [
           {

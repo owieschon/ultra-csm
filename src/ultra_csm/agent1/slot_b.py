@@ -24,12 +24,12 @@ if TYPE_CHECKING:
 
 log = logging.getLogger(__name__)
 
-SLOT_B_PROMPT_VERSION = "agent1-slot-b-reason-draft-v2"
+SLOT_B_PROMPT_VERSION = "agent1-slot-b-reason-draft-v3"
 SLOT_B_PROMPT_PATH = (
     Path(__file__).resolve().parents[3]
     / "docs"
     / "prompts"
-    / "agent1_slot_b_reason_draft_v2.md"
+    / "agent1_slot_b_reason_draft_v3.md"
 )
 
 FIXTURE_SLOT_B_MODEL_ID = "fixture-agent1-slot-b-v1"
