@@ -55,6 +55,8 @@ from ultra_csm.value_model import (
 
 if TYPE_CHECKING:
     from ultra_csm.cost_tracker import CostBudget, CostTracker
+    from ultra_csm.data_plane.contracts import StakeholderRelationship
+    from ultra_csm.data_plane.relationship_signals import JobChangeSignal
 
 log = logging.getLogger(__name__)
 
@@ -388,6 +390,27 @@ def build_reason_draft_request_for_account(
     )
 
 
+def _person_layer_inputs(
+    data_plane: CustomerDataPlane,
+    account_id: str,
+) -> tuple[tuple["StakeholderRelationship", ...], tuple["JobChangeSignal", ...]]:
+    """Additive person-layer fetch (Harvest 16): stakeholders + job-change
+    signals for *account_id*, in the same per-account data_plane pass
+    ``_slot_b_inputs_for_account`` already makes -- never a second fetch
+    pass. ``list_stakeholders``/``list_job_changes`` are NOT part of the
+    ``CRMDataConnector`` Protocol (only ``FixtureCRMDataConnector``
+    implements them for the fleetops fixture book); connectors that lack
+    them degrade to an empty tuple rather than raising, so this is fail-safe
+    for every other connector (Sim/Fieldstone) unchanged.
+    """
+
+    list_stakeholders = getattr(data_plane.crm, "list_stakeholders", None)
+    list_job_changes = getattr(data_plane.crm, "list_job_changes", None)
+    stakeholders = tuple(list_stakeholders(account_id)) if list_stakeholders else ()
+    job_changes = tuple(list_job_changes(account_id)) if list_job_changes else ()
+    return stakeholders, job_changes
+
+
 def _slot_b_inputs_for_account(
     data_plane: CustomerDataPlane,
     account: CRMAccount,
@@ -407,6 +430,7 @@ def _slot_b_inputs_for_account(
     cases = tuple(data_plane.crm.list_cases(account.account_id))
     signals = tuple(data_plane.telemetry.list_usage_signals(account.account_id))
     entitlements = tuple(data_plane.telemetry.list_entitlements(account.account_id))
+    stakeholders, job_changes = _person_layer_inputs(data_plane, account.account_id)
     signal_ids = {signal.signal_id for signal in signals}
     onboarding_projects, onboarding_phases, onboarding_tasks = _onboarding_evidence(
         data_plane, account.account_id
@@ -477,6 +501,9 @@ def _slot_b_inputs_for_account(
         usage_signals=signals,
         success_plans=plans,
         onboarding_milestones=onboarding_milestones,
+        stakeholders=stakeholders,
+        job_changes=job_changes,
+        as_of=as_of,
     )
     trajectory = _trajectory_decline_evaluation(
         snapshot_store,

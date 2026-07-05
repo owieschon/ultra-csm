@@ -982,6 +982,38 @@ def simulate_book(
         else:
             new_signals.append(sig)
 
+    # Person layer (Harvest 16): the per-tenant StakeholderRelationship
+    # readers are themselves as_of_day-parameterized (day-relative state,
+    # same category as contacts/cases above), so recompute at day_offset
+    # rather than accumulate. Function-local import mirrors
+    # synthetic_book.build_synthetic_book's cycle-break (these comms
+    # modules reach back into data_simulator -> synthetic_book).
+    from ultra_csm.data_plane.aspenridge_comms import aspenridge_stakeholder_relationships
+    from ultra_csm.data_plane.comms_fixtures import pinehill_stakeholder_relationships
+    from ultra_csm.data_plane.meridian_comms import meridian_stakeholder_relationships
+    from ultra_csm.data_plane.pinnacle_comms import pinnacle_stakeholder_relationships
+    from ultra_csm.data_plane.quarrystone_comms import quarrystone_stakeholder_relationships
+    from ultra_csm.data_plane.relationship_signals import job_change_signals_as_of
+    from ultra_csm.data_plane.trailhead_comms import trailhead_stakeholder_relationships
+
+    stakeholder_relationships = tuple(
+        rel
+        for reader in (
+            aspenridge_stakeholder_relationships,
+            pinehill_stakeholder_relationships,
+            meridian_stakeholder_relationships,
+            pinnacle_stakeholder_relationships,
+            quarrystone_stakeholder_relationships,
+            trailhead_stakeholder_relationships,
+        )
+        for rel in reader(day_offset)
+    )
+    job_change_signals = tuple(
+        signal
+        for acct_id in {a.account_id for a in base_book.accounts}
+        for signal in job_change_signals_as_of(acct_id, day_offset)
+    )
+
     return FixtureCustomerData(
         accounts=base_book.accounts,
         companies=new_companies,
@@ -996,4 +1028,6 @@ def simulate_book(
         usage_signals=tuple(new_signals),
         milestones=tuple(milestones_list),
         tenant_accounts=base_book.tenant_accounts,
+        stakeholder_relationships=stakeholder_relationships,
+        job_change_signals=job_change_signals,
     )

@@ -1545,6 +1545,34 @@ def build_synthetic_book() -> FixtureCustomerData:
     # -- Tenant mapping --
     all_ids = tuple(_id[slug] for slug, *_ in _ACCT_DATA)
 
+    # -- Person layer (Harvest 16) --
+    # Function-local import: the per-tenant comms modules reach
+    # data_simulator -> synthetic_book at module scope (narrative_shared),
+    # so importing them at synthetic_book module scope cycles. Deferring
+    # to call time (after both modules have finished initializing) is the
+    # standard break for this existing cycle; it changes no other module.
+    from ultra_csm.data_plane.aspenridge_comms import aspenridge_stakeholder_relationships
+    from ultra_csm.data_plane.comms_fixtures import pinehill_stakeholder_relationships
+    from ultra_csm.data_plane.meridian_comms import meridian_stakeholder_relationships
+    from ultra_csm.data_plane.pinnacle_comms import pinnacle_stakeholder_relationships
+    from ultra_csm.data_plane.quarrystone_comms import quarrystone_stakeholder_relationships
+    from ultra_csm.data_plane.relationship_signals import SIGNALS as _job_change_signals
+    from ultra_csm.data_plane.trailhead_comms import trailhead_stakeholder_relationships
+
+    stakeholder_relationships = tuple(
+        rel
+        for reader in (
+            aspenridge_stakeholder_relationships,
+            pinehill_stakeholder_relationships,
+            meridian_stakeholder_relationships,
+            pinnacle_stakeholder_relationships,
+            quarrystone_stakeholder_relationships,
+            trailhead_stakeholder_relationships,
+        )
+        for rel in reader(0)
+    )
+    job_change_signals = tuple(_job_change_signals)
+
     return FixtureCustomerData(
         accounts=accounts,
         companies=companies,
@@ -1559,6 +1587,8 @@ def build_synthetic_book() -> FixtureCustomerData:
         usage_signals=usage_signals,
         milestones=milestones,
         tenant_accounts={"ultra-demo": all_ids},
+        stakeholder_relationships=stakeholder_relationships,
+        job_change_signals=job_change_signals,
     )
 
 
