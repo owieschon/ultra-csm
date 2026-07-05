@@ -54,6 +54,11 @@ flow; scoreboard is append-only.
 - User-visible work carries an OBSERVED-BEHAVIOR DoD row (open the real
   surface, assert on what is seen); artifact gates cannot see a broken
   page (owner-ratified 2026-07-05).
+- TWO emitter sessions share ~/ultra-csm-dispatches/harvest/ — claim a
+  dispatch filename/report slot ONLY from 00_HARVEST_PLAN.md's FILE +
+  REPORT-SLOT REGISTRY, re-read immediately before writing, and append
+  the claim in the same emission (a 28/34 collision and a duplicate
+  11/12 emission both happened on 2026-07-05).
 - Battery runtime budget: ≤90s each; `make eval` ≤3 min (sample the
   account tail deterministically, state sampling in docstrings) — not
   every dispatch states this ceiling explicitly (Perturbation-Drift
@@ -129,7 +134,7 @@ Branch prefix `codex/` or `claude/` + kebab slug. Program reports:
 `~/ultra-csm-dispatches/harvest/00_HARVEST_PLAN.md` (19=density
 expansion, 21=operating cadence, 22=Act3 curation); 24–26 pinned by the
 Waves C/D/E roadmap extension (24=tick motion adoption, 25=Act 1
-knowledge+judge, 26=Act 2 Gmail write-back). **Next unassigned: 34.** Pinned: 27=ops-surface UI (PR #39), 28=booking-link (merged), 29=robustness-grid (PR #40), 30=runtime-chaos (PR #41), 31=judge-validation-resolve (harvest/13), 32=person-signal-wiring (harvest/14), 33=person-ui-depth (harvest/15).
+knowledge+judge, 26=Act 2 Gmail write-back). **Next unassigned: 36.** (34 = Notion authoring edge, merged PR #43; 35 = adversarial-surfaces, re-slotted from 31.) Pinned: 27=ops-surface UI (PR #39), 28=booking-link (merged), 29=robustness-grid (PR #40), 30=runtime-chaos (PR #41), 31=judge-validation-resolve (harvest/13), 32=person-signal-wiring (harvest/14), 33=person-ui-depth (harvest/15).
 Dispatch output dir: `~/ultra-csm-dispatches/` (harvest-phase dispatches
 under `harvest/`).
 
