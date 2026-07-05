@@ -47,6 +47,17 @@ LIVE_USD_PER_MTOK_OUTPUT = 25.00
 # fails closed, so a hostile prompt cannot smuggle a lookalike URL past this
 # validator regardless of how it's phrased.
 _URL_RE = re.compile(r"https?://[^\s<>\"']+")
+# Trailing characters that are almost always sentence punctuation wrapping a
+# URL in prose ("...(see <link>).") rather than part of the URL itself. The
+# greedy _URL_RE above has no way to know a URL's real boundary, so any match
+# gets these stripped before comparison -- otherwise a legitimately
+# allowlisted URL followed by a period or closing paren fails the allowlist
+# check for a punctuation reason having nothing to do with the URL's safety.
+_URL_TRAILING_PUNCTUATION = ".,;:!?)]}\"'"
+
+
+def _extract_urls(text: str) -> set[str]:
+    return {match.rstrip(_URL_TRAILING_PUNCTUATION) for match in _URL_RE.findall(text)}
 
 
 # Meeting-shaped = motions mapping to `initiate_customer_call` (working_session,
@@ -82,7 +93,7 @@ def _allowed_urls(request: "ReasonDraftRequest") -> set[str]:
     booking = org_context.get("booking")
     if isinstance(booking, dict) and booking.get("url"):
         allowed.add(str(booking["url"]))
-    allowed.update(_URL_RE.findall(json.dumps(org_context)))
+    allowed.update(_extract_urls(json.dumps(org_context)))
     return allowed
 
 
@@ -352,7 +363,7 @@ def validate_reason_draft_output(
             raise SlotBContractError(f"untrusted instruction leaked: {phrase}")
 
     if output.customer_draft:
-        found_urls = set(_URL_RE.findall(output.customer_draft))
+        found_urls = _extract_urls(output.customer_draft)
         smuggled = found_urls - _allowed_urls(request)
         if smuggled:
             raise SlotBContractError(
