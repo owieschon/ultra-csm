@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 import time
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -39,6 +40,28 @@ LIVE_TIMEOUT_S = 30.0
 LIVE_MAX_RETRIES = 2
 LIVE_USD_PER_MTOK_INPUT = 5.00
 LIVE_USD_PER_MTOK_OUTPUT = 25.00
+
+# Matches any http(s) URL in customer-facing draft text. The allowlist rule
+# below is the safety payoff for the booking link (a PRE-APPROVED config
+# string Slot B may place but never invent) -- any URL not in the allowlist
+# fails closed, so a hostile prompt cannot smuggle a lookalike URL past this
+# validator regardless of how it's phrased.
+_URL_RE = re.compile(r"https?://[^\s<>\"']+")
+
+
+def _allowed_urls(request: "ReasonDraftRequest") -> set[str]:
+    """The allowlist: the configured booking URL (if any) plus any URL
+    literally present in org_context's own declared content. Absent
+    org_context or booking -> empty set, meaning ANY url in a draft fails
+    closed (no legitimate source for one)."""
+
+    org_context = request.org_context or {}
+    allowed: set[str] = set()
+    booking = org_context.get("booking")
+    if isinstance(booking, dict) and booking.get("url"):
+        allowed.add(str(booking["url"]))
+    allowed.update(_URL_RE.findall(json.dumps(org_context)))
+    return allowed
 
 
 @dataclass(frozen=True)
@@ -301,6 +324,14 @@ def validate_reason_draft_output(
     for phrase in blocked:
         if phrase in text:
             raise SlotBContractError(f"untrusted instruction leaked: {phrase}")
+
+    if output.customer_draft:
+        found_urls = set(_URL_RE.findall(output.customer_draft))
+        smuggled = found_urls - _allowed_urls(request)
+        if smuggled:
+            raise SlotBContractError(
+                f"customer draft contains non-allowlisted URL(s): {sorted(smuggled)}"
+            )
 
 
 def prompt_metadata() -> dict[str, str]:

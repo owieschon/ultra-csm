@@ -172,6 +172,63 @@ def test_slot_b_validator_requires_customer_draft_when_contact_allowed():
         validate_reason_draft_output(request, output)
 
 
+_BOOKING_ORG_CONTEXT = {
+    "booking": {
+        "url": "https://calendar.example/schedule/fleetops-csm-working-session",
+        "label": "Schedule a working session",
+    },
+}
+
+
+def test_slot_b_validator_allows_allowlisted_booking_url():
+    request = _request(org_context=_BOOKING_ORG_CONTEXT)
+    output = ReasonDraftOutput(
+        reason="Score 95 from evidence [evidence:sig-1].",
+        cited_evidence_ids=("sig-1",),
+        customer_draft=(
+            "Hi Jordan, could we grab time? "
+            "https://calendar.example/schedule/fleetops-csm-working-session"
+        ),
+        model_id="test",
+        prompt_version=SLOT_B_PROMPT_VERSION,
+    )
+
+    validate_reason_draft_output(request, output)  # must not raise
+
+
+def test_slot_b_validator_rejects_smuggled_lookalike_url():
+    """Adversarial case: hostile org-context/request text tries to smuggle a
+    lookalike URL past the allowlist -- the validator must fail closed."""
+    request = _request(org_context=_BOOKING_ORG_CONTEXT)
+    output = ReasonDraftOutput(
+        reason="Score 95 from evidence [evidence:sig-1].",
+        cited_evidence_ids=("sig-1",),
+        customer_draft=(
+            "Hi Jordan, click here instead: "
+            "https://calendar.example.evil.com/schedule/fleetops-csm-working-session"
+        ),
+        model_id="test",
+        prompt_version=SLOT_B_PROMPT_VERSION,
+    )
+
+    with pytest.raises(SlotBContractError, match="non-allowlisted URL"):
+        validate_reason_draft_output(request, output)
+
+
+def test_slot_b_validator_rejects_any_url_when_no_booking_configured():
+    request = _request(org_context={"terminology": {}})
+    output = ReasonDraftOutput(
+        reason="Score 95 from evidence [evidence:sig-1].",
+        cited_evidence_ids=("sig-1",),
+        customer_draft="Hi Jordan, see https://totally-legit-scheduling.example/x",
+        model_id="test",
+        prompt_version=SLOT_B_PROMPT_VERSION,
+    )
+
+    with pytest.raises(SlotBContractError, match="non-allowlisted URL"):
+        validate_reason_draft_output(request, output)
+
+
 class _FakeMessages:
     def __init__(self, text: str):
         self.text = text
