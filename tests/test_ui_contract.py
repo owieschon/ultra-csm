@@ -105,8 +105,7 @@ class TestLedgerEndpoint:
             (p for p in proposals if p["action"] == "draft_customer_outreach"),
             None,
         )
-        if proposal is None:
-            pytest.skip("no draft_customer_outreach proposal in this sweep")
+        assert proposal is not None, "sweep is expected to yield a draft_customer_outreach proposal"
         verdict_resp = client.post(
             f"/proposals/{proposal['proposal_id']}/verdict",
             headers=AUTH_HEADERS,
