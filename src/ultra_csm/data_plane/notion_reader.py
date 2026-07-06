@@ -74,13 +74,31 @@ def _missing_env(env: dict[str, str]) -> tuple[str, ...]:
     return tuple(key for key in (_TOKEN_KEY,) if not env.get(key))
 
 
+def _unwrap_placeholder_brackets(value: str) -> str:
+    """Strip one enclosing ``<...>`` pair (e.g. ``<ntn_abc123>``) -- a real,
+    observed convention in this creds file for other credentials too (the
+    Rocketlane key carries the same wrapping), used as a visual
+    placeholder marker but sometimes left in place around the real pasted
+    value. Only strips a genuinely matching pair, never a lone bracket
+    that's part of the actual secret."""
+
+    if len(value) >= 2 and value.startswith("<") and value.endswith(">"):
+        return value[1:-1]
+    return value
+
+
 def _load_creds_file(path: str | None = None) -> dict[str, str]:
     """Notion-specific wrapper over the shared loader: an explicit *path*
     argument wins, otherwise ``ULTRA_CSM_NOTION_CREDS_PATH`` (this
     connector's own override) wins over the shared loader's generic
     ``ULTRA_CSM_LIVE_CREDS_PATH``/default-path resolution."""
 
-    return load_live_creds_file(path or os.environ.get(_CREDS_PATH_ENV))
+    env = load_live_creds_file(path or os.environ.get(_CREDS_PATH_ENV))
+    # The shared loader does not strip the ``<...>`` placeholder wrapping some
+    # pasted secrets carry (the Notion token in ~/ultra-csm-live-creds.env is
+    # wrapped; verified live). Apply it here so this connector's token is
+    # usable, without changing the shared loader's generic behavior.
+    return {key: _unwrap_placeholder_brackets(value) for key, value in env.items()}
 
 
 @dataclass(frozen=True)

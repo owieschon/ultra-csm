@@ -33,6 +33,30 @@ async function request<T>(
   return body as T;
 }
 
+export interface PendingMappingCandidate {
+  account_id: string;
+  confidence: number;
+  reason: string;
+  signal: string;
+}
+
+export interface PendingMapping {
+  source_type: "notion_meeting" | "slack_channel";
+  external_id: string;
+  title: string;
+  candidates: PendingMappingCandidate[];
+}
+
+export interface PendingMappingsResponse {
+  pending: PendingMapping[];
+  auth: string | null;
+}
+
+export interface ConfirmMappingResponse {
+  mapping_id: string;
+  auth: string | null;
+}
+
 export interface AccountSummary {
   account_id: string;
   account_name: string;
@@ -187,4 +211,23 @@ export const api = {
       }),
     }),
   ledger: (limit = 50) => request<LedgerResponse>(`/ledger?limit=${limit}`),
+  pendingSlackMappings: () =>
+    request<PendingMappingsResponse>("/comms/pending-mappings/slack"),
+  pendingNotionMappings: () =>
+    request<PendingMappingsResponse>("/comms/pending-mappings/notion"),
+  confirmCommsMapping: (
+    sourceType: "notion_meeting" | "slack_channel",
+    externalId: string,
+    accountId: string,
+    contactId?: string
+  ) =>
+    request<ConfirmMappingResponse>("/comms/mappings/confirm", {
+      method: "POST",
+      body: JSON.stringify({
+        source_type: sourceType,
+        external_id: externalId,
+        account_id: accountId,
+        contact_id: contactId ?? null,
+      }),
+    }),
 };

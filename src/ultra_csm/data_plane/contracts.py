@@ -250,6 +250,43 @@ class CommunicationSignal:
 
 
 @dataclass(frozen=True)
+class AccountAttributionCandidate:
+    """A proposed (not yet confirmed) account attribution for one piece of
+    identity-ambiguous external evidence -- shared shape for connectors that
+    must propose rather than assume which account a record belongs to
+    (Notion call transcripts by meeting title/transcript text, Slack
+    channels by channel name). Mirrors source_mapping.py's propose-then-
+    confirm discipline without reusing its field-mapping-specific
+    dataclasses -- this is record-level identity attribution, a different
+    problem from source_mapping's field-level schema mapping."""
+
+    account_id: str
+    confidence: float
+    reason: str
+    signal: Literal["title_match", "transcript_text_match", "channel_name_match"]
+
+
+@dataclass(frozen=True)
+class InternalCommsNote:
+    """Internal commentary on an account -- never customer-facing.
+
+    Distinct from ``CommunicationSignal`` rather than a widened variant of
+    it: an internal note has no customer ``contact_id`` (it's CSM-to-CSM
+    commentary, not a conversation with the customer), so forcing it into
+    the customer-conversation shape would require a fake contact reference.
+    ``source`` distinguishes a CSM-authored note (native, Postgres-backed)
+    from one pulled from a connected Slack channel.
+    """
+
+    note_id: str
+    account_id: str
+    author: str
+    timestamp: str
+    content: str
+    source: Literal["csm_note", "slack"]
+
+
+@dataclass(frozen=True)
 class StakeholderRelationship:
     """Relationship graph node between account and a contact.
 
@@ -473,6 +510,22 @@ class OnboardingConnector(Protocol):
     def derive_ttv_milestones(self, account_id: str) -> list[TimeToValueMilestone]: ...
 
 
+class CommsConnector(Protocol):
+    """Comms evidence seam: customer-facing (Gmail, Notion call transcripts)
+    and internal account commentary. Optional, same discipline as
+    OnboardingConnector: an account with no comms source configured has no
+    CommsConnector at all (``CustomerDataPlane.comms is None``), and the
+    Comms UI degrades honestly to empty lists rather than fabricating rows
+    (matches the drawer's existing dormant-until-real-data precedent in
+    ``ui/components/QueueDetail.tsx``)."""
+
+    def list_gmail_signals(self, account_id: str) -> list[CommunicationSignal]: ...
+
+    def list_call_transcript_signals(self, account_id: str) -> list[CommunicationSignal]: ...
+
+    def list_internal_notes(self, account_id: str) -> list[InternalCommsNote]: ...
+
+
 @dataclass(frozen=True)
 class CustomerDataPlane:
     """The integration seams an Ultra CSM agent consumes."""
@@ -481,3 +534,4 @@ class CustomerDataPlane:
     cs: CSPlatformConnector
     telemetry: ProductTelemetryConnector
     onboarding: OnboardingConnector | None = None
+    comms: CommsConnector | None = None
