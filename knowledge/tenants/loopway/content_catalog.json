@@ -7,14 +7,14 @@
       "id": "content-driver-app-quickstart",
       "title": "Driver App Quickstart: Getting Your First Driver Live",
       "module": "driver_app",
-      "addresses_gap": "activation_stalled",
+      "addresses_gap": "milestones_overdue",
       "format": "guide"
     },
     {
       "id": "content-driver-app-activation-video",
       "title": "Loopway Driver App Setup Walkthrough (6 min)",
       "module": "driver_app",
-      "addresses_gap": "activation_stalled",
+      "addresses_gap": "milestones_overdue",
       "format": "video"
     },
     {
@@ -35,7 +35,7 @@
       "id": "content-analytics-benchmark-report",
       "title": "2026 Last-Mile On-Time-Rate Benchmark Report",
       "module": "analytics",
-      "addresses_gap": "underused_capability",
+      "addresses_gap": "feature_shallow_depth",
       "format": "report"
     }
   ]
