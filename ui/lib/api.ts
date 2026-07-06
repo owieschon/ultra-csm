@@ -4,6 +4,9 @@
 // Demo/prod (`make serve` mounting ui/out at /ui via StaticFiles): base is
 // "" (relative), same-origin, no CORS needed.
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? "";
+export const isReadOnlyDemo = process.env.NEXT_PUBLIC_UCSM_READONLY_DEMO === "1";
+const DEMO_API_BASE =
+  process.env.NEXT_PUBLIC_UCSM_DEMO_API_BASE ?? "/ui/demo-api";
 
 export class ApiError extends Error {
   status: number;
@@ -19,12 +22,61 @@ async function request<T>(
   path: string,
   init?: RequestInit
 ): Promise<T> {
+  if (isReadOnlyDemo) {
+    return demoRequest<T>(path, init);
+  }
   const resp = await fetch(`${API_BASE}${path}`, {
     ...init,
     headers: {
       "Content-Type": "application/json",
       ...(init?.headers ?? {}),
     },
+  });
+  const body = await resp.json().catch(() => null);
+  if (!resp.ok) {
+    throw new ApiError(resp.status, body);
+  }
+  return body as T;
+}
+
+function demoPath(path: string): string {
+  const [rawPath, rawQuery = ""] = path.split("?");
+  const query = new URLSearchParams(rawQuery);
+  const day = query.get("day") ?? "140";
+  const accountMatch = rawPath.match(/^\/accounts\/([^/]+)\/([^/]+)$/);
+  if (rawPath === "/health") return "health.json";
+  if (rawPath === "/accounts") return `accounts-day-${day}.json`;
+  if (rawPath === "/sweep") return `sweep-day-${day}.json`;
+  if (rawPath === "/proposals") return "proposals.json";
+  if (rawPath === "/ledger") return "ledger.json";
+  if (rawPath === "/comms/pending-mappings/slack") return "comms-slack.json";
+  if (rawPath === "/comms/pending-mappings/notion") return "comms-notion.json";
+  if (accountMatch) {
+    const accountId = accountMatch[1];
+    const leaf = accountMatch[2];
+    if (leaf === "brief") return `account-${accountId}-brief-day-${day}.json`;
+    if (leaf === "trajectory") return `account-${accountId}-trajectory.json`;
+    if (leaf === "reconciliation") return `account-${accountId}-reconciliation-day-${day}.json`;
+  }
+  throw new ApiError(404, {
+    error: "Read-only demo fixture not found",
+    code: "READONLY_DEMO_NOT_FOUND",
+    path,
+  });
+}
+
+async function demoRequest<T>(path: string, init?: RequestInit): Promise<T> {
+  const method = init?.method ?? "GET";
+  if (method !== "GET" && path !== "/sweep") {
+    throw new ApiError(405, {
+      error: "The hosted demo is read-only.",
+      code: "READONLY_DEMO",
+      path,
+    });
+  }
+  const fixture = demoPath(path);
+  const resp = await fetch(`${DEMO_API_BASE}/${fixture}`, {
+    headers: { Accept: "application/json" },
   });
   const body = await resp.json().catch(() => null);
   if (!resp.ok) {

@@ -1,0 +1,58 @@
+{
+  "account_id": "162a9085-8e63-53f0-bb1b-b48426911d34",
+  "candidate_divergences": [],
+  "deterministic_signals": [
+    {
+      "contribution": 15,
+      "evidence": [
+        {
+          "field": "health_score",
+          "observed_at": "2026-06-21T00:00:00Z",
+          "source": "cs_platform",
+          "source_id": "162a9085-8e63-53f0-bb1b-b48426911d34"
+        }
+      ],
+      "name": "health_yellow",
+      "origin": "deterministic",
+      "surfaced_by_lenses": [
+        "risk_lens"
+      ],
+      "value": 1.0
+    },
+    {
+      "contribution": 20,
+      "evidence": [
+        {
+          "field": "target_date",
+          "observed_at": "2026-07-05",
+          "source": "cs_platform",
+          "source_id": "023f694d-e8cb-593b-8053-b69e06c2f22d"
+        }
+      ],
+      "name": "overdue_success_plan",
+      "origin": "deterministic",
+      "surfaced_by_lenses": [
+        "risk_lens"
+      ],
+      "value": 1.0
+    }
+  ],
+  "explanation": {
+    "disclaimer": "Model-generated explanation -- may be incomplete or mischaracterize the underlying evidence. Verify against the cited sources before acting.",
+    "evidence": [
+      {
+        "field": "health_score",
+        "observed_at": "2026-06-21T00:00:00Z",
+        "source": "cs_platform",
+        "source_id": "162a9085-8e63-53f0-bb1b-b48426911d34"
+      },
+      {
+        "field": "target_date",
+        "observed_at": "2026-07-05",
+        "source": "cs_platform",
+        "source_id": "023f694d-e8cb-593b-8053-b69e06c2f22d"
+      }
+    ],
+    "text": "Fixture explanation: no live model configured."
+  }
+}

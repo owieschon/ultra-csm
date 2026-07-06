@@ -1,0 +1,128 @@
+{
+  "account_id": "c79ad97e-e2ad-5b6a-beeb-800e4755adca",
+  "candidate_divergences": [],
+  "deterministic_signals": [
+    {
+      "contribution": 20,
+      "evidence": [
+        {
+          "field": "last_interaction",
+          "observed_at": "2026-06-21T07:00:00Z",
+          "source": "crm",
+          "source_id": "0cde8be1-1ecf-5092-96ec-411f8f8a40c9"
+        }
+      ],
+      "name": "single_threaded_risk",
+      "origin": "deterministic",
+      "surfaced_by_lenses": [
+        "value_model",
+        "risk_lens"
+      ],
+      "value": 1.0
+    },
+    {
+      "contribution": 30,
+      "evidence": [
+        {
+          "field": "health_score",
+          "observed_at": "2026-06-21T00:00:00Z",
+          "source": "cs_platform",
+          "source_id": "c79ad97e-e2ad-5b6a-beeb-800e4755adca"
+        }
+      ],
+      "name": "health_red",
+      "origin": "deterministic",
+      "surfaced_by_lenses": [
+        "risk_lens"
+      ],
+      "value": 1.0
+    },
+    {
+      "contribution": 18,
+      "evidence": [
+        {
+          "field": "status",
+          "observed_at": "2026-06-10T10:00:00Z",
+          "source": "crm",
+          "source_id": "633f9a3f-071c-56ef-86af-992135bd92ab"
+        }
+      ],
+      "name": "open_support_pressure",
+      "origin": "deterministic",
+      "surfaced_by_lenses": [
+        "risk_lens"
+      ],
+      "value": 1.0
+    },
+    {
+      "contribution": 8,
+      "evidence": [
+        {
+          "field": "due_date",
+          "observed_at": "2026-07-01",
+          "source": "cs_platform",
+          "source_id": "10b4aa63-02cd-5459-99cc-f154a26bc5e3"
+        }
+      ],
+      "name": "open_risk_cta",
+      "origin": "deterministic",
+      "surfaced_by_lenses": [
+        "risk_lens"
+      ],
+      "value": 1.0
+    },
+    {
+      "contribution": 12,
+      "evidence": [
+        {
+          "field": "active_users",
+          "observed_at": "2026-06-21T00:00:00Z",
+          "source": "cs_platform",
+          "source_id": "c79ad97e-e2ad-5b6a-beeb-800e4755adca"
+        }
+      ],
+      "name": "low_seat_penetration",
+      "origin": "deterministic",
+      "surfaced_by_lenses": [
+        "risk_lens"
+      ],
+      "value": 0.375
+    }
+  ],
+  "explanation": {
+    "disclaimer": "Model-generated explanation -- may be incomplete or mischaracterize the underlying evidence. Verify against the cited sources before acting.",
+    "evidence": [
+      {
+        "field": "last_interaction",
+        "observed_at": "2026-06-21T07:00:00Z",
+        "source": "crm",
+        "source_id": "0cde8be1-1ecf-5092-96ec-411f8f8a40c9"
+      },
+      {
+        "field": "health_score",
+        "observed_at": "2026-06-21T00:00:00Z",
+        "source": "cs_platform",
+        "source_id": "c79ad97e-e2ad-5b6a-beeb-800e4755adca"
+      },
+      {
+        "field": "status",
+        "observed_at": "2026-06-10T10:00:00Z",
+        "source": "crm",
+        "source_id": "633f9a3f-071c-56ef-86af-992135bd92ab"
+      },
+      {
+        "field": "due_date",
+        "observed_at": "2026-07-01",
+        "source": "cs_platform",
+        "source_id": "10b4aa63-02cd-5459-99cc-f154a26bc5e3"
+      },
+      {
+        "field": "active_users",
+        "observed_at": "2026-06-21T00:00:00Z",
+        "source": "cs_platform",
+        "source_id": "c79ad97e-e2ad-5b6a-beeb-800e4755adca"
+      }
+    ],
+    "text": "Fixture explanation: no live model configured."
+  }
+}
