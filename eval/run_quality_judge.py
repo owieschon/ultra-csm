@@ -13,6 +13,7 @@ import argparse
 import hashlib
 import json
 import random
+import time
 from pathlib import Path
 
 from eval.deterministic_quality import DETERMINISTIC_DIMENSIONS
@@ -23,6 +24,8 @@ from eval.gold_slot_b_hard import HARD_PATH, HARD_KEY_PATH
 
 REPORT_PATH = Path(__file__).resolve().parent / "gold" / "judge_agreement.json"
 KAPPA_CI_SAMPLES = 1000
+MAX_RETRIES = 5
+RETRYABLE_STATUS_CODES = {408, 409, 429, 500, 502, 503, 529}
 
 
 def load_clean() -> list[dict]:
@@ -65,7 +68,7 @@ def run_judge(judge, items: list[dict], *, layer: str) -> list[dict]:
             f"family={family} id={it['candidate_id']}",
             flush=True,
         )
-        it["judge"] = judge.score_output(it["request"], it["output"])
+        it["judge"] = _score_with_retry(judge, it["request"], it["output"])
     return items
 
 
@@ -170,6 +173,34 @@ def by_family(items: list[dict]) -> dict:
     return dict(sorted(fams.items()))
 
 
+def _score_with_retry(judge, request: dict, output: dict) -> dict[str, int]:
+    last_exc: Exception | None = None
+    for attempt in range(1, MAX_RETRIES + 1):
+        try:
+            return judge.score_output(request, output)
+        except Exception as exc:
+            last_exc = exc
+            if not _retryable(exc) or attempt == MAX_RETRIES:
+                break
+            time.sleep(min(2 ** (attempt - 1), 30))
+    raise last_exc if last_exc is not None else RuntimeError("judge scoring failed")
+
+
+def _retryable(exc: Exception) -> bool:
+    if isinstance(exc, ValueError):
+        return True
+    status_code = getattr(exc, "status_code", None)
+    if status_code in RETRYABLE_STATUS_CODES:
+        return True
+    return exc.__class__.__name__ in {
+        "APIConnectionError",
+        "APITimeoutError",
+        "InternalServerError",
+        "OverloadedError",
+        "RateLimitError",
+    }
+
+
 def build_report(judge) -> dict:
     clean = run_judge(judge, load_clean(), layer="clean")
     hard = run_judge(judge, load_hard(), layer="hard")
@@ -200,9 +231,12 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="Use bare-score judge output; default uses reasoning-before-score.",
     )
+    parser.add_argument("--max-tokens", type=int, default=None)
     args = parser.parse_args(argv)
 
     judge = AnthropicQualityJudge(model_id=args.model, reasoning=not args.terse)
+    if args.max_tokens is not None:
+        judge._max_tokens = max(judge._max_tokens, args.max_tokens)
     report = build_report(judge)
     Path(args.output).write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
