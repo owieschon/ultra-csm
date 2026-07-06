@@ -49,7 +49,7 @@ def test_upsert_row_updates_existing_row_numeric_properties_only():
 
     with patch("scripts.content_roadmap_push.find_existing_row", return_value="page-123"):
         with patch("scripts.content_roadmap_push._notion_request") as mock_request:
-            page_id, created = upsert_row(token="tok", database_id="db-1", row=_ROW)
+            page_id, created = upsert_row(token="tok", data_source_id="ds-1", row=_ROW)
 
     assert page_id == "page-123"
     assert created is False
@@ -63,7 +63,7 @@ def test_upsert_row_updates_existing_row_numeric_properties_only():
 def test_upsert_row_creates_new_row_with_default_status():
     with patch("scripts.content_roadmap_push.find_existing_row", return_value=None):
         with patch("scripts.content_roadmap_push._notion_request") as mock_request:
-            page_id, created = upsert_row(token="tok", database_id="db-1", row=_ROW)
+            page_id, created = upsert_row(token="tok", data_source_id="ds-1", row=_ROW)
 
     assert created is True
     body = mock_request.call_args[1]["body"]
