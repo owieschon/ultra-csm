@@ -121,7 +121,10 @@ def assert_demo_noauth_loopback(bind_host: str | None = None) -> None:
     host = (bind_host if bind_host is not None else os.environ.get("ULTRA_CSM_BIND_HOST"))
     host = (host or "").strip()
     if not host:
-        return
+        raise RuntimeError(
+            "ULTRA_CSM_DEMO_NOAUTH may only boot on a loopback bind host; "
+            "got unset/empty bind host. Use HOST=127.0.0.1 or disable demo no-auth."
+        )
     normalized = host[1:-1] if host.startswith("[") and host.endswith("]") else host
     if normalized == "localhost":
         return
