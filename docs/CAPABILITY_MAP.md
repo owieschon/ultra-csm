@@ -109,7 +109,7 @@ CA-8: Product discoverability signal (repeated self-service questions to product
 ## D9: Eval and Observability
 
 EV-1: Deterministic scorecard with unsafe foils — Built.
-EV-2: Quality judge (Sonnet 4.6, N-run aggregation, determinism probes) — Built.
+EV-2: Quality judge (Sonnet 5, N-run aggregation, determinism probes, drift-power scoped) — Built.
 EV-3: Regression system (offline + live lanes, Wilson confidence intervals) — Built.
 EV-4: Observability protocols (Tracer, Meter with NoOp defaults) — Built.
 EV-5: Live OTel export adapter — Not built. Depends on EV-4.

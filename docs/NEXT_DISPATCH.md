@@ -52,12 +52,14 @@ not deferred to the end.
 - **Structural capture:** recorded in `eval/regression_csm_live.json` when credentials are
   available; `STATUS.md` is the current rendered pointer for artifact-owned numbers.
   Scope: contract/safety drift, not semantic quality.
-- **Quality capture:** pending; build the human-validated judge lane and realistic
-  degradation described in [`QUALITY_REGRESSION_EVAL_SPEC.md`](QUALITY_REGRESSION_EVAL_SPEC.md).
-- **Migration capture:** pending; run the paired McNemar artifact with a candidate model id
-  before claiming a model-migration result.
-- **Then package the eval story:** with the non-determinism regression
-  proven on quality, the demo path has its evidence spine.
+- **Quality capture:** judge validation, realistic gold-set degradation, and drift-power
+  scoping are now recorded in `eval/gold/judge_agreement.json`,
+  `eval/gold/judge_compare.json`, `eval/gold/judge_model_migration.json`, and
+  `eval/drift_power_csm.json`.
+- **Migration capture:** complete for the judge model: paired McNemar migration adopted
+  `claude-sonnet-5`; the current claim boundary is sample-size, not model choice.
+- **Then package the eval story:** with non-determinism regression proven for large quality
+  drops and scoped for smaller drops, the demo path has its evidence spine.
   Do not wait for Phase 3.
 
 ### Phase 3 — deepen + breadth, then package the data-source story
