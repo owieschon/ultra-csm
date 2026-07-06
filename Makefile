@@ -13,7 +13,7 @@ setup:
 	$(PYTHON) -m pip install -e ".[dev,api,mcp]" -c constraints.txt
 
 serve:
-	PYTHONPATH=src:. $(PYTHON) -m uvicorn ultra_csm.api:app --host $(HOST) --port 8000 --reload
+	ULTRA_CSM_BIND_HOST=$(HOST) PYTHONPATH=src:. $(PYTHON) -m uvicorn ultra_csm.api:app --host $(HOST) --port 8000 --reload
 
 mcp:
 	PYTHONPATH=src:. $(PYTHON) -m ultra_csm.mcp_server

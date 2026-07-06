@@ -467,6 +467,15 @@ def _propose_expansion_call(
         "evidence_ids": [ref.source_id for ref in evidence],
         "claim_boundary": "deterministic expansion lens; no Slot-B quality claim",
     }
+    if action == "draft_customer_outreach":
+        gate.record_outreach_contact_ref(
+            account_ref=account.account_id,
+            contact_ref=contact.contact_id,
+            email=contact.email,
+            name=contact.name,
+            consent=contact.consent_to_contact,
+            cause_ref=f"agent1:expansion:{account.account_id}:{as_of}:contact-consent",
+        )
     return gate.propose(
         intent="agent1_expansion_lens",
         payload=payload,

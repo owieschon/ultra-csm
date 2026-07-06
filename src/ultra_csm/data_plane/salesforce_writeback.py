@@ -66,8 +66,17 @@ class LiveSalesforceActivityCommitter:
             raise CommitError(f"LiveSalesforceActivityCommitter cannot commit {proposal.action}")
         self._gate.assert_payload_bound(outcome, proposal.payload)
         account_id = _required_str(proposal.payload, "account_id")
-        key = _idempotency_key(proposal, outcome)
-        already = _ledger_has_committed_key(self._ledger_path, key)
+        key = _idempotency_key(proposal, outcome, target="salesforce:Task")
+        already = (
+            self._gate.idempotency_key_exists(key)
+            if dry_run
+            else not self._gate.claim_idempotency_key(
+                key,
+                request_id=proposal.proposal_id,
+                result_ref="salesforce:Task:intent",
+                cause_ref=f"commit:{proposal.proposal_id}",
+            )
+        )
         receipt = CommitReceipt(
             receipt_id=canonical_payload_sha256({
                 "proposal_id": proposal.proposal_id,
@@ -91,13 +100,10 @@ class LiveSalesforceActivityCommitter:
 
         # Record intent BEFORE the POST fires, closing the crash window
         # where a process kill between the network call and the ledger
-        # append could leave a real Salesforce Task with no local record,
-        # risking a duplicate Task on retry. The intent record always
-        # carries committed=False (via replace(), never the real receipt
-        # object) -- _ledger_has_committed_key only treats committed=True
-        # rows as proof of a successful prior send, so an intent-phase row
-        # must never be mistaken for one, even for a first-ever attempt
-        # where the final receipt itself is committed=True.
+        # append could leave a real Salesforce Task with no local record. The
+        # Postgres idempotency reservation above is the authority; this JSONL
+        # intent row is the human-readable audit trail and always carries
+        # committed=False via replace(), never the final receipt object.
         intent_receipt = replace(receipt, committed=False)
         self._append_ledger(intent_receipt, sf_task_id=None, subject=subject, phase="intent")
 
@@ -129,7 +135,9 @@ class LiveSalesforceActivityCommitter:
             self._append_ledger(
                 replace(receipt, committed=False), sf_task_id=None, subject=subject, phase="failed",
             )
+            self._gate.release_idempotency_key(key)
             raise
+        self._gate.mark_idempotency_result(key, result_ref=f"salesforce:Task:{sf_task_id}")
         self._append_ledger(receipt, sf_task_id=sf_task_id, subject=subject, phase="confirmed")
         return receipt
 
@@ -158,24 +166,14 @@ def _required_str(payload: dict[str, Any], key: str) -> str:
     return value
 
 
-def _idempotency_key(proposal: ActionProposal, outcome: GateOutcome) -> str:
+def _idempotency_key(
+    proposal: ActionProposal,
+    outcome: GateOutcome,
+    *,
+    target: str = "salesforce:Task",
+) -> str:
     return canonical_payload_sha256({
         "proposal_id": proposal.proposal_id,
         "payload_sha256": outcome.payload_sha256,
+        "target": target,
     })
-
-
-def _ledger_has_committed_key(path: Path, key: str) -> bool:
-    if not path.exists():
-        return False
-    for line in path.read_text(encoding="utf-8").splitlines():
-        if not line.strip():
-            continue
-        entry = json.loads(line)
-        if (
-            entry["receipt"]["idempotency_key"] == key
-            and entry["receipt"]["committed"]
-            and not entry["receipt"]["dry_run"]
-        ):
-            return True
-    return False

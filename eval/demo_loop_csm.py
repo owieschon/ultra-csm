@@ -29,7 +29,7 @@ from ultra_csm.governance import (
     ActionGate,
     FixtureVerdictSource,
     ROLE_CS_ORCHESTRATOR,
-    ROLE_ORDER_CONFIRM_AUTHORITY,
+    ROLE_SAFETY_REVIEWER,
     Verdict,
     make_principal,
     proposal_fields_for,
@@ -202,7 +202,7 @@ def _setup_demo_roster(conn) -> tuple[str, str, str]:
         tenant_id=tenant_id,
         actor_id=seed_actor,
         display_name="demo-approval-authority",
-        role=ROLE_ORDER_CONFIRM_AUTHORITY,
+        role=ROLE_SAFETY_REVIEWER,
     )
     return orch, authority, tenant_id
 

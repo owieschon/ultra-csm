@@ -29,7 +29,7 @@ from ultra_csm.comms_mapping import (
 )
 from ultra_csm.logging_config import setup_logging
 from ultra_csm.platform import EphemeralCluster
-from ultra_csm.platform.db import apply_migrations, session
+from ultra_csm.platform.db import apply_migrations, assert_rls_safe_role, session
 from ultra_csm.platform.seed import det_uuid, seed, SEED_CLOCK
 
 from ultra_csm.data_plane import (
@@ -75,6 +75,7 @@ from ultra_csm._api_helpers import (
     _enrich_person_evidence,
     _proposal_has_contact_consent,
     _score_one_account,
+    assert_demo_noauth_loopback,
     auth_marker,
     demo_noauth_enabled,
     parse_api_tokens,
@@ -360,6 +361,7 @@ async def lifespan(app: FastAPI):
 
     setup_logging("INFO")
     log.info("Booting ephemeral Postgres cluster for API")
+    assert_demo_noauth_loopback()
     if demo_noauth_enabled():
         log.warning(
             "ULTRA_CSM_DEMO_NOAUTH=1 enabled; mutating API routes allow "
@@ -376,6 +378,7 @@ async def lifespan(app: FastAPI):
 
     # Runtime connection for the lifetime of the server.
     _conn = psycopg.connect(**_cluster.dsn(user="app_runtime"))
+    assert_rls_safe_role(_conn)
 
     # Seed governance roster.
     seed_roster(_conn, tenant_id=_TENANT_ID, actor_id=_SEED_AGENT, now=_CLOCK)

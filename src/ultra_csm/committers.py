@@ -121,7 +121,17 @@ class SimOutboundCommitter:
             raise CommitError(f"SimOutboundCommitter cannot commit {proposal.action}")
         self._gate.assert_payload_bound(outcome, proposal.payload)
         account_id = _required_str(proposal.payload, "account_id")
-        key = _idempotency_key(proposal, outcome)
+        key = _idempotency_key(proposal, outcome, target=str(self._outbox))
+        already = (
+            self._gate.idempotency_key_exists(key)
+            if dry_run
+            else not self._gate.claim_idempotency_key(
+                key,
+                request_id=proposal.proposal_id,
+                result_ref=str(self._outbox),
+                cause_ref=f"commit:{proposal.proposal_id}",
+            )
+        )
         receipt = _receipt(
             proposal,
             outcome,
@@ -129,7 +139,7 @@ class SimOutboundCommitter:
             idempotency_key=key,
             target=str(self._outbox),
             dry_run=dry_run,
-            committed=not _contains_key(self._outbox, key),
+            committed=not already,
         )
         if dry_run or not receipt.committed:
             return receipt
@@ -149,6 +159,7 @@ class SimOutboundCommitter:
             "receipt": asdict(receipt),
             "source": "sim",
         })
+        self._gate.mark_idempotency_result(key, result_ref=str(self._outbox))
         return receipt
 
 
@@ -174,8 +185,17 @@ class SimCrmActivityCommitter:
             raise CommitError(f"SimCrmActivityCommitter cannot commit {proposal.action}")
         self._gate.assert_payload_bound(outcome, proposal.payload)
         account_id = _required_str(proposal.payload, "account_id")
-        key = _idempotency_key(proposal, outcome)
-        already = any(activity.idempotency_key == key for activity in self._store.state().activities)
+        key = _idempotency_key(proposal, outcome, target=str(self._store.path))
+        already = (
+            self._gate.idempotency_key_exists(key)
+            if dry_run
+            else not self._gate.claim_idempotency_key(
+                key,
+                request_id=proposal.proposal_id,
+                result_ref=str(self._store.path),
+                cause_ref=f"commit:{proposal.proposal_id}",
+            )
+        )
         receipt = _receipt(
             proposal,
             outcome,
@@ -195,6 +215,7 @@ class SimCrmActivityCommitter:
             idempotency_key=key,
             occurred_at=str(proposal.payload.get("as_of") or "2026-06-28") + "T12:00:00Z",
         )
+        self._gate.mark_idempotency_result(key, result_ref=str(self._store.path))
         return receipt
 
 
@@ -225,10 +246,11 @@ def _receipt(
     )
 
 
-def _idempotency_key(proposal: ActionProposal, outcome: GateOutcome) -> str:
+def _idempotency_key(proposal: ActionProposal, outcome: GateOutcome, *, target: str) -> str:
     return canonical_payload_sha256({
         "proposal_id": proposal.proposal_id,
         "payload_sha256": outcome.payload_sha256,
+        "target": target,
     })
 
 
@@ -241,17 +263,6 @@ def _required_str(payload: dict[str, Any], key: str) -> str:
 
 def _activity_direction(action: str) -> str:
     return "internal" if action == "recommend_next_best_action" else "outbound"
-
-
-def _contains_key(path: Path, key: str) -> bool:
-    if not path.exists():
-        return False
-    for line in path.read_text(encoding="utf-8").splitlines():
-        if not line.strip():
-            continue
-        if json.loads(line)["receipt"]["idempotency_key"] == key:
-            return True
-    return False
 
 
 def _append_jsonl(path: Path, payload: dict[str, Any]) -> None:

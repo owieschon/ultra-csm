@@ -2,20 +2,25 @@
 
 from __future__ import annotations
 
+import json
+
+import psycopg
 import pytest
 
 from ultra_csm.governance import (
     ActionGate,
+    Authorizer,
     FixtureVerdictSource,
     GateError,
     Verdict,
     canonical_payload_sha256,
-    PERM_ORDER_CONFIRM,
 )
+from ultra_csm.platform.db import session
 
 from tests._govhelpers import (  # noqa: F401 - gov_conn is a pytest fixture used by injection
     CLOCK,
     T1,
+    det,
     gov_conn,
     make_human_principal,
     setup_roster,
@@ -25,6 +30,20 @@ from tests._govhelpers import (  # noqa: F401 - gov_conn is a pytest fixture use
 def _gate(conn, *, actor, source):
     return ActionGate(conn, tenant_id=T1, actor_principal_id=actor,
                       verdict_source=source, now=CLOCK)
+
+
+def _seed_account_contact(gate: ActionGate, *, consent: bool):
+    account_id = det("account", "outreach-consent", str(consent))
+    contact_id = det("contact", "outreach-consent", str(consent))
+    gate.record_outreach_contact_ref(
+        account_ref=account_id,
+        contact_ref=contact_id,
+        email=f"consent-{consent}@example.com",
+        name="Consent Test",
+        consent=consent,
+        cause_ref=f"test:contact-consent:{consent}",
+    )
+    return account_id, contact_id
 
 
 # ---------------------------------------------------------------------------
@@ -118,10 +137,73 @@ def test_gate_tampered_payload_refused(gov_conn):
         gate.assert_payload_bound(out, tampered)
 
 
+def test_db_rejects_action_proposal_payload_hash_mismatch(gov_conn):
+    """The database recomputes the canonical payload hash, so direct SQL cannot
+    insert a proposal whose stored payload and anti-TOCTOU hash disagree."""
+    orch, _authority = setup_roster(gov_conn)
+    payload = {"body": "draft", "to": "buyer@example.com"}
+    with pytest.raises(psycopg.errors.CheckViolation, match="payload hash mismatch"):
+        with session(gov_conn, tenant_id=T1, actor_id=orch, now=CLOCK) as cur:
+            cur.execute(
+                "INSERT INTO action_proposal (tenant_id, actor_principal_id, intent, "
+                "action, payload, payload_sha256, autonomy_tier, required_permission) "
+                "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
+                (
+                    T1,
+                    orch,
+                    "send_email",
+                    "email.send",
+                    json.dumps(payload),
+                    "not-the-canonical-hash",
+                    2,
+                    "email.send",
+                ),
+            )
+
+
+def test_db_rejects_approved_outreach_without_contact_consent(gov_conn):
+    """REST/MCP have app-level consent checks; the DB is the backstop for any
+    lower-level caller that tries to approve customer outreach directly."""
+    orch, _authority = setup_roster(gov_conn)
+    human = make_human_principal(gov_conn)
+    src = FixtureVerdictSource(default=Verdict("approve", human_principal_id=human))
+    gate = _gate(gov_conn, actor=orch, source=src)
+    account_id, contact_id = _seed_account_contact(gate, consent=False)
+
+    prop = gate.propose(intent="customer_outreach", action="draft_customer_outreach",
+                        payload={
+                            "account_id": account_id,
+                            "contact_id": contact_id,
+                            "body": "Draft that must not send.",
+                        },
+                        autonomy_tier=2,
+                        required_permission="customer.outreach.draft")
+    with pytest.raises(psycopg.errors.InsufficientPrivilege, match="outreach consent"):
+        gate.record_verdict(prop)
+
+
+def test_db_allows_approved_outreach_with_contact_consent(gov_conn):
+    orch, _authority = setup_roster(gov_conn)
+    human = make_human_principal(gov_conn)
+    src = FixtureVerdictSource(default=Verdict("approve", human_principal_id=human))
+    gate = _gate(gov_conn, actor=orch, source=src)
+    account_id, contact_id = _seed_account_contact(gate, consent=True)
+
+    prop = gate.propose(intent="customer_outreach", action="draft_customer_outreach",
+                        payload={
+                            "account_id": account_id,
+                            "contact_id": contact_id,
+                            "body": "Consented draft.",
+                        },
+                        autonomy_tier=2,
+                        required_permission="customer.outreach.draft")
+    out = gate.record_verdict(prop)
+    assert out.authorized is True
+
+
 def test_verdict_unique_per_proposal(gov_conn):
     """UNIQUE(proposal_id): a second verdict on the same proposal is rejected by
     the DB — the gate is idempotent under retry / double-post."""
-    import psycopg
     orch, _authority = setup_roster(gov_conn)
     human = make_human_principal(gov_conn)
     src = FixtureVerdictSource(default=Verdict("approve", human_principal_id=human))
@@ -134,24 +216,21 @@ def test_verdict_unique_per_proposal(gov_conn):
         gate.record_verdict(prop)
 
 
-def test_csm_orchestrator_verdict_cannot_mint_order_confirm_authority(gov_conn):
-    """SoD via the PERMISSION layer: even a properly human, non-self approver
-    who merely holds the cs-orchestrator role (not order-confirm-authority)
-    cannot mint order.confirm authority. Distinct from the gate/DB human-ness
-    check below -- this is Authorizer.can_confirm_order, a permission lookup,
-    not a kind/self-approval check."""
+def test_csm_orchestrator_verdict_cannot_mint_reviewer_authority(gov_conn):
+    """Permission-layer check: a properly human, non-self approval cannot grant
+    the proposing CSM agent extra governance-review authority."""
     orch, _authority = setup_roster(gov_conn)
     human = make_human_principal(gov_conn)
-    assert PERM_ORDER_CONFIRM == "order.confirm"
     src = FixtureVerdictSource(by_intent={
-        "customer_outreach": Verdict("approve", human_principal_id=human)})
+        "log_crm_activity": Verdict("approve", human_principal_id=human)})
     gate = _gate(gov_conn, actor=orch, source=src)
-    prop = gate.propose(intent="customer_outreach", action="draft_customer_outreach",
+    prop = gate.propose(intent="log_crm_activity", action="log_crm_activity",
                         payload={"account_id": "acct", "body": "draft"}, autonomy_tier=2,
-                        required_permission="customer.outreach.draft")
+                        required_permission="crm.activity.write")
     out = gate.record_verdict(prop)
     assert out.authorized is True
-    assert gate.confirm_authority_ok(out) is False
+    authz = Authorizer(gov_conn, tenant_id=T1, actor_id=orch, now=CLOCK)
+    assert authz.has_permission(orch, "governance.review") is False
 
 
 # ---------------------------------------------------------------------------
