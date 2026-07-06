@@ -17,11 +17,24 @@ from ultra_csm.triggers import (
 )
 
 
-def test_default_trigger_config_is_ttv_only():
+def test_default_trigger_config_promotes_live_book_lenses():
     config = load_trigger_config(DEFAULT_TRIGGER_CONFIG_PATH)
 
     assert config.config_version == "triggers-v1"
-    assert {trigger.action.lens for trigger in config.triggers} == {"ttv"}
+    triggers_by_name = {trigger.name: trigger for trigger in config.triggers}
+    assert set(triggers_by_name) == {
+        "daily_ttv",
+        "weekly_risk_sweep",
+        "weekly_expansion_sweep",
+    }
+    assert {trigger.action.lens for trigger in config.triggers} == {
+        "ttv",
+        "risk",
+        "expansion",
+    }
+    assert triggers_by_name["daily_ttv"].action.scope == "book"
+    assert triggers_by_name["weekly_risk_sweep"].every_days == 7
+    assert triggers_by_name["weekly_expansion_sweep"].every_days == 7
 
 
 def test_schedule_trigger_is_deterministic_and_respects_boundary():

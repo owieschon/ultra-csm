@@ -197,7 +197,7 @@ def check_real_sweep_guard_fleetops() -> dict[str, Any]:
                     )
                     if result is None:
                         continue
-                    tier, _motion = result
+                    tier, _motion, _triggers = result
                     if tier != "tech_touch" or not item.customer_contact_allowed:
                         continue
                     detail["accounts_checked"] += 1

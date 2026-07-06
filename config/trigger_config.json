@@ -9,6 +9,24 @@
         "lens": "ttv",
         "scope": "book"
       }
+    },
+    {
+      "name": "weekly_risk_sweep",
+      "kind": "schedule",
+      "every": "7d",
+      "action": {
+        "lens": "risk",
+        "scope": "book"
+      }
+    },
+    {
+      "name": "weekly_expansion_sweep",
+      "kind": "schedule",
+      "every": "7d",
+      "action": {
+        "lens": "expansion",
+        "scope": "book"
+      }
     }
   ]
 }
