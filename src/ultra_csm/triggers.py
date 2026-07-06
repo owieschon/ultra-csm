@@ -31,7 +31,7 @@ SuppressionReason = Literal[
     "pending_proposal",
 ]
 
-KNOWN_LENSES = frozenset({"ttv"})
+KNOWN_LENSES = frozenset({"ttv", "risk", "expansion"})
 KNOWN_KINDS = frozenset({"schedule", "deadline", "event"})
 KNOWN_SCOPES = frozenset({"book", "account"})
 KNOWN_FIELDS = frozenset({

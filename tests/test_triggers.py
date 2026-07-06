@@ -153,7 +153,7 @@ def test_trigger_config_rejects_authority_keys(key: str):
         {"kind": "unknown"},
         {"when": [{"field": "unknown", "op": "within_days", "value": 90}]},
         {"when": [{"field": "renewal_date", "op": "unknown", "value": 90}]},
-        {"action": {"lens": "risk", "scope": "account"}},
+        {"action": {"lens": "not_a_real_lens", "scope": "account"}},
     ],
 )
 def test_trigger_config_fails_closed_for_unknowns(patch: dict):
