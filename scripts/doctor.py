@@ -45,7 +45,9 @@ def check_pg_binaries() -> tuple[bool, str]:
         if found is None:
             missing.append(name)
             continue
-        out = subprocess.run([str(found), "--version"], capture_output=True, text=True)
+        out = subprocess.run(
+            [str(found), "--version"], capture_output=True, text=True, timeout=120
+        )
         versions.append(out.stdout.strip() or name)
     if missing:
         return False, (
@@ -85,12 +87,28 @@ def check_ephemeral_cluster() -> tuple[bool, str]:
         return False, f"cluster failed to boot: {exc} ({log_hint})"
 
 
+def check_stale_clusters() -> tuple[bool, str]:
+    """Preflight-only: reap orphaned ephemeral-Postgres datadirs and report
+    what was found. Never fails the overall doctor run -- an orphan found
+    and reaped is a thing fixed, not a problem left unresolved."""
+    try:
+        from ultra_csm.platform import reap_stale_clusters
+    except ImportError as exc:
+        return False, f"cannot import platform module: {exc} — run `make setup`"
+    reaped = reap_stale_clusters()
+    if not reaped:
+        return True, "no orphaned ephemeral-Postgres clusters found under build/tmp/"
+    names = ", ".join(Path(c.datadir).name for c in reaped)
+    return True, f"reaped {len(reaped)} orphaned cluster(s): {names}"
+
+
 CHECKS = (
     ("python", check_python),
     ("venv", check_venv),
     ("postgres binaries", check_pg_binaries),
     ("package imports", check_imports),
     ("ephemeral cluster", check_ephemeral_cluster),
+    ("stale cluster reaper", check_stale_clusters),
 )
 
 
