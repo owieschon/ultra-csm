@@ -1,0 +1,35 @@
+{
+  "account_id": "390eef5a-4d06-59ae-93cb-2c0a012e7ef8",
+  "candidate_divergences": [],
+  "deterministic_signals": [
+    {
+      "contribution": 20,
+      "evidence": [
+        {
+          "field": "target_date",
+          "observed_at": "2026-07-20",
+          "source": "cs_platform",
+          "source_id": "2b9e4aff-7f3e-5fd8-af1d-482d72f79fdc"
+        }
+      ],
+      "name": "overdue_success_plan",
+      "origin": "deterministic",
+      "surfaced_by_lenses": [
+        "risk_lens"
+      ],
+      "value": 1.0
+    }
+  ],
+  "explanation": {
+    "disclaimer": "Model-generated explanation -- may be incomplete or mischaracterize the underlying evidence. Verify against the cited sources before acting.",
+    "evidence": [
+      {
+        "field": "target_date",
+        "observed_at": "2026-07-20",
+        "source": "cs_platform",
+        "source_id": "2b9e4aff-7f3e-5fd8-af1d-482d72f79fdc"
+      }
+    ],
+    "text": "Fixture explanation: no live model configured."
+  }
+}

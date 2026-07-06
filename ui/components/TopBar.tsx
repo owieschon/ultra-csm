@@ -13,6 +13,7 @@ export function TopBar({
   queueCount,
   day,
   liveMode,
+  readOnlyDemo,
   onDayChange,
   health,
   onOpenPalette,
@@ -24,6 +25,7 @@ export function TopBar({
   queueCount: number;
   day: number;
   liveMode: boolean;
+  readOnlyDemo?: boolean;
   onDayChange: (day: number) => void;
   health: "ok" | "degraded" | "checking";
   onOpenPalette: () => void;
@@ -62,7 +64,7 @@ export function TopBar({
           <span className="num" style={{ color: "var(--fg-2)" }}>
             {accountCount != null ? `${accountCount} accounts` : "…"}
           </span>
-          <span className="pb">LIVE BOOK</span>
+          <span className="pb">{readOnlyDemo ? "READ-ONLY DEMO" : "LIVE BOOK"}</span>
         </span>
       </div>
 
@@ -133,7 +135,7 @@ export function TopBar({
                     : "var(--danger)",
             }}
           />
-          {health === "ok" ? "LIVE" : health === "checking" ? "…" : "DEGRADED"}
+          {readOnlyDemo ? "STATIC" : health === "ok" ? "LIVE" : health === "checking" ? "…" : "DEGRADED"}
         </div>
       </div>
     </header>
