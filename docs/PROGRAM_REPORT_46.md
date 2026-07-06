@@ -23,8 +23,9 @@ is green and zero hard STOP conditions fired.
 | No Notion API calls in matcher/aggregation (precise check — see IF/THEN #9) | `! grep -rniE "import.*notion_reader\|import.*notion_call_transcripts\|urllib\|_notion_request\|requests\.(get\|post)" src/ultra_csm/content_roadmap.py src/ultra_csm/agent1/content_route_matcher.py` | `NONE` |
 | Governance spec unmodified (anti-Goodhart) | `git diff --stat main -- src/ultra_csm/governance/csm_actions.py tests/test_content_catalog.py tests/test_knowledge.py` | empty |
 | Live Notion push (Owner Ask) | `python scripts/content_roadmap_push.py` | **BLOCKED** — `content-roadmap-push failed: Could not locate the existing Content Catalog/Org Pack databases via live search...` (see `BLOCKED_CONTENT_ROADMAP.md`) |
-| Full suite (`make eval`) | `make eval` | started; see Final Verification for status at report time |
-| Lint | `make lint` | pending, see Final Verification |
+| Full suite (`make eval`) | `make eval` | `680 passed, 1 skipped, 0 failed` in 703.23s |
+| Lint | `make lint` | `All checks passed!` |
+| Hygiene | `make hygiene` | exit 0 |
 
 **Real ranked roadmap** (fleetops's book at day_offset=140/`2026-11-08`; loopway's book
 at day 0/`2026-06-21`; the taste-node artifact this dispatch's Routing table names):
@@ -167,7 +168,8 @@ name a shared `as_of` convention explicitly rather than inherit this one.
 | Every new/modified test file | `pytest tests/test_content_catalog.py tests/test_content_roadmap.py tests/test_content_route_matcher.py tests/test_content_roadmap_push.py tests/test_notion_render.py -q` | 30 passed |
 | Regression (agent1/sweep-adjacent) | `pytest tests/test_agent1_sweep.py tests/test_agent1_slot_b.py tests/test_agent1_time_to_value.py tests/test_agent1_lenses.py -q` | 45 passed |
 | Bridge gate | `make notion-render && make notion-render-check && pytest tests/test_notion_render.py -k curated -q` | `BRIDGE_OK` |
-| Full suite (`make eval`) / lint / hygiene | (background run; the machine had 8+ other dispatches' `make eval` running concurrently at the time, slowing all of them) | **status TBD — see addendum or re-run before merge if not resolved by the time this is read** |
+| Full suite (`make eval`) | `make eval` | `680 passed, 1 skipped, 0 failed` in 703.23s (11:43 — slow due to 8+ other dispatches' concurrent `make eval` runs sharing the machine at the time, not this dispatch's own tests) |
+| Lint / hygiene | `make lint && make hygiene` | `All checks passed!` / exit 0 |
 
 ## Receipts appendix (K4)
 
@@ -210,8 +212,11 @@ documented collision-avoidance quirk.
 `grep -q '^ULTRA_CSM_NOTION_TOKEN=' ~/ultra-csm-live-creds.env` → present; live search
 calls confirmed the token authenticates but has zero shared pages (see Owner Ask 1).
 
-**Merge policy check (K11):** not yet re-verified at report-writing time (Final
-Verification's `make eval`/lint status is pending) — per Merge Policy, this run is
-noisy regardless (BLOCKED item present), so the PR is left open, unmerged, with this
-report's Owner Asks in the PR body, whether or not `allow_auto_merge`/branch protection
-mechanics are configured.
+**Merge policy check (K11):** `gh api repos/owieschon/ultra-csm --jq .allow_auto_merge`
+→ `true`; `gh api repos/owieschon/ultra-csm/branches/main/protection` → 200, required
+check `eval + CSM scorecard`. Both mechanics ARE configured. The run is **not clean**
+regardless — the Phase 3 live-push BLOCKED item (Owner Ask) counts as noisy per Merge
+Policy's own text ("no unresolved BLOCKED items ... counts as noisy → demoted"), and the
+concurrent `sweep.py` edit in a parallel worktree (Owner Ask 2) is an additional reason
+to hold. Per K11, this PR is left **open**, not auto-merged, with both Owner Asks stated
+in the PR body.
