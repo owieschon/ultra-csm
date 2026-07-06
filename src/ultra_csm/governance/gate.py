@@ -239,6 +239,46 @@ class ActionGate:
             payload_sha256=eff_sha, verdict=v.verdict,
         )
 
+    # -- deny + supersede (the bounded draft-revise loop's verdict path) ----
+    def reject_and_supersede(self, proposal: ActionProposal, *,
+                             human_principal_id: str, revised_payload: dict,
+                             rationale: str | None = None,
+                             cause_ref: str | None = None) -> None:
+        """Record a deny+supersede verdict: the ORIGINAL proposal is denied
+        (never mutated -- distinct from `record_verdict`'s own 'revise', which
+        approves in place). Used by the bounded Slot B draft-revise loop
+        (agent1/revise.py), which emits a fresh superseding proposal via
+        `propose()` separately; this method only closes out the rejected one.
+
+        `revised_payload` here is the revise-loop's edit-instruction record
+        (`{"kind": ..., "edit_instruction": ...}`), NOT an authorized action
+        body -- `approved_payload_sha256` is always None for this path,
+        because nothing is being authorized to commit. This is why the
+        gate/DB human-ness check (record_verdict, above) does not apply here:
+        that check is scoped to verdicts that AUTHORIZE
+        (approved_payload_sha256 IS NOT NULL), and this path's whole point is
+        that it never does.
+
+        Raises GateError if the proposal is not currently 'pending' (a
+        compare-and-set on the UPDATE, not a blind write) -- callers must not
+        reject_and_supersede a proposal that already has a terminal verdict."""
+        with session(self._conn, tenant_id=self._tenant_id, actor_id=self._actor,
+                     cause_ref=cause_ref, now=self._now) as cur:
+            cur.execute(
+                "UPDATE action_proposal SET status = %s, row_version = row_version + 1 "
+                "WHERE proposal_id = %s AND status = %s",
+                ("denied", proposal.proposal_id, "pending"),
+            )
+            if cur.rowcount != 1:
+                raise GateError(f"proposal is not pending: {proposal.proposal_id}")
+            cur.execute(
+                "INSERT INTO action_verdict (tenant_id, proposal_id, verdict, "
+                "revised_payload, approved_payload_sha256, rationale, "
+                "human_principal_id) VALUES (%s, %s, %s, %s, %s, %s, %s)",
+                (self._tenant_id, proposal.proposal_id, "revise",
+                 json.dumps(revised_payload), None, rationale, human_principal_id),
+            )
+
     # -- the committer's anti-TOCTOU check ----------------------------------
     def assert_payload_bound(self, outcome: GateOutcome, payload: dict) -> None:
         """Fail-closed before executing: the action the committer is about to run
