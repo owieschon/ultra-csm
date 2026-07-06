@@ -233,6 +233,17 @@ def write_gold_label_status(
     return status
 
 
+def check_gold_label_status(
+    path: Path = GOLD_PATH,
+    *,
+    output: Path = STATUS_PATH,
+    key_path: Path | None = None,
+) -> bool:
+    status = gold_label_status(path, key_path=key_path)
+    rendered = json.dumps(status, indent=2, sort_keys=True) + "\n"
+    return output.exists() and output.read_text(encoding="utf-8") == rendered
+
+
 def _blindness_errors(records: tuple[dict, ...]) -> list[str]:
     errors = []
     raw = "\n".join(json.dumps(record, sort_keys=True) for record in records)
@@ -735,8 +746,21 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--key-output", default=None)
     parser.add_argument("--status", action="store_true")
     parser.add_argument("--require-complete", action="store_true")
+    parser.add_argument("--check", action="store_true")
     parser.add_argument("--status-output", default=str(STATUS_PATH))
     args = parser.parse_args(argv)
+    if args.check:
+        output = Path(args.status_output)
+        current = check_gold_label_status(
+            Path(args.output),
+            output=output,
+            key_path=Path(args.key_output) if args.key_output else None,
+        )
+        if not current:
+            print(f"{_display_path(output)} is stale; run `make quality-gold-status-csm`")
+            return 1
+        print(f"{_display_path(output)} is current")
+        return 0
     if args.status or args.require_complete:
         status = write_gold_label_status(
             Path(args.output),

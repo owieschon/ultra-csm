@@ -381,22 +381,42 @@ def write_hard_status(path: Path = HARD_PATH, *, output: Path = HARD_STATUS_PATH
     return status
 
 
+def check_hard_status(path: Path = HARD_PATH, *, output: Path = HARD_STATUS_PATH, key_path: Path = HARD_KEY_PATH) -> bool:
+    status = hard_status(path, key_path=key_path)
+    rendered = json.dumps(status, indent=2, sort_keys=True) + "\n"
+    return output.exists() and output.read_text(encoding="utf-8") == rendered
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
+    parser.add_argument("--output", default=str(HARD_PATH))
+    parser.add_argument("--key-output", default=str(HARD_KEY_PATH))
+    parser.add_argument("--status-output", default=str(HARD_STATUS_PATH))
     parser.add_argument("--status", action="store_true")
     parser.add_argument("--require-complete", action="store_true")
+    parser.add_argument("--check", action="store_true")
     args = parser.parse_args(argv)
+    path = Path(args.output)
+    key_path = Path(args.key_output)
+    status_output = Path(args.status_output)
+    if args.check:
+        current = check_hard_status(path, output=status_output, key_path=key_path)
+        if not current:
+            print(f"{_display_path(status_output)} is stale; run `make quality-gold-hard-status-csm`")
+            return 1
+        print(f"{_display_path(status_output)} is current")
+        return 0
     if args.status or args.require_complete:
-        status = write_hard_status()
+        status = write_hard_status(path, output=status_output, key_path=key_path)
         print(
             f"Slot B hard layer: {status['labeled']}/{status['total']} labeled, "
             f"blind={status['blind']}, "
             f"ready_for_judge_validation={status['ready_for_judge_validation']}"
         )
         return 0 if status["ready_for_judge_validation"] or not args.require_complete else 2
-    records = write_hard()
-    print(f"wrote {len(records)} hard adversarial gold rows -> {_display_path(HARD_PATH)}")
-    print(f"held-out key -> {_display_path(HARD_KEY_PATH)}")
+    records = write_hard(path, key_path=key_path)
+    print(f"wrote {len(records)} hard adversarial gold rows -> {_display_path(path)}")
+    print(f"held-out key -> {_display_path(key_path)}")
     return 0
 
 

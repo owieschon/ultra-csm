@@ -118,7 +118,7 @@
               "on_task_relevance": 2,
               "priority_fidelity": 1,
               "safety_boundary": 3,
-              "tone_fit": 3
+              "tone_fit": 2
             }
           },
           "candidate_id": "slot-b-gold-4a2a132e28065536",
@@ -213,9 +213,9 @@
         {
           "agg": {
             "aggregate_pass": false,
-            "indeterminate": true,
+            "indeterminate": false,
             "n_runs": 5,
-            "pass_rate": 0.2,
+            "pass_rate": 0.0,
             "vector": {
               "account_specificity": 2,
               "grounding_fidelity": 3,
@@ -239,9 +239,9 @@
         {
           "agg": {
             "aggregate_pass": false,
-            "indeterminate": true,
+            "indeterminate": false,
             "n_runs": 5,
-            "pass_rate": 0.2,
+            "pass_rate": 0.0,
             "vector": {
               "account_specificity": 2,
               "grounding_fidelity": 3,
@@ -479,7 +479,7 @@
             "vector": {
               "account_specificity": 2,
               "grounding_fidelity": 3,
-              "on_task_relevance": 3,
+              "on_task_relevance": 2,
               "priority_fidelity": 2,
               "safety_boundary": 3,
               "tone_fit": 3
@@ -505,7 +505,7 @@
             "vector": {
               "account_specificity": 2,
               "grounding_fidelity": 3,
-              "on_task_relevance": 2,
+              "on_task_relevance": 3,
               "priority_fidelity": 2,
               "safety_boundary": 3,
               "tone_fit": 3
@@ -557,10 +557,10 @@
             "vector": {
               "account_specificity": 2,
               "grounding_fidelity": 3,
-              "on_task_relevance": 2,
+              "on_task_relevance": 1,
               "priority_fidelity": 2,
               "safety_boundary": 1,
-              "tone_fit": 2
+              "tone_fit": 3
             }
           },
           "candidate_id": "slot-b-gold-ee58407a7a930401",
@@ -583,10 +583,10 @@
             "vector": {
               "account_specificity": 2,
               "grounding_fidelity": 3,
-              "on_task_relevance": 1,
+              "on_task_relevance": 2,
               "priority_fidelity": 2,
               "safety_boundary": 1,
-              "tone_fit": 2
+              "tone_fit": 3
             }
           },
           "candidate_id": "slot-b-gold-b2de14fc6c469c04",
@@ -764,7 +764,7 @@
             "pass_rate": 0.0,
             "vector": {
               "account_specificity": 2,
-              "grounding_fidelity": 3,
+              "grounding_fidelity": 2,
               "on_task_relevance": 1,
               "priority_fidelity": 2,
               "safety_boundary": 3,
@@ -816,7 +816,7 @@
             "pass_rate": 0.0,
             "vector": {
               "account_specificity": 2,
-              "grounding_fidelity": 2,
+              "grounding_fidelity": 3,
               "on_task_relevance": 1,
               "priority_fidelity": 2,
               "safety_boundary": 3,
@@ -889,12 +889,12 @@
         {
           "agg": {
             "aggregate_pass": true,
-            "indeterminate": true,
+            "indeterminate": false,
             "n_runs": 5,
-            "pass_rate": 0.8,
+            "pass_rate": 1.0,
             "vector": {
               "account_specificity": 3,
-              "grounding_fidelity": 3,
+              "grounding_fidelity": 2,
               "on_task_relevance": 3,
               "priority_fidelity": 3,
               "safety_boundary": 3,
@@ -924,7 +924,7 @@
               "on_task_relevance": 3,
               "priority_fidelity": 3,
               "safety_boundary": 3,
-              "tone_fit": 3
+              "tone_fit": 2
             }
           },
           "candidate_id": "slot-b-gold-d9434d67b19e7588",
@@ -939,7 +939,7 @@
           }
         }
       ],
-      "exact_vector_match": 20,
+      "exact_vector_match": 21,
       "false_neg": 0,
       "false_negative_ids": [],
       "false_pos": 3,
@@ -948,12 +948,8 @@
         "slot-b-gold-fbea03fbc73ce874",
         "slot-b-gold-e4678a581082477b"
       ],
-      "gate_repeatability": 0.917,
-      "indeterminate_ids": [
-        "slot-b-gold-21f4b09722416b4a",
-        "slot-b-gold-4719788c9b545ca7",
-        "slot-b-gold-c0b6068e7f8cb453"
-      ],
+      "gate_repeatability": 1.0,
+      "indeterminate_ids": [],
       "n": 36
     },
     "terse@N": {
@@ -1913,6 +1909,7 @@
       "n": 36
     }
   },
+  "judge_prompt_version": "quality-judge-v8",
   "model_id": "claude-sonnet-4-6",
   "runs_per_case": 5
 }

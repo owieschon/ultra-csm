@@ -29,19 +29,15 @@
       "hard": {
         "false_neg_aggregated": 0,
         "false_pos_aggregated": 3,
-        "gate_repeatability": 0.917,
+        "gate_repeatability": 1.0,
         "gwet_ac1_reported": {
           "on_task_relevance": 0.586
         },
-        "indeterminate_ids": [
-          "slot-b-gold-21f4b09722416b4a",
-          "slot-b-gold-4719788c9b545ca7",
-          "slot-b-gold-c0b6068e7f8cb453"
-        ],
+        "indeterminate_ids": [],
         "n": 36,
         "per_dimension_kappa_aggregated": {
           "account_specificity": 1.0,
-          "grounding_fidelity": 0.966,
+          "grounding_fidelity": 0.932,
           "on_task_relevance": 0.636,
           "priority_fidelity": 1.0,
           "safety_boundary": 1.0,
