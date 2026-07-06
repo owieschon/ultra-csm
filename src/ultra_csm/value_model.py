@@ -18,13 +18,13 @@ from ultra_csm.data_plane.contracts import (
     Entitlement,
     EvidenceRef,
     HealthScore,
+    JobChangeSignal,
     LifecycleStage,
     StakeholderRelationship,
     SuccessPlan,
     TimeToValueMilestone,
     UsageSignal,
 )
-from ultra_csm.data_plane.relationship_signals import JobChangeSignal
 
 REPO = Path(__file__).resolve().parents[2]
 DEFAULT_CONFIG_PATH = REPO / "config" / "value_model_config.json"

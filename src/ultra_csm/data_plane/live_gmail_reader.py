@@ -140,6 +140,18 @@ def live_email_thread(*, tag: str, participant_domain: str) -> dict:
     ``_is_auto_submitted``.
 
     Read-only. Does not modify the mailbox (opens with readonly=True).
+
+    Reference implementation: not called by any production sweep/tick path
+    directly -- eight ``data_plane`` comms-fixture modules (``aspenridge_comms``,
+    ``quarrystone_comms``, ``meridian_comms``, ``comms_fixtures``,
+    ``trailhead_comms``, ``pinnacle_comms``, plus ``notion_reader``) cite this
+    function BY NAME in their own docstrings as "the live-read equivalent
+    pattern" a live connector would follow to reshape a real fetch into the
+    same thread-dict shape their fixture ``*_email_thread()`` functions
+    already produce. It is exercised directly by
+    ``tests/test_live_gmail_reader_ooo_guard.py``. Keep this docstring's
+    contract accurate for those readers even though nothing currently calls
+    the function itself.
     """
 
     imap = _imap_connect(readonly=True)

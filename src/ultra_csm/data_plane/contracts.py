@@ -268,6 +268,38 @@ class StakeholderRelationship:
     related_contact_id: str | None = None
 
 
+JobChangeType = Literal["departure", "promotion", "lateral_move"]
+
+
+@dataclass(frozen=True)
+class JobChangeSignal:
+    """An enrichment-feed event reporting a contact's job change.
+
+    Moved here from ``data_plane/relationship_signals.py`` (architecture
+    cleanup, report 42): ``value_model.py`` (the deterministic core) consumes
+    this type directly (``_champion_departed_factor``, wired via Harvest 16's
+    person layer), so it belongs in the dependency-free contracts module
+    alongside its sibling person-record type ``StakeholderRelationship``,
+    not in a module that also pulls in fixture/bible content
+    (``data_plane.fixtures``, tenant ``*_comms`` modules). This dataclass
+    itself carries no fixture dependency; ``relationship_signals.py`` still
+    owns the actual fixture rows (``DEREK_VAUGHN_DEPARTURE`` etc.) and
+    imports this type back from here.
+    """
+
+    signal_id: str
+    account_id: str
+    contact_id: str
+    contact_name: str
+    change_type: JobChangeType
+    day_offset: int
+    observed_at: str
+    old_title: str
+    new_title: str | None  # None for a departure (no successor title to report)
+    same_company: bool
+    detail: str
+
+
 @dataclass(frozen=True)
 class SurveyResponse:
     """A survey response (NPS, CSAT, or custom) from a contact.
