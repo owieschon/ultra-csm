@@ -17,6 +17,7 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
+from eval.judge_validation import judge_validation_status
 from ultra_csm.governance.authorizer import ROLE_PERMISSIONS
 from ultra_csm.governance.csm_actions import CSM_ACTION_SPECS
 
@@ -37,7 +38,6 @@ SOURCES = {
     "quality_artifact": "demo_state/quality_breaker/red_quality_artifact.json",
     "tick_ledger": "demo_state/tick_demo/tick_ledger.jsonl",
     "precedence_battery": "eval/precedence_battery.json",
-    "quality_status": "eval/gold/slot_b_quality_status.json",
     "judge_agreement": "eval/gold/judge_agreement.json",
     "autonomy_report": "eval/autonomy_report.json",
 }
@@ -67,7 +67,6 @@ def build_oversight_report(root: Path = ROOT) -> dict[str, Any]:
     ticks = _jsonl(root, SOURCES["tick_ledger"])
     quality_artifact = _json(root, SOURCES["quality_artifact"])
     precedence = _json(root, SOURCES["precedence_battery"])
-    quality_status = _json(root, SOURCES["quality_status"])
     autonomy = _json(root, SOURCES["autonomy_report"])
 
     return {
@@ -87,7 +86,9 @@ def build_oversight_report(root: Path = ROOT) -> dict[str, Any]:
             "3_authority_boundaries": _authority_boundaries(verdicts),
             "4_suppression_and_release": _suppression_release(ticks, precedence),
             "5_degradation_honesty": _degradation(quality_artifact, operator_events),
-            "6_quality_measurement": _quality_measurement(quality_status, quality_agreement=_json(root, SOURCES["judge_agreement"])),
+            "6_quality_measurement": _quality_measurement(
+                quality_agreement=_json(root, SOURCES["judge_agreement"])
+            ),
             "7_autonomy_provenance": _autonomy(autonomy),
             "8_not_instrumented": list(NOT_INSTRUMENTED),
         },
@@ -242,10 +243,8 @@ def _degradation(quality_artifact: dict | None, operator_events: list[dict]) -> 
     }
 
 
-def _quality_measurement(quality_status: dict | None, *, quality_agreement: dict | None) -> dict:
-    validation = None
-    if quality_status:
-        validation = (quality_status.get("claim_boundary") or {}).get("judge_validation")
+def _quality_measurement(*, quality_agreement: dict | None) -> dict:
+    validation = judge_validation_status()
     agreement = None
     if quality_agreement:
         agreement = {

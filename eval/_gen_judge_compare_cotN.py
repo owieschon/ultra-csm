@@ -14,29 +14,96 @@ from __future__ import annotations
 
 import json
 import sys
+import time
+from pathlib import Path
 
 from eval.compare_judges import OUT_PATH
-from eval.judge_anthropic import AnthropicQualityJudge
+from eval.judge_anthropic import AnthropicQualityJudge, JUDGE_PROMPT_VERSION
 from eval.judge_nrun import aggregate, score_nrun_agreement
 from eval.run_quality_judge import load_hard
+from ultra_csm.cost_tracker import compute_cost
 
 RUNS = 5
 MAX_RETRIES = 5  # K7: transient parse/format hiccups, not a systemic bug
+RETRYABLE_STATUS_CODES = {408, 409, 429, 500, 502, 503, 529}
+USAGE_PATH = Path(".judge_compare_cotN_usage.json")
+
+
+class _UsageRecordingClient:
+    def __init__(self) -> None:
+        from anthropic import Anthropic
+
+        self._client = Anthropic()
+        self.messages = self
+        self.calls: list[dict] = []
+        self._write_summary()
+
+    def create(self, **kwargs):
+        started = time.monotonic()
+        msg = self._client.messages.create(**kwargs)
+        elapsed_ms = (time.monotonic() - started) * 1000
+        usage = getattr(msg, "usage", None)
+        input_tokens = int(getattr(usage, "input_tokens", 0) or 0)
+        output_tokens = int(getattr(usage, "output_tokens", 0) or 0)
+        model_id = str(kwargs.get("model") or "unknown")
+        self.calls.append(
+            {
+                "model_id": model_id,
+                "input_tokens": input_tokens,
+                "output_tokens": output_tokens,
+                "cost_usd": compute_cost(model_id, input_tokens, output_tokens),
+                "latency_ms": elapsed_ms,
+            }
+        )
+        self._write_summary()
+        return msg
+
+    def summary(self) -> dict:
+        return {
+            "calls": len(self.calls),
+            "input_tokens": sum(call["input_tokens"] for call in self.calls),
+            "output_tokens": sum(call["output_tokens"] for call in self.calls),
+            "cost_usd": round(sum(call["cost_usd"] for call in self.calls), 6),
+        }
+
+    def _write_summary(self) -> None:
+        USAGE_PATH.write_text(json.dumps(self.summary(), sort_keys=True) + "\n", encoding="utf-8")
 
 
 def _score_with_retry(judge, request, output):
     last_exc = None
-    for _ in range(MAX_RETRIES):
+    for attempt in range(1, MAX_RETRIES + 1):
         try:
             return judge.score_output(request, output)
-        except ValueError as exc:
+        except Exception as exc:
             last_exc = exc
+            if not _retryable(exc):
+                break
+            if attempt < MAX_RETRIES:
+                time.sleep(min(2 ** (attempt - 1), 30))
     raise last_exc
+
+
+def _retryable(exc: Exception) -> bool:
+    if isinstance(exc, ValueError):
+        return True
+    status_code = getattr(exc, "status_code", None)
+    if status_code in RETRYABLE_STATUS_CODES:
+        return True
+    return exc.__class__.__name__ in {
+        "APIConnectionError",
+        "APITimeoutError",
+        "InternalServerError",
+        "OverloadedError",
+        "RateLimitError",
+    }
 
 
 def run_arm_retrying(judge, items: list[dict], n: int) -> dict:
     scored = []
-    for it in items:
+    total = len(items)
+    for index, it in enumerate(items, start=1):
+        print(f"scoring hard case {index}/{total} id={it['candidate_id']}", flush=True)
         vectors = [_score_with_retry(judge, it["request"], it["output"]) for _ in range(n)]
         scored.append({
             "candidate_id": it["candidate_id"],
@@ -51,17 +118,20 @@ def run_arm_retrying(judge, items: list[dict], n: int) -> dict:
 
 def main() -> int:
     items = load_hard()
-    judge = AnthropicQualityJudge(reasoning=True)
+    client = _UsageRecordingClient()
+    judge = AnthropicQualityJudge(client=client, reasoning=True)
     cot_arm = run_arm_retrying(judge, items, RUNS)
 
     existing = json.loads(OUT_PATH.read_text(encoding="utf-8")) if OUT_PATH.exists() else {}
     existing["model_id"] = judge.model_id
+    existing["judge_prompt_version"] = JUDGE_PROMPT_VERSION
     existing["runs_per_case"] = RUNS
     existing.setdefault("arms", {})
     existing["arms"]["cot@N"] = cot_arm
     OUT_PATH.write_text(json.dumps(existing, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
     print(f"cot@N: n={cot_arm['n']} false_neg={cot_arm.get('false_neg')} false_pos={cot_arm.get('false_pos')}")
+    print(f"usage: {client.summary()}")
     return 0
 
 
