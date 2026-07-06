@@ -70,6 +70,23 @@ class RecordingSlotAClassifier:
         )
 
 
+class UnknownSlotAClassifier:
+    model_id = "unknown-slot-a"
+    prompt_version = SLOT_A_PROMPT_VERSION
+
+    def classify(self, request):  # noqa: ANN001 - protocol-shaped test double
+        return CaseNoteClassificationOutput(
+            case_id=request.case_id,
+            account_id=request.account_id,
+            classification="unknown",
+            source="slot_a",
+            model_id=self.model_id,
+            prompt_version=self.prompt_version,
+            cited_case_id=request.case_id,
+            reason="No blocker signal.",
+        )
+
+
 @pytest.fixture
 def sweep_conn(runtime_conn):
     runtime_conn.execute("BEGIN")
@@ -168,7 +185,65 @@ def test_agent1_sweep_calls_slot_a_on_case_notes_and_surfaces_sidecar(sweep_conn
     assert acme.priority is not None
     assert acme.slot_a_classifications
     assert acme.slot_a_classifications[0].classification == "blocker"
-    assert not any(factor.name == "slot_a_case_blocker" for factor in acme.priority.factors)
+    factor = next(
+        factor for factor in acme.priority.factors
+        if factor.name == "slot_a_case_blocker"
+    )
+    assert factor.contribution == 10
+    assert factor.config_version == "value-model-config-v1"
+    assert factor.rule_name == "high_arr_review_default"
+    assert factor.threshold_name == "slot_a_case_blocker_points"
+    assert factor.threshold_value == 10
+    assert factor.evidence
+    assert factor.evidence[0].source == "crm"
+    assert factor.evidence[0].field == "slot_a_case_blocker"
+
+
+def test_slot_a_priority_factor_does_not_drift_unclassified_accounts(sweep_conn):
+    orch, _authority = setup_roster(sweep_conn)
+    gate = ActionGate(
+        sweep_conn,
+        tenant_id=T1,
+        actor_principal_id=orch,
+        verdict_source=FixtureVerdictSource(),
+        now=CLOCK,
+    )
+    data_plane = build_sweep_fixture_data_plane(tenant_id=DEFAULT_TENANT)
+
+    baseline = run_time_to_value_sweep(
+        data_plane,
+        DEFAULT_TENANT,
+        gate,
+        sweep_principal_id=orch,
+        as_of=AS_OF,
+        case_note_classifier=UnknownSlotAClassifier(),
+    )
+    challenged = run_time_to_value_sweep(
+        data_plane,
+        DEFAULT_TENANT,
+        gate,
+        sweep_principal_id=orch,
+        as_of=AS_OF,
+        case_note_classifier=RecordingSlotAClassifier(),
+    )
+
+    baseline_by_account = {
+        item.account_id: item.priority
+        for item in baseline.work_items
+        if item.account_id is not None
+    }
+    checked = 0
+    for item in challenged.work_items:
+        if item.account_id is None or item.slot_a_classifications:
+            continue
+        checked += 1
+        assert item.priority == baseline_by_account[item.account_id]
+        assert item.priority is not None
+        assert not any(
+            factor.name == "slot_a_case_blocker"
+            for factor in item.priority.factors
+        )
+    assert checked > 0
 
 
 def test_org_context_cannot_change_sweep_authority_or_priority(sweep_conn):

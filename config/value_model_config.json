@@ -29,7 +29,8 @@
         "single_threaded_recency_days": 45,
         "new_stakeholder_window_days": 30,
         "new_stakeholder_points": 15,
-        "usage_concentration_points": 20
+        "usage_concentration_points": 20,
+        "slot_a_case_blocker_points": 10
       }
     },
     {
@@ -66,7 +67,8 @@
         "single_threaded_recency_days": 45,
         "new_stakeholder_window_days": 30,
         "new_stakeholder_points": 15,
-        "usage_concentration_points": 20
+        "usage_concentration_points": 20,
+        "slot_a_case_blocker_points": 10
       }
     }
   ],
