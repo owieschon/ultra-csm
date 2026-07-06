@@ -173,6 +173,57 @@ def _write_json(path: Path, data: dict) -> None:
     path.write_text(json.dumps(data, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
+# The tenant-agnostic subset of tests/test_content_catalog.py's schema
+# assertions (19_CONTENT_ROADMAP.md Phase 6) -- required fields + unique
+# ids + fictional flag + tenant match. NOT the full test file: its
+# "16 entries"/"8 canon modules" checks are fleetops-canon-specific facts
+# (would wrongly reject loopway's real 5-entry catalog), not a generic
+# write-gate. This does not import or edit tests/test_content_catalog.py
+# (MUST NOT TOUCH) -- it replicates only the reusable part.
+_REQUIRED_CATALOG_FIELDS = {"id", "title", "module", "addresses_gap", "format"}
+
+
+class ContentCatalogValidationError(ValueError):
+    """Raised when a --target curated payload fails the schema oracle --
+    the write is refused, nothing is written (K14: never weaken the gate
+    to make a write pass)."""
+
+
+def validate_content_catalog_payload(data: dict, *, tenant: str) -> None:
+    if data.get("fictional") is not True:
+        raise ContentCatalogValidationError("content_catalog payload must have fictional: true")
+    if data.get("tenant") != tenant:
+        raise ContentCatalogValidationError(
+            f"content_catalog payload tenant {data.get('tenant')!r} != {tenant!r}"
+        )
+    entries = data.get("entries", [])
+    ids = [e.get("id") for e in entries]
+    if len(ids) != len(set(ids)):
+        raise ContentCatalogValidationError("content_catalog entries have duplicate ids")
+    for entry in entries:
+        missing = _REQUIRED_CATALOG_FIELDS - set(entry)
+        if missing:
+            raise ContentCatalogValidationError(
+                f"content_catalog entry {entry.get('id')!r} missing required fields: {missing}"
+            )
+
+
+def render_content_catalog_curated(
+    payload: NotionAuthoringPayload, *, tenant: str, knowledge_root: Path
+) -> Path:
+    """--target curated (Decision 10): writes ONLY content_catalog.json,
+    to the REAL curated path content_route's matcher reads -- never
+    org_pack/playbooks/handoff_notes, which stay --target generated-only
+    and out of this dispatch's scope entirely. Refuses to write (raises,
+    writes nothing) if the payload fails validate_content_catalog_payload."""
+
+    data = render_content_catalog(payload, tenant=tenant)
+    validate_content_catalog_payload(data, tenant=tenant)
+    path = knowledge_root / "tenants" / tenant / "content_catalog.json"
+    _write_json(path, data)
+    return path
+
+
 def render_all(
     payload: NotionAuthoringPayload,
     *,
@@ -229,9 +280,30 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--check", action="store_true", help="fail if generated output is not byte-identical to a fresh render"
     )
+    parser.add_argument(
+        "--target",
+        choices=("generated", "curated"),
+        default="generated",
+        help=(
+            "generated (default, unchanged behavior): knowledge/_generated/, proves "
+            "loader-acceptance only. curated: writes ONLY content_catalog.json to the "
+            "REAL knowledge/tenants/<tenant>/ path content_route's matcher reads, gated "
+            "by validate_content_catalog_payload -- a manual, PR-reviewed action, never "
+            "wired into any Makefile target other than the ones this dispatch adds, "
+            "never called from tick.py/sweep.py/api.py."
+        ),
+    )
     args = parser.parse_args(argv)
 
     payload = load_captured_payload(args.payload, pack_version=args.pack_version)
+
+    if args.target == "curated":
+        path = render_content_catalog_curated(
+            payload, tenant=args.tenant, knowledge_root=ROOT / "knowledge"
+        )
+        print(f"wrote {path.relative_to(ROOT)} (curated)")
+        return 0
+
     output_root = Path(args.output_root)
 
     if args.check:

@@ -15,7 +15,13 @@ from pathlib import Path
 
 import pytest
 
-from scripts.notion_render import render_all, render_org_pack
+from scripts.notion_render import (
+    ContentCatalogValidationError,
+    render_all,
+    render_content_catalog_curated,
+    render_org_pack,
+    validate_content_catalog_payload,
+)
 from tests.test_content_catalog import _CANON_MODULES, _REQUIRED_FIELDS as _CATALOG_REQUIRED_FIELDS
 from tests.test_handoff_notes import _REQUIRED_FIELDS as _HANDOFF_REQUIRED_FIELDS
 from ultra_csm.data_plane.notion_reader import (
@@ -171,3 +177,68 @@ def test_live_reader_fails_closed_without_credentials(tmp_path):
             handoff_narrative_page_id="x",
             creds_path=str(empty_creds),
         )
+
+
+# --- Phase 6: --target curated bridge (19_CONTENT_ROADMAP.md) ----------
+# validate_content_catalog_payload replicates ONLY the tenant-agnostic
+# subset of test_content_catalog.py's assertions (required fields, unique
+# ids, fictional flag, tenant match) -- NOT its "16 entries"/"8 canon
+# modules" checks, which are fleetops-canon-specific facts that would
+# wrongly reject loopway's real 5-entry catalog. test_content_catalog.py
+# itself is untouched (verified below).
+
+
+def test_curated_render_writes_only_content_catalog(tmp_path):
+    payload = load_captured_payload(FIXTURE_PATH, pack_version="notion-pack-v1")
+    knowledge_root = tmp_path / "knowledge"
+
+    path = render_content_catalog_curated(payload, tenant=TENANT, knowledge_root=knowledge_root)
+
+    assert path == knowledge_root / "tenants" / TENANT / "content_catalog.json"
+    assert path.is_file()
+    # Nothing else was written -- org_pack/playbooks/handoff_notes stay
+    # --target generated-only (out of this dispatch's scope).
+    written = sorted(p.relative_to(knowledge_root) for p in knowledge_root.rglob("*.json"))
+    assert written == [Path("tenants") / TENANT / "content_catalog.json"]
+
+    data = json.loads(path.read_text(encoding="utf-8"))
+    for entry in data["entries"]:
+        assert _CATALOG_REQUIRED_FIELDS <= set(entry)
+
+
+def test_curated_render_refuses_to_write_a_payload_missing_required_fields(tmp_path):
+    bad_data = {
+        "fictional": True,
+        "tenant": TENANT,
+        "entries": [{"id": "c1", "title": "x"}],  # missing module/addresses_gap/format
+    }
+    with pytest.raises(ContentCatalogValidationError, match="missing required fields"):
+        validate_content_catalog_payload(bad_data, tenant=TENANT)
+
+    # Refusal means nothing is written -- prove the file never exists.
+    knowledge_root = tmp_path / "knowledge"
+    assert not (knowledge_root / "tenants" / TENANT / "content_catalog.json").exists()
+
+
+def test_curated_render_refuses_a_tenant_mismatch():
+    data = {"fictional": True, "tenant": "loopway", "entries": []}
+    with pytest.raises(ContentCatalogValidationError, match="tenant"):
+        validate_content_catalog_payload(data, tenant="fleetops")
+
+
+def test_generated_target_unchanged_by_the_curated_addition(tmp_path):
+    """Negative check: --target generated's render_all output is
+    byte-identical to before this dispatch's edit -- the curated path is
+    a pure addition, never a modification of the existing default."""
+
+    payload = load_captured_payload(FIXTURE_PATH, pack_version="notion-pack-v1")
+    written = render_all(
+        payload,
+        output_root=tmp_path,
+        tenant=TENANT,
+        pack_version="notion-pack-v1",
+        account_slug=ACCOUNT_SLUG,
+    )
+    assert len(written) == 5  # org_pack, golden_corpus exemplar, playbooks, content_catalog, handoff_note
+    load_org_pack(str(tmp_path / "org_pack.json"))
+    load_playbooks(TENANT, tenants_dir=str(tmp_path / "tenants"))
