@@ -8,6 +8,7 @@ import { dirname } from "path";
 // (CORS added in api.py's Phase 1 commit) and does not use this export.
 const nextConfig = {
   output: "export",
+  basePath: "/ui",
   trailingSlash: true,
   images: { unoptimized: true },
   // Pins Turbopack's workspace-root inference to this directory -- an
