@@ -83,7 +83,9 @@ from ultra_csm._api_helpers import (
     AccountDataError,
     AuthError,
     _build_account_brief,
+    _proposal_has_contact_consent,
     _score_one_account,
+    _truthy,
     auth_marker,
     demo_noauth_enabled,
     parse_api_tokens,
@@ -157,10 +159,6 @@ _last_relay_session_id: str | None = None
 # separate from _relay_sessions so the flat single-table tools can never grab
 # a table of a relational book (and vice versa).
 _relational_books: dict[str, dict[str, _RelaySession]] = {}
-
-
-def _truthy(value: str | None) -> bool:
-    return (value or "").strip().lower() in {"1", "true", "yes", "on"}
 
 
 def mcp_readonly_enabled() -> bool:
@@ -520,20 +518,6 @@ def _typed_refusal(
         payload.update(extra)
     _record_session_event("refusal", payload)
     return _with_demo_context(payload, suggested_next=["get_session_ledger", "list_proposals"])
-
-
-def _proposal_has_contact_consent(proposal: ActionProposal) -> bool:
-    if proposal.action != "draft_customer_outreach":
-        return True
-    assert _data_plane is not None
-    account_id = proposal.payload.get("account_id")
-    contact_id = proposal.payload.get("contact_id")
-    if not isinstance(account_id, str):
-        return False
-    contacts = _data_plane.crm.list_contacts(account_id)
-    if isinstance(contact_id, str):
-        contacts = [contact for contact in contacts if contact.contact_id == contact_id]
-    return any(contact.consent_to_contact for contact in contacts)
 
 
 def _expansion_approval_blockers(proposal: ActionProposal) -> tuple[dict[str, object], ...]:
@@ -1090,8 +1074,18 @@ def ingest_book(
     expected_count: int | None,
     session_id: str | None = None,
     final_chunk: bool = True,
+    acknowledge_truncation: bool = False,
 ) -> dict:
-    """Ingest host-relayed raw records and return a confirmation proposal."""
+    """Ingest host-relayed raw records and return a confirmation proposal.
+
+    Args:
+        acknowledge_truncation: Required (True) to freeze a book where any
+            record was silently dropped (``dropped_record_count > 0``, e.g. a
+            chunk exceeded ``max_records``), matching the stricter stance
+            already applied to an outright ``received_count``/``expected_count``
+            mismatch. Some callers may legitimately want a partial book, so
+            this is an explicit opt-in rather than an unconditional refusal.
+    """
 
     refusal = _relay_tool_available("ingest_book")
     if refusal is not None:
@@ -1152,6 +1146,19 @@ def ingest_book(
             expected_count=session.expected_count,
             stored_count=len(session.raw_records),
             truncated=session.dropped_record_count > 0,
+            dropped_record_count=session.dropped_record_count,
+        )
+    if session.dropped_record_count > 0 and not acknowledge_truncation:
+        return _relay_refusal(
+            "RELAY_TRUNCATION_UNACKNOWLEDGED",
+            "records were silently dropped (dropped_record_count > 0); "
+            "refusing to freeze a truncated book without acknowledge_truncation=true.",
+            "ingest_book",
+            session_id=session.session_id,
+            received_count=session.received_count,
+            expected_count=session.expected_count,
+            stored_count=len(session.raw_records),
+            truncated=True,
             dropped_record_count=session.dropped_record_count,
         )
 
@@ -1242,6 +1249,7 @@ def ingest_table(
     expected_count: int | None,
     field_metadata: dict[str, Any] | None = None,
     final_chunk: bool = True,
+    acknowledge_truncation: bool = False,
 ) -> dict:
     """Ingest one named table of a relational book and return its open questions.
 
@@ -1257,6 +1265,14 @@ def ingest_table(
     "relationship_name": "Account"}}. Declared references drive foreign-key
     mapping directly; identity and value-direction decisions always remain
     human.
+
+    Args:
+        acknowledge_truncation: Required (True) to freeze a table where any
+            record was silently dropped (``dropped_record_count > 0``, e.g. a
+            chunk exceeded ``max_records``), matching the stricter stance
+            already applied to an outright ``received_count``/``expected_count``
+            mismatch. Some callers may legitimately want a partial table, so
+            this is an explicit opt-in rather than an unconditional refusal.
     """
 
     refusal = _relay_tool_available("ingest_table")
@@ -1403,6 +1419,20 @@ def ingest_table(
             expected_count=session.expected_count,
             stored_count=len(session.raw_records),
             truncated=session.dropped_record_count > 0,
+            dropped_record_count=session.dropped_record_count,
+        )
+    if session.dropped_record_count > 0 and not acknowledge_truncation:
+        return _relay_refusal(
+            "RELAY_TRUNCATION_UNACKNOWLEDGED",
+            "records were silently dropped (dropped_record_count > 0); "
+            "refusing to freeze a truncated table without acknowledge_truncation=true.",
+            "ingest_table",
+            book_id=book_id,
+            table_name=table_name,
+            received_count=session.received_count,
+            expected_count=session.expected_count,
+            stored_count=len(session.raw_records),
+            truncated=True,
             dropped_record_count=session.dropped_record_count,
         )
 
@@ -1781,7 +1811,10 @@ def submit_verdict(
             suggested_next=["list_proposals", "submit_verdict", "get_session_ledger"],
         )
 
-    if verdict == "approve" and not _proposal_has_contact_consent(proposal):
+    assert _data_plane is not None
+    if verdict == "approve" and not _proposal_has_contact_consent(
+        proposal, data_plane=_data_plane,
+    ):
         return _typed_refusal(
             code="CONSENT_MISSING",
             message="Customer-facing outreach is blocked because contact consent is missing",

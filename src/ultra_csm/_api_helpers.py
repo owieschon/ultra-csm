@@ -11,7 +11,8 @@ from typing import Any
 from ultra_csm._util import iso_date
 from ultra_csm.agent1.sweep import _person_layer_inputs
 from ultra_csm.data_plane import CustomerDataPlane
-from ultra_csm.governance import ROLE_ORDER_CONFIRM_AUTHORITY as CSM_APPROVAL_ROLE
+from ultra_csm.governance import ActionProposal
+from ultra_csm.governance import ROLE_CS_ORCHESTRATOR as CSM_APPROVAL_ROLE
 from ultra_csm.governance import role_id
 from ultra_csm.person_factors import new_stakeholder_unengaged
 from ultra_csm.platform.db import session
@@ -101,10 +102,14 @@ def parse_api_tokens(raw: str | None = None) -> dict[str, str]:
     return token_map
 
 
+def _truthy(value: str | None) -> bool:
+    return (value or "").strip().lower() in {"1", "true", "yes", "on"}
+
+
 def demo_noauth_enabled() -> bool:
     return (
-        os.environ.get("ULTRA_CSM_DEMO_NOAUTH") == "1"
-        or os.environ.get("ULTRA_CSM_DEMO_OPERATOR") == "1"
+        _truthy(os.environ.get("ULTRA_CSM_DEMO_NOAUTH"))
+        or _truthy(os.environ.get("ULTRA_CSM_DEMO_OPERATOR"))
     )
 
 
@@ -494,3 +499,23 @@ def _require_account(account_id: str, data_plane: CustomerDataPlane):
     if account is None:
         raise AccountNotFoundError(account_id)
     return account
+
+
+def _proposal_has_contact_consent(
+    proposal: ActionProposal, *, data_plane: CustomerDataPlane,
+) -> bool:
+    """True unless *proposal* is a ``draft_customer_outreach`` targeting a
+    contact without ``consent_to_contact``. Shared by the REST (api.py) and
+    MCP (mcp_server.py) approve paths so both surfaces enforce identical
+    consent semantics on the same proposal shape."""
+
+    if proposal.action != "draft_customer_outreach":
+        return True
+    account_id = proposal.payload.get("account_id")
+    contact_id = proposal.payload.get("contact_id")
+    if not isinstance(account_id, str):
+        return False
+    contacts = data_plane.crm.list_contacts(account_id)
+    if isinstance(contact_id, str):
+        contacts = [contact for contact in contacts if contact.contact_id == contact_id]
+    return any(contact.consent_to_contact for contact in contacts)
