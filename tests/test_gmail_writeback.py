@@ -25,7 +25,7 @@ from ultra_csm.data_plane.gmail_writeback import (
 from ultra_csm.data_plane.live_smoke import HttpRequest, HttpResponse
 from ultra_csm.governance import ActionGate, FixtureVerdictSource, GateError, Verdict
 
-from tests._govhelpers import CLOCK, T1, setup_roster
+from tests._govhelpers import CLOCK, T1, make_human_principal, setup_roster
 
 AS_OF = "2026-06-27"
 _ENV = {
@@ -71,7 +71,8 @@ class _FakeGmailClient:
 def _bridge_ctx(runtime_conn, tmp_path):
     """Build a real, DB-backed, APPROVED draft_customer_outreach proposal
     the same way the demo loop does -- gate state, not an invented queue."""
-    orch, authority = setup_roster(runtime_conn)
+    orch, _authority = setup_roster(runtime_conn)
+    human = make_human_principal(runtime_conn)
     gate = ActionGate(
         runtime_conn,
         tenant_id=T1,
@@ -96,7 +97,7 @@ def _bridge_ctx(runtime_conn, tmp_path):
     )
     outcome = gate.record_verdict(
         proposal,
-        Verdict("approve", human_principal_id=authority, rationale="test approval with consent"),
+        Verdict("approve", human_principal_id=human, rationale="test approval with consent"),
         cause_ref="test:approve",
     )
     return gate, proposal, outcome

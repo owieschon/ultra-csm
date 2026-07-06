@@ -21,7 +21,7 @@ from ultra_csm.data_plane.salesforce_writeback import (
 )
 from ultra_csm.governance import ActionGate, FixtureVerdictSource, Verdict
 
-from tests._govhelpers import CLOCK, T1, setup_roster
+from tests._govhelpers import CLOCK, T1, make_human_principal, setup_roster
 
 AS_OF = "2026-06-27"
 _ENV = {
@@ -50,7 +50,8 @@ class _FakeTaskClient:
 
 
 def _bridge_ctx(runtime_conn, tmp_path):
-    orch, authority = setup_roster(runtime_conn)
+    orch, _authority = setup_roster(runtime_conn)
+    human = make_human_principal(runtime_conn)
     gate = ActionGate(
         runtime_conn,
         tenant_id=T1,
@@ -70,9 +71,13 @@ def _bridge_ctx(runtime_conn, tmp_path):
         proposal_id=item.proposal.proposal_id,
         now=CLOCK,
     )
+    # human, not the agent-kind `authority` fixture: this proposal is tier>=2
+    # (draft_customer_outreach), so the gate/DB human-ness check (Stream 23)
+    # now requires a genuine kind='human' approver here, matching what the
+    # real API/MCP token seam (`_ensure_human_principal`) always produces.
     outcome = gate.record_verdict(
         proposal,
-        Verdict("approve", human_principal_id=authority, rationale="test approval"),
+        Verdict("approve", human_principal_id=human, rationale="test approval"),
         cause_ref="test:approve",
     )
     return gate, proposal, outcome

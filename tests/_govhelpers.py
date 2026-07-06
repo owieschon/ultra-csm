@@ -66,6 +66,21 @@ def setup_roster(conn, *, tenant=T1, seed_actor=T1_AGENT):
     return orch, authority
 
 
+def make_human_principal(conn, *, tenant=T1, seed_actor=T1_AGENT, display_name="human-reviewer"):
+    """Create a kind='human' principal for a tenant (mirrors the shape
+    `_api_helpers.py::_ensure_human_principal` uses in production, scoped to
+    what tests need: no bearer-token/grant machinery, just the row the
+    gate/DB human-ness check reads)."""
+    principal_id = det("principal", tenant, display_name)
+    with session(conn, tenant_id=tenant, actor_id=seed_actor, now=CLOCK) as cur:
+        cur.execute(
+            "INSERT INTO principal (principal_id, tenant_id, kind, display_name) "
+            "VALUES (%s, %s, 'human', %s) ON CONFLICT (principal_id) DO NOTHING",
+            (principal_id, tenant, display_name),
+        )
+    return principal_id
+
+
 def change_log_count(conn, table, pk_key, pk_val, *, tenant=T1) -> int:
     """How many change_log rows exist for this row (provenance completeness)."""
     with conn.cursor() as cur:

@@ -17,6 +17,7 @@ from tests._govhelpers import (  # noqa: F401 - gov_conn is a pytest fixture use
     CLOCK,
     T1,
     gov_conn,
+    make_human_principal,
     setup_roster,
 )
 
@@ -30,8 +31,9 @@ def _gate(conn, *, actor, source):
 # State machine: approve / deny / revise
 # ---------------------------------------------------------------------------
 def test_gate_approve_authorizes(gov_conn):
-    orch, authority = setup_roster(gov_conn)
-    src = FixtureVerdictSource(default=Verdict("approve", human_principal_id=authority))
+    orch, _authority = setup_roster(gov_conn)
+    human = make_human_principal(gov_conn)
+    src = FixtureVerdictSource(default=Verdict("approve", human_principal_id=human))
     gate = _gate(gov_conn, actor=orch, source=src)
 
     prop = gate.propose(intent="send_email", action="email.send",
@@ -64,10 +66,11 @@ def test_gate_deny_blocks(gov_conn):
 def test_gate_revise_applies_revised_payload(gov_conn):
     """A revise verdict supersedes the original payload: the committer is bound to
     the HUMAN's edited body, and the original hash no longer authorizes."""
-    orch, authority = setup_roster(gov_conn)
+    orch, _authority = setup_roster(gov_conn)
+    human = make_human_principal(gov_conn)
     revised = {"to": "buyer@acme-diesel.example", "body": "corrected"}
     src = FixtureVerdictSource(default=Verdict(
-        "revise", human_principal_id=authority, revised_payload=revised))
+        "revise", human_principal_id=human, revised_payload=revised))
     gate = _gate(gov_conn, actor=orch, source=src)
 
     prop = gate.propose(intent="send_email", action="email.send",
@@ -98,8 +101,9 @@ def test_gate_revise_applies_revised_payload(gov_conn):
 # Anti-TOCTOU: payload_sha256 binds (a tampered payload post-approval is refused)
 # ---------------------------------------------------------------------------
 def test_gate_tampered_payload_refused(gov_conn):
-    orch, authority = setup_roster(gov_conn)
-    src = FixtureVerdictSource(default=Verdict("approve", human_principal_id=authority))
+    orch, _authority = setup_roster(gov_conn)
+    human = make_human_principal(gov_conn)
+    src = FixtureVerdictSource(default=Verdict("approve", human_principal_id=human))
     gate = _gate(gov_conn, actor=orch, source=src)
 
     prop = gate.propose(intent="send_email", action="email.send",
@@ -118,8 +122,9 @@ def test_verdict_unique_per_proposal(gov_conn):
     """UNIQUE(proposal_id): a second verdict on the same proposal is rejected by
     the DB — the gate is idempotent under retry / double-post."""
     import psycopg
-    orch, authority = setup_roster(gov_conn)
-    src = FixtureVerdictSource(default=Verdict("approve", human_principal_id=authority))
+    orch, _authority = setup_roster(gov_conn)
+    human = make_human_principal(gov_conn)
+    src = FixtureVerdictSource(default=Verdict("approve", human_principal_id=human))
     gate = _gate(gov_conn, actor=orch, source=src)
     prop = gate.propose(intent="send_email", action="email.send",
                         payload={"to": "x"}, autonomy_tier=2,
@@ -130,10 +135,16 @@ def test_verdict_unique_per_proposal(gov_conn):
 
 
 def test_csm_orchestrator_verdict_cannot_mint_order_confirm_authority(gov_conn):
+    """SoD via the PERMISSION layer: even a properly human, non-self approver
+    who merely holds the cs-orchestrator role (not order-confirm-authority)
+    cannot mint order.confirm authority. Distinct from the gate/DB human-ness
+    check below -- this is Authorizer.can_confirm_order, a permission lookup,
+    not a kind/self-approval check."""
     orch, _authority = setup_roster(gov_conn)
+    human = make_human_principal(gov_conn)
     assert PERM_ORDER_CONFIRM == "order.confirm"
     src = FixtureVerdictSource(by_intent={
-        "customer_outreach": Verdict("approve", human_principal_id=orch)})
+        "customer_outreach": Verdict("approve", human_principal_id=human)})
     gate = _gate(gov_conn, actor=orch, source=src)
     prop = gate.propose(intent="customer_outreach", action="draft_customer_outreach",
                         payload={"account_id": "acct", "body": "draft"}, autonomy_tier=2,
@@ -141,3 +152,89 @@ def test_csm_orchestrator_verdict_cannot_mint_order_confirm_authority(gov_conn):
     out = gate.record_verdict(prop)
     assert out.authorized is True
     assert gate.confirm_authority_ok(out) is False
+
+
+# ---------------------------------------------------------------------------
+# Gate/DB human-ness check (Stream 23): for tier>=2 intents, an
+# authorizing ('approve'/'revise') verdict's human_principal_id must be
+# kind='human' and must differ from the proposal's own actor. This is a
+# SECOND, independent layer under the token seam's `_ensure_human_principal`
+# (`_api_helpers.py`, untouched) -- that seam already forces kind='human' for
+# every real API/MCP request; this closes the gap for any caller that
+# constructs a Verdict directly against the gate/DB layer itself.
+# ---------------------------------------------------------------------------
+def test_agent_kind_self_approve_rejected_for_tier_two(gov_conn):
+    """The demonstrated gap: an agent-kind principal approving its OWN
+    tier>=2 proposal must now be rejected at the gate/DB layer, not just
+    return authorized=True (pre-fix, this was exactly the assertion at the
+    top of this file's predecessor test)."""
+    orch, _authority = setup_roster(gov_conn)
+    src = FixtureVerdictSource(default=Verdict("approve", human_principal_id=orch))
+    gate = _gate(gov_conn, actor=orch, source=src)
+    prop = gate.propose(intent="send_email", action="email.send",
+                        payload={"to": "buyer@acme-diesel.example", "body": "hi"},
+                        autonomy_tier=2, required_permission="email.send")
+    with pytest.raises(GateError, match="human"):
+        gate.record_verdict(prop)
+
+
+def test_agent_kind_distinct_approver_still_rejected_for_tier_two(gov_conn):
+    """Differing from the actor is not sufficient on its own: an agent-kind
+    `authority` (distinct from `orch`) approving a tier>=2 proposal is still
+    rejected -- the check is kind='human' AND distinct-from-actor, not either
+    alone."""
+    orch, authority = setup_roster(gov_conn)
+    src = FixtureVerdictSource(default=Verdict("approve", human_principal_id=authority))
+    gate = _gate(gov_conn, actor=orch, source=src)
+    prop = gate.propose(intent="send_email", action="email.send",
+                        payload={"to": "buyer@acme-diesel.example", "body": "hi"},
+                        autonomy_tier=2, required_permission="email.send")
+    with pytest.raises(GateError, match="human"):
+        gate.record_verdict(prop)
+
+
+def test_human_kind_self_id_impossible_but_distinct_approver_authorizes_tier_two(gov_conn):
+    """The legitimate path: a genuine kind='human' principal, distinct from
+    the proposing actor, approving a tier>=2 proposal succeeds -- the check
+    does not overreach into rejecting valid human approvals."""
+    orch, _authority = setup_roster(gov_conn)
+    human = make_human_principal(gov_conn)
+    src = FixtureVerdictSource(default=Verdict("approve", human_principal_id=human))
+    gate = _gate(gov_conn, actor=orch, source=src)
+    prop = gate.propose(intent="send_email", action="email.send",
+                        payload={"to": "buyer@acme-diesel.example", "body": "hi"},
+                        autonomy_tier=2, required_permission="email.send")
+    out = gate.record_verdict(prop)
+    assert out.authorized is True
+
+
+def test_gate_revise_also_enforces_human_ness_for_tier_two(gov_conn):
+    """gate.py's own 'revise' path (auto-approve+mutate, status='approved')
+    is an authorizing verdict too -- the human-ness check applies to it
+    exactly like 'approve', not just to the literal string 'approve'."""
+    orch, _authority = setup_roster(gov_conn)
+    revised = {"to": "buyer@acme-diesel.example", "body": "corrected"}
+    src = FixtureVerdictSource(default=Verdict(
+        "revise", human_principal_id=orch, revised_payload=revised))
+    gate = _gate(gov_conn, actor=orch, source=src)
+    prop = gate.propose(intent="send_email", action="email.send",
+                        payload={"to": "buyer@acme-diesel.example", "body": "draft"},
+                        autonomy_tier=2, required_permission="email.send")
+    with pytest.raises(GateError, match="human"):
+        gate.record_verdict(prop)
+
+
+def test_gate_deny_is_never_subject_to_human_ness_check(gov_conn):
+    """A 'deny' verdict authorizes nothing -- there is no approving principal
+    to check, so an agent-kind self-denial on a tier>=2 proposal is untouched
+    by this dispatch (matches eval/week1_protocol.py's real deny-verdict
+    usage, which relies on this)."""
+    orch, _authority = setup_roster(gov_conn)
+    src = FixtureVerdictSource(default=Verdict("deny", human_principal_id=orch))
+    gate = _gate(gov_conn, actor=orch, source=src)
+    prop = gate.propose(intent="send_email", action="email.send",
+                        payload={"to": "x", "body": "y"},
+                        autonomy_tier=2, required_permission="email.send")
+    out = gate.record_verdict(prop)
+    assert out.authorized is False
+    assert out.status == "denied"

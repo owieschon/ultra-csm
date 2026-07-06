@@ -21,7 +21,7 @@ from ultra_csm.governance import (
 )
 from ultra_csm.value_model import build_customer_value_model
 
-from tests._govhelpers import CLOCK, T1, setup_roster
+from tests._govhelpers import CLOCK, T1, make_human_principal, setup_roster
 
 AS_OF = "2026-06-27"
 
@@ -29,7 +29,8 @@ AS_OF = "2026-06-27"
 def test_sim_commit_reobserves_outcome_and_is_idempotent(runtime_conn, tmp_path):
     runtime_conn.execute("BEGIN")
     try:
-        orch, authority = setup_roster(runtime_conn)
+        orch, _authority = setup_roster(runtime_conn)
+        human = make_human_principal(runtime_conn)
         gate = ActionGate(
             runtime_conn,
             tenant_id=T1,
@@ -54,9 +55,12 @@ def test_sim_commit_reobserves_outcome_and_is_idempotent(runtime_conn, tmp_path)
             proposal_id=item.proposal.proposal_id,
             now=CLOCK,
         )
+        # human, not the agent-kind `authority` fixture: this proposal is
+        # tier>=2, so the gate/DB human-ness check (Stream 23) now requires a
+        # genuine kind='human' approver here.
         outcome = gate.record_verdict(
             proposal,
-            Verdict("approve", human_principal_id=authority, rationale="test approval"),
+            Verdict("approve", human_principal_id=human, rationale="test approval"),
             cause_ref="test:approve",
         )
 
