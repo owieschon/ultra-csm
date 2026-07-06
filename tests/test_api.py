@@ -22,9 +22,19 @@ from ultra_csm.governance import (  # noqa: E402
     proposal_fields_for,
 )
 from ultra_csm import api  # noqa: E402
+from ultra_csm._api_helpers import assert_demo_noauth_loopback  # noqa: E402
 from ultra_csm.api import app  # noqa: E402
 
 AUTH_HEADERS = {"Authorization": "Bearer lane-a-token"}
+
+
+def test_demo_noauth_boot_guard_requires_loopback(monkeypatch):
+    monkeypatch.setenv("ULTRA_CSM_DEMO_NOAUTH", "1")
+    assert_demo_noauth_loopback("127.0.0.1")
+    assert_demo_noauth_loopback("localhost")
+    assert_demo_noauth_loopback("::1")
+    with pytest.raises(RuntimeError, match="loopback bind host"):
+        assert_demo_noauth_loopback("0.0.0.0")
 
 
 def _create_pending_draft_proposal(client: TestClient, *, day: int | None = None) -> dict:

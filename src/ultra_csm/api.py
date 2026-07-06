@@ -75,6 +75,7 @@ from ultra_csm._api_helpers import (
     _enrich_person_evidence,
     _proposal_has_contact_consent,
     _score_one_account,
+    assert_demo_noauth_loopback,
     auth_marker,
     demo_noauth_enabled,
     parse_api_tokens,
@@ -360,6 +361,7 @@ async def lifespan(app: FastAPI):
 
     setup_logging("INFO")
     log.info("Booting ephemeral Postgres cluster for API")
+    assert_demo_noauth_loopback()
     if demo_noauth_enabled():
         log.warning(
             "ULTRA_CSM_DEMO_NOAUTH=1 enabled; mutating API routes allow "
