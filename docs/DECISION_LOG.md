@@ -181,3 +181,55 @@ what the CSM actually meant in the source Notion block, and a mislabeled `addres
 still passes the account-specific schema check. Live Notion auth is untested — no
 `NOTION_*` credential exists in `~/ultra-csm-live-creds.env` as of 2026-07-05, so the live
 pull is an Owner Ask, not a claimed capability.
+
+## Content Roadmap: taxonomy canonicalization, additive ARR scoring, disk-only matcher (Stream 46)
+
+1. **`content_catalog.json`'s `addresses_gap` vocabulary is canonicalized to
+   `agent1/sweep.py`'s trigger vocabulary, not the reverse.** 9 categories existed across
+   fleetops/loopway before this change; only 1 (`feature_shallow_depth`) matched a real
+   trigger name. 6 were relabeled to their closest trigger (`underused_capability`→
+   `feature_shallow_depth`, `activation_stalled`→`milestones_overdue`,
+   `single_threaded_risk`→`champion_inactive`, `renewal_risk`→`health_red`,
+   `low_engagement`→`health_yellow`); 3 with no corresponding trigger
+   (`alert_fatigue`, `integration_blocker`, `usage_decay_silent`) were left as-is — a
+   stated exclusion, not a forced, low-confidence mapping. A code-only mapping table
+   preserving both vocabularies was rejected: two parallel taxonomies drift apart
+   silently over time, and the roadmap's whole purpose is to have one demand vocabulary.
+2. **Coverage-gap ranking is additive across two dimensions (account count, high-ARR
+   account count), never multiplicative or ARR-discounted.**
+   `coverage_gap_score = accounts_affected + high_arr_bonus − existing_content_count`.
+   A gap with zero high-ARR accounts scores exactly `accounts_affected −
+   existing_content_count`; ARR never subtracts, it only adds (owner requirement:
+   "both high number of users and high ARR are equally important... should never
+   deprioritize something for less ARR"). `high_arr_bonus` reuses the existing
+   `arr_review_floor_cents` threshold (`value_model.py`'s `resolve_thresholds`,
+   most-specific-rule-wins) rather than a new dollar cutoff.
+3. **`content_route` (governance/csm_actions.py, defined since Report 34 or earlier) had
+   zero callers anywhere in the runtime before this change** — verified by grep, not
+   assumed; `data_plane/campaigns.py` runs one hand-curated static campaign unrelated to
+   trigger matching. The new matcher (`agent1/content_route_matcher.py`) and its wiring
+   into `agent1/sweep.py`'s per-account proposal loop are the first real caller. No
+   governance code changed — `content_route`'s existing `CSMActionSpec` (autonomy_tier=2,
+   `human_approve`) is reused unmodified.
+4. **The matcher and the sweep loop read `content_catalog.json` from disk; neither calls
+   the Notion API.** The only path from Notion-authored content to what `content_route`
+   serves is `scripts/notion_render.py --target curated` — a manual, PR-reviewed build
+   step, gated by `validate_content_catalog_payload` (the tenant-agnostic subset of
+   `test_content_catalog.py`'s schema assertions), never wired into `tick.py`/`sweep.py`/
+   `api.py`. A live-read-at-sweep-time design was rejected: it would contradict this
+   repo's seed-then-read architecture (`docs/AGENT_PROFILE.md`'s risk posture: "no live
+   connector reads at request time except deliberately-scoped manual review actions").
+5. **`--target curated` writes ONLY `content_catalog.json`**, never `org_pack.json`/
+   `playbooks.json`/`handoff_notes/*` — those stay `--target generated`-only, unchanged,
+   out of this dispatch's scope. `--target generated`'s default behavior and output are
+   verified byte-identical to before this change (negative test).
+
+**What this does NOT prove.** The 6 taxonomy relabels are the emitter's best-effort
+semantic judgment, not owner-verified CS domain expertise — `low_engagement`→
+`health_yellow` in particular has looser semantic fit than the other 5. The real ranked
+roadmap (see `docs/PROGRAM_REPORT_46.md`) is a genuine computed artifact, not a mock, but
+whether the CS/content team finds a Notion database usable as their actual planning
+surface is untested — no content-team member has seen it. The live push to Notion is
+BLOCKED (Owner Ask): `ULTRA_CSM_NOTION_TOKEN` has zero pages shared with it as of
+2026-07-05, a different integration than the one used to create the Content
+Catalog/Org Pack databases earlier in the session.
