@@ -22,6 +22,13 @@ import psycopg
 from ultra_csm.agent1 import SweepResult, collapse_cohorts, run_time_to_value_sweep
 from ultra_csm.agent1.lens_expansion import ExpansionLensResult, run_expansion_lens
 from ultra_csm.agent1.lens_risk import RiskLensResult, run_risk_lens
+from ultra_csm.agent1.precedence import (
+    ActionPacket,
+    FindingPacket,
+    evaluate_precedence,
+    load_precedence_config,
+)
+from ultra_csm.cohort_packets import build_cohort_packets_artifact
 from ultra_csm.data_plane import (
     DEFAULT_DEMO_STATE_DIR,
     DEFAULT_TENANT,
@@ -49,6 +56,7 @@ from ultra_csm.platform.runtime import (
     persistent_database_configured,
 )
 from ultra_csm.platform.seed import SEED_CLOCK
+from ultra_csm.rejection_ledger import RejectionLedger, top_factor_name
 from ultra_csm.snapshot_store import SnapshotStore
 from ultra_csm.triggers import (
     AccountTriggerState,
@@ -286,11 +294,29 @@ def run_tick_with_config(
             "created_proposals": run_payload["created_proposals"],
         })
 
+    rejection_ledger = RejectionLedger(state_dir / "rejection_ledger.json")
+    rejection_summary = _annotate_rejection_ledger(
+        fired_runs,
+        rejection_ledger,
+        day=observed.day,
+    )
+    precedence = _precedence_state_for_runs(
+        tuple(fired_runs),
+        as_of=observed.as_of,
+    )
+    cohort_packets = build_cohort_packets_artifact(
+        observed.data,
+        tick_ledger=_cohort_trigger_records(tuple(fired_runs)),
+        action_packets=_cohort_action_records(tuple(fired_runs), precedence),
+    )
     artifacts = _write_tick_artifacts(
         state_dir=state_dir,
         observed=observed,
         evaluation=evaluation,
         fired_runs=tuple(fired_runs),
+        precedence=precedence,
+        rejection_summary=rejection_summary,
+        cohort_packets=cohort_packets,
     )
     ledger_entry = {
         "artifact": "tick_ledger_entry",
@@ -300,6 +326,13 @@ def run_tick_with_config(
         "config_version": config.config_version,
         "fired_triggers": fired_for_ledger,
         "suppressions": [item.to_dict() for item in evaluation.suppressions],
+        "precedence": precedence,
+        "rejection_ledger": rejection_summary,
+        "cohort_packets": {
+            "artifact": cohort_packets["artifact"],
+            "packet_count": cohort_packets["packet_count"],
+            "segment_axes": cohort_packets["segment_axes"],
+        },
         "artifacts_written": artifacts,
         "snapshot": observed.trigger_state.to_dict(),
     }
@@ -566,12 +599,229 @@ def _lens_payload_for_trigger(
     }
 
 
+def _precedence_state_for_runs(
+    fired_runs: tuple[dict[str, Any], ...],
+    *,
+    as_of: str,
+) -> dict[str, Any]:
+    findings: list[FindingPacket] = []
+    actions: list[ActionPacket] = []
+    for run in fired_runs:
+        lens = run["trigger"]["action"]["lens"]
+        trigger_name = run["trigger"]["trigger_name"]
+        for index, item in enumerate(run["work_items"]):
+            account_id = item.get("account_id")
+            if not account_id:
+                continue
+            evidence_refs = tuple(_evidence_ref_ids(item.get("evidence", ())))
+            if lens == "risk":
+                findings.append(FindingPacket(
+                    finding_id=f"risk:{account_id}:{index}",
+                    account_id=account_id,
+                    lens="risk",
+                    condition_instance=f"risk:{account_id}:{as_of}",
+                    evidence_refs=evidence_refs,
+                    payload={
+                        "trigger_name": trigger_name,
+                        "recommended_action": item.get("recommended_action"),
+                        "reason": item.get("reason"),
+                    },
+                ))
+            elif lens == "ttv":
+                findings.append(FindingPacket(
+                    finding_id=f"ttv_gap:{account_id}:{index}",
+                    account_id=account_id,
+                    lens="ttv_gap",
+                    condition_instance=f"ttv_gap:{account_id}:{as_of}",
+                    evidence_refs=evidence_refs,
+                    payload={
+                        "trigger_name": trigger_name,
+                        "recommended_action": item.get("recommended_action"),
+                        "reason": item.get("reason"),
+                    },
+                ))
+            elif lens == "expansion" and item.get("customer_contact_allowed"):
+                proposal = item.get("proposal") or {}
+                payload = {
+                    "account_id": account_id,
+                    "recommended_action": item.get("recommended_action"),
+                    "reason": item.get("reason"),
+                    "evidence_ids": list(evidence_refs),
+                    "proposal_id": proposal.get("proposal_id"),
+                    "trigger_name": trigger_name,
+                }
+                actions.append(ActionPacket(
+                    action_id=(
+                        f"proposal:{proposal['proposal_id']}"
+                        if proposal.get("proposal_id")
+                        else f"expansion:{account_id}:{index}"
+                    ),
+                    account_id=account_id,
+                    lens="expansion",
+                    scope="customer_facing",
+                    action_type=item.get("recommended_action") or "initiate_customer_call",
+                    autonomy_tier=int(proposal.get("autonomy_tier") or 3),
+                    payload=payload,
+                ))
+    evaluation = evaluate_precedence(
+        tuple(findings),
+        tuple(actions),
+        load_precedence_config(),
+        as_of=as_of,
+    )
+    artifact = evaluation.to_dict()
+    artifact["source"] = "tick_fired_runs"
+    artifact["finding_count"] = len(findings)
+    artifact["action_count"] = len(actions)
+    return artifact
+
+
+def _annotate_rejection_ledger(
+    fired_runs: list[dict[str, Any]],
+    ledger: RejectionLedger,
+    *,
+    day: int,
+) -> dict[str, Any]:
+    checked = 0
+    matches: list[dict[str, Any]] = []
+    for run in fired_runs:
+        for item in run["work_items"]:
+            account_id = item.get("account_id")
+            priority = item.get("priority") or {}
+            factor_name = _top_factor_name_payload(tuple(priority.get("factors") or ()))
+            motion = item.get("recommended_action")
+            if not account_id or not factor_name or not motion:
+                continue
+            checked += 1
+            record = ledger.lookup(
+                tenant_id=DEFAULT_TENANT,
+                account_id=account_id,
+                factor_name=factor_name,
+                motion=motion,
+            )
+            key = {
+                "tenant_id": DEFAULT_TENANT,
+                "account_id": account_id,
+                "factor_name": factor_name,
+                "motion": motion,
+            }
+            item["rejection_ledger"] = {
+                "checked": True,
+                "day": day,
+                "key": key,
+                "matched": record is not None,
+                "previous_rejection": record.to_dict() if record is not None else None,
+            }
+            if record is not None:
+                matches.append({"key": key, "previous_rejection": record.to_dict()})
+    return {
+        "artifact": "tick_rejection_ledger_check",
+        "checked_count": checked,
+        "matched_count": len(matches),
+        "matches": matches,
+    }
+
+
+def _cohort_trigger_records(fired_runs: tuple[dict[str, Any], ...]) -> list[dict[str, Any]]:
+    records: list[dict[str, Any]] = []
+    for run in fired_runs:
+        trigger_name = run["trigger"]["trigger_name"]
+        for item in run["work_items"]:
+            account_id = item.get("account_id")
+            if account_id:
+                records.append({"account_id": account_id, "trigger_name": trigger_name})
+        for item in run.get("escalations", ()):
+            for account_id in item.get("candidate_account_ids", ()):
+                records.append({"account_id": account_id, "trigger_name": trigger_name})
+    return records
+
+
+def _cohort_action_records(
+    fired_runs: tuple[dict[str, Any], ...],
+    precedence: dict[str, Any],
+) -> list[dict[str, Any]]:
+    records: list[dict[str, Any]] = []
+    for run in fired_runs:
+        for item in run["work_items"]:
+            account_id = item.get("account_id")
+            if not account_id:
+                continue
+            proposal = item.get("proposal")
+            records.append({
+                "account_id": account_id,
+                "status": (proposal or {}).get("status") or "observed",
+                "recommended_action": item.get("recommended_action"),
+            })
+    for active in precedence.get("active_actions", ()):
+        action = active.get("action", {})
+        records.append({
+            "account_id": action.get("account_id"),
+            "status": active.get("status", "active"),
+            "recommended_action": action.get("action_type"),
+        })
+    for held in precedence.get("held_actions", ()):
+        action = held.get("action", {})
+        records.append({
+            "account_id": action.get("account_id"),
+            "status": held.get("status", "held"),
+            "recommended_action": action.get("action_type"),
+        })
+    return records
+
+
+def _evidence_ref_ids(evidence: Any) -> tuple[str, ...]:
+    refs: list[str] = []
+    for ref in evidence or ():
+        if isinstance(ref, dict):
+            source = ref.get("source")
+            source_id = ref.get("source_id")
+            field = ref.get("field")
+            refs.append(":".join(str(part) for part in (source, source_id, field) if part))
+    return tuple(refs)
+
+
+def _top_factor_name_payload(factors: tuple[Any, ...]) -> str | None:
+    shaped = tuple(
+        type("_Factor", (), {
+            "name": item.get("name"),
+            "contribution": item.get("contribution", 0),
+        })()
+        for item in factors
+        if isinstance(item, dict)
+    )
+    return top_factor_name(shaped)
+
+
+def _empty_precedence_artifact() -> dict[str, Any]:
+    return {
+        "visible_findings": [],
+        "active_actions": [],
+        "held_actions": [],
+        "ledger_events": [],
+        "source": "tick_fired_runs",
+        "finding_count": 0,
+        "action_count": 0,
+    }
+
+
+def _empty_rejection_summary() -> dict[str, Any]:
+    return {
+        "artifact": "tick_rejection_ledger_check",
+        "checked_count": 0,
+        "matched_count": 0,
+        "matches": [],
+    }
+
+
 def _write_tick_artifacts(
     *,
     state_dir: Path,
     observed: ObservedTickState,
     evaluation: TriggerEvaluation,
     fired_runs: tuple[dict[str, Any], ...],
+    precedence: dict[str, Any] | None = None,
+    rejection_summary: dict[str, Any] | None = None,
+    cohort_packets: dict[str, Any] | None = None,
 ) -> list[str]:
     state_dir.mkdir(parents=True, exist_ok=True)
     stamp = observed.as_of.replace("-", "")
@@ -583,6 +833,9 @@ def _write_tick_artifacts(
         "as_of": observed.as_of,
         "day": observed.day,
         "fired_runs": list(fired_runs),
+        "precedence": precedence or _empty_precedence_artifact(),
+        "rejection_ledger": rejection_summary or _empty_rejection_summary(),
+        "cohort_packets": cohort_packets,
     }
     digest = {
         "artifact": "tick_digest",
@@ -595,6 +848,10 @@ def _write_tick_artifacts(
         "suppressions": [item.to_dict() for item in evaluation.suppressions],
         "work_items": sum(len(run["work_items"]) for run in fired_runs),
         "proposals_created": sum(len(run["created_proposals"]) for run in fired_runs),
+        "precedence_held_actions": len((precedence or {}).get("held_actions", ())),
+        "precedence_active_actions": len((precedence or {}).get("active_actions", ())),
+        "rejection_ledger_matches": (rejection_summary or {}).get("matched_count", 0),
+        "cohort_packet_count": (cohort_packets or {}).get("packet_count", 0),
     }
     work_queue_path.write_text(json.dumps(work_queue, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     digest_path.write_text(json.dumps(digest, indent=2, sort_keys=True) + "\n", encoding="utf-8")

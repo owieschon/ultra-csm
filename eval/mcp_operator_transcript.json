@@ -1,7 +1,7 @@
 {
   "access_mode": "demo_operator",
   "artifact": "mcp_operator_transcript",
-  "artifact_sha256": "b77985865eadfbf05d7eda510c643027845b029ea6d48928bb46122a1d0c7c82",
+  "artifact_sha256": "e4129f09aa946cc5d0cd37cf54065a1b3104341e6c2b2ec8d144e7156d2730af",
   "beats": [
     "briefing",
     "queue",
@@ -397,6 +397,18 @@
             "recipient_resolution": "first_consenting_fallback",
             "recipient_role": "operations",
             "recommended_action": "draft_customer_outreach",
+            "slot_a_classifications": [
+              {
+                "account_id": "a317f5e7-575e-5879-8256-9082e40ef19f",
+                "case_id": "4ddf4d0e-2600-56f7-9edc-a5a0071d8186",
+                "cited_case_id": "4ddf4d0e-2600-56f7-9edc-a5a0071d8186",
+                "classification": "blocker",
+                "model_id": "fixture-agent1-slot-a-v1",
+                "prompt_version": "agent1-slot-a-case-note-v1",
+                "reason": "Matched blocker case-note signals: implementation blocker.",
+                "source": "slot_a"
+              }
+            ],
             "swept_at": "2026-06-27",
             "tenant_id": "ultra-demo"
           },
@@ -554,6 +566,7 @@
             "recipient_resolution": "first_consenting_fallback",
             "recipient_role": null,
             "recommended_action": "recommend_next_best_action",
+            "slot_a_classifications": [],
             "swept_at": "2026-06-27",
             "tenant_id": "ultra-demo"
           },
@@ -723,6 +736,18 @@
             "recipient_resolution": "first_consenting_fallback",
             "recipient_role": "operations",
             "recommended_action": "draft_customer_outreach",
+            "slot_a_classifications": [
+              {
+                "account_id": "ac5ddaea-764f-57ef-866d-593d57a20a00",
+                "case_id": "fefff49b-e3f3-5127-86dd-970eedbf8ce1",
+                "cited_case_id": "fefff49b-e3f3-5127-86dd-970eedbf8ce1",
+                "classification": "unknown",
+                "model_id": "fixture-agent1-slot-a-v1",
+                "prompt_version": "agent1-slot-a-case-note-v1",
+                "reason": "No clear blocker or noise signal in the case note.",
+                "source": "slot_a"
+              }
+            ],
             "swept_at": "2026-06-27",
             "tenant_id": "ultra-demo"
           },
@@ -863,6 +888,7 @@
             "recipient_resolution": "first_consenting_fallback",
             "recipient_role": "operations",
             "recommended_action": "draft_customer_outreach",
+            "slot_a_classifications": [],
             "swept_at": "2026-06-27",
             "tenant_id": "ultra-demo"
           },
@@ -980,12 +1006,13 @@
             "recipient_resolution": "first_consenting_fallback",
             "recipient_role": "operations",
             "recommended_action": "draft_customer_outreach",
+            "slot_a_classifications": [],
             "swept_at": "2026-06-27",
             "tenant_id": "ultra-demo"
           }
         ]
       },
-      "output_sha256": "17cc482ca9e3b19fd917990b7c0fec60e3fc070fbd1958a10e999cd8ea9ee776",
+      "output_sha256": "90c83d127305e914184456ba170414ae2d9c0fe432ccf4f92b3c7af6baa7363a",
       "tool": "get_morning_briefing"
     },
     {
