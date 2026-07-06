@@ -11,7 +11,7 @@ on a second run). Getting there past the access grant surfaced 4 more real bugs 
 parent chain, `initial_data_source` nesting for custom properties, and schema validation
 before reusing a found database) — see IF/THEN branches 12-15 and Owner Ask 1's
 resolution note below. One stray artifact remains in the workspace as a result (a
-wrongly-shaped "Content Roadmap" data source from before the fix) — Owen action needed,
+wrongly-shaped "Content Roadmap" data source from before the fix) — owner action needed,
 not code; see Owner Ask 1.
 
 **Tripwire flagged at top (now resolved):** the only reason this run was left demoted
