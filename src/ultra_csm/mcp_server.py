@@ -26,7 +26,7 @@ from mcp.server.fastmcp import FastMCP
 
 from ultra_csm.logging_config import setup_logging
 from ultra_csm.platform import EphemeralCluster
-from ultra_csm.platform.db import session
+from ultra_csm.platform.db import assert_rls_safe_role, session
 from ultra_csm.platform.seed import det_uuid, SEED_CLOCK
 
 from ultra_csm.data_plane import (
@@ -302,6 +302,7 @@ def _boot() -> None:
     # Open the runtime connection used for the lifetime of the server.
     dsn = _cluster.dsn(user="app_runtime")
     _conn = psycopg.connect(**dsn)
+    assert_rls_safe_role(_conn)
 
     # Seed the governance roster for the acme-csm tenant.
     seed_roster(_conn, tenant_id=_TENANT_ID, actor_id=_SEED_AGENT, now=_CLOCK)

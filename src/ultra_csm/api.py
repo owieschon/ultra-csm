@@ -29,7 +29,7 @@ from ultra_csm.comms_mapping import (
 )
 from ultra_csm.logging_config import setup_logging
 from ultra_csm.platform import EphemeralCluster
-from ultra_csm.platform.db import apply_migrations, session
+from ultra_csm.platform.db import apply_migrations, assert_rls_safe_role, session
 from ultra_csm.platform.seed import det_uuid, seed, SEED_CLOCK
 
 from ultra_csm.data_plane import (
@@ -376,6 +376,7 @@ async def lifespan(app: FastAPI):
 
     # Runtime connection for the lifetime of the server.
     _conn = psycopg.connect(**_cluster.dsn(user="app_runtime"))
+    assert_rls_safe_role(_conn)
 
     # Seed governance roster.
     seed_roster(_conn, tenant_id=_TENANT_ID, actor_id=_SEED_AGENT, now=_CLOCK)

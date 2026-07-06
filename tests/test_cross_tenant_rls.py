@@ -21,10 +21,20 @@ valid and unchanged.
 from __future__ import annotations
 
 import psycopg
+import pytest
 
-from ultra_csm.platform.db import session
+from ultra_csm.platform.db import UnsafeDbRole, assert_rls_safe_role, session
 
 from tests._govhelpers import CLOCK, T1, T1_AGENT, T2, T2_AGENT
+
+
+def test_runtime_role_passes_rls_safety_guard(runtime_conn):
+    assert_rls_safe_role(runtime_conn)
+
+
+def test_superuser_role_fails_rls_safety_guard(bootstrap_conn):
+    with pytest.raises(UnsafeDbRole, match="bypasses RLS"):
+        assert_rls_safe_role(bootstrap_conn)
 
 
 def _write_principal_as_t1(runtime_conn: psycopg.Connection) -> str:
