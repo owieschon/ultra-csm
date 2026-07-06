@@ -191,6 +191,43 @@ class TestAccountBriefEndpoint:
         assert isinstance(derek["days_since_interaction"], int)
 
 
+class TestAccountReconciliationEndpoint:
+    """Reconciliation agent (Harvest 31 / report 52): read-only endpoint
+    surfacing deterministic divergence/lens signals plus a fixture-mode
+    explanation and candidate divergences for one account."""
+
+    def test_reconciliation_missing_account_404(self, client: TestClient):
+        resp = client.get("/accounts/00000000-0000-0000-0000-000000000000/reconciliation")
+        assert resp.status_code == 404
+
+    def test_reconciliation_pinnacle_supply_signals(self, client: TestClient):
+        from ultra_csm.data_plane.fixtures import account_id_for
+
+        account_id = account_id_for("pinnacle-supply")
+        resp = client.get(f"/accounts/{account_id}/reconciliation?day=4")
+        assert resp.status_code == 200
+        body = resp.json()
+        assert body["account_id"] == account_id
+
+        signals_by_name = {s["name"]: s for s in body["deterministic_signals"]}
+        assert "single_threaded_risk" in signals_by_name
+        assert "usage_concentration" in signals_by_name
+        assert set(signals_by_name["single_threaded_risk"]["surfaced_by_lenses"]) == {
+            "value_model",
+            "risk_lens",
+        }
+        # Deterministic signals never carry a disclaimer field.
+        assert "disclaimer" not in signals_by_name["single_threaded_risk"]
+
+        assert "text" in body["explanation"]
+        assert body["explanation"]["disclaimer"]
+        assert isinstance(body["candidate_divergences"], list)
+        for candidate in body["candidate_divergences"]:
+            assert candidate["origin"] == "llm_hypothesis"
+            assert candidate["disclaimer"]
+            assert candidate["confidence"] in ("low", "medium")
+
+
 # ---------------------------------------------------------------------------
 # POST /sweep
 # ---------------------------------------------------------------------------

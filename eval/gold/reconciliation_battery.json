@@ -1,0 +1,58 @@
+{
+  "account_id": "91330ede-650a-5015-856d-c685a83807b4",
+  "account_slug": "pinnacle-supply",
+  "artifact": "reconciliation_battery",
+  "as_of": "2026-06-25",
+  "candidate_divergences_dropped_by_judge": 0,
+  "candidate_divergences_kept": [
+    {
+      "claim": "The CRM lists multiple contacts with defined roles on this account, yet telemetry shows usage concentrated in a single active person, suggesting the recorded contacts are not actually engaging with the product.",
+      "confidence": "low",
+      "disclaimer": "Unverified AI hypothesis, not a confirmed finding -- may be wrong. Judge-scored for grounding but not human-confirmed.",
+      "evidence": [
+        {
+          "field": "role",
+          "observed_at": "2026-06-25",
+          "source": "crm",
+          "source_id": "7d31c110-b419-56eb-afa1-8496bf066887"
+        },
+        {
+          "field": "role",
+          "observed_at": "2026-06-25",
+          "source": "crm",
+          "source_id": "be632da3-5335-552b-8465-5c670fc9da04"
+        },
+        {
+          "field": "role",
+          "observed_at": "2026-06-25",
+          "source": "crm",
+          "source_id": "382ef4b6-a7b4-5d9d-b0c6-efb58e02ccbd"
+        },
+        {
+          "field": "person_active_days",
+          "observed_at": "2026-06-21T00:00:00Z",
+          "source": "telemetry",
+          "source_id": "21bd1ae9-6174-5f55-891e-34c7b84d58e0"
+        }
+      ],
+      "judge_scores": {
+        "hypothesis_grounding": 2,
+        "hypothesis_specificity": 3
+      },
+      "origin": "llm_hypothesis"
+    }
+  ],
+  "candidate_divergences_proposed": 1,
+  "deterministic_signal_count": 5,
+  "explanation": {
+    "disclaimer": "Model-generated explanation -- may be incomplete or mischaracterize the underlying evidence. Verify against the cited sources before acting.",
+    "judge_scores": {
+      "explanation_grounding": 2,
+      "explanation_specificity": 3
+    },
+    "text": "The deterministic signals paint a split picture between what the CS platform reports and what telemetry observes. On the CS/CRM side, the account looks expansion-ready: `expansion_readiness_high_adoption` shows a strong 0.8 adoption rate and `arr_expansion_surface` reflects a sizeable $350,000 ARR base (also captured as `arr_risk_exposure`). Telemetry, however, tells a more fragile story \u2014 `single_threaded_risk` and `usage_concentration` both sit at maximum (1.0), indicating that actual product usage is concentrated in effectively a single active person rather than spread across the account. In short, the platform's high-adoption, high-expansion narrative rests on a usage footprint that telemetry shows is dangerously narrow."
+  },
+  "hard_ok": true,
+  "judge_prompt_version": "reconciliation-judge-v1",
+  "reconciliation_prompt_version": "agent1-reconciliation-v1"
+}
