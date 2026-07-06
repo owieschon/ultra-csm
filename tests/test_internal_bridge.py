@@ -3,6 +3,12 @@ from __future__ import annotations
 import pytest
 
 from eval.internal_bridge_battery import run_battery
+from eval.internal_bridge_validation import (
+    FixturePacketProseScorer,
+    build_validation_report,
+    packet_quality_payload,
+)
+from eval.judge_csm import QUALITY_DIMENSIONS
 from tests._govhelpers import CLOCK, T1, setup_roster
 from ultra_csm.agent1 import run_time_to_value_sweep
 from ultra_csm.data_plane import ACME_LOGISTICS, DEFAULT_TENANT, build_sweep_fixture_data_plane
@@ -29,6 +35,22 @@ def test_internal_bridge_battery_is_deterministic():
     assert run_battery() == run_battery()
 
 
+def test_internal_bridge_validation_report_fixture_shape():
+    report = build_validation_report(prose_scorer=FixturePacketProseScorer())
+
+    assert report["routing_core_hard_ok"] is True
+    assert report["confusion_matrix"]["confidently_wrong_cells"] == []
+    assert report["abstain_axis"] == {
+        "oracle_abstain_agent_abstain": 4,
+        "oracle_route_agent_abstain": 0,
+        "oracle_abstain_agent_route": 0,
+        "oracle_route_agent_route": 14,
+    }
+    assert len(report["cases"]) == 18
+    first_scores = report["cases"][0]["packet_prose"]["scores"]
+    assert tuple(first_scores) == QUALITY_DIMENSIONS
+
+
 def test_packet_cites_exact_decision_evidence_for_routed_foil():
     cases = tuple(build_sweep_fixture_data_plane(tenant_id=DEFAULT_TENANT).crm.list_cases(ACME_LOGISTICS))
     decision = route_internal_bridge(cases, as_of="2026-06-27")
@@ -46,6 +68,27 @@ def test_packet_cites_exact_decision_evidence_for_routed_foil():
     assert packet.cited_evidence_ids == tuple(ref.source_id for ref in decision.evidence)
     for evidence_id in packet.cited_evidence_ids:
         assert evidence_id in packet.body
+
+
+def test_packet_quality_payload_matches_judge_contract_fields():
+    cases = tuple(build_sweep_fixture_data_plane(tenant_id=DEFAULT_TENANT).crm.list_cases(ACME_LOGISTICS))
+    decision = route_internal_bridge(cases, as_of="2026-06-27")
+    request = InternalBridgePacketRequest(
+        tenant_id=DEFAULT_TENANT,
+        account_id=ACME_LOGISTICS,
+        account_name="Acme Logistics",
+        as_of="2026-06-27",
+        decision=decision,
+    )
+    packet = build_internal_bridge_packet(request)
+    quality_request, quality_output = packet_quality_payload(request, packet)
+
+    assert quality_request["disposition"] == "internal_review"
+    assert quality_request["customer_contact_allowed"] is False
+    assert quality_request["evidence"][0]["source_id"] == packet.cited_evidence_ids[0]
+    assert quality_output["customer_draft"] is None
+    assert quality_output["reason"] == packet.body
+    assert quality_output["cited_evidence_ids"] == list(packet.cited_evidence_ids)
 
 
 def test_packet_has_reasoned_abstention_not_empty_body():
