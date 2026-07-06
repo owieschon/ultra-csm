@@ -8,8 +8,10 @@ an unmodified code path -- pass the live thread dict as their optional
 ``thread=`` argument instead of letting them default to the fixture.
 
 Auth: IMAP with an app password (``ULTRA_CSM_GMAIL_APP_PASSWORD`` /
-``ULTRA_CSM_GMAIL_SENDER`` in the credentials env file). Read-only: this
-module only ever opens the mailbox with ``readonly=True``.
+``ULTRA_CSM_GMAIL_SENDER`` in the credentials env file, parsed via the shared
+``connector_catalog.load_live_creds_file`` loader -- architecture cleanup,
+report 42). Read-only: this module only ever opens the mailbox with
+``readonly=True``.
 """
 
 from __future__ import annotations
@@ -17,24 +19,23 @@ from __future__ import annotations
 import email.header
 import email.utils
 import imaplib
-import os
 from email import message_from_bytes
 from email.message import Message
 
+from ultra_csm.data_plane.connector_catalog import (
+    load_live_creds_file,
+    resolve_live_creds_path,
+)
+
 
 def _imap_connect(readonly: bool = True) -> imaplib.IMAP4_SSL:
-    addr, pw = "", ""
-    creds_path = os.path.expanduser("~/ultra-csm-live-creds.env")
-    for line in open(creds_path):
-        line = line.strip()
-        if line.startswith("ULTRA_CSM_GMAIL_SENDER="):
-            addr = line.split("=", 1)[1].strip()
-        if line.startswith("ULTRA_CSM_GMAIL_APP_PASSWORD="):
-            pw = line.split("=", 1)[1].strip()
+    env = load_live_creds_file()
+    addr = env.get("ULTRA_CSM_GMAIL_SENDER", "")
+    pw = env.get("ULTRA_CSM_GMAIL_APP_PASSWORD", "")
     if not addr or not pw:
         raise RuntimeError(
             "ULTRA_CSM_GMAIL_SENDER/ULTRA_CSM_GMAIL_APP_PASSWORD missing from "
-            f"{creds_path}"
+            f"{resolve_live_creds_path()}"
         )
     imap = imaplib.IMAP4_SSL("imap.gmail.com", timeout=30)
     imap.login(addr, pw)
