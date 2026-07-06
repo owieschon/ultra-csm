@@ -12,9 +12,10 @@ four files it authorizes (`LICENSE`, `pyproject.toml`, `ui/package.json`,
 `eval/external_corpus_probe.py`) total 4 files changed, 31 lines
 (27 insertions + 4 deletions) — see Final verification table. Naming the
 excess per Phase 3's instruction rather than silently absorbing it: the
-raw `git diff origin/main... --stat` measured *after* this report's own
-commit is 5 files / 184 lines, because it now includes this report file
-itself (153 insertions) — the report is Phase 3's own named deliverable
+raw `git diff origin/main... --stat` measured at final HEAD is 5 files /
+197 lines (193 insertions + 4 deletions), because it now includes this
+report file itself (166 insertions, growing as the report documents its
+own corrections) — the report is Phase 3's own named deliverable
 with its own dedicated commit (`docs: report 36...`), not a scope
 violation of the ownership map, but its size means the dispatch's stated
 "≤4 files, ≤60 lines" DoD-table number is only exactly true for the
@@ -132,7 +133,7 @@ excludes a repo-wide sweep for other constructs.
 | `make lint` | `All checks passed!` |
 | `make hygiene` | exit 0 |
 | `git diff origin/main... --stat` (code-only, before report commit) | `LICENSE \| 21 +++++++++++++++++++++`, `eval/external_corpus_probe.py \| 8 ++++----`, `pyproject.toml \| 1 +`, `ui/package.json \| 1 +`, `4 files changed, 27 insertions(+), 4 deletions(-)` |
-| `git diff origin/main... --stat` (final, after report commit) | `LICENSE \| 21 ++`, `docs/PROGRAM_REPORT_36.md \| 153 ++++...`, `eval/external_corpus_probe.py \| 8 +-`, `pyproject.toml \| 1 +`, `ui/package.json \| 1 +`, `5 files changed, 180 insertions(+), 4 deletions(-)` |
+| `git diff origin/main... --stat` (final, after report commits — self-referential, grows with each report edit; not re-chased to an exact final byte count) | 5 files changed (`LICENSE`, `docs/PROGRAM_REPORT_36.md`, `eval/external_corpus_probe.py`, `pyproject.toml`, `ui/package.json`); report file itself accounts for the great majority of insertions. The stable, decision-relevant number is the code-only diff above (4 files/31 lines) — the report's own size is not part of the ownership-map budget claim. |
 | `gh api repos/:owner/:repo --jq .allow_auto_merge` | `true` |
 | `gh api repos/:owner/:repo/branches/main/protection` | 200 (does not 404); `required_status_checks.contexts` includes `"eval + CSM scorecard"` |
 
