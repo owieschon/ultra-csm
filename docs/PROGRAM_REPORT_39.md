@@ -2,7 +2,7 @@
 
 Worktree: `~/dev/ultra-csm-public-docs-integrity`, branch `codex/public-docs-integrity`, off `origin/main` @ `96bda58`.
 
-Tripwires (K12): one flagged — diff budget file count is 11 vs. the dispatch's stated 10 (line budget held: 68 << 200). See IF/THEN section below; not a STOP condition.
+Tripwires (K12): one flagged — final diff budget (including this report file itself) is 12 files / 177 lines vs. the dispatch's stated 10 files / 200 lines. Line budget held (177 < 200); file count is 2 over. See IF/THEN section below; not a STOP condition.
 
 ## DoD evidence table
 
@@ -16,7 +16,7 @@ Tripwires (K12): one flagged — diff budget file count is 11 vs. the dispatch's
 | gold JSON still valid | `python3 -c "import json,glob; [json.load(open(f)) for f in glob.glob('eval/gold/*.json')]"` | no error | no error | PASS |
 | lint clean | `make lint` | `All checks passed!` | `All checks passed!` | PASS |
 | hygiene clean | `make hygiene` | exit 0 | exit 0, no findings | PASS |
-| diff budget held | `git diff origin/main... --stat \| tail -1` | ≤10 files, ≤200 lines | 11 files, 68 lines (49 ins + 19 del) | FILE COUNT OVER by 1; line budget held |
+| diff budget held | `git diff origin/main... --stat \| tail -1` | ≤10 files, ≤200 lines | 12 files, 177 lines (158 ins + 19 del) — includes this report file itself (1 file / 109 lines) | FILE COUNT OVER by 2; line budget held |
 
 ## IF/THEN branches taken
 
@@ -30,7 +30,7 @@ Tripwires (K12): one flagged — diff budget file count is 11 vs. the dispatch's
 
 5. **Machine-path residue — 3 additional files found outside the named globs.** The same grep pattern (`/Users/owieschon`), run without the dispatch's file-glob restriction, surfaces residue in 3 more files: `docs/LIVE_INTEGRATION_FINDINGS.md:129`, `docs/PROGRAM_REPORT.md:4` (unnumbered — not matched by the `PROGRAM_REPORT_*.md` glob, a distinct file from the numbered reports), `docs/EXECUTOR_HANDOFF_LANE_I.md:33`. IF these are edited, THEN it exceeds both the literal Ownership map (only `docs/PROGRAM_REPORT_*.md` and `eval/gold/*.json` are OWNS-listed for path-residue) and the Decisions text's stated scope ("this dispatch does NOT replace running this repo's own `/scrub` tool for a full identity/AI-residue pass"). Chose: did NOT edit these 3 files; recorded as Owner Ask (below) instead, per K2 (ambiguous fork → additive + conformant + smallest — smallest here means staying inside the literal Ownership map, not silently widening it).
 
-6. **Diff budget: 11 files vs. stated 10.** See DoD table row. IF the literal 10-file cap is treated as a hard STOP, THEN 3 of the 4 program-report fixes or 1 of the 4 gold-JSON fixes would need to be dropped to hit exactly 10 — but every one of the 11 files touched is either explicitly named in the Ownership map (`docs/SECURITY.md`, `SECURITY.md`, `README.md`, `docs/PROGRAM_REPORT_*.md`, `eval/gold/*.json`) or directly required by a ratified Decisions bullet (root `SECURITY.md`'s creation is itself one of the 11). Chose: kept all 11 legitimate fixes rather than trim an owned, correctly-scoped fix to satisfy a numeric target — the line budget (the tighter, more meaningful constraint for a docs-only change) held at 68 of 200. Flagged here rather than silently absorbed. None of the 3 named STOP conditions apply to this situation, so this is a recorded IF/THEN, not a STOP.
+6. **Diff budget: 12 files vs. stated 10 (final count, including this report file).** See DoD table row. Before this report file was committed, the substantive-fix diff was 11 files/68 lines; the mandatory Phase 4 report commit (`docs/PROGRAM_REPORT_39.md` itself, required by the Report contract) adds a 12th file and 109 lines, for a final 12 files / 177 lines. IF the literal 10-file cap is treated as a hard STOP, THEN either 2+ of the legitimately-owned content fixes would need to be dropped, or the mandatory report file itself would have to be excluded from its own budget accounting — neither is sound: every one of the other 11 files is explicitly named in the Ownership map (`docs/SECURITY.md`, `SECURITY.md`, `README.md`, `docs/PROGRAM_REPORT_*.md`, `eval/gold/*.json`) or directly required by a ratified Decisions bullet, and the report file is mandated by this same dispatch's Report contract with a pre-assigned filename ("never renumber"). Chose: kept all 12 files rather than trim an owned fix or omit the required report — the line budget (177 of 200), the tighter and more meaningful constraint for a docs-only change, held comfortably. Flagged here rather than silently absorbed. None of the 3 named STOP conditions apply, so this is a recorded IF/THEN, not a STOP.
 
 ## Owner Asks
 
@@ -43,7 +43,7 @@ Tripwires (K12): one flagged — diff budget file count is 11 vs. the dispatch's
 
 2. **Sampled human read recommended on the SECURITY.md Dependency Notes rewrite** (per routing table: TASTE-routed, mechanical oracle can't verify prose clarity) and on the roadmap-item-3 wording reconciliation (per routing table: lightly TASTE-routed — "does the new sentence actually stop contradicting STATUS.md, or just say different words").
 
-3. **Diff-budget file-count overage (11 vs. 10) noted above** — no action needed unless the wave owner wants the numeric budget itself tightened for future narrow-scope docs dispatches with 4+4 file globs.
+3. **Diff-budget file-count overage (12 vs. 10, final count including this report file itself) noted above** — no action needed unless the wave owner wants the numeric budget itself tightened for future narrow-scope docs dispatches with 4+4 file globs plus a mandatory report file.
 
 ## STOP conditions hit
 
@@ -71,7 +71,7 @@ The two mechanical claims most worth doubting are the account-count fix and the 
 | Gold JSON structural integrity | byte-level check that pre-existing missing-trailing-newline property in `reference_review_iteration3.json` was not altered by the edit | confirmed unchanged (`0a7d` = `\n}`, no final `\n`, matches pre-edit `git show HEAD:...` byte tail) |
 | `make lint` | ran in worktree | `All checks passed!` |
 | `make hygiene` | ran in worktree | exit 0, no findings |
-| Diff budget | `git diff origin/main... --stat` | 11 files / 68 lines (line budget held, file count +1 over, explained above) |
+| Diff budget | `git diff origin/main... --stat` | 12 files / 177 lines, final count including this report file (line budget held, file count +2 over, explained above) |
 
 ## Receipts appendix
 
@@ -84,20 +84,21 @@ eb25f30 docs: README claims reconciled with current code/artifacts (judge versio
 ce52ba1 docs: scrub committed machine paths from program reports and gold artifacts (narrow scope; full /scrub still recommended)
 ```
 
-**Files touched (11):**
+**Files touched (12, including this report file itself):**
 ```
-README.md                                    | 13 +++++++------
-SECURITY.md                                  | 11 +++++++++++ (new)
-docs/PROGRAM_REPORT_2.md                     |  2 +-
-docs/PROGRAM_REPORT_21.md                    |  2 +-
-docs/PROGRAM_REPORT_34.md                    |  2 +-
-docs/PROGRAM_REPORT_4.md                     |  2 +-
-docs/SECURITY.md                             | 22 ++++++++++++++++++++--
-eval/gold/judge_live_50.json                 |  2 +-
-eval/gold/reference_review_apply_report.json |  6 +++---
-eval/gold/reference_review_iteration3.json   |  2 +-
-eval/gold/v6_ontask_apply_report.json        |  4 ++--
-11 files changed, 49 insertions(+), 19 deletions(-)
+README.md                                    |  13 ++--
+SECURITY.md                                  |  11 +++ (new)
+docs/PROGRAM_REPORT_2.md                     |   2 +-
+docs/PROGRAM_REPORT_21.md                    |   2 +-
+docs/PROGRAM_REPORT_34.md                    |   2 +-
+docs/PROGRAM_REPORT_39.md                    | 109 +++ (new, this report)
+docs/PROGRAM_REPORT_4.md                     |   2 +-
+docs/SECURITY.md                             |  22 +++-
+eval/gold/judge_live_50.json                 |   2 +-
+eval/gold/reference_review_apply_report.json |   6 +-
+eval/gold/reference_review_iteration3.json   |   2 +-
+eval/gold/v6_ontask_apply_report.json        |   4 +-
+12 files changed, 158 insertions(+), 19 deletions(-)
 ```
 
 **Live npm audit (2026-07-05), `cd ui && npm audit --audit-level=low`:** 4 high + 1 moderate advisory on `next@14.2.x` (one transitively on `postcss`); JSON metadata: `{'info': 0, 'low': 0, 'moderate': 1, 'high': 4, 'critical': 0, 'total': 5}`.
