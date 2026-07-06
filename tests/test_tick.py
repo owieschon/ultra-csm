@@ -103,6 +103,82 @@ def test_tick_runs_sweep_writes_provenance_and_preserves_action_tier(
         assert required_permission == expected["required_permission"]
 
 
+@pytest.mark.parametrize("lens_name", ["risk", "expansion"])
+def test_tick_dispatches_risk_and_expansion_lenses(
+    lens_name: str,
+    tmp_path: Path,
+    tick_conn,
+):
+    """Report 51: a fired trigger naming the risk/expansion lens calls
+    ``run_risk_lens``/``run_expansion_lens`` (not the TTV sweep) and writes
+    an artifact with the narrower lens-result shape (no ``escalations``/
+    ``degraded_items``/``budget_skipped`` -- those fields belong to
+    ``SweepResult`` only)."""
+
+    context = setup_tick_roster(tick_conn)
+    config = parse_trigger_config({
+        "config_version": "test-triggers",
+        "triggers": [{
+            "name": f"weekly_{lens_name}_sweep",
+            "kind": "schedule",
+            "every": "1d",
+            "action": {"lens": lens_name, "scope": "book"},
+        }],
+    })
+
+    result = run_tick_with_config(
+        as_of="2026-06-21",
+        config=config,
+        state_dir=tmp_path,
+        conn=tick_conn,
+        gate_context=context,
+    )
+
+    assert result.ledger_entry is not None
+    assert result.artifacts_written
+    work_queue = json.loads(Path(result.artifacts_written[0]).read_text(encoding="utf-8"))
+    run_payload = work_queue["fired_runs"][0]
+    assert run_payload["trigger"]["action"]["lens"] == lens_name
+    assert "escalations" not in run_payload
+    assert "degraded_items" not in run_payload
+    assert "budget_skipped" not in run_payload
+    assert "work_items" in run_payload
+    assert "swept_accounts" in run_payload
+
+
+def test_tick_ttv_lens_dispatch_unchanged(tmp_path: Path, tick_conn):
+    """Zero-drift companion to the risk/expansion dispatch test above: a
+    ``"lens": "ttv"`` trigger still writes the full ``SweepResult`` shape
+    (escalations/degraded_items/budget_skipped present), unchanged by the
+    new branch."""
+
+    context = setup_tick_roster(tick_conn)
+    config = parse_trigger_config({
+        "config_version": "test-triggers",
+        "triggers": [{
+            "name": "daily_ttv",
+            "kind": "schedule",
+            "every": "1d",
+            "action": {"lens": "ttv", "scope": "book"},
+        }],
+    })
+
+    result = run_tick_with_config(
+        as_of="2026-06-21",
+        config=config,
+        state_dir=tmp_path,
+        conn=tick_conn,
+        gate_context=context,
+    )
+
+    work_queue = json.loads(Path(result.artifacts_written[0]).read_text(encoding="utf-8"))
+    run_payload = work_queue["fired_runs"][0]
+    assert run_payload["trigger"]["action"]["lens"] == "ttv"
+    assert "escalations" in run_payload
+    assert "degraded_items" in run_payload
+    assert "budget_skipped" in run_payload
+
+
 def test_tick_records_cooldown_suppressions_in_ledger(tmp_path: Path, tick_conn):
     context = setup_tick_roster(tick_conn)
     config = parse_trigger_config({
