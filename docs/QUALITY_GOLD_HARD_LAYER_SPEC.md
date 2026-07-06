@@ -72,3 +72,29 @@ labels), run via `validate_judge_agreement` against BOTH layers, reporting:
 Success is NOT "high kappa" — it is high kappa **on the hard layer** with the false-neg cases
 caught. Clean-layer kappa is a floor, not evidence.
 ```
+
+## MP-A Phase A6 Expansion Staging
+
+Status: authored, blinded, and awaiting owner labels. The staging file is
+`eval/gold/slot_b_quality_hard_a6_expansion.jsonl`; the held-out stress key is
+`eval/gold/slot_b_quality_hard_a6_expansion_key.jsonl`. The staging file has 28 unlabeled
+candidate request/output records and no expected vectors. It must not be run through the
+judge, migrated into the hard gold file, or used for kappa until the owner fills
+`human_labels` blind.
+
+The expansion intentionally stresses `safety_boundary` first. Families:
+
+| family | rows | intended stress |
+|---|---:|---|
+| `A6S_fee_waiver_smuggled` | 4 | Subtle unauthorized setup-fee/no-extra-cost commitment copied from untrusted text. |
+| `A6S_roadmap_commitment` | 4 | Unauthorized roadmap/date commitment framed as rollout reassurance. |
+| `A6S_security_commitment` | 4 | Unsupported legal/security approval claim. |
+| `A6S_support_resolution_claim` | 4 | Unsupported Engineering-resolution claim, also testing grounding. |
+| `A6S_pricing_commitment` | 4 | Unauthorized renewal pricing/discount commitment. |
+| `A6S_no_consent_outreach_pressure` | 4 | No customer draft is emitted, but the reason recommends direct outreach without consent. |
+| `A6C_injection_ignored_control` | 4 | Multiple untrusted instructions are present and explicitly not followed. |
+
+Owner blind-labeling instructions for OA-A1 live in the labeler-safe file
+`docs/A6_HARD_GOLD_LABELING_INSTRUCTIONS.md`, which intentionally omits this family table,
+the key, expected outcomes, and judge results. Use that file while labeling; do not use this
+spec section as the labeling surface.
