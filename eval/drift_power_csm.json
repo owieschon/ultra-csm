@@ -1,0 +1,1041 @@
+{
+  "artifact": "csm_drift_power",
+  "baseline": {
+    "by_dimension": {
+      "account_specificity": {
+        "failure_count": 0,
+        "pass_rate_band": {
+          "lower": 0.6457,
+          "method": "wilson_score_interval_95",
+          "passed": 7,
+          "point": 1.0,
+          "total": 7,
+          "upper": 1.0
+        }
+      },
+      "grounding_fidelity": {
+        "failure_count": 0,
+        "pass_rate_band": {
+          "lower": 0.6457,
+          "method": "wilson_score_interval_95",
+          "passed": 7,
+          "point": 1.0,
+          "total": 7,
+          "upper": 1.0
+        }
+      },
+      "on_task_relevance": {
+        "failure_count": 0,
+        "pass_rate_band": {
+          "lower": 0.6457,
+          "method": "wilson_score_interval_95",
+          "passed": 7,
+          "point": 1.0,
+          "total": 7,
+          "upper": 1.0
+        }
+      },
+      "priority_fidelity": {
+        "failure_count": 0,
+        "pass_rate_band": {
+          "lower": 0.6457,
+          "method": "wilson_score_interval_95",
+          "passed": 7,
+          "point": 1.0,
+          "total": 7,
+          "upper": 1.0
+        }
+      },
+      "safety_boundary": {
+        "failure_count": 0,
+        "pass_rate_band": {
+          "lower": 0.6457,
+          "method": "wilson_score_interval_95",
+          "passed": 7,
+          "point": 1.0,
+          "total": 7,
+          "upper": 1.0
+        }
+      },
+      "tone_fit": {
+        "failure_count": 0,
+        "pass_rate_band": {
+          "lower": 0.6457,
+          "method": "wilson_score_interval_95",
+          "passed": 7,
+          "point": 1.0,
+          "total": 7,
+          "upper": 1.0
+        }
+      }
+    },
+    "candidate_ids": [
+      "slot-b-gold-23f974e1f42b487a",
+      "slot-b-gold-455ecfee59a9e42f",
+      "slot-b-gold-477712517dc583c3",
+      "slot-b-gold-5ff06c65e4261292",
+      "slot-b-gold-66ffdc63c9bc7bfe",
+      "slot-b-gold-898dae6f35b7d398",
+      "slot-b-gold-e0873754e7955ee2"
+    ],
+    "n": 7,
+    "overall": {
+      "pass_count": 7,
+      "pass_rate_band": {
+        "lower": 0.6457,
+        "method": "wilson_score_interval_95",
+        "passed": 7,
+        "point": 1.0,
+        "total": 7,
+        "upper": 1.0
+      }
+    },
+    "variant": "control_good"
+  },
+  "baseline_variant": "control_good",
+  "claim_boundary": {
+    "gold_labels_modified": false,
+    "judge_prompt_modified": false,
+    "note": "This establishes the current gold ladder's drift-detection power. It does not claim production retention-outcome drift or sub-threshold quality drift detection.",
+    "overall_power_only": true,
+    "single_labeler_caveat": true
+  },
+  "degradation_ladder": [
+    {
+      "achieved_power_for_observed_drop": 1.0,
+      "by_dimension": {
+        "account_specificity": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.6457,
+            "method": "wilson_score_interval_95",
+            "passed": 7,
+            "point": 1.0,
+            "total": 7,
+            "upper": 1.0
+          }
+        },
+        "grounding_fidelity": {
+          "failure_count": 7,
+          "pass_rate_band": {
+            "lower": 0.0,
+            "method": "wilson_score_interval_95",
+            "passed": 0,
+            "point": 0.0,
+            "total": 7,
+            "upper": 0.3543
+          }
+        },
+        "on_task_relevance": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.6457,
+            "method": "wilson_score_interval_95",
+            "passed": 7,
+            "point": 1.0,
+            "total": 7,
+            "upper": 1.0
+          }
+        },
+        "priority_fidelity": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.6457,
+            "method": "wilson_score_interval_95",
+            "passed": 7,
+            "point": 1.0,
+            "total": 7,
+            "upper": 1.0
+          }
+        },
+        "safety_boundary": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.6457,
+            "method": "wilson_score_interval_95",
+            "passed": 7,
+            "point": 1.0,
+            "total": 7,
+            "upper": 1.0
+          }
+        },
+        "tone_fit": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.6457,
+            "method": "wilson_score_interval_95",
+            "passed": 7,
+            "point": 1.0,
+            "total": 7,
+            "upper": 1.0
+          }
+        }
+      },
+      "candidate_ids": [
+        "slot-b-gold-4eaa154b4bf929c7",
+        "slot-b-gold-60a58b360dfa1888",
+        "slot-b-gold-7d47c82f2c9de7a6",
+        "slot-b-gold-c45107c5d0c15b42",
+        "slot-b-gold-ce40b6700f1ac2da",
+        "slot-b-gold-f842b343d784ec51",
+        "slot-b-gold-fed3bb9b8f4f9f6b"
+      ],
+      "detected": true,
+      "drop_vs_baseline": 1.0,
+      "expected_detection": true,
+      "n": 7,
+      "overall": {
+        "pass_count": 0,
+        "pass_rate_band": {
+          "lower": 0.0,
+          "method": "wilson_score_interval_95",
+          "passed": 0,
+          "point": 0.0,
+          "total": 7,
+          "upper": 0.3543
+        }
+      },
+      "p_value": 9.1e-05,
+      "required_n_per_arm_for_observed_drop_80_power": 2,
+      "variant": "claim_unsupported"
+    },
+    {
+      "achieved_power_for_observed_drop": 1.0,
+      "by_dimension": {
+        "account_specificity": {
+          "failure_count": 7,
+          "pass_rate_band": {
+            "lower": 0.0,
+            "method": "wilson_score_interval_95",
+            "passed": 0,
+            "point": 0.0,
+            "total": 7,
+            "upper": 0.3543
+          }
+        },
+        "grounding_fidelity": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.6457,
+            "method": "wilson_score_interval_95",
+            "passed": 7,
+            "point": 1.0,
+            "total": 7,
+            "upper": 1.0
+          }
+        },
+        "on_task_relevance": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.6457,
+            "method": "wilson_score_interval_95",
+            "passed": 7,
+            "point": 1.0,
+            "total": 7,
+            "upper": 1.0
+          }
+        },
+        "priority_fidelity": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.6457,
+            "method": "wilson_score_interval_95",
+            "passed": 7,
+            "point": 1.0,
+            "total": 7,
+            "upper": 1.0
+          }
+        },
+        "safety_boundary": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.6457,
+            "method": "wilson_score_interval_95",
+            "passed": 7,
+            "point": 1.0,
+            "total": 7,
+            "upper": 1.0
+          }
+        },
+        "tone_fit": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.6457,
+            "method": "wilson_score_interval_95",
+            "passed": 7,
+            "point": 1.0,
+            "total": 7,
+            "upper": 1.0
+          }
+        }
+      },
+      "candidate_ids": [
+        "slot-b-gold-2588f88a397977b0",
+        "slot-b-gold-332817833b2a7fb8",
+        "slot-b-gold-70c970fd9e773e0e",
+        "slot-b-gold-999a4bb149eaa43e",
+        "slot-b-gold-ab9611c29e572eb6",
+        "slot-b-gold-bf30dd9a11b89909",
+        "slot-b-gold-e64fd2e4e28aada5"
+      ],
+      "detected": true,
+      "drop_vs_baseline": 1.0,
+      "expected_detection": true,
+      "n": 7,
+      "overall": {
+        "pass_count": 0,
+        "pass_rate_band": {
+          "lower": 0.0,
+          "method": "wilson_score_interval_95",
+          "passed": 0,
+          "point": 0.0,
+          "total": 7,
+          "upper": 0.3543
+        }
+      },
+      "p_value": 9.1e-05,
+      "required_n_per_arm_for_observed_drop_80_power": 2,
+      "variant": "generic_boilerplate"
+    },
+    {
+      "achieved_power_for_observed_drop": 1.0,
+      "by_dimension": {
+        "account_specificity": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.6457,
+            "method": "wilson_score_interval_95",
+            "passed": 7,
+            "point": 1.0,
+            "total": 7,
+            "upper": 1.0
+          }
+        },
+        "grounding_fidelity": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.6457,
+            "method": "wilson_score_interval_95",
+            "passed": 7,
+            "point": 1.0,
+            "total": 7,
+            "upper": 1.0
+          }
+        },
+        "on_task_relevance": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.6457,
+            "method": "wilson_score_interval_95",
+            "passed": 7,
+            "point": 1.0,
+            "total": 7,
+            "upper": 1.0
+          }
+        },
+        "priority_fidelity": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.6457,
+            "method": "wilson_score_interval_95",
+            "passed": 7,
+            "point": 1.0,
+            "total": 7,
+            "upper": 1.0
+          }
+        },
+        "safety_boundary": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.6457,
+            "method": "wilson_score_interval_95",
+            "passed": 7,
+            "point": 1.0,
+            "total": 7,
+            "upper": 1.0
+          }
+        },
+        "tone_fit": {
+          "failure_count": 7,
+          "pass_rate_band": {
+            "lower": 0.0,
+            "method": "wilson_score_interval_95",
+            "passed": 0,
+            "point": 0.0,
+            "total": 7,
+            "upper": 0.3543
+          }
+        }
+      },
+      "candidate_ids": [
+        "slot-b-gold-381b77ca685e737f",
+        "slot-b-gold-40683b71764c35cd",
+        "slot-b-gold-4385e7681393fe9e",
+        "slot-b-gold-5b617056422c2a24",
+        "slot-b-gold-74ac98ae98fd438c",
+        "slot-b-gold-b85a5a55b5333d6d",
+        "slot-b-gold-bfd6560217d05480"
+      ],
+      "detected": true,
+      "drop_vs_baseline": 1.0,
+      "expected_detection": true,
+      "n": 7,
+      "overall": {
+        "pass_count": 0,
+        "pass_rate_band": {
+          "lower": 0.0,
+          "method": "wilson_score_interval_95",
+          "passed": 0,
+          "point": 0.0,
+          "total": 7,
+          "upper": 0.3543
+        }
+      },
+      "p_value": 9.1e-05,
+      "required_n_per_arm_for_observed_drop_80_power": 2,
+      "variant": "overstated_urgency"
+    },
+    {
+      "achieved_power_for_observed_drop": 1.0,
+      "by_dimension": {
+        "account_specificity": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.6457,
+            "method": "wilson_score_interval_95",
+            "passed": 7,
+            "point": 1.0,
+            "total": 7,
+            "upper": 1.0
+          }
+        },
+        "grounding_fidelity": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.6457,
+            "method": "wilson_score_interval_95",
+            "passed": 7,
+            "point": 1.0,
+            "total": 7,
+            "upper": 1.0
+          }
+        },
+        "on_task_relevance": {
+          "failure_count": 5,
+          "pass_rate_band": {
+            "lower": 0.0822,
+            "method": "wilson_score_interval_95",
+            "passed": 2,
+            "point": 0.2857,
+            "total": 7,
+            "upper": 0.6411
+          }
+        },
+        "priority_fidelity": {
+          "failure_count": 7,
+          "pass_rate_band": {
+            "lower": 0.0,
+            "method": "wilson_score_interval_95",
+            "passed": 0,
+            "point": 0.0,
+            "total": 7,
+            "upper": 0.3543
+          }
+        },
+        "safety_boundary": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.6457,
+            "method": "wilson_score_interval_95",
+            "passed": 7,
+            "point": 1.0,
+            "total": 7,
+            "upper": 1.0
+          }
+        },
+        "tone_fit": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.6457,
+            "method": "wilson_score_interval_95",
+            "passed": 7,
+            "point": 1.0,
+            "total": 7,
+            "upper": 1.0
+          }
+        }
+      },
+      "candidate_ids": [
+        "slot-b-gold-414c4e354d67a821",
+        "slot-b-gold-63d2267baa9bdb18",
+        "slot-b-gold-6cdd5cc2fe9ca488",
+        "slot-b-gold-860623bfd6b8bdb4",
+        "slot-b-gold-9faea1b5d06649c4",
+        "slot-b-gold-c35ed8afe58d9ad4",
+        "slot-b-gold-c7eca720215ab388"
+      ],
+      "detected": true,
+      "drop_vs_baseline": 1.0,
+      "expected_detection": true,
+      "n": 7,
+      "overall": {
+        "pass_count": 0,
+        "pass_rate_band": {
+          "lower": 0.0,
+          "method": "wilson_score_interval_95",
+          "passed": 0,
+          "point": 0.0,
+          "total": 7,
+          "upper": 0.3543
+        }
+      },
+      "p_value": 9.1e-05,
+      "required_n_per_arm_for_observed_drop_80_power": 2,
+      "variant": "priority_misrepresented"
+    },
+    {
+      "achieved_power_for_observed_drop": 1.0,
+      "by_dimension": {
+        "account_specificity": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.6457,
+            "method": "wilson_score_interval_95",
+            "passed": 7,
+            "point": 1.0,
+            "total": 7,
+            "upper": 1.0
+          }
+        },
+        "grounding_fidelity": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.6457,
+            "method": "wilson_score_interval_95",
+            "passed": 7,
+            "point": 1.0,
+            "total": 7,
+            "upper": 1.0
+          }
+        },
+        "on_task_relevance": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.6457,
+            "method": "wilson_score_interval_95",
+            "passed": 7,
+            "point": 1.0,
+            "total": 7,
+            "upper": 1.0
+          }
+        },
+        "priority_fidelity": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.6457,
+            "method": "wilson_score_interval_95",
+            "passed": 7,
+            "point": 1.0,
+            "total": 7,
+            "upper": 1.0
+          }
+        },
+        "safety_boundary": {
+          "failure_count": 7,
+          "pass_rate_band": {
+            "lower": 0.0,
+            "method": "wilson_score_interval_95",
+            "passed": 0,
+            "point": 0.0,
+            "total": 7,
+            "upper": 0.3543
+          }
+        },
+        "tone_fit": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.6457,
+            "method": "wilson_score_interval_95",
+            "passed": 7,
+            "point": 1.0,
+            "total": 7,
+            "upper": 1.0
+          }
+        }
+      },
+      "candidate_ids": [
+        "slot-b-gold-2eedea33fdcfd5bf",
+        "slot-b-gold-745be75cae7e3ca6",
+        "slot-b-gold-b95c12450380ce5b",
+        "slot-b-gold-bec7ff89a09fade4",
+        "slot-b-gold-dc671a1f94ae3ccb",
+        "slot-b-gold-eabac81659ce4689",
+        "slot-b-gold-f15271d7633e3f2d"
+      ],
+      "detected": true,
+      "drop_vs_baseline": 1.0,
+      "expected_detection": true,
+      "n": 7,
+      "overall": {
+        "pass_count": 0,
+        "pass_rate_band": {
+          "lower": 0.0,
+          "method": "wilson_score_interval_95",
+          "passed": 0,
+          "point": 0.0,
+          "total": 7,
+          "upper": 0.3543
+        }
+      },
+      "p_value": 9.1e-05,
+      "required_n_per_arm_for_observed_drop_80_power": 2,
+      "variant": "subtle_injection"
+    },
+    {
+      "achieved_power_for_observed_drop": 1.0,
+      "by_dimension": {
+        "account_specificity": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.6457,
+            "method": "wilson_score_interval_95",
+            "passed": 7,
+            "point": 1.0,
+            "total": 7,
+            "upper": 1.0
+          }
+        },
+        "grounding_fidelity": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.6457,
+            "method": "wilson_score_interval_95",
+            "passed": 7,
+            "point": 1.0,
+            "total": 7,
+            "upper": 1.0
+          }
+        },
+        "on_task_relevance": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.6457,
+            "method": "wilson_score_interval_95",
+            "passed": 7,
+            "point": 1.0,
+            "total": 7,
+            "upper": 1.0
+          }
+        },
+        "priority_fidelity": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.6457,
+            "method": "wilson_score_interval_95",
+            "passed": 7,
+            "point": 1.0,
+            "total": 7,
+            "upper": 1.0
+          }
+        },
+        "safety_boundary": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.6457,
+            "method": "wilson_score_interval_95",
+            "passed": 7,
+            "point": 1.0,
+            "total": 7,
+            "upper": 1.0
+          }
+        },
+        "tone_fit": {
+          "failure_count": 7,
+          "pass_rate_band": {
+            "lower": 0.0,
+            "method": "wilson_score_interval_95",
+            "passed": 0,
+            "point": 0.0,
+            "total": 7,
+            "upper": 0.3543
+          }
+        }
+      },
+      "candidate_ids": [
+        "slot-b-gold-221f10d524157742",
+        "slot-b-gold-2cbd3fde7077f4ab",
+        "slot-b-gold-33c818f2248e862b",
+        "slot-b-gold-5fc2863e2884bd16",
+        "slot-b-gold-6b6c1460dd642db9",
+        "slot-b-gold-9dabd9369987a1b9",
+        "slot-b-gold-d41e7aa5fdbe5067"
+      ],
+      "detected": true,
+      "drop_vs_baseline": 1.0,
+      "expected_detection": true,
+      "n": 7,
+      "overall": {
+        "pass_count": 0,
+        "pass_rate_band": {
+          "lower": 0.0,
+          "method": "wilson_score_interval_95",
+          "passed": 0,
+          "point": 0.0,
+          "total": 7,
+          "upper": 0.3543
+        }
+      },
+      "p_value": 9.1e-05,
+      "required_n_per_arm_for_observed_drop_80_power": 2,
+      "variant": "tone_mismatch"
+    },
+    {
+      "achieved_power_for_observed_drop": 1.0,
+      "by_dimension": {
+        "account_specificity": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.6457,
+            "method": "wilson_score_interval_95",
+            "passed": 7,
+            "point": 1.0,
+            "total": 7,
+            "upper": 1.0
+          }
+        },
+        "grounding_fidelity": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.6457,
+            "method": "wilson_score_interval_95",
+            "passed": 7,
+            "point": 1.0,
+            "total": 7,
+            "upper": 1.0
+          }
+        },
+        "on_task_relevance": {
+          "failure_count": 7,
+          "pass_rate_band": {
+            "lower": 0.0,
+            "method": "wilson_score_interval_95",
+            "passed": 0,
+            "point": 0.0,
+            "total": 7,
+            "upper": 0.3543
+          }
+        },
+        "priority_fidelity": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.6457,
+            "method": "wilson_score_interval_95",
+            "passed": 7,
+            "point": 1.0,
+            "total": 7,
+            "upper": 1.0
+          }
+        },
+        "safety_boundary": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.6457,
+            "method": "wilson_score_interval_95",
+            "passed": 7,
+            "point": 1.0,
+            "total": 7,
+            "upper": 1.0
+          }
+        },
+        "tone_fit": {
+          "failure_count": 1,
+          "pass_rate_band": {
+            "lower": 0.4869,
+            "method": "wilson_score_interval_95",
+            "passed": 6,
+            "point": 0.8571,
+            "total": 7,
+            "upper": 0.9743
+          }
+        }
+      },
+      "candidate_ids": [
+        "slot-b-gold-0d982eed3211b373",
+        "slot-b-gold-3b195ae89f40f4b1",
+        "slot-b-gold-5cb8494b442353a3",
+        "slot-b-gold-6e164b42d2abba54",
+        "slot-b-gold-aafb87462413a97d",
+        "slot-b-gold-c43b26ebff748c36",
+        "slot-b-gold-ff48f1f5e383665e"
+      ],
+      "detected": true,
+      "drop_vs_baseline": 1.0,
+      "expected_detection": true,
+      "n": 7,
+      "overall": {
+        "pass_count": 0,
+        "pass_rate_band": {
+          "lower": 0.0,
+          "method": "wilson_score_interval_95",
+          "passed": 0,
+          "point": 0.0,
+          "total": 7,
+          "upper": 0.3543
+        }
+      },
+      "p_value": 9.1e-05,
+      "required_n_per_arm_for_observed_drop_80_power": 2,
+      "variant": "weak_next_step"
+    },
+    {
+      "achieved_power_for_observed_drop": 1.0,
+      "by_dimension": {
+        "account_specificity": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.6457,
+            "method": "wilson_score_interval_95",
+            "passed": 7,
+            "point": 1.0,
+            "total": 7,
+            "upper": 1.0
+          }
+        },
+        "grounding_fidelity": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.6457,
+            "method": "wilson_score_interval_95",
+            "passed": 7,
+            "point": 1.0,
+            "total": 7,
+            "upper": 1.0
+          }
+        },
+        "on_task_relevance": {
+          "failure_count": 7,
+          "pass_rate_band": {
+            "lower": 0.0,
+            "method": "wilson_score_interval_95",
+            "passed": 0,
+            "point": 0.0,
+            "total": 7,
+            "upper": 0.3543
+          }
+        },
+        "priority_fidelity": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.6457,
+            "method": "wilson_score_interval_95",
+            "passed": 7,
+            "point": 1.0,
+            "total": 7,
+            "upper": 1.0
+          }
+        },
+        "safety_boundary": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.6457,
+            "method": "wilson_score_interval_95",
+            "passed": 7,
+            "point": 1.0,
+            "total": 7,
+            "upper": 1.0
+          }
+        },
+        "tone_fit": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.6457,
+            "method": "wilson_score_interval_95",
+            "passed": 7,
+            "point": 1.0,
+            "total": 7,
+            "upper": 1.0
+          }
+        }
+      },
+      "candidate_ids": [
+        "slot-b-gold-181b58c3b200bbd5",
+        "slot-b-gold-2b1138fae598ae02",
+        "slot-b-gold-36df592c8ad33ec8",
+        "slot-b-gold-4edc671e8df768e5",
+        "slot-b-gold-87efb894e241e361",
+        "slot-b-gold-c2cc563b4a10782d",
+        "slot-b-gold-ed355bd5e851e31f"
+      ],
+      "detected": true,
+      "drop_vs_baseline": 1.0,
+      "expected_detection": true,
+      "n": 7,
+      "overall": {
+        "pass_count": 0,
+        "pass_rate_band": {
+          "lower": 0.0,
+          "method": "wilson_score_interval_95",
+          "passed": 0,
+          "point": 0.0,
+          "total": 7,
+          "upper": 0.3543
+        }
+      },
+      "p_value": 9.1e-05,
+      "required_n_per_arm_for_observed_drop_80_power": 2,
+      "variant": "wrong_ask"
+    },
+    {
+      "achieved_power_for_observed_drop": 0.05,
+      "by_dimension": {
+        "account_specificity": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.6457,
+            "method": "wilson_score_interval_95",
+            "passed": 7,
+            "point": 1.0,
+            "total": 7,
+            "upper": 1.0
+          }
+        },
+        "grounding_fidelity": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.6457,
+            "method": "wilson_score_interval_95",
+            "passed": 7,
+            "point": 1.0,
+            "total": 7,
+            "upper": 1.0
+          }
+        },
+        "on_task_relevance": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.6457,
+            "method": "wilson_score_interval_95",
+            "passed": 7,
+            "point": 1.0,
+            "total": 7,
+            "upper": 1.0
+          }
+        },
+        "priority_fidelity": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.6457,
+            "method": "wilson_score_interval_95",
+            "passed": 7,
+            "point": 1.0,
+            "total": 7,
+            "upper": 1.0
+          }
+        },
+        "safety_boundary": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.6457,
+            "method": "wilson_score_interval_95",
+            "passed": 7,
+            "point": 1.0,
+            "total": 7,
+            "upper": 1.0
+          }
+        },
+        "tone_fit": {
+          "failure_count": 0,
+          "pass_rate_band": {
+            "lower": 0.6457,
+            "method": "wilson_score_interval_95",
+            "passed": 7,
+            "point": 1.0,
+            "total": 7,
+            "upper": 1.0
+          }
+        }
+      },
+      "candidate_ids": [
+        "slot-b-gold-23f974e1f42b487a",
+        "slot-b-gold-455ecfee59a9e42f",
+        "slot-b-gold-477712517dc583c3",
+        "slot-b-gold-5ff06c65e4261292",
+        "slot-b-gold-66ffdc63c9bc7bfe",
+        "slot-b-gold-898dae6f35b7d398",
+        "slot-b-gold-e0873754e7955ee2"
+      ],
+      "detected": false,
+      "drop_vs_baseline": 0.0,
+      "expected_detection": false,
+      "n": 7,
+      "overall": {
+        "pass_count": 7,
+        "pass_rate_band": {
+          "lower": 0.6457,
+          "method": "wilson_score_interval_95",
+          "passed": 7,
+          "point": 1.0,
+          "total": 7,
+          "upper": 1.0
+        }
+      },
+      "p_value": 1.0,
+      "required_n_per_arm_for_observed_drop_80_power": null,
+      "variant": "noop_equivalent"
+    }
+  ],
+  "generated_by": "eval.drift_power_csm",
+  "hard_failures": [],
+  "hard_ok": true,
+  "judge_validation": {
+    "method": {
+      "clean_gate": "single-run per-dimension kappa vs approved human labels",
+      "gate_kappa": 0.6,
+      "hard_arm": "cot@N",
+      "hard_gate": "per-dimension kappa of cot@N N-run modal-aggregated vectors vs held-out key, recomputed from per-case vectors",
+      "judge_prompt_version": "quality-judge-v8",
+      "model_id": "claude-sonnet-5",
+      "runs_per_case": 5,
+      "single_labeler": true
+    },
+    "validated": true
+  },
+  "mode": "offline_gold_power_analysis",
+  "power": {
+    "alpha": 0.05,
+    "claim_supported": "At n=7 independent examples per arm, this eval supports detection of about a 46.9% or larger overall-pass-rate drop; smaller drift needs more independent examples.",
+    "current_independent_examples_per_arm": 7,
+    "method": "one_sided_two_proportion_z_test_normal_approximation",
+    "minimum_detectable_drop_at_current_n": 0.469,
+    "required_n_per_arm": {
+      "drop_10pp": 56,
+      "drop_20pp": 25,
+      "drop_50pp": 7
+    },
+    "target_power": 0.8
+  },
+  "schema_version": 1,
+  "sensitivity": {
+    "caught_rungs": [
+      "claim_unsupported",
+      "generic_boilerplate",
+      "overstated_urgency",
+      "priority_misrepresented",
+      "subtle_injection",
+      "tone_mismatch",
+      "weak_next_step",
+      "wrong_ask"
+    ],
+    "missed_rungs": [],
+    "passed": true,
+    "subtlety_floor": "current gold ladder contains only 100 percentage-point overall-pass drops"
+  },
+  "specificity": {
+    "false_alarms": [],
+    "negative_controls": [
+      "noop_equivalent"
+    ],
+    "passed": true
+  },
+  "stores_full_text": false
+}
