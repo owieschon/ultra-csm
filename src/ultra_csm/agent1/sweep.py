@@ -25,6 +25,13 @@ from ultra_csm.agent1.slot_b import (
     SlotBPriorityFactor,
     validate_reason_draft_output,
 )
+from ultra_csm.agent1.slot_a import (
+    CaseNoteClassificationOutput,
+    CaseNoteClassificationRequest,
+    CaseNoteClassifier,
+    FixtureCaseNoteClassifier,
+    SlotACaseRef,
+)
 from ultra_csm.data_plane import (
     CRMAccount,
     CRMContact,
@@ -118,6 +125,7 @@ class CSMWorkItem:
     customer_draft: str | None = None
     motion: str | None = None
     recipient_resolution: str | None = None
+    slot_a_classifications: tuple[CaseNoteClassificationOutput, ...] = ()
     # Person UI depth (Harvest 17), additive: the resolved recipient's
     # identity, discarded before this (resolve_recipient's CRMContact was
     # checked for truthiness only) -- captured here for the recipient chip.
@@ -140,6 +148,7 @@ class _SlotBInputs:
     cases: tuple
     evidence: tuple[EvidenceRef, ...]
     priority: Priority
+    slot_a_classifications: tuple[CaseNoteClassificationOutput, ...] = ()
     stakeholders: tuple = ()
 
 
@@ -173,6 +182,7 @@ def run_time_to_value_sweep(
     playbooks: PlaybookSet | None = None,
     playbook_tenant_slug: str | None = None,
     value_model_config: ValueModelConfig | None = None,
+    case_note_classifier: CaseNoteClassifier | None = None,
 ) -> SweepResult:
     """Run Agent 1 across a tenant book and emit a deterministic work queue.
 
@@ -205,6 +215,7 @@ def run_time_to_value_sweep(
         playbooks = load_playbooks(playbook_tenant_slug)
     if value_model_config is None:
         value_model_config = load_value_model_config()
+    classifier = case_note_classifier or FixtureCaseNoteClassifier()
 
     if cost_tracker is not None:
         cost_tracker.reset_sweep()
@@ -287,6 +298,7 @@ def run_time_to_value_sweep(
             snapshot_store=snapshot_store,
             playbooks=playbooks,
             value_model_config=value_model_config,
+            case_note_classifier=classifier,
         )
         if built is not None:
             if budget_exceeded:
@@ -369,8 +381,10 @@ def build_reason_draft_request_for_account(
     inputs = _slot_b_inputs_for_account(
         data_plane,
         account,
+        tenant_id=tenant_id,
         as_of=as_of,
         evidence_source_ids=evidence_source_ids,
+        case_note_classifier=FixtureCaseNoteClassifier(),
     )
     if inputs is None:
         return None
@@ -424,13 +438,42 @@ def _person_layer_inputs(
     return stakeholders, job_changes
 
 
+def _classify_case_notes(
+    classifier: CaseNoteClassifier,
+    *,
+    tenant_id: str,
+    account_id: str,
+    cases: tuple,
+) -> tuple[CaseNoteClassificationOutput, ...]:
+    case_refs = tuple(
+        SlotACaseRef(case_id=case.case_id, account_id=case.account_id)
+        for case in cases
+    )
+    outputs: list[CaseNoteClassificationOutput] = []
+    for case in cases:
+        note = getattr(case, "subject", "")
+        if not note:
+            continue
+        request = CaseNoteClassificationRequest(
+            tenant_id=tenant_id,
+            account_id=account_id,
+            case_id=case.case_id,
+            case_note_text=note,
+            account_case_refs=case_refs,
+        )
+        outputs.append(classifier.classify(request))
+    return tuple(outputs)
+
+
 def _slot_b_inputs_for_account(
     data_plane: CustomerDataPlane,
     account: CRMAccount,
     *,
+    tenant_id: str,
     as_of: str,
     evidence_source_ids: tuple[str, ...] | None = None,
     snapshot_store: SnapshotStore | None = None,
+    case_note_classifier: CaseNoteClassifier,
 ) -> _SlotBInputs | None:
     company = data_plane.cs.get_company(account.account_id)
     health = data_plane.cs.get_health_score(account.account_id)
@@ -441,6 +484,12 @@ def _slot_b_inputs_for_account(
     ctas = tuple(data_plane.cs.list_ctas(account.account_id, status="open"))
     plans = tuple(data_plane.cs.list_success_plans(account.account_id))
     cases = tuple(data_plane.crm.list_cases(account.account_id))
+    slot_a_classifications = _classify_case_notes(
+        case_note_classifier,
+        tenant_id=tenant_id,
+        account_id=account.account_id,
+        cases=cases,
+    )
     signals = tuple(data_plane.telemetry.list_usage_signals(account.account_id))
     entitlements = tuple(data_plane.telemetry.list_entitlements(account.account_id))
     stakeholders, job_changes = _person_layer_inputs(data_plane, account.account_id)
@@ -536,7 +585,13 @@ def _slot_b_inputs_for_account(
     )
     if priority.score <= 0:
         return None
-    return _SlotBInputs(cases=cases, evidence=evidence, priority=priority, stakeholders=stakeholders)
+    return _SlotBInputs(
+        cases=cases,
+        evidence=evidence,
+        priority=priority,
+        slot_a_classifications=slot_a_classifications,
+        stakeholders=stakeholders,
+    )
 
 
 def _proposal_contact(
@@ -890,13 +945,16 @@ def _work_item_for_account(
     snapshot_store: SnapshotStore | None = None,
     playbooks: PlaybookSet | None = None,
     value_model_config: ValueModelConfig | None = None,
+    case_note_classifier: CaseNoteClassifier | None = None,
 ) -> CSMWorkItem | None:
     value_start = time.perf_counter()
     inputs = _slot_b_inputs_for_account(
         data_plane,
         account,
+        tenant_id=tenant_id,
         as_of=as_of,
         snapshot_store=snapshot_store,
+        case_note_classifier=case_note_classifier or FixtureCaseNoteClassifier(),
     )
     if timing is not None:
         timing.value_model_ms += (time.perf_counter() - value_start) * 1000.0
@@ -1056,6 +1114,7 @@ def _work_item_for_account(
         recipient_resolution=recipient_resolution,
         recipient_name=recipient_name,
         recipient_role=recipient_role,
+        slot_a_classifications=inputs.slot_a_classifications,
     )
 
 
