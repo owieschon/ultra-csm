@@ -262,6 +262,41 @@ class TestRelayTools:
         assert result["truncated"] is True
         assert result["dropped_record_count"] == 1
 
+    def test_ingest_refuses_silent_truncation_without_acknowledgment(self):
+        """dropped_record_count > 0 with a MATCHING received_count/expected_count
+        (so RELAY_COUNT_MISMATCH does not already fire) must still refuse to
+        freeze, matching the stricter stance already applied to outright count
+        mismatches -- a silently dropped record is not a mismatch, but it is
+        just as much a partial book."""
+        result = mcp_server.ingest_book(
+            _relay_records(),
+            {"source_name": "unit", "max_records": 1},
+            expected_count=2,
+            session_id="relay-truncation-unacked",
+        )
+
+        assert result["code"] == "RELAY_TRUNCATION_UNACKNOWLEDGED"
+        assert result["dropped_record_count"] == 1
+        assert "mapping_proposal" not in result
+
+    def test_ingest_freezes_truncated_book_with_explicit_acknowledgment(self):
+        """The same truncated session as above proceeds to a normal mapping
+        proposal once the caller explicitly opts in with
+        acknowledge_truncation=True -- some callers legitimately want a
+        partial book, so this is a required opt-in, not an outright refusal."""
+        result = mcp_server.ingest_book(
+            _relay_records(),
+            {"source_name": "unit", "max_records": 1},
+            expected_count=2,
+            session_id="relay-truncation-acked",
+            acknowledge_truncation=True,
+        )
+
+        assert "error" not in result
+        assert result["dropped_record_count"] == 1
+        assert result["truncated"] is True
+        assert "mapping_proposal" in result
+
     def test_confirm_book_mappings_replays_and_returns_propose_only_actions(self):
         ingest = mcp_server.ingest_book(
             _relay_records(),

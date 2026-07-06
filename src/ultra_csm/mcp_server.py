@@ -1074,8 +1074,18 @@ def ingest_book(
     expected_count: int | None,
     session_id: str | None = None,
     final_chunk: bool = True,
+    acknowledge_truncation: bool = False,
 ) -> dict:
-    """Ingest host-relayed raw records and return a confirmation proposal."""
+    """Ingest host-relayed raw records and return a confirmation proposal.
+
+    Args:
+        acknowledge_truncation: Required (True) to freeze a book where any
+            record was silently dropped (``dropped_record_count > 0``, e.g. a
+            chunk exceeded ``max_records``), matching the stricter stance
+            already applied to an outright ``received_count``/``expected_count``
+            mismatch. Some callers may legitimately want a partial book, so
+            this is an explicit opt-in rather than an unconditional refusal.
+    """
 
     refusal = _relay_tool_available("ingest_book")
     if refusal is not None:
@@ -1136,6 +1146,19 @@ def ingest_book(
             expected_count=session.expected_count,
             stored_count=len(session.raw_records),
             truncated=session.dropped_record_count > 0,
+            dropped_record_count=session.dropped_record_count,
+        )
+    if session.dropped_record_count > 0 and not acknowledge_truncation:
+        return _relay_refusal(
+            "RELAY_TRUNCATION_UNACKNOWLEDGED",
+            "records were silently dropped (dropped_record_count > 0); "
+            "refusing to freeze a truncated book without acknowledge_truncation=true.",
+            "ingest_book",
+            session_id=session.session_id,
+            received_count=session.received_count,
+            expected_count=session.expected_count,
+            stored_count=len(session.raw_records),
+            truncated=True,
             dropped_record_count=session.dropped_record_count,
         )
 
