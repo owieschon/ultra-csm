@@ -217,6 +217,20 @@ class TestSweepEndpoint:
         assert resp.status_code == 200
         assert resp.json()["auth"] == "demo-noauth"
 
+    def test_demo_operator_truthy_value_boots_tokenless_sweep(
+        self, client: TestClient, monkeypatch,
+    ):
+        """DEMO_OPERATOR=true (the lenient truthy spelling documented for this
+        flag, not the strict '1') must boot a mode whose own tokenless verdict
+        calls succeed rather than reject with AUTH_REQUIRED -- demo_noauth_enabled
+        and mcp_server.py's mode-detection now share one truthy parser instead
+        of the former strict-'1'-only vs. lenient split."""
+        monkeypatch.setenv("ULTRA_CSM_DEMO_OPERATOR", "true")
+
+        resp = client.post("/sweep")
+        assert resp.status_code == 200
+        assert resp.json()["auth"] == "demo-noauth"
+
     def test_trigger_sweep(self, client: TestClient):
         resp = client.post("/sweep", headers=AUTH_HEADERS)
         assert resp.status_code == 200

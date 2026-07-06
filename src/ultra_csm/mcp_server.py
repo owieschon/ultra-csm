@@ -85,6 +85,7 @@ from ultra_csm._api_helpers import (
     _build_account_brief,
     _proposal_has_contact_consent,
     _score_one_account,
+    _truthy,
     auth_marker,
     demo_noauth_enabled,
     parse_api_tokens,
@@ -158,10 +159,6 @@ _last_relay_session_id: str | None = None
 # separate from _relay_sessions so the flat single-table tools can never grab
 # a table of a relational book (and vice versa).
 _relational_books: dict[str, dict[str, _RelaySession]] = {}
-
-
-def _truthy(value: str | None) -> bool:
-    return (value or "").strip().lower() in {"1", "true", "yes", "on"}
 
 
 def mcp_readonly_enabled() -> bool:

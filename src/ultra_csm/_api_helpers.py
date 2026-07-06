@@ -102,10 +102,14 @@ def parse_api_tokens(raw: str | None = None) -> dict[str, str]:
     return token_map
 
 
+def _truthy(value: str | None) -> bool:
+    return (value or "").strip().lower() in {"1", "true", "yes", "on"}
+
+
 def demo_noauth_enabled() -> bool:
     return (
-        os.environ.get("ULTRA_CSM_DEMO_NOAUTH") == "1"
-        or os.environ.get("ULTRA_CSM_DEMO_OPERATOR") == "1"
+        _truthy(os.environ.get("ULTRA_CSM_DEMO_NOAUTH"))
+        or _truthy(os.environ.get("ULTRA_CSM_DEMO_OPERATOR"))
     )
 
 
