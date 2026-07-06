@@ -21,12 +21,12 @@
     "self_consistency_recheck_needed": false,
     "single_labeler": true
   },
-  "clean_path": "/Users/owieschon/dev/ultra-csm/eval/gold/slot_b_quality.jsonl",
+  "clean_path": "eval/gold/slot_b_quality.jsonl",
   "conflict_count": 0,
   "conflicts": [],
   "date": "2026-07-02",
   "description": "mechanical re-score of on_task_relevance under ratified v6 boundary (clean + hard)",
-  "hard_key_path": "/Users/owieschon/dev/ultra-csm/eval/gold/slot_b_quality_hard_key.jsonl",
+  "hard_key_path": "eval/gold/slot_b_quality_hard_key.jsonl",
   "rule_counts": {
     "hard:v6-internal-review-assignment:2->3": 1
   },

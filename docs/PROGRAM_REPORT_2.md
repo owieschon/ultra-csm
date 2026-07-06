@@ -20,7 +20,7 @@
 
 ## Consolidated Owner Ask
 
-1. Salesforce: provide either refresh-token OAuth credentials or a short-lived access token in `/Users/owieschon/ultra-csm-live-creds.env`.
+1. Salesforce: provide either refresh-token OAuth credentials or a short-lived access token in `~/ultra-csm-live-creds.env`.
 2. Gmail: provide OAuth client credentials and a refresh token with `gmail.compose` scope (`ULTRA_CSM_GMAIL_CLIENT_ID`, `ULTRA_CSM_GMAIL_CLIENT_SECRET`, `ULTRA_CSM_GMAIL_REFRESH_TOKEN`, optional `ULTRA_CSM_GMAIL_USER_ID`).
 3. Drift-power: provide `ANTHROPIC_API_KEY` when the credentialed judge experiment should run.
 

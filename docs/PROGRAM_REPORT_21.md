@@ -97,7 +97,7 @@ whole record.
 pinehill-transport       disposition=propose_customer_action  exemplars=True pass=True
 meridian-fleet           disposition=propose_customer_action  exemplars=True pass=True
 harborview-fleet         disposition=propose_customer_action  exemplars=True pass=True
-artifact -> /Users/owieschon/ultra-csm-operating-runs/2026-07-05/judge_gold/judge_live_50.json
+artifact -> ~/ultra-csm-operating-runs/2026-07-05/judge_gold/judge_live_50.json
 ```
 
 Preflight cost estimate: `$0.2310` against a `$2.00` cap (worst-case,

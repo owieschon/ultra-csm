@@ -20,9 +20,9 @@
     "mechanical_transfer": true,
     "single_labeler": true
   },
-  "clean_path": "/Users/owieschon/dev/ultra-csm/eval/gold/slot_b_quality.jsonl",
-  "hard_key_path": "/Users/owieschon/dev/ultra-csm/eval/gold/slot_b_quality_hard_key.jsonl",
-  "review_path": "/Users/owieschon/dev/ultra-csm/eval/gold/reference_review_iteration3.json",
+  "clean_path": "eval/gold/slot_b_quality.jsonl",
+  "hard_key_path": "eval/gold/slot_b_quality_hard_key.jsonl",
+  "review_path": "eval/gold/reference_review_iteration3.json",
   "total_cells": 151,
   "unchanged_cells": 34
 }
