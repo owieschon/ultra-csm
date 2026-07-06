@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { api, PendingMapping } from "@/lib/api";
+import { api, isReadOnlyDemo, PendingMapping } from "@/lib/api";
 
 // Minimal pending-mappings review surface (Owen's own scoping: no fancy
 // UI needed). Lists what the two live-pull endpoints currently see and
@@ -34,6 +34,7 @@ export default function CommsReviewPage() {
     externalId: string,
     accountId: string
   ) {
+    if (isReadOnlyDemo) return;
     const key = `${sourceType}:${externalId}`;
     setConfirming(key);
     try {
@@ -102,10 +103,10 @@ export default function CommsReviewPage() {
                     <button
                       className="btn approve"
                       style={{ padding: "4px 10px", fontSize: 12 }}
-                      disabled={isConfirmed || confirming === key}
+                      disabled={isReadOnlyDemo || isConfirmed || confirming === key}
                       onClick={() => confirm(sourceType, item.external_id, c.account_id)}
                     >
-                      {isConfirmed ? "confirmed" : confirming === key ? "confirming…" : "confirm"}
+                      {isReadOnlyDemo ? "read-only" : isConfirmed ? "confirmed" : confirming === key ? "confirming…" : "confirm"}
                     </button>
                   </div>
                 );

@@ -12,8 +12,8 @@ export interface ActionRailHandle {
 
 export const ActionRail = forwardRef<
   ActionRailHandle,
-  { item: WorkItem | null; onVerdict: (proposalId: string) => void }
->(function ActionRail({ item, onVerdict }, ref) {
+  { item: WorkItem | null; onVerdict: (proposalId: string) => void; readOnly?: boolean }
+>(function ActionRail({ item, onVerdict, readOnly = false }, ref) {
   const [ledger, setLedger] = useState<LedgerEvent[]>([]);
   const [ledgerGap, setLedgerGap] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
@@ -50,6 +50,10 @@ export const ActionRail = forwardRef<
   }, [canEdit, proposalId]);
 
   async function act(verdict: "approve" | "deny" | "revise") {
+    if (readOnly) {
+      setError("Hosted demo is read-only. Decisions are disabled.");
+      return;
+    }
     if (!proposalId || !canAct || busy) return;
     if (verdict === "revise" && !canEdit) return;
     const instruction = editInstruction.trim();
@@ -83,7 +87,9 @@ export const ActionRail = forwardRef<
     approve: () => act("approve"),
     deny: () => act("deny"),
     edit: () => {
-      if (canEdit) setEditOpen(true);
+      if (readOnly) {
+        setError("Hosted demo is read-only. Decisions are disabled.");
+      } else if (canEdit) setEditOpen(true);
     },
   }));
 
@@ -110,25 +116,30 @@ export const ActionRail = forwardRef<
             {error}
           </div>
         )}
+        {readOnly && (
+          <div className="gate">
+            hosted read-only demo — approvals and sends disabled
+          </div>
+        )}
       </div>
       <div className="actions">
         <button
           className="btn approve"
-          disabled={!canAct || busy}
+          disabled={readOnly || !canAct || busy}
           onClick={() => act("approve")}
         >
           Approve &amp; send<span className="k">A</span>
         </button>
         <button
           className="btn edit"
-          disabled={!canEdit || busy}
+          disabled={readOnly || !canEdit || busy}
           onClick={() => setEditOpen((open) => !open)}
         >
           Edit draft<span className="k">E</span>
         </button>
         <button
           className="btn deny"
-          disabled={!canAct || busy}
+          disabled={readOnly || !canAct || busy}
           onClick={() => act("deny")}
         >
           Deny<span className="k">D</span>

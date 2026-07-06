@@ -7,7 +7,7 @@ import { QueueView } from "@/components/QueueView";
 import { ActionRail, ActionRailHandle } from "@/components/ActionRail";
 import { CommandPalette } from "@/components/CommandPalette";
 import { ShortcutsOverlay } from "@/components/ShortcutsOverlay";
-import { api, AccountSummary, WorkItem } from "@/lib/api";
+import { api, AccountSummary, isReadOnlyDemo, WorkItem } from "@/lib/api";
 import { useSweep } from "@/lib/useSweep";
 import { toggleTheme } from "@/lib/theme";
 
@@ -120,6 +120,7 @@ export default function Home() {
         queueCount={needsCount}
         day={day}
         liveMode={liveMode}
+        readOnlyDemo={isReadOnlyDemo}
         onDayChange={setDay}
         health={health}
         onOpenPalette={() => setPaletteOpen(true)}
@@ -155,6 +156,7 @@ export default function Home() {
               ref={railRef}
               item={selectedItem}
               onVerdict={() => setRefreshToken((t) => t + 1)}
+              readOnly={isReadOnlyDemo}
             />
           )}
         </aside>

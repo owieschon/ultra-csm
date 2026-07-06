@@ -1,0 +1,875 @@
+{
+  "pending_count": 11,
+  "proposals": [
+    {
+      "action": "draft_customer_outreach",
+      "autonomy_tier": 2,
+      "intent": "agent1_time_to_value_sweep",
+      "payload": {
+        "account_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+        "account_name": "Ironhorse Freight Co",
+        "as_of": "2026-11-08",
+        "body": "Hi Marcus Webb, Ironhorse Freight Co is showing an onboarding risk tied to milestones_overdue, days_overdue. Can we review the overdue activation steps and agree on owners?",
+        "contact_email": "marcus.webb@ironhorse-freight.example",
+        "contact_id": "3610a030-a5cd-55db-80b7-7b89d66203a4",
+        "draft_channel": "email",
+        "evidence_ids": [
+          "4635cdb7-5bb5-5c43-acc1-5dc989d4d583",
+          "afbc6091-985b-50e5-8522-e1a916af56c9",
+          "7d61c11f-73d4-52f6-a738-33ab96634a61",
+          "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43"
+        ],
+        "priority": {
+          "factors": [
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 50,
+              "evidence": [
+                {
+                  "field": "ttv_milestone",
+                  "observed_at": "2026-06-22",
+                  "source": "telemetry",
+                  "source_id": "4635cdb7-5bb5-5c43-acc1-5dc989d4d583"
+                },
+                {
+                  "field": "ttv_milestone",
+                  "observed_at": "2026-07-01",
+                  "source": "telemetry",
+                  "source_id": "4635cdb7-5bb5-5c43-acc1-5dc989d4d583"
+                }
+              ],
+              "name": "milestones_overdue",
+              "rule_name": "base_default",
+              "threshold_name": "milestone_overdue_points",
+              "threshold_value": 25,
+              "value": 2.0
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 40,
+              "evidence": [
+                {
+                  "field": "ttv_milestone",
+                  "observed_at": "2026-06-22",
+                  "source": "telemetry",
+                  "source_id": "4635cdb7-5bb5-5c43-acc1-5dc989d4d583"
+                },
+                {
+                  "field": "ttv_milestone",
+                  "observed_at": "2026-07-01",
+                  "source": "telemetry",
+                  "source_id": "4635cdb7-5bb5-5c43-acc1-5dc989d4d583"
+                }
+              ],
+              "name": "days_overdue",
+              "rule_name": "base_default",
+              "threshold_name": "days_overdue_cap",
+              "threshold_value": 40,
+              "value": 139.0
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 20,
+              "evidence": [
+                {
+                  "field": "target_date",
+                  "observed_at": "2026-07-15",
+                  "source": "cs_platform",
+                  "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
+                }
+              ],
+              "name": "success_plan_overdue",
+              "rule_name": "base_default",
+              "threshold_name": "success_plan_overdue_points",
+              "threshold_value": 20,
+              "value": 1.0
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 15,
+              "evidence": [
+                {
+                  "field": "underused_capabilities",
+                  "observed_at": "2026-11-08T00:00:00Z",
+                  "source": "cs_platform",
+                  "source_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43"
+                },
+                {
+                  "field": "capability",
+                  "observed_at": "2026-06-01",
+                  "source": "telemetry",
+                  "source_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43:core_telematics"
+                },
+                {
+                  "field": "capability",
+                  "observed_at": "2026-06-01",
+                  "source": "telemetry",
+                  "source_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43:route_optimization"
+                },
+                {
+                  "field": "capability",
+                  "observed_at": "2026-06-01",
+                  "source": "telemetry",
+                  "source_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43:driver_coaching"
+                },
+                {
+                  "field": "capability",
+                  "observed_at": "2026-06-01",
+                  "source": "telemetry",
+                  "source_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43:maintenance_alerts"
+                }
+              ],
+              "name": "feature_depth_gap",
+              "rule_name": "base_default",
+              "threshold_name": "depth_floor",
+              "threshold_value": 0.6,
+              "value": 0.5
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 18,
+              "evidence": [
+                {
+                  "field": "active_users",
+                  "observed_at": "2026-11-08T00:00:00Z",
+                  "source": "cs_platform",
+                  "source_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43"
+                },
+                {
+                  "field": "objectives",
+                  "observed_at": "2026-07-15",
+                  "source": "cs_platform",
+                  "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
+                }
+              ],
+              "name": "usage_outcome_unverified",
+              "rule_name": "base_default",
+              "threshold_name": "outcome_activity_floor",
+              "threshold_value": 0.75,
+              "value": 1.0
+            }
+          ],
+          "score": 143
+        },
+        "subject": "Time-to-Value follow-up for Ironhorse Freight Co"
+      },
+      "proposal_id": "473c6c8b-0f8b-4563-9404-efe48164b6b5",
+      "required_permission": "customer.outreach.draft",
+      "status": "pending"
+    },
+    {
+      "action": "draft_customer_outreach",
+      "autonomy_tier": 2,
+      "intent": "agent1_time_to_value_sweep",
+      "payload": {
+        "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
+        "account_name": "Pinehill Transport",
+        "as_of": "2026-11-08",
+        "body": "Hi Dennis Gruber, Pinehill Transport is showing an onboarding risk tied to success_plan_overdue, health_yellow. Can we map the missing users needed for a complete rollout?",
+        "contact_email": "dennis.gruber@pinehill-transport.example",
+        "contact_id": "fdd4645a-e0b6-53d8-ba03-249f260574d8",
+        "draft_channel": "email",
+        "evidence_ids": [
+          "df3f3e70-7ed8-5d10-9b05-395fd3d1a0f1",
+          "4e2db753-f222-5f7b-8356-0a2f59fae1e3",
+          "ae0a5970-d69b-5c18-ad60-8015524e565c"
+        ],
+        "priority": {
+          "factors": [
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 20,
+              "evidence": [
+                {
+                  "field": "target_date",
+                  "observed_at": "2026-06-21",
+                  "source": "cs_platform",
+                  "source_id": "df3f3e70-7ed8-5d10-9b05-395fd3d1a0f1"
+                }
+              ],
+              "name": "success_plan_overdue",
+              "rule_name": "base_default",
+              "threshold_name": "success_plan_overdue_points",
+              "threshold_value": 20,
+              "value": 1.0
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 15,
+              "evidence": [
+                {
+                  "field": "health_score",
+                  "observed_at": "2026-11-08T00:00:00Z",
+                  "source": "cs_platform",
+                  "source_id": "ae0a5970-d69b-5c18-ad60-8015524e565c"
+                }
+              ],
+              "name": "health_yellow",
+              "rule_name": "base_default",
+              "threshold_name": "health_yellow_points",
+              "threshold_value": 15,
+              "value": 1.0
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 12,
+              "evidence": [
+                {
+                  "field": "active_users",
+                  "observed_at": "2026-11-08T00:00:00Z",
+                  "source": "cs_platform",
+                  "source_id": "ae0a5970-d69b-5c18-ad60-8015524e565c"
+                }
+              ],
+              "name": "low_seat_penetration",
+              "rule_name": "base_default",
+              "threshold_name": "seat_penetration_floor",
+              "threshold_value": 0.5,
+              "value": 0.24
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 15,
+              "evidence": [
+                {
+                  "field": "underused_capabilities",
+                  "observed_at": "2026-11-08T00:00:00Z",
+                  "source": "cs_platform",
+                  "source_id": "ae0a5970-d69b-5c18-ad60-8015524e565c"
+                },
+                {
+                  "field": "capability",
+                  "observed_at": "2026-05-17",
+                  "source": "telemetry",
+                  "source_id": "ae0a5970-d69b-5c18-ad60-8015524e565c:core_telematics"
+                },
+                {
+                  "field": "capability",
+                  "observed_at": "2026-05-17",
+                  "source": "telemetry",
+                  "source_id": "ae0a5970-d69b-5c18-ad60-8015524e565c:route_optimization"
+                }
+              ],
+              "name": "feature_depth_gap",
+              "rule_name": "base_default",
+              "threshold_name": "depth_floor",
+              "threshold_value": 0.6,
+              "value": 0.5
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 20,
+              "evidence": [
+                {
+                  "field": "last_interaction",
+                  "observed_at": "2026-10-29T05:00:00Z",
+                  "source": "crm",
+                  "source_id": "fdd4645a-e0b6-53d8-ba03-249f260574d8"
+                }
+              ],
+              "name": "single_threaded_risk",
+              "rule_name": "base_default",
+              "threshold_name": "min_threaded_persons",
+              "threshold_value": 1,
+              "value": 1.0
+            }
+          ],
+          "score": 82
+        },
+        "subject": "Time-to-Value follow-up for Pinehill Transport"
+      },
+      "proposal_id": "13b8e527-9928-49cd-95df-c69cb51b871a",
+      "required_permission": "customer.outreach.draft",
+      "status": "pending"
+    },
+    {
+      "action": "draft_customer_outreach",
+      "autonomy_tier": 2,
+      "intent": "agent1_time_to_value_sweep",
+      "payload": {
+        "account_id": "081b380c-99e7-5073-992a-9e0d8b27d8c0",
+        "account_name": "Ridgeline Warehousing",
+        "as_of": "2026-11-08",
+        "body": "Hi Jared Nolan, Ridgeline Warehousing is showing an onboarding risk tied to success_plan_overdue, health_yellow. Can we map the missing users needed for a complete rollout?",
+        "contact_email": "jared.nolan@ridgeline-wh.example",
+        "contact_id": "3e482549-264d-5a2d-b368-ca08b272ac98",
+        "draft_channel": "email",
+        "evidence_ids": [
+          "eb6f3bbc-1ea8-5b0c-b6d5-ad15afda0e34",
+          "081b380c-99e7-5073-992a-9e0d8b27d8c0"
+        ],
+        "priority": {
+          "factors": [
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 20,
+              "evidence": [
+                {
+                  "field": "target_date",
+                  "observed_at": "2026-07-14",
+                  "source": "cs_platform",
+                  "source_id": "eb6f3bbc-1ea8-5b0c-b6d5-ad15afda0e34"
+                }
+              ],
+              "name": "success_plan_overdue",
+              "rule_name": "base_default",
+              "threshold_name": "success_plan_overdue_points",
+              "threshold_value": 20,
+              "value": 1.0
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 15,
+              "evidence": [
+                {
+                  "field": "health_score",
+                  "observed_at": "2026-06-21T00:00:00Z",
+                  "source": "cs_platform",
+                  "source_id": "081b380c-99e7-5073-992a-9e0d8b27d8c0"
+                }
+              ],
+              "name": "health_yellow",
+              "rule_name": "base_default",
+              "threshold_name": "health_yellow_points",
+              "threshold_value": 15,
+              "value": 1.0
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 12,
+              "evidence": [
+                {
+                  "field": "active_users",
+                  "observed_at": "2026-06-21T00:00:00Z",
+                  "source": "cs_platform",
+                  "source_id": "081b380c-99e7-5073-992a-9e0d8b27d8c0"
+                }
+              ],
+              "name": "low_seat_penetration",
+              "rule_name": "base_default",
+              "threshold_name": "seat_penetration_floor",
+              "threshold_value": 0.5,
+              "value": 0.3
+            }
+          ],
+          "score": 47
+        },
+        "subject": "Time-to-Value follow-up for Ridgeline Warehousing"
+      },
+      "proposal_id": "65797631-bb0c-46ba-99f8-1e64742f15df",
+      "required_permission": "customer.outreach.draft",
+      "status": "pending"
+    },
+    {
+      "action": "draft_customer_outreach",
+      "autonomy_tier": 2,
+      "intent": "agent1_time_to_value_sweep",
+      "payload": {
+        "account_id": "162a9085-8e63-53f0-bb1b-b48426911d34",
+        "account_name": "Northstar Couriers",
+        "as_of": "2026-11-08",
+        "body": "Hi Sandra Faulkner, Northstar Couriers is showing an onboarding risk tied to success_plan_overdue, health_yellow. Can we check whether the current adoption gap is putting launch timing at risk?",
+        "contact_email": "sandra.faulkner@northstar-couriers.example",
+        "contact_id": "9d346d73-1e66-5964-8f42-066caec9010a",
+        "draft_channel": "email",
+        "evidence_ids": [
+          "023f694d-e8cb-593b-8053-b69e06c2f22d",
+          "162a9085-8e63-53f0-bb1b-b48426911d34"
+        ],
+        "priority": {
+          "factors": [
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 20,
+              "evidence": [
+                {
+                  "field": "target_date",
+                  "observed_at": "2026-07-05",
+                  "source": "cs_platform",
+                  "source_id": "023f694d-e8cb-593b-8053-b69e06c2f22d"
+                }
+              ],
+              "name": "success_plan_overdue",
+              "rule_name": "base_default",
+              "threshold_name": "success_plan_overdue_points",
+              "threshold_value": 20,
+              "value": 1.0
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 15,
+              "evidence": [
+                {
+                  "field": "health_score",
+                  "observed_at": "2026-06-21T00:00:00Z",
+                  "source": "cs_platform",
+                  "source_id": "162a9085-8e63-53f0-bb1b-b48426911d34"
+                }
+              ],
+              "name": "health_yellow",
+              "rule_name": "base_default",
+              "threshold_name": "health_yellow_points",
+              "threshold_value": 15,
+              "value": 1.0
+            }
+          ],
+          "score": 35
+        },
+        "subject": "Time-to-Value follow-up for Northstar Couriers"
+      },
+      "proposal_id": "eae56b66-33fa-4848-8014-e3c6ba770042",
+      "required_permission": "customer.outreach.draft",
+      "status": "pending"
+    },
+    {
+      "action": "draft_customer_outreach",
+      "autonomy_tier": 2,
+      "intent": "agent1_time_to_value_sweep",
+      "payload": {
+        "account_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32",
+        "account_name": "Clearwater Field Ops",
+        "as_of": "2026-11-08",
+        "body": "Hi Kelly Vance, Clearwater Field Ops is showing an onboarding risk tied to success_plan_overdue, health_yellow. Can we map the missing users needed for a complete rollout?",
+        "contact_email": "kelly.vance@clearwater-fo.example",
+        "contact_id": "4294e961-ee2d-536b-9a91-136ef3e39fbd",
+        "draft_channel": "email",
+        "evidence_ids": [
+          "3ea4da77-9a46-57ce-aa0a-36440aed7192",
+          "33509b75-de98-51fa-90a0-c68c90fe9324",
+          "865e1e03-cb2f-524d-b572-1eeabebb8d32"
+        ],
+        "priority": {
+          "factors": [
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 20,
+              "evidence": [
+                {
+                  "field": "target_date",
+                  "observed_at": "2026-07-15",
+                  "source": "cs_platform",
+                  "source_id": "3ea4da77-9a46-57ce-aa0a-36440aed7192"
+                }
+              ],
+              "name": "success_plan_overdue",
+              "rule_name": "base_default",
+              "threshold_name": "success_plan_overdue_points",
+              "threshold_value": 20,
+              "value": 1.0
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 15,
+              "evidence": [
+                {
+                  "field": "health_score",
+                  "observed_at": "2026-06-21T00:00:00Z",
+                  "source": "cs_platform",
+                  "source_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32"
+                }
+              ],
+              "name": "health_yellow",
+              "rule_name": "base_default",
+              "threshold_name": "health_yellow_points",
+              "threshold_value": 15,
+              "value": 1.0
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 12,
+              "evidence": [
+                {
+                  "field": "active_users",
+                  "observed_at": "2026-06-21T00:00:00Z",
+                  "source": "cs_platform",
+                  "source_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32"
+                }
+              ],
+              "name": "low_seat_penetration",
+              "rule_name": "base_default",
+              "threshold_name": "seat_penetration_floor",
+              "threshold_value": 0.5,
+              "value": 0.3333333333333333
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 15,
+              "evidence": [
+                {
+                  "field": "underused_capabilities",
+                  "observed_at": "2026-06-21T00:00:00Z",
+                  "source": "cs_platform",
+                  "source_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32"
+                },
+                {
+                  "field": "capability",
+                  "observed_at": "2026-06-01",
+                  "source": "telemetry",
+                  "source_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32:core_telematics"
+                },
+                {
+                  "field": "capability",
+                  "observed_at": "2026-06-01",
+                  "source": "telemetry",
+                  "source_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32:maintenance_alerts"
+                }
+              ],
+              "name": "feature_depth_gap",
+              "rule_name": "base_default",
+              "threshold_name": "depth_floor",
+              "threshold_value": 0.6,
+              "value": 0.5
+            }
+          ],
+          "score": 62
+        },
+        "subject": "Time-to-Value follow-up for Clearwater Field Ops"
+      },
+      "proposal_id": "171001df-c1f5-4869-b17f-6aa3d0a92bed",
+      "required_permission": "customer.outreach.draft",
+      "status": "pending"
+    },
+    {
+      "action": "draft_customer_outreach",
+      "autonomy_tier": 2,
+      "intent": "agent1_time_to_value_sweep",
+      "payload": {
+        "account_id": "390eef5a-4d06-59ae-93cb-2c0a012e7ef8",
+        "account_name": "Summit Industrial Supply",
+        "as_of": "2026-11-08",
+        "body": "Hi Diana Kowalski, Summit Industrial Supply is showing an onboarding risk tied to success_plan_overdue. Can we review the activation blockers and next steps?",
+        "contact_email": "diana.kowalski@summit-industrial.example",
+        "contact_id": "e3d2b93a-4221-5c8e-8f95-1f00cc780df1",
+        "draft_channel": "email",
+        "evidence_ids": [
+          "2b9e4aff-7f3e-5fd8-af1d-482d72f79fdc",
+          "390eef5a-4d06-59ae-93cb-2c0a012e7ef8"
+        ],
+        "priority": {
+          "factors": [
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 20,
+              "evidence": [
+                {
+                  "field": "target_date",
+                  "observed_at": "2026-07-20",
+                  "source": "cs_platform",
+                  "source_id": "2b9e4aff-7f3e-5fd8-af1d-482d72f79fdc"
+                }
+              ],
+              "name": "success_plan_overdue",
+              "rule_name": "base_default",
+              "threshold_name": "success_plan_overdue_points",
+              "threshold_value": 20,
+              "value": 1.0
+            }
+          ],
+          "score": 20
+        },
+        "subject": "Time-to-Value follow-up for Summit Industrial Supply"
+      },
+      "proposal_id": "feff3e51-4754-4ba6-86c4-14165331a515",
+      "required_permission": "customer.outreach.draft",
+      "status": "pending"
+    },
+    {
+      "action": "draft_customer_outreach",
+      "autonomy_tier": 2,
+      "intent": "agent1_time_to_value_sweep",
+      "payload": {
+        "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+        "account_name": "Trailhead Logistics",
+        "as_of": "2026-11-08",
+        "body": "Hi Vanessa Torres, Trailhead Logistics is showing an onboarding risk tied to success_plan_overdue, arr_tier. Can we review the activation blockers and next steps?",
+        "contact_email": "vanessa.torres@trailhead-logistics.example",
+        "contact_id": "5ba7aa51-a5eb-5220-9d3b-71bbe67377a1",
+        "draft_channel": "email",
+        "evidence_ids": [
+          "20527c0a-8156-5119-934a-4017e19fc39d",
+          "21830db9-7182-5d97-b22e-d57c4e28f696"
+        ],
+        "priority": {
+          "factors": [
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 20,
+              "evidence": [
+                {
+                  "field": "target_date",
+                  "observed_at": "2026-09-01",
+                  "source": "cs_platform",
+                  "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
+                }
+              ],
+              "name": "success_plan_overdue",
+              "rule_name": "high_arr_review_default",
+              "threshold_name": "success_plan_overdue_points",
+              "threshold_value": 20,
+              "value": 1.0
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 5,
+              "evidence": [
+                {
+                  "field": "arr_cents",
+                  "observed_at": "2025-01-01",
+                  "source": "cs_platform",
+                  "source_id": "21830db9-7182-5d97-b22e-d57c4e28f696"
+                }
+              ],
+              "name": "arr_tier",
+              "rule_name": "high_arr_review_default",
+              "threshold_name": "arr_review_floor_cents",
+              "threshold_value": 15000000,
+              "value": 31000000.0
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 20,
+              "evidence": [
+                {
+                  "field": "last_interaction",
+                  "observed_at": "2026-11-08T04:00:00Z",
+                  "source": "crm",
+                  "source_id": "5ba7aa51-a5eb-5220-9d3b-71bbe67377a1"
+                }
+              ],
+              "name": "single_threaded_risk",
+              "rule_name": "high_arr_review_default",
+              "threshold_name": "min_threaded_persons",
+              "threshold_value": 1,
+              "value": 1.0
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 18,
+              "evidence": [
+                {
+                  "field": "active_users",
+                  "observed_at": "2026-11-08T00:00:00Z",
+                  "source": "cs_platform",
+                  "source_id": "21830db9-7182-5d97-b22e-d57c4e28f696"
+                },
+                {
+                  "field": "objectives",
+                  "observed_at": "2026-09-01",
+                  "source": "cs_platform",
+                  "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
+                }
+              ],
+              "name": "usage_outcome_unverified",
+              "rule_name": "high_arr_review_default",
+              "threshold_name": "outcome_activity_floor",
+              "threshold_value": 0.75,
+              "value": 0.8111111111111111
+            }
+          ],
+          "score": 63
+        },
+        "subject": "Time-to-Value follow-up for Trailhead Logistics"
+      },
+      "proposal_id": "35936e0a-f802-47e3-8e52-1747eb18fb46",
+      "required_permission": "customer.outreach.draft",
+      "status": "pending"
+    },
+    {
+      "action": "draft_customer_outreach",
+      "autonomy_tier": 2,
+      "intent": "agent1_time_to_value_sweep",
+      "payload": {
+        "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+        "account_name": "Meridian Fleet Group",
+        "as_of": "2026-11-08",
+        "body": "Hi Alicia Fernandez, Meridian Fleet Group is showing an onboarding risk tied to arr_tier. Can we review the activation blockers and next steps?",
+        "contact_email": "alicia.fernandez@meridian-fleet.example",
+        "contact_id": "b2d52039-fa63-5981-8b9b-e08ee50e8a14",
+        "draft_channel": "email",
+        "evidence_ids": [
+          "30f4240b-e6c6-5bd2-b7b4-42a9b8d68cc1",
+          "47f78943-7a8a-5bf1-9eeb-df74372085c7"
+        ],
+        "priority": {
+          "factors": [
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 5,
+              "evidence": [
+                {
+                  "field": "arr_cents",
+                  "observed_at": "2025-01-01",
+                  "source": "cs_platform",
+                  "source_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7"
+                }
+              ],
+              "name": "arr_tier",
+              "rule_name": "high_arr_review_default",
+              "threshold_name": "arr_review_floor_cents",
+              "threshold_value": 15000000,
+              "value": 28000000.0
+            }
+          ],
+          "score": 5
+        },
+        "subject": "Time-to-Value follow-up for Meridian Fleet Group"
+      },
+      "proposal_id": "9a53cb2a-83da-4f54-80b5-9b881dc4cce6",
+      "required_permission": "customer.outreach.draft",
+      "status": "pending"
+    },
+    {
+      "action": "draft_customer_outreach",
+      "autonomy_tier": 2,
+      "intent": "agent1_time_to_value_sweep",
+      "payload": {
+        "account_id": "f8504037-dc1a-50e4-bdd9-7900b1379444",
+        "account_name": "Sagebrush Transport",
+        "as_of": "2026-11-08",
+        "body": "Hi Brett Sawyer, Sagebrush Transport is showing an onboarding risk tied to health_red. Can we review the blocker behind the red health signal?",
+        "contact_email": "brett.sawyer@sagebrush-transport.example",
+        "contact_id": "66c4d941-3342-5f92-8ea5-4c8c6764ef1e",
+        "draft_channel": "email",
+        "evidence_ids": [
+          "751d5071-7c34-5cd1-bca9-178d0f38ad1d",
+          "3acf0291-5b0b-55b9-8653-d042239fcc17",
+          "f8504037-dc1a-50e4-bdd9-7900b1379444"
+        ],
+        "priority": {
+          "factors": [
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 30,
+              "evidence": [
+                {
+                  "field": "health_score",
+                  "observed_at": "2026-08-30T00:00:00Z",
+                  "source": "cs_platform",
+                  "source_id": "f8504037-dc1a-50e4-bdd9-7900b1379444"
+                }
+              ],
+              "name": "health_red",
+              "rule_name": "base_default",
+              "threshold_name": "health_red_points",
+              "threshold_value": 30,
+              "value": 1.0
+            }
+          ],
+          "score": 30
+        },
+        "subject": "Time-to-Value follow-up for Sagebrush Transport"
+      },
+      "proposal_id": "87e36b65-ce9a-473c-8c9a-fb34e472a070",
+      "required_permission": "customer.outreach.draft",
+      "status": "pending"
+    },
+    {
+      "action": "draft_customer_outreach",
+      "autonomy_tier": 2,
+      "intent": "agent1_time_to_value_sweep",
+      "payload": {
+        "account_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18",
+        "account_name": "Harborview Fleet",
+        "as_of": "2026-11-08",
+        "body": "Hi Gregory Foster, Harborview Fleet is showing an onboarding risk tied to health_yellow, feature_depth_gap. Can we check whether the current adoption gap is putting launch timing at risk?",
+        "contact_email": "gregory.foster@harborview-fleet.example",
+        "contact_id": "5d346e9f-08bb-5736-9b51-e3be8b8c9cad",
+        "draft_channel": "email",
+        "evidence_ids": [
+          "4af5a5c0-f51a-5a83-9217-141f4333c6db",
+          "625c9e2b-353d-5bc9-b866-91b2c536d104",
+          "2f75e535-4d63-5289-8084-aa72fcf3b39a",
+          "b8275b07-a825-5c1b-86d3-5b8063dcaf18"
+        ],
+        "priority": {
+          "factors": [
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 15,
+              "evidence": [
+                {
+                  "field": "health_score",
+                  "observed_at": "2026-08-05T00:00:00Z",
+                  "source": "cs_platform",
+                  "source_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18"
+                }
+              ],
+              "name": "health_yellow",
+              "rule_name": "base_default",
+              "threshold_name": "health_yellow_points",
+              "threshold_value": 15,
+              "value": 1.0
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 15,
+              "evidence": [
+                {
+                  "field": "underused_capabilities",
+                  "observed_at": "2026-06-21T00:00:00Z",
+                  "source": "cs_platform",
+                  "source_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18"
+                },
+                {
+                  "field": "capability",
+                  "observed_at": "2025-08-01",
+                  "source": "telemetry",
+                  "source_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18:core_telematics"
+                },
+                {
+                  "field": "capability",
+                  "observed_at": "2025-08-01",
+                  "source": "telemetry",
+                  "source_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18:route_optimization"
+                },
+                {
+                  "field": "capability",
+                  "observed_at": "2025-08-01",
+                  "source": "telemetry",
+                  "source_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18:advanced_reporting"
+                },
+                {
+                  "field": "capability",
+                  "observed_at": "2025-08-01",
+                  "source": "telemetry",
+                  "source_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18:dispatch_automation"
+                }
+              ],
+              "name": "feature_depth_gap",
+              "rule_name": "base_default",
+              "threshold_name": "depth_floor",
+              "threshold_value": 0.6,
+              "value": 0.5
+            }
+          ],
+          "score": 30
+        },
+        "subject": "Time-to-Value follow-up for Harborview Fleet"
+      },
+      "proposal_id": "28b8614f-c371-4735-a94c-eb7e7ff57efa",
+      "required_permission": "customer.outreach.draft",
+      "status": "pending"
+    },
+    {
+      "action": "content_route",
+      "autonomy_tier": 2,
+      "intent": "agent1_time_to_value_sweep",
+      "payload": {
+        "account_id": "dbb5d1ad-a08a-57bf-9d16-00c94f82fe8b",
+        "account_name": "Quietvale Trucking",
+        "addresses_gap": "feature_shallow_depth",
+        "as_of": "2026-11-08",
+        "contact_email": "morgan.reyes@quietvale-trucking.example",
+        "contact_id": "3fd8c2cd-63ba-5a20-a279-b0ea500f6e86",
+        "content_format": "webinar",
+        "content_id": "content-route-optimizer-adoption",
+        "content_title": "5 Ways Fleets Cut Deadhead Miles with Route Optimizer",
+        "draft_channel": "email"
+      },
+      "proposal_id": "49fdde54-35e3-4abb-a6b7-1eb1e5c5d736",
+      "required_permission": "content.route",
+      "status": "pending"
+    }
+  ],
+  "tenant_id": "edaf7829-b0d2-5ba5-8191-a012f53a5ca7"
+}

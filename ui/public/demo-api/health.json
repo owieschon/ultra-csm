@@ -1,0 +1,15 @@
+{
+  "accounts_loaded": 9,
+  "auth": "demo-noauth",
+  "config_loaded": true,
+  "data_plane_mode": "fixture",
+  "data_plane_sources": {
+    "gmail": "fixture_or_persisted",
+    "rocketlane": "fixture",
+    "salesforce": "fixture"
+  },
+  "db_connected": true,
+  "health_source": "fixture_cs_platform",
+  "status": "ok",
+  "tenant_id": "edaf7829-b0d2-5ba5-8191-a012f53a5ca7"
+}
