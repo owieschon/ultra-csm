@@ -95,8 +95,11 @@ def test_tick_runs_sweep_writes_provenance_and_preserves_action_tier(
             "FROM action_proposal ORDER BY created_ts"
         )
         rows = cur.fetchall()
+        cur.execute("SELECT DISTINCT event_type FROM audit.event_log")
+        audit_events = {row[0] for row in cur.fetchall()}
 
     assert rows
+    assert {"sweep.fired", "value_model", "slot_b.draft", "judge.score"} <= audit_events
     for action, autonomy_tier, required_permission in rows:
         expected = proposal_fields_for(action)
         assert autonomy_tier == expected["autonomy_tier"]

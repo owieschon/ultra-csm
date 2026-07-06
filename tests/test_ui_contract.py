@@ -96,7 +96,20 @@ class TestLedgerEndpoint:
         assert "events" in body
         assert "ledger_gap" in body
         assert isinstance(body["ledger_gap"], list)
-        assert body["ledger_gap"], "ledger gap must be disclosed, not silently empty"
+        assert body["ledger_gap"] == []
+
+    def test_ledger_reflects_sweep_operational_events(self, client: TestClient):
+        sweep = client.post("/sweep", headers=AUTH_HEADERS)
+        assert sweep.status_code == 200
+
+        ledger = client.get("/ledger?limit=200").json()
+        events = {entry["event"] for entry in ledger["events"]}
+
+        assert "sweep.fired" in events
+        assert "value_model" in events
+        assert "slot_b.draft" in events
+        assert "judge.score" in events
+        assert ledger["ledger_gap"] == []
 
     def test_ledger_reflects_a_real_verdict(self, client: TestClient):
         client.post("/sweep", headers=AUTH_HEADERS)

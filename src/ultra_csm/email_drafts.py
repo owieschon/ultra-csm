@@ -9,7 +9,9 @@ from typing import Any, Mapping
 from urllib import parse
 
 from ultra_csm.data_plane.live_smoke import HttpClient, HttpRequest, UrllibHttpClient
+from ultra_csm.audit_ledger import AuditContext, record_audit_event
 from ultra_csm.governance import ActionProposal, canonical_payload_sha256
+from ultra_csm.outcome_reobserver import queue_reobservation_for_proposal
 
 
 class EmailDraftError(RuntimeError):
@@ -110,9 +112,11 @@ class GmailDraftCommitter:
         *,
         env: Mapping[str, str],
         client: HttpClient | None = None,
+        audit_context: AuditContext | None = None,
     ) -> None:
         self._env = env
         self._http = client or UrllibHttpClient()
+        self._audit_context = audit_context
 
     def create_draft(
         self,
@@ -148,7 +152,7 @@ class GmailDraftCommitter:
         payload = response.json()
         if not isinstance(payload, dict) or not isinstance(payload.get("id"), str):
             raise EmailDraftError("Gmail drafts.create response missing draft id")
-        return GmailDraftReceipt(
+        receipt = GmailDraftReceipt(
             draft_id=payload["id"],
             proposal_id=proposal.proposal_id,
             payload_sha256=artifact.payload_sha256,
@@ -157,6 +161,43 @@ class GmailDraftCommitter:
                 "live_send_performed": False,
                 "gmail_scope": "gmail.compose",
             },
+        )
+        self._record_gmail_commit(proposal, receipt)
+        return receipt
+
+    def _record_gmail_commit(
+        self,
+        proposal: ActionProposal,
+        receipt: GmailDraftReceipt,
+    ) -> None:
+        if self._audit_context is None:
+            return
+        account_id = str(proposal.payload.get("account_id") or "")
+        record_audit_event(
+            self._audit_context.conn,
+            tenant_id=self._audit_context.tenant_id,
+            actor_id=self._audit_context.actor_id,
+            event_type="gmail.commit",
+            proposal_id=proposal.proposal_id,
+            account_ref=account_id or None,
+            source_ref=f"gmail.commit:draft:{receipt.draft_id}",
+            detail="Gmail draft committed",
+            payload={
+                "draft_id": receipt.draft_id,
+                "proposal_id": receipt.proposal_id,
+                "payload_sha256": receipt.payload_sha256,
+                "draft_never_send": True,
+                "gmail_scope": "gmail.compose",
+            },
+            now=self._audit_context.now,
+        )
+        queue_reobservation_for_proposal(
+            self._audit_context.conn,
+            tenant_id=self._audit_context.tenant_id,
+            actor_id=self._audit_context.actor_id,
+            proposal=proposal,
+            commit_ref=f"gmail:draft:{receipt.draft_id}",
+            now=self._audit_context.now,
         )
 
     def _access_token(self) -> str:
