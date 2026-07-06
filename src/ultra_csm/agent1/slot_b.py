@@ -47,6 +47,7 @@ LIVE_USD_PER_MTOK_OUTPUT = 25.00
 # fails closed, so a hostile prompt cannot smuggle a lookalike URL past this
 # validator regardless of how it's phrased.
 _URL_RE = re.compile(r"https?://[^\s<>\"']+")
+_DANGEROUS_URI_SCHEME_RE = re.compile(r"(?i)\b(?:javascript|data):[^\s)>\"]+")
 # Trailing characters that are almost always sentence punctuation wrapping a
 # URL in prose ("...(see <link>).") rather than part of the URL itself. The
 # greedy _URL_RE above has no way to know a URL's real boundary, so any match
@@ -58,6 +59,13 @@ _URL_TRAILING_PUNCTUATION = ".,;:!?)]}\"'"
 
 def _extract_urls(text: str) -> set[str]:
     return {match.rstrip(_URL_TRAILING_PUNCTUATION) for match in _URL_RE.findall(text)}
+
+
+def _extract_dangerous_uri_schemes(text: str) -> set[str]:
+    return {
+        match.rstrip(_URL_TRAILING_PUNCTUATION)
+        for match in _DANGEROUS_URI_SCHEME_RE.findall(text)
+    }
 
 
 # Meeting-shaped = motions mapping to `initiate_customer_call` (working_session,
@@ -368,6 +376,11 @@ def validate_reason_draft_output(
         if smuggled:
             raise SlotBContractError(
                 f"customer draft contains non-allowlisted URL(s): {sorted(smuggled)}"
+            )
+        dangerous_schemes = _extract_dangerous_uri_schemes(output.customer_draft)
+        if dangerous_schemes:
+            raise SlotBContractError(
+                f"customer draft contains unsafe URI scheme(s): {sorted(dangerous_schemes)}"
             )
 
 
