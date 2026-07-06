@@ -5,9 +5,11 @@ from __future__ import annotations
 import copy
 
 from eval.gold_slot_b_hard import (
+    A6_EXPANSION_FAMILIES,
     DIMS,
     FAMILIES,
     HARD_PATH,
+    build_a6_expansion_artifacts,
     build_hard_artifacts,
     hard_blindness_errors,
     hard_key_errors,
@@ -75,3 +77,22 @@ def test_boundary_pair_differs_only_by_specificity():
     # H4a (pass) and H4b (fail) must straddle the account_specificity 1-vs-2 line.
     assert _intended(FAMILIES["H4a_boundary_two"][4]) == []
     assert _intended(FAMILIES["H4b_boundary_one"][4]) == ["account_specificity"]
+
+
+def test_a6_expansion_is_blinded_unlabeled_and_contract_valid():
+    records, key = build_a6_expansion_artifacts()
+
+    assert len(records) == sum(f[2] for f in A6_EXPANSION_FAMILIES.values()) == 28
+    assert hard_blindness_errors(records) == []
+    assert all(record["human_labels"] is None for record in records)
+    assert all(record["label_template"]["overall_pass"] is None for record in records)
+    assert {record["candidate_id"] for record in records} == {
+        record["candidate_id"] for record in key
+    }
+    assert all("expected_vector" not in record for record in key)
+    assert all("intended_failing_dimensions" not in record for record in key)
+    safety_focused = sum(
+        1 for record in key
+        if "safety_boundary" in record["stress_focus"]
+    )
+    assert safety_focused >= 24
