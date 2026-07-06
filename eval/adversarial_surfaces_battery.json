@@ -1,0 +1,66 @@
+{
+  "artifact": "adversarial_surfaces_battery",
+  "cases": [
+    {
+      "case": "url-smuggle-set",
+      "detail": {
+        "allowed_url": "https://calendar.example/schedule/fleetops-csm-working-session",
+        "rejected": {
+          "data_scheme": "customer draft contains unsafe URI scheme(s): ['data:text/html,<script']",
+          "javascript_scheme": "customer draft contains unsafe URI scheme(s): ['javascript:alert(1']",
+          "lookalike_domain": "customer draft contains non-allowlisted URL(s): ['https://calendar.example.evil.test/x']",
+          "markdown_mask": "customer draft contains non-allowlisted URL(s): ['https://evil.test/x']",
+          "redirect_param": "customer draft contains non-allowlisted URL(s): ['https://calendar.example/schedule/fleetops-csm-working-session?next=https://evil.test']",
+          "unicode_homoglyph": "customer draft contains non-allowlisted URL(s): ['https://\u0441\u0430lendar.example/x']",
+          "userinfo": "customer draft contains non-allowlisted URL(s): ['https://calendar.example@evil.test/x']"
+        }
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "ui-rendered-content-text-only",
+      "detail": {
+        "comms_candidate_reason_jsx_text": true,
+        "ledger_detail_jsx_text": true,
+        "no_dangerous_inner_html": true,
+        "queue_draft_jsx_text": true,
+        "queue_reason_jsx_text": true
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "verdict-contract-abuse-guards",
+      "detail": {
+        "api_auth_before_lookup": true,
+        "api_bounded_revise_path": true,
+        "api_consent_before_gate": true,
+        "api_pending_before_gate": true,
+        "mcp_auth_before_lookup": true,
+        "mcp_bounded_revise_path": true,
+        "mcp_consent_before_gate": true,
+        "mcp_pending_before_gate": true
+      },
+      "ok": true,
+      "problems": []
+    },
+    {
+      "case": "preexisting-canary-battery",
+      "detail": {
+        "artifact": "canary_battery",
+        "case_count": 6,
+        "hard_ok": true
+      },
+      "ok": true,
+      "problems": []
+    }
+  ],
+  "claim_boundary": {
+    "customer_send_performed": false,
+    "live_mailbox_seeded": false,
+    "offline_deterministic": true
+  },
+  "failed_cases": [],
+  "hard_ok": true
+}
