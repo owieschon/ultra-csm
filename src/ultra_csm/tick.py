@@ -20,6 +20,8 @@ from typing import Any
 import psycopg
 
 from ultra_csm.agent1 import SweepResult, collapse_cohorts, run_time_to_value_sweep
+from ultra_csm.agent1.lens_expansion import ExpansionLensResult, run_expansion_lens
+from ultra_csm.agent1.lens_risk import RiskLensResult, run_risk_lens
 from ultra_csm.data_plane import (
     DEFAULT_DEMO_STATE_DIR,
     DEFAULT_TENANT,
@@ -226,28 +228,52 @@ def run_tick_with_config(
             if fired.action.scope == "book"
             else _restrict_fixture_data(observed.data, fired.account_id)
         )
-        sweep = run_time_to_value_sweep(
-            _data_plane_from_fixture(sweep_data),
-            DEFAULT_TENANT,
-            gate,
-            sweep_principal_id=gate_context.actor_principal_id,
-            as_of=observed.as_of,
-            snapshot_store=snapshot_store,
-            playbook_tenant_slug=TICK_PLAYBOOK_TENANT_SLUG,
-        )
-        # Cohort collapse needs the whole book (not the per-trigger
-        # restricted sweep_data) to see every account's tier+triggers, per
-        # collapse_cohorts' own docstring -- same tenant_id/playbooks/config
-        # as the sweep above, just an unrestricted data_plane for detection.
-        sweep = collapse_cohorts(
-            sweep,
-            observed.data_plane,
-            tenant_id=DEFAULT_TENANT,
-            playbooks=playbooks,
-            value_model_config=value_model_config,
-            as_of=observed.as_of,
-        )
-        run_payload = _sweep_payload_for_trigger(sweep, fired)
+        lens_data_plane = _data_plane_from_fixture(sweep_data)
+        if fired.action.lens == "risk":
+            lens_result = run_risk_lens(
+                lens_data_plane,
+                DEFAULT_TENANT,
+                gate,
+                sweep_principal_id=gate_context.actor_principal_id,
+                as_of=observed.as_of,
+                snapshot_store=snapshot_store,
+            )
+            run_payload = _lens_payload_for_trigger(lens_result, fired)
+        elif fired.action.lens == "expansion":
+            lens_result = run_expansion_lens(
+                lens_data_plane,
+                DEFAULT_TENANT,
+                gate,
+                sweep_principal_id=gate_context.actor_principal_id,
+                as_of=observed.as_of,
+                snapshot_store=snapshot_store,
+            )
+            run_payload = _lens_payload_for_trigger(lens_result, fired)
+        else:
+            sweep = run_time_to_value_sweep(
+                lens_data_plane,
+                DEFAULT_TENANT,
+                gate,
+                sweep_principal_id=gate_context.actor_principal_id,
+                as_of=observed.as_of,
+                snapshot_store=snapshot_store,
+                playbook_tenant_slug=TICK_PLAYBOOK_TENANT_SLUG,
+            )
+            # Cohort collapse needs the whole book (not the per-trigger
+            # restricted sweep_data) to see every account's tier+triggers, per
+            # collapse_cohorts' own docstring -- same tenant_id/playbooks/config
+            # as the sweep above, just an unrestricted data_plane for detection.
+            # TTV-lens-specific: risk/expansion lenses do not use cohort
+            # collapse or playbook motion resolution (report 51 Decisions).
+            sweep = collapse_cohorts(
+                sweep,
+                observed.data_plane,
+                tenant_id=DEFAULT_TENANT,
+                playbooks=playbooks,
+                value_model_config=value_model_config,
+                as_of=observed.as_of,
+            )
+            run_payload = _sweep_payload_for_trigger(sweep, fired)
         fired_runs.append(run_payload)
         fired_for_ledger.append({
             **fired.to_dict(),
@@ -488,6 +514,37 @@ def _sweep_payload_for_trigger(sweep: SweepResult, fired: FiredTrigger) -> dict[
     }
 
 
+def _lens_payload_for_trigger(
+    lens_result: "RiskLensResult | ExpansionLensResult", fired: FiredTrigger
+) -> dict[str, Any]:
+    """Report 51: Risk/Expansion lens payload, mirroring
+    ``_sweep_payload_for_trigger``'s shape for the narrower lens-result
+    dataclasses (``tenant_id, lens_version, work_items, swept_accounts`` --
+    no ``escalations``/``degraded_items``/``budget_skipped``, fields these
+    lenses do not have)."""
+
+    work_items = []
+    created_proposals = []
+    for item in lens_result.work_items:
+        item_payload = asdict(item)
+        item_payload["trigger_provenance"] = fired.to_dict()
+        item_payload["trigger_evidence"] = fired.evidence
+        if item.proposal is not None:
+            created_proposals.append({
+                "proposal_id": item.proposal.proposal_id,
+                "status": item.proposal.status,
+                "action": item.proposal.action_type,
+                "account_id": item.account_id,
+            })
+        work_items.append(item_payload)
+    return {
+        "trigger": fired.to_dict(),
+        "swept_accounts": list(lens_result.swept_accounts),
+        "work_items": work_items,
+        "created_proposals": created_proposals,
+    }
+
+
 def _write_tick_artifacts(
     *,
     state_dir: Path,
@@ -716,6 +773,23 @@ def _demo_trigger_config() -> TriggerConfig:
                 "when": [{"field": "health_band", "op": "transition", "value": ["green", "*"]}],
                 "action": {"lens": "ttv", "scope": "account"},
                 "cooldown_days": 14,
+            },
+            # Report 51: illustrative wiring for the Risk/Expansion lenses'
+            # own "weekly_book_sweep" trigger_subscriptions
+            # (lens_risk.py's RISK_LENS_SPEC / lens_expansion.py's
+            # EXPANSION_LENS_SPEC) -- not a validated production trigger
+            # policy (see report 51's Report contract).
+            {
+                "name": "weekly_risk_sweep",
+                "kind": "schedule",
+                "every": "7d",
+                "action": {"lens": "risk", "scope": "book"},
+            },
+            {
+                "name": "weekly_expansion_sweep",
+                "kind": "schedule",
+                "every": "7d",
+                "action": {"lens": "expansion", "scope": "book"},
             },
         ],
     })
