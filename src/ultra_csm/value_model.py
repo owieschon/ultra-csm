@@ -26,6 +26,24 @@ from ultra_csm.data_plane.contracts import (
     UsageSignal,
 )
 
+
+# Constraint (architecture cleanup, report 42, Sanctioned Exception): this
+# anchoring pattern climbs from the installed module's own file location to
+# find repo-root `config/`. It resolves correctly for an editable install
+# (`pip install -e .`) or when run from a source checkout, because
+# `parents[2]` lands on the repo root either way. A NON-EDITABLE install
+# (`pip install .` into a clean venv) copies this package into site-packages
+# without `config/`/`knowledge/`/`migrations/` alongside it -- those
+# directories are not currently declared as package-data in pyproject.toml,
+# and declaring them wouldn't be enough on its own: this same
+# `parents[N]`-climb pattern recurs in ~9 other production modules
+# (api.py, mcp_server.py, cli.py, knowledge.py, triggers.py, tick.py, and
+# several agent1/*.py files), all of which would need to switch to
+# importlib.resources-style resolution for a non-editable install to work.
+# That rewrite is larger than this dispatch's diff budget alongside its four
+# other independent items, so this is scoped down to a documented
+# constraint per the Sanctioned Exceptions section: **editable install only**
+# is the supported install mode until that resolution rewrite happens.
 REPO = Path(__file__).resolve().parents[2]
 DEFAULT_CONFIG_PATH = REPO / "config" / "value_model_config.json"
 
