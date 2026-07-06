@@ -10,6 +10,7 @@ from __future__ import annotations
 
 from contextlib import contextmanager
 from datetime import datetime
+import hashlib
 from pathlib import Path
 
 import psycopg
@@ -21,10 +22,43 @@ _OPTIONAL = ("cause_ref", "request_id", "turn_id", "model_id", "prompt_version",
 
 
 def apply_migrations(conn: psycopg.Connection, dir: str | Path) -> None:
-    """Apply ordered NNNN_*.sql files as the (superuser) bootstrap connection."""
+    """Apply ordered NNNN_*.sql files as the bootstrap connection.
+
+    ``public.schema_migration`` makes this safe for persistent databases:
+    a second boot skips migrations already recorded with the same checksum,
+    while a changed historical migration fails closed instead of replaying.
+    """
     with conn.cursor() as cur:
+        cur.execute(
+            """
+            CREATE TABLE IF NOT EXISTS public.schema_migration (
+              filename text PRIMARY KEY,
+              checksum_sha256 text NOT NULL,
+              applied_at timestamptz NOT NULL DEFAULT now()
+            )
+            """
+        )
         for path in sorted(Path(dir).glob("[0-9]*_*.sql")):
-            cur.execute(path.read_text())
+            sql = path.read_text(encoding="utf-8")
+            checksum = hashlib.sha256(sql.encode("utf-8")).hexdigest()
+            cur.execute(
+                "SELECT checksum_sha256 FROM public.schema_migration WHERE filename = %s",
+                (path.name,),
+            )
+            row = cur.fetchone()
+            if row is not None:
+                if row[0] != checksum:
+                    raise RuntimeError(
+                        f"migration checksum mismatch for {path.name}: "
+                        "the database has a different immutable migration body"
+                    )
+                continue
+            cur.execute(sql)
+            cur.execute(
+                "INSERT INTO public.schema_migration (filename, checksum_sha256) "
+                "VALUES (%s, %s)",
+                (path.name, checksum),
+            )
     conn.commit()
 
 

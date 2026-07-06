@@ -43,6 +43,11 @@ from ultra_csm.governance import (
 from ultra_csm.knowledge import load_playbooks
 from ultra_csm.logging_config import setup_logging
 from ultra_csm.platform import boot_seeded_cluster, session
+from ultra_csm.platform.runtime import (
+    bootstrap_persistent_database,
+    connect_persistent_runtime_database,
+    persistent_database_configured,
+)
 from ultra_csm.platform.seed import SEED_CLOCK
 from ultra_csm.snapshot_store import SnapshotStore
 from ultra_csm.triggers import (
@@ -343,6 +348,21 @@ def run_tick_cli(
 ) -> int:
     if dry_run:
         result = run_tick(as_of=as_of, config_path=config_path, state_dir=state_dir, dry_run=True)
+    elif persistent_database_configured():
+        bootstrap_persistent_database(MIGRATIONS)
+        conn = connect_persistent_runtime_database()
+        try:
+            context = setup_tick_roster(conn)
+            result = run_tick(
+                as_of=as_of,
+                config_path=config_path,
+                state_dir=state_dir,
+                dry_run=False,
+                conn=conn,
+                gate_context=context,
+            )
+        finally:
+            conn.close()
     else:
         with boot_seeded_cluster(MIGRATIONS, limit=200) as (_cluster, dsn):
             with psycopg.connect(**dsn) as conn:
