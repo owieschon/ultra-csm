@@ -15,7 +15,7 @@ org instead of the simulated tenant store. Scope is deliberately narrow:
 from __future__ import annotations
 
 import json
-from dataclasses import asdict
+from dataclasses import asdict, replace
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -84,10 +84,23 @@ class LiveSalesforceActivityCommitter:
             payload_sha256=outcome.payload_sha256,
         )
         if dry_run or already:
-            self._append_ledger(receipt, sf_task_id=None, subject=None)
+            self._append_ledger(receipt, sf_task_id=None, subject=None, phase="skipped")
             return receipt
 
         subject = f"{self._subject_prefix} {proposal.payload.get('subject') or proposal.intent}"
+
+        # Record intent BEFORE the POST fires, closing the crash window
+        # where a process kill between the network call and the ledger
+        # append could leave a real Salesforce Task with no local record,
+        # risking a duplicate Task on retry. The intent record always
+        # carries committed=False (via replace(), never the real receipt
+        # object) -- _ledger_has_committed_key only treats committed=True
+        # rows as proof of a successful prior send, so an intent-phase row
+        # must never be mistaken for one, even for a first-ever attempt
+        # where the final receipt itself is committed=True.
+        intent_receipt = replace(receipt, committed=False)
+        self._append_ledger(intent_receipt, sf_task_id=None, subject=subject, phase="intent")
+
         auth = salesforce_auth_from_env(self._env, client=self._client)
         body = json.dumps({
             "WhatId": account_id,
@@ -96,22 +109,28 @@ class LiveSalesforceActivityCommitter:
             "ActivityDate": str(proposal.payload.get("as_of") or "")[:10] or None,
             "Description": str(proposal.payload.get("body") or "")[:32000],
         }, sort_keys=True).encode("utf-8")
-        response = self._client.send(HttpRequest(
-            "POST",
-            f"{auth.instance_url}/services/data/{auth.api_version}/sobjects/Task",
-            {
-                "authorization": f"Bearer {auth.access_token}",
-                "content-type": "application/json",
-            },
-            body=body,
-        ))
-        if response.status not in (200, 201):
-            raise SalesforceWriteError(f"Task create failed: status {response.status}")
-        result = response.json()
-        sf_task_id = result.get("id") if isinstance(result, dict) else None
-        if not isinstance(sf_task_id, str) or not sf_task_id:
-            raise SalesforceWriteError("Task create response missing id")
-        self._append_ledger(receipt, sf_task_id=sf_task_id, subject=subject)
+        try:
+            response = self._client.send(HttpRequest(
+                "POST",
+                f"{auth.instance_url}/services/data/{auth.api_version}/sobjects/Task",
+                {
+                    "authorization": f"Bearer {auth.access_token}",
+                    "content-type": "application/json",
+                },
+                body=body,
+            ))
+            if response.status not in (200, 201):
+                raise SalesforceWriteError(f"Task create failed: status {response.status}")
+            result = response.json()
+            sf_task_id = result.get("id") if isinstance(result, dict) else None
+            if not isinstance(sf_task_id, str) or not sf_task_id:
+                raise SalesforceWriteError("Task create response missing id")
+        except SalesforceWriteError:
+            self._append_ledger(
+                replace(receipt, committed=False), sf_task_id=None, subject=subject, phase="failed",
+            )
+            raise
+        self._append_ledger(receipt, sf_task_id=sf_task_id, subject=subject, phase="confirmed")
         return receipt
 
     def _append_ledger(
@@ -120,6 +139,7 @@ class LiveSalesforceActivityCommitter:
         *,
         sf_task_id: str | None,
         subject: str | None,
+        phase: str,
     ) -> None:
         self._ledger_dir.mkdir(parents=True, exist_ok=True)
         with self._ledger_path.open("a", encoding="utf-8") as handle:
@@ -127,6 +147,7 @@ class LiveSalesforceActivityCommitter:
                 "receipt": asdict(receipt),
                 "sf_task_id": sf_task_id,
                 "subject": subject,
+                "ledger_phase": phase,
             }, sort_keys=True) + "\n")
 
 

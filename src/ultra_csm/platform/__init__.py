@@ -137,6 +137,7 @@ class EphemeralCluster:
             check=True,
             capture_output=True,
             env=env,
+            timeout=120,
         )
         subprocess.run(
             [
@@ -154,6 +155,7 @@ class EphemeralCluster:
             stdout=DEVNULL,
             stderr=DEVNULL,
             env=env,
+            timeout=120,
         )
         self._started = True
         return self
@@ -165,6 +167,7 @@ class EphemeralCluster:
                 [pg_ctl, "-D", str(self._datadir), "-m", "immediate", "stop"],
                 check=False,
                 capture_output=True,
+                timeout=120,
             )
             self._started = False
         for ctx in (self._dd, self._sock):
@@ -199,8 +202,105 @@ def boot_seeded_cluster(
         yield cluster, cluster.dsn(user=user)
 
 
+def _postmaster_pid(datadir: Path) -> int | None:
+    """Read the PID from a `postmaster.pid` file, or None if missing/unparseable."""
+    pidfile = datadir / "postmaster.pid"
+    if not pidfile.exists():
+        return None
+    try:
+        first_line = pidfile.read_text(encoding="utf-8").splitlines()[0]
+        return int(first_line.strip())
+    except (OSError, IndexError, ValueError):
+        return None
+
+
+def _pid_is_alive(pid: int) -> bool:
+    """True iff `pid` names a live process this user can see.
+
+    Uses signal 0 (no-op) rather than actually signaling the process --
+    this only probes existence/permission, it never affects the target.
+    """
+    try:
+        os.kill(pid, 0)
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        # Process exists but is owned by someone else -- still alive.
+        return True
+    return True
+
+
+@dataclass(frozen=True)
+class ReapedCluster:
+    """One `build/tmp/pgdata.*` directory the reaper found and removed."""
+
+    datadir: str
+    postmaster_pid: int | None
+    stop_attempted: bool
+
+
+def reap_stale_clusters(*, base: Path | None = None) -> list[ReapedCluster]:
+    """Find and remove orphaned ephemeral-Postgres datadirs under `build/tmp/`.
+
+    A directory is only ever treated as orphaned -- and therefore eligible
+    for `pg_ctl stop` + removal -- when BOTH of these hold:
+      1. it matches the `pgdata.*` naming pattern this repo's own
+         `EphemeralCluster.start()` uses, AND
+      2. it contains a `postmaster.pid` file whose recorded PID is NOT a
+         live process (a stale/unreachable postmaster).
+
+    A `pgdata.*` directory with a *live* postmaster PID is a cluster that
+    is (or may be) actively in use by another concurrent run -- e.g. a
+    sibling `make eval` on the same machine -- and matching on the naming
+    pattern alone is not enough to prove orphan status. Never stop/remove
+    it. This mirrors a real false-positive risk observed directly on this
+    machine: two other worktrees' ephemeral clusters were caught mid-run
+    with live postmaster PIDs while auditing this exact directory.
+
+    Returns the list of directories reaped (empty if none were stale).
+    Never raises on an individual directory's cleanup failure -- logs and
+    continues, so one bad entry doesn't block reaping the rest.
+    """
+    base = base if base is not None else (_REPO / "build" / "tmp")
+    if not base.exists():
+        return []
+
+    toolchain = None
+    reaped: list[ReapedCluster] = []
+    for entry in sorted(base.glob("pgdata.*")):
+        if not entry.is_dir():
+            continue
+        pid = _postmaster_pid(entry)
+        if pid is not None and _pid_is_alive(pid):
+            # Live cluster -- may be in active use. Never touch it.
+            continue
+        if pid is None:
+            # No postmaster.pid at all: already fully stopped (a prior
+            # `pg_ctl stop` completed and removed it, or it never started).
+            # Nothing live to stop; just remove the leftover directory.
+            shutil.rmtree(entry, ignore_errors=True)
+            reaped.append(ReapedCluster(datadir=str(entry), postmaster_pid=None, stop_attempted=False))
+            continue
+
+        # pid is not None and not alive: a stale postmaster.pid from a
+        # crashed/killed prior session. Attempt pg_ctl stop first (in case
+        # a child process outlived the recorded postmaster PID), then
+        # remove the directory regardless of that command's outcome.
+        if toolchain is None:
+            toolchain = _resolve_toolchain()
+        subprocess.run(
+            [toolchain.pg_ctl, "-D", str(entry), "-m", "fast", "stop"],
+            check=False,
+            capture_output=True,
+            timeout=120,
+        )
+        shutil.rmtree(entry, ignore_errors=True)
+        reaped.append(ReapedCluster(datadir=str(entry), postmaster_pid=pid, stop_attempted=True))
+    return reaped
+
+
 __all__ = [
-    "EphemeralCluster", "UnsafeDbRole", "apply_migrations", "assert_rls_safe_role",
-    "boot_seeded_cluster", "engine_data_dir", "resolve_postgres_boot_tier",
-    "seed", "session",
+    "EphemeralCluster", "ReapedCluster", "UnsafeDbRole", "apply_migrations",
+    "assert_rls_safe_role", "boot_seeded_cluster", "engine_data_dir",
+    "reap_stale_clusters", "resolve_postgres_boot_tier", "seed", "session",
 ]

@@ -37,7 +37,17 @@ class JSONFormatter(logging.Formatter):
 
 
 def setup_logging(level: str = "INFO") -> None:
-    """Configure the root logger with structured JSON output to stderr."""
+    """Configure the root logger with structured JSON output to stderr.
+
+    Idempotent on repeated calls (returns early if our JSON handler is
+    already installed), and also reclaims the root logger from any
+    pre-existing plain `StreamHandler`s -- e.g. the MCP SDK's own
+    `logging.basicConfig()`, which installs a handler on import before this
+    repo gets a chance to run. Left alone, both handlers fire on every
+    record and each log line is emitted twice (once plain, once JSON).
+    Non-StreamHandler handlers (e.g. a test's custom handler) are left
+    untouched.
+    """
     root = logging.getLogger()
     root.setLevel(getattr(logging, level.upper(), logging.INFO))
 
@@ -47,6 +57,14 @@ def setup_logging(level: str = "INFO") -> None:
         for h in root.handlers
     ):
         return
+
+    # Remove any other pre-existing StreamHandler (plain-text, no JSONFormatter)
+    # so its output doesn't duplicate ours once we install our own below.
+    for existing in list(root.handlers):
+        if isinstance(existing, logging.StreamHandler) and not isinstance(
+            existing.formatter, JSONFormatter
+        ):
+            root.removeHandler(existing)
 
     handler = logging.StreamHandler(sys.stderr)
     handler.setFormatter(JSONFormatter())
