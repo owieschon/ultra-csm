@@ -30,6 +30,12 @@ from ultra_csm.comms_mapping import (
 from ultra_csm.logging_config import setup_logging
 from ultra_csm.platform import EphemeralCluster
 from ultra_csm.platform.db import apply_migrations, assert_rls_safe_role, session
+from ultra_csm.platform.runtime import (
+    bootstrap_persistent_database,
+    connect_persistent_runtime_database,
+    persistent_admin_configured,
+    persistent_database_configured,
+)
 from ultra_csm.platform.seed import det_uuid, seed, SEED_CLOCK
 
 from ultra_csm.data_plane import (
@@ -355,12 +361,15 @@ class TrajectoryResponse(BaseModel):
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Boot ephemeral Postgres, seed, and configure on startup; tear down on
-    shutdown."""
+    """Boot Postgres, seed, and configure on startup; tear down on shutdown."""
     global _cluster, _conn, _data_plane, _orch_principal
 
     setup_logging("INFO")
-    log.info("Booting ephemeral Postgres cluster for API")
+    _cluster = None
+    _conn = None
+    _data_plane = None
+    _orch_principal = None
+
     assert_demo_noauth_loopback()
     if demo_noauth_enabled():
         log.warning(
@@ -369,16 +378,25 @@ async def lifespan(app: FastAPI):
             extra={"auth": "demo-noauth"},
         )
 
-    _cluster = EphemeralCluster().start()
+    if persistent_database_configured():
+        log.info(
+            "Booting persistent Postgres database for API",
+            extra={"admin_migrations": persistent_admin_configured()},
+        )
+        bootstrap_persistent_database(_MIGRATIONS)
+        _conn = connect_persistent_runtime_database()
+    else:
+        log.info("Booting ephemeral Postgres cluster for API")
+        _cluster = EphemeralCluster().start()
 
-    # Migrate and seed via bootstrap connection.
-    with psycopg.connect(**_cluster.dsn(user=_cluster.BOOTSTRAP_USER)) as boot:
-        apply_migrations(boot, _MIGRATIONS)
-        seed(boot)
+        # Migrate and seed via bootstrap connection.
+        with psycopg.connect(**_cluster.dsn(user=_cluster.BOOTSTRAP_USER)) as boot:
+            apply_migrations(boot, _MIGRATIONS)
+            seed(boot)
 
-    # Runtime connection for the lifetime of the server.
-    _conn = psycopg.connect(**_cluster.dsn(user="app_runtime"))
-    assert_rls_safe_role(_conn)
+        # Runtime connection for the lifetime of the server.
+        _conn = psycopg.connect(**_cluster.dsn(user="app_runtime"))
+        assert_rls_safe_role(_conn)
 
     # Seed governance roster.
     seed_roster(_conn, tenant_id=_TENANT_ID, actor_id=_SEED_AGENT, now=_CLOCK)
