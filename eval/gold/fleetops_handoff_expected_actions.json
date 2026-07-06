@@ -1,0 +1,388 @@
+[
+  {
+    "tenant": "fleetops_handoff",
+    "account_slug": "pinehill-transport",
+    "checkpoint_day": 20,
+    "mode": "gap",
+    "required": {
+      "signal": "active_technical_failure",
+      "motion_in": ["escalation"],
+      "evidence_must_include": ["7b7fe426-01f6-529e-a65b-3240e6ddc058"]
+    },
+    "forbidden_motions": ["content_route"],
+    "handoff": {
+      "review_id": "B0-01",
+      "target_in": ["engineering"],
+      "forbidden_targets": ["product"],
+      "abstain_correct": false,
+      "reason": "Active, escalated, high-priority integration failure."
+    },
+    "notes": "MP-B blind case B0-01: Pinehill day 20; owner blind call engineering."
+  },
+  {
+    "tenant": "fleetops_handoff",
+    "account_slug": "pinehill-transport",
+    "checkpoint_day": 50,
+    "mode": "gap",
+    "required": {
+      "signal": "recurring_technical_case_pattern",
+      "motion_in": ["escalation"],
+      "evidence_must_include": [
+        "7b7fe426-01f6-529e-a65b-3240e6ddc058",
+        "90c96b52-a603-51b0-aa5a-024f9d5d90fc"
+      ]
+    },
+    "forbidden_motions": ["content_route"],
+    "handoff": {
+      "review_id": "B0-02",
+      "target_in": ["engineering"],
+      "forbidden_targets": ["product"],
+      "abstain_correct": false,
+      "reason": "Two high-priority cases on the same legacy-dispatch integration failure, with the later case still escalated."
+    },
+    "notes": "MP-B blind case B0-02: Pinehill day 50; recurring legacy-dispatch integration cases."
+  },
+  {
+    "tenant": "fleetops_handoff",
+    "account_slug": "pinehill-transport",
+    "checkpoint_day": 90,
+    "mode": "gap",
+    "required": {
+      "signal": "recurring_technical_case_pattern",
+      "motion_in": ["escalation"],
+      "evidence_must_include": [
+        "7b7fe426-01f6-529e-a65b-3240e6ddc058",
+        "90c96b52-a603-51b0-aa5a-024f9d5d90fc",
+        "43a814d9-314b-522a-bda5-4ccfe507d55c"
+      ]
+    },
+    "forbidden_motions": ["content_route"],
+    "handoff": {
+      "review_id": "B0-03",
+      "target_in": ["engineering"],
+      "forbidden_targets": ["product"],
+      "abstain_correct": false,
+      "reason": "Three same-system integration cases, including an in-progress event-loss case after two prior incidents."
+    },
+    "notes": "MP-B blind case B0-03: Pinehill day 90; three legacy-dispatch integration cases."
+  },
+  {
+    "tenant": "fleetops_handoff",
+    "account_slug": "trailhead-logistics",
+    "checkpoint_day": 60,
+    "mode": "gap",
+    "required": {
+      "signal": "feature_request_cluster",
+      "motion_in": ["content_route"],
+      "evidence_must_include": ["6ee1311a-6031-57ad-a6b4-a5ae8ed32418"]
+    },
+    "forbidden_motions": ["escalation"],
+    "handoff": {
+      "review_id": "B0-04",
+      "target_in": ["product"],
+      "forbidden_targets": ["engineering"],
+      "abstain_correct": false,
+      "reason": "Feature request for a report template is a product capability gap; owner marked confidence low and the same-model ambiguity probe called abstain."
+    },
+    "notes": "MP-B blind case B0-04: Trailhead day 60; owner blind call product with low confidence."
+  },
+  {
+    "tenant": "fleetops_handoff",
+    "account_slug": "trailhead-logistics",
+    "checkpoint_day": 130,
+    "mode": "gap",
+    "required": {
+      "signal": "feature_request_cluster",
+      "motion_in": ["content_route"],
+      "evidence_must_include": [
+        "6ee1311a-6031-57ad-a6b4-a5ae8ed32418",
+        "badfdd75-9630-5572-9bfe-953363e95fd9"
+      ]
+    },
+    "forbidden_motions": ["escalation"],
+    "handoff": {
+      "review_id": "B0-05",
+      "target_in": ["product"],
+      "forbidden_targets": ["engineering"],
+      "abstain_correct": false,
+      "reason": "Two low-priority feature-request cases, including a new API webhook request."
+    },
+    "notes": "MP-B blind case B0-05: Trailhead day 130; feature-request cluster."
+  },
+  {
+    "tenant": "fleetops_handoff",
+    "account_slug": "trailhead-logistics",
+    "checkpoint_day": 180,
+    "mode": "gap",
+    "required": {
+      "signal": "feature_request_cluster",
+      "motion_in": ["content_route"],
+      "evidence_must_include": [
+        "6ee1311a-6031-57ad-a6b4-a5ae8ed32418",
+        "badfdd75-9630-5572-9bfe-953363e95fd9"
+      ]
+    },
+    "forbidden_motions": ["escalation"],
+    "handoff": {
+      "review_id": "B0-06",
+      "target_in": ["product"],
+      "forbidden_targets": ["engineering"],
+      "abstain_correct": false,
+      "reason": "Two resolved low-priority feature requests still form product-feedback evidence; owner marked abstain defensible and the same-model ambiguity probe called abstain."
+    },
+    "notes": "MP-B blind case B0-06: Trailhead day 180; owner blind call product with medium confidence."
+  },
+  {
+    "tenant": "fleetops_handoff",
+    "account_slug": "ironridge-fleet",
+    "checkpoint_day": 42,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": ["escalation", "content_route"],
+    "handoff": {
+      "review_id": "B0-07",
+      "target_in": [],
+      "forbidden_targets": ["engineering", "product"],
+      "abstain_correct": true,
+      "reason": "One high-priority webhook case resolved in two days with no recurrence."
+    },
+    "notes": "MP-B blind case B0-07: Ironridge day 42; same-week resolved webhook case."
+  },
+  {
+    "tenant": "fleetops_handoff",
+    "account_slug": "cedar-valley",
+    "checkpoint_day": 18,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": ["escalation", "content_route"],
+    "handoff": {
+      "review_id": "B0-08",
+      "target_in": [],
+      "forbidden_targets": ["engineering", "product"],
+      "abstain_correct": true,
+      "reason": "Renewal-paperwork case with no technical symptom or product request."
+    },
+    "notes": "MP-B blind case B0-08: Cedar Valley day 18; renewal paperwork case."
+  },
+  {
+    "tenant": "fleetops_handoff",
+    "account_slug": "cypress-field",
+    "checkpoint_day": 6,
+    "mode": "gap",
+    "required": {
+      "signal": "single_contestable_accuracy_case",
+      "motion_in": ["escalation", "content_route"],
+      "evidence_must_include": ["d066c552-18b5-5457-8426-654cf525d314"]
+    },
+    "forbidden_motions": [],
+    "handoff": {
+      "review_id": "B0-09",
+      "target_in": ["engineering", "product"],
+      "forbidden_targets": [],
+      "abstain_correct": false,
+      "reason": "Single early GPS-accuracy case is contestable between defect and product-accuracy limit."
+    },
+    "notes": "MP-B blind case B0-09: Cypress day 6; owner blind call contestable, widened to engineering or product."
+  },
+  {
+    "tenant": "fleetops_handoff",
+    "account_slug": "cypress-field",
+    "checkpoint_day": 15,
+    "mode": "gap",
+    "required": {
+      "signal": "recurring_technical_case_pattern",
+      "motion_in": ["escalation"],
+      "evidence_must_include": [
+        "d066c552-18b5-5457-8426-654cf525d314",
+        "b4946066-537d-52f8-b223-22d4c5874de7",
+        "7f490468-511b-5747-961c-ee4795297d2e"
+      ]
+    },
+    "forbidden_motions": ["content_route"],
+    "handoff": {
+      "review_id": "B0-10",
+      "target_in": ["engineering"],
+      "forbidden_targets": ["product"],
+      "abstain_correct": false,
+      "reason": "Three same-topic GPS accuracy cases across fifteen days, all unresolved at checkpoint."
+    },
+    "notes": "MP-B blind case B0-10: Cypress day 15; repeated GPS accuracy cases."
+  },
+  {
+    "tenant": "fleetops_handoff",
+    "account_slug": "harborview-fleet",
+    "checkpoint_day": 20,
+    "mode": "gap",
+    "required": {
+      "signal": "recurring_technical_case_pattern",
+      "motion_in": ["escalation"],
+      "evidence_must_include": [
+        "582bfa06-a2b5-508d-81e2-270faa09248f",
+        "3a369f50-cbad-5668-9d66-e1e04eac0c80"
+      ]
+    },
+    "forbidden_motions": ["content_route"],
+    "handoff": {
+      "review_id": "B0-11",
+      "target_in": ["engineering"],
+      "forbidden_targets": ["product"],
+      "abstain_correct": false,
+      "reason": "Two high-priority ERP integration cases with both still active at checkpoint; watch as a soft spot if real case text shows connector requests rather than breakages."
+    },
+    "notes": "MP-B blind case B0-11: Harborview day 20; repeated ERP integration cases."
+  },
+  {
+    "tenant": "fleetops_handoff",
+    "account_slug": "hawkstone-industries",
+    "checkpoint_day": 210,
+    "mode": "gap",
+    "required": {
+      "signal": "recurring_technical_case_pattern",
+      "motion_in": ["escalation"],
+      "evidence_must_include": [
+        "a3f4e940-d444-510d-9ec1-cdcb8bdfb778",
+        "031b3a70-6d52-5693-81d7-f8dbc6bd5fcb"
+      ]
+    },
+    "forbidden_motions": ["content_route"],
+    "handoff": {
+      "review_id": "B0-12",
+      "target_in": ["engineering"],
+      "forbidden_targets": ["product"],
+      "abstain_correct": false,
+      "reason": "Three simultaneous reporting/export breakage cases after a platform update; abstaining would miss an active technical incident."
+    },
+    "notes": "MP-B blind case B0-12: Hawkstone day 210; reporting/export incident cluster."
+  },
+  {
+    "tenant": "fleetops_handoff",
+    "account_slug": "mesa-industrial",
+    "checkpoint_day": 160,
+    "mode": "gap",
+    "required": {
+      "signal": "single_product_capability_request",
+      "motion_in": ["content_route"],
+      "evidence_must_include": ["93e389f0-edb1-5adf-99dc-337a00e202be"]
+    },
+    "forbidden_motions": ["escalation"],
+    "handoff": {
+      "review_id": "B0-13",
+      "target_in": ["product"],
+      "forbidden_targets": ["engineering"],
+      "abstain_correct": false,
+      "reason": "Report-format customization request is a product capability gap; owner marked near-abstain."
+    },
+    "notes": "MP-B blind case B0-13: Mesa day 160; owner blind call product with medium confidence."
+  },
+  {
+    "tenant": "fleetops_handoff",
+    "account_slug": "bison-transport",
+    "checkpoint_day": 60,
+    "mode": "gap",
+    "required": {
+      "signal": "single_contestable_quality_case",
+      "motion_in": ["escalation", "content_route"],
+      "evidence_must_include": ["41fdb309-e0e5-5081-868a-b54fabf760ae"]
+    },
+    "forbidden_motions": [],
+    "handoff": {
+      "review_id": "B0-14",
+      "target_in": ["engineering", "product"],
+      "forbidden_targets": [],
+      "abstain_correct": false,
+      "reason": "Route-optimization quality complaint is contestable between algorithm defect and feature effectiveness."
+    },
+    "notes": "MP-B blind case B0-14: Bison day 60; owner blind call contestable, widened to engineering or product."
+  },
+  {
+    "tenant": "fleetops_handoff",
+    "account_slug": "stonebridge-fleet",
+    "checkpoint_day": 70,
+    "mode": "gap",
+    "required": {
+      "signal": "active_realtime_position_defect",
+      "motion_in": ["escalation"],
+      "evidence_must_include": ["afe231fa-83a5-538d-a616-9532e5c533e4"]
+    },
+    "forbidden_motions": ["content_route"],
+    "handoff": {
+      "review_id": "B0-15",
+      "target_in": ["engineering"],
+      "forbidden_targets": ["product"],
+      "abstain_correct": false,
+      "reason": "Real-time-position issue reads as a latency/data defect after both blind passes landed engineering."
+    },
+    "notes": "MP-B blind case B0-15: Stonebridge day 70; owner tightened to engineering-only after ambiguity probe."
+  },
+  {
+    "tenant": "fleetops_handoff",
+    "account_slug": "cascade-field",
+    "checkpoint_day": 45,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": ["escalation", "content_route"],
+    "handoff": {
+      "review_id": "B0-16",
+      "target_in": [],
+      "forbidden_targets": ["engineering", "product"],
+      "abstain_correct": true,
+      "reason": "Resolved low-priority configuration question."
+    },
+    "notes": "MP-B blind case B0-16: Cascade day 45; resolved setup/configuration question."
+  },
+  {
+    "tenant": "fleetops_handoff",
+    "account_slug": "sagebrush-transport",
+    "checkpoint_day": 30,
+    "mode": "gap",
+    "required": {
+      "signal": "recurring_technical_case_pattern",
+      "motion_in": ["escalation"],
+      "evidence_must_include": [
+        "4343309d-2b19-5293-933f-6ec6648b4957",
+        "4d41a9c8-639e-5757-b215-6210dbf9834a"
+      ]
+    },
+    "forbidden_motions": ["content_route"],
+    "handoff": {
+      "review_id": "B0-17",
+      "target_in": ["engineering"],
+      "forbidden_targets": ["product"],
+      "abstain_correct": false,
+      "reason": "Two high-priority performance/dashboard cases with one escalated and one in progress."
+    },
+    "notes": "MP-B blind case B0-17: Sagebrush day 30; repeated reporting-performance cases."
+  },
+  {
+    "tenant": "fleetops_handoff",
+    "account_slug": "clearwater-field-ops",
+    "checkpoint_day": 10,
+    "mode": "none",
+    "required": {
+      "signal": null,
+      "motion_in": [],
+      "evidence_must_include": []
+    },
+    "forbidden_motions": ["escalation", "content_route"],
+    "handoff": {
+      "review_id": "B0-18",
+      "target_in": [],
+      "forbidden_targets": ["engineering", "product"],
+      "abstain_correct": true,
+      "reason": "One resolved low-priority mobile-app setup question."
+    },
+    "notes": "MP-B blind case B0-18: Clearwater day 10; resolved setup question."
+  }
+]
