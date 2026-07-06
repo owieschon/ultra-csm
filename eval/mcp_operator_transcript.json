@@ -1,7 +1,7 @@
 {
   "access_mode": "demo_operator",
   "artifact": "mcp_operator_transcript",
-  "artifact_sha256": "f4dfad58cb1e54a997e2f07246258b0f28b736346fb21a05a8a02da99e83545e",
+  "artifact_sha256": "b77985865eadfbf05d7eda510c643027845b029ea6d48928bb46122a1d0c7c82",
   "beats": [
     "briefing",
     "queue",
@@ -1588,6 +1588,9 @@
           "live": false,
           "sim": true
         },
+        "comms_call_transcripts": [],
+        "comms_gmail": [],
+        "comms_internal": [],
         "company": {
           "arr_cents": 18400000,
           "csm_owner_id": "csm-001",
@@ -1885,7 +1888,7 @@
           "Overdue milestone: first_driver_workflow (expected by 2026-06-22)"
         ]
       },
-      "output_sha256": "7156b98ab6494f3d93e4022631748f2e9164bb0abba23c75e2763fb17de7a720",
+      "output_sha256": "71225f2f93ebafb097e3cb46ba765f11fdfa64119ecd9f2a9338d871d313ebe3",
       "tool": "get_account_brief"
     },
     {

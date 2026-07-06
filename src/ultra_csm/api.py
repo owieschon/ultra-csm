@@ -22,6 +22,11 @@ from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
+from ultra_csm.comms_mapping import (
+    confirm_comms_mapping,
+    ingest_notion_call_transcripts,
+    ingest_slack_internal_notes,
+)
 from ultra_csm.logging_config import setup_logging
 from ultra_csm.platform import EphemeralCluster
 from ultra_csm.platform.db import apply_migrations, session
@@ -75,6 +80,7 @@ from ultra_csm._api_helpers import (
     parse_api_tokens,
     resolve_write_principal,
     score_account_priority,
+    sync_demo_accounts_to_postgres,
 )
 from ultra_csm import reconciliation_agent
 
@@ -200,6 +206,9 @@ class AccountBriefResponse(BaseModel):
     recent_usage_signals: list[dict[str, Any]]
     milestones: list[dict[str, Any]]
     suggested_talking_points: list[str]
+    comms_gmail: list[dict[str, Any]]
+    comms_call_transcripts: list[dict[str, Any]]
+    comms_internal: list[dict[str, Any]]
 
 
 class SweepResponse(BaseModel):
@@ -240,6 +249,43 @@ class VerdictResponse(BaseModel):
     verdict: str
     payload_sha256: str
     superseding_proposal_id: str | None = None
+    auth: str | None = None
+
+
+class PendingMappingCandidateSchema(BaseModel):
+    account_id: str
+    confidence: float
+    reason: str
+    signal: str
+
+
+class PendingMappingSchema(BaseModel):
+    source_type: Literal["notion_meeting", "slack_channel"]
+    external_id: str
+    title: str
+    candidates: list[PendingMappingCandidateSchema]
+
+
+class PendingMappingsResponse(BaseModel):
+    pending: list[PendingMappingSchema]
+    auth: str | None = None
+
+
+class ConfirmMappingRequest(BaseModel):
+    source_type: Literal["notion_meeting", "slack_channel"]
+    external_id: str
+    account_id: str
+    contact_id: str | None = None
+
+
+class ConfirmMappingResponse(BaseModel):
+    mapping_id: str
+    auth: str | None = None
+
+
+class IngestCommsResponse(BaseModel):
+    slack_notes_written: int
+    notion_signals_written: int
     auth: str | None = None
 
 
@@ -343,8 +389,17 @@ async def lifespan(app: FastAPI):
         now=_CLOCK,
     )
 
+    # Mirror both fictional CRM account books (the persistent 9-account
+    # default view and the 181-account ?day=N view -- /accounts and every
+    # account-detail page draw from one or the other) into Postgres's
+    # account table, so comms confirm/ingest can be exercised against
+    # real demo accounts, not only manually-seeded test accounts.
+    synced_account_count = sync_demo_accounts_to_postgres(
+        _conn, tenant_id=_TENANT_ID, actor_id=_SEED_AGENT, now=_CLOCK
+    )
+
     # Build the fixture data plane.
-    _data_plane = build_sweep_fixture_data_plane()
+    _data_plane = build_sweep_fixture_data_plane(comms_conn=_conn, comms_tenant_id=_TENANT_ID)
 
     log.info(
         "Ultra CSM API ready",
@@ -353,6 +408,7 @@ async def lifespan(app: FastAPI):
             "orch_principal": _orch_principal,
             "auth": auth_marker(),
             "configured_api_tokens": len(parse_api_tokens()),
+            "synced_account_count": synced_account_count,
         },
     )
 
@@ -510,6 +566,7 @@ def _data_plane_for_day(
 
     from ultra_csm.data_plane.book_simulator import simulate_book
     from ultra_csm.data_plane.fixtures import (
+        FixtureCommsConnector,
         FixtureCRMDataConnector,
         FixtureCSPlatformConnector,
         FixtureProductTelemetryConnector,
@@ -533,6 +590,7 @@ def _data_plane_for_day(
         crm=FixtureCRMDataConnector(data=data),
         cs=FixtureCSPlatformConnector(data=data),
         telemetry=FixtureProductTelemetryConnector(data=data),
+        comms=FixtureCommsConnector(data=data, conn=_conn, tenant_id=_TENANT_ID),
     )
     return dp, as_of
 
@@ -1642,6 +1700,163 @@ async def submit_verdict(proposal_id: str, body: VerdictRequest, request: Reques
         authorized=outcome.authorized,
         verdict=outcome.verdict,
         payload_sha256=outcome.payload_sha256,
+        auth=auth_principal.auth,
+    )
+
+
+@app.get("/comms/pending-mappings/slack", response_model=PendingMappingsResponse)
+async def get_pending_slack_mappings(request: Request):
+    """Live, human-initiated review pull -- NOT the high-frequency brief
+    endpoint (which stays seed-then-read like every other connector; see
+    api.py's data-plane construction). A CSM opening this page to decide
+    which channel maps to which account is an occasional, manual action,
+    so a live call here is deliberate, not a break from that pattern."""
+
+    from ultra_csm.data_plane.slack_reader import KnownAccount as SlackKnownAccount
+    import urllib.error
+
+    from ultra_csm.data_plane.slack_reader import SlackReadError, live_slack_channels
+
+    auth_principal = _require_write_auth(request)
+    dp, _ = _data_plane_for_day(None)
+    known_accounts = tuple(
+        SlackKnownAccount(account_id=a.account_id, account_name=a.name) for a in dp.crm.list_accounts()
+    )
+    try:
+        pending = live_slack_channels(known_accounts=known_accounts)
+    except SlackReadError as exc:
+        raise HTTPException(status_code=503, detail={"error": str(exc), "code": "SLACK_READ_ERROR"})
+    except urllib.error.HTTPError as exc:
+        # A real Slack API rejection (bad/expired token, missing scope) --
+        # distinct from a network failure below (HTTPError IS a URLError
+        # subclass, so this must be caught first).
+        raise HTTPException(
+            status_code=502, detail={"error": f"Slack API returned {exc.code}", "code": "SLACK_API_ERROR"}
+        )
+    except (urllib.error.URLError, TimeoutError) as exc:
+        # A live network/SSL/connection failure, distinct from a missing
+        # credential -- both are real Owner-visible states, never a raw
+        # unhandled 500 traceback leaking to the client.
+        raise HTTPException(status_code=503, detail={"error": str(exc), "code": "SLACK_NETWORK_ERROR"})
+
+    return PendingMappingsResponse(
+        pending=[
+            PendingMappingSchema(
+                source_type="slack_channel",
+                external_id=p.channel_id,
+                title=p.channel_name,
+                candidates=[PendingMappingCandidateSchema(**vars(c)) for c in p.candidates],
+            )
+            for p in pending
+        ],
+        auth=auth_principal.auth,
+    )
+
+
+@app.get("/comms/pending-mappings/notion", response_model=PendingMappingsResponse)
+async def get_pending_notion_mappings(request: Request):
+    """Live, human-initiated review pull -- see get_pending_slack_mappings'
+    docstring for why a live call is fine here specifically."""
+
+    import urllib.error
+
+    from ultra_csm.data_plane.notion_call_transcripts import (
+        KnownAccount as NotionKnownAccount,
+        NotionTranscriptReadError,
+        live_call_transcripts,
+    )
+
+    auth_principal = _require_write_auth(request)
+    dp, _ = _data_plane_for_day(None)
+    known_accounts = tuple(
+        NotionKnownAccount(
+            account_id=a.account_id, account_name=a.name, contacts=tuple(dp.crm.list_contacts(a.account_id))
+        )
+        for a in dp.crm.list_accounts()
+    )
+    try:
+        pending = live_call_transcripts(known_accounts=known_accounts)
+    except NotionTranscriptReadError as exc:
+        raise HTTPException(status_code=503, detail={"error": str(exc), "code": "NOTION_READ_ERROR"})
+    except urllib.error.HTTPError as exc:
+        raise HTTPException(
+            status_code=502, detail={"error": f"Notion API returned {exc.code}", "code": "NOTION_API_ERROR"}
+        )
+    except (urllib.error.URLError, TimeoutError) as exc:
+        raise HTTPException(status_code=503, detail={"error": str(exc), "code": "NOTION_NETWORK_ERROR"})
+
+    return PendingMappingsResponse(
+        pending=[
+            PendingMappingSchema(
+                source_type="notion_meeting",
+                external_id=p.meeting_note_id,
+                title=p.title,
+                candidates=[PendingMappingCandidateSchema(**vars(c)) for c in p.candidates],
+            )
+            for p in pending
+        ],
+        auth=auth_principal.auth,
+    )
+
+
+@app.post("/comms/mappings/confirm", response_model=ConfirmMappingResponse)
+async def post_confirm_mapping(body: ConfirmMappingRequest, request: Request):
+    """Persist a human-confirmed external-id -> account attribution
+    (comms_mapping.confirm_comms_mapping). The one write action this
+    minimal review surface offers -- no browsing/editing UI beyond what
+    the two GET endpoints above already return."""
+
+    assert _conn is not None and _orch_principal is not None
+    auth_principal = _require_write_auth(request)
+
+    mapping_id = confirm_comms_mapping(
+        _conn,
+        tenant_id=_TENANT_ID,
+        actor_id=_orch_principal,
+        source_type=body.source_type,
+        external_id=body.external_id,
+        account_id=body.account_id,
+        confirmed_by=auth_principal.principal_id,
+        contact_id=body.contact_id,
+        now=_CLOCK,
+    )
+    return ConfirmMappingResponse(mapping_id=mapping_id, auth=auth_principal.auth)
+
+
+@app.post("/comms/ingest", response_model=IngestCommsResponse)
+async def post_ingest_comms(request: Request):
+    """Run the confirmed-mapping ingest for both sources (comms_mapping.
+    ingest_slack_internal_notes / ingest_notion_call_transcripts), inside
+    this server's own long-lived connection (_conn).
+
+    This is deliberately an endpoint, not a standalone CLI script: this
+    app's Postgres is an EphemeralCluster (platform/__init__.py) -- a
+    fresh, empty database per process, torn down on exit. A separate CLI
+    invocation would boot its own throwaway cluster, ingest into it, and
+    have that data vanish the moment the process exits, completely
+    disconnected from whatever the running API server can see. Calling
+    this endpoint is the only way ingested data actually lands in the
+    same database the brief endpoint reads from.
+
+    A recurring job therefore means periodically calling THIS endpoint
+    against a continuously-running server (e.g. `curl -X POST .../comms/
+    ingest` from cron), not scheduling a script. Setting up that
+    schedule remains an Owner Ask regardless (AGENT_PROFILE.md: standing
+    jobs are always owner-gated) -- this endpoint is what such a job
+    would call, not the job itself."""
+
+    assert _conn is not None and _orch_principal is not None
+    auth_principal = _require_write_auth(request)
+
+    slack_written = ingest_slack_internal_notes(
+        _conn, tenant_id=_TENANT_ID, actor_id=_orch_principal, now=_CLOCK
+    )
+    notion_written = ingest_notion_call_transcripts(
+        _conn, tenant_id=_TENANT_ID, actor_id=_orch_principal, now=_CLOCK
+    )
+    return IngestCommsResponse(
+        slack_notes_written=slack_written,
+        notion_signals_written=notion_written,
         auth=auth_principal.auth,
     )
 

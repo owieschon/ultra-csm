@@ -202,6 +202,46 @@ def _ensure_human_principal(
     return principal_id
 
 
+def sync_demo_accounts_to_postgres(conn, *, tenant_id: str, actor_id: str, now) -> int:
+    """Mirror every fictional CRM account the demo can show into
+    Postgres's ``account`` table, keyed by the SAME deterministic
+    account_id the fixture books already generate (``account_id_for``/
+    ``det_id`` -- stable across every ephemeral cluster boot, since
+    neither book has randomness).
+
+    Without this, the comms confirm/ingest pipeline (comms_mapping.py)
+    can only be exercised against manually-seeded test accounts, never
+    the actual accounts /accounts and the account-detail UI show --
+    every write into comms_source_mapping/internal_note/
+    communication_signal has an account_id FK into this table.
+
+    TWO disjoint books need syncing (verified: zero account_id overlap),
+    because ``GET /accounts`` serves a DIFFERENT book depending on the
+    ``day`` query param (``_data_plane_for_day`` in api.py): no ``day`` ->
+    the persistent 9-account ``build_sweep_fixture_data_plane`` book;
+    ``day=N`` -> the 181-account ``build_synthetic_book`` book (the
+    account SET is identical across every simulated day -- simulate_book
+    mutates account VALUES, never the account list -- so one sync per
+    book at boot covers every day the UI can request).
+
+    Returns the number of accounts synced."""
+
+    from ultra_csm.data_plane import build_sweep_fixture_data_plane, DEFAULT_TENANT
+    from ultra_csm.data_plane.synthetic_book import build_synthetic_book
+
+    accounts = list(build_synthetic_book().accounts)
+    accounts += build_sweep_fixture_data_plane().crm.list_accounts(tenant_id=DEFAULT_TENANT)
+
+    with session(conn, tenant_id=tenant_id, actor_id=actor_id, now=now) as cur:
+        for account in accounts:
+            cur.execute(
+                "INSERT INTO account (account_id, tenant_id, name) VALUES (%s, %s, %s) "
+                "ON CONFLICT (account_id) DO UPDATE SET name = EXCLUDED.name",
+                (account.account_id, tenant_id, account.name),
+            )
+    return len(accounts)
+
+
 def _score_one_account(
     account_id: str,
     *,
@@ -446,6 +486,16 @@ def _build_account_brief(
     open_ctas = [c for c in ctas if c.status in ("open", "in_progress")]
     open_cases = [c for c in cases if c.closed_at is None]
 
+    if data_plane.comms is not None:
+        comms_gmail = data_plane.comms.list_gmail_signals(account_id)
+        comms_call_transcripts = data_plane.comms.list_call_transcript_signals(account_id)
+        comms_internal = data_plane.comms.list_internal_notes(account_id)
+    else:
+        # No comms source configured for this account -- degrade honestly to
+        # empty, same discipline as onboarding/adoption when their source is
+        # absent (never fabricate rows).
+        comms_gmail, comms_call_transcripts, comms_internal = [], [], []
+
     return {
         "account_id": account_id,
         "account_name": account.name,
@@ -491,6 +541,9 @@ def _build_account_brief(
         "recent_usage_signals": [asdict(s) for s in signals[:20]],
         "milestones": [asdict(m) for m in milestones],
         "suggested_talking_points": talking_points,
+        "comms_gmail": [asdict(c) for c in comms_gmail],
+        "comms_call_transcripts": [asdict(c) for c in comms_call_transcripts],
+        "comms_internal": [asdict(n) for n in comms_internal],
     }
 
 
