@@ -2,9 +2,8 @@
 
 from ultra_csm.governance.authorizer import (
     Authorizer,
-    PERM_ORDER_CONFIRM,
     ROLE_CS_ORCHESTRATOR,
-    ROLE_ORDER_CONFIRM_AUTHORITY,
+    ROLE_SAFETY_REVIEWER,
     canonical_payload_sha256,
     make_principal,
     permission_id,
@@ -31,7 +30,7 @@ from ultra_csm.governance.gate import (
 __all__ = [
     "Authorizer", "canonical_payload_sha256",
     "seed_roster", "make_principal", "role_id", "permission_id",
-    "PERM_ORDER_CONFIRM", "ROLE_CS_ORCHESTRATOR", "ROLE_ORDER_CONFIRM_AUTHORITY",
+    "ROLE_CS_ORCHESTRATOR", "ROLE_SAFETY_REVIEWER",
     "CSM_ACTION_SPECS", "CSMActionSpec", "UnknownCSMActionError",
     "csm_action_spec", "proposal_fields_for",
     "ActionGate", "ActionProposal", "GateOutcome", "Verdict", "VerdictSource",

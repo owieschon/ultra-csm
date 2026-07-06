@@ -1,14 +1,10 @@
-"""The RBAC authorizer — a permission lookup over grant_ → role_permission →
-permission, plus the separation-of-duties check the gate composes.
+"""The RBAC authorizer: permission lookup over grant_ -> role_permission ->
+permission.
 
 `has_permission` is the §7 autonomy gate reduced to a *lookup* (does this
 principal hold the permission this action requires?) rather than hard-coded
 logic. It runs through `session()` so RLS scopes the query to the acting
 tenant; the answer is fail-closed (a principal with no matching grant → False).
-
-This is the Python mirror of the DB-level `sod_confirm_authority` trigger (0004):
-the trigger is the defense-in-depth backstop on the raw UPDATE, this is the
-app-layer gate the ActionGate consults before it ever attempts the write.
 """
 
 from __future__ import annotations
@@ -19,17 +15,16 @@ import json
 from ultra_csm.platform.db import session
 from ultra_csm.platform.seed import det_uuid as _det
 
-PERM_ORDER_CONFIRM = "order.confirm"
-ROLE_ORDER_CONFIRM_AUTHORITY = "order_confirm_authority"
+ROLE_SAFETY_REVIEWER = "safety_reviewer"
 ROLE_CS_ORCHESTRATOR = "cs_orchestrator"
 
 ROLES = (
     ROLE_CS_ORCHESTRATOR,
-    ROLE_ORDER_CONFIRM_AUTHORITY,
+    ROLE_SAFETY_REVIEWER,
 )
 
 ROLE_PERMISSIONS = {
-    PERM_ORDER_CONFIRM: ROLE_ORDER_CONFIRM_AUTHORITY,
+    "governance.review": ROLE_SAFETY_REVIEWER,
     "csm.recommend": ROLE_CS_ORCHESTRATOR,
     "customer.outreach.draft": ROLE_CS_ORCHESTRATOR,
     "crm.activity.write": ROLE_CS_ORCHESTRATOR,
@@ -130,9 +125,3 @@ class Authorizer:
                 (principal_id, permission),
             )
             return bool(cur.fetchone()[0])
-
-    def can_confirm_order(self, principal_id: str) -> bool:
-        """The critical SoD predicate: only an order-confirm-authority
-        principal (holding `order.confirm`) may commit an order. The
-        cs-orchestrator principal, by construction, returns False here."""
-        return self.has_permission(principal_id, PERM_ORDER_CONFIRM)

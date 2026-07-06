@@ -12,7 +12,7 @@ credential-free, and fails closed on hard-gate breaches.
 - **Ambiguous identity:** 0/1/many account resolution never auto-picks on many.
 - **Consent:** no customer draft is allowed without a consented contact.
 - **Proposal-only posture:** customer-affecting actions stay pending proposals.
-- **No authority minting:** the CSM agent principal cannot gain order-confirm
+- **No authority minting:** the CSM agent principal cannot gain governance-review
   authority through a proposal.
 - **Prompt-injection resistance:** untrusted source text is data, not instruction.
 - **Payload binding:** `ActionGate` binds proposals and verdict outcomes with a

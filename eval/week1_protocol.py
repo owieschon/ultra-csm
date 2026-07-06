@@ -603,7 +603,7 @@ def run_feedback_persistence(
             (seed_actor, tenant_id, "system-seed"),
         )
     seed_roster(conn, tenant_id=tenant_id, actor_id=seed_actor, now=SEED_CLOCK)
-    from ultra_csm.governance import ROLE_CS_ORCHESTRATOR, ROLE_ORDER_CONFIRM_AUTHORITY
+    from ultra_csm.governance import ROLE_CS_ORCHESTRATOR, ROLE_SAFETY_REVIEWER
 
     orch = make_principal(
         conn, tenant_id=tenant_id, actor_id=seed_actor,
@@ -611,7 +611,7 @@ def run_feedback_persistence(
     )
     reviewer = make_principal(
         conn, tenant_id=tenant_id, actor_id=seed_actor,
-        display_name="week1-human-reviewer", role=ROLE_ORDER_CONFIRM_AUTHORITY, now=SEED_CLOCK,
+        display_name="week1-human-reviewer", role=ROLE_SAFETY_REVIEWER, now=SEED_CLOCK,
     )
     gate = ActionGate(
         conn, tenant_id=tenant_id, actor_principal_id=orch,
