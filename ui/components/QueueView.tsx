@@ -15,7 +15,7 @@ export function QueueView({
   onSelect,
   onSelectedItemChange,
 }: {
-  day: number;
+  day: number | undefined;
   accounts: AccountSummary[] | null;
   sweep: SweepData | null;
   sweepError: string | null;

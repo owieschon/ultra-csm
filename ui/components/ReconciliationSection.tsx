@@ -88,7 +88,7 @@ export function ReconciliationSection({
   day,
 }: {
   accountId: string;
-  day: number;
+  day: number | undefined;
 }) {
   const [data, setData] = useState<ReconciliationResponse | null>(null);
   const [failed, setFailed] = useState(false);

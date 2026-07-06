@@ -23,7 +23,7 @@ export function BookView({
 }: {
   accounts: AccountSummary[] | null;
   sweep: SweepData | null;
-  day: number;
+  day: number | undefined;
   onWorkQueue: () => void;
   onSelectAccount: (accountId: string) => void;
 }) {
@@ -74,8 +74,15 @@ export function BookView({
               : `Book steady — ${needsCount} need you.`}
           </h2>
           <div className="sub">
-            <b className="num">{accounts.length}</b> accounts · day{" "}
-            <b className="num">{day}</b> ·{" "}
+            <b className="num">{accounts.length}</b> accounts ·{" "}
+            {day == null ? (
+              <b>live</b>
+            ) : (
+              <>
+                day <b className="num">{day}</b>
+              </>
+            )}{" "}
+            ·{" "}
             <b className="num">{escalationCount}</b> escalations{" "}
             <span className="chip-det" title="Composed from sweep + accounts data by template — no LLM">
               deterministic brief

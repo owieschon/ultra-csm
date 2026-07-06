@@ -42,12 +42,12 @@ from ultra_csm.data_plane import (
     DEFAULT_DEMO_STATE_DIR,
     DEFAULT_TENANT,
     SimTenantStore,
-    build_sweep_fixture_data_plane,
     FixtureCRMDataConnector,
     FixtureCSPlatformConnector,
     FixtureCustomerData,
     FixtureProductTelemetryConnector,
 )
+from ultra_csm.data_plane.live_facade import build_served_data_plane
 from ultra_csm.data_plane.external_book import (
     CONNECTOR_ID as _EXTERNAL_CONNECTOR_ID,
     DEFAULT_MAX_RECORDS,
@@ -279,10 +279,16 @@ def _boot() -> None:
     _validate_access_mode_env()
 
     if mcp_readonly_enabled():
-        _data_plane = build_sweep_fixture_data_plane(tenant_id=DEFAULT_TENANT)
+        assembly = build_served_data_plane(tenant_id=DEFAULT_TENANT, as_of=_CLOCK)
+        _data_plane = assembly.data_plane
         log.info(
             "Ultra CSM MCP server ready (read-only, no database)",
-            extra={"tenant_id": _TENANT_ID, "auth": "read-only-no-db"},
+            extra={
+                "tenant_id": _TENANT_ID,
+                "auth": "read-only-no-db",
+                "data_plane_mode": assembly.mode,
+                "health_source": assembly.health_source,
+            },
         )
         return
 
@@ -344,8 +350,13 @@ def _boot() -> None:
         _run_sweep_and_cache(cause_ref="mcp-demo:boot")
         _seed_demo_refusal_proposals()
     else:
-        # Build the fixture data plane (in-memory, no DB needed).
-        _data_plane = build_sweep_fixture_data_plane(tenant_id=DEFAULT_TENANT)
+        assembly = build_served_data_plane(
+            conn=_conn,
+            comms_tenant_id=_TENANT_ID,
+            tenant_id=DEFAULT_TENANT,
+            as_of=_CLOCK,
+        )
+        _data_plane = assembly.data_plane
 
     log.info(
         "Ultra CSM MCP server ready",
@@ -355,6 +366,8 @@ def _boot() -> None:
             "auth": auth_marker(),
             "access_mode": _access_mode(),
             "configured_api_tokens": len(parse_api_tokens()),
+            "data_plane_mode": assembly.mode if not mcp_demo_operator_enabled() else "sim",
+            "health_source": assembly.health_source if not mcp_demo_operator_enabled() else "sim",
         },
     )
 
