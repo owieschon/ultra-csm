@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Check out Ultra CSM
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4 (2025-11-13)
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v4 (2025-11-13)
 
       - name: Ensure PostgreSQL 16 binaries on PATH
         run: |
@@ -90,7 +90,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Check out Ultra CSM
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4 (2025-11-13)
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v4 (2025-11-13)
 
       - name: Set up Node 20
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4 (2025-04-02)
@@ -118,7 +118,7 @@ jobs:
 
       - name: Check out Ultra CSM
         if: ${{ env.ENDOR_TOKEN != '' }}
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4 (2025-11-13)
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v4 (2025-11-13)
         with:
           fetch-depth: 0
 
