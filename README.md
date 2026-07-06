@@ -62,6 +62,10 @@ Credentialed lanes are intentionally separate from offline verification:
 - Customer-facing sends are owner-gated and never self-approved.
 - The Gmail live-send path is staged only for the burner allowlist until a human approves.
 
+## Hosted Read-Only Demo
+
+The optional hosted demo is static: Vercel builds `ui/out`, serves committed JSON fixtures from `ui/public/demo-api/`, and disables all approvals, edits, sends, and comms confirmations. It is a safe distribution surface for the fixture-backed operations UI, not a live connector deployment. See `docs/PROGRAM_REPORT_67.md`.
+
 ## Docs
 
 - Start with `docs/README.md` for the curated docs map.

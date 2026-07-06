@@ -12,6 +12,7 @@
 - [`PROGRAM_REPORT_58.md`](PROGRAM_REPORT_58.md) - Layer 2 wire report.
 - [`PROGRAM_REPORT_65.md`](PROGRAM_REPORT_65.md) - Layer 3 run report.
 - [`PROGRAM_REPORT_66.md`](PROGRAM_REPORT_66.md) - front-door rewrite and archive report.
+- [`PROGRAM_REPORT_67.md`](PROGRAM_REPORT_67.md) - hosted read-only demo report.
 
 ## Judgment Reports Kept At Root
 

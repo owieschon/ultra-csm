@@ -1,0 +1,204 @@
+{
+  "account_id": "390eef5a-4d06-59ae-93cb-2c0a012e7ef8",
+  "account_name": "Summit Industrial Supply",
+  "adoption": {
+    "account_id": "390eef5a-4d06-59ae-93cb-2c0a012e7ef8",
+    "active_assets": 10,
+    "active_users": 12,
+    "adoption_rate": 0.4,
+    "entitled_assets": 25,
+    "licensed_users": 18,
+    "measured_at": "2026-06-21T00:00:00Z",
+    "underused_capabilities": []
+  },
+  "comms_call_transcripts": [],
+  "comms_gmail": [],
+  "comms_internal": [],
+  "company": {
+    "arr_cents": 3800000,
+    "csm_owner_id": "csm-103",
+    "lifecycle_stage": "adopting",
+    "renewal_date": "2027-06-07",
+    "status": "Active"
+  },
+  "contacts": [
+    {
+      "consent_to_contact": true,
+      "email": "diana.kowalski@summit-industrial.example",
+      "name": "Diana Kowalski",
+      "role": "operations",
+      "title": "Plant Manager"
+    },
+    {
+      "consent_to_contact": true,
+      "email": "neil.drummond@summit-industrial.example",
+      "name": "Neil Drummond",
+      "role": "logistics",
+      "title": "Logistics Coordinator"
+    }
+  ],
+  "divergences": [],
+  "entitlements": [
+    {
+      "account_id": "390eef5a-4d06-59ae-93cb-2c0a012e7ef8",
+      "capability": "core_telematics",
+      "ends_at": null,
+      "entitled_quantity": 25,
+      "starts_at": "2026-06-07",
+      "unit": "assets"
+    },
+    {
+      "account_id": "390eef5a-4d06-59ae-93cb-2c0a012e7ef8",
+      "capability": "fuel_analytics",
+      "ends_at": null,
+      "entitled_quantity": 18,
+      "starts_at": "2026-06-07",
+      "unit": "assets"
+    }
+  ],
+  "health_snapshot": {
+    "band": "green",
+    "drivers": [
+      "fast_activation"
+    ],
+    "measured_at": "2026-06-21T00:00:00Z",
+    "score": 78.0
+  },
+  "industry": "manufacturing",
+  "lifecycle_stage": "adopting",
+  "milestones": [
+    {
+      "account_id": "390eef5a-4d06-59ae-93cb-2c0a012e7ef8",
+      "achieved_at": "2026-06-10T15:00:00Z",
+      "evidence_signal_ids": [
+        "59c0a35d-7f68-5fb0-81ef-b81bc6f02003"
+      ],
+      "expected_by": "2026-06-14",
+      "milestone": "admin_setup"
+    },
+    {
+      "account_id": "390eef5a-4d06-59ae-93cb-2c0a012e7ef8",
+      "achieved_at": "2026-07-12T00:00:00Z",
+      "evidence_signal_ids": [
+        "59c0a35d-7f68-5fb0-81ef-b81bc6f02003"
+      ],
+      "expected_by": "2026-06-28",
+      "milestone": "activate_50pct_assets"
+    }
+  ],
+  "open_cases": [],
+  "open_ctas": [],
+  "opportunities": [],
+  "priority": {
+    "factors": [
+      {
+        "config_version": "value-model-config-v1",
+        "contribution": 20,
+        "evidence": [
+          {
+            "field": "target_date",
+            "observed_at": "2026-07-20",
+            "source": "cs_platform",
+            "source_id": "2b9e4aff-7f3e-5fd8-af1d-482d72f79fdc"
+          }
+        ],
+        "name": "success_plan_overdue",
+        "rule_name": "base_default",
+        "threshold_name": "success_plan_overdue_points",
+        "threshold_value": 20,
+        "value": 1.0
+      }
+    ],
+    "score": 20
+  },
+  "recent_usage_signals": [
+    {
+      "account_id": "390eef5a-4d06-59ae-93cb-2c0a012e7ef8",
+      "grain": "company",
+      "metric_name": "daily_active_assets",
+      "observed_at": "2026-06-21T00:00:00Z",
+      "signal_id": "59c0a35d-7f68-5fb0-81ef-b81bc6f02003",
+      "source_ref": "product-telemetry:daily_active_assets",
+      "subject_id": null,
+      "unit": "assets",
+      "value": 10.0
+    }
+  ],
+  "stakeholders": [
+    {
+      "champion": false,
+      "consent_to_contact": true,
+      "contact_id": "e3d2b93a-4221-5c8e-8f95-1f00cc780df1",
+      "days_since_interaction": null,
+      "departed": false,
+      "name": "Diana Kowalski",
+      "new_unengaged": false,
+      "relationship_type": null,
+      "title": "Plant Manager"
+    },
+    {
+      "champion": false,
+      "consent_to_contact": true,
+      "contact_id": "53f0eec5-81f3-52dd-b10d-7898a4c6583f",
+      "days_since_interaction": null,
+      "departed": false,
+      "name": "Neil Drummond",
+      "new_unengaged": false,
+      "relationship_type": null,
+      "title": "Logistics Coordinator"
+    }
+  ],
+  "success_plans": [
+    {
+      "account_id": "390eef5a-4d06-59ae-93cb-2c0a012e7ef8",
+      "objectives": [
+        "activate_core_fleet",
+        "deploy_fuel_analytics"
+      ],
+      "plan_id": "2b9e4aff-7f3e-5fd8-af1d-482d72f79fdc",
+      "status": "active",
+      "target_date": "2026-07-20"
+    }
+  ],
+  "suggested_talking_points": [
+    "success_plan_overdue: value=1.00, contribution=+20 (rule: base_default)"
+  ],
+  "trajectory": {
+    "consecutive_band": "green",
+    "consecutive_count": 5,
+    "points": [
+      {
+        "day": 0,
+        "health_band": "green",
+        "health_score": 78.0,
+        "priority_score": 0
+      },
+      {
+        "day": 30,
+        "health_band": "green",
+        "health_score": 78.0,
+        "priority_score": 0
+      },
+      {
+        "day": 60,
+        "health_band": "green",
+        "health_score": 78.0,
+        "priority_score": 0
+      },
+      {
+        "day": 90,
+        "health_band": "green",
+        "health_score": 78.0,
+        "priority_score": 0
+      },
+      {
+        "day": 120,
+        "health_band": "green",
+        "health_score": 78.0,
+        "priority_score": 0
+      }
+    ],
+    "trend": "stable",
+    "trend_velocity": 0.0
+  }
+}

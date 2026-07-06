@@ -1,0 +1,323 @@
+{
+  "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+  "account_name": "Trailhead Logistics",
+  "adoption": {
+    "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+    "active_assets": 155,
+    "active_users": 73,
+    "adoption_rate": 0.78,
+    "entitled_assets": 200,
+    "licensed_users": 90,
+    "measured_at": "2026-11-08T00:00:00Z",
+    "underused_capabilities": []
+  },
+  "comms_call_transcripts": [],
+  "comms_gmail": [],
+  "comms_internal": [],
+  "company": {
+    "arr_cents": 31000000,
+    "csm_owner_id": "csm-101",
+    "lifecycle_stage": "steady_state",
+    "renewal_date": "2027-01-01",
+    "status": "Active"
+  },
+  "contacts": [
+    {
+      "consent_to_contact": true,
+      "email": "vanessa.torres@trailhead-logistics.example",
+      "name": "Vanessa Torres",
+      "role": "operations",
+      "title": "VP Operations"
+    },
+    {
+      "consent_to_contact": true,
+      "email": "paul.gerhardt@trailhead-logistics.example",
+      "name": "Paul Gerhardt",
+      "role": "technology",
+      "title": "CTO"
+    },
+    {
+      "consent_to_contact": true,
+      "email": "mike.lindgren@trailhead-logistics.example",
+      "name": "Mike Lindgren",
+      "role": "fleet_operations",
+      "title": "Fleet Director"
+    },
+    {
+      "consent_to_contact": true,
+      "email": "samira.ali@trailhead-logistics.example",
+      "name": "Samira Ali",
+      "role": "safety",
+      "title": "Safety Manager"
+    }
+  ],
+  "divergences": [
+    {
+      "config_version": "value-model-config-v1",
+      "contribution": 18,
+      "evidence": [
+        {
+          "field": "active_users",
+          "observed_at": "2026-11-08T00:00:00Z",
+          "source": "cs_platform",
+          "source_id": "21830db9-7182-5d97-b22e-d57c4e28f696"
+        },
+        {
+          "field": "objectives",
+          "observed_at": "2026-09-01",
+          "source": "cs_platform",
+          "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
+        }
+      ],
+      "name": "usage_outcome_unverified",
+      "rule_name": "high_arr_review_default",
+      "threshold_name": "outcome_activity_floor",
+      "threshold_value": 0.75,
+      "value": 0.8111111111111111
+    }
+  ],
+  "entitlements": [
+    {
+      "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+      "capability": "core_telematics",
+      "ends_at": null,
+      "entitled_quantity": 200,
+      "starts_at": "2025-01-01",
+      "unit": "assets"
+    },
+    {
+      "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+      "capability": "route_optimization",
+      "ends_at": null,
+      "entitled_quantity": 200,
+      "starts_at": "2025-01-01",
+      "unit": "assets"
+    },
+    {
+      "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+      "capability": "advanced_reporting",
+      "ends_at": null,
+      "entitled_quantity": 90,
+      "starts_at": "2025-01-01",
+      "unit": "users"
+    },
+    {
+      "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+      "capability": "fuel_analytics",
+      "ends_at": null,
+      "entitled_quantity": 200,
+      "starts_at": "2025-01-01",
+      "unit": "assets"
+    },
+    {
+      "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+      "capability": "compliance_dashboard",
+      "ends_at": null,
+      "entitled_quantity": 90,
+      "starts_at": "2025-01-01",
+      "unit": "users"
+    }
+  ],
+  "health_snapshot": {
+    "band": "green",
+    "drivers": [
+      "exemplary_adoption",
+      "strong_champion",
+      "advocacy_active"
+    ],
+    "measured_at": "2026-09-09T00:00:00Z",
+    "score": 94.0
+  },
+  "industry": "logistics",
+  "lifecycle_stage": "steady_state",
+  "milestones": [],
+  "open_cases": [],
+  "open_ctas": [],
+  "opportunities": [
+    {
+      "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+      "amount_cents": 4500000,
+      "close_date": "2026-10-01",
+      "opportunity_id": "994f6508-9670-558a-b545-77092477f898",
+      "opportunity_type": "Expansion",
+      "stage_name": "Qualification"
+    }
+  ],
+  "priority": {
+    "factors": [
+      {
+        "config_version": "value-model-config-v1",
+        "contribution": 20,
+        "evidence": [
+          {
+            "field": "target_date",
+            "observed_at": "2026-09-01",
+            "source": "cs_platform",
+            "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
+          }
+        ],
+        "name": "success_plan_overdue",
+        "rule_name": "high_arr_review_default",
+        "threshold_name": "success_plan_overdue_points",
+        "threshold_value": 20,
+        "value": 1.0
+      },
+      {
+        "config_version": "value-model-config-v1",
+        "contribution": 5,
+        "evidence": [
+          {
+            "field": "arr_cents",
+            "observed_at": "2025-01-01",
+            "source": "cs_platform",
+            "source_id": "21830db9-7182-5d97-b22e-d57c4e28f696"
+          }
+        ],
+        "name": "arr_tier",
+        "rule_name": "high_arr_review_default",
+        "threshold_name": "arr_review_floor_cents",
+        "threshold_value": 15000000,
+        "value": 31000000.0
+      },
+      {
+        "config_version": "value-model-config-v1",
+        "contribution": 18,
+        "evidence": [
+          {
+            "field": "active_users",
+            "observed_at": "2026-11-08T00:00:00Z",
+            "source": "cs_platform",
+            "source_id": "21830db9-7182-5d97-b22e-d57c4e28f696"
+          },
+          {
+            "field": "objectives",
+            "observed_at": "2026-09-01",
+            "source": "cs_platform",
+            "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
+          }
+        ],
+        "name": "usage_outcome_unverified",
+        "rule_name": "high_arr_review_default",
+        "threshold_name": "outcome_activity_floor",
+        "threshold_value": 0.75,
+        "value": 0.8111111111111111
+      }
+    ],
+    "score": 43
+  },
+  "recent_usage_signals": [
+    {
+      "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+      "grain": "company",
+      "metric_name": "daily_active_assets",
+      "observed_at": "2026-11-08T00:00:00Z",
+      "signal_id": "d7bbee6c-1f53-5164-ade3-8fb89a8aab48",
+      "source_ref": "product-telemetry:daily_active_assets",
+      "subject_id": null,
+      "unit": "assets",
+      "value": 155.0
+    }
+  ],
+  "stakeholders": [
+    {
+      "champion": true,
+      "consent_to_contact": true,
+      "contact_id": "5ba7aa51-a5eb-5220-9d3b-71bbe67377a1",
+      "days_since_interaction": 0,
+      "departed": false,
+      "name": "Vanessa Torres",
+      "new_unengaged": false,
+      "relationship_type": "champion",
+      "title": "VP Operations"
+    },
+    {
+      "champion": false,
+      "consent_to_contact": true,
+      "contact_id": "9af87b79-92f5-505f-8eba-74e91ed81d4c",
+      "days_since_interaction": null,
+      "departed": false,
+      "name": "Paul Gerhardt",
+      "new_unengaged": false,
+      "relationship_type": null,
+      "title": "CTO"
+    },
+    {
+      "champion": false,
+      "consent_to_contact": true,
+      "contact_id": "c8836191-bc7e-54ac-ac00-d010e2adb93b",
+      "days_since_interaction": 85,
+      "departed": false,
+      "name": "Mike Lindgren",
+      "new_unengaged": false,
+      "relationship_type": "stakeholder",
+      "title": "Fleet Director"
+    },
+    {
+      "champion": false,
+      "consent_to_contact": true,
+      "contact_id": "ae90c013-a562-56d0-8347-bd614a50f6e1",
+      "days_since_interaction": null,
+      "departed": false,
+      "name": "Samira Ali",
+      "new_unengaged": false,
+      "relationship_type": null,
+      "title": "Safety Manager"
+    }
+  ],
+  "success_plans": [
+    {
+      "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+      "objectives": [
+        "maintain_exemplary_adoption",
+        "expand_compliance_reporting"
+      ],
+      "plan_id": "20527c0a-8156-5119-934a-4017e19fc39d",
+      "status": "active",
+      "target_date": "2026-09-01"
+    }
+  ],
+  "suggested_talking_points": [
+    "success_plan_overdue: value=1.00, contribution=+20 (rule: high_arr_review_default)",
+    "arr_tier: value=31000000.00, contribution=+5 (rule: high_arr_review_default)",
+    "usage_outcome_unverified: value=0.81, contribution=+18 (rule: high_arr_review_default)",
+    "Divergence signal: usage_outcome_unverified (value=0.81, contribution=+18)"
+  ],
+  "trajectory": {
+    "consecutive_band": "green",
+    "consecutive_count": 5,
+    "points": [
+      {
+        "day": 0,
+        "health_band": "green",
+        "health_score": 94.0,
+        "priority_score": 23
+      },
+      {
+        "day": 30,
+        "health_band": "green",
+        "health_score": 94.0,
+        "priority_score": 23
+      },
+      {
+        "day": 60,
+        "health_band": "green",
+        "health_score": 94.0,
+        "priority_score": 23
+      },
+      {
+        "day": 90,
+        "health_band": "green",
+        "health_score": 94.0,
+        "priority_score": 23
+      },
+      {
+        "day": 120,
+        "health_band": "green",
+        "health_score": 94.0,
+        "priority_score": 23
+      }
+    ],
+    "trend": "stable",
+    "trend_velocity": 0.0
+  }
+}
