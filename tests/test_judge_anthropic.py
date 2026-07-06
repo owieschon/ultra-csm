@@ -7,7 +7,12 @@ from types import SimpleNamespace
 
 import pytest
 
-from eval.judge_csm import QUALITY_DIMENSIONS
+from eval.judge_csm import (
+    OUT_OF_VALIDATED_DOMAIN,
+    QUALITY_DIMENSIONS,
+    QualityLabels,
+    SlotBQualityCandidate,
+)
 from eval.gold_slot_b_quality import _request_specs
 from eval.judge_anthropic import (
     AnthropicQualityJudge,
@@ -84,6 +89,38 @@ def test_judge_score_output_via_fake_client():
     scores = _llm_vec(g=1, t=2, tone=3, s=3)
     judge = AnthropicQualityJudge(client=_FakeClient(scores), model_id="fake")
     assert judge.score_output(_priority_request(), _priority_output()) == _vec(1, 2, 3, 3, 3, 3)
+
+
+def test_judge_score_refuses_artifacts_outside_validated_domain():
+    judge = AnthropicQualityJudge(client=_FakeClient(_llm_vec()), model_id="fake")
+    candidate = SlotBQualityCandidate(
+        candidate_id="qbr-recap-001",
+        fixture_mode=True,
+        request=_priority_request(),
+        output=_priority_output(),
+        artifact_type="qbr_recap",
+    )
+
+    result = judge.score(candidate)
+
+    assert result.quality == OUT_OF_VALIDATED_DOMAIN
+    assert result.artifact_type == "qbr_recap"
+    assert not hasattr(result, "dimension_scores")
+
+
+def test_judge_score_returns_real_labels_for_validated_draft_domain():
+    judge = AnthropicQualityJudge(client=_FakeClient(_llm_vec(g=1, t=2, tone=3, s=3)), model_id="fake")
+    candidate = SlotBQualityCandidate(
+        candidate_id="draft-001",
+        fixture_mode=True,
+        request=_priority_request(),
+        output=_priority_output(),
+    )
+
+    result = judge.score(candidate)
+
+    assert isinstance(result, QualityLabels)
+    assert result.dimension_scores == _vec(1, 2, 3, 3, 3, 3)
 
 
 def test_judge_defaults_to_dedicated_model_id():
