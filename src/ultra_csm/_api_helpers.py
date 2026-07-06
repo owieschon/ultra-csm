@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import ipaddress
 import logging
 import os
 from dataclasses import asdict, dataclass
@@ -110,6 +111,28 @@ def demo_noauth_enabled() -> bool:
     return (
         _truthy(os.environ.get("ULTRA_CSM_DEMO_NOAUTH"))
         or _truthy(os.environ.get("ULTRA_CSM_DEMO_OPERATOR"))
+    )
+
+
+def assert_demo_noauth_loopback(bind_host: str | None = None) -> None:
+    """Fail closed if demo no-auth is enabled on a non-loopback bind host."""
+    if not demo_noauth_enabled():
+        return
+    host = (bind_host if bind_host is not None else os.environ.get("ULTRA_CSM_BIND_HOST"))
+    host = (host or "").strip()
+    if not host:
+        return
+    normalized = host[1:-1] if host.startswith("[") and host.endswith("]") else host
+    if normalized == "localhost":
+        return
+    try:
+        if ipaddress.ip_address(normalized).is_loopback:
+            return
+    except ValueError:
+        pass
+    raise RuntimeError(
+        "ULTRA_CSM_DEMO_NOAUTH may only boot on a loopback bind host; "
+        f"got {host!r}. Use HOST=127.0.0.1 or disable demo no-auth."
     )
 
 

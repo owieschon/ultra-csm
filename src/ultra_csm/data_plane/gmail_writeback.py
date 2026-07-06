@@ -137,7 +137,7 @@ class LiveGmailOutboundCommitter:
         # regardless of gate authorization -- the gate approving a payload
         # never widens what this transport is allowed to address.
         if recipient not in self._allowlist:
-            key = _idempotency_key(proposal, outcome)
+            key = _idempotency_key(proposal, outcome, target="gmail:refused")
             receipt = CommitReceipt(
                 receipt_id=canonical_payload_sha256(
                     {"proposal_id": proposal.proposal_id, "idempotency_key": key, "target": "gmail:refused"}
@@ -172,8 +172,17 @@ class LiveGmailOutboundCommitter:
                 "subject/body about to be sent do not byte-match the approved payload"
             )
 
-        key = _idempotency_key(proposal, outcome)
-        already = _ledger_has_committed_key(self._ledger_path, key)
+        key = _idempotency_key(proposal, outcome, target="gmail:send")
+        already = (
+            self._gate.idempotency_key_exists(key)
+            if dry_run
+            else not self._gate.claim_idempotency_key(
+                key,
+                request_id=proposal.proposal_id,
+                result_ref="gmail:send:intent",
+                cause_ref=f"commit:{proposal.proposal_id}",
+            )
+        )
         subject = f"[{self._subject_tag}] {subject_raw}"
         receipt = CommitReceipt(
             receipt_id=canonical_payload_sha256(
@@ -192,7 +201,12 @@ class LiveGmailOutboundCommitter:
             self._append_ledger(receipt, recipient=recipient, message_id=None, subject=subject, refusal_reason=None)
             return receipt
 
-        message_id = self._send(recipient=recipient, subject=subject, body=approved_body)
+        try:
+            message_id = self._send(recipient=recipient, subject=subject, body=approved_body)
+        except GmailWriteError:
+            self._gate.release_idempotency_key(key)
+            raise
+        self._gate.mark_idempotency_result(key, result_ref=f"gmail:message:{message_id}")
         self._append_ledger(receipt, recipient=recipient, message_id=message_id, subject=subject, refusal_reason=None)
         return receipt
 
@@ -260,27 +274,17 @@ def _build_rfc2822(*, sender: str, recipient: str, subject: str, body: str) -> b
     return "\r\n".join(lines).encode("utf-8")
 
 
-def _idempotency_key(proposal: ActionProposal, outcome: GateOutcome) -> str:
+def _idempotency_key(
+    proposal: ActionProposal,
+    outcome: GateOutcome,
+    *,
+    target: str = "gmail:send",
+) -> str:
     return canonical_payload_sha256({
         "proposal_id": proposal.proposal_id,
         "payload_sha256": outcome.payload_sha256,
+        "target": target,
     })
-
-
-def _ledger_has_committed_key(path: Path, key: str) -> bool:
-    if not path.exists():
-        return False
-    for line in path.read_text(encoding="utf-8").splitlines():
-        if not line.strip():
-            continue
-        entry = json.loads(line)
-        if (
-            entry["receipt"]["idempotency_key"] == key
-            and entry["receipt"]["committed"]
-            and not entry["receipt"]["dry_run"]
-        ):
-            return True
-    return False
 
 
 def ledger_send_count(path: Path | str) -> int:

@@ -116,6 +116,7 @@ def test_live_committer_sends_exactly_one_message_and_ledgers_it(runtime_conn, t
         receipt = committer.commit(proposal, outcome, recipient=_ALLOWED_RECIPIENT)
 
         assert receipt.committed is True
+        assert gate.idempotency_key_exists(receipt.idempotency_key)
         assert len(client.send_requests) == 1
         req = client.send_requests[0]
         raw = base64.urlsafe_b64decode(json.loads(req.body)["raw"]).decode("utf-8")
@@ -149,6 +150,7 @@ def test_live_committer_is_idempotent_second_call_sends_nothing(runtime_conn, tm
 
         assert first.committed is True
         assert second.committed is False
+        assert gate.idempotency_key_exists(first.idempotency_key)
         # No second messages.send request was ever sent -- idempotency is
         # enforced before the network call, not after.
         assert len(client.send_requests) == 1

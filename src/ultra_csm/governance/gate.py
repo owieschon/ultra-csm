@@ -14,11 +14,9 @@ Determinism: the "human" is an injectable `VerdictSource`. `FixtureVerdictSource
 returns a pre-supplied verdict for the offline scored path (no network, no key);
 the live console is a different source over the same tables/state machine.
 
-Authority composition (additive): when a gated action's `intent == 'confirm_order'`,
-an APPROVED verdict cast by a principal that holds `order.confirm` authority is what a
-caller turns into a code-minted authorization. The LLM-driven proposal never carries that
-authority itself — the separation-of-duties gate enforces that the agent principal cannot
-mint order-confirm authority through a proposal.
+Authority composition stays outside model text: a verdict records a human
+decision, while committers and permission checks decide what concrete side
+effects can run. The LLM-driven proposal never mints authority itself.
 """
 
 from __future__ import annotations
@@ -26,10 +24,8 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass
 
-from ultra_csm.governance.authorizer import Authorizer, canonical_payload_sha256
+from ultra_csm.governance.authorizer import canonical_payload_sha256
 from ultra_csm.platform.db import session
-
-CONFIRM_ORDER_INTENT = "confirm_order"
 
 
 class GateError(Exception):
@@ -118,8 +114,6 @@ class ActionGate:
         self._actor = actor_principal_id
         self._source = verdict_source
         self._now = now
-        self._authz = Authorizer(conn, tenant_id=tenant_id,
-                                 actor_id=actor_principal_id, now=now)
 
     # -- emit ---------------------------------------------------------------
     def propose(self, *, intent: str, action: str, payload: dict,
@@ -290,20 +284,82 @@ class ActionGate:
         if canonical_payload_sha256(payload) != outcome.payload_sha256:
             raise GateError("payload hash does not match the authorized verdict")
 
-    def confirm_authority_ok(self, outcome: GateOutcome) -> bool:
-        """For a confirm_order action: True iff the approving verdict was cast by
-        a principal that actually holds `order.confirm` — the SoD bridge to Slice
-        1's code-minted AuthorizationDecision. The cs-orchestrator principal,
-        lacking the permission, fails this."""
-        if not outcome.authorized:
-            return False
-        return self._authz.can_confirm_order(self._human_for(outcome.proposal_id))
-
-    def _human_for(self, proposal_id: str) -> str:
+    def idempotency_key_exists(self, idem_key: str) -> bool:
+        """Return True if a committer already reserved this mutation key."""
         with session(self._conn, tenant_id=self._tenant_id, actor_id=self._actor,
                      now=self._now) as cur:
             cur.execute(
-                "SELECT human_principal_id FROM action_verdict "
-                "WHERE proposal_id = %s", (proposal_id,))
-            row = cur.fetchone()
-        return str(row[0]) if row else ""
+                "SELECT 1 FROM idempotency_keys WHERE tenant_id = %s AND idem_key = %s",
+                (self._tenant_id, idem_key),
+            )
+            return cur.fetchone() is not None
+
+    def claim_idempotency_key(
+        self,
+        idem_key: str,
+        *,
+        request_id: str | None = None,
+        result_ref: str | None = None,
+        cause_ref: str | None = None,
+    ) -> bool:
+        """Atomically reserve a committer mutation key.
+
+        Returns True only for the caller that inserted the row. Concurrent or
+        retried callers get False and must skip the external mutation.
+        """
+        with session(self._conn, tenant_id=self._tenant_id, actor_id=self._actor,
+                     cause_ref=cause_ref, now=self._now) as cur:
+            cur.execute(
+                "INSERT INTO idempotency_keys (tenant_id, idem_key, request_id, result_ref) "
+                "VALUES (%s, %s, %s, %s) ON CONFLICT DO NOTHING RETURNING idem_key",
+                (self._tenant_id, idem_key, request_id, result_ref),
+            )
+            return cur.fetchone() is not None
+
+    def record_outreach_contact_ref(
+        self,
+        *,
+        account_ref: str,
+        contact_ref: str,
+        email: str | None = None,
+        name: str | None = None,
+        consent: bool,
+        cause_ref: str | None = None,
+    ) -> None:
+        """Mirror the contact consent fact a customer-outreach proposal relies on."""
+        if not account_ref or not contact_ref:
+            raise GateError("outreach contact ref requires account_ref and contact_ref")
+        with session(self._conn, tenant_id=self._tenant_id, actor_id=self._actor,
+                     cause_ref=cause_ref, now=self._now) as cur:
+            cur.execute(
+                "INSERT INTO outreach_contact_consent_ref "
+                "(tenant_id, account_ref, contact_ref, email, name, consent) "
+                "VALUES (%s, %s, %s, %s, %s, %s) "
+                "ON CONFLICT (tenant_id, account_ref, contact_ref) DO UPDATE SET "
+                "email = EXCLUDED.email, name = EXCLUDED.name, "
+                "consent = EXCLUDED.consent, observed_at = app.clock()",
+                (self._tenant_id, account_ref, contact_ref, email, name, consent),
+            )
+
+    def mark_idempotency_result(self, idem_key: str, *, result_ref: str) -> None:
+        """Attach the external result reference to an already-reserved key."""
+        with session(self._conn, tenant_id=self._tenant_id, actor_id=self._actor,
+                     now=self._now) as cur:
+            cur.execute(
+                "UPDATE idempotency_keys SET result_ref = %s "
+                "WHERE tenant_id = %s AND idem_key = %s",
+                (result_ref, self._tenant_id, idem_key),
+            )
+
+    def release_idempotency_key(self, idem_key: str) -> None:
+        """Release a reservation when the external system explicitly refused it.
+
+        Ambiguous process crashes keep the row, which is the safer duplicate
+        prevention behavior for live writes.
+        """
+        with session(self._conn, tenant_id=self._tenant_id, actor_id=self._actor,
+                     now=self._now) as cur:
+            cur.execute(
+                "DELETE FROM idempotency_keys WHERE tenant_id = %s AND idem_key = %s",
+                (self._tenant_id, idem_key),
+            )

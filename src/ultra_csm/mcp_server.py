@@ -26,7 +26,7 @@ from mcp.server.fastmcp import FastMCP
 
 from ultra_csm.logging_config import setup_logging
 from ultra_csm.platform import EphemeralCluster
-from ultra_csm.platform.db import session
+from ultra_csm.platform.db import assert_rls_safe_role, session
 from ultra_csm.platform.seed import det_uuid, SEED_CLOCK
 
 from ultra_csm.data_plane import (
@@ -302,6 +302,7 @@ def _boot() -> None:
     # Open the runtime connection used for the lifetime of the server.
     dsn = _cluster.dsn(user="app_runtime")
     _conn = psycopg.connect(**dsn)
+    assert_rls_safe_role(_conn)
 
     # Seed the governance roster for the acme-csm tenant.
     seed_roster(_conn, tenant_id=_TENANT_ID, actor_id=_SEED_AGENT, now=_CLOCK)
@@ -444,6 +445,14 @@ def _seed_demo_refusal_proposals() -> None:
     cyberdyne = _data_plane.crm.get_account(CYBERDYNE_NO_CONSENT)
     cyberdyne_contact = next(iter(_data_plane.crm.list_contacts(CYBERDYNE_NO_CONSENT)), None)
     if cyberdyne is not None and cyberdyne_contact is not None:
+        gate.record_outreach_contact_ref(
+            account_ref=cyberdyne.account_id,
+            contact_ref=cyberdyne_contact.contact_id,
+            email=cyberdyne_contact.email,
+            name=cyberdyne_contact.name,
+            consent=cyberdyne_contact.consent_to_contact,
+            cause_ref="mcp-demo:no-consent-refusal:contact-consent",
+        )
         gate.propose(
             intent="mcp_demo_no_consent_refusal",
             payload={

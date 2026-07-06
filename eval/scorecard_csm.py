@@ -555,7 +555,10 @@ def _assert_no_authority_mint(ctx: ScorecardContext, sweep: SweepResult) -> None
     for item in sweep.work_items:
         if item.proposal is not None:
             assert item.proposal.created_by_principal == ctx.actor_id
-            assert not authz.can_confirm_order(item.proposal.created_by_principal)
+            assert not authz.has_permission(
+                item.proposal.created_by_principal,
+                "governance.review",
+            )
 
 
 def _assert_injection(sweep: SweepResult) -> None:

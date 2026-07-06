@@ -18,13 +18,23 @@ from fastapi.testclient import TestClient  # noqa: E402
 from ultra_csm.data_plane.fixtures import ACME_LOGISTICS, CYBERDYNE_NO_CONSENT  # noqa: E402
 from ultra_csm.governance import (  # noqa: E402
     ROLE_CS_ORCHESTRATOR,
-    ROLE_ORDER_CONFIRM_AUTHORITY,
+    ROLE_SAFETY_REVIEWER,
     proposal_fields_for,
 )
 from ultra_csm import api  # noqa: E402
+from ultra_csm._api_helpers import assert_demo_noauth_loopback  # noqa: E402
 from ultra_csm.api import app  # noqa: E402
 
 AUTH_HEADERS = {"Authorization": "Bearer lane-a-token"}
+
+
+def test_demo_noauth_boot_guard_requires_loopback(monkeypatch):
+    monkeypatch.setenv("ULTRA_CSM_DEMO_NOAUTH", "1")
+    assert_demo_noauth_loopback("127.0.0.1")
+    assert_demo_noauth_loopback("localhost")
+    assert_demo_noauth_loopback("::1")
+    with pytest.raises(RuntimeError, match="loopback bind host"):
+        assert_demo_noauth_loopback("0.0.0.0")
 
 
 def _create_pending_draft_proposal(client: TestClient, *, day: int | None = None) -> dict:
@@ -470,10 +480,8 @@ class TestGovernanceEndpoints:
         self, client: TestClient, monkeypatch,
     ):
         """A brand-new bearer-token-mapped human must NOT be auto-granted
-        ROLE_ORDER_CONFIRM_AUTHORITY (the highest-tier, SoD-critical
-        order.confirm role) on first use -- it should get the lesser
-        ROLE_CS_ORCHESTRATOR default instead, with no per-human
-        differentiation beyond that."""
+        ROLE_SAFETY_REVIEWER on first use -- it should get the lesser
+        ROLE_CS_ORCHESTRATOR default instead."""
         monkeypatch.setenv(
             "ULTRA_CSM_API_TOKENS",
             "lane-a-token:Lane A Manager,lane-z-token:Lane Z New Hire",
@@ -502,7 +510,7 @@ class TestGovernanceEndpoints:
             )
             granted_roles = {row[0] for row in cur.fetchall()}
         assert granted_roles == {ROLE_CS_ORCHESTRATOR}
-        assert ROLE_ORDER_CONFIRM_AUTHORITY not in granted_roles
+        assert ROLE_SAFETY_REVIEWER not in granted_roles
 
     def test_verdict_precedence_recheck_uses_proposals_own_day_not_static_default(
         self, client: TestClient,

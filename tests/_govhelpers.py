@@ -8,7 +8,7 @@ import pytest
 
 from ultra_csm.governance import (
     ROLE_CS_ORCHESTRATOR,
-    ROLE_ORDER_CONFIRM_AUTHORITY,
+    ROLE_SAFETY_REVIEWER,
     make_principal,
     seed_roster,
 )
@@ -61,8 +61,8 @@ def setup_roster(conn, *, tenant=T1, seed_actor=T1_AGENT):
         display_name="cs-orchestrator", role=ROLE_CS_ORCHESTRATOR, now=CLOCK)
     authority = make_principal(
         conn, tenant_id=tenant, actor_id=seed_actor,
-        display_name="order-confirm-authority",
-        role=ROLE_ORDER_CONFIRM_AUTHORITY, now=CLOCK)
+        display_name="safety-reviewer",
+        role=ROLE_SAFETY_REVIEWER, now=CLOCK)
     return orch, authority
 
 
