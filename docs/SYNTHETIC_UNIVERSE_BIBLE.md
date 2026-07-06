@@ -899,6 +899,59 @@ day 69 and day 101+ (`(as_of - last_interaction).days > window_days`).
 grading) — this arc exists solely to exercise the new value-model factor,
 not to add a new narrative beat the briefing/extractor layer is graded on.
 
+### Routine health check-ins — four uncalibrated accounts (Harvest 17, dispatch 28)
+
+UI data-depth work (docs/PROGRAM_REPORT_45.md) found the operations-surface
+UI's Comms drawer empty for the account a demo actually opens
+(`ironhorse-freight`, the highest priority_score account at day 140).
+Fixing that by seeding comms for the highest-scoring accounts directly
+would have collided with existing calibration: `ironhorse-freight` is
+itself one of the 27 boring controls above (`grading mode: none... a
+briefing/extractor that flags any of these at any checkpoint is
+over-triggering`); every other queue-visible account at day 140
+(Pinehill, Trailhead, Quarrystone, Clearwater, Ridgeline, Northstar,
+Sagebrush, Harborview, Summit, Meridian) is one of the six arcs, a
+boring control, or otherwise individually calibrated above.
+
+Four accounts were chosen instead specifically because they clear every
+existing calibration in this document and are not tech-touch (Segmented
+book's "thinness is CORRECT at tech tier" rule does not apply — these are
+high/mid-touch): `cobalt-fleet-ops` (high-touch, $16.5M ARR),
+`northbend-haulage` (high-touch, $27M ARR), `cedarfield-industrial-supply`
+(mid-touch, $7.6M ARR), `elmwood-trucking` (mid-touch, $3.5M ARR). Each
+carries exactly one scored factor (`health_yellow`, no case/milestone/
+success-plan signal) — a genuinely thin, unremarkable account, same
+category `synthetic_book.py` already gives them.
+
+New minimal modules (`cobalt_comms.py`, `northbend_comms.py`,
+`cedarfield_comms.py`, `elmwood_comms.py`, mirroring pinnacle_comms.py's
+CommunicationSignal-construction pattern at a fraction of its size): each
+adds a 2-3 message email exchange between the account's single real
+contact (per synthetic_book.py's contact table) and its assigned CSM
+persona (Priya Nandan/csm101, Marcus Webb/csm102, or Devon Ellis/csm104 —
+reused, not invented), acknowledging the yellow health band in routine,
+unremarkable language. No case, milestone, or success-plan content
+invented — the correspondence's entire content is "checking in on a
+mild health dip," matching what these accounts' real scored factors
+actually say. No calendar or stakeholder-relationship layer added (out of
+this addition's scope; Stakeholders already reads richer real data via
+`_person_layer_inputs`).
+
+**Not yet live:** as of this writing, no consumer wires `CommunicationSignal`
+content (from these four modules or the pre-existing six arcs' modules)
+into `_build_account_brief`'s API response — `CustomerDataPlane` has no
+`comms` connector field, and `_api_helpers.py` never reads `*_comms.py`
+output. The Comms drawer's continued empty-for-every-account state is a
+live-wiring gap outside this addition's ownership (see
+docs/PROGRAM_REPORT_45.md's Owner Asks), not something these four modules
+fix on their own. They exist so that wiring, once built, has real fixture
+content to read.
+
+**Grading mode:** unchanged from boring-control (`none`) — these four
+accounts exist solely to give the Comms drawer real, non-colliding fixture
+content once wired, not to add a narrative beat any existing battery is
+graded on.
+
 ## Segmented book (Universe v2, WS-Segmented-Book, Wave 2)
 
 Expands the book from 35 to 180 accounts: ~7 new high-touch (`arr_cents >=
