@@ -105,66 +105,111 @@ def find_content_roadmap_parent(*, token: str) -> str:
     the new database must live under the SAME parent. Raises if nothing
     is found (a real structural gap -- the integration may lack access to
     any page at all; verify with Notion's "Add connections" UI before
-    retrying, not by varying the search query)."""
+    retrying, not by varying the search query).
+
+    Titles are matched by SUBSTRING, not exact equality: the real
+    databases are titled "Content Catalog (FleetOps)"/"Org Pack
+    (FleetOps)", not the bare names (verified live 2026-07-05, an exact-
+    match version of this function silently found nothing despite real
+    access being granted). A data_source object carries its own
+    ``database_parent`` convenience field (Notion API 2025-09-03) giving
+    the ultimate page_id directly -- ``parent`` itself is only a
+    ``database_id``, one level short of the page."""
 
     data = _notion_request("POST", "/search", token=token, body={})
     for result in data.get("results", []):
-        title = ""
-        if result.get("object") in ("data_source", "database"):
-            title = "".join(t.get("plain_text", "") for t in result.get("title", []))
-        if title in ("Content Catalog", "Org Pack"):
-            parent = result.get("parent", {})
-            if parent.get("type") == "page_id":
-                return parent["page_id"]
+        if result.get("object") != "data_source":
+            continue
+        title = "".join(t.get("plain_text", "") for t in result.get("title", []))
+        if "Content Catalog" in title or "Org Pack" in title:
+            database_parent = result.get("database_parent", {})
+            if database_parent.get("type") == "page_id":
+                return database_parent["page_id"]
     raise ContentRoadmapPushError(
         "Could not locate the existing Content Catalog/Org Pack databases via "
-        "live search -- the integration may have zero pages shared with it "
-        "(verified 2026-07-05: an unfiltered search returned 0 results with "
-        "no auth error). This is an Owner Ask: share the target page with "
-        "the ULTRA_CSM_NOTION_TOKEN integration in Notion's UI, then retry."
+        "live search, or their parent page, despite the integration having "
+        "real search access. This is a structural gap needing manual "
+        "investigation in Notion's UI, not a credential/access problem."
     )
 
 
+_EXPECTED_PROPERTY_NAMES = {"Gap", "Tenant", "Accounts Affected", "Coverage Gap Score"}
+
+
 def find_existing_database(*, token: str, title: str = _DATABASE_TITLE) -> str | None:
+    """A same-titled data source with the WRONG schema is treated as no
+    match, not reused -- verified live 2026-07-05: an earlier create call
+    (before the initial_data_source fix) silently produced a "Content
+    Roadmap" data source with only the default "Name" title property,
+    and querying it for "Tenant" 400s. That stray artifact is left in
+    place (a destructive trash/delete on a search-found, not
+    self-created-this-run, resource was correctly denied by the auto-mode
+    classifier) -- an Owner cleanup, not something this function silently
+    papers over by reusing it anyway."""
+
     data = _notion_request(
         "POST", "/search", token=token, body={"query": title}
     )
     for result in data.get("results", []):
-        if result.get("object") not in ("data_source", "database"):
+        if result.get("object") != "data_source":
             continue
         result_title = "".join(t.get("plain_text", "") for t in result.get("title", []))
-        if result_title == title:
+        if result_title != title:
+            continue
+        properties = set(result.get("properties", {}))
+        if _EXPECTED_PROPERTY_NAMES <= properties:
             return result["id"]
     return None
 
 
 def create_content_roadmap_database(*, token: str, parent_page_id: str) -> str:
+    """Returns the DATA SOURCE id (not the database id) -- everything
+    downstream (find_existing_row/upsert_row) queries via
+    /data_sources/{id}, matching what find_existing_database already
+    returns from search. Notion API 2025-09-03: property schema for a
+    new database's first data source goes under initial_data_source,
+    never top-level (verified live 2026-07-05 against a first attempt
+    that silently created a database with only the default "Name" title
+    property -- top-level "properties" is accepted but ignored, not
+    rejected, so this fails silently if not checked)."""
+
     body = {
         "parent": {"type": "page_id", "page_id": parent_page_id},
         "title": [{"type": "text", "text": {"content": _DATABASE_TITLE}}],
-        "properties": {
-            "Gap": {"title": {}},
-            "Tenant": {"select": {"options": [{"name": t} for t in ("fleetops", "loopway")]}},
-            "Accounts Affected": {"number": {}},
-            "High-ARR Accounts Affected": {"number": {}},
-            "Existing Content Count": {"number": {}},
-            "Coverage Gap Score": {"number": {}},
-            "Status": {
-                "select": {
-                    "options": [
-                        {"name": "Not Started"},
-                        {"name": "In Progress"},
-                        {"name": "Published"},
-                    ]
-                }
-            },
+        "initial_data_source": {
+            "properties": {
+                "Gap": {"type": "title", "title": {}},
+                "Tenant": {
+                    "type": "select",
+                    "select": {"options": [{"name": t} for t in ("fleetops", "loopway")]},
+                },
+                "Accounts Affected": {"type": "number", "number": {"format": "number"}},
+                "High-ARR Accounts Affected": {"type": "number", "number": {"format": "number"}},
+                "Existing Content Count": {"type": "number", "number": {"format": "number"}},
+                "Coverage Gap Score": {"type": "number", "number": {"format": "number"}},
+                "Status": {
+                    "type": "select",
+                    "select": {
+                        "options": [
+                            {"name": "Not Started"},
+                            {"name": "In Progress"},
+                            {"name": "Published"},
+                        ]
+                    },
+                },
+            }
         },
     }
     created = _notion_request("POST", "/databases", token=token, body=body)
-    return created["id"]
+    data_sources = created.get("data_sources", [])
+    if not data_sources:
+        raise ContentRoadmapPushError(
+            f"POST /databases response had no data_sources: {created!r}"
+        )
+    return data_sources[0]["id"]
 
 
-def find_existing_row(*, token: str, database_id: str, row: RoadmapRow) -> str | None:
+def find_existing_row(*, token: str, data_source_id: str, row: RoadmapRow) -> str | None:
     """Query-before-write, keyed on (Tenant, Gap) per Decision 6."""
 
     body = {
@@ -176,7 +221,7 @@ def find_existing_row(*, token: str, database_id: str, row: RoadmapRow) -> str |
         }
     }
     data = _notion_request(
-        "POST", f"/data_sources/{database_id}/query", token=token, body=body
+        "POST", f"/data_sources/{data_source_id}/query", token=token, body=body
     )
     results = data.get("results", [])
     return results[0]["id"] if results else None
@@ -191,11 +236,11 @@ def _numeric_properties(row: RoadmapRow) -> dict:
     }
 
 
-def upsert_row(*, token: str, database_id: str, row: RoadmapRow) -> tuple[str, bool]:
+def upsert_row(*, token: str, data_source_id: str, row: RoadmapRow) -> tuple[str, bool]:
     """Returns (page_id, created). Updates only the 4 numeric properties on
     an existing row -- Status is never touched here (Decision 6)."""
 
-    existing_page_id = find_existing_row(token=token, database_id=database_id, row=row)
+    existing_page_id = find_existing_row(token=token, data_source_id=data_source_id, row=row)
     if existing_page_id is not None:
         _notion_request(
             "PATCH",
@@ -215,7 +260,10 @@ def upsert_row(*, token: str, database_id: str, row: RoadmapRow) -> tuple[str, b
         "POST",
         "/pages",
         token=token,
-        body={"parent": {"database_id": database_id}, "properties": properties},
+        # A page's parent under a database is data_source_id in this API
+        # version (2025-09-03), not database_id -- confirmed live 2026-07-05
+        # against an existing Content Catalog row's own parent shape.
+        body={"parent": {"data_source_id": data_source_id}, "properties": properties},
     )
     return created["id"], True
 
@@ -229,15 +277,15 @@ def push_content_roadmap(*, dry_run: bool = False, creds_path: str | None = None
         }
 
     token = _read_token(creds_path)
-    database_id = find_existing_database(token=token)
-    if database_id is None:
+    data_source_id = find_existing_database(token=token)
+    if data_source_id is None:
         parent_page_id = find_content_roadmap_parent(token=token)
-        database_id = create_content_roadmap_database(token=token, parent_page_id=parent_page_id)
+        data_source_id = create_content_roadmap_database(token=token, parent_page_id=parent_page_id)
 
     created_count = 0
     updated_count = 0
     for row in rows:
-        _page_id, created = upsert_row(token=token, database_id=database_id, row=row)
+        _page_id, created = upsert_row(token=token, data_source_id=data_source_id, row=row)
         if created:
             created_count += 1
         else:
@@ -245,7 +293,7 @@ def push_content_roadmap(*, dry_run: bool = False, creds_path: str | None = None
 
     return {
         "dry_run": False,
-        "database_id": database_id,
+        "data_source_id": data_source_id,
         "rows_created": created_count,
         "rows_updated": updated_count,
     }

@@ -227,9 +227,10 @@ pull is an Owner Ask, not a claimed capability.
 **What this does NOT prove.** The 6 taxonomy relabels are the emitter's best-effort
 semantic judgment, not owner-verified CS domain expertise — `low_engagement`→
 `health_yellow` in particular has looser semantic fit than the other 5. The real ranked
-roadmap (see `docs/PROGRAM_REPORT_46.md`) is a genuine computed artifact, not a mock, but
-whether the CS/content team finds a Notion database usable as their actual planning
-surface is untested — no content-team member has seen it. The live push to Notion is
-BLOCKED (Owner Ask): `ULTRA_CSM_NOTION_TOKEN` has zero pages shared with it as of
-2026-07-05, a different integration than the one used to create the Content
-Catalog/Org Pack databases earlier in the session.
+roadmap (see `docs/PROGRAM_REPORT_46.md`) is a genuine computed artifact, not a mock, and
+is now live in Notion (14 rows, verified idempotent 2026-07-06 after the owner granted
+page access — getting there also surfaced and fixed 4 real bugs in the push script's
+Notion API 2025-09-03 handling: title matching, the data_source/database/page parent
+chain, `initial_data_source` property nesting, and schema validation before reusing a
+found database). Whether the CS/content team finds it usable as their actual planning
+surface remains untested — no content-team member has given feedback on it.
