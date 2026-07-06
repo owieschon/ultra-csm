@@ -12,6 +12,7 @@ export function TopBar({
   accountCount,
   queueCount,
   day,
+  liveMode,
   onDayChange,
   health,
   onOpenPalette,
@@ -22,6 +23,7 @@ export function TopBar({
   accountCount: number | null;
   queueCount: number;
   day: number;
+  liveMode: boolean;
   onDayChange: (day: number) => void;
   health: "ok" | "degraded" | "checking";
   onOpenPalette: () => void;
@@ -90,13 +92,20 @@ export function TopBar({
 
       <div className="scrub">
         <span className="lbl">
-          day <b className="num">{day}</b>
+          {liveMode ? (
+            <b>live</b>
+          ) : (
+            <>
+              day <b className="num">{day}</b>
+            </>
+          )}
         </span>
         <input
           type="range"
           min={1}
           max={365}
           value={day}
+          disabled={liveMode}
           onChange={(e) => onDayChange(Number(e.target.value))}
         />
       </div>

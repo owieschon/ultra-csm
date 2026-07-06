@@ -153,6 +153,19 @@ class TestAccountDetailEndpoint:
         assert "score" in body["priority"]
         assert "divergences" in body
 
+    def test_derived_health_endpoint_reports_served_source_posture(self, client: TestClient):
+        accounts = client.get("/accounts").json()["accounts"]
+        account_id = accounts[0]["account_id"]
+
+        resp = client.get(f"/accounts/{account_id}/derived-health")
+        assert resp.status_code == 200
+        body = resp.json()
+        assert body["account_id"] == account_id
+        assert body["data_plane_mode"] == "fixture"
+        assert body["health_source"] == "fixture_cs_platform"
+        assert "salesforce" in body["source_status"]
+        assert body["drivers"]
+
     def test_missing_account_404(self, client: TestClient):
         resp = client.get("/accounts/00000000-0000-0000-0000-000000000000")
         assert resp.status_code == 404

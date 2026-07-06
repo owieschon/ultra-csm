@@ -13,11 +13,16 @@ export interface SweepData {
 // calling it once per view (Book AND Queue) would double-propose the same
 // triggers. Lifted here so page.tsx fetches once per (day, refreshToken) and
 // both views share the result.
-export function useSweep(day: number, refreshToken: number) {
+export function useSweep(
+  day: number | undefined,
+  refreshToken: number,
+  enabled = true
+) {
   const [sweep, setSweep] = useState<SweepData | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!enabled) return;
     setError(null);
     api
       .sweep(day)
@@ -29,7 +34,7 @@ export function useSweep(day: number, refreshToken: number) {
         })
       )
       .catch((e) => setError(String(e)));
-  }, [day, refreshToken]);
+  }, [day, refreshToken, enabled]);
 
   return { sweep, error };
 }
