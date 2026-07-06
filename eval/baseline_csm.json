@@ -181,9 +181,26 @@
               "threshold_name": "depth_floor",
               "threshold_value": 0.7,
               "value": 0.0
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 10,
+              "evidence": [
+                {
+                  "field": "slot_a_case_blocker",
+                  "observed_at": "2026-06-27",
+                  "source": "crm",
+                  "source_id": "4ddf4d0e-2600-56f7-9edc-a5a0071d8186"
+                }
+              ],
+              "name": "slot_a_case_blocker",
+              "rule_name": "high_arr_review_default",
+              "threshold_name": "slot_a_case_blocker_points",
+              "threshold_value": 10,
+              "value": 1.0
             }
           ],
-          "score": 162
+          "score": 172
         },
         "proposal_action_type": "draft_customer_outreach",
         "proposal_status": "pending",
@@ -686,12 +703,12 @@
   "measurement_scope": "Offline CI baseline: exact deterministic Agent 1 spine plus seeded distributional fixture mechanics. This is not live model drift evidence.",
   "schema_version": 1,
   "scorecard_score": {
-    "passed": 23,
-    "total": 23
+    "passed": 24,
+    "total": 24
   },
   "slot_b": {
     "fixture_model_id": "fixture-agent1-slot-b-v1",
     "live_model_id": "claude-opus-4-8",
-    "prompt_version": "agent1-slot-b-reason-draft-v1"
+    "prompt_version": "agent1-slot-b-reason-draft-v4"
   }
 }
