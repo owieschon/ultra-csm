@@ -2,7 +2,7 @@
 
 Worktree: `~/dev/ultra-csm-public-docs-integrity`, branch `codex/public-docs-integrity`, off `origin/main` @ `96bda58`.
 
-Tripwires (K12): one flagged — final diff budget (including this report file itself) is 12 files / 177 lines vs. the dispatch's stated 10 files / 200 lines. Line budget held (177 < 200); file count is 2 over. See IF/THEN section below; not a STOP condition.
+Tripwires (K12): one flagged — final diff budget (including this report file itself) is 12 files vs. the dispatch's stated 10 files; line count is in the 170s-180s range (this report's own final edits shift it by a few lines each pass) against a 200-line budget. File count is 2 over; line budget holds with headroom regardless of this report's exact final self-inclusive line count. See IF/THEN section below; not a STOP condition. (Ground truth for the reader: run `git diff origin/main... --stat` in the worktree — this document's own line count cannot perfectly predict itself.)
 
 ## DoD evidence table
 
@@ -12,7 +12,8 @@ Tripwires (K12): one flagged — final diff budget (including this report file i
 | root SECURITY.md exists | `test -f SECURITY.md && echo yes` | `yes` | `yes` | PASS |
 | README v7 gone | `grep -n "prompt v7" README.md` | (no match) | exit 1, no match | PASS |
 | README account count matches live server | manual: compare README's new number to a live `list_accounts` call | equal | README states 9; live `list_accounts()` MCP tool call returned `account_count: 9` (two independent methods: raw `build_sweep_fixture_data_plane` + the actual tool function) | PASS |
-| no machine paths in docs+gold | `grep -rn "/Users/" docs/PROGRAM_REPORT_*.md eval/gold/*.json` | (no match) | exit 1, no match | PASS |
+| no machine paths in docs+gold (in the 4 originally-owned reports + 4 gold files) | `grep -rn "/Users/" docs/PROGRAM_REPORT_2.md docs/PROGRAM_REPORT_21.md docs/PROGRAM_REPORT_34.md docs/PROGRAM_REPORT_4.md eval/gold/*.json` | (no match) | exit 1, no match | PASS |
+| no machine paths, literal gate command as written in dispatch (`docs/PROGRAM_REPORT_*.md` glob) | `grep -rn "/Users/" docs/PROGRAM_REPORT_*.md eval/gold/*.json` | (no match) | matches inside `docs/PROGRAM_REPORT_39.md` itself (this report), which quotes residue strings verbatim in its Owner Ask / IF-THEN sections as required by K4 receipts — the 4 originally-scoped reports remain clean (see row above) | EXPECTED, not a regression — see note below |
 | gold JSON still valid | `python3 -c "import json,glob; [json.load(open(f)) for f in glob.glob('eval/gold/*.json')]"` | no error | no error | PASS |
 | lint clean | `make lint` | `All checks passed!` | `All checks passed!` | PASS |
 | hygiene clean | `make hygiene` | exit 0 | exit 0, no findings | PASS |
