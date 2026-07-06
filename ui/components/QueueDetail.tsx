@@ -6,6 +6,49 @@ import { label, MOTION_LABELS, TRIGGER_LABELS } from "@/lib/labels";
 
 type Brief = Record<string, unknown>;
 
+// Row shapes for the 4 remaining generic-Drawer sources, verified against
+// _api_helpers.py's _build_account_brief -> asdict() output (Phase 1's
+// contract table): TimeToValueMilestone, UsageSignal, SuccessPlan, CRMCase
+// (contracts.py). Stakeholders already has its own bespoke drawer (Harvest
+// 17); Comms/Calendar/Agent-history stay dormant (briefField: null) -- no
+// live source exists for them (see DRAWERS below), untouched here.
+interface MilestoneRow {
+  milestone: string;
+  expected_by: string;
+  achieved_at: string | null;
+}
+interface UsageSignalRow {
+  metric_name: string;
+  value: number;
+  unit: string;
+  observed_at: string;
+}
+interface SuccessPlanRow {
+  status: string;
+  objectives: string[];
+  target_date: string;
+}
+interface CaseRow {
+  subject: string;
+  status: string;
+  priority: string;
+}
+
+// snake_case code -> plain phrase, shared by milestone/objective rows (both
+// carry short verb-object codes rather than free text, unlike case.subject
+// which is already natural language). Falls back to a spaced, lowercased
+// rendering of the raw code for any value not in this table, rather than
+// hiding or inventing a claim about codes we haven't authored a phrase for.
+function humanizeCode(code: string): string {
+  const known: Record<string, string> = {
+    activate_50pct_assets: "Activate 50% of fleet",
+    first_route_optimization: "First route optimization",
+    activate_core_fleet: "Activate core fleet",
+    complete_driver_onboarding: "Complete driver onboarding",
+  };
+  return known[code] ?? code.replace(/_/g, " ");
+}
+
 // Person UI depth (Harvest 17): a stakeholder row as served by the
 // additive AccountBriefResponse.stakeholders field (_api_helpers.py's
 // _stakeholder_rows) -- name/role/recency/consent/flags precomputed
@@ -32,20 +75,75 @@ const ROLE_LABELS: Record<string, string> = {
   admin: "Admin",
 };
 
+// Per-drawer row formatter: plain-language primary text + optional mono/
+// colored metadata, mirroring StakeholderPersonRow's established two-part
+// shape (sname/smeta) rather than the raw-JSON .evid-row/.eval styling
+// (globals.css:160-162 -- .eval is monospace by default, wrong container
+// for plain-English text). Formats ONLY fields the row actually carries,
+// verified against contracts.py's dataclasses (Phase 1 reading list) --
+// no invented percentages/trends/comparisons.
+function milestoneRowText(row: MilestoneRow): { name: string; meta: string } {
+  const label = humanizeCode(row.milestone);
+  if (row.achieved_at) {
+    return { name: label, meta: `completed ${row.achieved_at}` };
+  }
+  return { name: label, meta: `expected by ${row.expected_by}` };
+}
+
+function usageSignalRowText(row: UsageSignalRow): { name: string; meta: string } {
+  const label = humanizeCode(row.metric_name);
+  return { name: label, meta: `${row.value} ${row.unit} · ${row.observed_at.slice(0, 10)}` };
+}
+
+function successPlanRowText(row: SuccessPlanRow): { name: string; meta: string } {
+  const name = row.objectives.length > 0 ? humanizeCode(row.objectives[0]) : "Success plan";
+  const extra = row.objectives.length > 1 ? ` +${row.objectives.length - 1} more` : "";
+  return { name: name + extra, meta: `${row.status} · due ${row.target_date}` };
+}
+
+function caseRowText(row: CaseRow): { name: string; meta: string } {
+  return { name: row.subject, meta: `${row.status} · ${row.priority} priority` };
+}
+
 // Drawer -> brief field mapping, verified against api.py's AccountBriefResponse
 // (Phase 1's contract table). Stakeholders now reads the additive
 // `stakeholders` field (per-person role graph) instead of raw `contacts`.
 // Comms/Calendar/Agent-history have NO live source anywhere this endpoint
 // reads from -- rendered dormant honestly, never populated with placeholder
 // rows (UI_DESIGN_BRIEF's no-fake-data rule).
-const DRAWERS: { key: string; name: string; briefField: string | null }[] = [
+const DRAWERS: {
+  key: string;
+  name: string;
+  briefField: string | null;
+  formatter?: (row: unknown) => { name: string; meta: string };
+}[] = [
   { key: "comms", name: "Comms", briefField: null },
   { key: "calendar", name: "Calendar", briefField: null },
   { key: "people", name: "Stakeholders", briefField: "stakeholders" },
-  { key: "onboarding", name: "Onboarding (Rocketlane)", briefField: "milestones" },
-  { key: "telemetry", name: "Telemetry", briefField: "recent_usage_signals" },
-  { key: "plan", name: "Success plan", briefField: "success_plans" },
-  { key: "cases", name: "Cases", briefField: "open_cases" },
+  {
+    key: "onboarding",
+    name: "Onboarding (Rocketlane)",
+    briefField: "milestones",
+    formatter: milestoneRowText as (row: unknown) => { name: string; meta: string },
+  },
+  {
+    key: "telemetry",
+    name: "Telemetry",
+    briefField: "recent_usage_signals",
+    formatter: usageSignalRowText as (row: unknown) => { name: string; meta: string },
+  },
+  {
+    key: "plan",
+    name: "Success plan",
+    briefField: "success_plans",
+    formatter: successPlanRowText as (row: unknown) => { name: string; meta: string },
+  },
+  {
+    key: "cases",
+    name: "Cases",
+    briefField: "open_cases",
+    formatter: caseRowText as (row: unknown) => { name: string; meta: string },
+  },
   { key: "agent", name: "Agent history", briefField: null },
 ];
 
@@ -101,7 +199,7 @@ export function QueueDetail({ item, day }: { item: WorkItem; day: number }) {
               onToggle={() => setOpenDrawer(openDrawer === d.key ? null : d.key)}
             />
           ) : (
-            <Drawer key={d.key} name={d.name} field={d.briefField} brief={brief} open={openDrawer === d.key}
+            <Drawer key={d.key} name={d.name} field={d.briefField} brief={brief} formatter={d.formatter} open={openDrawer === d.key}
               onToggle={() => setOpenDrawer(openDrawer === d.key ? null : d.key)} />
           )
         )}
@@ -159,7 +257,19 @@ export function QueueDetail({ item, day }: { item: WorkItem; day: number }) {
                           </span>
                         </span>
                       ) : (
-                        <span className="eval">{JSON.stringify(ev).slice(0, 120)}</span>
+                        // General case (EvidenceRef, contracts.py): every
+                        // record carries source/source_id/field/observed_at
+                        // (verified live against a real brief response) --
+                        // humanize the field name, keep source_id as the
+                        // mono receipt, same register as the person-cited
+                        // branch above. No invented claim beyond these
+                        // fields.
+                        <span className="eval">
+                          {humanizeCode((ev.field as string) ?? "record")} · observed {(ev.observed_at as string) ?? "—"}
+                          <span className="mono" style={{ marginLeft: 6, color: "var(--fg-3)" }}>
+                            {(ev.source as string) ?? "evidence"} · {String(ev.source_id ?? "").slice(0, 8)}
+                          </span>
+                        </span>
                       )}
                     </div>
                   );
@@ -218,12 +328,14 @@ function Drawer({
   name,
   field,
   brief,
+  formatter,
   open,
   onToggle,
 }: {
   name: string;
   field: string | null;
   brief: Brief | null;
+  formatter?: (row: unknown) => { name: string; meta: string };
   open: boolean;
   onToggle: () => void;
 }) {
@@ -242,11 +354,20 @@ function Drawer({
       </div>
       {open && !dormant && (
         <div className="drawer-b">
-          {(rows ?? []).map((row, i) => (
-            <div className="evid-row" key={i}>
-              <span className="eval">{JSON.stringify(row).slice(0, 160)}</span>
-            </div>
-          ))}
+          {(rows ?? []).map((row, i) =>
+            formatter ? (
+              <DrawerRow key={i} row={row} formatter={formatter} />
+            ) : (
+              // Fallback path only -- every DRAWERS entry with a non-null
+              // briefField now carries a formatter (Phase 1, dispatch 28);
+              // this branch is unreachable today and stays as the honest
+              // degrade for any future drawer wired without one yet, rather
+              // than crashing or hiding the record.
+              <div className="evid-row" key={i}>
+                <span className="eval">{JSON.stringify(row).slice(0, 160)}</span>
+              </div>
+            )
+          )}
           {(rows ?? []).length === 0 && (
             <div className="evid-row">
               <span className="eval" style={{ color: "var(--fg-3)" }}>
@@ -256,6 +377,20 @@ function Drawer({
           )}
         </div>
       )}
+    </div>
+  );
+}
+
+// Plain-language row for a humanized drawer source, reusing StakeholderPersonRow's
+// established .stake-row shape (globals.css: plain-English primary text, NOT
+// monospace by default -- unlike .evid-row/.eval which IS mono, wrong container
+// for a formatted sentence) rather than adding a new CSS pattern per drawer.
+function DrawerRow<T>({ row, formatter }: { row: T; formatter: (row: T) => { name: string; meta: string } }) {
+  const { name, meta } = formatter(row);
+  return (
+    <div className="stake-row">
+      <span className="sname">{name}</span>
+      <span className="smeta">{meta}</span>
     </div>
   );
 }
