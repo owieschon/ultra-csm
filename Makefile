@@ -266,6 +266,7 @@ hygiene:
 	$(PYTHON) scripts/hygiene_scan.py
 
 clean:
+	PYTHONPATH=src:. $(PYTHON) scripts/reap_stale_clusters.py
 	rm -rf build/tmp
 
 demo:
