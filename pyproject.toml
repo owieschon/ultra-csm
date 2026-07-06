@@ -7,7 +7,7 @@ name = "ultra-csm"
 version = "0.0.0"
 description = "Ultra CSM — eval-first customer-success agent: one governed value model with thin agent-lenses over it"
 requires-python = ">=3.10"
-license = "MIT"
+license = "PolyForm-Noncommercial-1.0.0"
 dependencies = [
     "psycopg[binary]>=3.2",
 ]
