@@ -96,6 +96,7 @@ def test_live_committer_creates_exactly_one_task_and_ledgers_it(runtime_conn, tm
         receipt = committer.commit(proposal, outcome)
 
         assert receipt.committed is True
+        assert gate.idempotency_key_exists(receipt.idempotency_key)
         assert len(client.requests) == 1
         req = client.requests[0]
         assert req.method == "POST"
@@ -137,6 +138,7 @@ def test_live_committer_is_idempotent_second_call_makes_no_request(runtime_conn,
 
         assert first.committed is True
         assert second.committed is False
+        assert gate.idempotency_key_exists(first.idempotency_key)
         # No second Task-create request was ever sent -- idempotency is
         # enforced before the network call, not after.
         assert len(client.requests) == 1
@@ -196,17 +198,18 @@ def test_live_committer_raises_on_non_2xx_status(runtime_conn, tmp_path):
 
 class _LedgerCheckingClient:
     """Wraps a real client but asserts, at the moment the POST would fire,
-    that an intent ledger row for this key already exists on disk --
-    proving order-of-operations (ledger-write-before-POST), not just that
-    a ledger row exists somewhere after the call returns."""
+    that the DB idempotency key and intent ledger row already exist -- proving
+    order-of-operations before the external mutation, not just after return."""
 
-    def __init__(self, inner, *, ledger_path, idempotency_key):
+    def __init__(self, inner, *, gate, ledger_path, idempotency_key):
         self._inner = inner
+        self._gate = gate
         self._ledger_path = ledger_path
         self._idempotency_key = idempotency_key
         self.checked_intent_present_before_post = False
 
     def send(self, req: HttpRequest) -> HttpResponse:
+        assert self._gate.idempotency_key_exists(self._idempotency_key)
         assert self._ledger_path.exists(), "intent row must be on disk before the POST fires"
         lines = [json.loads(line) for line in self._ledger_path.read_text().splitlines()]
         matching = [
@@ -221,8 +224,8 @@ class _LedgerCheckingClient:
 
 
 def test_live_committer_writes_intent_ledger_row_before_the_post_fires(runtime_conn, tmp_path):
-    """Order-of-operations proof: the intent record must be written and
-    queryable BEFORE the network POST call, not only after success."""
+    """Order-of-operations proof: DB idempotency and the audit intent record
+    must be queryable BEFORE the network POST call, not only after success."""
     runtime_conn.execute("BEGIN")
     try:
         gate, proposal, outcome = _bridge_ctx(runtime_conn, tmp_path)
@@ -231,7 +234,7 @@ def test_live_committer_writes_intent_ledger_row_before_the_post_fires(runtime_c
         key = committer_module._idempotency_key(proposal, outcome)
         inner_client = _FakeTaskClient()
         checking_client = _LedgerCheckingClient(
-            inner_client, ledger_path=ledger_path, idempotency_key=key,
+            inner_client, gate=gate, ledger_path=ledger_path, idempotency_key=key,
         )
         committer = LiveSalesforceActivityCommitter(
             gate, env=_ENV, ledger_dir=ledger_dir, client=checking_client,

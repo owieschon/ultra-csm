@@ -194,6 +194,14 @@ class TimeToValueAccelerator:
         assert recommendation.contact is not None
         fields = proposal_fields_for("draft_customer_outreach")
         payload = _proposal_payload(recommendation.evidence, recommendation.contact, as_of)
+        gate.record_outreach_contact_ref(
+            account_ref=recommendation.evidence.account.account_id,
+            contact_ref=recommendation.contact.contact_id,
+            email=recommendation.contact.email,
+            name=recommendation.contact.name,
+            consent=recommendation.contact.consent_to_contact,
+            cause_ref=f"agent1:ttv:{account_id}:{as_of}:contact-consent",
+        )
         proposal = gate.propose(
             intent="agent1_time_to_value",
             payload=payload,
