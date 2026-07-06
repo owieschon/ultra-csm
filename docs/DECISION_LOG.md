@@ -4,6 +4,31 @@ Append-only record of non-obvious engineering decisions and the evidence behind 
 
 ---
 
+## Current quality-judge decision (v8, regenerated 2026-07-06)
+
+**Decision.** The shipped Slot B quality gate is `quality-judge-v8` on
+`claude-sonnet-4-6`, evaluated by the `cot@N` hard-layer arm with 5 runs per
+case. `judge_validation_status()` is the source of truth: it derives
+`validated=True` from `eval/gold/judge_agreement.json` and regenerated
+`eval/gold/judge_compare.json`, including a prompt-version equality check
+against the shipped `eval.judge_anthropic.JUDGE_PROMPT_VERSION`.
+
+**Evidence.** Phase 1 of the live build regenerated the hard-layer compare
+artifact via `eval/_gen_judge_compare_cotN.py` rather than hand-editing the
+missing field. The committed artifact now carries
+`"judge_prompt_version": "quality-judge-v8"`, `runs_per_case=5`, hard-layer
+false negatives `0`, false positives `3`, and recomputed hard kappas:
+grounding_fidelity `0.932`, on_task_relevance `0.636`,
+account_specificity `1.0`, priority_fidelity `1.0`, tone_fit `0.896`,
+safety_boundary `1.0`. Live spend for the successful regeneration was 180
+calls, 395,725 input tokens, 25,950 output tokens, `$1.576425`.
+
+**Claim boundary.** This validates agreement against the current single-labeler
+gold/key artifacts. It is not a second-human ceiling and it is not yet a
+drift-power claim; those remain separate measurements.
+
+---
+
 ## Quality judge: model and prompt selection for the Slot B gate
 
 **Context.** The Slot B quality judge scores six dimensions (1/2/3) and a draft passes

@@ -28,15 +28,8 @@ def _copy(tmp_path: Path) -> tuple[Path, Path]:
 def test_validates_from_committed_evidence_artifacts():
     status = judge_validation_status()
 
-    # Stream 20 (prompt-version binding): judge_compare.json carries no
-    # judge_prompt_version field at all, so the fail-closed equality check
-    # (added this stream) now correctly reports validated=False on the
-    # currently committed artifacts -- a real, disclosed gap (see
-    # docs/PROGRAM_REPORT_37.md Owner Asks), not a bug in this test. Every
-    # other claim this test pins -- including the v8 literal string below --
-    # remains true and is asserted unchanged.
-    assert status["validated"] is False
-    assert status["failures"] == ["compare artifact has no judge_prompt_version"]
+    assert status["validated"] is True
+    assert status["failures"] == []
     assert status["method"]["judge_prompt_version"] == "quality-judge-v8"
     assert status["method"]["runs_per_case"] >= 3
     for dim in QUALITY_DIMENSIONS:
@@ -154,16 +147,10 @@ def test_live_semantic_quality_proven_from_passing_evidence(tmp_path):
 def test_live_semantic_quality_committed_artifact_is_proven():
     """The evidence artifact actually committed to the repo (a real live run,
     docs/PROGRAM_REPORT_6.md) derives proven=True -- PROVIDED the judge
-    itself is validated. Stream 20 (prompt-version binding) correctly flips
-    judge_validation_status()['validated'] to False on current committed
-    artifacts (judge_compare.json has no judge_prompt_version field), which
-    live_semantic_quality_status() requires as its own precondition -- see
-    docs/PROGRAM_REPORT_37.md Owner Asks. Proven with an explicitly-validated
-    judge_status to isolate this test's own claim (the live artifact's
-    N-run gate) from that separate, disclosed gap."""
-    status = live_semantic_quality_status(
-        LIVE_SEMANTIC_QUALITY_PATH, judge_status={"validated": True}
-    )
+    itself is validated. Phase 1 of the live build regenerated
+    judge_compare.json with the shipped prompt-version stamp, so this test can
+    exercise the real committed judge-validation precondition again."""
+    status = live_semantic_quality_status(LIVE_SEMANTIC_QUALITY_PATH)
     assert status["proven"] is True
     assert status["failures"] == []
 
@@ -250,10 +237,7 @@ def test_h2_contradicted_number_scores_grounding_1():
 def test_ac1_reported_only_for_wide_ci_dims_never_gates():
     """Fragility fallback: a dimension whose single-run bootstrap CI floor is
     below GATE_KAPPA gets Gwet's AC1 reported alongside kappa -- REPORTED
-    only, and computed/reported regardless of the separate prompt-version
-    gap (Stream 20) that flips `validated` to False on current committed
-    artifacts -- AC1 reporting is not a gate substitute and is orthogonal to
-    that gap (it is not a gate substitute)."""
+    only. AC1 reporting is not a gate substitute."""
     status = judge_validation_status()
 
     reported = status["hard"]["gwet_ac1_reported"]
@@ -262,9 +246,7 @@ def test_ac1_reported_only_for_wide_ci_dims_never_gates():
     # A dimension with a tight CI (e.g. safety_boundary, deterministic 1.0) is
     # never reported -- AC1 is scoped to the fragile dims only.
     assert "safety_boundary" not in reported
-    # Stream 20: validated is correctly False here (compare artifact has no
-    # judge_prompt_version) -- see docs/PROGRAM_REPORT_37.md Owner Asks. This
-    # test's own claim (AC1 reporting) is unaffected and still verified above.
+    assert status["validated"] is True
 
 
 def test_ac1_absent_when_no_dimension_has_a_wide_ci(tmp_path):
