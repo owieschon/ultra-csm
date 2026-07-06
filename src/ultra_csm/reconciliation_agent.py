@@ -387,7 +387,14 @@ class AnthropicReconciliationWriter:
         start = time.perf_counter()
         msg = self._client.messages.create(
             model=self.model_id,
-            max_tokens=700,
+            # 1500, not slot_b.py's 700: this response can include up to
+            # MAX_CANDIDATE_DIVERGENCES candidates, each with its own
+            # evidence list -- more structured output than Slot B's
+            # reason+customer_draft shape. A truncated response is a
+            # ReconciliationContractError (invalid JSON), not silently
+            # accepted -- retry at the call site, don't just raise the cap
+            # further without bound.
+            max_tokens=1500,
             system=prompt,
             messages=[{"role": "user", "content": json.dumps(payload, sort_keys=True)}],
         )
