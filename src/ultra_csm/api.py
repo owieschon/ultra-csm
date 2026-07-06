@@ -64,6 +64,7 @@ from ultra_csm.cost_tracker import CostBudget, CostTracker
 from ultra_csm.proposal_revise import ReviseServiceError, apply_bounded_revise
 from ultra_csm._api_helpers import (
     AccountDataError,
+    AccountNotFoundError,
     AuthError,
     _build_account_brief,
     _enrich_person_evidence,
@@ -75,6 +76,7 @@ from ultra_csm._api_helpers import (
     resolve_write_principal,
     score_account_priority,
 )
+from ultra_csm import reconciliation_agent
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -1123,6 +1125,69 @@ async def get_account_brief(
         }
 
     return brief
+
+
+@app.get("/accounts/{account_id}/reconciliation")
+async def get_account_reconciliation(
+    account_id: str,
+    day: int | None = Query(None, ge=0, le=365),
+    deep: bool = Query(False, description="Use deep data simulation layer"),
+):
+    """Reconciliation agent (Harvest 31 / report 52): reconciles what CS
+    tools report against what telemetry shows for this account, with a
+    plain-English explanation and (advisory, judge-gated) candidate
+    divergences. Read-only -- creates no proposal.
+
+    Uses the fixture (no-network) writer by default, matching every other
+    LLM slot in this API (live mode is an explicit opt-in constructed only
+    by eval/reconciliation_battery.py's bounded verification sample, never
+    the API's default -- a GET request here must never trigger a live,
+    costly LLM call).
+    """
+    dp, as_of = _data_plane_for_day(day, deep=deep)
+    result = reconciliation_agent.explain(
+        dp, account_id, as_of=as_of, writer=reconciliation_agent.FixtureReconciliationWriter(),
+    )
+    if result is None:
+        raise _account_data_http_error(AccountNotFoundError(account_id))
+    return {
+        "account_id": result.account_id,
+        "deterministic_signals": [
+            {
+                "origin": s.origin,
+                "name": s.name,
+                "value": s.value,
+                "contribution": s.contribution,
+                "surfaced_by_lenses": list(s.surfaced_by_lenses),
+                "evidence": [
+                    {"source": e.source, "source_id": e.source_id, "field": e.field, "observed_at": e.observed_at}
+                    for e in s.evidence
+                ],
+            }
+            for s in result.deterministic_signals
+        ],
+        "explanation": {
+            "text": result.explanation.text,
+            "disclaimer": result.explanation.disclaimer,
+            "evidence": [
+                {"source": e.source, "source_id": e.source_id, "field": e.field, "observed_at": e.observed_at}
+                for e in result.explanation.evidence
+            ],
+        },
+        "candidate_divergences": [
+            {
+                "origin": c.origin,
+                "claim": c.claim,
+                "confidence": c.confidence,
+                "disclaimer": c.disclaimer,
+                "evidence": [
+                    {"source": e.source, "source_id": e.source_id, "field": e.field, "observed_at": e.observed_at}
+                    for e in c.evidence
+                ],
+            }
+            for c in result.candidate_divergences
+        ],
+    }
 
 
 @app.get("/accounts/{account_id}/trajectory", response_model=TrajectoryResponse)
