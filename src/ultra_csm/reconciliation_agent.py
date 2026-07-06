@@ -20,16 +20,53 @@ computation ``_item_for_account`` uses before it creates a proposal.
 
 from __future__ import annotations
 
+import json
+import time
 from dataclasses import dataclass
+from pathlib import Path
+from typing import TYPE_CHECKING, Protocol
 
 from ultra_csm.agent1.lens_expansion import ExpansionLensWeights, _expansion_factors
 from ultra_csm.agent1.lens_risk import RiskLensWeights, _risk_factors
+from ultra_csm.agent1.slot_b import (
+    LIVE_MAX_RETRIES,
+    LIVE_SLOT_B_MODEL_ID,
+    LIVE_TIMEOUT_S,
+    _extract_json_object,
+    _text_from_message,
+)
 from ultra_csm.agent1.sweep import _person_layer_inputs, _trajectory_decline_evaluation
 from ultra_csm.data_plane import CustomerDataPlane, EvidenceRef
 from ultra_csm.snapshot_store import SnapshotStore
 from ultra_csm.value_model import ValueFactor, build_customer_value_model
 
+if TYPE_CHECKING:
+    from ultra_csm.cost_tracker import CostTracker
+
 _LENS_ORDER = ("value_model", "risk_lens", "expansion_lens")
+
+RECONCILIATION_PROMPT_VERSION = "agent1-reconciliation-v1"
+RECONCILIATION_PROMPT_PATH = (
+    Path(__file__).resolve().parents[2]
+    / "docs"
+    / "prompts"
+    / "agent1_reconciliation_v1.md"
+)
+LIVE_RECONCILIATION_MODEL_ID = LIVE_SLOT_B_MODEL_ID
+FIXTURE_RECONCILIATION_MODEL_ID = "fixture-agent1-reconciliation-v1"
+MAX_CANDIDATE_DIVERGENCES = 3
+
+# Fixed, non-LLM-authored disclaimer text (Decisions: an LLM must never
+# write its own disclaimer). Every non-deterministic field carries its
+# own copy of the relevant one below.
+EXPLANATION_DISCLAIMER = (
+    "Model-generated explanation -- may be incomplete or mischaracterize the "
+    "underlying evidence. Verify against the cited sources before acting."
+)
+CANDIDATE_DISCLAIMER = (
+    "Unverified AI hypothesis, not a confirmed finding -- may be wrong. "
+    "Judge-scored for grounding but not human-confirmed."
+)
 
 
 @dataclass(frozen=True)
@@ -162,4 +199,249 @@ def _dedupe_signals(
             surfaced_by_lenses=tuple(by_key[key]["surfaced_by"]),
         )
         for key in order
+    )
+
+
+def _raw_evidence_pool(
+    data_plane: CustomerDataPlane, account_id: str, *, as_of: str,
+) -> tuple[EvidenceRef, ...]:
+    """Read-only evidence pool the LLM's Job 2 (candidate divergences) may
+    cite from -- contacts, cases, usage signals. Contacts carry no natural
+    timestamp of their own (a static CRM profile record), so ``as_of`` is
+    used as their ``observed_at`` (the state was observed as of this
+    reconciliation run)."""
+
+    refs: list[EvidenceRef] = []
+    for contact in data_plane.crm.list_contacts(account_id):
+        refs.append(EvidenceRef("crm", contact.contact_id, "role", as_of))
+    for case in data_plane.crm.list_cases(account_id):
+        refs.append(EvidenceRef("crm", case.case_id, "status", case.created_at))
+    for signal in data_plane.telemetry.list_usage_signals(account_id):
+        refs.append(EvidenceRef("telemetry", signal.signal_id, signal.metric_name, signal.observed_at))
+    return tuple(refs)
+
+
+@dataclass(frozen=True)
+class Explanation:
+    text: str
+    disclaimer: str
+    evidence: tuple[EvidenceRef, ...]
+
+
+@dataclass(frozen=True)
+class CandidateDivergence:
+    origin: str  # always "llm_hypothesis"
+    claim: str
+    confidence: str  # "low" | "medium" -- never "high"
+    evidence: tuple[EvidenceRef, ...]
+    disclaimer: str
+
+
+@dataclass(frozen=True)
+class ReconciliationResult:
+    account_id: str
+    deterministic_signals: tuple[DeterministicSignal, ...]
+    explanation: Explanation
+    candidate_divergences: tuple[CandidateDivergence, ...]
+
+
+class ReconciliationContractError(ValueError):
+    """Raised when the LLM's output violates this slot's contract (bad
+    JSON, missing field, confidence out of range, an evidence reference
+    not present in the supplied raw evidence pool)."""
+
+
+class ReconciliationWriter(Protocol):
+    def write(
+        self,
+        *,
+        account_id: str,
+        deterministic_signals: tuple[DeterministicSignal, ...],
+        raw_evidence: tuple[EvidenceRef, ...],
+    ) -> tuple[str, tuple[CandidateDivergence, ...]]: ...
+
+
+def _evidence_ref_by_id(pool: tuple[EvidenceRef, ...]) -> dict[str, EvidenceRef]:
+    return {ref.source_id: ref for ref in pool}
+
+
+def _parse_and_validate(
+    text: str, *, raw_evidence: tuple[EvidenceRef, ...],
+) -> tuple[str, tuple[CandidateDivergence, ...]]:
+    try:
+        raw = json.loads(_extract_json_object(text))
+    except json.JSONDecodeError as exc:
+        raise ReconciliationContractError(f"invalid JSON: {exc}") from exc
+
+    explanation_text = raw.get("explanation")
+    if not isinstance(explanation_text, str) or not explanation_text.strip():
+        raise ReconciliationContractError("explanation must be a non-empty string")
+
+    candidates_raw = raw.get("candidate_divergences", ())
+    if not isinstance(candidates_raw, list | tuple):
+        raise ReconciliationContractError("candidate_divergences must be a list")
+    if len(candidates_raw) > MAX_CANDIDATE_DIVERGENCES:
+        # Enforced in code, not merely prompt-instructed (Decisions).
+        candidates_raw = candidates_raw[:MAX_CANDIDATE_DIVERGENCES]
+
+    by_id = _evidence_ref_by_id(raw_evidence)
+    candidates: list[CandidateDivergence] = []
+    for item in candidates_raw:
+        claim = item.get("claim")
+        confidence = item.get("confidence")
+        if not isinstance(claim, str) or not claim.strip():
+            raise ReconciliationContractError("candidate claim must be a non-empty string")
+        if confidence not in ("low", "medium"):
+            raise ReconciliationContractError(
+                f"candidate confidence must be 'low' or 'medium', got {confidence!r}"
+            )
+        cited = []
+        for ev in item.get("evidence", ()):
+            source_id = ev.get("source_id")
+            ref = by_id.get(source_id)
+            if ref is None:
+                raise ReconciliationContractError(
+                    f"candidate cites source_id {source_id!r} not present in raw_evidence"
+                )
+            cited.append(ref)
+        candidates.append(CandidateDivergence(
+            origin="llm_hypothesis",
+            claim=claim,
+            confidence=confidence,
+            evidence=tuple(cited),
+            disclaimer=CANDIDATE_DISCLAIMER,
+        ))
+    return explanation_text, tuple(candidates)
+
+
+@dataclass
+class FixtureReconciliationWriter:
+    """Deterministic, no-network writer for tests/fixture-mode runs."""
+
+    explanation_text: str = "Fixture explanation: no live model configured."
+    candidates: tuple[CandidateDivergence, ...] = ()
+
+    def write(
+        self,
+        *,
+        account_id: str,
+        deterministic_signals: tuple[DeterministicSignal, ...],
+        raw_evidence: tuple[EvidenceRef, ...],
+    ) -> tuple[str, tuple[CandidateDivergence, ...]]:
+        return self.explanation_text, self.candidates[:MAX_CANDIDATE_DIVERGENCES]
+
+
+class AnthropicReconciliationWriter:
+    """Live reconciliation slot. Mirrors slot_b.py's AnthropicReasonDraftWriter
+    call pattern (same client/timeout/retry constants, same live model id
+    reused per Decisions) -- not constructed by the offline battery."""
+
+    model_id = LIVE_RECONCILIATION_MODEL_ID
+    prompt_version = RECONCILIATION_PROMPT_VERSION
+
+    def __init__(
+        self,
+        client=None,
+        *,
+        model_id: str | None = None,
+        prompt_text: str | None = None,
+        cost_tracker: "CostTracker | None" = None,
+    ) -> None:
+        if client is None:  # pragma: no cover - live lane
+            from anthropic import Anthropic
+
+            client = Anthropic(timeout=LIVE_TIMEOUT_S, max_retries=LIVE_MAX_RETRIES)
+        self._client = client
+        self.model_id = model_id or LIVE_RECONCILIATION_MODEL_ID
+        self._prompt_text = prompt_text
+        self._cost_tracker = cost_tracker
+
+    def write(
+        self,
+        *,
+        account_id: str,
+        deterministic_signals: tuple[DeterministicSignal, ...],
+        raw_evidence: tuple[EvidenceRef, ...],
+    ) -> tuple[str, tuple[CandidateDivergence, ...]]:
+        prompt = self._prompt_text or RECONCILIATION_PROMPT_PATH.read_text(encoding="utf-8")
+        payload = {
+            "account_id": account_id,
+            "deterministic_signals": [
+                {
+                    "name": s.name,
+                    "value": s.value,
+                    "contribution": s.contribution,
+                    "surfaced_by_lenses": list(s.surfaced_by_lenses),
+                    "evidence": [
+                        {"source": e.source, "source_id": e.source_id, "field": e.field, "observed_at": e.observed_at}
+                        for e in s.evidence
+                    ],
+                }
+                for s in deterministic_signals
+            ],
+            "raw_evidence": [
+                {"source": e.source, "source_id": e.source_id, "field": e.field, "observed_at": e.observed_at}
+                for e in raw_evidence
+            ],
+        }
+        start = time.perf_counter()
+        msg = self._client.messages.create(
+            model=self.model_id,
+            max_tokens=700,
+            system=prompt,
+            messages=[{"role": "user", "content": json.dumps(payload, sort_keys=True)}],
+        )
+        latency_ms = (time.perf_counter() - start) * 1000.0
+        usage = getattr(msg, "usage", None)
+        in_tok = getattr(usage, "input_tokens", None)
+        out_tok = getattr(usage, "output_tokens", None)
+        if self._cost_tracker is not None and in_tok is not None:
+            self._cost_tracker.record(
+                model_id=self.model_id,
+                input_tokens=in_tok,
+                output_tokens=out_tok or 0,
+                latency_ms=latency_ms,
+                account_id=account_id,
+            )
+        explanation_text, candidates = _parse_and_validate(
+            _text_from_message(msg), raw_evidence=raw_evidence,
+        )
+        return explanation_text, candidates
+
+
+def explain(
+    data_plane: CustomerDataPlane,
+    account_id: str,
+    *,
+    as_of: str,
+    writer: ReconciliationWriter,
+    snapshot_store: SnapshotStore | None = None,
+) -> ReconciliationResult | None:
+    """Full reconciliation: Tier-1 gathering + the guarded LLM slot
+    (Job 1 explanation, Job 2 at-most-3 judge-eligible candidate
+    divergences). Returns ``None`` when Tier-1 gathering itself returns
+    ``None`` (missing account/CS data)."""
+
+    signals = gather_signals(data_plane, account_id, as_of=as_of, snapshot_store=snapshot_store)
+    if signals is None:
+        return None
+
+    raw_evidence = _raw_evidence_pool(data_plane, account_id, as_of=as_of)
+    explanation_text, candidates = writer.write(
+        account_id=account_id,
+        deterministic_signals=signals,
+        raw_evidence=raw_evidence,
+    )
+    explanation_evidence = tuple(
+        ref for signal in signals for ref in signal.evidence
+    )
+    return ReconciliationResult(
+        account_id=account_id,
+        deterministic_signals=signals,
+        explanation=Explanation(
+            text=explanation_text,
+            disclaimer=EXPLANATION_DISCLAIMER,
+            evidence=explanation_evidence,
+        ),
+        candidate_divergences=candidates,
     )
