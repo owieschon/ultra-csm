@@ -190,6 +190,21 @@ class TestAccountBriefEndpoint:
         assert derek["departed"] is True
         assert isinstance(derek["days_since_interaction"], int)
 
+    def test_brief_comms_fields_are_real_and_honestly_empty(self, client: TestClient):
+        """The demo data plane wires a real FixtureCommsConnector (not
+        comms=None) -- the three fields being empty here means a real
+        connector was asked and genuinely found nothing (the demo fixtures
+        carry no comms data yet), not that the field was bypassed."""
+
+        accounts = client.get("/accounts").json()["accounts"]
+        account_id = next(a["account_id"] for a in accounts if a.get("health_band") is not None)
+
+        resp = client.get(f"/accounts/{account_id}/brief")
+        body = resp.json()
+        assert body["comms_gmail"] == []
+        assert body["comms_call_transcripts"] == []
+        assert body["comms_internal"] == []
+
 
 class TestAccountReconciliationEndpoint:
     """Reconciliation agent (Harvest 31 / report 52): read-only endpoint

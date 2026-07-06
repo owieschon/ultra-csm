@@ -108,9 +108,11 @@ function caseRowText(row: CaseRow): { name: string; meta: string } {
 // Drawer -> brief field mapping, verified against api.py's AccountBriefResponse
 // (Phase 1's contract table). Stakeholders now reads the additive
 // `stakeholders` field (per-person role graph) instead of raw `contacts`.
-// Comms/Calendar/Agent-history have NO live source anywhere this endpoint
-// reads from -- rendered dormant honestly, never populated with placeholder
-// rows (UI_DESIGN_BRIEF's no-fake-data rule).
+// Comms is rendered by CommsDrawer (three sources, own tab strip) instead of
+// the generic single-field Drawer -- its briefField is unused, kept null only
+// so this array's shape stays uniform. Calendar/Agent-history have NO live
+// source anywhere this endpoint reads from -- rendered dormant honestly, never
+// populated with placeholder rows (UI_DESIGN_BRIEF's no-fake-data rule).
 const DRAWERS: {
   key: string;
   name: string;
@@ -198,6 +200,9 @@ export function QueueDetail({ item, day }: { item: WorkItem; day: number }) {
               open={openDrawer === d.key}
               onToggle={() => setOpenDrawer(openDrawer === d.key ? null : d.key)}
             />
+          ) : d.key === "comms" ? (
+            <CommsDrawer key={d.key} brief={brief} open={openDrawer === d.key}
+              onToggle={() => setOpenDrawer(openDrawer === d.key ? null : d.key)} />
           ) : (
             <Drawer key={d.key} name={d.name} field={d.briefField} brief={brief} formatter={d.formatter} open={openDrawer === d.key}
               onToggle={() => setOpenDrawer(openDrawer === d.key ? null : d.key)} />
@@ -480,6 +485,97 @@ function StakeholderPersonRow({ row }: { row: StakeholderRow }) {
         <span className="mono" style={{ color: "var(--warn)" }}>
           new · unengaged
         </span>
+      )}
+    </div>
+  );
+}
+
+const COMMS_TABS: { key: string; label: string; field: string }[] = [
+  { key: "gmail", label: "Gmail", field: "comms_gmail" },
+  { key: "calls", label: "Call Transcripts", field: "comms_call_transcripts" },
+  { key: "internal", label: "Internal", field: "comms_internal" },
+];
+
+// One human-readable line per row, source-shape-aware -- mirrors the
+// original design mockup's comms rows (source tag + natural-language
+// line, e.g. "gmail · re: rollout timeline · replied 3.1h"), not a raw
+// JSON dump. Does NOT synthesize a claim the data doesn't carry (e.g. the
+// mockup's hand-authored "vs 4h norm" comparison) -- only formats fields
+// the row actually has.
+function commsRowText(field: string, row: Record<string, unknown>): { source: string; line: string } {
+  if (field === "comms_internal") {
+    const author = (row.author as string) ?? "unknown";
+    const content = String(row.content ?? "").slice(0, 100);
+    return { source: (row.source as string) === "slack" ? "slack" : "note", line: `${author}: ${content}` };
+  }
+  const direction = (row.direction as string) ?? "";
+  const timestamp = (row.timestamp as string) ?? "";
+  const responseHours = row.response_time_hours as number | null | undefined;
+  const replySuffix = typeof responseHours === "number" ? ` · replied in ${responseHours}h` : "";
+  return { source: (row.channel as string) ?? "comms", line: `${direction}${replySuffix} · ${timestamp}` };
+}
+
+// Three customer/internal comms sources (Gmail, Notion call transcripts,
+// internal notes -- see api.py's AccountBriefResponse), one drawer, own
+// tab strip -- distinct from the generic single-field Drawer below because
+// no other drawer needs a multi-source split.
+function CommsDrawer({
+  brief,
+  open,
+  onToggle,
+}: {
+  brief: Brief | null;
+  open: boolean;
+  onToggle: () => void;
+}) {
+  const [activeTab, setActiveTab] = useState(COMMS_TABS[0].key);
+  const rowsByTab = COMMS_TABS.map((t) => ({
+    ...t,
+    rows: (brief?.[t.field] as unknown[] | undefined) ?? [],
+  }));
+  const total = rowsByTab.reduce((sum, t) => sum + t.rows.length, 0);
+  const active = rowsByTab.find((t) => t.key === activeTab) ?? rowsByTab[0];
+
+  return (
+    <div className="drawer">
+      <div className="drawer-h" onClick={onToggle}>
+        <span className="dn">Comms</span>
+        <span className="ds">{total} record{total === 1 ? "" : "s"} across 3 sources</span>
+      </div>
+      {open && (
+        <div className="drawer-b">
+          <div className="sec-h" style={{ marginBottom: 4 }}>
+            {rowsByTab.map((t) => (
+              <span
+                key={t.key}
+                className="tierpill"
+                style={{ cursor: "pointer", marginRight: 6, opacity: t.key === activeTab ? 1 : 0.55 }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActiveTab(t.key);
+                }}
+              >
+                {t.label} ({t.rows.length})
+              </span>
+            ))}
+          </div>
+          {active.rows.map((row, i) => {
+            const { source, line } = commsRowText(active.field, row as Record<string, unknown>);
+            return (
+              <div className="evid-row" key={i}>
+                <span className="esys">{source}</span>
+                <span className="eval">{line}</span>
+              </div>
+            );
+          })}
+          {active.rows.length === 0 && (
+            <div className="evid-row">
+              <span className="eval" style={{ color: "var(--fg-3)" }}>
+                none
+              </span>
+            </div>
+          )}
+        </div>
       )}
     </div>
   );

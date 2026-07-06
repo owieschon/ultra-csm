@@ -19,6 +19,7 @@ from typing import TYPE_CHECKING
 from ultra_csm.data_plane.contracts import (
     AccountResolution,
     AdoptionSummary,
+    CommunicationSignal,
     CRMAccount,
     CRMActivity,
     CRMCase,
@@ -30,6 +31,7 @@ from ultra_csm.data_plane.contracts import (
     CustomerDataPlane,
     Entitlement,
     HealthScore,
+    InternalCommsNote,
     StakeholderRelationship,
     SuccessPlan,
     TimeToValueMilestone,
@@ -89,6 +91,11 @@ class FixtureCustomerData:
     # simulation deferred until wired here.
     stakeholder_relationships: tuple[StakeholderRelationship, ...] = ()
     job_change_signals: "tuple[JobChangeSignal, ...]" = ()
+    # Comms three-way split: additive (all existing FixtureCustomerData(...)
+    # call sites omit these and get the honest-empty default, same discipline
+    # as CommunicationSignal.channel's earlier additive widening).
+    communication_signals: tuple[CommunicationSignal, ...] = ()
+    internal_notes: tuple[InternalCommsNote, ...] = ()
 
 
 def default_fixture_data() -> FixtureCustomerData:
@@ -493,6 +500,105 @@ class FixtureCSPlatformConnector:
         )
 
 
+class FixtureCommsConnector:
+    """Comms connector: Gmail + Notion call transcripts (both
+    CommunicationSignal, distinguished by channel) and internal notes
+    (native CSM notes + Slack, both InternalCommsNote).
+
+    Reads real Postgres (communication_signal / internal_note, migrations
+    0005/0008) when a connection is supplied -- this is the actual
+    seed-then-read closing move: ingest_slack_internal_notes/
+    ingest_notion_call_transcripts (comms_mapping.py) write there, and this
+    is what reads it back for the brief endpoint. Falls back to in-memory
+    FixtureCustomerData tuples when no connection is given (conn=None),
+    same default every other Fixture*Connector already uses -- this keeps
+    every existing call site (build_fixture_data_plane, tests, the MCP
+    server) working unchanged with zero required-argument additions.
+
+    Known gap (2026-07-05): the synthetic demo tenant's fictional accounts
+    (CRMAccount fixtures) have no corresponding Postgres `account` row --
+    only tenant/principal are seeded (platform/seed.py). A read against
+    Postgres for one of those account_ids returns an honest empty list
+    (no matching rows), never an error; the confirm/ingest write path
+    would need a real Postgres account row to succeed first (a separate,
+    larger reconciliation this dispatch does not attempt)."""
+
+    def __init__(
+        self,
+        *,
+        data: FixtureCustomerData | None = None,
+        conn=None,
+        tenant_id: str | None = None,
+    ) -> None:
+        self._data = data or default_fixture_data()
+        self._conn = conn
+        self._tenant_id = tenant_id
+
+    def _query_communication_signals(self, account_id: str, *, channel: str) -> list[CommunicationSignal]:
+        with self._conn.cursor() as cur:
+            cur.execute("SELECT set_config('app.tenant_id', %s, true)", (self._tenant_id,))
+            cur.execute(
+                "SELECT signal_id, account_id, contact_id, channel, direction, "
+                "message_ts, response_time_hours, attendees "
+                "FROM communication_signal "
+                "WHERE tenant_id = %s AND account_id = %s AND channel = %s",
+                (self._tenant_id, account_id, channel),
+            )
+            rows = cur.fetchall()
+        return [
+            CommunicationSignal(
+                signal_id=str(row[0]),
+                account_id=str(row[1]),
+                contact_id=str(row[2]),
+                channel=row[3],
+                direction=row[4],
+                timestamp=row[5].isoformat() if hasattr(row[5], "isoformat") else str(row[5]),
+                response_time_hours=row[6],
+                attendees=tuple(row[7] or ()),
+            )
+            for row in rows
+        ]
+
+    def list_gmail_signals(self, account_id: str) -> list[CommunicationSignal]:
+        if self._conn is not None:
+            return self._query_communication_signals(account_id, channel="email")
+        return [
+            s for s in self._data.communication_signals
+            if s.account_id == account_id and s.channel == "email"
+        ]
+
+    def list_call_transcript_signals(self, account_id: str) -> list[CommunicationSignal]:
+        if self._conn is not None:
+            return self._query_communication_signals(account_id, channel="call")
+        return [
+            s for s in self._data.communication_signals
+            if s.account_id == account_id and s.channel == "call"
+        ]
+
+    def list_internal_notes(self, account_id: str) -> list[InternalCommsNote]:
+        if self._conn is not None:
+            with self._conn.cursor() as cur:
+                cur.execute("SELECT set_config('app.tenant_id', %s, true)", (self._tenant_id,))
+                cur.execute(
+                    "SELECT note_id, account_id, author, content, source, message_ts "
+                    "FROM internal_note WHERE tenant_id = %s AND account_id = %s",
+                    (self._tenant_id, account_id),
+                )
+                rows = cur.fetchall()
+            return [
+                InternalCommsNote(
+                    note_id=str(row[0]),
+                    account_id=str(row[1]),
+                    author=row[2],
+                    timestamp=row[5].isoformat() if row[5] is not None else "",
+                    content=row[3],
+                    source=row[4],
+                )
+                for row in rows
+            ]
+        return [n for n in self._data.internal_notes if n.account_id == account_id]
+
+
 class FixtureProductTelemetryConnector:
     """Pure product-telemetry fixture."""
 
@@ -523,12 +629,15 @@ class FixtureProductTelemetryConnector:
         return [m for m in self._data.milestones if m.account_id == account_id]
 
 
-def build_fixture_data_plane(*, tenant: str = DEFAULT_TENANT) -> CustomerDataPlane:
+def build_fixture_data_plane(
+    *, tenant: str = DEFAULT_TENANT, comms_conn=None, comms_tenant_id: str | None = None
+) -> CustomerDataPlane:
     data = default_fixture_data()
     return CustomerDataPlane(
         crm=FixtureCRMDataConnector(tenant=tenant, data=data),
         cs=FixtureCSPlatformConnector(data=data),
         telemetry=FixtureProductTelemetryConnector(data=data),
+        comms=FixtureCommsConnector(data=data, conn=comms_conn, tenant_id=comms_tenant_id),
     )
 
 
@@ -874,18 +983,23 @@ def build_sweep_fixture_data_plane(
     *,
     tenant: str = DEFAULT_TENANT,
     tenant_id: str = DEFAULT_TENANT,
+    comms_conn=None,
+    comms_tenant_id: str | None = None,
 ) -> CustomerDataPlane:
     data = sweep_fixture_data(tenant_id=tenant_id)
     return CustomerDataPlane(
         crm=FixtureCRMDataConnector(tenant=tenant, data=data),
         cs=FixtureCSPlatformConnector(data=data),
         telemetry=FixtureProductTelemetryConnector(data=data),
+        comms=FixtureCommsConnector(data=data, conn=comms_conn, tenant_id=comms_tenant_id),
     )
 
 
 def synthetic_book_fixtures(
     *,
     tenant: str = DEFAULT_TENANT,
+    comms_conn=None,
+    comms_tenant_id: str | None = None,
 ) -> CustomerDataPlane:
     """35-account synthetic book of business for demo.
 
@@ -900,4 +1014,5 @@ def synthetic_book_fixtures(
         crm=FixtureCRMDataConnector(tenant=tenant, data=data),
         cs=FixtureCSPlatformConnector(data=data),
         telemetry=FixtureProductTelemetryConnector(data=data),
+        comms=FixtureCommsConnector(data=data, conn=comms_conn, tenant_id=comms_tenant_id),
     )
