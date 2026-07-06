@@ -2,11 +2,11 @@ PYTHON := .venv/bin/python
 
 # One-time reviewer setup. Requires Python 3.10+ and local PostgreSQL 16 tooling
 # (`initdb`/`pg_ctl`) available on PATH or through the platform package.
-.PHONY: setup eval lint scorecard-csm csm-work-queue demo-loop year-in-life-csm tick-demo-csm mcp-readonly-demo-csm mcp-operator-demo-csm mcp-relay-demo-csm mcp-relational-demo-csm mcp-stdio-replay-csm slot-a-scorecard-csm autonomy-report-csm attio-simulated-onboarding-csm gainsight-simulated-onboarding-csm product-telemetry-simulated-onboarding-csm telemetry-simulated-live-csm salesforce-simulated-onboarding-csm hubspot-simulated-onboarding-csm relay-battery-csm relational-battery-csm narrative-battery-csm content-battery-csm content-invariance-csm canary-battery-csm week1-protocol-csm week1-protocol-fieldstone-csm quantity-battery-csm transcript-battery-csm tier-policy-battery-csm tier-gating-battery-csm perturbation-battery-csm drift-battery-csm deployment-readiness fieldstone-battery-csm crateworks-battery-csm crateworks-onboarding-csm week1-protocol-crateworks-csm loopway-battery-csm loopway-attio-simulated-onboarding-csm week1-protocol-loopway-csm demo clean outcome-simulation-csm stochastic-csm regression-csm regression-csm-live oversight-report doctor quality-regression-csm quality-gold-csm quality-gold-label-csm quality-gold-status-csm quality-gold-validate-csm quality-gold-hard-csm quality-gold-hard-label-csm quality-gold-hard-status-csm quality-gold-hard-validate-csm judge-agreement-csm judge-diagnosis-csm judge-reference-review-csm judge-reference-recheck-csm judge-reference-apply-csm judge-live-csm status hygiene serve mcp fieldstone-perturbation-battery-csm fieldstone-drift-battery-csm crateworks-perturbation-battery-csm crateworks-drift-battery-csm loopway-perturbation-battery-csm loopway-drift-battery-csm ui-dev ui-build ui-check resilience-battery-csm person-factor-battery-csm
+.PHONY: setup eval lint scorecard-csm scorecard-csm-check csm-work-queue demo-loop year-in-life-csm tick-demo-csm mcp-readonly-demo-csm mcp-operator-demo-csm mcp-relay-demo-csm mcp-relational-demo-csm mcp-stdio-replay-csm slot-a-scorecard-csm autonomy-report-csm attio-simulated-onboarding-csm gainsight-simulated-onboarding-csm product-telemetry-simulated-onboarding-csm telemetry-simulated-live-csm salesforce-simulated-onboarding-csm hubspot-simulated-onboarding-csm relay-battery-csm relational-battery-csm narrative-battery-csm content-battery-csm content-invariance-csm canary-battery-csm week1-protocol-csm week1-protocol-fieldstone-csm quantity-battery-csm transcript-battery-csm tier-policy-battery-csm tier-gating-battery-csm perturbation-battery-csm drift-battery-csm deployment-readiness fieldstone-battery-csm crateworks-battery-csm crateworks-onboarding-csm week1-protocol-crateworks-csm loopway-battery-csm loopway-attio-simulated-onboarding-csm week1-protocol-loopway-csm demo clean outcome-simulation-csm stochastic-csm regression-csm regression-csm-live oversight-report doctor quality-regression-csm quality-gold-csm quality-gold-label-csm quality-gold-status-csm quality-gold-validate-csm quality-gold-hard-csm quality-gold-hard-label-csm quality-gold-hard-status-csm quality-gold-hard-validate-csm judge-agreement-csm judge-diagnosis-csm judge-reference-review-csm judge-reference-recheck-csm judge-reference-apply-csm judge-live-csm status hygiene serve mcp fieldstone-perturbation-battery-csm fieldstone-drift-battery-csm crateworks-perturbation-battery-csm crateworks-drift-battery-csm loopway-perturbation-battery-csm loopway-drift-battery-csm ui-dev ui-build ui-check resilience-battery-csm person-factor-battery-csm
 setup:
 	python3 -m venv .venv
 	$(PYTHON) -m pip install --upgrade pip
-	$(PYTHON) -m pip install -e ".[dev,api,mcp]"
+	$(PYTHON) -m pip install -e ".[dev,api,mcp]" -c constraints.txt
 
 serve:
 	PYTHONPATH=src:. $(PYTHON) -m uvicorn ultra_csm.api:app --host 0.0.0.0 --port 8000 --reload
@@ -35,6 +35,9 @@ lint:
 
 scorecard-csm:
 	PYTHONPATH=src:. $(PYTHON) -m eval.scorecard_csm
+
+scorecard-csm-check:
+	PYTHONPATH=src:. $(PYTHON) -m eval.scorecard_csm --check
 
 csm-work-queue: scorecard-csm
 

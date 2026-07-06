@@ -354,8 +354,7 @@ class TestGovernanceEndpoints:
         client.post("/sweep", headers=AUTH_HEADERS)
         proposals = client.get("/proposals").json()["proposals"]
 
-        if not proposals:
-            pytest.skip("No pending proposals to verdict")
+        assert proposals, "sweep is expected to yield pending proposals over the fixture book"
 
         proposal_id = proposals[0]["proposal_id"]
         resp = client.post(
@@ -494,8 +493,7 @@ class TestGovernanceEndpoints:
         client.post("/sweep", headers=AUTH_HEADERS)
         proposals = client.get("/proposals").json()["proposals"]
 
-        if not proposals:
-            pytest.skip("No pending proposals to verdict")
+        assert proposals, "sweep is expected to yield pending proposals over the fixture book"
 
         proposal_id = proposals[0]["proposal_id"]
 

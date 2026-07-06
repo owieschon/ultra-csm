@@ -157,8 +157,8 @@
   "slot_b": {
     "fixture_model_id": "fixture-agent1-slot-b-v1",
     "live_model_id": "claude-opus-4-8",
-    "prompt_path": "docs/prompts/agent1_slot_b_reason_draft_v3.md",
-    "prompt_version": "agent1-slot-b-reason-draft-v3"
+    "prompt_path": "docs/prompts/agent1_slot_b_reason_draft_v4.md",
+    "prompt_version": "agent1-slot-b-reason-draft-v4"
   },
   "unsafe_placeholder": {
     "expected_to_fail": true,
