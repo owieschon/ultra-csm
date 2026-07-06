@@ -160,7 +160,7 @@ dispatch was asked to close.
 
 ## Receipts appendix
 
-**Files created/modified** (all paths under `/Users/owieschon/dev/ultra-csm-notion-authoring-edge/`):
+**Files created/modified** (all paths repo-root-relative):
 - `src/ultra_csm/data_plane/notion_reader.py` (new — parse/map + live pull, 328 lines)
 - `scripts/notion_render.py` (new — renderer, both tiers, `--check`, 270 lines)
 - `tests/test_notion_render.py` (new — fixture/agnostic/isolation/account-specific/live-credential-fail-closed tests, 5 tests)

@@ -103,7 +103,7 @@ claude mcp add ultra-csm --env ULTRA_CSM_MCP_READONLY=1 -- \
 
 Then, in Claude Code, ask: *"Which accounts are most at risk, and what evidence says
 so?"* — answers are grounded in the same deterministic value-model tools the agent
-uses over a simulated 35-account book; write tools return a typed refusal enforced in
+uses over a simulated 9-account book; write tools return a typed refusal enforced in
 the server process, not left to the model's judgment. `docs/TOUR.md` has more prompts
 and a ten-minute walk through the rest of the system.
 
@@ -163,9 +163,9 @@ A non-deterministic instrument must never own a deterministic gate. That boundar
 | Area | Status |
 |---|---|
 | Deterministic spine | **Proven** — scorecard hard gates green on real Postgres |
-| LLM quality judge | **Validated** under N-run modal aggregation (single-labeler gold, prompt v7): clean layer all six dimensions κ ≥ 0.6 with zero gate errors; adversarial hard layer clears all six aggregated with zero false negatives. `priority_fidelity` and `account_specificity` are deterministic. The claim is derived from versioned evidence artifacts (`eval/judge_validation.py`), never hand-set; a second independent labeler remains open |
+| LLM quality judge | **Validated** under N-run modal aggregation (single-labeler gold, prompt v8 — `eval/judge_anthropic.py`'s `JUDGE_PROMPT_VERSION`): clean layer all six dimensions κ ≥ 0.6 with zero gate errors; adversarial hard layer clears all six aggregated with zero false negatives. `priority_fidelity` and `account_specificity` are deterministic. The claim is derived from versioned evidence artifacts (`eval/judge_validation.py`), never hand-set; a second independent labeler remains open |
 | Connectors (Salesforce/Rocketlane live; Gainsight/Attio fixture) | **Salesforce and Rocketlane proven live**: real read-only CRM fetch and a real, create-only write-back against a seeded corpus B account (`docs/PROGRAM_REPORT_6.md`); real onboarding phase/task evidence lights up the TTV rail end-to-end, including a live cross-system beat joining both. Gainsight/Attio remain fixture-tested to the credential boundary — no live org available in this environment |
-| Live semantic quality | **Proven** — real Slot B drafts generated over live corpus B accounts, scored by the validated N-run judge (cot@5, prompt v7); derived (never hand-set) via `eval.judge_validation.live_semantic_quality_status` from `eval/gold/live_semantic_quality.json` |
+| Live semantic quality | **Proven** — real Slot B drafts generated over live corpus B accounts, scored by the validated N-run judge (cot@5, prompt v8); derived (never hand-set) via `eval.judge_validation.live_semantic_quality_status` from `eval/gold/live_semantic_quality.json` |
 | Data | Curated **fixtures** for the simulated book; two real live tenants for the connector/quality proof above, not production customer data |
 | Outcome rail, Risk & Expansion lenses | Outcome rail live-instrumented via the Rocketlane TTV bridge, including a lifecycle-aware fix for onboarding-stage delivery-slippage-only accounts; deterministic Risk and Expansion lenses are built, with draft-quality claims gated on judge validation |
 | Oversight evidence | **Rendered from ledgers** — `make oversight-report` writes `demo_state/oversight_report.{json,md}`: verdicts, payload-hash-bound receipts, suppressions, breaker events, quality state, and autonomy provenance, with an explicit "not instrumented" section. An evidence record, not a compliance certification |
@@ -180,9 +180,10 @@ architecture, and measurement discipline — `docs/DECISION_LOG.md` records what
    (judge-vs-human1-vs-human2).
 2. **Drift-power experiment** — show the judge's residual noise floor is below the generation
    drift it must detect, or scope the "detects quality drift" claim down to what's provable.
-3. **Close the loop in simulation** — stateful sim tenant, graduated autonomy (tier-1 internal
-   actions auto-execute; customer-facing tiers stay human-gated), committers, and outcome
-   re-observation — per `docs/DEMO_EXECUTION_PLAN.md`.
+3. **Extend the closed sim loop toward graduated autonomy** — the sim loop already
+   closes end to end (`STATUS.md`'s `loop_closed_sim=true`); next is tier-1 internal
+   actions auto-executing while customer-facing tiers stay human-gated, plus
+   committers and outcome re-observation — per `docs/DEMO_EXECUTION_PLAN.md`.
 4. **Gmail draft placement, live** — the offline path (draft-never-send, OAuth token refresh,
    create-only) is built and tested; live placement is gated on the owner supplying Gmail OAuth
    credentials.
