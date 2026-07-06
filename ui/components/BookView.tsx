@@ -106,8 +106,7 @@ export function BookView({
             <span
               className="lens"
               key={l}
-              style={{ color: "var(--fg-3)" }}
-              title="no live source yet"
+              title={`lens: ${l.toLowerCase()}`}
             >
               {l}
             </span>

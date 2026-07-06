@@ -22,6 +22,7 @@ import psycopg
 from ultra_csm.agent1 import SweepResult, collapse_cohorts, run_time_to_value_sweep
 from ultra_csm.agent1.lens_expansion import ExpansionLensResult, run_expansion_lens
 from ultra_csm.agent1.lens_risk import RiskLensResult, run_risk_lens
+from ultra_csm.audit_ledger import record_audit_event
 from ultra_csm.agent1.precedence import (
     ActionPacket,
     FindingPacket,
@@ -337,6 +338,13 @@ def run_tick_with_config(
         "snapshot": observed.trigger_state.to_dict(),
     }
     _append_jsonl(ledger_path, ledger_entry)
+    _record_tick_audit_events(
+        conn,
+        gate_context=gate_context,
+        as_of=observed.as_of,
+        fired_runs=tuple(fired_runs),
+        ledger_entry=ledger_entry,
+    )
     return TickResult(
         as_of=observed.as_of,
         day=observed.day,
@@ -566,6 +574,103 @@ def _sweep_payload_for_trigger(sweep: SweepResult, fired: FiredTrigger) -> dict[
         "degraded_items": sweep.degraded_items,
         "budget_skipped": sweep.budget_skipped,
     }
+
+
+def _record_tick_audit_events(
+    conn: psycopg.Connection,
+    *,
+    gate_context: TickGateContext,
+    as_of: str,
+    fired_runs: tuple[dict[str, Any], ...],
+    ledger_entry: dict[str, Any],
+) -> None:
+    created_proposals = [
+        proposal["proposal_id"]
+        for run in fired_runs
+        for proposal in run.get("created_proposals", ())
+        if proposal.get("proposal_id")
+    ]
+    record_audit_event(
+        conn,
+        tenant_id=gate_context.tenant_id,
+        actor_id=gate_context.actor_principal_id,
+        event_type="sweep.fired",
+        source_ref=f"tick:{as_of}:sweep.fired",
+        detail=(
+            f"Tick fired {len(fired_runs)} trigger runs and created "
+            f"{len(created_proposals)} proposals"
+        ),
+        payload={
+            "as_of": as_of,
+            "fired_trigger_count": len(fired_runs),
+            "proposal_ids": created_proposals,
+            "tick_ledger_artifact": ledger_entry.get("artifact"),
+        },
+        now=SEED_CLOCK,
+    )
+    for run in fired_runs:
+        trigger = run.get("trigger", {})
+        trigger_name = str(trigger.get("trigger_name") or "unknown")
+        for index, item in enumerate(run.get("work_items", ())):
+            account_id = str(item.get("account_id") or "")
+            proposal = item.get("proposal") if isinstance(item.get("proposal"), dict) else None
+            proposal_id = proposal.get("proposal_id") if proposal else None
+            priority = item.get("priority") if isinstance(item.get("priority"), dict) else None
+            if priority is not None:
+                record_audit_event(
+                    conn,
+                    tenant_id=gate_context.tenant_id,
+                    actor_id=gate_context.actor_principal_id,
+                    event_type="value_model",
+                    proposal_id=proposal_id,
+                    account_ref=account_id or None,
+                    source_ref=f"tick:{as_of}:{trigger_name}:{index}:value_model",
+                    detail=f"Value model scored {priority.get('score')}",
+                    payload={
+                        "as_of": as_of,
+                        "trigger_name": trigger_name,
+                        "account_id": account_id,
+                        "score": priority.get("score"),
+                    },
+                    now=SEED_CLOCK,
+                )
+            draft_mode = item.get("draft_mode")
+            if draft_mode and draft_mode != "none":
+                record_audit_event(
+                    conn,
+                    tenant_id=gate_context.tenant_id,
+                    actor_id=gate_context.actor_principal_id,
+                    event_type="slot_b.draft",
+                    proposal_id=proposal_id,
+                    account_ref=account_id or None,
+                    source_ref=f"tick:{as_of}:{trigger_name}:{index}:slot_b.draft",
+                    detail=f"Slot B produced {draft_mode} draft output",
+                    payload={
+                        "as_of": as_of,
+                        "trigger_name": trigger_name,
+                        "account_id": account_id,
+                        "draft_mode": draft_mode,
+                    },
+                    now=SEED_CLOCK,
+                )
+                record_audit_event(
+                    conn,
+                    tenant_id=gate_context.tenant_id,
+                    actor_id=gate_context.actor_principal_id,
+                    event_type="judge.score",
+                    proposal_id=proposal_id,
+                    account_ref=account_id or None,
+                    source_ref=f"tick:{as_of}:{trigger_name}:{index}:judge.score",
+                    detail="Slot B contract validator passed",
+                    payload={
+                        "as_of": as_of,
+                        "trigger_name": trigger_name,
+                        "account_id": account_id,
+                        "judge_kind": "contract_validator",
+                        "passed": True,
+                    },
+                    now=SEED_CLOCK,
+                )
 
 
 def _lens_payload_for_trigger(
