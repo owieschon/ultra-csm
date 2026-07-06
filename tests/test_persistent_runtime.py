@@ -83,14 +83,20 @@ def test_persistent_api_restart_keeps_proposal_verdict_and_ledger(monkeypatch):
             assert ledger.status_code == 200
             events = ledger.json()["events"]
 
-        assert {
+        persisted_events = {
             (event["proposal_id"], event["event"])
             for event in events
             if event["proposal_id"] == proposal_id
-        } == {
+        }
+        assert {
             (proposal_id, "gate.propose"),
             (proposal_id, "gate.deny"),
-        }
+        } <= persisted_events
+        assert {
+            (proposal_id, "value_model"),
+            (proposal_id, "slot_b.draft"),
+            (proposal_id, "judge.score"),
+        } <= persisted_events
 
 
 def test_persistent_runtime_enforces_cross_tenant_rls(monkeypatch):

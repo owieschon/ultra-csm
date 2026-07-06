@@ -2,16 +2,21 @@ from __future__ import annotations
 
 import inspect
 import json
+from dataclasses import replace
 
 import pytest
 
+from ultra_csm.audit_ledger import AuditContext, list_audit_events
+from ultra_csm.data_plane import ACME_LOGISTICS, build_fixture_data_plane
 from ultra_csm.data_plane.live_smoke import HttpRequest, HttpResponse
 from ultra_csm.email_drafts import (
     EmailDraftError,
     GmailDraftCommitter,
     render_email_draft_from_proposal,
 )
-from ultra_csm.governance import ActionProposal, canonical_payload_sha256
+from ultra_csm.governance import ActionGate, ActionProposal, FixtureVerdictSource, canonical_payload_sha256
+from ultra_csm.outcome_reobserver import perform_due_reobservations
+from tests._govhelpers import CLOCK, T1, setup_roster
 
 
 class FakeGmailClient:
@@ -33,6 +38,15 @@ class FakeGmailClient:
                 headers={"content-type": "application/json"},
             )
         return HttpResponse(status=404, body=b"{}", headers={})
+
+
+@pytest.fixture
+def gov_conn(runtime_conn):
+    runtime_conn.execute("BEGIN")
+    try:
+        yield runtime_conn
+    finally:
+        runtime_conn.rollback()
 
 
 def test_render_email_draft_requires_approved_proposal_and_binds_payload_sha():
@@ -80,6 +94,60 @@ def test_gmail_draft_committer_creates_draft_only_and_records_receipt():
     assert body["message"]["raw"]
 
 
+def test_gmail_draft_commit_writes_audit_and_reobserve_queue(gov_conn):
+    orch, _authority = setup_roster(gov_conn)
+    gate = ActionGate(
+        gov_conn,
+        tenant_id=T1,
+        actor_principal_id=orch,
+        verdict_source=FixtureVerdictSource(),
+        now=CLOCK,
+    )
+    proposed = gate.propose(
+        intent="time_to_value",
+        action="draft_customer_outreach",
+        payload=_proposal_payload(account_id=ACME_LOGISTICS),
+        autonomy_tier=2,
+        required_permission="customer.outreach.draft",
+        cause_ref="test:gmail-audit",
+    )
+    proposal = replace(proposed, status="approved")
+    artifact = render_email_draft_from_proposal(proposal)
+    committer = GmailDraftCommitter(
+        env={
+            "ULTRA_CSM_GMAIL_CLIENT_ID": "client",
+            "ULTRA_CSM_GMAIL_CLIENT_SECRET": "secret",
+            "ULTRA_CSM_GMAIL_REFRESH_TOKEN": "refresh",
+        },
+        client=FakeGmailClient(),
+        audit_context=AuditContext(gov_conn, tenant_id=T1, actor_id=orch, now=CLOCK),
+    )
+
+    receipt = committer.create_draft(proposal, artifact)
+    reobserved = perform_due_reobservations(
+        gov_conn,
+        tenant_id=T1,
+        actor_id=orch,
+        data_plane=build_fixture_data_plane(),
+        as_of="2026-06-27",
+        now=CLOCK,
+    )
+    events = list_audit_events(
+        gov_conn,
+        tenant_id=T1,
+        actor_id=orch,
+        limit=20,
+        now=CLOCK,
+    )
+    by_type = {event.event_type: event for event in events}
+
+    assert receipt.draft_id == "draft-123"
+    assert by_type["gmail.commit"].proposal_id == proposal.proposal_id
+    assert by_type["reobserve.queue"].proposal_id == proposal.proposal_id
+    assert reobserved
+    assert by_type["reobserve.result"].payload["proposal_id"] == proposal.proposal_id
+
+
 def test_gmail_draft_committer_refuses_unapproved_or_mismatched_payload():
     approved = _proposal(status="approved")
     pending = _proposal(status="pending")
@@ -112,12 +180,7 @@ def test_gmail_committer_has_no_gmail_delivery_endpoint():
 
 
 def _proposal(*, status: str, subject: str = "Activation follow-up") -> ActionProposal:
-    payload = {
-        "account_id": "acct-001",
-        "contact_email": "ops@example.test",
-        "subject": subject,
-        "body": "Please review the activation plan.",
-    }
+    payload = _proposal_payload(subject=subject)
     return ActionProposal(
         proposal_id="proposal-001",
         intent="time_to_value",
@@ -128,3 +191,16 @@ def _proposal(*, status: str, subject: str = "Activation follow-up") -> ActionPr
         required_permission="customer.outreach.draft",
         status=status,
     )
+
+
+def _proposal_payload(
+    *,
+    account_id: str = "acct-001",
+    subject: str = "Activation follow-up",
+) -> dict:
+    return {
+        "account_id": account_id,
+        "contact_email": "ops@example.test",
+        "subject": subject,
+        "body": "Please review the activation plan.",
+    }

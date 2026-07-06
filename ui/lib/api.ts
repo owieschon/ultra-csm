@@ -155,7 +155,7 @@ export interface LedgerEvent {
   ts: string;
   event: string;
   label: string;
-  proposal_id: string;
+  proposal_id: string | null;
   detail: string;
 }
 
