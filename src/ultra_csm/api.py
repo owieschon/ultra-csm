@@ -67,6 +67,7 @@ from ultra_csm._api_helpers import (
     AuthError,
     _build_account_brief,
     _enrich_person_evidence,
+    _proposal_has_contact_consent,
     _score_one_account,
     auth_marker,
     demo_noauth_enabled,
@@ -532,6 +533,41 @@ def _data_plane_for_day(
         telemetry=FixtureProductTelemetryConnector(data=data),
     )
     return dp, as_of
+
+
+def _precedence_data_plane_for_proposal(
+    proposal: ActionProposal,
+) -> tuple[CustomerDataPlane, str]:
+    """Return the data plane + as_of a precedence re-check should use for
+    *proposal*, scoped to the day it actually originated from rather than
+    the static default.
+
+    Real proposals from a day-scoped sweep (``POST /sweep?day=N``) already
+    carry ``payload["as_of"]`` (set by agent1/lens_expansion.py's
+    _propose_expansion_call at emit time) -- this derives the simulation day
+    back out of that recorded date and re-fetches that day's synthetic-book
+    data plane via the same ``_data_plane_for_day`` used at sweep time, so
+    the re-check sees the same book the proposal was raised against. Falls
+    back to the static default plane (today's behaviour) when the proposal
+    carries no parseable ``as_of`` -- not every proposal type carries one.
+    """
+
+    as_of = proposal.payload.get("as_of")
+    if not isinstance(as_of, str):
+        return _data_plane_for_day(None)
+
+    from ultra_csm.data_plane.synthetic_book import SEED_DATE
+
+    try:
+        seed_date = datetime.strptime(SEED_DATE, "%Y-%m-%d")
+        proposal_date = datetime.strptime(as_of, "%Y-%m-%d")
+    except ValueError:
+        return _data_plane_for_day(None)
+
+    day = (proposal_date - seed_date).days
+    if day < 0:
+        return _data_plane_for_day(None)
+    return _data_plane_for_day(day)
 
 
 def _fixture_data_for_day(day: int | None, *, deep: bool = False):
@@ -1470,14 +1506,27 @@ async def submit_verdict(proposal_id: str, body: VerdictRequest, request: Reques
             auth_principal=auth_principal,
         )
 
+    if body.verdict == "approve" and not _proposal_has_contact_consent(
+        proposal, data_plane=_data_plane,
+    ):
+        raise HTTPException(
+            status_code=409,
+            detail={
+                "error": "Customer-facing outreach is blocked because contact consent is missing",
+                "code": "CONSENT_MISSING",
+                "proposal_id": proposal_id,
+            },
+        )
+
     action_packet = _action_packet_for_proposal(proposal)
     if body.verdict == "approve" and action_packet is not None:
-        blockers = _current_precedence_findings(_data_plane, as_of=_AS_OF)  # type: ignore[arg-type]
+        precedence_dp, precedence_as_of = _precedence_data_plane_for_proposal(proposal)
+        blockers = _current_precedence_findings(precedence_dp, as_of=precedence_as_of)
         decision = approval_decision(
             action_packet,
             blockers,
             load_precedence_config(),
-            as_of=_AS_OF,
+            as_of=precedence_as_of,
         )
         if not decision.allowed:
             raise HTTPException(
