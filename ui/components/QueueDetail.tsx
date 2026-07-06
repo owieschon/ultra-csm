@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { api, WorkItem } from "@/lib/api";
 import { label, MOTION_LABELS, TRIGGER_LABELS } from "@/lib/labels";
+import { ReconciliationSection } from "./ReconciliationSection";
 
 type Brief = Record<string, unknown>;
 
@@ -279,6 +280,8 @@ export function QueueDetail({ item, day }: { item: WorkItem; day: number }) {
           </div>
         ))}
       </div>
+
+      <ReconciliationSection accountId={item.account_id} day={day} />
 
       <div className="sec">
         <div className="sec-h">
