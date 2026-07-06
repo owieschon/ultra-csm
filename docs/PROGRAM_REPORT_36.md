@@ -72,7 +72,8 @@ Python dependency (fastapi, uvicorn, mcp, pytest, ruff, httpx) is
 MIT/BSD-3, `psycopg[binary]` is LGPL-3.0-only but consumed unvendored (no
 distribution obligation triggered), and every direct npm dependency in
 `ui/` is MIT/Apache-2.0/BSD. MIT is compatible with all of them and is the
-shortest, most common choice for a portfolio/demo repo. **The owner may
+shortest, most common default license choice for a small open-source repo.
+**The owner may
 prefer Apache-2.0 (explicit patent grant) or a source-available notice
 instead** — this dispatch shipped the default rather than leaving the repo
 unlicensed while a preference is decided. Swapping license text later is a
