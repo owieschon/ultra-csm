@@ -8,7 +8,7 @@ repository because they may contain private source details.
 from __future__ import annotations
 
 import argparse
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 import json
 import os
 from pathlib import Path
@@ -49,7 +49,7 @@ def run_external_corpus_probe(
 ) -> dict[str, Any]:
     env = env or os.environ
     _assert_outside_repo(output_root)
-    run_id = run_label or datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
+    run_id = run_label or datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     run_dir = output_root / run_id
     _assert_outside_repo(run_dir)
     run_dir.mkdir(parents=True, exist_ok=False)
@@ -121,7 +121,7 @@ def _fetch_records(
     api_key = _required_env(env, API_KEY_ENV)
     records: list[dict[str, Any]] = []
     source_reported_count: int | None = None
-    started = datetime.now(UTC)
+    started = datetime.now(timezone.utc)
     offset = 0
     page_index = 0
     while offset < limit:
@@ -155,7 +155,7 @@ def _fetch_records(
 
     raw_path = run_dir / "raw_records.json"
     raw_path.write_text(json.dumps(records, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    elapsed_ms = int((datetime.now(UTC) - started).total_seconds() * 1000)
+    elapsed_ms = int((datetime.now(timezone.utc) - started).total_seconds() * 1000)
     return records, {
         "rows_fetched": len(records),
         "source_reported_count": source_reported_count,
