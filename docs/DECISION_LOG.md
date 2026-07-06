@@ -322,3 +322,17 @@ Notion API 2025-09-03 handling: title matching, the data_source/database/page pa
 chain, `initial_data_source` property nesting, and schema validation before reusing a
 found database). Whether the CS/content team finds it usable as their actual planning
 surface remains untested — no content-team member has given feedback on it.
+
+## MP-B internal bridge spike: deterministic routing, packet fielding, B3 validation artifact (Stream MP-B)
+
+**Context.** MP-B tested one internal handoff pair before generalizing the archetype: detect grounded CRM support/feedback signals, route them to Engineering or Product, carry abstention as a field, and produce an evidence-cited internal packet. The Wave-0 oracle is owner-confirmed single-oracle ground truth with recorded residuals: B0-04/B0-06 are gap/none fence-sitters, B0-09/B0-14 are widened Engineering/Product boundary rows, and B0-11 is a watched soft spot. No independent second human labeler was supplied; the same-model ambiguity probe is disclosed as correlated and is not IRR.
+
+**Decision.**
+1. **Keep the routing core deterministic and additive.** `route_internal_bridge` consumes CRM cases only and emits `target`, `motion`, `signal`, `evidence`, `abstained`, and `reason`. It is attached to the sweep work item without changing existing Slot A/Slot B disposition or action selection.
+2. **Grade placement per case, not aggregate abstention rate.** `eval/internal_bridge_validation_report.json` reports rows as oracle target cells, columns as agent target cells, and separately counts the abstain axis. The dangerous headline cell is a confident route to the wrong target.
+3. **Reuse the shipped Slot B quality judge for packet prose.** B3 adapts each internal packet into the existing request/output shape and records all six `eval/judge_csm.py` dimension scores with the same `KAPPA_GATE`. No new judge is created or validated in this spike.
+4. **Capability claims are spike-scoped.** IB-1/IB-2/IB-3 are marked built only for the MP-B minimal slice: Wave-0 case-signal aggregation, Engineering/Product/abstain routing, and an internal packet schema/fixture writer. IB-4, IB-5, and VM-8 remain not built.
+
+**B3 numbers.** `eval/internal_bridge_validation_report.json` reports `routing_core_hard_ok=true` with `routing_failed_cases=[]`. Confusion cells: oracle `engineering` -> agent `engineering` = 8; oracle `product` -> agent `product` = 4; oracle `engineering|product` -> agent `engineering` = 2; oracle `abstain` -> agent `abstain` = 4. Abstain axis: oracle-abstain/agent-abstain = 4, oracle-route/agent-route = 14, oracle-route/agent-abstain = 0, oracle-abstain/agent-route = 0. The confidently-wrong cell list is empty. Packet prose judge: `claude-sonnet-5`, `quality-judge-v8`, existing judge validation status `validated=true`; packet failures = 0. Score distribution: `grounding_fidelity` 18x3; `on_task_relevance` 18x3; `account_specificity` 14x3 and 4x2; `priority_fidelity` 18x2 (the adapter supplies the internal-bridge signal as the priority-like factor, but no priority score); `tone_fit` 18x3; `safety_boundary` 18x3.
+
+**Verdict boundary.** The spike can report an existence proof when the deterministic oracle clears and the packet prose scores are captured. It does not prove real-world durability, feedback-loop closure, QBR narrative generation, or the green account that churns anyway; that durability claim remains blocked on VM-8. The word "validated" remains owner-confirmed, not self-asserted by this artifact.
