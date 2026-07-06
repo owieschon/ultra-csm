@@ -39,6 +39,7 @@ from ultra_csm.governance import (
     seed_roster,
 )
 from ultra_csm.knowledge import load_playbooks
+from ultra_csm.logging_config import setup_logging
 from ultra_csm.platform import boot_seeded_cluster, session
 from ultra_csm.platform.seed import SEED_CLOCK
 from ultra_csm.snapshot_store import SnapshotStore
@@ -751,6 +752,7 @@ def _parse_date(value: str | date | datetime) -> date:
 
 
 def main(argv: list[str] | None = None) -> int:
+    setup_logging("INFO")
     parser = argparse.ArgumentParser(prog="python -m ultra_csm.tick")
     parser.add_argument("--demo", action="store_true")
     parser.add_argument("--as-of", default=SEED_DATE)
