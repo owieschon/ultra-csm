@@ -39,6 +39,12 @@ def judge_validation_status(
     compare_path: Path = COMPARE_PATH,
 ) -> dict[str, Any]:
     """Derive the judge-validation claim from the evidence artifacts on disk."""
+    # Local import: eval.judge_anthropic -> eval.label_gold -> eval.gold_slot_b_quality
+    # imports judge_validation_status back from this module, so a module-level
+    # import here creates a circular import. eval.judge_csm (imported at module
+    # level above) has no such path back to this module.
+    from eval.judge_anthropic import JUDGE_PROMPT_VERSION
+
     failures: list[str] = []
     agreement = _load(agreement_path, failures)
     compare = _load(compare_path, failures)
@@ -129,6 +135,20 @@ def judge_validation_status(
     )
     if not prompt_version:
         failures.append("agreement artifact has no judge_prompt_version")
+    elif prompt_version != JUDGE_PROMPT_VERSION:
+        failures.append(
+            f"agreement judge_prompt_version {prompt_version!r} != shipped {JUDGE_PROMPT_VERSION!r}"
+        )
+
+    compare_prompt_version = (
+        compare.get("judge_prompt_version") if isinstance(compare, dict) else None
+    )
+    if compare_prompt_version is None:
+        failures.append("compare artifact has no judge_prompt_version")
+    elif compare_prompt_version != JUDGE_PROMPT_VERSION:
+        failures.append(
+            f"compare judge_prompt_version {compare_prompt_version!r} != shipped {JUDGE_PROMPT_VERSION!r}"
+        )
 
     return _status(
         not failures,
