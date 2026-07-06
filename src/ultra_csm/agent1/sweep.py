@@ -8,6 +8,11 @@ from dataclasses import asdict, dataclass, replace
 from typing import TYPE_CHECKING, Literal
 
 from ultra_csm._util import compact_asdict, iso_date
+from ultra_csm.agent1.content_route_matcher import (
+    ContentCatalogEntry,
+    load_tenant_content_catalog,
+    match_content,
+)
 from ultra_csm.agent1.slot_b import (
     FIXTURE_SLOT_B_MODEL_ID,
     FixtureReasonDraftWriter,
@@ -724,7 +729,7 @@ def _account_tier_and_motion(
     playbooks: PlaybookSet,
     value_model_config: ValueModelConfig,
     as_of: str | None = None,
-) -> tuple[str, str | None] | None:
+) -> tuple[str, str | None, set[str]] | None:
     """Resolve this one account's tier and tier-appropriate motion together
     via the promoted ``motion_resolver.resolve_motions`` -- a single-account
     map naturally never reaches cohort-collapse threshold, so this yields
@@ -732,7 +737,14 @@ def _account_tier_and_motion(
     motion_resolver's docstring). *as_of* is optional (default None) so
     existing callers that predate Phase 2's ``milestones_overdue``
     detector keep working unchanged; it just skips that one date-based
-    trigger."""
+    trigger.
+
+    Widened (19_CONTENT_ROADMAP.md Phase 5) to also return the raw
+    trigger set: its one caller, ``_work_item_for_account``, needs it for
+    the ``content_route`` matcher and would otherwise have to call
+    ``_account_tier_and_triggers`` a second time -- a second data-plane
+    fetch pass this function's own docstring precedent (see
+    ``_account_tier_and_triggers``) explicitly avoids."""
 
     tier_and_triggers = _account_tier_and_triggers(
         data_plane, account, value_model_config=value_model_config, as_of=as_of
@@ -743,7 +755,7 @@ def _account_tier_and_motion(
     resolved = resolve_motions({account.account_id: tier}, {account.account_id: triggers}, playbooks)
     plays = resolved["per_account"].get(account.account_id, ())
     motion = plays[0]["motion"] if plays else None
-    return tier, motion
+    return tier, motion, triggers
 
 
 def collapse_cohorts(
@@ -865,6 +877,7 @@ def _work_item_for_account(
     )
     tier = tier_and_motion[0] if tier_and_motion is not None else None
     motion = tier_and_motion[1] if tier_and_motion is not None else None
+    triggers = tier_and_motion[2] if tier_and_motion is not None else set()
 
     contact = next((contact for contact in contacts if contact.consent_to_contact), None)
     customer_contact_allowed = contact is not None
@@ -898,6 +911,28 @@ def _work_item_for_account(
         if customer_contact_allowed and not customer_action_blocked
         else "recommend_next_best_action"
     )
+    # content_route (19_CONTENT_ROADMAP.md Decision 7): only considered
+    # when draft_customer_outreach did NOT already claim this account this
+    # pass (action is still "recommend_next_best_action" at this point).
+    # implied_motion_for_action("content_route") has no ACTION_IMPLIED_MOTION
+    # entry (verified: governance/csm_actions.py) -- per that function's own
+    # docstring this means "no forbidden-motion implication", so
+    # tier_forbids_motion (which is specific to draft_customer_outreach's
+    # motion) does not gate content_route; only the quality breaker does,
+    # matching customer_action_blocked's OTHER guard.
+    content_route_match: ContentCatalogEntry | None = None
+    if (
+        action == "recommend_next_best_action"
+        and customer_contact_allowed
+        and not (quality_breaker is not None and quality_breaker.triggered)
+        and playbooks is not None
+    ):
+        catalog = load_tenant_content_catalog(playbooks.tenant)
+        matches = match_content(triggers, catalog)
+        if matches:
+            content_route_match = matches[0]
+            action = "content_route"
+            disposition = "propose_customer_action"
     # Caller-supplied org_context (e.g. a hostile-pack test fixture) is used
     # verbatim, unchanged from before this dispatch. Only the default org
     # pack path is disposition-aware, so golden-exemplar selection can vary
@@ -943,6 +978,18 @@ def _work_item_for_account(
             evidence=inputs.evidence,
             priority=inputs.priority,
             draft_body=slot_b.customer_draft,
+        )
+        if timing is not None:
+            timing.governance_ms += (time.perf_counter() - governance_start) * 1000.0
+        proposal_ref = _proposal_ref(proposal, action=action, principal_id=sweep_principal_id)
+    elif content_route_match is not None and contact is not None:
+        governance_start = time.perf_counter()
+        proposal = _propose_content_route(
+            gate,
+            account=account,
+            contact=contact,
+            as_of=as_of,
+            matched_entry=content_route_match,
         )
         if timing is not None:
             timing.governance_ms += (time.perf_counter() - governance_start) * 1000.0
@@ -1013,6 +1060,42 @@ def _propose_outreach(
         grounding_ref=f"sweep:{account.account_id}:{as_of}",
         cause_ref=f"agent1:sweep:{account.account_id}:{as_of}",
         **proposal_fields_for(action),
+    )
+
+
+def _propose_content_route(
+    gate: ActionGate,
+    *,
+    account: CRMAccount,
+    contact: CRMContact,
+    as_of: str,
+    matched_entry: ContentCatalogEntry,
+) -> ActionProposal:
+    """Mirrors ``_propose_outreach``'s gate-integration shape exactly
+    (same ``gate.propose`` call, same ``proposal_fields_for`` unpack), but
+    the payload routes a PRE-APPROVED catalog asset -- content_id/title/
+    format -- rather than an LLM-drafted email body, since that is what
+    ``content_route``'s own spec describes (governance/csm_actions.py:
+    "only the routing decision is proposed")."""
+
+    payload = {
+        "account_id": account.account_id,
+        "account_name": account.name,
+        "contact_id": contact.contact_id,
+        "contact_email": contact.email,
+        "draft_channel": "email",
+        "as_of": as_of,
+        "content_id": matched_entry.content_id,
+        "content_title": matched_entry.title,
+        "content_format": matched_entry.format,
+        "addresses_gap": matched_entry.addresses_gap,
+    }
+    return gate.propose(
+        intent="agent1_time_to_value_sweep",
+        payload=payload,
+        grounding_ref=f"sweep:{account.account_id}:{as_of}",
+        cause_ref=f"agent1:sweep:{account.account_id}:{as_of}",
+        **proposal_fields_for("content_route"),
     )
 
 
