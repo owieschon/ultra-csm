@@ -92,7 +92,7 @@ cross-system join between corpus B and corpus C.
    `developer.rocketlane.com/docs/authentication`; check trial/plan gating
    of the REST API, since the org's MCP host is on a distinct subdomain
    from `api.rocketlane.com` (full host in
-   `/Users/owieschon/ultra-csm-corpus-a-PRIVATE.md`), which may indicate a
+   `~/ultra-csm-corpus-a-PRIVATE.md`), which may indicate a
    different API cluster.
 2. **D3's activation-gap signal isn't wired into Agent 1's sweep scoring.**
    `has_activation_gap()` (RUNNING_LATE progress, `atRisk` task, or

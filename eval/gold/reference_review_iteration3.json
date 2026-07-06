@@ -8791,6 +8791,6 @@
     "account_specificity",
     "tone_fit"
   ],
-  "source_report": "/Users/owieschon/dev/ultra-csm/eval/gold/judge_disagreement_report.json",
+  "source_report": "eval/gold/judge_disagreement_report.json",
   "total_cells": 151
 }

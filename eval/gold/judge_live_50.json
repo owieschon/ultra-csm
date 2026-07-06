@@ -1,7 +1,7 @@
 {
   "anchor_day": 50,
   "anchor_fixture_as_of": "2026-08-10",
-  "anchor_source": "/Users/owieschon/ultra-csm-corpus-runs/live-reseed-20260704/anchor.json",
+  "anchor_source": "~/ultra-csm-corpus-runs/live-reseed-20260704/anchor.json",
   "anchor_tag": "UCSM-NARR2",
   "artifact": "judge_live_csm",
   "book_source": "Universe v2 35-account narrative book (synthetic_book.py), advanced to the anchor's story day via book_simulator.simulate_book(). No daily operating-artifact snapshot of generated drafts exists yet in this repo for a given anchor day, so drafts are generated live via this demo path rather than read from a prior sweep artifact, per this dispatch's Decisions section.",
