@@ -759,7 +759,18 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--work-queue-output", type=Path, default=DEFAULT_WORK_QUEUE_OUTPUT)
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help="fail if regenerating drifts from the committed scorecard/work-queue JSON",
+    )
     args = parser.parse_args(argv)
+
+    before = {
+        path: path.read_text(encoding="utf-8") if path.exists() else None
+        for path in (args.output, args.work_queue_output)
+    }
+
     artifact = build_scorecard(
         output_path=args.output,
         work_queue_path=args.work_queue_output,
@@ -770,6 +781,18 @@ def main(argv: list[str] | None = None) -> int:
         f"{score['passed']}/{score['total']} hard_ok={artifact['hard_ok']}"
     )
     print(f"scorecard JSON -> {args.output}")
+
+    if args.check:
+        stale = [
+            path.relative_to(REPO) if path.is_relative_to(REPO) else path
+            for path, prior_text in before.items()
+            if prior_text != path.read_text(encoding="utf-8")
+        ]
+        if stale:
+            print(f"stale: {', '.join(str(path) for path in stale)} do not match regenerated output")
+            return 1
+        print("scorecard/work-queue artifacts are current")
+
     return 0 if artifact["hard_ok"] else 1
 
 

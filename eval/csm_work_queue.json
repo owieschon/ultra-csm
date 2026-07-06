@@ -24,6 +24,9 @@
       "priority": null,
       "proposal": null,
       "reason": "Ambiguous contact identity; no account was auto-selected.",
+      "recipient_name": null,
+      "recipient_resolution": null,
+      "recipient_role": null,
       "recommended_action": null,
       "swept_at": "2026-06-27",
       "tenant_id": "ultra-demo"
@@ -236,6 +239,9 @@
         "status": "pending"
       },
       "reason": "Acme Logistics has deterministic Time-to-Value score 162 from milestones_overdue=50, days_overdue=30, success_plan_overdue=20; draft customer outreach. Evidence [evidence:6dcc1c92-e0fd-5d6f-808f-d2e747f04415], [evidence:d2212e35-9ab1-52ff-af61-7ed49fe36086], [evidence:e8171967-d726-5c85-814a-73aaa19dc2cf].",
+      "recipient_name": "Jordan Lee",
+      "recipient_resolution": "first_consenting_fallback",
+      "recipient_role": "operations",
       "recommended_action": "draft_customer_outreach",
       "swept_at": "2026-06-27",
       "tenant_id": "ultra-demo"
@@ -390,6 +396,9 @@
       },
       "proposal": null,
       "reason": "Cyberdyne Transport has deterministic Time-to-Value score 109 from milestones_overdue=25, days_overdue=22, success_plan_overdue=20; route for internal review. Evidence [evidence:947b1c03-4cfd-57d1-8734-96a9a1d0580a], [evidence:094d20f6-589f-523d-8c1a-57ee263b4b15], [evidence:7c951754-708e-54c9-a308-927f4898a051].",
+      "recipient_name": null,
+      "recipient_resolution": "first_consenting_fallback",
+      "recipient_role": null,
       "recommended_action": "recommend_next_best_action",
       "swept_at": "2026-06-27",
       "tenant_id": "ultra-demo"
@@ -556,6 +565,9 @@
         "status": "pending"
       },
       "reason": "Soylent Distribution has deterministic Time-to-Value score 105 from milestones_overdue=25, days_overdue=18, success_plan_overdue=20; draft customer outreach. Evidence [evidence:a6a68e4b-b7af-5b71-8e33-8964271ee848], [evidence:de370721-fcfe-5b52-9682-fa7b8e79a07a], [evidence:ef71210b-a3d3-5953-ad04-71bc869c6789].",
+      "recipient_name": "Avery Kim",
+      "recipient_resolution": "first_consenting_fallback",
+      "recipient_role": "operations",
       "recommended_action": "draft_customer_outreach",
       "swept_at": "2026-06-27",
       "tenant_id": "ultra-demo"
@@ -693,6 +705,9 @@
         "status": "pending"
       },
       "reason": "Globex Fleet has deterministic Time-to-Value score 91 from milestones_overdue=25, days_overdue=24, health_yellow=15; draft customer outreach. Evidence [evidence:85b3431d-1fe0-5c97-86da-c33dbc2d01c8], [evidence:0f5ea32b-c798-5a0d-b21b-28f3eb5f85ee], [evidence:b2178254-7d72-55e3-84af-27846a0cb7d5].",
+      "recipient_name": "Alex Rivers",
+      "recipient_resolution": "first_consenting_fallback",
+      "recipient_role": "operations",
       "recommended_action": "draft_customer_outreach",
       "swept_at": "2026-06-27",
       "tenant_id": "ultra-demo"
@@ -807,6 +822,9 @@
         "status": "pending"
       },
       "reason": "Initech Services has deterministic Time-to-Value score 62 from success_plan_overdue=20, health_yellow=15, low_seat_penetration=12; draft customer outreach. Evidence [evidence:7dd6a2dc-67d4-5087-9708-7d3c5a83df44], [evidence:efe1d86f-af21-5ca6-8719-3ba8b4429292].",
+      "recipient_name": "Samir Rao",
+      "recipient_resolution": "first_consenting_fallback",
+      "recipient_role": "operations",
       "recommended_action": "draft_customer_outreach",
       "swept_at": "2026-06-27",
       "tenant_id": "ultra-demo"

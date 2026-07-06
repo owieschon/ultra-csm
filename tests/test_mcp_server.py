@@ -655,8 +655,7 @@ class TestSubmitVerdict:
         mcp_server.run_sweep()
         proposals = mcp_server.list_proposals()["proposals"]
 
-        if not proposals:
-            pytest.skip("No pending proposals from sweep")
+        assert proposals, "sweep is expected to yield pending proposals over the fixture book"
 
         proposal_id = proposals[0]["proposal_id"]
         result = mcp_server.submit_verdict(
@@ -665,11 +664,9 @@ class TestSubmitVerdict:
             "Test approval",
             token=MCP_TOKEN,
         )
-        # May succeed or fail depending on cache state — just ensure it's structured.
-        assert isinstance(result, dict)
-        if "error" not in result:
-            assert result["proposal_id"] == proposal_id
-            assert result["status"] in ("approved", "denied")
+        assert "error" not in result
+        assert result["proposal_id"] == proposal_id
+        assert result["status"] == "approved"
 
     def test_revise_uses_bounded_loop(self, monkeypatch):
         monkeypatch.setenv("ULTRA_CSM_API_TOKENS", f"{MCP_TOKEN}:MCP Lane Manager")
@@ -679,8 +676,7 @@ class TestSubmitVerdict:
             if proposal["action"] == "draft_customer_outreach"
         ]
 
-        if not proposals:
-            pytest.skip("No pending draft proposals from sweep")
+        assert proposals, "sweep is expected to yield pending draft_customer_outreach proposals"
 
         proposal_id = proposals[0]["proposal_id"]
         result = mcp_server.submit_verdict(

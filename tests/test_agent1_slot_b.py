@@ -370,6 +370,10 @@ def test_anthropic_slot_b_payload_includes_org_context():
 
     AnthropicReasonDraftWriter(client=client).write(request)
 
+    assert client.messages.last_kwargs is not None
+    payload = json.loads(client.messages.last_kwargs["messages"][0]["content"])
+    assert payload["request"]["org_context"] == request.org_context
+
 
 def test_anthropic_slot_b_records_cost_without_meter():
     request = _request(org_context=load_org_pack().slot_b_context())
