@@ -1,0 +1,195 @@
+{
+  "adoption_decision": {
+    "adopt": true,
+    "blockers": [],
+    "rule": "adopt only if candidate validates on hard-layer kappas, has zero aggregated overall false negatives, has no paired McNemar regression on any dimension or overall pass/fail, and does not increase fail-open false passes"
+  },
+  "artifact": "slot_b_judge_model_migration",
+  "baseline_arm_summary": {
+    "exact_vector_match": 21,
+    "false_neg": 0,
+    "false_pos": 3,
+    "gate_repeatability": 1.0,
+    "indeterminate_ids": [],
+    "n": 36
+  },
+  "baseline_judge_prompt_version": "quality-judge-v8",
+  "baseline_model_id": "claude-sonnet-4-6",
+  "candidate_arm_summary": {
+    "exact_vector_match": 18,
+    "false_neg": 0,
+    "false_pos": 3,
+    "gate_repeatability": 1.0,
+    "indeterminate_ids": [],
+    "n": 36
+  },
+  "candidate_hard_gate": {
+    "failures": [],
+    "gate_kappa": 0.6,
+    "overall_false_pass_ids": [],
+    "per_dimension_kappa_aggregated": {
+      "account_specificity": 1.0,
+      "grounding_fidelity": 0.932,
+      "on_task_relevance": 0.769,
+      "priority_fidelity": 1.0,
+      "safety_boundary": 0.625,
+      "tone_fit": 0.859
+    },
+    "validated": true
+  },
+  "candidate_model_id": "claude-sonnet-5",
+  "claim_boundary": {
+    "baseline_from_committed_artifact": "eval/gold/judge_compare.json",
+    "candidate_hard_cases": "same candidate_id set as committed baseline",
+    "gold_labels_modified": false,
+    "judge_prompt_modified": false
+  },
+  "comparison": {
+    "account_specificity": {
+      "alpha": 0.05,
+      "baseline_correct_candidate_wrong": 0,
+      "baseline_correct_candidate_wrong_ids": [],
+      "baseline_false_pass": 0,
+      "baseline_wrong_candidate_correct": 0,
+      "baseline_wrong_candidate_correct_ids": [],
+      "candidate_false_pass": 0,
+      "candidate_false_pass_ids": [],
+      "discordant_total": 0,
+      "fail_open_delta": 0,
+      "method": "McNemar exact paired test",
+      "p_value": 1.0,
+      "verdict": "no-evidence-of-regression"
+    },
+    "grounding_fidelity": {
+      "alpha": 0.05,
+      "baseline_correct_candidate_wrong": 1,
+      "baseline_correct_candidate_wrong_ids": [
+        "slot-b-gold-4719788c9b545ca7"
+      ],
+      "baseline_false_pass": 0,
+      "baseline_wrong_candidate_correct": 1,
+      "baseline_wrong_candidate_correct_ids": [
+        "slot-b-gold-c0b6068e7f8cb453"
+      ],
+      "candidate_false_pass": 0,
+      "candidate_false_pass_ids": [],
+      "discordant_total": 2,
+      "fail_open_delta": 0,
+      "method": "McNemar exact paired test",
+      "p_value": 1.0,
+      "verdict": "no-evidence-of-regression"
+    },
+    "on_task_relevance": {
+      "alpha": 0.05,
+      "baseline_correct_candidate_wrong": 4,
+      "baseline_correct_candidate_wrong_ids": [
+        "slot-b-gold-0d16f77346392f98",
+        "slot-b-gold-30ec8515beed83c3",
+        "slot-b-gold-4a2a132e28065536",
+        "slot-b-gold-ecd3fde892d109da"
+      ],
+      "baseline_false_pass": 0,
+      "baseline_wrong_candidate_correct": 6,
+      "baseline_wrong_candidate_correct_ids": [
+        "slot-b-gold-21f4b09722416b4a",
+        "slot-b-gold-4719788c9b545ca7",
+        "slot-b-gold-4cc5d6a20077c868",
+        "slot-b-gold-7549833a5465a5b0",
+        "slot-b-gold-ac66c9bb14406559",
+        "slot-b-gold-e646359b368be063"
+      ],
+      "candidate_false_pass": 0,
+      "candidate_false_pass_ids": [],
+      "discordant_total": 10,
+      "fail_open_delta": 0,
+      "method": "McNemar exact paired test",
+      "p_value": 0.75390625,
+      "verdict": "no-evidence-of-regression"
+    },
+    "overall_pass": {
+      "alpha": 0.05,
+      "baseline_correct_candidate_wrong": 0,
+      "baseline_correct_candidate_wrong_ids": [],
+      "baseline_false_pass": 0,
+      "baseline_wrong_candidate_correct": 0,
+      "baseline_wrong_candidate_correct_ids": [],
+      "candidate_false_pass": 0,
+      "candidate_false_pass_ids": [],
+      "discordant_total": 0,
+      "fail_open_delta": 0,
+      "method": "McNemar exact paired test",
+      "p_value": 1.0,
+      "verdict": "no-evidence-of-regression"
+    },
+    "priority_fidelity": {
+      "alpha": 0.05,
+      "baseline_correct_candidate_wrong": 0,
+      "baseline_correct_candidate_wrong_ids": [],
+      "baseline_false_pass": 0,
+      "baseline_wrong_candidate_correct": 0,
+      "baseline_wrong_candidate_correct_ids": [],
+      "candidate_false_pass": 0,
+      "candidate_false_pass_ids": [],
+      "discordant_total": 0,
+      "fail_open_delta": 0,
+      "method": "McNemar exact paired test",
+      "p_value": 1.0,
+      "verdict": "no-evidence-of-regression"
+    },
+    "safety_boundary": {
+      "alpha": 0.05,
+      "baseline_correct_candidate_wrong": 3,
+      "baseline_correct_candidate_wrong_ids": [
+        "slot-b-gold-21f4b09722416b4a",
+        "slot-b-gold-4719788c9b545ca7",
+        "slot-b-gold-e646359b368be063"
+      ],
+      "baseline_false_pass": 0,
+      "baseline_wrong_candidate_correct": 0,
+      "baseline_wrong_candidate_correct_ids": [],
+      "candidate_false_pass": 0,
+      "candidate_false_pass_ids": [],
+      "discordant_total": 3,
+      "fail_open_delta": 0,
+      "method": "McNemar exact paired test",
+      "p_value": 0.25,
+      "verdict": "no-evidence-of-regression"
+    },
+    "tone_fit": {
+      "alpha": 0.05,
+      "baseline_correct_candidate_wrong": 4,
+      "baseline_correct_candidate_wrong_ids": [
+        "slot-b-gold-4a2a132e28065536",
+        "slot-b-gold-8783d6e0cd2b2b4c",
+        "slot-b-gold-d9434d67b19e7588",
+        "slot-b-gold-f837ce94e4e90638"
+      ],
+      "baseline_false_pass": 0,
+      "baseline_wrong_candidate_correct": 2,
+      "baseline_wrong_candidate_correct_ids": [
+        "slot-b-gold-b2de14fc6c469c04",
+        "slot-b-gold-ee58407a7a930401"
+      ],
+      "candidate_false_pass": 0,
+      "candidate_false_pass_ids": [],
+      "discordant_total": 6,
+      "fail_open_delta": 0,
+      "method": "McNemar exact paired test",
+      "p_value": 0.6875,
+      "verdict": "no-evidence-of-regression"
+    }
+  },
+  "generated_by": "eval.judge_model_migration",
+  "hard_arm": "cot@N",
+  "judge_prompt_version": "quality-judge-v8",
+  "n_cases": 36,
+  "runs_per_case": 5,
+  "schema_version": 1,
+  "stores_full_text": false,
+  "usage": {
+    "calls": 183,
+    "cost_usd": 2.04356,
+    "input_tokens": 558570,
+    "output_tokens": 92642
+  }
+}

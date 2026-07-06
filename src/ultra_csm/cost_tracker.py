@@ -23,6 +23,7 @@ MODEL_PRICING: dict[str, tuple[float, float]] = {
     # (input_cost_per_mtok, output_cost_per_mtok)
     "claude-opus-4-8": (5.00, 25.00),
     "claude-sonnet-4-6": (3.00, 15.00),
+    "claude-sonnet-5": (2.00, 10.00),
     "claude-haiku-4-5": (0.80, 4.00),
     # Fixture / test models — zero cost.
     "fixture-agent1-slot-b-v1": (0.0, 0.0),
