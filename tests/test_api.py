@@ -33,6 +33,14 @@ def test_demo_noauth_boot_guard_requires_loopback(monkeypatch):
     assert_demo_noauth_loopback("127.0.0.1")
     assert_demo_noauth_loopback("localhost")
     assert_demo_noauth_loopback("::1")
+    monkeypatch.setenv("ULTRA_CSM_BIND_HOST", "127.0.0.1")
+    assert_demo_noauth_loopback()
+    monkeypatch.delenv("ULTRA_CSM_BIND_HOST", raising=False)
+    with pytest.raises(RuntimeError, match="unset/empty bind host"):
+        assert_demo_noauth_loopback()
+    monkeypatch.setenv("ULTRA_CSM_BIND_HOST", "")
+    with pytest.raises(RuntimeError, match="unset/empty bind host"):
+        assert_demo_noauth_loopback()
     with pytest.raises(RuntimeError, match="loopback bind host"):
         assert_demo_noauth_loopback("0.0.0.0")
 
