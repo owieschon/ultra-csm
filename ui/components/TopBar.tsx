@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toggleTheme as toggleThemeUtil } from "@/lib/theme";
 
@@ -77,6 +78,10 @@ export function TopBar({
           Queue{queueCount > 0 && <span className="cnt num">{queueCount}</span>}
         </button>
       </div>
+
+      <Link className="navlink" href="/comms-review">
+        Comms
+      </Link>
 
       <div className="search" onClick={onOpenPalette} style={{ cursor: "pointer" }}>
         <span className="ph">Search accounts…</span>
