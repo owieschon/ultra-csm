@@ -17,17 +17,92 @@
 
 set -euo pipefail
 
-REPO_ROOT="$HOME/dev/ultra-csm-operating-cadence"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="${ULTRA_CSM_REPO_ROOT:-$(cd "$SCRIPT_DIR/../.." && pwd)}"
 ANCHOR_PATH="$HOME/ultra-csm-corpus-runs/live-reseed-20260704/anchor.json"
 RUNS_ROOT="$HOME/ultra-csm-operating-runs"
 LOG_PATH="$RUNS_ROOT/operating_log.jsonl"
 JUDGE_COST_CAP_USD="2.00"
+MONITOR_SLUG="${SENTRY_MONITOR_SLUG:-ultra-csm-operating-daily}"
+MONITOR_SCHEDULE="${SENTRY_MONITOR_SCHEDULE:-30 7 * * *}"
+RUN_STARTED_AT="$(date +%s)"
 
 cd "$REPO_ROOT"
+
+load_env_file() {
+  env_file="$1"
+  if [ ! -f "$env_file" ]; then
+    return 0
+  fi
+  eval "$(
+    PYTHONPATH=src:. .venv/bin/python - "$env_file" <<'PYSCRIPT'
+import shlex
+import sys
+
+from dotenv import dotenv_values
+
+ALLOW_PREFIXES = (
+    "ULTRA_CSM_",
+    "SENTRY_",
+    "SALESFORCE_",
+    "ROCKETLANE_",
+    "GMAIL_",
+    "GOOGLE_",
+    "NOTION_",
+    "SLACK_",
+)
+ALLOW_EXACT = {"ANTHROPIC_API_KEY"}
+
+for key, value in dotenv_values(sys.argv[1]).items():
+    if not key or value is None:
+        continue
+    if key in ALLOW_EXACT or any(key.startswith(prefix) for prefix in ALLOW_PREFIXES):
+        print(f"export {key}={shlex.quote(value)}")
+PYSCRIPT
+  )"
+}
+
+load_env_file "${ULTRA_CSM_OPERATING_ENV_FILE:-$HOME/ultra-csm-operating.env}"
+load_env_file "$HOME/ultra-csm-live-creds.env"
 
 RUN_DATE="$(date +%F)"
 OUT_DIR="$RUNS_ROOT/$RUN_DATE"
 mkdir -p "$OUT_DIR"
+
+CHECK_IN_ID="$(PYTHONPATH=src:. .venv/bin/python -m ultra_csm.operating_monitor check-in \
+  --monitor "$MONITOR_SLUG" \
+  --status in_progress \
+  --schedule "$MONITOR_SCHEDULE" 2>/dev/null || true)"
+
+finish_monitoring() {
+  status=$?
+  duration="$(
+    PYTHONPATH=src:. .venv/bin/python - "$RUN_STARTED_AT" <<'PYSCRIPT'
+import sys
+import time
+
+started = float(sys.argv[1])
+print(f"{time.time() - started:.3f}")
+PYSCRIPT
+  )"
+  if [ "$status" -eq 0 ]; then
+    PYTHONPATH=src:. .venv/bin/python -m ultra_csm.operating_monitor check-in \
+      --monitor "$MONITOR_SLUG" \
+      --status ok \
+      --check-in-id "$CHECK_IN_ID" \
+      --duration "$duration" >/dev/null 2>&1 || true
+  else
+    PYTHONPATH=src:. .venv/bin/python -m ultra_csm.operating_monitor check-in \
+      --monitor "$MONITOR_SLUG" \
+      --status error \
+      --check-in-id "$CHECK_IN_ID" \
+      --duration "$duration" >/dev/null 2>&1 || true
+    PYTHONPATH=src:. .venv/bin/python -m ultra_csm.operating_monitor event \
+      --message "Ultra CSM daily operating run failed" \
+      --detail "exit_status=$status" >/dev/null 2>&1 || true
+  fi
+}
+trap finish_monitoring EXIT
 
 echo "============================================"
 echo "Ultra-CSM daily operating run: $RUN_DATE"
@@ -104,6 +179,19 @@ if [ -z "${ANTHROPIC_API_KEY:-}" ]; then
   echo "# JUDGE LANE SKIPPED: ANTHROPIC_API_KEY not set"
   echo "# (checked \$ANTHROPIC_API_KEY and $KEY_ENV)"
   echo "############################################"
+elif ! PYTHONPATH=src:. .venv/bin/python - <<'PYSCRIPT'
+import importlib.util
+import sys
+
+sys.exit(0 if importlib.util.find_spec("anthropic") is not None else 1)
+PYSCRIPT
+then
+  echo ""
+  echo "############################################"
+  echo "# JUDGE LANE SKIPPED: anthropic package not installed in this venv"
+  echo "# (deterministic operating artifacts above are unaffected)"
+  echo "############################################"
+  JUDGE_STATUS="skipped_no_anthropic_package"
 else
   echo ""
   echo "-- judge lane preflight: projecting worst-case cost against \$$JUDGE_COST_CAP_USD cap --"
@@ -187,6 +275,11 @@ with open(log_path, "a") as f:
     f.write(json.dumps(entry, sort_keys=True) + "\n")
 print(json.dumps(entry, indent=2, sort_keys=True))
 PYSCRIPT
+
+PYTHONPATH=src:. .venv/bin/python -m ultra_csm.operating_monitor alarms \
+  --operating-log "$LOG_PATH" \
+  --daily-budget-usd "${ULTRA_CSM_DAILY_COST_BUDGET_USD:-10.0}" \
+  > "$OUT_DIR/monitor_alarms.json" || true
 
 echo ""
 echo "============================================"

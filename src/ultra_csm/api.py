@@ -27,6 +27,7 @@ from ultra_csm.comms_mapping import (
     run_confirmed_comms_ingest,
 )
 from ultra_csm.logging_config import setup_logging
+from ultra_csm.operating_monitor import monitor_from_env
 from ultra_csm.platform import EphemeralCluster
 from ultra_csm.platform.db import apply_migrations, assert_rls_safe_role, session
 from ultra_csm.platform.runtime import (
@@ -2285,6 +2286,14 @@ async def http_exception_handler(request: Request, exc: HTTPException):
 @app.exception_handler(Exception)
 async def unhandled_exception_handler(request: Request, exc: Exception):
     log.exception("Unhandled exception", extra={"path": request.url.path})
+    try:
+        monitor_from_env().capture_event(
+            message="Ultra CSM API unhandled exception",
+            tags={"component": "api", "path": request.url.path},
+            extra={"exception_type": type(exc).__name__},
+        )
+    except Exception:
+        log.exception("Sentry error capture failed", extra={"path": request.url.path})
     return JSONResponse(
         status_code=500,
         content={"error": "Internal server error", "code": "INTERNAL_ERROR"},
