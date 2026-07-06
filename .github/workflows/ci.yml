@@ -68,6 +68,9 @@ jobs:
       - name: Agent 1 CSM scorecard
         run: make scorecard-csm
 
+      - name: Scorecard/work-queue drift gate
+        run: make scorecard-csm-check
+
       - name: Agent 1 CSM regression
         run: make regression-csm
 
