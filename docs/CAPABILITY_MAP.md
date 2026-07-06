@@ -21,8 +21,8 @@ VM-2: Configurable thresholds by account tier — Built.
 VM-3: Diagnostic divergence detection (cross-rail contradictions) — Built. Depends on VM-1.
 VM-4: TTV priority projection — Built. Depends on VM-1, VM-3.
 VM-5: Lifecycle state classification (onboarding, adopted, expanding, renewing, at-risk) — Partially built (TTV only). Depends on VM-1.
-VM-6: Snapshot persistence (store value model output per evaluation) — Not built. Depends on VM-1, D2 database.
-VM-7: Trajectory computation (compare snapshots over time windows) — Not built. Depends on VM-6.
+VM-6: Snapshot persistence (store value model output per evaluation) — Built for the persistent runtime and ephemeral eval harness. Depends on VM-1, D2 database.
+VM-7: Trajectory computation (compare snapshots over time windows) — Built. Depends on VM-6.
 VM-8: Outcome rail instrumentation (connect business metrics to stated objectives) — Not built. Depends on D2 connectors, VM-1.
 VM-9: Trend-based factor generation (decline_slope, activation_window_days) — Not built. Depends on VM-7.
 
@@ -33,15 +33,15 @@ DP-2: Fixture implementations with adversarial cases — Built. Depends on DP-1.
 DP-3: Connector readiness lifecycle (spec to smoke to discover to map to freeze) — Built.
 DP-4: Schema explorer with confidence-scored field mapping — Built. Depends on DP-3.
 DP-5: Salesforce adapter (JSON-to-dataclass parsers) — Partially built (parsers only, no HTTP client). Depends on DP-1.
-DP-6: Salesforce live connector (OAuth, SOQL, pagination, rate limiting) — Not built. Depends on DP-5.
+DP-6: Salesforce live connector (OAuth, SOQL, pagination, rate limiting) — Partially built for the granted dev org read path and bounded write-back/draft-prep lanes; not a generalized production connector. Depends on DP-5.
 DP-7: Attio live connector — Not built. Depends on DP-1.
 DP-8: Gainsight live connector (health, CTAs, success plans, renewal center, education) — Not built. Depends on DP-1.
-DP-9: Rocketlane live connector (milestones, tasks, timeline) — Not built. Depends on DP-1.
+DP-9: Rocketlane live connector (milestones, tasks, timeline) — Partially built for the granted trial read path and live facade overlay; not a full production connector. Depends on DP-1.
 DP-10: Relationship intelligence live connector (stakeholder map, multi-threading, engagement) — Not built. Depends on DP-1.
 DP-11: Product telemetry connector (usage events, feature activation, sessions) — Not built. Depends on DP-1.
 DP-12: Billing connector (plan, consumption, invoices, payment status) — Not built. Depends on DP-1.
 DP-13: Calendar connector (meeting events, attendees, frequency) — Not built.
-DP-14: Email connector (threads, response times, sentiment signals) — Not built.
+DP-14: Email connector (threads, response times, sentiment signals) — Partially built for Gmail read overlays and burner-scoped draft/send-prep lanes; response-time and sentiment products are not complete.
 DP-15: Support connector (tickets, CSAT, resolution patterns) — Not built. Depends on DP-1.
 
 ## D3: Lenses
@@ -50,10 +50,10 @@ L-1: Lens protocol (projection function, filter chain, drafting slot, governance
 L-2: Time-to-Value lens (detect onboarding stalls, propose interventions) — Built. Depends on D1, D2, D4, L-1.
 L-3: Account sweep (batch iterate book, resolve identity, build evidence, score, propose) — Built. Depends on L-2, D2.
 L-4: Slot B writer (reason + draft generation, evidence grounding, contract validation) — Built. Depends on L-1.
-L-5: Risk/Retention lens (trajectory, engagement, renewal proximity, champion risk) — Not built. Depends on D1, VM-7, D2, D4, L-1.
-L-6: Expansion lens (consumption vs entitlement, unrealized value, sustained health) — Not built. Depends on D1, VM-7, D2, D4, L-1.
-L-7: Multi-lens account view (same account seen through multiple lenses without conflict) — Not built. Depends on L-5, L-6.
-L-8: Lens-specific drafting prompts (different tone/framing per lens) — Not built (single Slot B prompt today). Depends on L-4.
+L-5: Risk/Retention lens (trajectory, engagement, renewal proximity, champion risk) — Built as a deterministic internal lens in the tick path; no churn-probability claim. Depends on D1, VM-7, D2, D4, L-1.
+L-6: Expansion lens (consumption vs entitlement, unrealized value, sustained health) — Built as a deterministic proposal lens in the tick path; customer-facing actions remain precedence- and approval-gated. Depends on D1, VM-7, D2, D4, L-1.
+L-7: Multi-lens account view (same account seen through multiple lenses without conflict) — Partially built: tick emits combined precedence/rejection/cohort packets and the reconciliation endpoint gathers cross-lens signals; API precedence still has a separate inline projection pending consolidation. Depends on L-5, L-6.
+L-8: Lens-specific drafting prompts (different tone/framing per lens) — Partially built: Risk and Expansion prompt files/spec metadata exist, but deterministic lens modules do not make a fresh wording-quality claim for those prompts. Depends on L-4.
 
 ## D4: Governance
 
@@ -62,14 +62,14 @@ G-2: Payload binding (SHA-256 anti-TOCTOU) — Built. Depends on G-1.
 G-3: RBAC with separation of duties (two-layer: app + DB trigger) — Built.
 G-4: CSM action taxonomy (6 actions, 3 autonomy tiers, release conditions) — Built.
 G-5: Fixture verdict source for deterministic eval — Built. Depends on G-1.
-G-6: Live verdict source (API/UI for CSM to review and approve proposals) — Not built. Depends on G-1.
+G-6: Live verdict source (API/UI for CSM to review and approve proposals) — Built for explicit human verdict submission; the system never self-approves. Depends on G-1.
 G-7: Proposal expiration (time-bound pending proposals) — Not built. Depends on G-1.
 G-8: Autonomy graduation (track approval/modification/outcome rates, propose tier changes) — Not built. Depends on G-1, D8 cohort analyst.
 G-9: Policy evaluation from policy tables (tables exist, no app code reads them) — Not built. Depends on G-1.
 
 ## D5: Operating Layer
 
-OL-1: Daily digest (prioritized list of accounts, proposals, commitments, meetings) — Not built. Depends on D1, D3, OL-5, OL-3.
+OL-1: Daily digest (prioritized list of accounts, proposals, commitments, meetings) — Partially built as scheduled tick artifacts and operations UI views; commitments and calendar context remain incomplete. Depends on D1, D3, OL-5, OL-3.
 OL-2: Account brief generation (health, changes, stakeholders, commitments, risks, talking points) — Not built. Depends on D1, D2, VM-7, OL-5.
 OL-3: Calendar integration (meeting prep, attendee tracking, frequency shift detection) — Not built. Depends on DP-13.
 OL-4: Inbox intelligence (classify, prioritize, extract action items, link to account context) — Not built. Depends on DP-14, D1.
@@ -120,11 +120,11 @@ EV-7: Autonomy health monitoring (outcome quality by action type, drift detectio
 
 Phase 0 (done): VM-1 through VM-4, DP-1 through DP-4, L-1 through L-4, G-1 through G-5, EV-1 through EV-4.
 
-Phase 1 — First real data, first real output: Salesforce live connector (DP-5 completion, DP-6), snapshot persistence (VM-6), basic trajectory (VM-7), account brief generation (OL-2), live verdict source (G-6). Definition of done: connect to a real Salesforce instance, compute health scores for a real book of business, generate account briefs, present proposals a CSM can approve or reject.
+Phase 1 — First real data, first real output: Salesforce live connector (DP-5 completion, DP-6), snapshot persistence (VM-6), basic trajectory (VM-7), account brief generation (OL-2), live verdict source (G-6). Current state: persistence, trajectory, human verdict submission, and bounded Salesforce live lanes are present; account briefs and a generalized production Salesforce connector remain incomplete.
 
-Phase 2 — The CSM's daily workflow: daily digest (OL-1), commitment tracker (OL-5), Gainsight connector (DP-8), Rocketlane connector (DP-9), Risk/Retention lens (L-5, L-8), Risk lens eval battery (EV-6), calendar integration (DP-13, OL-3). Definition of done: the CSM starts their day with the digest, walks into meetings with briefs, has commitments tracked automatically, and the Risk lens detects at-risk accounts with real data.
+Phase 2 — The CSM's daily workflow: daily digest (OL-1), commitment tracker (OL-5), Gainsight connector (DP-8), Rocketlane connector (DP-9), Risk/Retention lens (L-5, L-8), Risk lens eval battery (EV-6), calendar integration (DP-13, OL-3). Current state: scheduled tick operation, bounded Rocketlane read overlay, and the Risk lens are present; commitment tracking, Gainsight, calendar, and per-lens eval batteries remain incomplete.
 
-Phase 3 — Growth and cross-functional value: Expansion lens (L-6, L-7, L-8, EV-6), relationship intelligence connector (DP-10), knowledge base foundation (KB-1 through KB-4), internal bridge feedback aggregation (IB-1, IB-2), QBR narrative generation (IB-5), outcome rail instrumentation (VM-8). Definition of done: the system identifies expansion opportunities with evidence, provides playbook context for Slot B, aggregates feedback weighted by revenue impact, and generates QBR narratives.
+Phase 3 — Growth and cross-functional value: Expansion lens (L-6, L-7, L-8, EV-6), relationship intelligence connector (DP-10), knowledge base foundation (KB-1 through KB-4), internal bridge feedback aggregation (IB-1, IB-2), QBR narrative generation (IB-5), outcome rail instrumentation (VM-8). Current state: Expansion lens and partial multi-lens packets are present; relationship intelligence, knowledge base, feedback aggregation, QBR narrative generation, outcome rail instrumentation, and per-lens eval batteries remain incomplete.
 
 Phase 4 — The flywheel: cohort analyst intervention effectiveness (CA-1, CA-2), churn signal discovery (CA-3), onboarding and expansion patterns (CA-4, CA-5), system self-diagnosis (CA-6), cohort to knowledge base pipeline (CA-7, KB-6), feedback loop closure (IB-4), autonomy graduation (G-8, G-9, EV-7), CSM reflection and retrospective (OL-8). Definition of done: the system discovers population-level patterns, proposes improvements through governance, the knowledge base grows from cohort findings, and autonomy for proven action types can be graduated.
 

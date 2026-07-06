@@ -57,6 +57,8 @@ make lint hygiene
 
 Credentialed lanes are intentionally separate from offline verification:
 
+- Fixture mode is the default. Live data-plane reads require explicitly setting `ULTRA_CSM_DATA_PLANE_MODE=live` with the relevant tenant-scoped connector credentials.
+- Persistent application state requires `ULTRA_CSM_DATABASE_URL`. Without it, local gates use fixture data and ephemeral Postgres harnesses such as `make eval`.
 - Live connector reads/writes use explicit tenant-scoped credentials.
 - Live judge runs spend model budget and write regenerated artifacts.
 - Customer-facing sends are owner-gated and never self-approved.
