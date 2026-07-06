@@ -1249,6 +1249,7 @@ def ingest_table(
     expected_count: int | None,
     field_metadata: dict[str, Any] | None = None,
     final_chunk: bool = True,
+    acknowledge_truncation: bool = False,
 ) -> dict:
     """Ingest one named table of a relational book and return its open questions.
 
@@ -1264,6 +1265,14 @@ def ingest_table(
     "relationship_name": "Account"}}. Declared references drive foreign-key
     mapping directly; identity and value-direction decisions always remain
     human.
+
+    Args:
+        acknowledge_truncation: Required (True) to freeze a table where any
+            record was silently dropped (``dropped_record_count > 0``, e.g. a
+            chunk exceeded ``max_records``), matching the stricter stance
+            already applied to an outright ``received_count``/``expected_count``
+            mismatch. Some callers may legitimately want a partial table, so
+            this is an explicit opt-in rather than an unconditional refusal.
     """
 
     refusal = _relay_tool_available("ingest_table")
@@ -1410,6 +1419,20 @@ def ingest_table(
             expected_count=session.expected_count,
             stored_count=len(session.raw_records),
             truncated=session.dropped_record_count > 0,
+            dropped_record_count=session.dropped_record_count,
+        )
+    if session.dropped_record_count > 0 and not acknowledge_truncation:
+        return _relay_refusal(
+            "RELAY_TRUNCATION_UNACKNOWLEDGED",
+            "records were silently dropped (dropped_record_count > 0); "
+            "refusing to freeze a truncated table without acknowledge_truncation=true.",
+            "ingest_table",
+            book_id=book_id,
+            table_name=table_name,
+            received_count=session.received_count,
+            expected_count=session.expected_count,
+            stored_count=len(session.raw_records),
+            truncated=True,
             dropped_record_count=session.dropped_record_count,
         )
 
