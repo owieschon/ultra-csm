@@ -630,6 +630,16 @@ def _precedence_data_plane_for_proposal(
     return _data_plane_for_day(day)
 
 
+def _revise_data_plane_for_proposal(
+    proposal: ActionProposal,
+) -> tuple[CustomerDataPlane, str]:
+    """Return the data plane a bounded draft revise should reconstruct from."""
+
+    if proposal.payload.get("as_of") == _AS_OF:
+        return _data_plane_for_day(None)
+    return _precedence_data_plane_for_proposal(proposal)
+
+
 def _fixture_data_for_day(day: int | None, *, deep: bool = False):
     """Return fixture data aligned with ``_data_plane_for_day`` for reporting."""
 
@@ -812,12 +822,12 @@ def _bounded_revise_response(
     *,
     auth_principal,
 ) -> VerdictResponse:
-    assert _data_plane is not None
+    revise_dp, _ = _revise_data_plane_for_proposal(proposal)
     try:
         result = apply_bounded_revise(
             _gate(),
             proposal,
-            data_plane=_data_plane,
+            data_plane=revise_dp,
             tenant_id=DEFAULT_TENANT,
             human_principal_id=auth_principal.principal_id,
             reason=body.reason,
