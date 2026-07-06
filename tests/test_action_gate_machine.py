@@ -20,7 +20,6 @@ from ultra_csm.platform.db import session
 from tests._govhelpers import (  # noqa: F401 - gov_conn is a pytest fixture used by injection
     CLOCK,
     T1,
-    T1_AGENT,
     det,
     gov_conn,
     make_human_principal,
@@ -33,28 +32,17 @@ def _gate(conn, *, actor, source):
                       verdict_source=source, now=CLOCK)
 
 
-def _seed_account_contact(conn, *, consent: bool):
+def _seed_account_contact(gate: ActionGate, *, consent: bool):
     account_id = det("account", "outreach-consent", str(consent))
     contact_id = det("contact", "outreach-consent", str(consent))
-    with session(conn, tenant_id=T1, actor_id=T1_AGENT, now=CLOCK) as cur:
-        cur.execute(
-            "INSERT INTO account (account_id, tenant_id, name) "
-            "VALUES (%s, %s, %s) ON CONFLICT (account_id) DO NOTHING",
-            (account_id, T1, f"Consent test {consent}"),
-        )
-        cur.execute(
-            "INSERT INTO contact (contact_id, tenant_id, account_id, email, name, consent) "
-            "VALUES (%s, %s, %s, %s, %s, %s) "
-            "ON CONFLICT (contact_id) DO UPDATE SET consent = EXCLUDED.consent",
-            (
-                contact_id,
-                T1,
-                account_id,
-                f"consent-{consent}@example.com",
-                "Consent Test",
-                consent,
-            ),
-        )
+    gate.record_outreach_contact_ref(
+        account_ref=account_id,
+        contact_ref=contact_id,
+        email=f"consent-{consent}@example.com",
+        name="Consent Test",
+        consent=consent,
+        cause_ref=f"test:contact-consent:{consent}",
+    )
     return account_id, contact_id
 
 
@@ -176,11 +164,11 @@ def test_db_rejects_action_proposal_payload_hash_mismatch(gov_conn):
 def test_db_rejects_approved_outreach_without_contact_consent(gov_conn):
     """REST/MCP have app-level consent checks; the DB is the backstop for any
     lower-level caller that tries to approve customer outreach directly."""
-    account_id, contact_id = _seed_account_contact(gov_conn, consent=False)
     orch, _authority = setup_roster(gov_conn)
     human = make_human_principal(gov_conn)
     src = FixtureVerdictSource(default=Verdict("approve", human_principal_id=human))
     gate = _gate(gov_conn, actor=orch, source=src)
+    account_id, contact_id = _seed_account_contact(gate, consent=False)
 
     prop = gate.propose(intent="customer_outreach", action="draft_customer_outreach",
                         payload={
@@ -195,11 +183,11 @@ def test_db_rejects_approved_outreach_without_contact_consent(gov_conn):
 
 
 def test_db_allows_approved_outreach_with_contact_consent(gov_conn):
-    account_id, contact_id = _seed_account_contact(gov_conn, consent=True)
     orch, _authority = setup_roster(gov_conn)
     human = make_human_principal(gov_conn)
     src = FixtureVerdictSource(default=Verdict("approve", human_principal_id=human))
     gate = _gate(gov_conn, actor=orch, source=src)
+    account_id, contact_id = _seed_account_contact(gate, consent=True)
 
     prop = gate.propose(intent="customer_outreach", action="draft_customer_outreach",
                         payload={

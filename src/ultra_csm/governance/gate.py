@@ -290,6 +290,86 @@ class ActionGate:
         if canonical_payload_sha256(payload) != outcome.payload_sha256:
             raise GateError("payload hash does not match the authorized verdict")
 
+    def idempotency_key_exists(self, idem_key: str) -> bool:
+        """Return True if a committer already reserved this mutation key."""
+        with session(self._conn, tenant_id=self._tenant_id, actor_id=self._actor,
+                     now=self._now) as cur:
+            cur.execute(
+                "SELECT 1 FROM idempotency_keys WHERE tenant_id = %s AND idem_key = %s",
+                (self._tenant_id, idem_key),
+            )
+            return cur.fetchone() is not None
+
+    def claim_idempotency_key(
+        self,
+        idem_key: str,
+        *,
+        request_id: str | None = None,
+        result_ref: str | None = None,
+        cause_ref: str | None = None,
+    ) -> bool:
+        """Atomically reserve a committer mutation key.
+
+        Returns True only for the caller that inserted the row. Concurrent or
+        retried callers get False and must skip the external mutation.
+        """
+        with session(self._conn, tenant_id=self._tenant_id, actor_id=self._actor,
+                     cause_ref=cause_ref, now=self._now) as cur:
+            cur.execute(
+                "INSERT INTO idempotency_keys (tenant_id, idem_key, request_id, result_ref) "
+                "VALUES (%s, %s, %s, %s) ON CONFLICT DO NOTHING RETURNING idem_key",
+                (self._tenant_id, idem_key, request_id, result_ref),
+            )
+            return cur.fetchone() is not None
+
+    def record_outreach_contact_ref(
+        self,
+        *,
+        account_ref: str,
+        contact_ref: str,
+        email: str | None = None,
+        name: str | None = None,
+        consent: bool,
+        cause_ref: str | None = None,
+    ) -> None:
+        """Mirror the contact consent fact a customer-outreach proposal relies on."""
+        if not account_ref or not contact_ref:
+            raise GateError("outreach contact ref requires account_ref and contact_ref")
+        with session(self._conn, tenant_id=self._tenant_id, actor_id=self._actor,
+                     cause_ref=cause_ref, now=self._now) as cur:
+            cur.execute(
+                "INSERT INTO outreach_contact_consent_ref "
+                "(tenant_id, account_ref, contact_ref, email, name, consent) "
+                "VALUES (%s, %s, %s, %s, %s, %s) "
+                "ON CONFLICT (tenant_id, account_ref, contact_ref) DO UPDATE SET "
+                "email = EXCLUDED.email, name = EXCLUDED.name, "
+                "consent = EXCLUDED.consent, observed_at = app.clock()",
+                (self._tenant_id, account_ref, contact_ref, email, name, consent),
+            )
+
+    def mark_idempotency_result(self, idem_key: str, *, result_ref: str) -> None:
+        """Attach the external result reference to an already-reserved key."""
+        with session(self._conn, tenant_id=self._tenant_id, actor_id=self._actor,
+                     now=self._now) as cur:
+            cur.execute(
+                "UPDATE idempotency_keys SET result_ref = %s "
+                "WHERE tenant_id = %s AND idem_key = %s",
+                (result_ref, self._tenant_id, idem_key),
+            )
+
+    def release_idempotency_key(self, idem_key: str) -> None:
+        """Release a reservation when the external system explicitly refused it.
+
+        Ambiguous process crashes keep the row, which is the safer duplicate
+        prevention behavior for live writes.
+        """
+        with session(self._conn, tenant_id=self._tenant_id, actor_id=self._actor,
+                     now=self._now) as cur:
+            cur.execute(
+                "DELETE FROM idempotency_keys WHERE tenant_id = %s AND idem_key = %s",
+                (self._tenant_id, idem_key),
+            )
+
     def confirm_authority_ok(self, outcome: GateOutcome) -> bool:
         """For a confirm_order action: True iff the approving verdict was cast by
         a principal that actually holds `order.confirm` — the SoD bridge to Slice

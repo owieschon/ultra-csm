@@ -1099,6 +1099,15 @@ def _propose_outreach(
         },
         "evidence_ids": [ref.source_id for ref in evidence],
     }
+    if action == "draft_customer_outreach":
+        gate.record_outreach_contact_ref(
+            account_ref=account.account_id,
+            contact_ref=contact.contact_id,
+            email=contact.email,
+            name=contact.name,
+            consent=contact.consent_to_contact,
+            cause_ref=f"agent1:sweep:{account.account_id}:{as_of}:contact-consent",
+        )
     return gate.propose(
         intent="agent1_time_to_value_sweep",
         payload=payload,
