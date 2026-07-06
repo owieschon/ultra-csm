@@ -1,7 +1,8 @@
 # Quality Regression Eval Spec
 
-Status: offline mechanics built; blinded gold-set label queue generated; live validated quality
-lane pending. The current live artifact proves structural contract drift only.
+Status: offline mechanics built; blinded gold-set label queue generated; judge validated;
+drift-power scoped by `eval/drift_power_csm.json`. The current live artifact proves
+structural contract drift only.
 `make quality-regression-csm` now proves the semantic-quality evaluator mechanics offline
 with a degradation ladder and no-op negative control. `make quality-gold-csm` writes the
 63-record synthetic label queue at `eval/gold/slot_b_quality.jsonl` and the held-out key at
@@ -81,6 +82,9 @@ Current offline artifact: `eval/quality_regression_csm.json`
 - specificity summary for the `noop_equivalent` negative control;
 - conservative power estimate for the captured N;
 - explicit claim boundary: human-validated live semantic quality remains pending.
+- drift-power companion: `eval/drift_power_csm.json`, which currently supports detection
+  of about a 46.9 percentage-point or larger overall-pass-rate drop at n=7 independent
+  examples per arm, with no false alarm on the no-op negative control.
 
 Future live artifact:
 
