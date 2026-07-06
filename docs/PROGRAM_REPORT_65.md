@@ -82,7 +82,7 @@ deployments named above.
 
 ## Receipts Appendix
 
-- Phase reports: `docs/PROGRAM_REPORT_59.md` through `docs/PROGRAM_REPORT_64.md`.
+- Phase reports: `docs/archive/PROGRAM_REPORT_59.md` through `docs/archive/PROGRAM_REPORT_64.md`.
 - Send manifest: `/Users/owieschon/ultra-csm-operating-runs/phase10/phase10_send_manifest.json`.
 - Live adversarial drill: `/Users/owieschon/ultra-csm-operating-runs/phase11/live_adversarial_drill.json`.
 - Judge migration: `eval/gold/judge_model_migration.json`.
