@@ -22,7 +22,6 @@ from ultra_csm.agent1.slot_b import (
 )
 from ultra_csm.governance import ActionGate, ActionProposal, GateError, Verdict
 from ultra_csm.knowledge import is_safe_customer_ask
-from ultra_csm.platform.db import session
 
 UNREVIEWED_PREFERENCE_LABEL = "unreviewed_preference_data"
 REVISION_KIND = "slot_b_bounded_redraft"
@@ -161,11 +160,14 @@ def run_slot_b_revise_loop(
     )
     _assert_no_commercial_commitment(new_payload)
 
-    _record_rejected_revise_verdict(
-        gate,
+    gate.reject_and_supersede(
         proposal,
-        verdict,
-        instruction=instruction,
+        human_principal_id=verdict.human_principal_id,
+        revised_payload={
+            "kind": REVISION_KIND,
+            "edit_instruction": instruction.text,
+        },
+        rationale=verdict.rationale,
         cause_ref=cause_ref,
     )
     superseding = gate.propose(
@@ -293,47 +295,6 @@ def _superseding_payload(
         "edit_instruction": instruction.text,
     }
     return payload
-
-
-def _record_rejected_revise_verdict(
-    gate: ActionGate,
-    proposal: ActionProposal,
-    verdict: Verdict,
-    *,
-    instruction: _ConstrainedEditInstruction,
-    cause_ref: str | None,
-) -> None:
-    with session(
-        gate._conn,
-        tenant_id=gate._tenant_id,
-        actor_id=gate._actor,
-        cause_ref=cause_ref,
-        now=gate._now,
-    ) as cur:
-        cur.execute(
-            "UPDATE action_proposal SET status = %s, row_version = row_version + 1 "
-            "WHERE proposal_id = %s AND status = %s",
-            ("denied", proposal.proposal_id, "pending"),
-        )
-        if cur.rowcount != 1:
-            raise GateError(f"proposal is not pending: {proposal.proposal_id}")
-        cur.execute(
-            "INSERT INTO action_verdict (tenant_id, proposal_id, verdict, "
-            "revised_payload, approved_payload_sha256, rationale, "
-            "human_principal_id) VALUES (%s, %s, %s, %s, %s, %s, %s)",
-            (
-                gate._tenant_id,
-                proposal.proposal_id,
-                "revise",
-                json.dumps({
-                    "kind": REVISION_KIND,
-                    "edit_instruction": instruction.text,
-                }),
-                None,
-                verdict.rationale,
-                verdict.human_principal_id,
-            ),
-        )
 
 
 def _preference_pair(

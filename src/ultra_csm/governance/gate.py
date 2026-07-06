@@ -159,7 +159,14 @@ class ActionGate:
         injected VerdictSource (the fixture path). Writes exactly one
         action_verdict row (UNIQUE(proposal_id) → idempotent under retry) and
         moves the proposal to its terminal status, atomically with the revise
-        payload edit. Returns the bound GateOutcome the committer checks."""
+        payload edit. Returns the bound GateOutcome the committer checks.
+
+        For tier>=2 intents, an 'approve'/'revise' verdict's human_principal_id
+        must be a kind='human' principal distinct from the proposing actor
+        (GateError if not) -- a second, independent layer under the token seam's
+        `_ensure_human_principal`, backstopped by the 0005 DB trigger. Tier-1
+        auto_internal_only verdicts (committers.py::auto_approve_internal) are
+        exempt by design."""
         v = verdict or self._source.verdict_for(proposal)
         if v.verdict not in ("approve", "deny", "revise"):
             raise GateError(f"unknown verdict {v.verdict!r}")
@@ -177,6 +184,32 @@ class ActionGate:
 
         with session(self._conn, tenant_id=self._tenant_id, actor_id=self._actor,
                      cause_ref=cause_ref, now=self._now) as cur:
+            # Gate/DB human-ness check (defense-in-depth; the DB trigger in
+            # 0005_gate_human_ness.sql is the hard backstop -- this is the
+            # clean application-level error before that raw exception would
+            # hit). Scoped to verdicts that AUTHORIZE (approved_sha is not
+            # None: 'approve' and gate.py's own payload-mutating 'revise')
+            # for tier>=2 intents only -- tier-1 auto_internal_only legitimately
+            # auto-approves via a non-human system_principal_id
+            # (committers.py::auto_approve_internal) and must stay untouched.
+            if approved_sha is not None and proposal.autonomy_tier >= 2:
+                cur.execute(
+                    "SELECT kind FROM principal WHERE principal_id = %s",
+                    (v.human_principal_id,),
+                )
+                row = cur.fetchone()
+                approver_kind = row[0] if row else None
+                if approver_kind != "human":
+                    raise GateError(
+                        f"gate human-ness: approving principal "
+                        f"{v.human_principal_id!r} is not kind='human' "
+                        f"(tier {proposal.autonomy_tier})")
+                if v.human_principal_id == self._actor:
+                    raise GateError(
+                        f"gate human-ness: approving principal "
+                        f"{v.human_principal_id!r} cannot be the proposal's "
+                        f"own actor (tier {proposal.autonomy_tier})")
+
             # revise edits the proposal payload + hash atomically with the verdict.
             if v.verdict == "revise":
                 cur.execute(
@@ -205,6 +238,46 @@ class ActionGate:
             authorized=(new_status == "approved"), payload=eff_payload,
             payload_sha256=eff_sha, verdict=v.verdict,
         )
+
+    # -- deny + supersede (the bounded draft-revise loop's verdict path) ----
+    def reject_and_supersede(self, proposal: ActionProposal, *,
+                             human_principal_id: str, revised_payload: dict,
+                             rationale: str | None = None,
+                             cause_ref: str | None = None) -> None:
+        """Record a deny+supersede verdict: the ORIGINAL proposal is denied
+        (never mutated -- distinct from `record_verdict`'s own 'revise', which
+        approves in place). Used by the bounded Slot B draft-revise loop
+        (agent1/revise.py), which emits a fresh superseding proposal via
+        `propose()` separately; this method only closes out the rejected one.
+
+        `revised_payload` here is the revise-loop's edit-instruction record
+        (`{"kind": ..., "edit_instruction": ...}`), NOT an authorized action
+        body -- `approved_payload_sha256` is always None for this path,
+        because nothing is being authorized to commit. This is why the
+        gate/DB human-ness check (record_verdict, above) does not apply here:
+        that check is scoped to verdicts that AUTHORIZE
+        (approved_payload_sha256 IS NOT NULL), and this path's whole point is
+        that it never does.
+
+        Raises GateError if the proposal is not currently 'pending' (a
+        compare-and-set on the UPDATE, not a blind write) -- callers must not
+        reject_and_supersede a proposal that already has a terminal verdict."""
+        with session(self._conn, tenant_id=self._tenant_id, actor_id=self._actor,
+                     cause_ref=cause_ref, now=self._now) as cur:
+            cur.execute(
+                "UPDATE action_proposal SET status = %s, row_version = row_version + 1 "
+                "WHERE proposal_id = %s AND status = %s",
+                ("denied", proposal.proposal_id, "pending"),
+            )
+            if cur.rowcount != 1:
+                raise GateError(f"proposal is not pending: {proposal.proposal_id}")
+            cur.execute(
+                "INSERT INTO action_verdict (tenant_id, proposal_id, verdict, "
+                "revised_payload, approved_payload_sha256, rationale, "
+                "human_principal_id) VALUES (%s, %s, %s, %s, %s, %s, %s)",
+                (self._tenant_id, proposal.proposal_id, "revise",
+                 json.dumps(revised_payload), None, rationale, human_principal_id),
+            )
 
     # -- the committer's anti-TOCTOU check ----------------------------------
     def assert_payload_bound(self, outcome: GateOutcome, payload: dict) -> None:
