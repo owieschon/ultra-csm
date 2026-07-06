@@ -159,7 +159,14 @@ class ActionGate:
         injected VerdictSource (the fixture path). Writes exactly one
         action_verdict row (UNIQUE(proposal_id) → idempotent under retry) and
         moves the proposal to its terminal status, atomically with the revise
-        payload edit. Returns the bound GateOutcome the committer checks."""
+        payload edit. Returns the bound GateOutcome the committer checks.
+
+        For tier>=2 intents, an 'approve'/'revise' verdict's human_principal_id
+        must be a kind='human' principal distinct from the proposing actor
+        (GateError if not) -- a second, independent layer under the token seam's
+        `_ensure_human_principal`, backstopped by the 0005 DB trigger. Tier-1
+        auto_internal_only verdicts (committers.py::auto_approve_internal) are
+        exempt by design."""
         v = verdict or self._source.verdict_for(proposal)
         if v.verdict not in ("approve", "deny", "revise"):
             raise GateError(f"unknown verdict {v.verdict!r}")
@@ -177,6 +184,32 @@ class ActionGate:
 
         with session(self._conn, tenant_id=self._tenant_id, actor_id=self._actor,
                      cause_ref=cause_ref, now=self._now) as cur:
+            # Gate/DB human-ness check (defense-in-depth; the DB trigger in
+            # 0005_gate_human_ness.sql is the hard backstop -- this is the
+            # clean application-level error before that raw exception would
+            # hit). Scoped to verdicts that AUTHORIZE (approved_sha is not
+            # None: 'approve' and gate.py's own payload-mutating 'revise')
+            # for tier>=2 intents only -- tier-1 auto_internal_only legitimately
+            # auto-approves via a non-human system_principal_id
+            # (committers.py::auto_approve_internal) and must stay untouched.
+            if approved_sha is not None and proposal.autonomy_tier >= 2:
+                cur.execute(
+                    "SELECT kind FROM principal WHERE principal_id = %s",
+                    (v.human_principal_id,),
+                )
+                row = cur.fetchone()
+                approver_kind = row[0] if row else None
+                if approver_kind != "human":
+                    raise GateError(
+                        f"gate human-ness: approving principal "
+                        f"{v.human_principal_id!r} is not kind='human' "
+                        f"(tier {proposal.autonomy_tier})")
+                if v.human_principal_id == self._actor:
+                    raise GateError(
+                        f"gate human-ness: approving principal "
+                        f"{v.human_principal_id!r} cannot be the proposal's "
+                        f"own actor (tier {proposal.autonomy_tier})")
+
             # revise edits the proposal payload + hash atomically with the verdict.
             if v.verdict == "revise":
                 cur.execute(
