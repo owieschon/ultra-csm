@@ -165,6 +165,44 @@ export interface LedgerResponse {
   ledger_gap: string[];
 }
 
+// Reconciliation agent (Harvest 31/32, report 52/53): reported-vs-
+// experienced reconciliation for one account. EvidenceRefRow mirrors
+// EvidenceRef (contracts.py) -- source/source_id/field/observed_at.
+export interface EvidenceRefRow {
+  source: string;
+  source_id: string;
+  field: string;
+  observed_at: string;
+}
+
+export interface DeterministicSignalRow {
+  origin: "deterministic";
+  name: string;
+  value: number;
+  contribution: number;
+  surfaced_by_lenses: string[];
+  evidence: EvidenceRefRow[];
+}
+
+export interface CandidateDivergenceRow {
+  origin: "llm_hypothesis";
+  claim: string;
+  confidence: "low" | "medium";
+  disclaimer: string;
+  evidence: EvidenceRefRow[];
+}
+
+export interface ReconciliationResponse {
+  account_id: string;
+  deterministic_signals: DeterministicSignalRow[];
+  explanation: {
+    text: string;
+    disclaimer: string;
+    evidence: EvidenceRefRow[];
+  };
+  candidate_divergences: CandidateDivergenceRow[];
+}
+
 export interface HealthResponse {
   status: string;
   db_connected: boolean;
@@ -185,6 +223,10 @@ export const api = {
   accountTrajectory: (accountId: string, window = 30) =>
     request<Record<string, unknown>>(
       `/accounts/${accountId}/trajectory?window=${window}`
+    ),
+  accountReconciliation: (accountId: string, day?: number) =>
+    request<ReconciliationResponse>(
+      `/accounts/${accountId}/reconciliation${day != null ? `?day=${day}` : ""}`
     ),
   // No Authorization header is sent: `_require_write_auth` accepts either a
   // mapped ULTRA_CSM_API_TOKENS bearer or ULTRA_CSM_DEMO_NOAUTH=1 (the
