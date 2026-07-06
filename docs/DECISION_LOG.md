@@ -4,9 +4,9 @@ Append-only record of non-obvious engineering decisions and the evidence behind 
 
 ---
 
-## Current quality-judge decision (v8, regenerated 2026-07-06)
+## Prior quality-judge decision (v8 on Sonnet 4.6, regenerated 2026-07-06)
 
-**Decision.** The shipped Slot B quality gate is `quality-judge-v8` on
+**Decision.** Before the Phase 12 model migration below, the shipped Slot B quality gate was `quality-judge-v8` on
 `claude-sonnet-4-6`, evaluated by the `cot@N` hard-layer arm with 5 runs per
 case. `judge_validation_status()` is the source of truth: it derives
 `validated=True` from `eval/gold/judge_agreement.json` and regenerated
@@ -26,6 +26,45 @@ calls, 395,725 input tokens, 25,950 output tokens, `$1.576425`.
 **Claim boundary.** This validates agreement against the current single-labeler
 gold/key artifacts. It is not a second-human ceiling and it is not yet a
 drift-power claim; those remain separate measurements.
+
+---
+
+## Quality judge model migration: Sonnet 4.6 -> Sonnet 5 (2026-07-06)
+
+**Decision.** Adopt `claude-sonnet-5` as the shipped Slot B quality judge model
+for prompt `quality-judge-v8`. The judge remains `cot@N` with 5 runs per hard
+case; no gold labels, held-out keys, rubric anchors, or prompt text were changed.
+
+**Migration screen.** `eval/judge_model_migration.py` compared the committed
+`claude-sonnet-4-6` `cot@N` baseline in `eval/gold/judge_compare.json` against a
+fresh `claude-sonnet-5` candidate arm on the same 36 hard cases. The paired
+McNemar overall pass/fail comparison had `baseline_correct_candidate_wrong=0`,
+`baseline_wrong_candidate_correct=0`, `p_value=1.0`, and no fail-open false-pass
+increase. Per-dimension adoption blockers were also empty. Candidate hard-layer
+aggregated kappas were: grounding `0.932`, on_task `0.769`, tone `0.859`,
+safety `0.625`, account_specificity `1.0`, priority_fidelity `1.0`; aggregated
+overall false negatives were `0`.
+
+**Validation after adoption.** The shipped evidence artifacts were regenerated
+for `claude-sonnet-5`: `eval/gold/judge_agreement.json` and
+`eval/gold/judge_compare.json`. `judge_validation_status()` derives
+`validated=True`, with clean layer n=63, min judge-scored kappa `0.653`, clean
+false_pos `0`, clean false_neg `0`; hard layer n=36, min aggregated kappa
+`0.625`, hard false_pos `3`, hard false_neg `0`, gate repeatability `1.0`. The
+old `terse@N` arm was intentionally not carried forward into `judge_compare.json`
+because it belonged to the old model and the validation gate consumes only
+`cot@N`.
+
+**Cost and reliability.** The successful candidate screen made 183 API calls
+including retries, 558,570 input tokens, 92,642 output tokens, cost `$2.043560`.
+One failed pre-hardening attempt made 25 calls, 76,410 input tokens, 6,874 output
+tokens, cost `$0.221560`; the failure was malformed JSON during candidate
+screening. The harness now supports a larger response budget and per-case
+checkpoints; the agreement runner now retries transient parse/API failures.
+
+**Claim boundary.** This is a model migration decision for the existing
+single-labeler-validated judge. It is not a second-human inter-rater ceiling and
+not the drift-power experiment.
 
 ---
 

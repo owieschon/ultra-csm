@@ -243,9 +243,10 @@ def test_ac1_reported_only_for_wide_ci_dims_never_gates():
     reported = status["hard"]["gwet_ac1_reported"]
     assert "on_task_relevance" in reported
     assert isinstance(reported["on_task_relevance"], float)
-    # A dimension with a tight CI (e.g. safety_boundary, deterministic 1.0) is
-    # never reported -- AC1 is scoped to the fragile dims only.
-    assert "safety_boundary" not in reported
+    # Deterministic dimensions are never reported -- AC1 is scoped to
+    # judge-scored dimensions with wide single-run CIs only.
+    assert "account_specificity" not in reported
+    assert "priority_fidelity" not in reported
     assert status["validated"] is True
 
 
