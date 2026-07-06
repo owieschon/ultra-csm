@@ -6,7 +6,7 @@ PYTHON := .venv/bin/python
 setup:
 	python3 -m venv .venv
 	$(PYTHON) -m pip install --upgrade pip
-	$(PYTHON) -m pip install -e ".[dev,api,mcp]"
+	$(PYTHON) -m pip install -e ".[dev,api,mcp]" -c constraints.txt
 
 serve:
 	PYTHONPATH=src:. $(PYTHON) -m uvicorn ultra_csm.api:app --host 0.0.0.0 --port 8000 --reload
