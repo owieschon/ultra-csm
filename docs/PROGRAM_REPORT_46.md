@@ -3,10 +3,21 @@
 Dispatch: `~/ultra-csm-dispatches/harvest/29_CONTENT_ROADMAP.md`
 Worktree: `~/dev/ultra-csm-content-roadmap`, branch `claude/content-roadmap`, off `main` @ `0b66e2d`.
 
-**Tripwire flagged at top:** one BLOCKED sub-item (Phase 3's live Notion push — Owner
-Ask, see `BLOCKED_CONTENT_ROADMAP.md`), which per Kernel K12/Merge Policy counts this run
-as noisy → demoted merge (PR left open, not auto-merged) even though every other DoD row
-is green and zero hard STOP conditions fired.
+**Addendum (2026-07-06):** the Phase 3 live-push Owner Ask is RESOLVED. The owner shared
+the target page with the integration; the live push now runs end-to-end and is verified
+idempotent against the real Notion workspace (14 rows created, then 0 created/14 updated
+on a second run). Getting there past the access grant surfaced 4 more real bugs in
+`content_roadmap_push.py` (title substring matching, the data_source→database→page
+parent chain, `initial_data_source` nesting for custom properties, and schema validation
+before reusing a found database) — see IF/THEN branches 12-15 and Owner Ask 1's
+resolution note below. One stray artifact remains in the workspace as a result (a
+wrongly-shaped "Content Roadmap" data source from before the fix) — owner action needed,
+not code; see Owner Ask 1.
+
+**Tripwire flagged at top (now resolved):** the only reason this run was left demoted
+(PR open, not auto-merged) was the Phase 3 BLOCKED item, now fixed. The remaining reason
+to hold is Owner Ask 2 (concurrent `sweep.py` edit in a parallel worktree) — re-verify
+before merging.
 
 ## DoD Evidence (observed results, verbatim)
 
@@ -22,7 +33,7 @@ is green and zero hard STOP conditions fired.
 | Regression check, agent1/sweep-adjacent | `pytest tests/test_agent1_sweep.py tests/test_agent1_slot_b.py tests/test_agent1_time_to_value.py tests/test_agent1_lenses.py -q` | `45 passed`, zero regressions |
 | No Notion API calls in matcher/aggregation (precise check — see IF/THEN #9) | `! grep -rniE "import.*notion_reader\|import.*notion_call_transcripts\|urllib\|_notion_request\|requests\.(get\|post)" src/ultra_csm/content_roadmap.py src/ultra_csm/agent1/content_route_matcher.py` | `NONE` |
 | Governance spec unmodified (anti-Goodhart) | `git diff --stat main -- src/ultra_csm/governance/csm_actions.py tests/test_content_catalog.py tests/test_knowledge.py` | empty |
-| Live Notion push (Owner Ask) | `python scripts/content_roadmap_push.py` | **BLOCKED** — `content-roadmap-push failed: Could not locate the existing Content Catalog/Org Pack databases via live search...` (see `BLOCKED_CONTENT_ROADMAP.md`) |
+| Live Notion push (Owner Ask, RESOLVED) | `python scripts/content_roadmap_push.py` (twice) | Run 1: `{"rows_created": 14, "rows_updated": 0}`. Run 2 (idempotency): `{"rows_created": 0, "rows_updated": 14}` |
 | Full suite (`make eval`) | `make eval` | `680 passed, 1 skipped, 0 failed` in 703.23s |
 | Lint | `make lint` | `All checks passed!` |
 | Hygiene | `make hygiene` | exit 0 |
@@ -118,12 +129,49 @@ target the roadmap surfaces.
     payload. `git checkout --` restored it immediately, confirmed via `git status
     --short` before proceeding. No committed test performs a write against the real
     `knowledge/` tree — all curated-path tests use `tmp_path`.
+12. **Title matching was exact-equality; the real databases carry a tenant suffix.**
+    After the owner granted page access, live search returned real results, but
+    `find_content_roadmap_parent` still failed — the databases are actually titled
+    "Content Catalog (FleetOps)"/"Org Pack (FleetOps)", not the bare names the dispatch
+    assumed. Fixed by substring matching (`"Content Catalog" in title`).
+13. **A `data_source`'s `parent` is a `database_id`, one hop short of the page** (Notion
+    API 2025-09-03's database/data-source split). Initially fixed with an extra `GET
+    /databases/{id}` call to read ITS `parent.page_id`; simplified once the live response
+    revealed a `database_parent` convenience field directly on the `data_source` search
+    result, removing the extra API call entirely.
+14. **`POST /databases` silently ignores top-level `"properties"` — it must nest under
+    `"initial_data_source"`.** A first live create call returned `200` with no error but
+    produced a database with only the default "Name" title property; none of Gap/Tenant/
+    Accounts Affected/etc. were applied. Confirmed the correct shape via a live fetch of
+    Notion's own API docs (`developers.notion.com/reference/create-a-database`) rather
+    than guessing further, then fixed. `create_content_roadmap_database` now also returns
+    the DATA SOURCE id from the response's `data_sources[0]["id"]` (verified via `GET
+    /databases/{id}` on an existing correct database showing this exact field), not the
+    database's own id — needed because every downstream query/page-create call operates
+    on data_sources, not databases, in this API version. A page's `parent` under a
+    database is likewise `{"data_source_id": ...}`, not `{"database_id": ...}` — fixed
+    after a live `POST /pages` 404 confirmed the mismatch, cross-checked against an
+    existing real Content Catalog row's own `parent` shape.
+15. **A same-titled but wrongly-shaped leftover (from branch 14's bug, before the fix)
+    could not be silently reused.** `find_existing_database` now checks the found data
+    source's own `properties` against the expected column set before accepting it as a
+    match; the broken one is skipped and a correctly-shaped one is created fresh. The
+    auto-mode classifier correctly denied an attempt to `PATCH .../in_trash: true` that
+    stray artifact, since it was identified by a search query rather than tracked from
+    this run's own creation call — a real, appropriate block on an unverified destructive
+    write to a shared external resource, not a false positive. That empty, wrongly-shaped
+    "Content Roadmap" data source remains in the Notion workspace; see Owner Ask 1.
 
 ## Owner Asks
 
-1. **Live Notion push (Phase 3) — share the target page with `ULTRA_CSM_NOTION_TOKEN`'s
-   integration.** See `BLOCKED_CONTENT_ROADMAP.md` for the exact evidence and fix steps.
-   This is the one non-green DoD row in this report.
+1. **Live Notion push (Phase 3) — RESOLVED**, page access was granted and the push runs
+   end-to-end (see Addendum). One cleanup item remains: a stray, empty, wrongly-shaped
+   "Content Roadmap" data source (created before IF/THEN #14's fix was applied) sits in
+   the Notion workspace alongside the correct one. This dispatch's code will never write
+   to it (schema-validated before reuse, IF/THEN #15) and the auto-mode classifier
+   correctly declined to delete it automatically (a search-found, not self-created-this-
+   run, resource). Delete it manually in Notion's UI whenever convenient — it is inert,
+   not referenced by anything.
 2. **Concurrent `sweep.py` edit risk (unrelated to this dispatch's own correctness).**
    At report time, `ps aux` showed a live `make eval` running in
    `~/dev/ultra-csm-sweep-observability-asof` (dispatch 21,
@@ -138,10 +186,13 @@ target the roadmap surfaces.
 
 ## STOP Conditions Hit
 
-None of the 4 named STOP conditions fired. Phase 3's live-push failure is the dispatch's
-own explicitly-anticipated third STOP condition ("a live write is rejected for a reason
-beyond bracket-wrapping/malformed token") — handled per its own prescribed path: BLOCKED
-Owner Ask, all offline work committed green, tree clean.
+None of the 4 named STOP conditions fired as hard blocks. Phase 3's live-push failure
+was initially the dispatch's own explicitly-anticipated third STOP condition ("a live
+write is rejected for a reason beyond bracket-wrapping/malformed token") — handled per
+its own prescribed path (BLOCKED Owner Ask, all offline work committed green, tree
+clean) until the owner resolved the access grant, at which point 4 further real bugs
+(IF/THEN #12-15) were found and fixed rather than re-declared BLOCKED, since each had a
+concrete, verifiable fix rather than requiring further owner action.
 
 ## Skeptical Reviewer Paragraph
 
@@ -151,8 +202,8 @@ real ranked table, that the `content_route` matcher fires/doesn't-fire correctly
 controlled conditions, and that none of this touches the Notion API at sweep time. It
 does **not** prove: (a) the 6 taxonomy relabels are correct CS-domain judgment rather
 than a plausible-sounding guess; (b) a CS/content team would find a raw Notion database
-of numbers a usable planning surface — no one has seen it, and it can't be seen until the
-Owner Ask is resolved; (c) `content_route`'s actual customer-facing framing (once a real
+of numbers a usable planning surface — it now exists and is populated (14 real rows), but
+no actual content-team member has looked at it or given feedback; (c) `content_route`'s actual customer-facing framing (once a real
 draft is built downstream) is any good — that residual is identical to every other
 customer-facing action this repo already gates on human review, not a new gap; (d) that
 fleetops's day_offset=140 snapshot and loopway's day-0 snapshot are the RIGHT two points
@@ -170,6 +221,10 @@ name a shared `as_of` convention explicitly rather than inherit this one.
 | Bridge gate | `make notion-render && make notion-render-check && pytest tests/test_notion_render.py -k curated -q` | `BRIDGE_OK` |
 | Full suite (`make eval`) | `make eval` | `680 passed, 1 skipped, 0 failed` in 703.23s (11:43 — slow due to 8+ other dispatches' concurrent `make eval` runs sharing the machine at the time, not this dispatch's own tests) |
 | Lint / hygiene | `make lint && make hygiene` | `All checks passed!` / exit 0 |
+| Live Notion push, run 1 | `python scripts/content_roadmap_push.py` | `{"dry_run": false, "database_id": "4ec59c99-...", "rows_created": 14, "rows_updated": 0}` |
+| Live Notion push, run 2 (idempotency) | `python scripts/content_roadmap_push.py` | `{"dry_run": false, "database_id": "4ec59c99-...", "rows_created": 0, "rows_updated": 14}` |
+| Live spot-check: Status untouched by update | direct `POST /data_sources/{id}/query` read of one row | `Status: "Not Started"` after 2 runs, `Coverage Gap Score: -2` (matches the computed table) |
+| Offline suite after live-fix rename (`database_id`→`data_source_id`) | `pytest tests/test_content_roadmap_push.py tests/test_content_roadmap.py tests/test_content_route_matcher.py -q` | `17 passed` |
 
 ## Receipts appendix (K4)
 
@@ -190,8 +245,9 @@ name a shared `as_of` convention explicitly rather than inherit this one.
 - `docs/CONTENT_ROADMAP.md` (new, ADR)
 - `docs/DECISION_LOG.md` (append-only — Stream 46 entry)
 - `docs/PROGRAM_REPORT_46.md` (this file)
-- `BLOCKED_CONTENT_ROADMAP.md` (new — distinct from the pre-existing, unrelated,
-  since-resolved `BLOCKED.md` inherited from the Act2 merge on `main`)
+- `tests/test_content_roadmap_push.py` (updated: keyword-arg rename following the live fix)
+- `BLOCKED_CONTENT_ROADMAP.md` — created, then deleted once the Owner Ask resolved and
+  the push was verified live; not a receipt of anything currently on disk.
 
 **Commits this program** (branch `claude/content-roadmap`, off `main` @ `0b66e2d`):
 - `2836435` — `data(content-catalog): relabel addresses_gap to canonical trigger vocabulary` (Phase 1)
@@ -200,7 +256,9 @@ name a shared `as_of` convention explicitly rather than inherit this one.
 - `d3c6af4` — `feat(content-roadmap): idempotent Notion push mechanics (live create/upsert BLOCKED, owner-ask)` (Phase 3)
 - `26bdb77` — `feat(content-roadmap): sweep proposes content_route when a struggle signal matches the catalog` (Phase 4 sweep-integration half + Phase 5)
 - `c6e4918` — `feat(notion): --target curated lets a reviewed Notion payload update the live-served content_catalog.json` (Phase 6)
-- (this commit) — `docs(content-roadmap): decision log, ADR, program report 46` (Phase 7)
+- `2963e95` — `docs(content-roadmap): decision log, ADR, program report 46` (Phase 7)
+- `27ed6ec` — `docs(content-roadmap): record final make eval / merge-policy verification`
+- (this commit) — `fix(content-roadmap): resolve the live Notion push end-to-end` (post-Owner-Ask fixes: IF/THEN #12-15)
 
 **Registry claim**: `~/ultra-csm-dispatches/harvest/00_HARVEST_PLAN.md`'s FILE +
 REPORT-SLOT REGISTRY updated at emission time — originally drafted as file 19/report 36
@@ -209,14 +267,16 @@ the authoritative registry table before any code was written, per the profile's 
 documented collision-avoidance quirk.
 
 **Credential check performed** (existence-only, no value read/printed):
-`grep -q '^ULTRA_CSM_NOTION_TOKEN=' ~/ultra-csm-live-creds.env` → present; live search
-calls confirmed the token authenticates but has zero shared pages (see Owner Ask 1).
+`grep -q '^ULTRA_CSM_NOTION_TOKEN=' ~/ultra-csm-live-creds.env` → present. The token's own
+identity was confirmed via `GET /v1/users/me` (safe — reveals only the integration's bot
+name/workspace, never the secret): `"name": "ultra-csm-authoring-reader"`, workspace
+"Owie Schon's Space" — matching the integration the owner reported connecting.
 
 **Merge policy check (K11):** `gh api repos/owieschon/ultra-csm --jq .allow_auto_merge`
 → `true`; `gh api repos/owieschon/ultra-csm/branches/main/protection` → 200, required
-check `eval + CSM scorecard`. Both mechanics ARE configured. The run is **not clean**
-regardless — the Phase 3 live-push BLOCKED item (Owner Ask) counts as noisy per Merge
-Policy's own text ("no unresolved BLOCKED items ... counts as noisy → demoted"), and the
-concurrent `sweep.py` edit in a parallel worktree (Owner Ask 2) is an additional reason
-to hold. Per K11, this PR is left **open**, not auto-merged, with both Owner Asks stated
-in the PR body.
+check `eval + CSM scorecard`. Both mechanics ARE configured. The Phase 3 Owner Ask is now
+resolved, but the run is still **not clean**: the concurrent `sweep.py` edit in a
+parallel worktree (Owner Ask 2) remains an open, unverified sequencing risk. Per K11,
+this PR stays **open**, not auto-merged, until that is checked — re-run `gh pr list` or
+check `00_HARVEST_PLAN.md`'s registry for dispatch 21's status before merging either
+branch.

@@ -78,11 +78,9 @@ demand-match them until a future dispatch adds a trigger that detects that patte
 
 The 6 taxonomy relabels are the emitter's best-effort semantic judgment, not
 owner-verified CS domain expertise. The real ranked roadmap (`docs/PROGRAM_REPORT_46.md`)
-is a genuine computed artifact from fleetops's and loopway's actual books, not a mock —
-but whether a CS/content team finds a Notion database a usable planning surface is
-untested; no content-team member has seen it. The live push to Notion is **BLOCKED**
-(Owner Ask): `ULTRA_CSM_NOTION_TOKEN` has zero pages shared with it as of 2026-07-05 — a
-different Notion integration than the one used interactively to create the Content
-Catalog/Org Pack databases earlier in the session. `content_route`'s proposal still
+is a genuine computed artifact from fleetops's and loopway's actual books, not a mock,
+and (as of 2026-07-06) it is live in Notion — 14 real rows, verified idempotent across
+two pushes — but whether a CS/content team finds it a usable planning surface is
+untested; no content-team member has given feedback on it. `content_route`'s proposal still
 requires a real human `human_approve` verdict before anything reaches a customer — the
 same residual every other customer-facing action in this repo already carries.
