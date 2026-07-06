@@ -535,6 +535,41 @@ def _data_plane_for_day(
     return dp, as_of
 
 
+def _precedence_data_plane_for_proposal(
+    proposal: ActionProposal,
+) -> tuple[CustomerDataPlane, str]:
+    """Return the data plane + as_of a precedence re-check should use for
+    *proposal*, scoped to the day it actually originated from rather than
+    the static default.
+
+    Real proposals from a day-scoped sweep (``POST /sweep?day=N``) already
+    carry ``payload["as_of"]`` (set by agent1/lens_expansion.py's
+    _propose_expansion_call at emit time) -- this derives the simulation day
+    back out of that recorded date and re-fetches that day's synthetic-book
+    data plane via the same ``_data_plane_for_day`` used at sweep time, so
+    the re-check sees the same book the proposal was raised against. Falls
+    back to the static default plane (today's behaviour) when the proposal
+    carries no parseable ``as_of`` -- not every proposal type carries one.
+    """
+
+    as_of = proposal.payload.get("as_of")
+    if not isinstance(as_of, str):
+        return _data_plane_for_day(None)
+
+    from ultra_csm.data_plane.synthetic_book import SEED_DATE
+
+    try:
+        seed_date = datetime.strptime(SEED_DATE, "%Y-%m-%d")
+        proposal_date = datetime.strptime(as_of, "%Y-%m-%d")
+    except ValueError:
+        return _data_plane_for_day(None)
+
+    day = (proposal_date - seed_date).days
+    if day < 0:
+        return _data_plane_for_day(None)
+    return _data_plane_for_day(day)
+
+
 def _fixture_data_for_day(day: int | None, *, deep: bool = False):
     """Return fixture data aligned with ``_data_plane_for_day`` for reporting."""
 
@@ -1485,12 +1520,13 @@ async def submit_verdict(proposal_id: str, body: VerdictRequest, request: Reques
 
     action_packet = _action_packet_for_proposal(proposal)
     if body.verdict == "approve" and action_packet is not None:
-        blockers = _current_precedence_findings(_data_plane, as_of=_AS_OF)  # type: ignore[arg-type]
+        precedence_dp, precedence_as_of = _precedence_data_plane_for_proposal(proposal)
+        blockers = _current_precedence_findings(precedence_dp, as_of=precedence_as_of)
         decision = approval_decision(
             action_packet,
             blockers,
             load_precedence_config(),
-            as_of=_AS_OF,
+            as_of=precedence_as_of,
         )
         if not decision.allowed:
             raise HTTPException(

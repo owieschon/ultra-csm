@@ -16,7 +16,11 @@ fastapi_mod = pytest.importorskip("fastapi")
 from fastapi.testclient import TestClient  # noqa: E402
 
 from ultra_csm.data_plane.fixtures import ACME_LOGISTICS, CYBERDYNE_NO_CONSENT  # noqa: E402
-from ultra_csm.governance import proposal_fields_for  # noqa: E402
+from ultra_csm.governance import (  # noqa: E402
+    ROLE_CS_ORCHESTRATOR,
+    ROLE_ORDER_CONFIRM_AUTHORITY,
+    proposal_fields_for,
+)
 from ultra_csm import api  # noqa: E402
 from ultra_csm.api import app  # noqa: E402
 
@@ -400,6 +404,89 @@ class TestGovernanceEndpoints:
             )
             row = cur.fetchone()
         assert row == ("human", "Lane A Manager")
+
+    def test_new_bearer_token_principal_gets_lesser_default_role(
+        self, client: TestClient, monkeypatch,
+    ):
+        """A brand-new bearer-token-mapped human must NOT be auto-granted
+        ROLE_ORDER_CONFIRM_AUTHORITY (the highest-tier, SoD-critical
+        order.confirm role) on first use -- it should get the lesser
+        ROLE_CS_ORCHESTRATOR default instead, with no per-human
+        differentiation beyond that."""
+        monkeypatch.setenv(
+            "ULTRA_CSM_API_TOKENS",
+            "lane-a-token:Lane A Manager,lane-z-token:Lane Z New Hire",
+        )
+
+        resp = client.post(
+            "/sweep", headers={"Authorization": "Bearer lane-z-token"},
+        )
+        assert resp.status_code == 200
+        assert resp.json()["auth"] == "bearer-token"
+
+        assert api._conn is not None and api._orch_principal is not None
+        with api.session(
+            api._conn,
+            tenant_id=api._TENANT_ID,
+            actor_id=api._orch_principal,
+            now=api._CLOCK,
+        ) as cur:
+            cur.execute(
+                "SELECT r.name "
+                "FROM principal p "
+                "JOIN grant_ g ON g.principal_id = p.principal_id "
+                "JOIN role r ON r.role_id = g.role_id "
+                "WHERE p.display_name = %s",
+                ("Lane Z New Hire",),
+            )
+            granted_roles = {row[0] for row in cur.fetchall()}
+        assert granted_roles == {ROLE_CS_ORCHESTRATOR}
+        assert ROLE_ORDER_CONFIRM_AUTHORITY not in granted_roles
+
+    def test_verdict_precedence_recheck_uses_proposals_own_day_not_static_default(
+        self, client: TestClient,
+    ):
+        """A proposal's precedence re-check must be scoped to the day it
+        actually originated from (payload['as_of']), not always the static
+        default plane. ACME_LOGISTICS is blocked on the static default plane
+        (see test_verdict_refuses_blocked_expansion_proposal below) but does
+        not exist at all in the ?day=N synthetic-book fixture -- a proposal
+        carrying an as_of from that synthetic-book timeline must therefore
+        see NO blocker for it and be allowed to proceed, proving the re-check
+        actually switched data planes rather than always consulting the
+        static default regardless of the proposal's own as_of."""
+        from datetime import datetime, timedelta
+
+        from ultra_csm.data_plane.synthetic_book import SEED_DATE
+
+        day = 5
+        as_of = (
+            datetime.strptime(SEED_DATE, "%Y-%m-%d") + timedelta(days=day)
+        ).strftime("%Y-%m-%d")
+
+        assert api._conn is not None
+        gate = api._gate()
+        proposal = gate.propose(
+            intent="test_day_scoped_expansion",
+            payload={
+                "account_id": ACME_LOGISTICS,
+                "account_name": "Acme Logistics",
+                "as_of": as_of,
+                "body": "Discuss expansion; account absent from this day's book.",
+            },
+            grounding_ref=f"test:{ACME_LOGISTICS}:day-scoped-expansion",
+            cause_ref=f"test:{ACME_LOGISTICS}:day-scoped-expansion",
+            **proposal_fields_for("initiate_customer_call"),
+        )
+
+        resp = client.post(
+            f"/proposals/{proposal.proposal_id}/verdict",
+            json={"verdict": "approve", "reason": "Approved in test"},
+            headers=AUTH_HEADERS,
+        )
+
+        assert resp.status_code == 200
+        assert resp.json()["status"] == "approved"
 
     def test_verdict_refuses_blocked_expansion_proposal(self, client: TestClient):
         assert api._conn is not None

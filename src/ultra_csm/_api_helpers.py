@@ -12,7 +12,7 @@ from ultra_csm._util import iso_date
 from ultra_csm.agent1.sweep import _person_layer_inputs
 from ultra_csm.data_plane import CustomerDataPlane
 from ultra_csm.governance import ActionProposal
-from ultra_csm.governance import ROLE_ORDER_CONFIRM_AUTHORITY as CSM_APPROVAL_ROLE
+from ultra_csm.governance import ROLE_CS_ORCHESTRATOR as CSM_APPROVAL_ROLE
 from ultra_csm.governance import role_id
 from ultra_csm.person_factors import new_stakeholder_unengaged
 from ultra_csm.platform.db import session
