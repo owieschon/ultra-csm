@@ -210,6 +210,9 @@ export interface HealthResponse {
   tenant_id: string;
   accounts_loaded: number;
   auth: string;
+  data_plane_mode: string;
+  data_plane_sources: Record<string, string>;
+  health_source: string;
 }
 
 export const api = {
