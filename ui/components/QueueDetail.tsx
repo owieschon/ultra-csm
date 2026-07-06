@@ -150,7 +150,7 @@ const DRAWERS: {
   { key: "agent", name: "Agent history", briefField: null },
 ];
 
-export function QueueDetail({ item, day }: { item: WorkItem; day: number }) {
+export function QueueDetail({ item, day }: { item: WorkItem; day: number | undefined }) {
   const [brief, setBrief] = useState<Brief | null>(null);
   const [openDrawer, setOpenDrawer] = useState<string | null>(null);
   const [openFactor, setOpenFactor] = useState<number | null>(null);

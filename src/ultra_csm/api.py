@@ -24,8 +24,7 @@ from pydantic import BaseModel, Field
 
 from ultra_csm.comms_mapping import (
     confirm_comms_mapping,
-    ingest_notion_call_transcripts,
-    ingest_slack_internal_notes,
+    run_confirmed_comms_ingest,
 )
 from ultra_csm.logging_config import setup_logging
 from ultra_csm.platform import EphemeralCluster
@@ -41,8 +40,8 @@ from ultra_csm.platform.seed import det_uuid, seed, SEED_CLOCK
 from ultra_csm.data_plane import (
     CustomerDataPlane,
     DEFAULT_TENANT,
-    build_sweep_fixture_data_plane,
 )
+from ultra_csm.data_plane.live_facade import DataPlaneAssembly, build_served_data_plane
 from ultra_csm.governance import (
     ActionGate,
     ActionProposal,
@@ -112,6 +111,7 @@ log = logging.getLogger(__name__)
 _cluster: EphemeralCluster | None = None
 _conn: psycopg.Connection | None = None
 _data_plane: CustomerDataPlane | None = None
+_data_plane_assembly: DataPlaneAssembly | None = None
 _orch_principal: str | None = None
 
 # Cost tracking and API metrics — initialised at import time so the
@@ -142,6 +142,9 @@ class HealthResponse(BaseModel):
     tenant_id: str
     accounts_loaded: int
     auth: str
+    data_plane_mode: str = "fixture"
+    data_plane_sources: dict[str, str] = Field(default_factory=dict)
+    health_source: str = "fixture_cs_platform"
 
 
 class ValueFactorSchema(BaseModel):
@@ -216,6 +219,17 @@ class AccountBriefResponse(BaseModel):
     comms_gmail: list[dict[str, Any]]
     comms_call_transcripts: list[dict[str, Any]]
     comms_internal: list[dict[str, Any]]
+
+
+class DerivedHealthResponse(BaseModel):
+    account_id: str
+    score: float | None
+    band: str | None
+    drivers: list[str]
+    measured_at: str | None
+    health_source: str
+    data_plane_mode: str
+    source_status: dict[str, str]
 
 
 class SweepResponse(BaseModel):
@@ -362,12 +376,13 @@ class TrajectoryResponse(BaseModel):
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Boot Postgres, seed, and configure on startup; tear down on shutdown."""
-    global _cluster, _conn, _data_plane, _orch_principal
+    global _cluster, _conn, _data_plane, _data_plane_assembly, _orch_principal
 
     setup_logging("INFO")
     _cluster = None
     _conn = None
     _data_plane = None
+    _data_plane_assembly = None
     _orch_principal = None
 
     assert_demo_noauth_loopback()
@@ -419,8 +434,13 @@ async def lifespan(app: FastAPI):
         _conn, tenant_id=_TENANT_ID, actor_id=_SEED_AGENT, now=_CLOCK
     )
 
-    # Build the fixture data plane.
-    _data_plane = build_sweep_fixture_data_plane(comms_conn=_conn, comms_tenant_id=_TENANT_ID)
+    _data_plane_assembly = build_served_data_plane(
+        conn=_conn,
+        comms_tenant_id=_TENANT_ID,
+        tenant_id=DEFAULT_TENANT,
+        as_of=_AS_OF,
+    )
+    _data_plane = _data_plane_assembly.data_plane
 
     log.info(
         "Ultra CSM API ready",
@@ -430,6 +450,8 @@ async def lifespan(app: FastAPI):
             "auth": auth_marker(),
             "configured_api_tokens": len(parse_api_tokens()),
             "synced_account_count": synced_account_count,
+            "data_plane_mode": _data_plane_assembly.mode,
+            "health_source": _data_plane_assembly.health_source,
         },
     )
 
@@ -1002,6 +1024,9 @@ async def health_check():
         tenant_id=_TENANT_ID,
         accounts_loaded=account_count,
         auth=auth_marker(),
+        data_plane_mode=_data_plane_assembly.mode if _data_plane_assembly else "uninitialized",
+        data_plane_sources=_data_plane_assembly.source_status if _data_plane_assembly else {},
+        health_source=_data_plane_assembly.health_source if _data_plane_assembly else "uninitialized",
     )
 
 
@@ -1101,6 +1126,40 @@ async def get_account_detail(
         return _score_one_account(account_id, data_plane=dp, as_of=as_of)
     except AccountDataError as exc:
         raise _account_data_http_error(exc)
+
+
+@app.get("/accounts/{account_id}/derived-health", response_model=DerivedHealthResponse)
+async def get_account_derived_health(
+    account_id: str,
+    day: int | None = Query(None, ge=0, le=365),
+    deep: bool = Query(False, description="Use deep data simulation layer"),
+):
+    """Read the served health signal and its evidence-source posture."""
+    dp, _as_of_value = _data_plane_for_day(day, deep=deep)
+    _require_account(account_id, dp)
+    health = dp.cs.get_health_score(account_id)
+    return DerivedHealthResponse(
+        account_id=account_id,
+        score=health.score if health else None,
+        band=health.band if health else None,
+        drivers=list(health.drivers) if health else ["health_not_instrumented"],
+        measured_at=health.measured_at if health else None,
+        health_source=(
+            _data_plane_assembly.health_source
+            if day is None and _data_plane_assembly is not None
+            else "simulation_or_fixture"
+        ),
+        data_plane_mode=(
+            _data_plane_assembly.mode
+            if day is None and _data_plane_assembly is not None
+            else "simulation"
+        ),
+        source_status=(
+            _data_plane_assembly.source_status
+            if day is None and _data_plane_assembly is not None
+            else {"book": "simulation"}
+        ),
+    )
 
 
 @app.get("/accounts/{account_id}/brief")
@@ -1879,15 +1938,12 @@ async def post_ingest_comms(request: Request):
     assert _conn is not None and _orch_principal is not None
     auth_principal = _require_write_auth(request)
 
-    slack_written = ingest_slack_internal_notes(
-        _conn, tenant_id=_TENANT_ID, actor_id=_orch_principal, now=_CLOCK
-    )
-    notion_written = ingest_notion_call_transcripts(
+    run = run_confirmed_comms_ingest(
         _conn, tenant_id=_TENANT_ID, actor_id=_orch_principal, now=_CLOCK
     )
     return IngestCommsResponse(
-        slack_notes_written=slack_written,
-        notion_signals_written=notion_written,
+        slack_notes_written=run.slack_notes_written,
+        notion_signals_written=run.notion_signals_written,
         auth=auth_principal.auth,
     )
 

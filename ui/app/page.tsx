@@ -17,6 +17,8 @@ export default function Home() {
   const [health, setHealth] = useState<"ok" | "degraded" | "checking">(
     "checking"
   );
+  const [liveMode, setLiveMode] = useState(false);
+  const [healthKnown, setHealthKnown] = useState(false);
   const [accounts, setAccounts] = useState<AccountSummary[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [selectedProposalId, setSelectedProposalId] = useState<string | null>(
@@ -26,23 +28,34 @@ export default function Home() {
   const [refreshToken, setRefreshToken] = useState(0);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
-  const { sweep, error: sweepError } = useSweep(day, refreshToken);
+  const servedDay = liveMode ? undefined : day;
+  const { sweep, error: sweepError } = useSweep(servedDay, refreshToken, healthKnown);
   const railRef = useRef<ActionRailHandle>(null);
 
   useEffect(() => {
     api
       .health()
-      .then((h) => setHealth(h.status === "ok" ? "ok" : "degraded"))
-      .catch(() => setHealth("degraded"));
+      .then((h) => {
+        setHealth(h.status === "ok" ? "ok" : "degraded");
+        setLiveMode(h.data_plane_mode === "live");
+        setHealthKnown(true);
+      })
+      .catch(() => {
+        setHealth("degraded");
+        setLiveMode(false);
+        setHealthKnown(true);
+      });
   }, []);
 
   useEffect(() => {
+    if (!healthKnown) return;
     setError(null);
+    setAccounts(null);
     api
-      .accounts(day)
+      .accounts(servedDay)
       .then((r) => setAccounts(r.accounts))
       .catch((e) => setError(String(e)));
-  }, [day]);
+  }, [servedDay, healthKnown]);
 
   const pendingProposalIds = (sweep?.work_items ?? [])
     .filter((i) => i.proposal?.status === "pending")
@@ -106,6 +119,7 @@ export default function Home() {
         accountCount={accounts?.length ?? null}
         queueCount={needsCount}
         day={day}
+        liveMode={liveMode}
         onDayChange={setDay}
         health={health}
         onOpenPalette={() => setPaletteOpen(true)}
@@ -118,14 +132,14 @@ export default function Home() {
             <BookView
               accounts={accounts}
               sweep={sweep}
-              day={day}
+              day={servedDay}
               onWorkQueue={() => setView("queue")}
               onSelectAccount={jumpToAccount}
             />
           )}
           {view === "queue" && (
             <QueueView
-              day={day}
+              day={servedDay}
               accounts={accounts}
               sweep={sweep}
               sweepError={sweepError}

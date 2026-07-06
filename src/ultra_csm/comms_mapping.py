@@ -46,6 +46,14 @@ class ConfirmedMapping:
     confirmed_at: str
 
 
+@dataclass(frozen=True)
+class CommsIngestRun:
+    """One owner-triggered standing-job run over confirmed comms mappings."""
+
+    slack_notes_written: int
+    notion_signals_written: int
+
+
 def confirm_comms_mapping(
     conn,
     *,
@@ -163,6 +171,31 @@ def ingest_notion_call_transcripts(
             )
             written += cur.rowcount
     return written
+
+
+def run_confirmed_comms_ingest(
+    conn,
+    *,
+    tenant_id: str,
+    actor_id: str,
+    creds_path: str | None = None,
+    now=None,
+) -> CommsIngestRun:
+    """Run the owner-gated comms ingest unit a standing job should call.
+
+    This function deliberately does not schedule itself. The API endpoint owns
+    auth, the owner owns any recurring launchd/cron configuration, and the job
+    body here only reads mappings that a human already confirmed.
+    """
+
+    return CommsIngestRun(
+        slack_notes_written=ingest_slack_internal_notes(
+            conn, tenant_id=tenant_id, actor_id=actor_id, creds_path=creds_path, now=now
+        ),
+        notion_signals_written=ingest_notion_call_transcripts(
+            conn, tenant_id=tenant_id, actor_id=actor_id, creds_path=creds_path, now=now
+        ),
+    )
 
 
 def list_confirmed_mappings(
