@@ -27,6 +27,12 @@ from mcp.server.fastmcp import FastMCP
 from ultra_csm.logging_config import setup_logging
 from ultra_csm.platform import EphemeralCluster
 from ultra_csm.platform.db import assert_rls_safe_role, session
+from ultra_csm.platform.runtime import (
+    bootstrap_persistent_database,
+    connect_persistent_runtime_database,
+    persistent_admin_configured,
+    persistent_database_configured,
+)
 from ultra_csm.platform.seed import det_uuid, SEED_CLOCK
 
 from ultra_csm.data_plane import (
@@ -280,7 +286,9 @@ def _boot() -> None:
         )
         return
 
-    log.info("Booting ephemeral Postgres cluster")
+    _cluster = None
+    _conn = None
+
     if demo_noauth_enabled():
         log.warning(
             "Demo no-auth enabled; MCP verdict tools allow "
@@ -288,21 +296,30 @@ def _boot() -> None:
             extra={"auth": "demo-noauth"},
         )
 
-    _cluster = EphemeralCluster().start()
-    atexit.register(_cluster.stop)
+    if persistent_database_configured():
+        log.info(
+            "Booting persistent Postgres database",
+            extra={"admin_migrations": persistent_admin_configured()},
+        )
+        bootstrap_persistent_database(_MIGRATIONS)
+        _conn = connect_persistent_runtime_database()
+    else:
+        log.info("Booting ephemeral Postgres cluster")
+        _cluster = EphemeralCluster().start()
+        atexit.register(_cluster.stop)
 
-    # Apply migrations and seed base tenant rows via a bootstrap connection.
-    with psycopg.connect(**_cluster.dsn(user=_cluster.BOOTSTRAP_USER)) as boot:
-        from ultra_csm.platform.db import apply_migrations
-        from ultra_csm.platform.seed import seed
+        # Apply migrations and seed base tenant rows via a bootstrap connection.
+        with psycopg.connect(**_cluster.dsn(user=_cluster.BOOTSTRAP_USER)) as boot:
+            from ultra_csm.platform.db import apply_migrations
+            from ultra_csm.platform.seed import seed
 
-        apply_migrations(boot, _MIGRATIONS)
-        seed(boot)
+            apply_migrations(boot, _MIGRATIONS)
+            seed(boot)
 
-    # Open the runtime connection used for the lifetime of the server.
-    dsn = _cluster.dsn(user="app_runtime")
-    _conn = psycopg.connect(**dsn)
-    assert_rls_safe_role(_conn)
+        # Open the runtime connection used for the lifetime of the server.
+        dsn = _cluster.dsn(user="app_runtime")
+        _conn = psycopg.connect(**dsn)
+        assert_rls_safe_role(_conn)
 
     # Seed the governance roster for the acme-csm tenant.
     seed_roster(_conn, tenant_id=_TENANT_ID, actor_id=_SEED_AGENT, now=_CLOCK)
