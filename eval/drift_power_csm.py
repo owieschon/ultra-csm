@@ -14,6 +14,7 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
+from eval.gold_slot_b_hard import HARD_PATH
 from eval.gold_slot_b_quality import GOLD_PATH, KEY_PATH, read_gold_label_candidates, read_gold_label_key
 from eval.judge_csm import PASSING_SCORE, QUALITY_DIMENSIONS
 from eval.judge_validation import judge_validation_status
@@ -60,6 +61,7 @@ def build_drift_power_report(
         target_power=TARGET_POWER,
         alpha=ALPHA,
     )
+    hard_layer = _summarize_hard_layer(HARD_PATH)
     return {
         "artifact": "csm_drift_power",
         "schema_version": SCHEMA_VERSION,
@@ -99,6 +101,7 @@ def build_drift_power_report(
                 "drop_50pp": required_n_per_arm(1.0, 0.5),
             },
         },
+        "expanded_hard_layer_power": hard_layer,
         "judge_validation": {
             "validated": judge_validation_status()["validated"],
             "method": judge_validation_status()["method"],
@@ -126,6 +129,44 @@ def write_drift_power_report(path: Path = ARTIFACT_PATH) -> dict[str, Any]:
     artifact = build_drift_power_report()
     path.write_text(json.dumps(artifact, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return artifact
+
+
+def _summarize_hard_layer(path: Path) -> dict[str, Any]:
+    rows = list(read_gold_label_candidates(path))
+    if not rows:
+        raise ValueError("hard layer is empty")
+    if any(row.get("human_labels") is None for row in rows):
+        raise ValueError("hard layer must be fully labeled for power analysis")
+    passed = [_overall_pass(row["human_labels"]["dimension_scores"]) for row in rows]
+    n = len(rows)
+    min_drop = minimum_detectable_drop(
+        1.0,
+        n,
+        n,
+        target_power=TARGET_POWER,
+        alpha=ALPHA,
+    )
+    return {
+        "layer": "slot_b_quality_hard",
+        "n": n,
+        "overall": {
+            "pass_count": sum(passed),
+            "fail_count": n - sum(passed),
+            "pass_rate_band": wilson_pass_rate_band(sum(passed), n),
+        },
+        "power": {
+            "method": "one_sided_two_proportion_z_test_normal_approximation",
+            "alpha": ALPHA,
+            "target_power": TARGET_POWER,
+            "current_independent_examples_per_arm": n,
+            "minimum_detectable_drop_at_current_n": min_drop,
+            "claim_supported": (
+                f"At n={n} hard-layer examples per arm, this eval supports detection "
+                f"of about a {min_drop:.1%} or larger overall-pass-rate drop from a "
+                "perfect-control arm; smaller drift needs more independent examples."
+            ),
+        },
+    }
 
 
 def _summarize_variant(name: str, rows: list[dict[str, Any]]) -> dict[str, Any]:

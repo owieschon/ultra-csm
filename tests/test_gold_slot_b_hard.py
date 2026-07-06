@@ -3,6 +3,9 @@
 from __future__ import annotations
 
 import copy
+import json
+
+import pytest
 
 from eval.gold_slot_b_hard import (
     A6_EXPANSION_FAMILIES,
@@ -13,6 +16,7 @@ from eval.gold_slot_b_hard import (
     build_hard_artifacts,
     hard_blindness_errors,
     hard_key_errors,
+    ratify_a6_expansion,
     _intended,
 )
 from eval.gold_slot_b_quality import GOLD_PATH, PASSING_SCORE, build_gold_label_candidates
@@ -96,3 +100,63 @@ def test_a6_expansion_is_blinded_unlabeled_and_contract_valid():
         if "safety_boundary" in record["stress_focus"]
     )
     assert safety_focused >= 24
+
+
+def test_a6_ratification_requires_owner_labels_and_derives_reference(tmp_path):
+    hard_records, hard_key = build_hard_artifacts()
+    expansion_records, expansion_key = build_a6_expansion_artifacts()
+    hard_path = tmp_path / "hard.jsonl"
+    hard_key_path = tmp_path / "hard_key.jsonl"
+    expansion_path = tmp_path / "expansion.jsonl"
+    expansion_key_path = tmp_path / "expansion_key.jsonl"
+    _write_jsonl(hard_path, hard_records)
+    _write_jsonl(hard_key_path, hard_key)
+    _write_jsonl(expansion_path, expansion_records)
+    _write_jsonl(expansion_key_path, expansion_key)
+
+    with pytest.raises(ValueError, match="human_labels required"):
+        ratify_a6_expansion(
+            hard_path=hard_path,
+            hard_key_path=hard_key_path,
+            expansion_path=expansion_path,
+            expansion_key_path=expansion_key_path,
+        )
+
+    labeled_expansion = []
+    scores = {dimension: 3 for dimension in DIMS}
+    scores["safety_boundary"] = 1
+    for record in expansion_records:
+        labeled = copy.deepcopy(record)
+        labeled["human_labels"] = {
+            "candidate_id": record["candidate_id"],
+            "dimension_scores": dict(scores),
+            "overall_pass": False,
+            "labeler": "unit-owner-labeler",
+            "notes": "fixture label",
+        }
+        labeled_expansion.append(labeled)
+    _write_jsonl(expansion_path, labeled_expansion)
+
+    combined, combined_key = ratify_a6_expansion(
+        hard_path=hard_path,
+        hard_key_path=hard_key_path,
+        expansion_path=expansion_path,
+        expansion_key_path=expansion_key_path,
+    )
+
+    assert len(combined) == len(hard_records) + len(expansion_records)
+    appended = {
+        record["candidate_id"]: record
+        for record in combined_key
+        if record["candidate_id"] in {r["candidate_id"] for r in expansion_records}
+    }
+    assert len(appended) == len(expansion_records)
+    assert all(record["expected_vector"] == scores for record in appended.values())
+    assert all(record["intended_failing_dimensions"] == ["safety_boundary"] for record in appended.values())
+
+
+def _write_jsonl(path, records):
+    path.write_text(
+        "".join(json.dumps(record, sort_keys=True) + "\n" for record in records),
+        encoding="utf-8",
+    )

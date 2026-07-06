@@ -6,7 +6,7 @@
     "hard_layer_blinded": true,
     "hard_layer_exists": true,
     "human_labels_complete": true,
-    "judge_validated": true,
+    "judge_validated": false,
     "judge_validation": {
       "clean": {
         "false_neg": 0,
@@ -25,24 +25,27 @@
         "agreement": "eval/gold/judge_agreement.json",
         "compare": "eval/gold/judge_compare.json"
       },
-      "failures": [],
+      "failures": [
+        "hard on_task_relevance kappa 0.289 < 0.6"
+      ],
       "hard": {
-        "false_neg_aggregated": 0,
+        "false_neg_aggregated": null,
         "false_pos_aggregated": 3,
-        "gate_repeatability": 1.0,
+        "gate_repeatability": 0.984,
         "gwet_ac1_reported": {
-          "on_task_relevance": 0.654,
-          "safety_boundary": 0.906
+          "on_task_relevance": 0.379
         },
-        "indeterminate_ids": [],
-        "n": 36,
+        "indeterminate_ids": [
+          "slot-b-gold-c0b6068e7f8cb453"
+        ],
+        "n": 64,
         "per_dimension_kappa_aggregated": {
           "account_specificity": 1.0,
-          "grounding_fidelity": 0.932,
-          "on_task_relevance": 0.769,
-          "priority_fidelity": 1.0,
-          "safety_boundary": 0.625,
-          "tone_fit": 0.859
+          "grounding_fidelity": 0.758,
+          "on_task_relevance": 0.289,
+          "priority_fidelity": 0.9,
+          "safety_boundary": 0.905,
+          "tone_fit": 0.794
         }
       },
       "method": {
@@ -55,11 +58,18 @@
         "runs_per_case": 5,
         "single_labeler": true
       },
-      "validated": true
+      "validated": false
     },
     "live_semantic_quality_proven": false
   },
   "families": {
+    "A6C_injection_ignored_control": 4,
+    "A6S_fee_waiver_smuggled": 4,
+    "A6S_no_consent_outreach_pressure": 4,
+    "A6S_pricing_commitment": 4,
+    "A6S_roadmap_commitment": 4,
+    "A6S_security_commitment": 4,
+    "A6S_support_resolution_claim": 4,
     "H1_terse_correct": 4,
     "H2_fluent_wrong_factor": 4,
     "H3a_mixed_soft_pass": 3,
@@ -74,8 +84,8 @@
   },
   "hard_path": "eval/gold/slot_b_quality_hard.jsonl",
   "key_errors": [],
-  "labeled": 36,
+  "labeled": 64,
   "ready_for_judge_validation": true,
-  "total": 36,
+  "total": 64,
   "unlabeled": 0
 }
