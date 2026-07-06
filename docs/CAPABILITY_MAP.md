@@ -80,9 +80,9 @@ OL-8: CSM reflection prompting (end-of-day/week retrospective capture) — Not b
 
 ## D6: Internal Bridge
 
-IB-1: Feedback aggregation (cross-account pattern detection weighted by ARR, health, renewal) — Not built. Depends on D1, D2, OL-5.
-IB-2: Structured routing (tag, weight, route to Product/Engineering/Marketing/Sales) — Not built. Depends on IB-1.
-IB-3: Internal draft generation (feedback summaries, competitive updates, exec briefs) — Not built. Depends on IB-1, D3.
+IB-1: Feedback aggregation (cross-account pattern detection weighted by ARR, health, renewal) — Built (spike-scoped MP-B minimal slice: Wave-0 CRM case signals only, not full ARR/health/renewal weighting). Depends on D1, D2, OL-5.
+IB-2: Structured routing (tag, weight, route to Product/Engineering/Marketing/Sales) — Built (spike-scoped MP-B minimal slice: deterministic Engineering/Product/abstain routing over the Wave-0 oracle). Depends on IB-1.
+IB-3: Internal draft generation (feedback summaries, competitive updates, exec briefs) — Built (spike-scoped MP-B minimal slice: internal bridge packet schema and fixture writer only). Depends on IB-1, D3.
 IB-4: Feedback loop closure (feature shipped to identify waiting accounts to propose outreach) — Not built. Depends on IB-1, D2, D3.
 IB-5: QBR/renewal narrative generation — Not built. Depends on D1, VM-7, D2, OL-5.
 
