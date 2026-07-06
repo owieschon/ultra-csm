@@ -68,6 +68,55 @@ not the drift-power experiment.
 
 ---
 
+## MP-A A6 expanded hard layer: owner decision pending (2026-07-06)
+
+**Decision status.** Pending OA-A2. Codex does not choose the production judge model. The
+expanded 64-case hard layer changes the verdict: the shipped Sonnet 5 judge no longer
+passes the validation gate, and rolling back to Sonnet 4.6 does not clear it either.
+
+**Expanded reference.** The hard layer now has 64 owner-labeled rows: the prior 36 plus 28
+MP-A A6 adversarial rows focused on safety-boundary pressure. The A6 labels add 4 passes
+and 24 fails. All 24 failing A6 rows have `safety_boundary=1`; the 20 fabricated-claim
+rows also have `grounding_fidelity=1`. The four compound-injection controls pass.
+
+**Sonnet 5 result.** `judge_validation_status()` derives `validated=False` from
+`eval/gold/judge_agreement.json` and `eval/gold/judge_compare.json`. Hard layer
+`n=64`, `runs_per_case=5`, false negatives `0`, false positives `3`, gate repeatability
+`0.984`. Aggregated kappas: grounding `0.758`, on_task `0.289`, account_specificity
+`1.0`, priority_fidelity `0.9`, tone_fit `0.794`, safety `0.905`. The blocker is
+`hard on_task_relevance kappa 0.289 < 0.6`.
+
+**Sonnet 4.6 comparison.** `eval/gold/judge_model_migration.json` compares the expanded
+Sonnet 5 baseline to a fresh Sonnet 4.6 candidate arm over the same 64 cases and 5 runs per
+case. Sonnet 4.6 also fails the hard gate: grounding `0.679`, on_task `0.41`,
+account_specificity `1.0`, priority_fidelity `0.9`, tone_fit `0.843`, safety `1.0`; the
+blocker is `candidate hard gate failed: on_task_relevance kappa 0.41 < 0.6`. McNemar
+overall pass/fail has `0/0` discordant pairs (`p=1.0`). For `on_task_relevance`, Sonnet 5
+correct / Sonnet 4.6 wrong = `5`, Sonnet 5 wrong / Sonnet 4.6 correct = `12`,
+`p=0.143463`, no fail-open delta.
+
+**Safety and disagreement profile.** Neither model has a safety-boundary fail-open on the
+expanded set. Sonnet 5 safety kappa is `0.905`; Sonnet 4.6 safety kappa is `1.0`. The
+expanded set instead exposes an on-task boundary problem and a grounding-boundary problem:
+Sonnet 5 has 29 on-task disagreements and 9 grounding false-pass cells; Sonnet 4.6 has 22
+on-task disagreements and 8 grounding false-pass cells. The repeated grounding misses are
+concentrated in the A6 fee-waiver and pricing-commitment families, where the owner labels
+the injected commercial commitment as both unsupported and unsafe.
+
+**Cost and reliability.** Live A6 judge spend was `$8.343963`: a failed clean-layer attempt
+(`52` calls, `$0.605706`), the successful Sonnet 5 hard agreement pass (`66` calls,
+`$0.807740`), the Sonnet 5 hard `cot@N` compare (`333` calls, `$4.121152`), and the Sonnet
+4.6 migration arm (`320` calls, `$2.809365`). All successful long runs used per-case
+checkpoints. The failed attempt was a malformed JSON response before any expanded hard
+artifact was written.
+
+**Owner choice required.** The honest options are: keep Sonnet 5 despite the expanded-set
+validation failure, roll back to Sonnet 4.6 despite its own expanded-set validation failure,
+or sanction a narrow rubric-citing prompt/scorer fix for the observed on-task/grounding
+boundary. Codex must not choose among these.
+
+---
+
 ## Quality drift-power scope (2026-07-06)
 
 **Decision.** The repo may claim quality-drift detection only at the effect size
@@ -89,6 +138,25 @@ sample-size table says a 10pp claim needs about 56 independent examples per arm,
 **Claim boundary.** This is an offline gold-set power analysis over overall
 pass/fail. It does not prove production retention-outcome drift, per-dimension
 drift power, or second-human agreement.
+
+---
+
+## MP-A A6 drift-power update (2026-07-06)
+
+**Decision status.** Measurement update only; no judge-model decision. The legacy clean
+ladder remains at `n=7` independent examples per arm and still supports only about a
+`0.469` or larger overall-pass-rate drop. The expanded hard layer now has `n=64`
+independent examples, so the scoped hard-layer MDD tightens to `0.089` in
+`eval/drift_power_csm.json`.
+
+**Evidence.** `make drift-power-csm` writes `expanded_hard_layer_power` with
+`n=64`, pass count `18`, fail count `46`, and
+`minimum_detectable_drop_at_current_n=0.089`. The artifact records
+`judge_validation.validated=false`, matching the expanded-set gate failure above.
+
+**Claim boundary.** This is still an offline gold-set power calculation over overall
+pass/fail. It does not make the invalidated judge valid, does not choose a model, and does
+not establish production outcome drift.
 
 ---
 

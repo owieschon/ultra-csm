@@ -411,6 +411,56 @@ def build_a6_expansion_artifacts() -> tuple[tuple[dict, ...], tuple[dict, ...]]:
     return tuple(label_records), tuple(key_records)
 
 
+def ratify_a6_expansion(
+    *,
+    hard_path: Path = HARD_PATH,
+    hard_key_path: Path = HARD_KEY_PATH,
+    expansion_path: Path = A6_EXPANSION_PATH,
+    expansion_key_path: Path = A6_EXPANSION_KEY_PATH,
+) -> tuple[tuple[dict, ...], tuple[dict, ...]]:
+    hard_records = list(read_gold_label_candidates(hard_path))
+    hard_key_records = list(read_gold_label_key(hard_key_path))
+    expansion_records = list(read_gold_label_candidates(expansion_path))
+    expansion_key = {r["candidate_id"]: r for r in read_gold_label_key(expansion_key_path)}
+    existing_ids = {r["candidate_id"] for r in hard_records}
+    appended_keys: list[dict] = []
+
+    for record in expansion_records:
+        candidate_id = record["candidate_id"]
+        if candidate_id in existing_ids:
+            raise ValueError(f"{candidate_id}: expansion id already ratified")
+        labels = record.get("human_labels")
+        if labels is None:
+            raise ValueError(f"{candidate_id}: human_labels required before ratification")
+        if labels.get("candidate_id") != candidate_id:
+            raise ValueError(f"{candidate_id}: human_labels.candidate_id mismatch")
+        scores = labels.get("dimension_scores")
+        if (
+            not isinstance(scores, dict)
+            or set(scores) != set(DIMS)
+            or not all(scores[d] in ORDINAL_SCORES for d in DIMS)
+        ):
+            raise ValueError(f"{candidate_id}: invalid human label vector")
+        expected_overall = all(scores[d] >= PASSING_SCORE for d in DIMS)
+        if labels.get("overall_pass") is not expected_overall:
+            raise ValueError(f"{candidate_id}: human_labels.overall_pass mismatch")
+        stress = expansion_key[candidate_id]
+        appended_keys.append({
+            "candidate_id": candidate_id,
+            "quality_variant": stress["stress_family"],
+            "intended_failing_dimensions": _intended([scores[d] for d in DIMS]),
+            "expected_vector": {d: int(scores[d]) for d in DIMS},
+            "trap": stress["trap"],
+        })
+
+    combined_records = tuple([*hard_records, *expansion_records])
+    combined_key = tuple([*hard_key_records, *appended_keys])
+    key_errors = hard_key_errors(combined_records, combined_key)
+    if key_errors:
+        raise ValueError(f"ratified hard key invalid: {key_errors}")
+    return combined_records, combined_key
+
+
 def write_hard(path: Path = HARD_PATH, *, key_path: Path = HARD_KEY_PATH) -> tuple[dict, ...]:
     records, key_records = build_hard_artifacts()
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -418,6 +468,28 @@ def write_hard(path: Path = HARD_PATH, *, key_path: Path = HARD_KEY_PATH) -> tup
         for r in records:
             fh.write(json.dumps(r, sort_keys=True) + "\n")
     with key_path.open("w", encoding="utf-8") as fh:
+        for r in key_records:
+            fh.write(json.dumps(r, sort_keys=True) + "\n")
+    return records
+
+
+def write_ratified_a6_expansion(
+    *,
+    hard_path: Path = HARD_PATH,
+    hard_key_path: Path = HARD_KEY_PATH,
+    expansion_path: Path = A6_EXPANSION_PATH,
+    expansion_key_path: Path = A6_EXPANSION_KEY_PATH,
+) -> tuple[dict, ...]:
+    records, key_records = ratify_a6_expansion(
+        hard_path=hard_path,
+        hard_key_path=hard_key_path,
+        expansion_path=expansion_path,
+        expansion_key_path=expansion_key_path,
+    )
+    with hard_path.open("w", encoding="utf-8") as fh:
+        for r in records:
+            fh.write(json.dumps(r, sort_keys=True) + "\n")
+    with hard_key_path.open("w", encoding="utf-8") as fh:
         for r in key_records:
             fh.write(json.dumps(r, sort_keys=True) + "\n")
     return records
@@ -439,7 +511,14 @@ def write_a6_expansion(
     return records
 
 
-HARD_LEAK_TOKENS = ("quality_variant", "intended_failing_dimensions", "expected_vector", "trap", *FAMILIES.keys())
+HARD_LEAK_TOKENS = (
+    "quality_variant",
+    "intended_failing_dimensions",
+    "expected_vector",
+    "trap",
+    *FAMILIES.keys(),
+    *A6_EXPANSION_FAMILIES.keys(),
+)
 
 
 def hard_blindness_errors(records: tuple[dict, ...]) -> list[str]:
@@ -464,9 +543,15 @@ def hard_key_errors(records: tuple[dict, ...], key_records: tuple[dict, ...]) ->
     for family, (_, _, count, *_rest) in FAMILIES.items():
         if counts[family] != count:
             errors.append(f"hard key must contain {count} {family} records (got {counts[family]})")
+    if any(counts[family] for family in A6_EXPANSION_FAMILIES):
+        for family, (_, _, count, *_rest) in A6_EXPANSION_FAMILIES.items():
+            if counts[family] != count:
+                errors.append(
+                    f"hard key must contain {count} {family} records (got {counts[family]})"
+                )
     for k in key_records:
         fam = str(k.get("quality_variant"))
-        if fam not in FAMILIES:
+        if fam not in FAMILIES and fam not in A6_EXPANSION_FAMILIES:
             errors.append(f"{k.get('candidate_id')}: unknown family {fam}")
             continue
         # The key's expected vectors are the RATIFIED reference: they started as the
@@ -550,6 +635,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--require-complete", action="store_true")
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--a6-expansion", action="store_true")
+    parser.add_argument("--ratify-a6-expansion", action="store_true")
     args = parser.parse_args(argv)
     path = Path(args.output)
     key_path = Path(args.key_output)
@@ -558,6 +644,11 @@ def main(argv: list[str] | None = None) -> int:
         records = write_a6_expansion()
         print(f"wrote {len(records)} A6 expansion rows -> {_display_path(A6_EXPANSION_PATH)}")
         print(f"held-out stress key -> {_display_path(A6_EXPANSION_KEY_PATH)}")
+        return 0
+    if args.ratify_a6_expansion:
+        records = write_ratified_a6_expansion()
+        print(f"ratified {len(records)} hard adversarial gold rows -> {_display_path(HARD_PATH)}")
+        print(f"updated held-out key -> {_display_path(HARD_KEY_PATH)}")
         return 0
     if args.check:
         current = check_hard_status(path, output=status_output, key_path=key_path)

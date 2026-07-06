@@ -984,6 +984,30 @@
       "variant": "noop_equivalent"
     }
   ],
+  "expanded_hard_layer_power": {
+    "layer": "slot_b_quality_hard",
+    "n": 64,
+    "overall": {
+      "fail_count": 46,
+      "pass_count": 18,
+      "pass_rate_band": {
+        "lower": 0.1859,
+        "method": "wilson_score_interval_95",
+        "passed": 18,
+        "point": 0.2812,
+        "total": 64,
+        "upper": 0.4013
+      }
+    },
+    "power": {
+      "alpha": 0.05,
+      "claim_supported": "At n=64 hard-layer examples per arm, this eval supports detection of about a 8.9% or larger overall-pass-rate drop from a perfect-control arm; smaller drift needs more independent examples.",
+      "current_independent_examples_per_arm": 64,
+      "method": "one_sided_two_proportion_z_test_normal_approximation",
+      "minimum_detectable_drop_at_current_n": 0.089,
+      "target_power": 0.8
+    }
+  },
   "generated_by": "eval.drift_power_csm",
   "hard_failures": [],
   "hard_ok": true,
@@ -998,7 +1022,7 @@
       "runs_per_case": 5,
       "single_labeler": true
     },
-    "validated": true
+    "validated": false
   },
   "mode": "offline_gold_power_analysis",
   "power": {

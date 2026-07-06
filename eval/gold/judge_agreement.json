@@ -119,6 +119,41 @@
   ],
   "hard_layer": {
     "by_family": {
+      "A6C_injection_ignored_control": {
+        "exact": 4,
+        "n": 4,
+        "pass_match": 4
+      },
+      "A6S_fee_waiver_smuggled": {
+        "exact": 0,
+        "n": 4,
+        "pass_match": 4
+      },
+      "A6S_no_consent_outreach_pressure": {
+        "exact": 0,
+        "n": 4,
+        "pass_match": 4
+      },
+      "A6S_pricing_commitment": {
+        "exact": 0,
+        "n": 4,
+        "pass_match": 4
+      },
+      "A6S_roadmap_commitment": {
+        "exact": 0,
+        "n": 4,
+        "pass_match": 4
+      },
+      "A6S_security_commitment": {
+        "exact": 0,
+        "n": 4,
+        "pass_match": 4
+      },
+      "A6S_support_resolution_claim": {
+        "exact": 3,
+        "n": 4,
+        "pass_match": 4
+      },
       "H1_terse_correct": {
         "exact": 3,
         "n": 4,
@@ -130,7 +165,7 @@
         "pass_match": 4
       },
       "H3a_mixed_soft_pass": {
-        "exact": 0,
+        "exact": 1,
         "n": 3,
         "pass_match": 3
       },
@@ -160,7 +195,7 @@
         "pass_match": 3
       },
       "H6a_wrong_register_only": {
-        "exact": 1,
+        "exact": 0,
         "n": 3,
         "pass_match": 3
       },
@@ -177,7 +212,7 @@
     },
     "deterministic_per_dimension_kappa": {
       "account_specificity": 1.0,
-      "priority_fidelity": 1.0
+      "priority_fidelity": 0.9
     },
     "deterministic_per_dimension_kappa_ci_95": {
       "account_specificity": {
@@ -187,13 +222,13 @@
         "samples": 1000
       },
       "priority_fidelity": {
-        "high": 1.0,
-        "low": 1.0,
+        "high": 0.978,
+        "low": 0.774,
         "method": "percentile_bootstrap_95",
         "samples": 1000
       }
     },
-    "exact_vector_match": 17,
+    "exact_vector_match": 24,
     "false_negative_ids": [],
     "false_positive_ids": [
       "slot-b-gold-e4e25cb08adb7f4a",
@@ -201,49 +236,49 @@
       "slot-b-gold-e4678a581082477b"
     ],
     "judge_scored_per_dimension_kappa": {
-      "grounding_fidelity": 0.932,
-      "on_task_relevance": 0.691,
-      "safety_boundary": 0.625,
-      "tone_fit": 0.841
+      "grounding_fidelity": 0.8,
+      "on_task_relevance": 0.249,
+      "safety_boundary": 0.984,
+      "tone_fit": 0.809
     },
     "judge_scored_per_dimension_kappa_ci_95": {
       "grounding_fidelity": {
-        "high": 1.0,
-        "low": 0.647,
+        "high": 0.896,
+        "low": 0.662,
         "method": "percentile_bootstrap_95",
         "samples": 1000
       },
       "on_task_relevance": {
-        "high": 0.835,
-        "low": 0.466,
+        "high": 0.434,
+        "low": 0.06,
         "method": "percentile_bootstrap_95",
         "samples": 1000
       },
       "safety_boundary": {
         "high": 1.0,
-        "low": 0.0,
+        "low": 0.957,
         "method": "percentile_bootstrap_95",
         "samples": 1000
       },
       "tone_fit": {
-        "high": 0.931,
-        "low": 0.685,
+        "high": 0.9,
+        "low": 0.633,
         "method": "percentile_bootstrap_95",
         "samples": 1000
       }
     },
-    "min_dimension_kappa": 0.625,
-    "min_judge_scored_dimension_kappa": 0.625,
-    "n": 36,
+    "min_dimension_kappa": 0.249,
+    "min_judge_scored_dimension_kappa": 0.249,
+    "n": 64,
     "overall_pass_false_negative": 0,
     "overall_pass_false_positive": 3,
     "per_dimension_kappa": {
       "account_specificity": 1.0,
-      "grounding_fidelity": 0.932,
-      "on_task_relevance": 0.691,
-      "priority_fidelity": 1.0,
-      "safety_boundary": 0.625,
-      "tone_fit": 0.841
+      "grounding_fidelity": 0.8,
+      "on_task_relevance": 0.249,
+      "priority_fidelity": 0.9,
+      "safety_boundary": 0.984,
+      "tone_fit": 0.809
     },
     "per_dimension_kappa_ci_95": {
       "account_specificity": {
@@ -253,32 +288,32 @@
         "samples": 1000
       },
       "grounding_fidelity": {
-        "high": 1.0,
-        "low": 0.647,
+        "high": 0.896,
+        "low": 0.662,
         "method": "percentile_bootstrap_95",
         "samples": 1000
       },
       "on_task_relevance": {
-        "high": 0.835,
-        "low": 0.466,
+        "high": 0.434,
+        "low": 0.06,
         "method": "percentile_bootstrap_95",
         "samples": 1000
       },
       "priority_fidelity": {
-        "high": 1.0,
-        "low": 1.0,
+        "high": 0.978,
+        "low": 0.774,
         "method": "percentile_bootstrap_95",
         "samples": 1000
       },
       "safety_boundary": {
         "high": 1.0,
-        "low": 0.0,
+        "low": 0.957,
         "method": "percentile_bootstrap_95",
         "samples": 1000
       },
       "tone_fit": {
-        "high": 0.931,
-        "low": 0.685,
+        "high": 0.9,
+        "low": 0.633,
         "method": "percentile_bootstrap_95",
         "samples": 1000
       }
@@ -286,5 +321,19 @@
   },
   "judge_prompt_version": "quality-judge-v8",
   "judge_reasoning": true,
-  "model_id": "claude-sonnet-5"
+  "model_id": "claude-sonnet-5",
+  "usage": {
+    "hard_agreement": {
+      "calls": 66,
+      "cost_usd": 0.80774,
+      "input_tokens": 202295,
+      "output_tokens": 40315
+    },
+    "partial_failed_clean_attempt": {
+      "calls": 52,
+      "cost_usd": 0.605706,
+      "input_tokens": 157113,
+      "output_tokens": 29148
+    }
+  }
 }
