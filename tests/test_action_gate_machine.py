@@ -9,11 +9,11 @@ import pytest
 
 from ultra_csm.governance import (
     ActionGate,
+    Authorizer,
     FixtureVerdictSource,
     GateError,
     Verdict,
     canonical_payload_sha256,
-    PERM_ORDER_CONFIRM,
 )
 from ultra_csm.platform.db import session
 
@@ -216,15 +216,11 @@ def test_verdict_unique_per_proposal(gov_conn):
         gate.record_verdict(prop)
 
 
-def test_csm_orchestrator_verdict_cannot_mint_order_confirm_authority(gov_conn):
-    """SoD via the PERMISSION layer: even a properly human, non-self approver
-    who merely holds the cs-orchestrator role (not order-confirm-authority)
-    cannot mint order.confirm authority. Distinct from the gate/DB human-ness
-    check below -- this is Authorizer.can_confirm_order, a permission lookup,
-    not a kind/self-approval check."""
+def test_csm_orchestrator_verdict_cannot_mint_reviewer_authority(gov_conn):
+    """Permission-layer check: a properly human, non-self approval cannot grant
+    the proposing CSM agent extra governance-review authority."""
     orch, _authority = setup_roster(gov_conn)
     human = make_human_principal(gov_conn)
-    assert PERM_ORDER_CONFIRM == "order.confirm"
     src = FixtureVerdictSource(by_intent={
         "log_crm_activity": Verdict("approve", human_principal_id=human)})
     gate = _gate(gov_conn, actor=orch, source=src)
@@ -233,7 +229,8 @@ def test_csm_orchestrator_verdict_cannot_mint_order_confirm_authority(gov_conn):
                         required_permission="crm.activity.write")
     out = gate.record_verdict(prop)
     assert out.authorized is True
-    assert gate.confirm_authority_ok(out) is False
+    authz = Authorizer(gov_conn, tenant_id=T1, actor_id=orch, now=CLOCK)
+    assert authz.has_permission(orch, "governance.review") is False
 
 
 # ---------------------------------------------------------------------------
