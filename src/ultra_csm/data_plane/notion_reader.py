@@ -27,13 +27,17 @@ validation in the reader).
 
 Auth (verify-at-runtime, Decision 5): a Notion internal integration
 authenticates with ``Authorization: Bearer <token>``
-(https://developers.notion.com/docs/authorization). This reader mirrors
-``live_gmail_reader.py``'s direct-parse-of-the-creds-file pattern (rather
-than the heavier ``connector_catalog``/``live_smoke`` HTTP-smoke framework
-used by Salesforce/Attio/Gainsight, which this dispatch does not touch):
-read ``ULTRA_CSM_NOTION_TOKEN`` from ``~/ultra-csm-live-creds.env``, raise if
-absent. Read-only: this module only ever issues GET/POST *query* requests
-against the Notion REST API, never a page/block write endpoint.
+(https://developers.notion.com/docs/authorization). This reader parses
+``ULTRA_CSM_NOTION_TOKEN`` from ``~/ultra-csm-live-creds.env`` via the shared
+``connector_catalog.load_live_creds_file`` loader (architecture cleanup,
+report 42 -- previously its own inline parse, mirroring
+``live_gmail_reader.py``'s; now one parse implementation for both), raise if
+absent. ``ULTRA_CSM_NOTION_CREDS_PATH`` remains a Notion-specific path
+override on top of the shared loader's own generic
+``ULTRA_CSM_LIVE_CREDS_PATH`` override, preserved additively rather than
+dropped in the consolidation. Read-only: this module only ever issues
+GET/POST *query* requests against the Notion REST API, never a page/block
+write endpoint.
 """
 
 from __future__ import annotations
@@ -44,9 +48,12 @@ from dataclasses import dataclass
 from typing import Any
 from urllib import request as urllib_request
 
+from ultra_csm.data_plane.connector_catalog import (
+    load_live_creds_file,
+    resolve_live_creds_path,
+)
 
 _CREDS_PATH_ENV = "ULTRA_CSM_NOTION_CREDS_PATH"
-_DEFAULT_CREDS_PATH = "~/ultra-csm-live-creds.env"
 _TOKEN_KEY = "ULTRA_CSM_NOTION_TOKEN"
 _NOTION_API_BASE = "https://api.notion.com/v1"
 _NOTION_VERSION = "2025-09-03"
@@ -68,24 +75,12 @@ def _missing_env(env: dict[str, str]) -> tuple[str, ...]:
 
 
 def _load_creds_file(path: str | None = None) -> dict[str, str]:
-    """Parse ``KEY=value`` lines from the credentials env file, mirroring
-    ``live_gmail_reader._imap_connect``'s direct-parse approach rather than
-    pulling in the ``connector_catalog`` registry (out of this dispatch's
-    OWNS list). Missing file -> empty dict, same fail-closed-at-point-of-use
-    discipline as the gmail reader (the caller raises when a required key is
-    absent, not this loader)."""
+    """Notion-specific wrapper over the shared loader: an explicit *path*
+    argument wins, otherwise ``ULTRA_CSM_NOTION_CREDS_PATH`` (this
+    connector's own override) wins over the shared loader's generic
+    ``ULTRA_CSM_LIVE_CREDS_PATH``/default-path resolution."""
 
-    creds_path = os.path.expanduser(path or os.environ.get(_CREDS_PATH_ENV) or _DEFAULT_CREDS_PATH)
-    env: dict[str, str] = {}
-    if not os.path.exists(creds_path):
-        return env
-    for line in open(creds_path):
-        line = line.strip()
-        if not line or line.startswith("#") or "=" not in line:
-            continue
-        key, value = line.split("=", 1)
-        env[key.strip()] = value.strip()
-    return env
+    return load_live_creds_file(path or os.environ.get(_CREDS_PATH_ENV))
 
 
 @dataclass(frozen=True)
@@ -328,8 +323,9 @@ def live_authoring_payload(
     env = _load_creds_file(creds_path)
     missing = _missing_env(env)
     if missing:
+        resolved_path = resolve_live_creds_path(creds_path or os.environ.get(_CREDS_PATH_ENV))
         raise NotionReadError(
-            f"missing Notion credential(s) in {creds_path or _DEFAULT_CREDS_PATH}: {', '.join(missing)}"
+            f"missing Notion credential(s) in {resolved_path}: {', '.join(missing)}"
         )
     token = _env(env, _TOKEN_KEY)
 

@@ -2,9 +2,57 @@
 
 from __future__ import annotations
 
+import os
+
 from ultra_csm.data_plane.readiness import ConnectorSpec, OfficialDocRef, RecordedShape
 
 ACCESSED_ON = "2026-06-28"
+
+# Shared live-credentials file loader (architecture cleanup, report 42):
+# extracted from what were previously two separate inline `KEY=value` parsers
+# -- `live_gmail_reader._imap_connect` and `notion_reader._load_creds_file` --
+# so there is one parse implementation, not two. This module is the credential
+# registry's existing home (`ConnectorSpec.credential_env`), so it's the
+# cleanest shared home for the loader too, even though that registry itself
+# only declares env-var NAMES and never touched a file directly.
+LIVE_CREDS_PATH_ENV = "ULTRA_CSM_LIVE_CREDS_PATH"
+DEFAULT_LIVE_CREDS_PATH = "~/ultra-csm-live-creds.env"
+
+
+def resolve_live_creds_path(path: str | None = None) -> str:
+    """Resolve the live-credentials file path a caller would actually read,
+    for use in error messages (so a raised error names the real path even
+    when ``ULTRA_CSM_LIVE_CREDS_PATH`` overrides the default). Same
+    resolution order as :func:`load_live_creds_file`."""
+
+    return os.path.expanduser(
+        path or os.environ.get(LIVE_CREDS_PATH_ENV) or DEFAULT_LIVE_CREDS_PATH
+    )
+
+
+def load_live_creds_file(path: str | None = None) -> dict[str, str]:
+    """Parse ``KEY=value`` lines from the live-credentials env file.
+
+    Resolution order: explicit *path* argument, then the
+    ``ULTRA_CSM_LIVE_CREDS_PATH`` env var, then ``~/ultra-csm-live-creds.env``
+    (see :func:`resolve_live_creds_path`). A missing file returns an empty
+    dict (fail-closed-at-point-of-use: the caller raises when a required key
+    is absent, not this loader) rather than raising, matching both callers'
+    existing behavior for an absent key. Blank lines and ``#``-prefixed
+    comment lines are skipped.
+    """
+
+    creds_path = resolve_live_creds_path(path)
+    env: dict[str, str] = {}
+    if not os.path.exists(creds_path):
+        return env
+    for line in open(creds_path):
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        env[key.strip()] = value.strip()
+    return env
 
 
 def doc(title: str, url: str) -> OfficialDocRef:

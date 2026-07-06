@@ -252,16 +252,16 @@ class AnthropicReasonDraftWriter:
         self._meter: Meter = meter or NoOpMeter()
         self._cost_tracker = cost_tracker
         self._tokens = self._meter.counter(
-            "pcs.llm.tokens",
+            "ultra_csm.llm.tokens",
             description="live LLM token usage (in+out)",
         )
         self._cost = self._meter.histogram(
-            "pcs.llm.cost_usd",
+            "ultra_csm.llm.cost_usd",
             unit="USD",
             description="estimated live LLM call cost",
         )
         self._latency = self._meter.histogram(
-            "pcs.llm.latency_ms",
+            "ultra_csm.llm.latency_ms",
             unit="ms",
             description="live LLM call latency",
         )

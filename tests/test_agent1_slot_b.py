@@ -357,7 +357,7 @@ def test_anthropic_slot_b_fake_client_parses_json_and_records_lineage():
     assert span.attributes["prompt_version"] == SLOT_B_PROMPT_VERSION
     assert span.attributes["usage.input_tokens"] == 100
     assert span.attributes["usage.output_tokens"] == 25
-    assert meter.counters["pcs.llm.tokens"].total == 125
+    assert meter.counters["ultra_csm.llm.tokens"].total == 125
 
 
 def test_anthropic_slot_b_payload_includes_org_context():

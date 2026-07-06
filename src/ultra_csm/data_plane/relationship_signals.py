@@ -1,10 +1,13 @@
-"""Job-change signal class (Universe v2, WS-Data-Classes Phase 6).
+"""Job-change fixture rows (Universe v2, WS-Data-Classes Phase 6).
 
-``JobChangeSignal`` is a new dataclass -- NOT added to ``contracts.py`` --
-representing an enrichment-feed event that would beat silence-detection to
-the punch: a contact's departure, promotion, or lateral move surfaced by an
-external enrichment source before the CS platform's own comm-cadence
-signals would notice anything changed.
+``JobChangeSignal`` (the dataclass) now lives in ``data_plane/contracts.py``
+(architecture cleanup, report 42) -- moved out of this module because
+``value_model.py`` (the deterministic core) imports it directly via
+``_champion_departed_factor`` (Harvest 16's person layer), and a
+deterministic-core dependency has no business transitively pulling in this
+module's fixture/bible imports (``fixtures.py``, ``narrative_shared.py``,
+``pinnacle_comms.py``, ``trailhead_comms.py``). This module now only owns
+the actual fixture rows below, importing the type back from ``contracts.py``.
 
 Two fixture rows, both hanging on EXISTING bible beats:
 
@@ -20,39 +23,30 @@ Two fixture rows, both hanging on EXISTING bible beats:
   a title change with no risk, consistent with Trailhead's healthy-control
   arc never having a real signal to surface.
 
-Dormant until a lens/enrichment consumer reads it -- no code path does yet
-(see docs/PROGRAM_REPORT_12.md's Owner Ask).
+Consumed since Harvest 16 (#48): ``value_model._champion_departed_factor``
+reads these rows via ``agent1/sweep.py``'s ``_person_layer_inputs`` ->
+``data_plane/fixtures.py``'s ``FixtureCRMDataConnector.list_job_changes``.
+No longer dormant -- see docs/PROGRAM_REPORT_12.md's original Owner Ask and
+docs/PROGRAM_REPORT_42.md for how it was resolved.
 """
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Literal
-
+from ultra_csm.data_plane.contracts import JobChangeSignal, JobChangeType
 from ultra_csm.data_plane.fixtures import det_id
 from ultra_csm.data_plane.narrative_shared import rfc3339
 from ultra_csm.data_plane.pinnacle_comms import DEREK_CONTACT_ID, PINNACLE_ACCOUNT_ID
 from ultra_csm.data_plane.trailhead_comms import TRAILHEAD_ACCOUNT_ID
 
-JobChangeType = Literal["departure", "promotion", "lateral_move"]
-
-
-@dataclass(frozen=True)
-class JobChangeSignal:
-    """An enrichment-feed event reporting a contact's job change."""
-
-    signal_id: str
-    account_id: str
-    contact_id: str
-    contact_name: str
-    change_type: JobChangeType
-    day_offset: int
-    observed_at: str
-    old_title: str
-    new_title: str | None  # None for a departure (no successor title to report)
-    same_company: bool
-    detail: str
-
+__all__ = [
+    "JobChangeSignal",
+    "JobChangeType",
+    "MIKE_LINDGREN_CONTACT_ID",
+    "DEREK_VAUGHN_DEPARTURE",
+    "MIKE_LINDGREN_PROMOTION",
+    "SIGNALS",
+    "job_change_signals_as_of",
+]
 
 MIKE_LINDGREN_CONTACT_ID = det_id(
     "contact", TRAILHEAD_ACCOUNT_ID, "mike.lindgren@trailhead-logistics.example"
