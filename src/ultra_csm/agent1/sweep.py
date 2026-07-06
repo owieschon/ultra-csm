@@ -46,6 +46,7 @@ from ultra_csm.data_plane import (
 from ultra_csm.data_plane.contracts import ResolutionState
 from ultra_csm.governance import ActionGate, ActionProposal, proposal_fields_for
 from ultra_csm.governance.csm_actions import CSMActionType, implied_motion_for_action
+from ultra_csm.internal_bridge import InternalBridgeDecision, route_internal_bridge
 from ultra_csm.knowledge import OrgPack, PlaybookSet, load_org_pack, load_playbooks
 from ultra_csm.motion_resolver import resolve_motions
 from ultra_csm.quality_breaker import (
@@ -131,6 +132,9 @@ class CSMWorkItem:
     # checked for truthiness only) -- captured here for the recipient chip.
     recipient_name: str | None = None
     recipient_role: str | None = None
+    # MP-B internal bridge: additive deterministic routing to the internal
+    # specialist pair. This does not alter disposition or customer action.
+    internal_bridge_decision: InternalBridgeDecision | None = None
 
 
 @dataclass
@@ -971,6 +975,7 @@ def _work_item_for_account(
     tier = tier_and_motion[0] if tier_and_motion is not None else None
     motion = tier_and_motion[1] if tier_and_motion is not None else None
     triggers = tier_and_motion[2] if tier_and_motion is not None else set()
+    internal_bridge_decision = route_internal_bridge(inputs.cases, as_of=as_of)
 
     contact, recipient_resolution = resolve_recipient(motion, inputs.stakeholders, contacts)
     customer_contact_allowed = contact is not None
@@ -1115,6 +1120,7 @@ def _work_item_for_account(
         recipient_name=recipient_name,
         recipient_role=recipient_role,
         slot_a_classifications=inputs.slot_a_classifications,
+        internal_bridge_decision=internal_bridge_decision,
     )
 
 
