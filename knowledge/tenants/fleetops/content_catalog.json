@@ -7,7 +7,7 @@
       "id": "content-live-map-quickstart",
       "title": "Live Map Quickstart: Getting Your First 10 Assets Reporting",
       "module": "core_telematics",
-      "addresses_gap": "activation_stalled",
+      "addresses_gap": "milestones_overdue",
       "format": "guide"
     },
     {
@@ -28,14 +28,14 @@
       "id": "content-driver-scorecards-manager-guide",
       "title": "Driver Scorecards for Fleet Managers: Reading the Weekly Digest",
       "module": "driver_coaching",
-      "addresses_gap": "underused_capability",
+      "addresses_gap": "feature_shallow_depth",
       "format": "guide"
     },
     {
       "id": "content-driver-scorecards-coaching-playbook",
       "title": "Turning Driver Scorecards into a Coaching Conversation",
       "module": "driver_coaching",
-      "addresses_gap": "low_engagement",
+      "addresses_gap": "health_yellow",
       "format": "playbook"
     },
     {
@@ -49,49 +49,49 @@
       "id": "content-maintenance-radar-predictive-primer",
       "title": "Predictive Maintenance 101: How Maintenance Radar Scores Risk",
       "module": "maintenance_alerts",
-      "addresses_gap": "underused_capability",
+      "addresses_gap": "feature_shallow_depth",
       "format": "one_pager"
     },
     {
       "id": "content-insights-hub-exec-dashboard",
       "title": "Building an Executive Dashboard in Insights Hub",
       "module": "advanced_reporting",
-      "addresses_gap": "underused_capability",
+      "addresses_gap": "feature_shallow_depth",
       "format": "webinar"
     },
     {
       "id": "content-compliance-center-audit-prep",
       "title": "Audit Season Prep with Compliance Center",
       "module": "compliance_dashboard",
-      "addresses_gap": "renewal_risk",
+      "addresses_gap": "health_red",
       "format": "guide"
     },
     {
       "id": "content-compliance-center-custom-templates",
       "title": "Building Custom Compliance Report Templates",
       "module": "compliance_dashboard",
-      "addresses_gap": "underused_capability",
+      "addresses_gap": "feature_shallow_depth",
       "format": "video"
     },
     {
       "id": "content-fuel-analytics-benchmark-report",
       "title": "2026 Fleet Fuel Efficiency Benchmark Report",
       "module": "fuel_analytics",
-      "addresses_gap": "underused_capability",
+      "addresses_gap": "feature_shallow_depth",
       "format": "report"
     },
     {
       "id": "content-dispatch-automation-rollout-guide",
       "title": "Rolling Out Dispatch Automation Without Disrupting Dispatchers",
       "module": "dispatch_automation",
-      "addresses_gap": "activation_stalled",
+      "addresses_gap": "milestones_overdue",
       "format": "guide"
     },
     {
       "id": "content-onboarding-launch-plan-overview",
       "title": "The FleetOps Launch Plan: What to Expect in Your First 90 Days",
       "module": "methodology",
-      "addresses_gap": "activation_stalled",
+      "addresses_gap": "milestones_overdue",
       "format": "one_pager"
     },
     {
@@ -105,14 +105,14 @@
       "id": "content-methodology-champion-transition",
       "title": "What to Do When Your FleetOps Champion Changes Roles",
       "module": "methodology",
-      "addresses_gap": "single_threaded_risk",
+      "addresses_gap": "champion_inactive",
       "format": "playbook"
     },
     {
       "id": "content-methodology-qbr-prep-checklist",
       "title": "QBR Prep Checklist for FleetOps Customers",
       "module": "methodology",
-      "addresses_gap": "renewal_risk",
+      "addresses_gap": "health_red",
       "format": "one_pager"
     }
   ]
