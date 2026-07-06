@@ -16,7 +16,7 @@ from ultra_csm.tick import (
     observe_sim_state,
     run_tick_with_config,
 )
-from ultra_csm.triggers import parse_trigger_config
+from ultra_csm.triggers import load_trigger_config, parse_trigger_config
 
 
 @pytest.fixture
@@ -144,6 +144,47 @@ def test_tick_dispatches_risk_and_expansion_lenses(
     assert "budget_skipped" not in run_payload
     assert "work_items" in run_payload
     assert "swept_accounts" in run_payload
+
+
+def test_live_trigger_config_fires_risk_expansion_with_evidence(
+    tmp_path: Path,
+    tick_conn,
+):
+    context = setup_tick_roster(tick_conn)
+    config = load_trigger_config()
+
+    result = run_tick_with_config(
+        as_of="2026-06-21",
+        config=config,
+        state_dir=tmp_path,
+        conn=tick_conn,
+        gate_context=context,
+    )
+
+    fired_lenses = {item.action.lens for item in result.evaluation.fired}
+    assert {"ttv", "risk", "expansion"} <= fired_lenses
+
+    work_queue = json.loads(Path(result.artifacts_written[0]).read_text(encoding="utf-8"))
+    runs_by_lens = {
+        run["trigger"]["action"]["lens"]: run
+        for run in work_queue["fired_runs"]
+    }
+    for lens_name in ("risk", "expansion"):
+        run_payload = runs_by_lens[lens_name]
+        assert run_payload["work_items"], f"{lens_name} live trigger produced no work"
+        first_item = run_payload["work_items"][0]
+        assert first_item["evidence"], f"{lens_name} item has no cited evidence"
+        assert first_item["trigger_evidence"]["type"] == "schedule"
+
+    assert work_queue["precedence"]["finding_count"] > 0
+    assert work_queue["precedence"]["action_count"] > 0
+    assert work_queue["precedence"]["held_actions"]
+    assert work_queue["rejection_ledger"]["checked_count"] > 0
+    assert work_queue["cohort_packets"]["packet_count"] > 0
+    assert any(
+        packet["observed_action_throughput"]
+        for packet in work_queue["cohort_packets"]["packets"]
+    )
 
 
 def test_tick_ttv_lens_dispatch_unchanged(tmp_path: Path, tick_conn):

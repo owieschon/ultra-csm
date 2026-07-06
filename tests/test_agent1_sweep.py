@@ -6,6 +6,10 @@ import pytest
 
 from tests._govhelpers import CLOCK, T1, setup_roster
 from ultra_csm.agent1 import run_time_to_value_sweep
+from ultra_csm.agent1.slot_a import (
+    CaseNoteClassificationOutput,
+    SLOT_A_PROMPT_VERSION,
+)
 from ultra_csm.agent1.slot_b import SLOT_B_PROMPT_VERSION
 from ultra_csm.agent1.sweep import _account_triggers_for_motion
 from ultra_csm.data_plane import (
@@ -43,6 +47,27 @@ class AlwaysFailingLiveWriter:
 
     def write(self, request):  # noqa: ANN001 - protocol-shaped test double
         raise RuntimeError("simulated live writer outage")
+
+
+class RecordingSlotAClassifier:
+    model_id = "recording-slot-a"
+    prompt_version = SLOT_A_PROMPT_VERSION
+
+    def __init__(self) -> None:
+        self.requests = []
+
+    def classify(self, request):  # noqa: ANN001 - protocol-shaped test double
+        self.requests.append(request)
+        return CaseNoteClassificationOutput(
+            case_id=request.case_id,
+            account_id=request.account_id,
+            classification="blocker",
+            source="slot_a",
+            model_id=self.model_id,
+            prompt_version=self.prompt_version,
+            cited_case_id=request.case_id,
+            reason="Matched blocker case-note signals.",
+        )
 
 
 @pytest.fixture
@@ -114,6 +139,36 @@ def test_agent1_sweep_returns_ranked_work_queue_and_escalation_lane(sweep_conn):
     assert escalation.priority is None
     assert escalation.proposal is None
     assert escalation.candidate_account_ids == tuple(sorted((WAYNE_NORTH, WAYNE_SOUTH)))
+
+
+def test_agent1_sweep_calls_slot_a_on_case_notes_and_surfaces_sidecar(sweep_conn):
+    orch, _authority = setup_roster(sweep_conn)
+    gate = ActionGate(
+        sweep_conn,
+        tenant_id=T1,
+        actor_principal_id=orch,
+        verdict_source=FixtureVerdictSource(),
+        now=CLOCK,
+    )
+    classifier = RecordingSlotAClassifier()
+
+    sweep = run_time_to_value_sweep(
+        build_sweep_fixture_data_plane(tenant_id=DEFAULT_TENANT),
+        DEFAULT_TENANT,
+        gate,
+        sweep_principal_id=orch,
+        as_of=AS_OF,
+        case_note_classifier=classifier,
+    )
+
+    assert classifier.requests
+    assert any(request.account_id == ACME_LOGISTICS for request in classifier.requests)
+
+    acme = next(item for item in sweep.work_items if item.account_id == ACME_LOGISTICS)
+    assert acme.priority is not None
+    assert acme.slot_a_classifications
+    assert acme.slot_a_classifications[0].classification == "blocker"
+    assert not any(factor.name == "slot_a_case_blocker" for factor in acme.priority.factors)
 
 
 def test_org_context_cannot_change_sweep_authority_or_priority(sweep_conn):
