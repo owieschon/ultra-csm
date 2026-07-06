@@ -14,6 +14,19 @@ export const TRIGGER_LABELS: Record<string, string> = {
   renewal_window: "Renewal approaching",
   seats_near_cap: "Seats near cap",
   onboarding_activation_gap: "Onboarding-stage activation gap",
+  // Reconciliation agent (Harvest 31/32): value_model divergences + Risk/
+  // Expansion lens factors (report 51/52) surfaced as Tier-1 signals.
+  single_threaded_risk: "Usage concentrated in one person",
+  usage_concentration: "One user drives most activity",
+  arr_risk_exposure: "Revenue at risk",
+  champion_departed: "Champion departed",
+  new_stakeholder_unengaged: "New stakeholder hasn't engaged",
+  health_usage_divergence: "Health score outpaces real usage",
+  expansion_readiness_high_adoption: "High adoption, ready to expand",
+  arr_expansion_surface: "Expansion headroom on contract value",
+  usage_outcome_unverified: "Usage without a proven outcome",
+  overdue_success_plan: "Success plan overdue",
+  open_expansion_opportunity: "Open expansion opportunity",
 };
 
 export const MOTION_LABELS: Record<string, string> = {
