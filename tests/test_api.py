@@ -27,15 +27,25 @@ from ultra_csm.api import app  # noqa: E402
 AUTH_HEADERS = {"Authorization": "Bearer lane-a-token"}
 
 
-def _create_pending_draft_proposal(client: TestClient) -> dict:
-    sweep_resp = client.post("/sweep", headers=AUTH_HEADERS)
+def _create_pending_draft_proposal(client: TestClient, *, day: int | None = None) -> dict:
+    path = f"/sweep?day={day}" if day is not None else "/sweep"
+    sweep_resp = client.post(path, headers=AUTH_HEADERS)
     assert sweep_resp.status_code == 200
+    proposal_id = next(
+        (
+            item["proposal"]["proposal_id"] for item in sweep_resp.json()["work_items"]
+            if item.get("proposal") is not None
+            and item["proposal"]["action_type"] == "draft_customer_outreach"
+        ),
+        None,
+    )
+    assert proposal_id is not None
     proposals_resp = client.get("/proposals")
     assert proposals_resp.status_code == 200
     proposal = next(
         (
             item for item in proposals_resp.json()["proposals"]
-            if item["action"] == "draft_customer_outreach"
+            if item["proposal_id"] == proposal_id
             and not item["payload"].get("revise_chain")
         ),
         None,
@@ -625,6 +635,24 @@ class TestGovernanceEndpoints:
         assert superseding["status"] == "pending"
         assert superseding["payload"]["revise_chain"]["parent_proposal_id"] == proposal["proposal_id"]
         assert "would you be open" in superseding["payload"]["body"].lower()
+
+    def test_revise_verdict_uses_proposal_day_plane(self, client: TestClient):
+        proposal = _create_pending_draft_proposal(client, day=140)
+
+        resp = client.post(
+            f"/proposals/{proposal['proposal_id']}/verdict",
+            json={
+                "verdict": "revise",
+                "reason": "Make the draft warmer",
+                "edit_instruction": "Make the tone warmer.",
+            },
+            headers=AUTH_HEADERS,
+        )
+
+        assert resp.status_code == 200
+        body = resp.json()
+        assert body["proposal_id"] == proposal["proposal_id"]
+        assert body["superseding_proposal_id"]
 
     def test_revise_verdict_refuses_hostile_edit(self, client: TestClient):
         proposal = _create_pending_draft_proposal(client)

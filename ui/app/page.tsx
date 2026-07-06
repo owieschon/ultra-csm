@@ -87,6 +87,8 @@ export default function Home() {
           if (pendingProposalIds[nextIdx]) setSelectedProposalId(pendingProposalIds[nextIdx]);
         } else if (e.key === "a") {
           railRef.current?.approve();
+        } else if (e.key === "e") {
+          railRef.current?.edit();
         } else if (e.key === "d") {
           railRef.current?.deny();
         }
