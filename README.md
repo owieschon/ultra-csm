@@ -147,6 +147,13 @@ make lint hygiene   # ruff lint + repo-residue scan
 No cloud, no credentials, and no customer data are needed for any of the above. The only
 credentialed lanes are the live quality judge and the live connectors (see below).
 
+**Editable install only:** `config/`, `knowledge/`, and `migrations/` are read at runtime
+via a repo-root-anchored path (climbing from the installed module's own file location),
+not declared as package-data. A non-editable install (`pip install .` into a separate
+venv) will not carry those directories along and will fail to find them at runtime. Both
+quickstarts above use an editable install (`-e`), which is currently the only supported
+install mode.
+
 ## What's evaluated — and why they're kept apart
 
 - **The deterministic spine** — exact, offline, zero-tolerance regression. Tenant isolation,
