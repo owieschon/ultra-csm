@@ -29,7 +29,6 @@ export function useSweep(day: number, refreshToken: number) {
         })
       )
       .catch((e) => setError(String(e)));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [day, refreshToken]);
 
   return { sweep, error };
