@@ -83,6 +83,7 @@ from ultra_csm._api_helpers import (
     AccountDataError,
     AuthError,
     _build_account_brief,
+    _proposal_has_contact_consent,
     _score_one_account,
     auth_marker,
     demo_noauth_enabled,
@@ -520,20 +521,6 @@ def _typed_refusal(
         payload.update(extra)
     _record_session_event("refusal", payload)
     return _with_demo_context(payload, suggested_next=["get_session_ledger", "list_proposals"])
-
-
-def _proposal_has_contact_consent(proposal: ActionProposal) -> bool:
-    if proposal.action != "draft_customer_outreach":
-        return True
-    assert _data_plane is not None
-    account_id = proposal.payload.get("account_id")
-    contact_id = proposal.payload.get("contact_id")
-    if not isinstance(account_id, str):
-        return False
-    contacts = _data_plane.crm.list_contacts(account_id)
-    if isinstance(contact_id, str):
-        contacts = [contact for contact in contacts if contact.contact_id == contact_id]
-    return any(contact.consent_to_contact for contact in contacts)
 
 
 def _expansion_approval_blockers(proposal: ActionProposal) -> tuple[dict[str, object], ...]:
@@ -1781,7 +1768,10 @@ def submit_verdict(
             suggested_next=["list_proposals", "submit_verdict", "get_session_ledger"],
         )
 
-    if verdict == "approve" and not _proposal_has_contact_consent(proposal):
+    assert _data_plane is not None
+    if verdict == "approve" and not _proposal_has_contact_consent(
+        proposal, data_plane=_data_plane,
+    ):
         return _typed_refusal(
             code="CONSENT_MISSING",
             message="Customer-facing outreach is blocked because contact consent is missing",

@@ -67,6 +67,7 @@ from ultra_csm._api_helpers import (
     AuthError,
     _build_account_brief,
     _enrich_person_evidence,
+    _proposal_has_contact_consent,
     _score_one_account,
     auth_marker,
     demo_noauth_enabled,
@@ -1468,6 +1469,18 @@ async def submit_verdict(proposal_id: str, body: VerdictRequest, request: Reques
             proposal,
             body,
             auth_principal=auth_principal,
+        )
+
+    if body.verdict == "approve" and not _proposal_has_contact_consent(
+        proposal, data_plane=_data_plane,
+    ):
+        raise HTTPException(
+            status_code=409,
+            detail={
+                "error": "Customer-facing outreach is blocked because contact consent is missing",
+                "code": "CONSENT_MISSING",
+                "proposal_id": proposal_id,
+            },
         )
 
     action_packet = _action_packet_for_proposal(proposal)

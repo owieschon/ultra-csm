@@ -15,7 +15,7 @@ fastapi_mod = pytest.importorskip("fastapi")
 
 from fastapi.testclient import TestClient  # noqa: E402
 
-from ultra_csm.data_plane.fixtures import ACME_LOGISTICS  # noqa: E402
+from ultra_csm.data_plane.fixtures import ACME_LOGISTICS, CYBERDYNE_NO_CONSENT  # noqa: E402
 from ultra_csm.governance import proposal_fields_for  # noqa: E402
 from ultra_csm import api  # noqa: E402
 from ultra_csm.api import app  # noqa: E402
@@ -411,6 +411,36 @@ class TestGovernanceEndpoints:
         assert resp.status_code == 409
         assert resp.json()["code"] == "PRECEDENCE_HELD"
         assert f"ttv_gap:{ACME_LOGISTICS}" in resp.json()["blocking_refs"]
+
+    def test_verdict_refuses_no_consent_outreach_proposal(self, client: TestClient):
+        """The REST approve path must enforce the same contact-consent check
+        the MCP surface already applies (mcp_server.py's
+        _proposal_has_contact_consent) -- both surfaces now share one
+        implementation in _api_helpers.py."""
+        assert api._conn is not None
+        gate = api._gate()
+        proposal = gate.propose(
+            intent="test_no_consent_outreach",
+            payload={
+                "account_id": CYBERDYNE_NO_CONSENT,
+                "account_name": "Cyberdyne Transport",
+                "contact_id": "6eeba12e-abd2-5a18-8476-487ef6142e1b",
+                "subject": "Onboarding activation follow-up",
+                "body": "Draft that must not be approved without consent.",
+            },
+            grounding_ref=f"test:{CYBERDYNE_NO_CONSENT}:no-consent",
+            cause_ref=f"test:{CYBERDYNE_NO_CONSENT}:no-consent",
+            **proposal_fields_for("draft_customer_outreach"),
+        )
+
+        resp = client.post(
+            f"/proposals/{proposal.proposal_id}/verdict",
+            json={"verdict": "approve", "reason": "Approved in test"},
+            headers=AUTH_HEADERS,
+        )
+
+        assert resp.status_code == 409
+        assert resp.json()["code"] == "CONSENT_MISSING"
 
     def test_revise_verdict_creates_superseding_pending_proposal(self, client: TestClient):
         proposal = _create_pending_draft_proposal(client)
