@@ -31,13 +31,13 @@ trusted, and the choice of instrument was revised twice on evidence, not picked 
 final: a single-run comparison first favored Sonnet-terse for stability, but a 5-run modal
 aggregation study then found terse@5 fails the hard adversarial layer even after aggregation
 (`on_task_relevance` κ 0.479, 3 aggregated false negatives) while `cot@5` clears all six dimensions
-(κ ≥ 0.661, zero aggregated false negatives) — so the validated gate judge today is Sonnet 4.6 with
-chain-of-thought reasoning, under 5-run aggregation, exactly because that is the arm the
-adversarial gold data says is trustworthy, not the one that looked best on a smaller sample
-(`docs/DECISION_LOG.md`). The doc also states the judge's own rare, honest disagreement rather than
-forcing it to zero — one boundary case (H6b, warm-but-generic drafts) draws 4 accepted hard false
-positives, recorded as a defensible disagreement, not chased away with a rubric rewrite. Every draft
-stays propose-only — a human approves before anything reaches a customer.
+(κ ≥ 0.661, zero aggregated false negatives). A later paired migration screen then adopted Sonnet 5
+only after the same hard-layer gate revalidated green. The validated gate judge today is Sonnet 5
+with chain-of-thought reasoning, under 5-run aggregation, exactly because the adversarial gold data
+says that is trustworthy, not because it looked best on a smaller sample (`docs/DECISION_LOG.md`).
+The doc also scopes the judge's drift-power claim to the measured sample size and states honest
+fail-closed disagreements rather than chasing them away with a rubric rewrite. Every draft stays
+propose-only — a human approves before anything reaches a customer.
 
 **The receipts.** `docs/LIVE_INTEGRATION_FINDINGS.md` and `docs/PROGRAM_REPORT_6.md` are the live
 runs against real Salesforce/Rocketlane orgs; `eval/gold/live_semantic_quality.json` is the judged
@@ -170,7 +170,7 @@ A non-deterministic instrument must never own a deterministic gate. That boundar
 | Area | Status |
 |---|---|
 | Deterministic spine | **Proven** — scorecard hard gates green on real Postgres |
-| LLM quality judge | **Validated** under N-run modal aggregation (single-labeler gold, prompt v8 — `eval/judge_anthropic.py`'s `JUDGE_PROMPT_VERSION`): clean layer all six dimensions κ ≥ 0.6 with zero gate errors; adversarial hard layer clears all six aggregated with zero false negatives. `priority_fidelity` and `account_specificity` are deterministic. The claim is derived from versioned evidence artifacts (`eval/judge_validation.py`), never hand-set; a second independent labeler remains open |
+| LLM quality judge | **Validated** under N-run modal aggregation (single-labeler gold, prompt v8 — `eval/judge_anthropic.py`'s `JUDGE_PROMPT_VERSION`): clean layer all six dimensions κ ≥ 0.6 with zero gate errors; adversarial hard layer clears all six aggregated with zero false negatives. `priority_fidelity` and `account_specificity` are deterministic. The claim is derived from versioned evidence artifacts (`eval/judge_validation.py`), never hand-set. Drift-power is now scoped by `eval/drift_power_csm.json`: at the current n=7 independent examples per arm, the eval supports detection of about a 46.9 percentage-point or larger overall-pass-rate drop; smaller drift needs more examples. A second independent labeler remains open |
 | Connectors (Salesforce/Rocketlane live; Gainsight/Attio fixture) | **Salesforce and Rocketlane proven live**: real read-only CRM fetch and a real, create-only write-back against a seeded corpus B account (`docs/PROGRAM_REPORT_6.md`); real onboarding phase/task evidence lights up the TTV rail end-to-end, including a live cross-system beat joining both. Gainsight/Attio remain fixture-tested to the credential boundary — no live org available in this environment |
 | Live semantic quality | **Proven** — real Slot B drafts generated over live corpus B accounts, scored by the validated N-run judge (cot@5, prompt v8); derived (never hand-set) via `eval.judge_validation.live_semantic_quality_status` from `eval/gold/live_semantic_quality.json` |
 | Data | Curated **fixtures** for the simulated book; two real live tenants for the connector/quality proof above, not production customer data |
@@ -185,8 +185,9 @@ architecture, and measurement discipline — `docs/DECISION_LOG.md` records what
 1. **A second independent human labeler** — the judge is validated against a single labeler's
    gold set; a blind second labeler establishes the human-agreement ceiling
    (judge-vs-human1-vs-human2).
-2. **Drift-power experiment** — show the judge's residual noise floor is below the generation
-   drift it must detect, or scope the "detects quality drift" claim down to what's provable.
+2. **Expand drift-power sample size if smaller-drop claims matter** — the current gold ladder
+   supports detecting about a 46.9 percentage-point or larger overall-pass-rate drop at n=7
+   per arm; a 10pp claim needs about 56 independent examples per arm.
 3. **Extend the closed sim loop toward graduated autonomy** — the sim loop already
    closes end to end (`STATUS.md`'s `loop_closed_sim=true`); next is tier-1 internal
    actions auto-executing while customer-facing tiers stay human-gated, plus

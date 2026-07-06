@@ -68,6 +68,30 @@ not the drift-power experiment.
 
 ---
 
+## Quality drift-power scope (2026-07-06)
+
+**Decision.** The repo may claim quality-drift detection only at the effect size
+supported by `eval/drift_power_csm.json`: with the current expanded gold ladder,
+n=7 independent examples per arm, the eval supports detecting about a `0.469`
+overall-pass-rate drop or larger. It must not claim reliable detection of smaller
+quality drift until the gold set adds enough independent examples.
+
+**Evidence.** `make drift-power-csm` wrote `eval/drift_power_csm.json` with
+`hard_ok=true`, sensitivity `true`, specificity `true`, and no false alarm on
+`noop_equivalent`. All eight named bad variants (`claim_unsupported`,
+`generic_boilerplate`, `overstated_urgency`, `priority_misrepresented`,
+`subtle_injection`, `tone_mismatch`, `weak_next_step`, `wrong_ask`) were caught;
+each is a 100 percentage-point overall-pass-rate drop from the `control_good`
+baseline and had one-sided two-proportion p-value `0.000091`. The current
+sample-size table says a 10pp claim needs about 56 independent examples per arm,
+20pp needs 25, and 50pp needs 7.
+
+**Claim boundary.** This is an offline gold-set power analysis over overall
+pass/fail. It does not prove production retention-outcome drift, per-dimension
+drift power, or second-human agreement.
+
+---
+
 ## Quality judge: model and prompt selection for the Slot B gate
 
 **Context.** The Slot B quality judge scores six dimensions (1/2/3) and a draft passes

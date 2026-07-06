@@ -165,8 +165,10 @@ The model is the thing under regression; as rails/factors are added, the baselin
   [0.431, 0.6329]. The bands are disjoint and the degraded lane records named
   failure clusters (`missing_evidence_citation`, `live_slot_contract_error`,
   `invalid_json`). The degraded prompt is a sentinel-output sabotage probe, so this proves
-  contract/safety drift detection, not quality drift. Model-migration comparison and
-  human-validated quality judging remain separate runs.
+  contract/safety drift detection, not semantic quality drift. The validated quality
+  judge and model-migration runs are now separate evidence artifacts, and
+  `eval/drift_power_csm.json` scopes the current quality-drift claim to about a 46.9
+  percentage-point or larger overall-pass-rate drop at n=7 independent examples per arm.
 
 ## Forward sequence (the roadmap)
 
