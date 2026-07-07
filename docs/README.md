@@ -3,6 +3,7 @@
 ## Start Here
 
 - [`../README.md`](../README.md) - product front door and current proof table.
+- [`LIMITS.md`](LIMITS.md) - honest boundaries for what is proven, scoped, or unproven.
 - [`TOUR.md`](TOUR.md) - short guided path through local use and live-build receipts.
 - [`../SECURITY.md`](../SECURITY.md) - canonical security posture.
 
@@ -13,6 +14,9 @@
 - [`PROGRAM_REPORT_65.md`](PROGRAM_REPORT_65.md) - Layer 3 run report.
 - [`PROGRAM_REPORT_66.md`](PROGRAM_REPORT_66.md) - front-door rewrite and archive report.
 - [`PROGRAM_REPORT_67.md`](PROGRAM_REPORT_67.md) - hosted read-only demo report.
+- [`PROGRAM_REPORT_68.md`](PROGRAM_REPORT_68.md) - MP-B internal handoff spike report.
+- [`PROGRAM_REPORT_69.md`](PROGRAM_REPORT_69.md) - VM-8 outcome integrity report.
+- [`PROGRAM_REPORT_70.md`](PROGRAM_REPORT_70.md) - judge scope enforcement report.
 
 ## Judgment Reports Kept At Root
 
