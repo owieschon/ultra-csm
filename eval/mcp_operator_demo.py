@@ -180,8 +180,10 @@ def _normalized_artifact(artifact: dict[str, Any]) -> dict[str, Any]:
 def _normalize(value: Any, ids: dict[str, str] | None = None) -> Any:
     ids = ids if ids is not None else {}
     if isinstance(value, str):
+        if value.startswith("ActionGate proposal "):
+            value = UUID_RE.sub("<proposal:action-gate>", value)
         return UUID_RE.sub(lambda match: _stable_id(match.group(0), ids), value)
-    if isinstance(value, list):
+    if isinstance(value, list | tuple):
         items = [_normalize(item, ids) for item in value]
         if items and all(isinstance(item, dict) and "proposal_id" in item for item in items):
             return sorted(
