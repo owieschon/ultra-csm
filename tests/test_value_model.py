@@ -7,7 +7,12 @@ from dataclasses import replace
 import pytest
 
 from ultra_csm.data_plane import ACME_LOGISTICS, sweep_fixture_data
-from ultra_csm.data_plane.contracts import AdoptionSummary, UsageSignal
+from ultra_csm.data_plane.contracts import (
+    AdoptionSummary,
+    CRMOpportunity,
+    SuccessPlan,
+    UsageSignal,
+)
 from ultra_csm.value_model import (
     ConfigRule,
     ConfigValidationError,
@@ -89,8 +94,11 @@ def _model(
     adoption: AdoptionSummary | None | object = _DEFAULT,
     config: ValueModelConfig | None = None,
     signals: tuple[UsageSignal, ...] | None = None,
+    plans: tuple[SuccessPlan, ...] | None = None,
+    opportunities: tuple[CRMOpportunity, ...] = (),
+    as_of: str | None = "2026-06-21",
 ):
-    account, company, health, base_adoption, entitlements, base_signals, plans = _facts()
+    account, company, health, base_adoption, entitlements, base_signals, base_plans = _facts()
     selected_adoption = base_adoption if adoption is _DEFAULT else adoption
     return build_customer_value_model(
         account=account,
@@ -99,8 +107,37 @@ def _model(
         adoption=selected_adoption,
         entitlements=entitlements,
         usage_signals=signals if signals is not None else base_signals,
-        success_plans=plans,
+        success_plans=plans if plans is not None else base_plans,
+        opportunities=opportunities,
+        as_of=as_of,
         config=config or _config(),
+    )
+
+
+def _plan(account_id: str = ACME_LOGISTICS) -> SuccessPlan:
+    return SuccessPlan(
+        plan_id="plan-outcome-integrity",
+        account_id=account_id,
+        status="active",
+        objectives=("reduce detention time",),
+        target_date="2026-09-30",
+    )
+
+
+def _renewal_opportunity(
+    *,
+    stage_name: str,
+    close_date: str,
+    opportunity_type: str = "Renewal",
+    account_id: str = ACME_LOGISTICS,
+) -> CRMOpportunity:
+    return CRMOpportunity(
+        opportunity_id=f"opp-{stage_name.lower().replace(' ', '-')}-{close_date}",
+        account_id=account_id,
+        stage_name=stage_name,
+        amount_cents=12_000_000,
+        close_date=close_date,
+        opportunity_type=opportunity_type,
     )
 
 
@@ -352,6 +389,93 @@ def test_usage_outcome_divergence_requires_high_usage_and_stated_outcome():
     assert factor.threshold_name == "outcome_activity_floor"
     assert factor.threshold_value == 0.75
     assert {ref.field for ref in factor.evidence} >= {"active_users", "objectives"}
+
+
+def test_green_high_usage_account_that_later_churns_does_not_backfill_known_outcome():
+    _, _, _, adoption, *_ = _facts()
+    lost_renewal = _renewal_opportunity(
+        stage_name="Closed Lost",
+        close_date="2026-07-01",
+    )
+    cfg = _config(ConfigRule(
+        "strict_outcome",
+        (MatchPredicate("account_id", "==", ACME_LOGISTICS),),
+        _thresholds(outcome_activity_floor=0.75),
+    ))
+
+    checkpoint = _model(
+        adoption=replace(adoption, active_users=88, licensed_users=100),
+        plans=(_plan(),),
+        opportunities=(lost_renewal,),
+        as_of="2026-06-21",
+        config=cfg,
+    )
+    after_churn = _model(
+        adoption=replace(adoption, active_users=88, licensed_users=100),
+        plans=(_plan(),),
+        opportunities=(lost_renewal,),
+        as_of="2026-07-02",
+        config=cfg,
+    )
+
+    assert checkpoint.outcome.realized_state == "not_instrumented"
+    assert "usage_outcome_unverified" in _factor_names(checkpoint)
+    assert after_churn.outcome.realized_state == "known"
+    factors = {item.name: item for item in after_churn.outcome.factors}
+    factor = factors["renewal_outcome_closed_lost"]
+    assert factor.value == -1.0
+    assert factor.contribution == 0
+    assert factor.evidence[0].source == "crm"
+    assert factor.evidence[0].source_id == lost_renewal.opportunity_id
+    assert factor.evidence[0].field == "stage_name"
+    assert "usage_outcome_unverified" not in _factor_names(after_churn)
+
+
+def test_closed_won_renewal_is_positive_realized_outcome_evidence():
+    _, _, _, adoption, *_ = _facts()
+    won_renewal = _renewal_opportunity(
+        stage_name="Closed Won",
+        close_date="2026-06-15",
+    )
+
+    model = _model(
+        adoption=replace(adoption, active_users=90, licensed_users=100),
+        plans=(_plan(),),
+        opportunities=(won_renewal,),
+        as_of="2026-06-21",
+    )
+
+    assert model.outcome.realized_state == "known"
+    factors = {item.name: item for item in model.outcome.factors}
+    factor = factors["renewal_outcome_closed_won"]
+    assert factor.value == 1.0
+    assert factor.evidence[0].source_id == won_renewal.opportunity_id
+    assert "usage_outcome_unverified" not in _factor_names(model)
+
+
+def test_non_terminal_or_non_renewal_opportunity_does_not_fabricate_known_outcome():
+    _, _, _, adoption, *_ = _facts()
+    proposal = _renewal_opportunity(
+        stage_name="Proposal",
+        close_date="2026-06-15",
+    )
+    expansion_win = _renewal_opportunity(
+        stage_name="Closed Won",
+        close_date="2026-06-15",
+        opportunity_type="Expansion",
+    )
+
+    model = _model(
+        adoption=replace(adoption, active_users=90, licensed_users=100),
+        plans=(_plan(),),
+        opportunities=(proposal, expansion_win),
+        as_of="2026-06-21",
+    )
+
+    assert model.outcome.realized_state == "not_instrumented"
+    assert {
+        item.name for item in model.outcome.factors
+    } == {"outcome_stated"}
 
 
 def test_min_seats_guard_blocks_single_threaded_risk():

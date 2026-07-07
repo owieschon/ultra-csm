@@ -301,7 +301,7 @@ def _outcome_rail_from_data(
     as_of: str,
     resolved: ResolvedThresholds,
 ) -> OutcomeRail:
-    """Build the outcome rail from success plans and case patterns.
+    """Build the outcome rail from success plans, renewal outcomes, and cases.
 
     Case analysis adds a ``repeat_case_topics`` factor when the same
     support topic recurs (negative signal) and notes high average CSAT
@@ -346,9 +346,17 @@ def _outcome_rail_from_data(
                 None,
             ))
 
+    renewal_outcome_factors = _terminal_renewal_outcome_factors_from_data(
+        ab,
+        resolved,
+        as_of=as_of,
+    )
+    if renewal_outcome_factors:
+        factors.extend(renewal_outcome_factors)
+
     realized_state: OutcomeState = (
         "known"
-        if any(
+        if renewal_outcome_factors or any(
             plan.status in {"realized", "achieved", "complete"}
             for plan in success_plans
         )
@@ -360,6 +368,44 @@ def _outcome_rail_from_data(
         realized_state=realized_state,
         factors=tuple(factors),
     )
+
+
+def _terminal_renewal_outcome_factors_from_data(
+    ab: AccountDataBundle,
+    resolved: ResolvedThresholds,
+    *,
+    as_of: str,
+) -> tuple[ValueFactor, ...]:
+    factors: list[ValueFactor] = []
+    for opportunity in ab.opportunities:
+        if "renew" not in opportunity.opportunity_type.lower():
+            continue
+        stage = opportunity.current_stage.strip().lower()
+        if stage == "closed won":
+            name = "renewal_outcome_closed_won"
+            value = 1.0
+        elif stage == "closed lost":
+            name = "renewal_outcome_closed_lost"
+            value = -1.0
+        else:
+            continue
+        factors.append(_factor(
+            name,
+            value,
+            0,
+            (
+                EvidenceRef(
+                    "crm",
+                    opportunity.opportunity_id,
+                    "current_stage",
+                    as_of,
+                ),
+            ),
+            resolved,
+            None,
+            None,
+        ))
+    return tuple(factors)
 
 
 # ---------------------------------------------------------------------------

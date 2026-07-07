@@ -336,3 +336,23 @@ surface remains untested — no content-team member has given feedback on it.
 **B3 numbers.** `eval/internal_bridge_validation_report.json` reports `routing_core_hard_ok=true` with `routing_failed_cases=[]`. Confusion cells: oracle `engineering` -> agent `engineering` = 8; oracle `product` -> agent `product` = 4; oracle `engineering|product` -> agent `engineering` = 2; oracle `abstain` -> agent `abstain` = 4. Abstain axis: oracle-abstain/agent-abstain = 4, oracle-route/agent-route = 14, oracle-route/agent-abstain = 0, oracle-abstain/agent-route = 0. The confidently-wrong cell list is empty. Packet prose judge: `claude-sonnet-5`, `quality-judge-v8`, existing judge validation status `validated=true`; packet failures = 0. Score distribution: `grounding_fidelity` 18x3; `on_task_relevance` 18x3; `account_specificity` 14x3 and 4x2; `priority_fidelity` 18x2 (the adapter supplies the internal-bridge signal as the priority-like factor, but no priority score); `tone_fit` 18x3; `safety_boundary` 18x3.
 
 **Verdict boundary.** The spike can report an existence proof when the deterministic oracle clears and the packet prose scores are captured. It does not prove real-world durability, feedback-loop closure, QBR narrative generation, or the green account that churns anyway; that durability claim remains blocked on VM-8. The word "validated" remains owner-confirmed, not self-asserted by this artifact.
+
+## VM-8 outcome integrity slice: terminal renewal outcomes (Harvest 33)
+
+**Context.** Report 68 left the "green account that churns anyway" durability
+gap explicitly open. Harvest 33 closes only the first integrity slice: the value
+model can ingest one realized business-outcome source without inferring success
+from usage or health.
+
+**Decision.**
+1. Terminal Renewal `CRMOpportunity` evidence is a realized-outcome source.
+   `Closed Won` and `Closed Lost` both make the rail `known`, but they emit
+   separate factor names (`renewal_outcome_closed_won` /
+   `renewal_outcome_closed_lost`) so negative known outcome cannot be rendered
+   as success.
+2. The opportunity close date is fenced by `as_of`; a future terminal close does
+   not backfill an earlier checkpoint.
+3. Non-terminal Renewal opportunities and terminal non-Renewal opportunities do
+   not affect outcome realization.
+4. VM-8 remains partial. This proves honest synthetic renewal outcome ingestion,
+   not live connector durability, attribution, ROI, or UI/ops depth.
