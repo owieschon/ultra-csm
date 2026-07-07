@@ -1,10 +1,12 @@
-"""Centralize-shaped app usage and PostHog telemetry exhaust.
+"""FleetOps-shaped app usage and PostHog telemetry exhaust.
 
-This module adds a source-specific telemetry layer for the six named
-``fleetops`` universe arcs. It mirrors the existing event-level product
-telemetry discipline: raw events are causal exhaust of the bible/scripted
-arcs, and agent-facing ``UsageSignal`` rows are derived from those events
-rather than authored as a second usage story.
+This module adds a source-specific telemetry layer for the ``fleetops``
+universe. The six named bible arcs remain hand-scripted; every other synthetic
+account gets deterministic persona/lifecycle telemetry with account/day jitter
+so archetypes have realistic centers of gravity without becoming homogeneous.
+It mirrors the existing event-level product telemetry discipline: raw events
+are causal exhaust, and agent-facing ``UsageSignal`` rows are derived from
+those events rather than authored as a second usage story.
 """
 
 from __future__ import annotations
@@ -12,9 +14,11 @@ from __future__ import annotations
 from dataclasses import dataclass
 from uuid import UUID
 
+from ultra_csm.data_plane.book_simulator import simulate_book
 from ultra_csm.data_plane.contracts import UsageSignal
 from ultra_csm.data_plane.fixtures import account_id_for, det_id
 from ultra_csm.data_plane.narrative_shared import rfc3339
+from ultra_csm.data_plane.synthetic_book import _ACCT_DATA, build_synthetic_book
 
 PropertyValue = str | int | float | bool
 Properties = tuple[tuple[str, PropertyValue], ...]
@@ -38,8 +42,8 @@ class ArcTelemetryProfile:
 
 
 @dataclass(frozen=True)
-class CentralizeAppEvent:
-    """One Centralize-domain event from app/backend/extension surfaces."""
+class FleetOpsAppEvent:
+    """One FleetOps-domain event from app/backend/extension surfaces."""
 
     event_id: str
     account_id: str
@@ -57,8 +61,8 @@ class CentralizeAppEvent:
 
 
 @dataclass(frozen=True)
-class CentralizePostHogEvent:
-    """One PostHog-shaped raw event emitted from Centralize app surfaces."""
+class FleetOpsPostHogEvent:
+    """One PostHog-shaped raw event emitted from FleetOps app surfaces."""
 
     event_id: str
     account_id: str | None
@@ -76,12 +80,30 @@ class CentralizePostHogEvent:
 
 
 @dataclass(frozen=True)
-class CentralizeTelemetryBundle:
+class FleetOpsTelemetryBundle:
     account_slug: str
     day_offset: int
-    app_events: tuple[CentralizeAppEvent, ...]
-    posthog_events: tuple[CentralizePostHogEvent, ...]
+    app_events: tuple[FleetOpsAppEvent, ...]
+    posthog_events: tuple[FleetOpsPostHogEvent, ...]
     usage_signals: tuple[UsageSignal, ...]
+
+
+@dataclass(frozen=True)
+class GenericTelemetryContext:
+    account_slug: str
+    account_id: str
+    account_name: str
+    industry: str | None
+    csm_owner_id: str
+    lifecycle_stage: str
+    status: str
+    arr_cents: int
+    health_score: float
+    health_band: str
+    adoption_rate: float
+    active_users: int
+    licensed_users: int
+    archetype: str
 
 
 CENTRALIZE_ARC_PROFILES: dict[str, ArcTelemetryProfile] = {
@@ -140,12 +162,29 @@ _USERS_BY_ARC = {
 }
 
 
-def centralize_telemetry_bundle(account_slug: str, day_offset: int) -> CentralizeTelemetryBundle:
-    if account_slug not in CENTRALIZE_ARC_PROFILES:
-        raise ValueError(f"Centralize telemetry is not scripted for {account_slug!r}")
+def centralize_account_slugs() -> tuple[str, ...]:
+    """Synthetic account slugs with FleetOps telemetry coverage."""
+
+    return tuple(slug for slug, *_ in _ACCT_DATA)
+
+
+def centralize_account_slug_for_id(account_id: str) -> str:
+    for slug in centralize_account_slugs():
+        if account_id_for(slug) == account_id:
+            return slug
+    raise ValueError(f"FleetOps telemetry has no synthetic account for {account_id!r}")
+
+
+def centralize_telemetry_bundle_for_account_id(
+    account_id: str, day_offset: int
+) -> FleetOpsTelemetryBundle:
+    return centralize_telemetry_bundle(centralize_account_slug_for_id(account_id), day_offset)
+
+
+def centralize_telemetry_bundle(account_slug: str, day_offset: int) -> FleetOpsTelemetryBundle:
     app_events = centralize_app_events_for_day(account_slug, day_offset)
     posthog_events = centralize_posthog_events_for_day(account_slug, day_offset)
-    return CentralizeTelemetryBundle(
+    return FleetOpsTelemetryBundle(
         account_slug=account_slug,
         day_offset=day_offset,
         app_events=app_events,
@@ -156,11 +195,13 @@ def centralize_telemetry_bundle(account_slug: str, day_offset: int) -> Centraliz
 
 def centralize_app_events_for_day(
     account_slug: str, day_offset: int
-) -> tuple[CentralizeAppEvent, ...]:
+) -> tuple[FleetOpsAppEvent, ...]:
+    if account_slug not in CENTRALIZE_ARC_PROFILES:
+        raise ValueError(f"FleetOps telemetry has no synthetic account for {account_slug!r}")
     profile = CENTRALIZE_ARC_PROFILES[account_slug]
     account_id = account_id_for(account_slug)
     primary_user, secondary_user = _USERS_BY_ARC[profile.arc]
-    events: list[CentralizeAppEvent] = []
+    events: list[FleetOpsAppEvent] = []
 
     def add(
         event_type: str,
@@ -174,7 +215,7 @@ def centralize_app_events_for_day(
         **properties: PropertyValue,
     ) -> None:
         events.append(
-            CentralizeAppEvent(
+            FleetOpsAppEvent(
                 event_id=det_id(
                     "centralize-app-event",
                     account_id,
@@ -396,13 +437,15 @@ def centralize_app_events_for_day(
 
 def centralize_posthog_events_for_day(
     account_slug: str, day_offset: int
-) -> tuple[CentralizePostHogEvent, ...]:
+) -> tuple[FleetOpsPostHogEvent, ...]:
+    if account_slug not in CENTRALIZE_ARC_PROFILES:
+        raise ValueError(f"FleetOps telemetry has no synthetic account for {account_slug!r}")
     profile = CENTRALIZE_ARC_PROFILES[account_slug]
     account_id = account_id_for(account_slug)
     user_id = _USERS_BY_ARC[profile.arc][0]
     distinct_id = det_id("posthog-person", user_id)
     base_path = _dominant_path(account_id, profile.arc)
-    events: list[CentralizePostHogEvent] = []
+    events: list[FleetOpsPostHogEvent] = []
 
     def add(
         event: str,
@@ -418,7 +461,7 @@ def centralize_posthog_events_for_day(
         session_id = det_id("posthog-session", account_id, day_offset, session_index)
         replay_ref = f"posthog:recording:{session_id}"
         events.append(
-            CentralizePostHogEvent(
+            FleetOpsPostHogEvent(
                 event_id=det_id("centralize-posthog-event", session_id, event, hour, path),
                 account_id=account_id if account_known else None,
                 distinct_id=distinct_id,
@@ -604,14 +647,19 @@ def centralize_usage_signals_for_day(account_slug: str, day_offset: int) -> tupl
 def centralize_usage_signals_through_day(
     account_slug: str, as_of_day: int, *, sample_days: tuple[int, ...] | None = None
 ) -> tuple[UsageSignal, ...]:
-    if account_slug not in CENTRALIZE_ARC_PROFILES:
-        raise ValueError(f"Centralize telemetry is not scripted for {account_slug!r}")
-    days = sample_days if sample_days is not None else CENTRALIZE_ARC_PROFILES[account_slug].checkpoint_days
+    days = sample_days if sample_days is not None else _checkpoint_days(account_slug)
     signals: list[UsageSignal] = []
     for day in days:
         if day <= as_of_day:
             signals.extend(centralize_usage_signals_for_day(account_slug, day))
     return tuple(signals)
+
+
+def _checkpoint_days(account_slug: str) -> tuple[int, ...]:
+    profile = CENTRALIZE_ARC_PROFILES.get(account_slug)
+    if profile is None:
+        raise ValueError(f"FleetOps telemetry has no synthetic account for {account_slug!r}")
+    return profile.checkpoint_days
 
 
 def centralize_sample_days(account_slug: str, as_of_day: int) -> tuple[int, ...]:
@@ -622,19 +670,20 @@ def centralize_sample_days(account_slug: str, as_of_day: int) -> tuple[int, ...]
     days so the story turns are always present.
     """
 
-    if account_slug not in CENTRALIZE_ARC_PROFILES:
-        raise ValueError(f"Centralize telemetry is not scripted for {account_slug!r}")
-    profile = CENTRALIZE_ARC_PROFILES[account_slug]
-    days = set(range(0, as_of_day + 1, 14))
-    days.update(day for day in profile.checkpoint_days if day <= as_of_day)
-    days.update(day for day in _ARC_BEAT_DAYS[profile.arc] if day <= as_of_day)
+    days = set(range(0, as_of_day + 1, 14 if account_slug in CENTRALIZE_ARC_PROFILES else 28))
+    days.update(day for day in _checkpoint_days(account_slug) if day <= as_of_day)
+    arc = CENTRALIZE_ARC_PROFILES.get(account_slug)
+    if arc is not None:
+        days.update(day for day in _ARC_BEAT_DAYS[arc.arc] if day <= as_of_day)
+    else:
+        days.update(day for day in (21, 63, 112, 140, 224, 280) if day <= as_of_day)
     days.add(0)
     return tuple(sorted(days))
 
 
 def centralize_telemetry_timeline(
     account_slug: str, as_of_day: int, *, sample_days: tuple[int, ...] | None = None
-) -> tuple[CentralizeTelemetryBundle, ...]:
+) -> tuple[FleetOpsTelemetryBundle, ...]:
     days = sample_days if sample_days is not None else centralize_sample_days(account_slug, as_of_day)
     return tuple(centralize_telemetry_bundle(account_slug, day) for day in days if day <= as_of_day)
 
@@ -696,7 +745,7 @@ def _extra_app_event_count(arc: str, day_offset: int) -> int:
         return 5 if 120 <= day_offset <= 190 else 3
     if arc == "healthy_control":
         return 3
-    raise ValueError(f"unknown Centralize telemetry arc {arc!r}")
+    raise ValueError(f"unknown FleetOps telemetry arc {arc!r}")
 
 
 def _extra_app_event(arc: str, index: int) -> tuple[str, str, str, str]:
@@ -743,7 +792,7 @@ def _posthog_session_count(arc: str, day_offset: int) -> int:
         return 8 if 120 <= day_offset <= 190 else 5
     if arc == "healthy_control":
         return 4
-    raise ValueError(f"unknown Centralize telemetry arc {arc!r}")
+    raise ValueError(f"unknown FleetOps telemetry arc {arc!r}")
 
 
 def _session_path(account_id: str, arc: str, session_index: int) -> str:
