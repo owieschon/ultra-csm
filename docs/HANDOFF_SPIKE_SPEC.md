@@ -86,3 +86,7 @@ Owner confirmed: "Confirmed: the Part B rows encode the routing oracle."
 ## OA-B2 Disposition
 
 No independent human second labeler was supplied. A same-model blind ambiguity probe was run by the owner as a correlated ambiguity check, not as inter-rater reliability. It found 16/18 rows consistent with the oracle after widened-row handling, with hard divergence only on `B0-04` and `B0-06`. The spike report must disclose single-oracle provenance and may cite the same-model pass only as an ambiguity probe.
+
+## Packet Schema Note
+
+The internal bridge packet carries `abstained: bool` and `reason: str` as first-class fields. This mirrors the existing Slot-A `unknown` fail-closed classification pattern and the reconciliation agent's confidence cap: uncertainty is represented structurally rather than as a new customer-facing action type. Full schema unification is a follow-on; this spike keeps the packet additive.
