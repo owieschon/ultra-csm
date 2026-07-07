@@ -14,11 +14,10 @@ from __future__ import annotations
 from dataclasses import dataclass
 from uuid import UUID
 
-from ultra_csm.data_plane.book_simulator import simulate_book
 from ultra_csm.data_plane.contracts import UsageSignal
 from ultra_csm.data_plane.fixtures import account_id_for, det_id
 from ultra_csm.data_plane.narrative_shared import rfc3339
-from ultra_csm.data_plane.synthetic_book import _ACCT_DATA, build_synthetic_book
+from ultra_csm.data_plane.synthetic_book import _ACCT_DATA
 
 PropertyValue = str | int | float | bool
 Properties = tuple[tuple[str, PropertyValue], ...]
