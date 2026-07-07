@@ -1,20 +1,29 @@
 # Ultra CSM
 
-Ultra CSM is a customer-success decision engine: it reads CRM, project, product, and comms evidence; scores customer value deterministically; and drafts CSM actions that stay behind a human approval gate.
+Ultra CSM is an agentic workspace for scaling the CSM function. It gives CSM
+teams account briefs, prioritized work queues, sales-to-CS handoff context,
+evidence-backed outreach drafts, internal Engineering/Product handoff packets,
+and governed approval proposals. Underneath, agents read CRM, project, product,
+telemetry, and comms evidence to identify onboarding stalls, retention risks,
+expansion opportunities, outcome gaps, and product/engineering escalation
+signals; customer-facing sends stay behind a human approval gate.
 
-It now runs against connected live orgs on persistent state, with Risk and Expansion lenses wired into the same daily loop as Time-to-Value. It does not claim production-customer retention lift, a real customer send, or second-human judge agreement.
+Start with the proof table below, then read [Honest Limits](docs/LIMITS.md) for
+the boundary line: what is proven, what is scoped, and what is still unproven.
 
 ## What Is Proven
 
 | Area | Current evidence | Boundary |
 | --- | --- | --- |
-| Deterministic spine | `make scorecard-csm` renders `eval/scorecard_csm.json` with `hard_ok=true`, 24/24 hard gates passing. Tenant isolation, consent, payload binding, and no-authority-minting are tested against the real gate path. | Offline and fixture-backed unless a row below says live. |
-| Live connectors | Salesforce, Rocketlane, and Gmail burner scopes are wired for the live program; earlier live connector receipts are in `docs/LIVE_INTEGRATION_FINDINGS.md`, with the full live-build serving story in `docs/PROGRAM_REPORT_58.md` and `docs/PROGRAM_REPORT_65.md`. | Connected dev/trial/burner orgs, not production customers. |
+| Deterministic spine | `make scorecard-csm-check` reports `Agent 1 CSM scorecard: 24/24 hard_ok=True` and confirms the scorecard/work-queue artifacts are current. The scorecard covers identity, evidence, consent, payload binding, unsafe drafts, tenant isolation, and the real gate path. | Offline and fixture-backed unless a row below says live. |
+| Live connectors | Salesforce, Rocketlane, and Gmail burner scopes were exercised during the live program; the serving and ledger receipts are in `docs/PROGRAM_REPORT_58.md` and `docs/PROGRAM_REPORT_65.md`. | Connected dev/trial/burner orgs, not production customers. |
 | Persistent operation | Phase 9 loaded `com.ultracsm.operating-daily`, ran through the scheduled path, and wrote durable audit rows. Layer 3 reported 3 file-ledger entries spanning 2026-07-05 to 2026-07-06 and 230 persistent DB audit rows. | Proves the operating mechanism and accumulated local ledger; not weeks of unattended production operation. |
 | Customer-facing loop | Phase 10 staged one burner-scoped `draft_customer_outreach` proposal with payload hash `065c48c96d0cee6aab4896f0f3a9103e863393f2109dc4eea5df5dcd2af4c232`, then stopped. | The owner must approve with `submit_verdict`; the system did not approve or send. |
-| Safety under live adversarial input | Phase 11 seeded one hostile burner email, ran ingestion and drafting, and captured `hard_ok=true`; the draft ignored the injected instruction and no approval/send occurred. | Burner mailbox only. |
-| Judge quality | The gate judge is Sonnet 5 after a paired migration screen returned `adopt=true`; validation derives `validated=true` from artifacts, not hand-written prose. | Single-labeler gold set. No second blind labeler yet. |
-| Drift power | `eval/drift_power_csm.json` has `hard_ok=true`, catches all eight bad variants, and scopes the current minimum detectable overall-pass-rate drop to about 46.9 percentage points. | Smaller drift needs more independent examples. |
+| Internal handoff | `eval/internal_bridge_validation_report.json` records one Engineering/Product handoff pair with `routing_core_hard_ok=true`, 18 cases, no routing failures, and zero confidently-wrong cells; `docs/PROGRAM_REPORT_68.md` records the single-oracle boundary. | Proves one spike-scoped handoff pair, not all internal-bridge archetypes. |
+| Outcome integrity | VM-8 proof tests pass for a green/high-usage account that later churns: before close, outcome stays `not_instrumented`; after close, terminal renewal evidence becomes `known` with explicit won/lost direction. | Synthetic renewal opportunity evidence only; broader outcome instrumentation is still partial. |
+| Judge scope | `tests/test_judge_validation.py` passes 21 tests. The full judge claim remains `validated=false`; five dimensions are scoped-gateable, and `on_task_relevance` is excluded by `assert_gating_dimensions(...)`. | Single-labeler gold set. No second blind human labeler yet. |
+| Drift power | `make drift-power-csm` reports `hard_ok=True`; the expanded hard layer in `eval/drift_power_csm.json` records `n=64` and minimum detectable overall-pass-rate drop `0.089`. | Smaller drift needs more independent examples; this is quality-drift power, not production outcome drift. |
+| Hosted read-only demo | `docs/PROGRAM_REPORT_67.md` records a static Vercel-ready demo backed by committed JSON fixtures in `ui/public/demo-api/`, with hosted write routes disabled. | Safe distribution surface only; not a live connector deployment. |
 | Monitoring | Sentry envelope/check-in code and missed-run/cost alarms are tested with fake transports. | No live Sentry DSN/token was found, so live Sentry ingestion is not proven. |
 
 ## How It Works
@@ -79,4 +88,5 @@ The optional hosted demo is static: Vercel builds `ui/out`, serves committed JSO
 1. Owner approval for the staged Phase 10 burner send.
 2. A second blind human labeler for inter-rater kappa.
 3. A live Sentry DSN/token to prove real Sentry ingestion.
-4. Real production customer deployment and retention outcomes.
+4. Broader outcome instrumentation beyond the synthetic terminal-renewal slice.
+5. Real production customer deployment and retention outcomes.
