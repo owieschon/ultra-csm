@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Approval audit trail</title><style>
+:root, [data-theme="dark"] {
+  --canvas: #222321; --chrome: #1B1C1A; --card: #2A2B28; --card-2: #33342F;
+  --hair: rgba(255,255,255,.09); --hair-soft: rgba(255,255,255,.05);
+  --fg: #F1F0EC; --fg-2: #B7B5AC; --fg-3: #858379;
+  --accent: #8189E6; --accent-fg: #fff; --accent-line: rgba(129,137,230,.45);
+  --ok: #5DBE93; --warn: #D9A452; --danger: #E67B80;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--canvas); color: var(--fg); font-family: -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif; font-size: 13.5px; line-height: 1.5; }
+.mock { min-height: 100vh; padding: 26px; display: grid; grid-template-columns: 324px 1fr; gap: 22px; }
+.queue, .detail, .card { background: var(--chrome); border: 1px solid var(--hair); border-radius: 12px; }
+.queue { padding: 14px; }
+h1, h2, h3 { margin: 0; font-weight: 650; }
+.muted { color: var(--fg-2); }
+.row { padding: 11px 12px; border: 1px solid var(--hair-soft); border-radius: 9px; margin-top: 8px; background: transparent; }
+.row.sel { background: var(--card); border-color: var(--accent-line); }
+.row strong { display: block; font-size: 13px; }
+.state { float: right; color: var(--warn); }
+.detail { padding: 28px; }
+.hero { border: 1px solid var(--accent-line); background: var(--card); border-radius: 12px; padding: 24px; margin: 22px 0; }
+.hero.danger { border-color: rgba(230,123,128,.6); }
+.hero h2 { font-size: 30px; line-height: 1.2; max-width: 980px; }
+.section { margin-top: 18px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.card { padding: 18px; background: var(--card); }
+.chip { display: inline-flex; align-items: center; border: 1px solid var(--hair); border-radius: 6px; padding: 2px 8px; color: var(--fg-2); font-size: 11px; margin: 0 6px 6px 0; white-space: nowrap; }
+.warn { color: var(--warn); border-color: rgba(217,164,82,.45); }
+.danger { color: var(--danger); border-color: rgba(230,123,128,.5); }
+.button { border: 1px solid var(--hair); border-radius: 8px; padding: 9px 11px; margin: 8px 0; background: var(--canvas); }
+.route { border: 1px solid var(--hair); border-radius: 10px; padding: 18px; }
+.route.on { border-color: var(--accent-line); }
+.timeline { display: grid; gap: 14px; margin-top: 22px; }
+.step { display: grid; grid-template-columns: 42px 1fr; gap: 14px; align-items: start; }
+.num { width: 34px; height: 34px; border: 1px solid var(--accent-line); border-radius: 50%; display: grid; place-items: center; font-family: ui-monospace, "SF Mono", Menlo, monospace; color: var(--accent); }
+.proposal-note { margin-top: 18px; color: var(--fg-2); font-size: 12px; }
+</style></head>
+<body><main class="mock">
+<aside class="queue">
+  <h2>Agent work queue</h2>
+  <p class="muted">drafted work, waiting for owner</p>
+  <div class="row "><span class="state">approval</span><strong>Harborview Fleet</strong><span class="muted">sales handoff</span></div>
+  <div class="row "><span class="state">review</span><strong>Pinehill Transport</strong><span class="muted">route to enablement</span></div>
+  <div class="row "><span class="state">approval</span><strong>Ironhorse Freight Co</strong><span class="muted">CSM action packet</span></div>
+  <div class="row "><span class="state">ready</span><strong>Trailhead Logistics</strong><span class="muted">evidence receipt</span></div>
+  <div class="row sel"><span class="state">logged</span><strong>Meridian Fleet Group</strong><span class="muted">post-action audit</span></div>
+</aside>
+<section class="detail">
+<h1>Approval audit trail</h1><p class="muted">Human anchor as ledger: what agents saw, drafted, what the CSM changed, and what actually released.</p>
+<div class="timeline">
+<div class="card step"><div class="num">1</div><div><h3>Agent assembled packet</h3><p class="muted">Used renewal opportunity, open cases, usage, and comms evidence.</p></div></div>
+<div class="card step"><div class="num">2</div><div><h3>CSM edited draft</h3><p class="muted">Changed tone and removed an unsupported product claim.</p></div></div>
+<div class="card step"><div class="num">3</div><div><h3>Approval gate passed</h3><p class="muted">Owner approved customer-facing send.</p></div></div>
+<div class="card step"><div class="num">4</div><div><h3>Released action logged</h3><p class="muted">Audit record preserves source IDs and final text.</p></div></div>
+</div>
+<p class="proposal-note">Hypothesis: the trust story lands when the UI shows the agent/human boundary as history, not boilerplate.</p>
+</section></main></body></html>
