@@ -111,6 +111,10 @@ svg { display: block; }
 /* ===== QUEUE VIEW ===== */
 .queue { flex: 1; min-height: 0; display: grid; grid-template-columns: 316px 1fr; }
 .lanes { border-right: 1px solid var(--hair); background: var(--chrome); overflow-y: auto; }
+.lane-intro { padding: 15px 14px 13px; border-bottom: 1px solid var(--hair); background: var(--chrome); }
+.eyebrow { font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--fg-3); }
+.intro-title { margin-top: 3px; font-size: 15px; font-weight: 650; letter-spacing: -.01em; color: var(--fg); }
+.intro-sub { margin-top: 2px; font-size: 11.5px; color: var(--fg-2); line-height: 1.45; }
 .lane-h { display: flex; align-items: center; gap: 8px; padding: 14px 14px 8px; position: sticky; top: 0; background: var(--chrome); }
 .lane-h .t { font-size: 12px; font-weight: 650; color: var(--fg); }
 .lane-h .c { font-size: 12px; color: var(--fg-2); font-variant-numeric: tabular-nums; font-weight: 650; }
@@ -128,6 +132,15 @@ svg { display: block; }
 .row .trig { font-size: 11.5px; color: var(--fg-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .row .wait { margin-left: auto; font-size: 11px; color: var(--fg-2); white-space: nowrap; flex: 0 0 auto; }
 .motion { font-size: 11px; font-weight: 550; padding: 1px 7px; border-radius: 5px; border: 1px solid var(--hair); color: var(--fg-2); white-space: nowrap; background: var(--canvas); flex: 0 0 auto; }
+.row.note { color: var(--fg-2); font-size: 12px; cursor: default; }
+.row.note:hover { background: transparent; }
+.cadence { font-size: 10px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; padding: 1px 6px; border-radius: 5px; border: 1px solid var(--hair); white-space: nowrap; flex: 0 0 auto; }
+.cadence.daily { color: var(--accent); border-color: var(--accent-line); background: var(--accent-dim); }
+.cadence.weekly { color: var(--ok); border-color: rgba(93,190,147,.42); background: var(--ok-dim); }
+.cadence.monthly { color: var(--fg-2); border-color: var(--hair); background: var(--canvas); }
+.cadence.quarterly,
+.cadence.annual { color: var(--warn); border-color: rgba(217,164,82,.45); background: var(--warn-dim); }
+.cadence.event { color: var(--danger); border-color: rgba(230,123,128,.45); background: var(--danger-dim); }
 .row.resolved { opacity: .5; }
 .row.resolved .acct { text-decoration: line-through; text-decoration-color: var(--fg-3); }
 .res-chip { display: inline-flex; align-items: center; gap: 4px; font-size: 10.5px; font-weight: 650; padding: 1px 7px; border-radius: 5px; }
@@ -135,6 +148,15 @@ svg { display: block; }
 .res-chip.dn { color: var(--danger); border: 1px solid var(--hair); }
 
 .detail-scroll { overflow-y: auto; flex: 1; padding: 22px 28px 48px; }
+.work-packet { border: 1px solid var(--accent-line); border-radius: 12px; background: var(--card); padding: 17px 18px; box-shadow: inset 0 1px 0 rgba(255,255,255,.03); }
+.work-top { display: flex; align-items: flex-start; gap: 14px; }
+.work-kicker { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 11px; color: var(--fg-2); }
+.work-title { margin-top: 8px; font-size: 22px; font-weight: 650; letter-spacing: -.025em; line-height: 1.15; color: var(--fg); }
+.work-account { margin-top: 5px; font-size: 12.5px; color: var(--fg-2); }
+.work-grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: 16px; margin-top: 17px; padding-top: 15px; border-top: 1px solid var(--hair-soft); }
+.work-label { font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--fg-3); }
+.work-copy { margin-top: 5px; font-size: 12.5px; line-height: 1.55; color: var(--fg-2); }
+.work-chips { margin-top: 6px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .identity { display: flex; gap: 14px; align-items: flex-start; padding-bottom: 18px; border-bottom: 1px solid var(--hair); }
 .mono-avatar { width: 46px; height: 46px; border-radius: 10px; background: var(--card-2); border: 1px solid var(--hair); color: var(--fg-2); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; flex: 0 0 auto; }
 .id-name { font-size: 22px; font-weight: 650; letter-spacing: -.025em; line-height: 1.15; }

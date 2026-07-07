@@ -70,8 +70,8 @@ export function BookView({
         <div className="txt">
           <h2>
             {needsCount === 0
-              ? "Book quiet."
-              : `Book steady — ${needsCount} need you.`}
+              ? "Book covered."
+              : `Today: ${needsCount} agent-prepared items need you.`}
           </h2>
           <div className="sub">
             <b className="num">{accounts.length}</b> accounts ·{" "}
@@ -90,7 +90,7 @@ export function BookView({
           </div>
         </div>
         <button className="cta" onClick={onWorkQueue} disabled={needsCount === 0}>
-          Work the queue{needsCount ? ` (${needsCount})` : ""}
+          Work today{needsCount ? ` (${needsCount})` : ""}
         </button>
       </div>
 

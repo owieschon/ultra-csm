@@ -5,6 +5,7 @@ import { AccountSummary, WorkItem } from "@/lib/api";
 import { SweepData } from "@/lib/useSweep";
 import { QueueLanes, LaneItem } from "@/components/QueueLanes";
 import { QueueDetail } from "@/components/QueueDetail";
+import { workItemKey } from "@/lib/work";
 
 export function QueueView({
   day,
@@ -28,25 +29,39 @@ export function QueueView({
     (accounts ?? []).forEach((a) => map.set(a.account_id, a.tier));
     return map;
   }, [accounts]);
+  const accountNameById = useMemo(() => {
+    const map = new Map<string, string>();
+    (accounts ?? []).forEach((a) => map.set(a.account_id, a.account_name));
+    return map;
+  }, [accounts]);
 
-  const withProposal = (sweep?.work_items ?? []).filter((i) => i.proposal);
+  const laneItem = (item: WorkItem): LaneItem => ({
+    item,
+    accountName: item.account_id ? accountNameById.get(item.account_id) ?? null : null,
+    tier: item.account_id ? tierByAccount.get(item.account_id) ?? null : null,
+  });
+  const workItems = sweep?.work_items ?? [];
+  const withProposal = workItems.filter((i) => i.proposal);
   const needsDecision: LaneItem[] = withProposal
     .filter((i) => i.proposal!.status === "pending")
-    .map((item) => ({ item, tier: item.account_id ? tierByAccount.get(item.account_id) ?? null : null }));
+    .map(laneItem);
+  const prepared: LaneItem[] = workItems
+    .filter((i) => !i.proposal)
+    .map(laneItem);
   const resolved: LaneItem[] = withProposal
     .filter((i) => i.proposal!.status !== "pending")
-    .map((item) => ({ item, tier: item.account_id ? tierByAccount.get(item.account_id) ?? null : null }));
+    .map(laneItem);
 
   const coveredCount = Math.max(
     0,
     (sweep?.swept_accounts.length ?? 0) -
-      new Set((sweep?.work_items ?? []).map((i) => i.account_id).filter(Boolean)).size
+      new Set(workItems.map((i) => i.account_id).filter(Boolean)).size
   );
 
   const selectedItem =
-    (sweep?.work_items ?? []).find(
-      (i) => i.proposal?.proposal_id === selectedProposalId
-    ) ?? null;
+    workItems.find((i) => workItemKey(i) === selectedProposalId) ??
+    workItems.find((i) => i.proposal?.proposal_id === selectedProposalId) ??
+    null;
 
   useEffect(() => {
     onSelectedItemChange(selectedItem);
@@ -63,6 +78,7 @@ export function QueueView({
     <div className="queue">
       <QueueLanes
         needsDecision={needsDecision}
+        prepared={prepared}
         resolved={resolved}
         escalations={sweep?.escalations ?? []}
         coveredCount={coveredCount}
@@ -79,8 +95,7 @@ export function QueueView({
             </h2>
             {sweep && (
               <div className="sub">
-                {needsDecision.length} need you · {coveredCount} covered, no
-                action needed
+                {needsDecision.length} need approval · {prepared.length} prepared without a send · {coveredCount} covered
               </div>
             )}
           </div>

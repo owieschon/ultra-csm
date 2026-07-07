@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { api, WorkItem } from "@/lib/api";
 import { label, MOTION_LABELS, TRIGGER_LABELS } from "@/lib/labels";
+import { describeWork } from "@/lib/work";
 import { ReconciliationSection } from "./ReconciliationSection";
 
 type Brief = Record<string, unknown>;
@@ -192,50 +193,11 @@ export function QueueDetail({ item, day }: { item: WorkItem; day: number | undef
 
   return (
     <div className="detail-scroll">
-      <div className="identity">
-        <div className="mono-avatar">
-          {(brief?.account_name as string | undefined)?.slice(0, 2).toUpperCase() ?? "··"}
-        </div>
-        <div>
-          <div className="id-name">
-            {(brief?.account_name as string) ?? item.account_id}
-          </div>
-          <div className="id-meta">
-            <span className="tierpill">
-              {(brief?.lifecycle_stage as string) ?? "—"}
-            </span>
-          </div>
-        </div>
-      </div>
+      <WorkPacket item={item} brief={brief} />
 
       <div className="sec">
         <div className="sec-h">
-          <span className="t">Account sources</span>
-          <span className="prov">
-            <span className="chip-det">8 systems — 5 live, 3 no source yet</span>
-          </span>
-        </div>
-        {DRAWERS.map((d) =>
-          d.key === "people" ? (
-            <StakeholderDrawer
-              key={d.key}
-              brief={brief}
-              open={openDrawer === d.key}
-              onToggle={() => setOpenDrawer(openDrawer === d.key ? null : d.key)}
-            />
-          ) : d.key === "comms" ? (
-            <CommsDrawer key={d.key} brief={brief} open={openDrawer === d.key}
-              onToggle={() => setOpenDrawer(openDrawer === d.key ? null : d.key)} />
-          ) : (
-            <Drawer key={d.key} name={d.name} field={d.briefField} brief={brief} formatter={d.formatter} open={openDrawer === d.key}
-              onToggle={() => setOpenDrawer(openDrawer === d.key ? null : d.key)} />
-          )
-        )}
-      </div>
-
-      <div className="sec">
-        <div className="sec-h">
-          <span className="t">Why this account, why now</span>
+          <span className="t">Evidence receipt — why now</span>
           <span className="prov">
             <span className="chip-det">Rule-based · no AI</span>
           </span>
@@ -314,15 +276,15 @@ export function QueueDetail({ item, day }: { item: WorkItem; day: number | undef
 
       <div className="sec">
         <div className="sec-h">
-          <span className="t">Chosen action — and why</span>
+          <span className="t">Agent-prepared work</span>
           <span className="prov">
-            <span className="chip-det">Rule-based</span>
+            <span className="chip-det">Operator review</span>
           </span>
         </div>
         <div className="resolve">
           <div className="line">
             <span className="m-final" title={item.motion ?? undefined}>
-              {item.motion ? label(MOTION_LABELS, item.motion) : "dormant — no live motion"}
+              {item.motion ? label(MOTION_LABELS, item.motion) : "prepared review"}
             </span>
             {item.recipient_name && (
               <span
@@ -341,17 +303,92 @@ export function QueueDetail({ item, day }: { item: WorkItem; day: number | undef
       {item.customer_draft && (
         <div className="sec">
           <div className="sec-h">
-            <span className="t">Proposed draft</span>
+            <span className="t">Draft or packet body</span>
             <span className="prov">
               <span className="chip-llm">AI-written — needs your approval</span>
             </span>
           </div>
           <div className="draft">
-            <div className="draft-h">draft · quality score dormant, no live source yet</div>
+            <div className="draft-h">customer-facing draft · release gated</div>
             <div className="draft-body">{item.customer_draft}</div>
           </div>
         </div>
       )}
+      <div className="sec">
+        <div className="sec-h">
+          <span className="t">Account context</span>
+          <span className="prov">
+            <span className="chip-det">8 systems — 5 live, 3 no source yet</span>
+          </span>
+        </div>
+        {DRAWERS.map((d) =>
+          d.key === "people" ? (
+            <StakeholderDrawer
+              key={d.key}
+              brief={brief}
+              open={openDrawer === d.key}
+              onToggle={() => setOpenDrawer(openDrawer === d.key ? null : d.key)}
+            />
+          ) : d.key === "comms" ? (
+            <CommsDrawer key={d.key} brief={brief} open={openDrawer === d.key}
+              onToggle={() => setOpenDrawer(openDrawer === d.key ? null : d.key)} />
+          ) : (
+            <Drawer key={d.key} name={d.name} field={d.briefField} brief={brief} formatter={d.formatter} open={openDrawer === d.key}
+              onToggle={() => setOpenDrawer(openDrawer === d.key ? null : d.key)} />
+          )
+        )}
+      </div>
+    </div>
+  );
+}
+
+function WorkPacket({ item, brief }: { item: WorkItem; brief: Brief | null }) {
+  const descriptor = describeWork(item);
+  const accountName = (brief?.account_name as string | undefined) ?? item.account_id ?? "Program work";
+  const lifecycleStage = (brief?.lifecycle_stage as string | undefined) ?? null;
+  const trajectory = brief?.trajectory as Record<string, unknown> | undefined;
+  const trend = typeof trajectory?.trend === "string" ? trajectory.trend : null;
+  const opportunities = (brief?.opportunities as unknown[] | undefined) ?? [];
+  const hasBridge = Boolean(
+    item.internal_bridge_decision && !item.internal_bridge_decision.abstained
+  );
+
+  return (
+    <div className="work-packet">
+      <div className="work-top">
+        <div className="mono-avatar">{accountName.slice(0, 2).toUpperCase()}</div>
+        <div>
+          <div className="work-kicker">
+            <span className={`cadence ${descriptor.cadence}`}>{descriptor.cadenceLabel}</span>
+            <span>{descriptor.kindLabel}</span>
+            <span>{descriptor.authorityLabel}</span>
+          </div>
+          <div className="work-title">{descriptor.packetLabel}</div>
+          <div className="work-account">
+            {accountName}
+            {lifecycleStage ? ` · ${humanizeCode(lifecycleStage)}` : ""}
+          </div>
+        </div>
+      </div>
+      <div className="work-grid">
+        <div>
+          <div className="work-label">CS operating job</div>
+          <div className="work-copy">
+            Agents prepared this {descriptor.cadenceLabel.toLowerCase()} packet for the CSM to review, edit, route, or release.
+          </div>
+        </div>
+        <div>
+          <div className="work-label">Receipts in packet</div>
+          <div className="work-chips">
+            <span className="chip-det">{item.priority?.factors.length ?? 0} value signals</span>
+            {trend && <span className="chip-det">trajectory: {trend}</span>}
+            {opportunities.length > 0 && (
+              <span className="chip-det">{opportunities.length} opportunity</span>
+            )}
+            {hasBridge && <span className="chip-det">internal briefing ready</span>}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

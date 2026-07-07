@@ -10,6 +10,7 @@ import { ShortcutsOverlay } from "@/components/ShortcutsOverlay";
 import { api, AccountSummary, isReadOnlyDemo, WorkItem } from "@/lib/api";
 import { useSweep } from "@/lib/useSweep";
 import { toggleTheme } from "@/lib/theme";
+import { workItemKey } from "@/lib/work";
 
 export default function Home() {
   const [view, setView] = useState<"book" | "queue">("book");
@@ -64,7 +65,7 @@ export default function Home() {
 
   function jumpToAccount(accountId: string) {
     const item = (sweep?.work_items ?? []).find((i) => i.account_id === accountId);
-    if (item?.proposal) setSelectedProposalId(item.proposal.proposal_id);
+    if (item) setSelectedProposalId(workItemKey(item));
     setView("queue");
   }
 
