@@ -1,5 +1,5 @@
 import { AccountSummary, CoverageReceiptResponse, WorkItem } from "@/lib/api";
-import { label, MOTION_LABELS } from "@/lib/labels";
+import { label, MOTION_LABELS, TRIGGER_LABELS } from "@/lib/labels";
 import { describeWork } from "@/lib/work";
 
 export type CoverageState =
@@ -22,6 +22,7 @@ export interface CoverageReceipt {
   workItem: WorkItem | null;
   evidenceLines: string[];
   missingLines: string[];
+  receiptLines: string[];
 }
 
 export const COVERAGE_FILTERS: { key: CoverageState | "all"; label: string }[] = [
@@ -78,12 +79,13 @@ function fromBackendReceipts(
       state: receipt.state,
       label: receipt.label,
       actionLabel: receipt.action_label,
-      reason: receipt.reason,
+      reason: operatorReason(receipt.state, workByAccount.get(receipt.account_id) ?? null, receipt.reason),
       scoreLabel: receipt.score_label,
       scanned: receipt.scanned,
       workItem: workByAccount.get(receipt.account_id) ?? null,
-      evidenceLines: receipt.evidence_lines,
-      missingLines: receipt.missing_lines,
+      evidenceLines: humanizeReceiptLines(receipt.evidence_lines),
+      missingLines: humanizeReceiptLines(receipt.missing_lines),
+      receiptLines: [...receipt.evidence_lines, ...receipt.missing_lines],
     }];
   });
 }
@@ -179,8 +181,14 @@ function baseReceipt(
       scanned ? "Included in latest swept_accounts receipt." : "Not included in latest sweep.",
       motion ? `Motion: ${motion}.` : "No motion emitted.",
       ...factorLines,
+    ].map(humanizeReceiptLine),
+    missingLines: (overrides.missingLines ?? []).map(humanizeReceiptLine),
+    receiptLines: [
+      scanned ? "Included in latest swept_accounts receipt." : "Not included in latest sweep.",
+      motion ? `Motion: ${item?.motion}.` : "No motion emitted.",
+      ...factorLines,
+      ...(overrides.missingLines ?? []),
     ],
-    missingLines: overrides.missingLines ?? [],
   };
 }
 
@@ -201,4 +209,73 @@ export function stateLabel(state: CoverageState): string {
     case "not_scanned":
       return "Not scanned";
   }
+}
+
+function operatorReason(
+  state: CoverageState,
+  item: WorkItem | null,
+  fallback: string
+): string {
+  const descriptor = item ? describeWork(item) : null;
+  switch (state) {
+    case "needs_human":
+      return descriptor
+        ? `Review the agent-prepared ${descriptor.packetLabel.toLowerCase()} before anything reaches the customer.`
+        : "Review the agent-prepared work before anything reaches the customer.";
+    case "prepared_work":
+      return descriptor
+        ? `${descriptor.packetLabel} is ready for internal review; no customer-facing action can send from here.`
+        : "Internal work is ready for review; no customer-facing action can send from here.";
+    case "reviewed":
+      return "This account already has a human decision recorded for the prepared work.";
+    case "covered":
+      return "The agent checked this account and found no work that needs attention right now.";
+    case "insufficient_evidence":
+      return "The agent could not score this account because required source evidence is missing.";
+    case "source_degraded":
+      return "A source problem blocked reliable prioritization for this account.";
+    case "not_scanned":
+      return "This account is in the book but did not appear in the latest sweep coverage receipt.";
+    default:
+      return fallback;
+  }
+}
+
+function humanizeReceiptLines(lines: string[]): string[] {
+  return lines.map(humanizeReceiptLine);
+}
+
+function humanizeReceiptLine(line: string): string {
+  if (line === "Included in latest swept_accounts receipt.") {
+    return "Included in the latest book sweep.";
+  }
+  if (line === "Not included in latest sweep." || line === "No swept_accounts receipt for this account.") {
+    return "Missing from the latest book sweep.";
+  }
+  if (line === "No motion emitted.") {
+    return "No agent action was prepared.";
+  }
+  if (line === "priority_score is null.") {
+    return "No reliable priority score is available.";
+  }
+  if (line.startsWith("priority_score_error:")) {
+    return "Priority scoring source returned an error.";
+  }
+  if (line === "Per-factor non-promotion thresholds are not exposed by the current API.") {
+    return "No detailed near-miss explanation is exposed yet.";
+  }
+
+  const motion = line.match(/^Motion: (.+)\.$/);
+  if (motion) {
+    return `Recommended next step: ${label(MOTION_LABELS, motion[1])}.`;
+  }
+
+  const factor = line.match(/^([^:]+): value ([^,]+), contribution ([^·]+)(?: · threshold .+)?$/);
+  if (factor) {
+    const factorLabel = label(TRIGGER_LABELS, factor[1]);
+    const contribution = String(factor[3]).trim();
+    return `${factorLabel}: adds ${contribution} priority points.`;
+  }
+
+  return line;
 }

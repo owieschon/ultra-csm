@@ -331,6 +331,15 @@ function CoverageReceiptCard({
   receipt: CoverageReceipt;
   onOpenPacket: () => void;
 }) {
+  const [showReceipt, setShowReceipt] = useState(false);
+  const guardrail = receipt.workItem?.proposal?.status === "pending"
+    ? "Human approval gate"
+    : receipt.workItem
+      ? "Internal review only"
+      : receipt.state === "covered"
+        ? "No action queued"
+        : "Source review needed";
+
   return (
     <div className={`coverage-receipt coverage-${receipt.state}`}>
       <div className="receipt-main">
@@ -341,7 +350,8 @@ function CoverageReceiptCard({
         </div>
         <div className="receipt-score num">{receipt.scoreLabel}</div>
       </div>
-      <div className="receipt-lines">
+      <div className="receipt-proof">
+        <div className="receipt-proof-label">What the agent knows</div>
         {receipt.evidenceLines.map((line) => (
           <span key={line}>{line}</span>
         ))}
@@ -352,13 +362,27 @@ function CoverageReceiptCard({
         ))}
       </div>
       <div className="receipt-actions">
-        <span className="chip-det">coverage receipt</span>
+        <span className="chip-det">{guardrail}</span>
+        {receipt.receiptLines.length > 0 && (
+          <button className="receipt-details" onClick={() => setShowReceipt((open) => !open)}>
+            {showReceipt ? "Hide machine receipt" : "Show machine receipt"}
+          </button>
+        )}
         {receipt.workItem && (
           <button className="mini-cta" onClick={onOpenPacket}>
             {receipt.actionLabel}
           </button>
         )}
       </div>
+      {showReceipt && (
+        <div className="receipt-raw">
+          {receipt.receiptLines.map((line) => (
+            <div key={line} className="mono">
+              {line}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
