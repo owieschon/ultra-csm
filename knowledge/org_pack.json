@@ -43,7 +43,7 @@
     {
       "factor": "milestones_overdue",
       "play": "review the overdue Launch Plan milestones (Kickoff, Integration & Data Setup, Activation, or Steady-State Handoff) and assign owners",
-      "customer_ask": "review the overdue activation steps and agree on owners"
+      "customer_ask": "confirm whether the remaining activation work is blocked by configuration, data import, or enablement, then agree on owners"
     },
     {
       "factor": "low_seat_penetration",

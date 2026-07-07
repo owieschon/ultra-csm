@@ -132,7 +132,7 @@ def test_agent1_sweep_returns_ranked_work_queue_and_escalation_lane(sweep_conn):
     assert value_factor.threshold_value == 0.55
     assert value_factor.evidence
     assert acme.customer_draft is not None
-    assert "overdue activation steps" in acme.customer_draft
+    assert "configuration, data import, or enablement" in acme.customer_draft
 
     assert len(sweep.escalations) == 1
     escalation = sweep.escalations[0]

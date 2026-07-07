@@ -109,6 +109,18 @@ class ProposalRef:
 
 
 @dataclass(frozen=True)
+class MotionSource:
+    """Why the selected playbook motion won for this work item."""
+
+    play_id: str
+    trigger_factor: str
+    motion: str
+    matched_priority_factor: str | None
+    priority_contribution: float | None
+    selection_reason: str
+
+
+@dataclass(frozen=True)
 class CSMWorkItem:
     tenant_id: str
     account_resolution: ResolutionState
@@ -125,6 +137,7 @@ class CSMWorkItem:
     draft_mode: DraftMode = "none"
     customer_draft: str | None = None
     motion: str | None = None
+    motion_source: MotionSource | None = None
     recipient_resolution: str | None = None
     slot_a_classifications: tuple[CaseNoteClassificationOutput, ...] = ()
     # Person UI depth (Harvest 17), additive: the resolved recipient's
@@ -827,8 +840,9 @@ def _account_tier_and_motion(
     *,
     playbooks: PlaybookSet,
     value_model_config: ValueModelConfig,
+    priority: Priority | None = None,
     as_of: str | None = None,
-) -> tuple[str, str | None, set[str]] | None:
+) -> tuple[str, str | None, set[str], MotionSource | None] | None:
     """Resolve this one account's tier and tier-appropriate motion together
     via the promoted ``motion_resolver.resolve_motions`` -- a single-account
     map naturally never reaches cohort-collapse threshold, so this yields
@@ -852,9 +866,64 @@ def _account_tier_and_motion(
         return None
     tier, triggers = tier_and_triggers
     resolved = resolve_motions({account.account_id: tier}, {account.account_id: triggers}, playbooks)
-    plays = resolved["per_account"].get(account.account_id, ())
-    motion = plays[0]["motion"] if plays else None
-    return tier, motion, triggers
+    plays = tuple(resolved["per_account"].get(account.account_id, ()))
+    if not plays:
+        return tier, None, triggers, None
+
+    ranked = sorted(
+        enumerate(plays),
+        key=lambda indexed_play: (
+            -_motion_priority_score(indexed_play[1], priority),
+            indexed_play[0],
+        ),
+    )
+    chosen = ranked[0][1]
+    source = _motion_source(chosen, priority)
+    return tier, chosen["motion"], triggers, source
+
+
+_TRIGGER_FACTOR_ALIASES: dict[str, tuple[str, ...]] = {
+    "feature_shallow_depth": ("feature_shallow_depth", "feature_depth_gap"),
+    "outcome_unknown": ("outcome_unknown", "usage_outcome_unverified"),
+}
+
+
+def _motion_priority_score(play: dict[str, str], priority: Priority | None) -> float:
+    source = _priority_factor_for_trigger(play["trigger_factor"], priority)
+    return float(source.contribution) if source is not None else 0.0
+
+
+def _motion_source(play: dict[str, str], priority: Priority | None) -> MotionSource:
+    factor = _priority_factor_for_trigger(play["trigger_factor"], priority)
+    if factor is None:
+        reason = "Selected from the matched tenant playbook trigger."
+        matched_factor = None
+        contribution = None
+    else:
+        reason = "Selected because this playbook trigger matched the strongest priority signal."
+        matched_factor = factor.name
+        contribution = float(factor.contribution)
+    return MotionSource(
+        play_id=play["play_id"],
+        trigger_factor=play["trigger_factor"],
+        motion=play["motion"],
+        matched_priority_factor=matched_factor,
+        priority_contribution=contribution,
+        selection_reason=reason,
+    )
+
+
+def _priority_factor_for_trigger(
+    trigger_factor: str,
+    priority: Priority | None,
+) -> PriorityFactor | None:
+    if priority is None:
+        return None
+    factor_names = _TRIGGER_FACTOR_ALIASES.get(trigger_factor, (trigger_factor,))
+    candidates = [factor for factor in priority.factors if factor.name in factor_names]
+    if not candidates:
+        return None
+    return max(candidates, key=lambda factor: factor.contribution)
 
 
 def collapse_cohorts(
@@ -972,7 +1041,12 @@ def _work_item_for_account(
 
     tier_and_motion = (
         _account_tier_and_motion(
-            data_plane, account, playbooks=playbooks, value_model_config=value_model_config
+            data_plane,
+            account,
+            playbooks=playbooks,
+            value_model_config=value_model_config,
+            priority=inputs.priority,
+            as_of=as_of,
         )
         if playbooks is not None
         else None
@@ -980,6 +1054,7 @@ def _work_item_for_account(
     tier = tier_and_motion[0] if tier_and_motion is not None else None
     motion = tier_and_motion[1] if tier_and_motion is not None else None
     triggers = tier_and_motion[2] if tier_and_motion is not None else set()
+    motion_source = tier_and_motion[3] if tier_and_motion is not None else None
     internal_bridge_decision = route_internal_bridge(inputs.cases, as_of=as_of)
 
     contact, recipient_resolution = resolve_recipient(motion, inputs.stakeholders, contacts)
@@ -1121,6 +1196,7 @@ def _work_item_for_account(
         draft_mode=draft_mode,
         customer_draft=slot_b.customer_draft,
         motion=motion,
+        motion_source=motion_source,
         recipient_resolution=recipient_resolution,
         recipient_name=recipient_name,
         recipient_role=recipient_role,

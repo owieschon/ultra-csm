@@ -1,7 +1,7 @@
 "use client";
 
 import { WorkItem } from "@/lib/api";
-import { label, MOTION_LABELS, TIER_LABELS, TRIGGER_LABELS } from "@/lib/labels";
+import { label, TIER_LABELS, TRIGGER_LABELS } from "@/lib/labels";
 import { describeWork, workItemKey } from "@/lib/work";
 
 export interface LaneItem {
@@ -155,7 +155,7 @@ function Row({
         )}
         {item.motion && (
           <span className="motion" title={item.motion}>
-            {label(MOTION_LABELS, item.motion)}
+            {descriptor.shortPacketLabel}
           </span>
         )}
         {!item.proposal && (

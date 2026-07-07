@@ -148,6 +148,15 @@ export interface WorkItemProposalRef {
   created_by_principal: string;
 }
 
+export interface MotionSource {
+  play_id: string;
+  trigger_factor: string;
+  motion: string;
+  matched_priority_factor: string | null;
+  priority_contribution: number | null;
+  selection_reason: string;
+}
+
 export interface InternalBridgeEvidence {
   source: string;
   source_id: string;
@@ -180,6 +189,7 @@ export interface WorkItem {
   draft_mode: string;
   customer_draft: string | null;
   motion: string | null;
+  motion_source?: MotionSource | null;
   internal_bridge_decision?: InternalBridgeDecision | null;
   recipient_resolution: string | null;
   recipient_name: string | null;

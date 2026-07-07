@@ -15,6 +15,7 @@ fastapi_mod = pytest.importorskip("fastapi")
 from fastapi.testclient import TestClient  # noqa: E402
 
 from ultra_csm.api import app  # noqa: E402
+from ultra_csm.data_plane.fixtures import account_id_for  # noqa: E402
 
 AUTH_HEADERS = {"Authorization": "Bearer lane-a-token"}
 
@@ -70,6 +71,27 @@ class TestSweepMotionLive:
         assert with_account, "no per-account work items in this sweep"
         motions = {item.get("motion") for item in with_account}
         assert motions != {None}, "motion resolution not live on /sweep"
+
+    def test_motion_source_follows_strongest_matching_signal(self, client: TestClient):
+        resp = client.post("/sweep?day=140", headers=AUTH_HEADERS)
+        assert resp.status_code == 200
+        ironhorse = next(
+            item for item in resp.json()["work_items"]
+            if item.get("account_id") == account_id_for("ironhorse-freight")
+        )
+
+        assert ironhorse["motion"] == "escalation"
+        assert ironhorse["motion_source"] == {
+            "play_id": "close-milestone-gap",
+            "trigger_factor": "milestones_overdue",
+            "motion": "escalation",
+            "matched_priority_factor": "milestones_overdue",
+            "priority_contribution": 50.0,
+            "selection_reason": (
+                "Selected because this playbook trigger matched the strongest "
+                "priority signal."
+            ),
+        }
 
     def test_sweep_cohort_collapse_present(self, client: TestClient):
         resp = client.post("/sweep", headers=AUTH_HEADERS)

@@ -9,7 +9,7 @@
         "account_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
         "account_name": "Ironhorse Freight Co",
         "as_of": "2026-11-08",
-        "body": "Hi Marcus Webb, Ironhorse Freight Co is showing an onboarding risk tied to milestones_overdue, days_overdue. Can we review the overdue activation steps and agree on owners?",
+        "body": "Hi Marcus Webb, Ironhorse Freight Co is showing an onboarding risk tied to milestones_overdue, days_overdue. Can we confirm whether the remaining activation work is blocked by configuration, data import, or enablement, then agree on owners?",
         "contact_email": "marcus.webb@ironhorse-freight.example",
         "contact_id": "3610a030-a5cd-55db-80b7-7b89d66203a4",
         "draft_channel": "email",
@@ -153,7 +153,7 @@
         },
         "subject": "Time-to-Value follow-up for Ironhorse Freight Co"
       },
-      "proposal_id": "f7f8a9b0-07e0-4b5e-9e6f-be9c34c66dde",
+      "proposal_id": "43794b1e-b127-4110-91fa-61761373dee2",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -278,7 +278,7 @@
         },
         "subject": "Time-to-Value follow-up for Pinehill Transport"
       },
-      "proposal_id": "a4cdb71e-54bf-4661-9e8f-ba975a82df16",
+      "proposal_id": "62a516a3-34cb-4077-9600-fc5a243728f3",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -356,7 +356,7 @@
         },
         "subject": "Time-to-Value follow-up for Ridgeline Warehousing"
       },
-      "proposal_id": "246df592-f7f4-4e21-84b2-698e580f9cb2",
+      "proposal_id": "2afcdf8a-264d-41b9-9f89-89fda861b481",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -417,7 +417,94 @@
         },
         "subject": "Time-to-Value follow-up for Northstar Couriers"
       },
-      "proposal_id": "6f52d3f7-f4eb-457c-b71f-b93d685aca94",
+      "proposal_id": "ec8c64db-4afa-4616-86e1-5b85028288db",
+      "required_permission": "customer.outreach.draft",
+      "status": "pending"
+    },
+    {
+      "action": "draft_customer_outreach",
+      "autonomy_tier": 2,
+      "intent": "agent1_time_to_value_sweep",
+      "payload": {
+        "account_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18",
+        "account_name": "Harborview Fleet",
+        "as_of": "2026-11-08",
+        "body": "Hi Gregory Foster, Harborview Fleet is showing an onboarding risk tied to health_yellow, feature_depth_gap. Can we check whether the current adoption gap is putting launch timing at risk?",
+        "contact_email": "gregory.foster@harborview-fleet.example",
+        "contact_id": "5d346e9f-08bb-5736-9b51-e3be8b8c9cad",
+        "draft_channel": "email",
+        "evidence_ids": [
+          "4af5a5c0-f51a-5a83-9217-141f4333c6db",
+          "625c9e2b-353d-5bc9-b866-91b2c536d104",
+          "2f75e535-4d63-5289-8084-aa72fcf3b39a",
+          "b8275b07-a825-5c1b-86d3-5b8063dcaf18"
+        ],
+        "priority": {
+          "factors": [
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 15,
+              "evidence": [
+                {
+                  "field": "health_score",
+                  "observed_at": "2026-08-05T00:00:00Z",
+                  "source": "cs_platform",
+                  "source_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18"
+                }
+              ],
+              "name": "health_yellow",
+              "rule_name": "base_default",
+              "threshold_name": "health_yellow_points",
+              "threshold_value": 15,
+              "value": 1.0
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 15,
+              "evidence": [
+                {
+                  "field": "underused_capabilities",
+                  "observed_at": "2026-06-21T00:00:00Z",
+                  "source": "cs_platform",
+                  "source_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18"
+                },
+                {
+                  "field": "capability",
+                  "observed_at": "2025-08-01",
+                  "source": "telemetry",
+                  "source_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18:core_telematics"
+                },
+                {
+                  "field": "capability",
+                  "observed_at": "2025-08-01",
+                  "source": "telemetry",
+                  "source_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18:route_optimization"
+                },
+                {
+                  "field": "capability",
+                  "observed_at": "2025-08-01",
+                  "source": "telemetry",
+                  "source_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18:advanced_reporting"
+                },
+                {
+                  "field": "capability",
+                  "observed_at": "2025-08-01",
+                  "source": "telemetry",
+                  "source_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18:dispatch_automation"
+                }
+              ],
+              "name": "feature_depth_gap",
+              "rule_name": "base_default",
+              "threshold_name": "depth_floor",
+              "threshold_value": 0.6,
+              "value": 0.5
+            }
+          ],
+          "score": 30
+        },
+        "subject": "Time-to-Value follow-up for Harborview Fleet"
+      },
+      "proposal_id": "68504e59-f9ef-42cb-a9b7-aa53dcaa83cb",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -525,7 +612,7 @@
         },
         "subject": "Time-to-Value follow-up for Clearwater Field Ops"
       },
-      "proposal_id": "8c747266-7477-493f-bdef-1e50716ac905",
+      "proposal_id": "43566824-30b5-43e2-85d0-039812280257",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -569,7 +656,7 @@
         },
         "subject": "Time-to-Value follow-up for Summit Industrial Supply"
       },
-      "proposal_id": "306a8ec2-3a05-460b-bbd1-7b798cb61dff",
+      "proposal_id": "cf038cb0-b871-4560-86be-debc823088ae",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -670,7 +757,7 @@
         },
         "subject": "Time-to-Value follow-up for Trailhead Logistics"
       },
-      "proposal_id": "30772eb6-f4a1-45e1-acc9-700ebe13deca",
+      "proposal_id": "a718e9f5-c76f-4599-bfbb-a4ccaa931547",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -714,7 +801,7 @@
         },
         "subject": "Time-to-Value follow-up for Meridian Fleet Group"
       },
-      "proposal_id": "1b1fd095-4188-4ed3-afe9-1df59cdaa0ac",
+      "proposal_id": "b888d443-0300-4958-9c2a-09e7610a2b59",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -759,94 +846,7 @@
         },
         "subject": "Time-to-Value follow-up for Sagebrush Transport"
       },
-      "proposal_id": "61e0bd47-dab0-442d-98a4-4180f9b242ae",
-      "required_permission": "customer.outreach.draft",
-      "status": "pending"
-    },
-    {
-      "action": "draft_customer_outreach",
-      "autonomy_tier": 2,
-      "intent": "agent1_time_to_value_sweep",
-      "payload": {
-        "account_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18",
-        "account_name": "Harborview Fleet",
-        "as_of": "2026-11-08",
-        "body": "Hi Gregory Foster, Harborview Fleet is showing an onboarding risk tied to health_yellow, feature_depth_gap. Can we check whether the current adoption gap is putting launch timing at risk?",
-        "contact_email": "gregory.foster@harborview-fleet.example",
-        "contact_id": "5d346e9f-08bb-5736-9b51-e3be8b8c9cad",
-        "draft_channel": "email",
-        "evidence_ids": [
-          "4af5a5c0-f51a-5a83-9217-141f4333c6db",
-          "625c9e2b-353d-5bc9-b866-91b2c536d104",
-          "2f75e535-4d63-5289-8084-aa72fcf3b39a",
-          "b8275b07-a825-5c1b-86d3-5b8063dcaf18"
-        ],
-        "priority": {
-          "factors": [
-            {
-              "config_version": "value-model-config-v1",
-              "contribution": 15,
-              "evidence": [
-                {
-                  "field": "health_score",
-                  "observed_at": "2026-08-05T00:00:00Z",
-                  "source": "cs_platform",
-                  "source_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18"
-                }
-              ],
-              "name": "health_yellow",
-              "rule_name": "base_default",
-              "threshold_name": "health_yellow_points",
-              "threshold_value": 15,
-              "value": 1.0
-            },
-            {
-              "config_version": "value-model-config-v1",
-              "contribution": 15,
-              "evidence": [
-                {
-                  "field": "underused_capabilities",
-                  "observed_at": "2026-06-21T00:00:00Z",
-                  "source": "cs_platform",
-                  "source_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18"
-                },
-                {
-                  "field": "capability",
-                  "observed_at": "2025-08-01",
-                  "source": "telemetry",
-                  "source_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18:core_telematics"
-                },
-                {
-                  "field": "capability",
-                  "observed_at": "2025-08-01",
-                  "source": "telemetry",
-                  "source_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18:route_optimization"
-                },
-                {
-                  "field": "capability",
-                  "observed_at": "2025-08-01",
-                  "source": "telemetry",
-                  "source_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18:advanced_reporting"
-                },
-                {
-                  "field": "capability",
-                  "observed_at": "2025-08-01",
-                  "source": "telemetry",
-                  "source_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18:dispatch_automation"
-                }
-              ],
-              "name": "feature_depth_gap",
-              "rule_name": "base_default",
-              "threshold_name": "depth_floor",
-              "threshold_value": 0.6,
-              "value": 0.5
-            }
-          ],
-          "score": 30
-        },
-        "subject": "Time-to-Value follow-up for Harborview Fleet"
-      },
-      "proposal_id": "7447aea8-dd7c-47e3-bb9e-02466d0bf2d9",
+      "proposal_id": "9bd72679-1cc5-4c01-ab72-bd538193544d",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -866,7 +866,7 @@
         "content_title": "5 Ways Fleets Cut Deadhead Miles with Route Optimizer",
         "draft_channel": "email"
       },
-      "proposal_id": "ac73088c-9685-4521-9990-9ca16fcbf35e",
+      "proposal_id": "ad259e20-f456-4d5f-80e7-26201f9c2ec8",
       "required_permission": "content.route",
       "status": "pending"
     }
