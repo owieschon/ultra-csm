@@ -17,6 +17,7 @@
 - [`PROGRAM_REPORT_68.md`](PROGRAM_REPORT_68.md) - MP-B internal handoff spike report.
 - [`PROGRAM_REPORT_69.md`](PROGRAM_REPORT_69.md) - VM-8 outcome integrity report.
 - [`PROGRAM_REPORT_70.md`](PROGRAM_REPORT_70.md) - judge scope enforcement report.
+- [`PROGRAM_REPORT_71.md`](PROGRAM_REPORT_71.md) - public front-door curation report.
 
 ## Judgment Reports Kept At Root
 
