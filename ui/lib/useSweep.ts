@@ -7,6 +7,7 @@ export interface SweepData {
   work_items: WorkItem[];
   escalations: Record<string, unknown>[];
   swept_accounts: string[];
+  degraded_items: number;
 }
 
 // A sweep (POST /sweep) creates real ActionGate proposals as a side effect —
@@ -31,6 +32,7 @@ export function useSweep(
           work_items: r.work_items,
           escalations: r.escalations,
           swept_accounts: r.swept_accounts,
+          degraded_items: r.degraded_items,
         })
       )
       .catch((e) => setError(String(e)));

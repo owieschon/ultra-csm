@@ -64,7 +64,7 @@ Briefing is a primitive, not a sales-only feature. The same packet shape can mov
 
 Use one primary object: **cadence-scoped agent work packet**.
 
-The packet has typed modules:
+The packet has typed modules, and the full book has coverage receipts so the worklist never becomes the only truth.
 
 1. **Work Header**
    - Account
@@ -101,6 +101,14 @@ The packet has typed modules:
 5. **Context Drawer**
    - Comms, cases, telemetry, success plan, opportunities, stakeholders
    - These are supporting facts, not the main product surface
+
+6. **Coverage Receipt**
+   - Account coverage state: needs human, prepared work, reviewed, covered, insufficient evidence, source degraded, or not scanned
+   - Latest sweep inclusion
+   - Current priority score or scoring error
+   - Work item emitted or explicit "no work item emitted"
+   - Factor thresholds when the current API exposes them
+   - Honest gap when per-factor non-promotion thresholds are not yet exposed
 
 This keeps stakeholder data in the system without making stakeholder intelligence the product.
 
@@ -142,6 +150,7 @@ Low code risk. No new backend.
 - In `QueueLanes`, group by `recommended_action`, `motion`, `internal_bridge_decision`, and `proposal.status`.
 - Add derived cadence labels from existing work item fields.
 - In `QueueDetail`, put the work packet above account sources.
+- In `BookView`, expose coverage filters and per-account coverage receipts so Today is a prioritized worklist, not the only inspectable truth.
 - Keep all existing drawers intact.
 
 ### Slice 2: Work Packet Detail
