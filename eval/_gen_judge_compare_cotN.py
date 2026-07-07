@@ -27,6 +27,7 @@ RUNS = 5
 MAX_RETRIES = 5  # K7: transient parse/format hiccups, not a systemic bug
 RETRYABLE_STATUS_CODES = {408, 409, 429, 500, 502, 503, 529}
 USAGE_PATH = Path(".judge_compare_cotN_usage.json")
+CHECKPOINT_PATH = Path(".judge_compare_cotN_checkpoint.json")
 
 
 class _UsageRecordingClient:
@@ -100,9 +101,13 @@ def _retryable(exc: Exception) -> bool:
 
 
 def run_arm_retrying(judge, items: list[dict], n: int) -> dict:
-    scored = []
+    scored = _load_checkpoint()
+    already_scored = {case["candidate_id"] for case in scored}
     total = len(items)
     for index, it in enumerate(items, start=1):
+        if it["candidate_id"] in already_scored:
+            print(f"scoring hard case {index}/{total} id={it['candidate_id']} checkpoint-hit", flush=True)
+            continue
         print(f"scoring hard case {index}/{total} id={it['candidate_id']}", flush=True)
         vectors = [_score_with_retry(judge, it["request"], it["output"]) for _ in range(n)]
         scored.append({
@@ -111,15 +116,34 @@ def run_arm_retrying(judge, items: list[dict], n: int) -> dict:
             "reference": it["reference"],
             "agg": aggregate(vectors),
         })
+        _write_checkpoint(scored)
     report = score_nrun_agreement(scored)
     report["cases"] = scored
     return report
+
+
+def _load_checkpoint() -> list[dict]:
+    if not CHECKPOINT_PATH.exists():
+        return []
+    payload = json.loads(CHECKPOINT_PATH.read_text(encoding="utf-8"))
+    cases = payload.get("cases", [])
+    if not isinstance(cases, list):
+        raise ValueError("judge compare checkpoint cases must be a list")
+    return cases
+
+
+def _write_checkpoint(cases: list[dict]) -> None:
+    CHECKPOINT_PATH.write_text(
+        json.dumps({"cases": cases}, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
 
 
 def main() -> int:
     items = load_hard()
     client = _UsageRecordingClient()
     judge = AnthropicQualityJudge(client=client, reasoning=True)
+    judge._max_tokens = max(judge._max_tokens, 1400)
     cot_arm = run_arm_retrying(judge, items, RUNS)
 
     existing = json.loads(OUT_PATH.read_text(encoding="utf-8")) if OUT_PATH.exists() else {}
