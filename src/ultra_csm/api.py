@@ -1431,7 +1431,7 @@ async def get_account_centralize_telemetry(
     day: int | None = Query(None, ge=0, le=365),
     deep: bool = Query(False, description="Use deep data simulation layer"),
 ):
-    """Raw FleetOps/Centralize app exhaust plus PostHog-shaped telemetry."""
+    """Raw FleetOps app exhaust plus PostHog-shaped telemetry."""
 
     resolved_day = day if day is not None else 0
     dp, as_of = _data_plane_for_day(day, deep=deep)
