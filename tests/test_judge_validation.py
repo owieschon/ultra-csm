@@ -6,15 +6,23 @@ import json
 from pathlib import Path
 from unittest.mock import patch
 
+import pytest
+
+from eval.judge_csm import PASSING_SCORE, QUALITY_DIMENSIONS
 from eval.judge_validation import (
     AGREEMENT_PATH,
     COMPARE_PATH,
     GATE_KAPPA,
     LIVE_SEMANTIC_QUALITY_PATH,
+    UnvalidatedGatingDimension,
+    assert_gating_dimensions,
     judge_validation_status,
     live_semantic_quality_status,
 )
-from eval.judge_csm import PASSING_SCORE, QUALITY_DIMENSIONS
+
+_SCOPED_GATING_DIMS = tuple(
+    dim for dim in QUALITY_DIMENSIONS if dim != "on_task_relevance"
+)
 
 
 def _copy(tmp_path: Path) -> tuple[Path, Path]:
@@ -42,6 +50,65 @@ def test_committed_evidence_fails_closed_on_oa_a2_false_opens():
         assert status["clean"]["per_dimension_kappa"][dim] >= GATE_KAPPA
     assert status["clean"]["false_neg"] == 0
     assert status["hard"]["false_pos_aggregated"] == 0
+
+
+def test_committed_evidence_exposes_only_validated_scoped_dimensions():
+    status = judge_validation_status()
+
+    assert status["validated"] is False
+    assert status["per_dimension_validated"] == {
+        dim: dim in _SCOPED_GATING_DIMS for dim in QUALITY_DIMENSIONS
+    }
+    assert set(status["validated_gating_dimensions"]) == set(_SCOPED_GATING_DIMS)
+    assert status["excluded_gating_dimensions"].keys() == {"on_task_relevance"}
+    assert "aggregate false-negative floor" in (
+        status["excluded_gating_dimensions"]["on_task_relevance"]
+    )
+
+
+def test_scoped_gate_accepts_only_the_five_validated_dimensions():
+    status = judge_validation_status()
+
+    accepted = assert_gating_dimensions(_SCOPED_GATING_DIMS, status=status)
+
+    assert accepted == tuple(sorted(_SCOPED_GATING_DIMS))
+
+
+def test_scoped_gate_rejects_on_task_relevance_even_when_mixed_with_valid_dims():
+    status = judge_validation_status()
+    requested = (*_SCOPED_GATING_DIMS[:4], "on_task_relevance")
+
+    with pytest.raises(UnvalidatedGatingDimension) as exc:
+        assert_gating_dimensions(requested, status=status)
+
+    assert "on_task_relevance" in exc.value.requested_dimensions
+    assert "on_task_relevance" in exc.value.excluded_dimensions
+    assert set(_SCOPED_GATING_DIMS).issubset(exc.value.validated_dimensions)
+
+
+def test_scoped_gate_rejects_on_task_relevance_alone():
+    status = judge_validation_status()
+
+    with pytest.raises(UnvalidatedGatingDimension) as exc:
+        assert_gating_dimensions(("on_task_relevance",), status=status)
+
+    assert exc.value.requested_dimensions == {"on_task_relevance"}
+    assert exc.value.validated_dimensions == set(_SCOPED_GATING_DIMS)
+
+
+def test_validated_gating_dimensions_are_derived_from_current_evidence(tmp_path):
+    agreement, compare = _copy(tmp_path)
+    payload = json.loads(compare.read_text(encoding="utf-8"))
+    for case in payload["arms"]["cot@N"]["cases"]:
+        case["agg"]["vector"]["tone_fit"] = 1
+    compare.write_text(json.dumps(payload), encoding="utf-8")
+
+    status = judge_validation_status(agreement_path=agreement, compare_path=compare)
+
+    assert status["validated"] is False
+    assert status["per_dimension_validated"]["tone_fit"] is False
+    assert "tone_fit" not in status["validated_gating_dimensions"]
+    assert "tone_fit" in status["excluded_gating_dimensions"]
 
 
 def test_prompt_version_mismatch_fails_closed_v9():
