@@ -39,3 +39,4 @@ supabase/.temp/
 eval/gold/determinism_probe*.json
 eval/gold/judge_diagnosis.json
 eval/gold/judge_compare_sonnet.json
+.vercel
