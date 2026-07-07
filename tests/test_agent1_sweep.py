@@ -29,6 +29,7 @@ from ultra_csm.data_plane import (
 from ultra_csm.data_plane.contracts import (
     AdoptionSummary,
     CRMAccount,
+    CRMOpportunity,
     CSCompany,
     HealthScore,
     SuccessPlan,
@@ -456,7 +457,15 @@ def _adoption(*, active: int = 8, licensed: int = 10, underused: tuple[str, ...]
     )
 
 
-def _value_model(*, health, adoption, entitlements=(), success_plans=(), onboarding_milestones=()):
+def _value_model(
+    *,
+    health,
+    adoption,
+    entitlements=(),
+    success_plans=(),
+    opportunities=(),
+    onboarding_milestones=(),
+):
     return build_customer_value_model(
         account=_ACCOUNT,
         company=_COMPANY,
@@ -465,7 +474,9 @@ def _value_model(*, health, adoption, entitlements=(), success_plans=(), onboard
         entitlements=entitlements,
         usage_signals=(),
         success_plans=success_plans,
+        opportunities=opportunities,
         onboarding_milestones=onboarding_milestones,
+        as_of="2026-06-01",
         config=_VMC,
     )
 
@@ -536,6 +547,42 @@ def test_outcome_unknown_trigger_absent_when_outcome_realized():
     triggers = _account_triggers_for_motion(
         health, adoption, (),
         value_model=_value_model(health=health, adoption=adoption, success_plans=plans),
+    )
+    assert "outcome_unknown" not in triggers
+
+
+def test_outcome_unknown_trigger_absent_when_terminal_renewal_outcome_known():
+    health = _health("green")
+    adoption = _adoption()
+    plans = (
+        SuccessPlan(
+            plan_id="p1",
+            account_id="acct-trig",
+            status="active",
+            objectives=("grow",),
+            target_date="2026-12-01",
+        ),
+    )
+    opportunities = (
+        CRMOpportunity(
+            opportunity_id="opp-renewal-lost",
+            account_id="acct-trig",
+            stage_name="Closed Lost",
+            amount_cents=1_000_000,
+            close_date="2026-05-30",
+            opportunity_type="Renewal",
+        ),
+    )
+    triggers = _account_triggers_for_motion(
+        health,
+        adoption,
+        (),
+        value_model=_value_model(
+            health=health,
+            adoption=adoption,
+            success_plans=plans,
+            opportunities=opportunities,
+        ),
     )
     assert "outcome_unknown" not in triggers
 
