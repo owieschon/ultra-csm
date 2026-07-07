@@ -66,11 +66,14 @@ candidate hard gate failed because `on_task_relevance kappa 0.587 < 0.6`, and
 overall false passes in this run, but it fails the candidate hard gate and is
 not adopted.
 
-**Accepted scope.** This is the spec's Outcome 2: keep Sonnet 5, disclose that
-the judge is validated for the other five dimensions but not safe to use as an
-autonomous gate on `on_task_relevance`. The full `judge_validation_status()`
-continues to fail closed; downstream live semantic quality remains unproven
-unless a caller explicitly adopts a scoped, non-on-task use.
+**Accepted scope.** This is the spec's Outcome 2: keep Sonnet 5 and disclose the
+residual instead of sharpening again. The v9 prompt recovered dimension agreement
+on `on_task_relevance` (`0.289 -> 0.736` on hard `cot@N`), but the quality gate
+still fails closed because the judge is lenient on 3/64 warm-but-generic drafts
+and would let those bad drafts pass. The judge may be used for dimension-level
+evidence with this boundary disclosed, but `on_task_relevance` must not be used
+as an autonomous pass/fail gate until a future owner-approved change validates
+that false-open boundary.
 
 **Live usage receipts.** The failed first v9 hard compare attempt cost
 `$0.569110`; the successful v9 hard `cot@N` compare cost `$4.398274`; the Sonnet
