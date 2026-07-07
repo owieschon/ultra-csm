@@ -101,9 +101,15 @@ class TestSweepMotionLive:
             "evidence",
             "approval",
         ]
-        assert chain[0]["value"] == "milestones_overdue"
-        assert chain[2]["value"] == "escalation"
+        assert chain[0]["value"] == "Onboarding running late"
+        assert chain[2]["value"] == "Escalate to human"
         assert chain[3]["value"].startswith("Marcus Webb")
+        visible_chain_text = " ".join(
+            f"{step['value']} {step['meta']}" for step in chain
+        )
+        assert "milestones_overdue" not in visible_chain_text
+        assert "draft_customer_outreach" not in visible_chain_text
+        assert "first_consenting_fallback" not in visible_chain_text
 
     def test_every_work_item_and_proposal_carries_diagnostic_chain(
         self, client: TestClient
@@ -118,6 +124,10 @@ class TestSweepMotionLive:
             assert isinstance(chain, list) and chain, item.get("account_id")
             stages = {step["stage"] for step in chain}
             assert {"signal", "diagnosis", "action", "recipient", "evidence", "approval"} <= stages
+            reason = item.get("reason") or ""
+            assert "milestones_overdue" not in reason
+            assert "feature_depth_gap" not in reason
+            assert "draft_customer_outreach" not in reason
 
         proposals = client.get("/proposals", headers=AUTH_HEADERS).json()["proposals"]
         assert proposals
@@ -125,6 +135,15 @@ class TestSweepMotionLive:
             chain = proposal["payload"].get("diagnostic_chain")
             assert isinstance(chain, list) and chain, proposal["proposal_id"]
             assert chain[-1]["stage"] == "approval"
+            visible_text = " ".join(
+                f"{step['value']} {step['meta']}" for step in chain
+            )
+            assert "_customer_" not in visible_text
+            assert "_fallback" not in visible_text
+            body = proposal["payload"].get("body") or ""
+            assert "milestones_overdue" not in body
+            assert "feature_depth_gap" not in body
+            assert "usage_outcome_unverified" not in body
 
     def test_sweep_cohort_collapse_present(self, client: TestClient):
         resp = client.post("/sweep", headers=AUTH_HEADERS)
@@ -192,6 +211,9 @@ class TestLedgerEndpoint:
         for entry in matching:
             assert entry["label"], entry
             assert entry["ts"], entry
+            assert "agent1_time_to_value_sweep" not in entry["detail"]
+            assert "draft_customer_outreach" not in entry["detail"]
+            assert "Slot B" not in entry["detail"]
 
     def test_ledger_event_names_are_two_register(self, client: TestClient):
         """UI_DESIGN_BRIEF's two-register rule: `label` is plain English,

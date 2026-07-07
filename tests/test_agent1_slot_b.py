@@ -85,7 +85,8 @@ def test_fixture_slot_b_outputs_grounded_reason_and_draft():
 
     assert output.prompt_version == SLOT_B_PROMPT_VERSION
     assert output.cited_evidence_ids == ("sig-1", "cta-1")
-    assert "sig-1" in output.reason and "cta-1" in output.reason
+    assert "sig-1" not in output.reason and "cta-1" not in output.reason
+    assert "2 cited source records" in output.reason
     assert "95" in output.reason
     assert output.customer_draft is not None
     assert "Jordan Lee" in output.customer_draft

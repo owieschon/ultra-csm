@@ -1975,6 +1975,40 @@ _LEDGER_HUMAN = {
 }
 
 
+_LEDGER_INTENT_HUMAN = {
+    "agent1_time_to_value_sweep": "Time-to-value sweep",
+    "customer_outreach": "Customer outreach",
+}
+
+
+_LEDGER_ACTION_HUMAN = {
+    "cohort_action": "cohort packet",
+    "content_route": "help content route",
+    "draft_customer_outreach": "customer outreach draft",
+    "recommend_next_best_action": "operator review",
+}
+
+
+def _ledger_gate_detail(intent: str | None, action: str | None) -> str:
+    intent_label = _LEDGER_INTENT_HUMAN.get(intent or "", (intent or "Action gate").replace("_", " "))
+    action_label = _LEDGER_ACTION_HUMAN.get(action or "", (action or "proposal").replace("_", " "))
+    return f"{intent_label} - {action_label}"
+
+
+def _ledger_audit_detail(item: AuditEvent) -> str:
+    payload = item.payload or {}
+    if item.event_type == "value_model":
+        score = payload.get("score")
+        return f"Priority score {score}" if score is not None else "Priority scored"
+    if item.event_type == "slot_b.draft":
+        mode = payload.get("draft_mode")
+        suffix = " with fixture writer" if mode == "fixture" else ""
+        return f"Agent prepared draft text{suffix}"
+    if item.event_type == "judge.score":
+        return "Safety contract passed"
+    return item.detail
+
+
 @app.get("/ledger", response_model=LedgerResponse)
 async def get_ledger(limit: int = Query(50, ge=1, le=500)):
     """Append-only ledger tail, most recent first.
@@ -2013,7 +2047,7 @@ async def get_ledger(limit: int = Query(50, ge=1, le=500)):
             event=row[1],
             label=_LEDGER_HUMAN.get(row[1], row[1]),
             proposal_id=str(row[0]),
-            detail=f"{row[3]} · {row[4]}",
+            detail=_ledger_gate_detail(row[3], row[4]),
         )
         for row in rows
     ]
@@ -2031,7 +2065,7 @@ async def get_ledger(limit: int = Query(50, ge=1, le=500)):
                 event=item.event_type,
                 label=_LEDGER_HUMAN.get(item.event_type, item.event_type),
                 proposal_id=item.proposal_id,
-                detail=item.detail,
+                detail=_ledger_audit_detail(item),
             )
             for item in list_audit_events(
                 _conn,

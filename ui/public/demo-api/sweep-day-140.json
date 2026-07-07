@@ -22,7 +22,7 @@
       "score_label": "priority score 143",
       "state": "needs_human",
       "work_item_disposition": "propose_customer_action",
-      "work_item_key": "a41bbbdc-1cf0-43ee-a003-3ef6883b363e"
+      "work_item_key": "ae649bb7-8013-4146-a6ec-1b6280940482"
     },
     {
       "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
@@ -45,7 +45,7 @@
       "score_label": "priority score 62",
       "state": "needs_human",
       "work_item_disposition": "propose_customer_action",
-      "work_item_key": "d6dc45e6-2646-4157-8880-714d71fed09a"
+      "work_item_key": "4ac4e21f-20b3-48a5-9813-a6c155316cf6"
     },
     {
       "account_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32",
@@ -68,7 +68,7 @@
       "score_label": "priority score 62",
       "state": "needs_human",
       "work_item_disposition": "propose_customer_action",
-      "work_item_key": "abf380b9-867e-405e-8b67-4a6be095ae01"
+      "work_item_key": "d49d38c3-4cda-4f7a-b1c7-8bc738a2676e"
     },
     {
       "account_id": "639fb054-d926-5a1e-b2bd-49b75157817d",
@@ -157,7 +157,7 @@
       "score_label": "priority score 47",
       "state": "needs_human",
       "work_item_disposition": "propose_customer_action",
-      "work_item_key": "0397f8ef-06b6-4a77-90d7-2b6eb7aa572f"
+      "work_item_key": "c2ba2d82-4450-4744-a337-11aa2e6ca132"
     },
     {
       "account_id": "f21afeb0-67ee-5adc-84c5-18782f7adcff",
@@ -224,7 +224,7 @@
       "score_label": "priority score 43",
       "state": "needs_human",
       "work_item_disposition": "propose_customer_action",
-      "work_item_key": "5da976f4-d13d-4f03-a5a1-a76f62e1130f"
+      "work_item_key": "7956cd70-88bc-49b6-adcd-e68f33771fab"
     },
     {
       "account_id": "320ce2b9-8553-5335-8366-1575565db280",
@@ -291,7 +291,7 @@
       "score_label": "priority score 35",
       "state": "needs_human",
       "work_item_disposition": "propose_customer_action",
-      "work_item_key": "32a0fc0c-651c-49fd-b7f3-1a74dd6295e6"
+      "work_item_key": "ff822e5b-d0b5-4027-b22a-87c1e8923f5e"
     },
     {
       "account_id": "5740e7ab-4f6e-5a8d-8996-10ca4dc384ce",
@@ -334,7 +334,7 @@
       "score_label": "priority score 30",
       "state": "needs_human",
       "work_item_disposition": "propose_customer_action",
-      "work_item_key": "a4785f3a-65cf-434e-87ca-072adc5662d3"
+      "work_item_key": "22a80d95-57f1-47a1-9fec-7b6f8d998340"
     },
     {
       "account_id": "b939ef0b-fed4-5889-96e4-15c0357a8563",
@@ -378,7 +378,7 @@
       "score_label": "priority score 30",
       "state": "needs_human",
       "work_item_disposition": "propose_customer_action",
-      "work_item_key": "3c729907-0887-46db-867c-637ce92d3634"
+      "work_item_key": "86970d40-fabf-46fa-b2b4-0bc4f6302c8c"
     },
     {
       "account_id": "a821ec8e-21a3-5f16-bd37-57947d324d62",
@@ -685,7 +685,7 @@
       "score_label": "priority score 20",
       "state": "needs_human",
       "work_item_disposition": "propose_customer_action",
-      "work_item_key": "548b8340-9cbd-4ab5-8e26-fa7450c30597"
+      "work_item_key": "e9b27686-8fee-4a61-a1ab-92b62380edd2"
     },
     {
       "account_id": "0c0cb8e2-df1a-5fce-a45b-57e01bbe2efd",
@@ -2092,7 +2092,7 @@
       "score_label": "priority score 5",
       "state": "needs_human",
       "work_item_disposition": "propose_customer_action",
-      "work_item_key": "a33a463c-6e06-4ae0-a5ad-184f33b6707d"
+      "work_item_key": "fa249bae-e004-4b52-8540-b274e7dce86d"
     },
     {
       "account_id": "2c8f2a9e-eba9-5b4e-ba37-c78dd4ba2aae",
@@ -4179,41 +4179,41 @@
       "account_resolution": "exactly_one",
       "candidate_account_ids": [],
       "customer_contact_allowed": true,
-      "customer_draft": "Hi Marcus Webb, Ironhorse Freight Co is showing an onboarding risk tied to milestones_overdue, days_overdue. Can we confirm whether the remaining activation work is blocked by configuration, data import, or enablement, then agree on owners?",
+      "customer_draft": "Hi Marcus Webb, Ironhorse Freight Co is showing an onboarding risk tied to overdue onboarding milestones, overdue activation timeline. Can we confirm whether the remaining activation work is blocked by configuration, data import, or enablement, then agree on owners?",
       "diagnostic_chain": [
         {
           "label": "Signal",
           "meta": "+50 priority from 2 evidence record(s)",
           "stage": "signal",
-          "value": "milestones_overdue"
+          "value": "Onboarding running late"
         },
         {
           "label": "Likely blocker",
-          "meta": "milestones_overdue",
+          "meta": "Onboarding running late",
           "stage": "diagnosis",
           "value": "Activation is stalled; inspect overdue milestones before outreach."
         },
         {
           "label": "Selected action",
-          "meta": "close-milestone-gap: Selected because this playbook trigger matched the strongest priority signal.",
+          "meta": "Selected because this playbook trigger matched the strongest priority signal.",
           "stage": "action",
-          "value": "escalation"
+          "value": "Escalate to human"
         },
         {
           "label": "Recipient path",
-          "meta": "first_consenting_fallback",
+          "meta": "first consenting contact",
           "stage": "recipient",
-          "value": "Marcus Webb (fleet_operations)"
+          "value": "Marcus Webb (fleet operations)"
         },
         {
           "label": "Evidence",
-          "meta": "4635cdb7-5bb5-5c43-acc1-5dc989d4d583, afbc6091-985b-50e5-8522-e1a916af56c9, 7d61c11f-73d4-52f6-a738-33ab96634a61, +1 more",
+          "meta": "telemetry, cs platform, crm records attached",
           "stage": "evidence",
           "value": "4 cited source record(s)"
         },
         {
           "label": "Approval boundary",
-          "meta": "draft_customer_outreach",
+          "meta": "customer outreach draft",
           "stage": "approval",
           "value": "Human approval required"
         }
@@ -4399,10 +4399,10 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "a41bbbdc-1cf0-43ee-a003-3ef6883b363e",
+        "proposal_id": "ae649bb7-8013-4146-a6ec-1b6280940482",
         "status": "pending"
       },
-      "reason": "Ironhorse Freight Co has deterministic Time-to-Value score 143 from milestones_overdue=50, days_overdue=40, success_plan_overdue=20; draft customer outreach. Evidence [evidence:4635cdb7-5bb5-5c43-acc1-5dc989d4d583], [evidence:afbc6091-985b-50e5-8522-e1a916af56c9], [evidence:7d61c11f-73d4-52f6-a738-33ab96634a61].",
+      "reason": "Ironhorse Freight Co has rule-based priority score 143 from overdue onboarding milestones +50, overdue activation timeline +40, overdue success plan +20; prepared a customer outreach draft. Evidence: 3 cited source records.",
       "recipient_name": "Marcus Webb",
       "recipient_resolution": "first_consenting_fallback",
       "recipient_role": "fleet_operations",
@@ -4427,41 +4427,41 @@
       "account_resolution": "exactly_one",
       "candidate_account_ids": [],
       "customer_contact_allowed": true,
-      "customer_draft": "Hi Dennis Gruber, Pinehill Transport is showing an onboarding risk tied to success_plan_overdue, health_yellow. Can we map the missing users needed for a complete rollout?",
+      "customer_draft": "Hi Dennis Gruber, Pinehill Transport is showing an onboarding risk tied to overdue success plan, slipping health trend. Can we map the missing users needed for a complete rollout?",
       "diagnostic_chain": [
         {
           "label": "Signal",
           "meta": "+15 priority from 3 evidence record(s)",
           "stage": "signal",
-          "value": "feature_depth_gap"
+          "value": "Paid features unused"
         },
         {
           "label": "Likely blocker",
-          "meta": "feature_shallow_depth",
+          "meta": "Paid features unused",
           "stage": "diagnosis",
           "value": "Paid capability has not reached operational use."
         },
         {
           "label": "Selected action",
-          "meta": "reactivate-stalled-module: Selected because this playbook trigger matched the strongest priority signal.",
+          "meta": "Selected because this playbook trigger matched the strongest priority signal.",
           "stage": "action",
-          "value": "content_route"
+          "value": "Send help content"
         },
         {
           "label": "Recipient path",
-          "meta": "first_consenting_fallback",
+          "meta": "first consenting contact",
           "stage": "recipient",
           "value": "Dennis Gruber (champion)"
         },
         {
           "label": "Evidence",
-          "meta": "df3f3e70-7ed8-5d10-9b05-395fd3d1a0f1, 4e2db753-f222-5f7b-8356-0a2f59fae1e3, ae0a5970-d69b-5c18-ad60-8015524e565c",
+          "meta": "cs platform, crm records attached",
           "stage": "evidence",
           "value": "3 cited source record(s)"
         },
         {
           "label": "Approval boundary",
-          "meta": "draft_customer_outreach",
+          "meta": "customer outreach draft",
           "stage": "approval",
           "value": "Human approval required"
         }
@@ -4619,10 +4619,10 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "d6dc45e6-2646-4157-8880-714d71fed09a",
+        "proposal_id": "4ac4e21f-20b3-48a5-9813-a6c155316cf6",
         "status": "pending"
       },
-      "reason": "Pinehill Transport has deterministic Time-to-Value score 82 from success_plan_overdue=20, health_yellow=15, low_seat_penetration=12; draft customer outreach. Evidence [evidence:df3f3e70-7ed8-5d10-9b05-395fd3d1a0f1], [evidence:4e2db753-f222-5f7b-8356-0a2f59fae1e3], [evidence:ae0a5970-d69b-5c18-ad60-8015524e565c].",
+      "reason": "Pinehill Transport has rule-based priority score 82 from overdue success plan +20, slipping health trend +15, licensed seats not fully activated +12; prepared a customer outreach draft. Evidence: 3 cited source records.",
       "recipient_name": "Dennis Gruber",
       "recipient_resolution": "first_consenting_fallback",
       "recipient_role": "champion",
@@ -4647,41 +4647,41 @@
       "account_resolution": "exactly_one",
       "candidate_account_ids": [],
       "customer_contact_allowed": true,
-      "customer_draft": "Hi Vanessa Torres, Trailhead Logistics is showing an onboarding risk tied to success_plan_overdue, arr_tier. Can we review the activation blockers and next steps?",
+      "customer_draft": "Hi Vanessa Torres, Trailhead Logistics is showing an onboarding risk tied to overdue success plan, high-value account. Can we review the activation blockers and next steps?",
       "diagnostic_chain": [
         {
           "label": "Signal",
           "meta": "+18 priority from 2 evidence record(s)",
           "stage": "signal",
-          "value": "usage_outcome_unverified"
+          "value": "Usage without a proven outcome"
         },
         {
           "label": "Likely blocker",
-          "meta": "outcome_unknown",
+          "meta": "No proven results yet",
           "stage": "diagnosis",
           "value": "Usage exists, but the business outcome is not proven yet."
         },
         {
           "label": "Selected action",
-          "meta": "confirm-outcome-objective: Selected because this playbook trigger matched the strongest priority signal.",
+          "meta": "Selected because this playbook trigger matched the strongest priority signal.",
           "stage": "action",
-          "value": "personal_email"
+          "value": "Personal email"
         },
         {
           "label": "Recipient path",
-          "meta": "role_graph",
+          "meta": "matched from role graph",
           "stage": "recipient",
           "value": "Vanessa Torres (champion)"
         },
         {
           "label": "Evidence",
-          "meta": "20527c0a-8156-5119-934a-4017e19fc39d, 21830db9-7182-5d97-b22e-d57c4e28f696",
+          "meta": "cs platform records attached",
           "stage": "evidence",
           "value": "2 cited source record(s)"
         },
         {
           "label": "Approval boundary",
-          "meta": "draft_customer_outreach",
+          "meta": "customer outreach draft",
           "stage": "approval",
           "value": "Human approval required"
         }
@@ -4810,10 +4810,10 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "5da976f4-d13d-4f03-a5a1-a76f62e1130f",
+        "proposal_id": "7956cd70-88bc-49b6-adcd-e68f33771fab",
         "status": "pending"
       },
-      "reason": "Trailhead Logistics has deterministic Time-to-Value score 63 from success_plan_overdue=20, arr_tier=5, single_threaded_risk=20; draft customer outreach. Evidence [evidence:20527c0a-8156-5119-934a-4017e19fc39d], [evidence:21830db9-7182-5d97-b22e-d57c4e28f696].",
+      "reason": "Trailhead Logistics has rule-based priority score 63 from overdue success plan +20, high-value account +5, single threaded risk +20; prepared a customer outreach draft. Evidence: 2 cited source records.",
       "recipient_name": "Vanessa Torres",
       "recipient_resolution": "role_graph",
       "recipient_role": "champion",
@@ -4844,19 +4844,19 @@
           "label": "Signal",
           "meta": "+12 priority from 1 evidence record(s)",
           "stage": "signal",
-          "value": "low_seat_penetration"
+          "value": "Seats not activated"
         },
         {
           "label": "Likely blocker",
-          "meta": "low_seat_penetration",
+          "meta": "Seats not activated",
           "stage": "diagnosis",
           "value": "Licensed seats are not activated deeply enough."
         },
         {
           "label": "Selected action",
-          "meta": "widen-seat-penetration: Selected because this playbook trigger matched the strongest priority signal.",
+          "meta": "Selected because this playbook trigger matched the strongest priority signal.",
           "stage": "action",
-          "value": "campaign_enroll"
+          "value": "Add to campaign"
         },
         {
           "label": "Recipient path",
@@ -4866,13 +4866,13 @@
         },
         {
           "label": "Evidence",
-          "meta": "10b4aa63-02cd-5459-99cc-f154a26bc5e3, 633f9a3f-071c-56ef-86af-992135bd92ab, c79ad97e-e2ad-5b6a-beeb-800e4755adca",
+          "meta": "cs platform, crm records attached",
           "stage": "evidence",
           "value": "3 cited source record(s)"
         },
         {
           "label": "Approval boundary",
-          "meta": "recommend_next_best_action",
+          "meta": "operator review",
           "stage": "approval",
           "value": "No customer-facing release"
         }
@@ -4974,7 +4974,7 @@
         "score": 62
       },
       "proposal": null,
-      "reason": "Quarry Stone Logistics has deterministic Time-to-Value score 62 from health_red=30, low_seat_penetration=12, single_threaded_risk=20; route for internal review. Evidence [evidence:10b4aa63-02cd-5459-99cc-f154a26bc5e3], [evidence:633f9a3f-071c-56ef-86af-992135bd92ab], [evidence:c79ad97e-e2ad-5b6a-beeb-800e4755adca].",
+      "reason": "Quarry Stone Logistics has rule-based priority score 62 from critical health trend +30, licensed seats not fully activated +12, single threaded risk +20; route for internal review. Evidence: 3 cited source records.",
       "recipient_name": null,
       "recipient_resolution": "first_consenting_fallback",
       "recipient_role": null,
@@ -4999,41 +4999,41 @@
       "account_resolution": "exactly_one",
       "candidate_account_ids": [],
       "customer_contact_allowed": true,
-      "customer_draft": "Hi Kelly Vance, Clearwater Field Ops is showing an onboarding risk tied to success_plan_overdue, health_yellow. Can we map the missing users needed for a complete rollout?",
+      "customer_draft": "Hi Kelly Vance, Clearwater Field Ops is showing an onboarding risk tied to overdue success plan, slipping health trend. Can we map the missing users needed for a complete rollout?",
       "diagnostic_chain": [
         {
           "label": "Signal",
           "meta": "+15 priority from 3 evidence record(s)",
           "stage": "signal",
-          "value": "feature_depth_gap"
+          "value": "Paid features unused"
         },
         {
           "label": "Likely blocker",
-          "meta": "feature_shallow_depth",
+          "meta": "Paid features unused",
           "stage": "diagnosis",
           "value": "Paid capability has not reached operational use."
         },
         {
           "label": "Selected action",
-          "meta": "reactivate-stalled-module: Selected because this playbook trigger matched the strongest priority signal.",
+          "meta": "Selected because this playbook trigger matched the strongest priority signal.",
           "stage": "action",
-          "value": "content_route"
+          "value": "Send help content"
         },
         {
           "label": "Recipient path",
-          "meta": "first_consenting_fallback",
+          "meta": "first consenting contact",
           "stage": "recipient",
           "value": "Kelly Vance (operations)"
         },
         {
           "label": "Evidence",
-          "meta": "3ea4da77-9a46-57ce-aa0a-36440aed7192, 33509b75-de98-51fa-90a0-c68c90fe9324, 865e1e03-cb2f-524d-b572-1eeabebb8d32",
+          "meta": "cs platform, crm records attached",
           "stage": "evidence",
           "value": "3 cited source record(s)"
         },
         {
           "label": "Approval boundary",
-          "meta": "draft_customer_outreach",
+          "meta": "customer outreach draft",
           "stage": "approval",
           "value": "Human approval required"
         }
@@ -5166,10 +5166,10 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "abf380b9-867e-405e-8b67-4a6be095ae01",
+        "proposal_id": "d49d38c3-4cda-4f7a-b1c7-8bc738a2676e",
         "status": "pending"
       },
-      "reason": "Clearwater Field Ops has deterministic Time-to-Value score 62 from success_plan_overdue=20, health_yellow=15, low_seat_penetration=12; draft customer outreach. Evidence [evidence:3ea4da77-9a46-57ce-aa0a-36440aed7192], [evidence:33509b75-de98-51fa-90a0-c68c90fe9324], [evidence:865e1e03-cb2f-524d-b572-1eeabebb8d32].",
+      "reason": "Clearwater Field Ops has rule-based priority score 62 from overdue success plan +20, slipping health trend +15, licensed seats not fully activated +12; prepared a customer outreach draft. Evidence: 3 cited source records.",
       "recipient_name": "Kelly Vance",
       "recipient_resolution": "first_consenting_fallback",
       "recipient_role": "operations",
@@ -5194,41 +5194,41 @@
       "account_resolution": "exactly_one",
       "candidate_account_ids": [],
       "customer_contact_allowed": true,
-      "customer_draft": "Hi Jared Nolan, Ridgeline Warehousing is showing an onboarding risk tied to success_plan_overdue, health_yellow. Can we map the missing users needed for a complete rollout?",
+      "customer_draft": "Hi Jared Nolan, Ridgeline Warehousing is showing an onboarding risk tied to overdue success plan, slipping health trend. Can we map the missing users needed for a complete rollout?",
       "diagnostic_chain": [
         {
           "label": "Signal",
           "meta": "+12 priority from 1 evidence record(s)",
           "stage": "signal",
-          "value": "low_seat_penetration"
+          "value": "Seats not activated"
         },
         {
           "label": "Likely blocker",
-          "meta": "low_seat_penetration",
+          "meta": "Seats not activated",
           "stage": "diagnosis",
           "value": "Licensed seats are not activated deeply enough."
         },
         {
           "label": "Selected action",
-          "meta": "widen-seat-penetration: Selected because this playbook trigger matched the strongest priority signal.",
+          "meta": "Selected because this playbook trigger matched the strongest priority signal.",
           "stage": "action",
-          "value": "campaign_enroll"
+          "value": "Add to campaign"
         },
         {
           "label": "Recipient path",
-          "meta": "first_consenting_fallback",
+          "meta": "first consenting contact",
           "stage": "recipient",
           "value": "Jared Nolan (operations)"
         },
         {
           "label": "Evidence",
-          "meta": "eb6f3bbc-1ea8-5b0c-b6d5-ad15afda0e34, 081b380c-99e7-5073-992a-9e0d8b27d8c0",
+          "meta": "cs platform records attached",
           "stage": "evidence",
           "value": "2 cited source record(s)"
         },
         {
           "label": "Approval boundary",
-          "meta": "draft_customer_outreach",
+          "meta": "customer outreach draft",
           "stage": "approval",
           "value": "Human approval required"
         }
@@ -5326,10 +5326,10 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "0397f8ef-06b6-4a77-90d7-2b6eb7aa572f",
+        "proposal_id": "c2ba2d82-4450-4744-a337-11aa2e6ca132",
         "status": "pending"
       },
-      "reason": "Ridgeline Warehousing has deterministic Time-to-Value score 47 from success_plan_overdue=20, health_yellow=15, low_seat_penetration=12; draft customer outreach. Evidence [evidence:eb6f3bbc-1ea8-5b0c-b6d5-ad15afda0e34], [evidence:081b380c-99e7-5073-992a-9e0d8b27d8c0].",
+      "reason": "Ridgeline Warehousing has rule-based priority score 47 from overdue success plan +20, slipping health trend +15, licensed seats not fully activated +12; prepared a customer outreach draft. Evidence: 2 cited source records.",
       "recipient_name": "Jared Nolan",
       "recipient_resolution": "first_consenting_fallback",
       "recipient_role": "operations",
@@ -5343,41 +5343,41 @@
       "account_resolution": "exactly_one",
       "candidate_account_ids": [],
       "customer_contact_allowed": true,
-      "customer_draft": "Hi Sandra Faulkner, Northstar Couriers is showing an onboarding risk tied to success_plan_overdue, health_yellow. Can we check whether the current adoption gap is putting launch timing at risk?",
+      "customer_draft": "Hi Sandra Faulkner, Northstar Couriers is showing an onboarding risk tied to overdue success plan, slipping health trend. Can we check whether the current adoption gap is putting launch timing at risk?",
       "diagnostic_chain": [
         {
           "label": "Signal",
           "meta": "+20 priority from 1 evidence record(s)",
           "stage": "signal",
-          "value": "success_plan_overdue"
+          "value": "Success plan overdue"
         },
         {
           "label": "Likely blocker",
-          "meta": "outcome_unknown",
+          "meta": "No proven results yet",
           "stage": "diagnosis",
           "value": "Usage exists, but the business outcome is not proven yet."
         },
         {
           "label": "Selected action",
-          "meta": "confirm-outcome-objective: Selected from the matched tenant playbook trigger.",
+          "meta": "Selected from the matched tenant playbook trigger.",
           "stage": "action",
-          "value": "personal_email"
+          "value": "Personal email"
         },
         {
           "label": "Recipient path",
-          "meta": "first_consenting_fallback",
+          "meta": "first consenting contact",
           "stage": "recipient",
           "value": "Sandra Faulkner (logistics)"
         },
         {
           "label": "Evidence",
-          "meta": "023f694d-e8cb-593b-8053-b69e06c2f22d, 162a9085-8e63-53f0-bb1b-b48426911d34",
+          "meta": "cs platform records attached",
           "stage": "evidence",
           "value": "2 cited source record(s)"
         },
         {
           "label": "Approval boundary",
-          "meta": "draft_customer_outreach",
+          "meta": "customer outreach draft",
           "stage": "approval",
           "value": "Human approval required"
         }
@@ -5458,10 +5458,10 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "32a0fc0c-651c-49fd-b7f3-1a74dd6295e6",
+        "proposal_id": "ff822e5b-d0b5-4027-b22a-87c1e8923f5e",
         "status": "pending"
       },
-      "reason": "Northstar Couriers has deterministic Time-to-Value score 35 from success_plan_overdue=20, health_yellow=15; draft customer outreach. Evidence [evidence:023f694d-e8cb-593b-8053-b69e06c2f22d], [evidence:162a9085-8e63-53f0-bb1b-b48426911d34].",
+      "reason": "Northstar Couriers has rule-based priority score 35 from overdue success plan +20, slipping health trend +15; prepared a customer outreach draft. Evidence: 2 cited source records.",
       "recipient_name": "Sandra Faulkner",
       "recipient_resolution": "first_consenting_fallback",
       "recipient_role": "logistics",
@@ -5475,41 +5475,41 @@
       "account_resolution": "exactly_one",
       "candidate_account_ids": [],
       "customer_contact_allowed": true,
-      "customer_draft": "Hi Brett Sawyer, Sagebrush Transport is showing an onboarding risk tied to health_red. Can we review the blocker behind the red health signal?",
+      "customer_draft": "Hi Brett Sawyer, Sagebrush Transport is showing an onboarding risk tied to critical health trend. Can we review the blocker behind the red health signal?",
       "diagnostic_chain": [
         {
           "label": "Signal",
           "meta": "+30 priority from 1 evidence record(s)",
           "stage": "signal",
-          "value": "health_red"
+          "value": "Health critical"
         },
         {
           "label": "Likely blocker",
-          "meta": "outcome_unknown",
+          "meta": "No proven results yet",
           "stage": "diagnosis",
           "value": "Usage exists, but the business outcome is not proven yet."
         },
         {
           "label": "Selected action",
-          "meta": "confirm-outcome-objective: Selected from the matched tenant playbook trigger.",
+          "meta": "Selected from the matched tenant playbook trigger.",
           "stage": "action",
-          "value": "personal_email"
+          "value": "Personal email"
         },
         {
           "label": "Recipient path",
-          "meta": "first_consenting_fallback",
+          "meta": "first consenting contact",
           "stage": "recipient",
-          "value": "Brett Sawyer (fleet_operations)"
+          "value": "Brett Sawyer (fleet operations)"
         },
         {
           "label": "Evidence",
-          "meta": "751d5071-7c34-5cd1-bca9-178d0f38ad1d, 3acf0291-5b0b-55b9-8653-d042239fcc17, f8504037-dc1a-50e4-bdd9-7900b1379444",
+          "meta": "cs platform, crm records attached",
           "stage": "evidence",
           "value": "3 cited source record(s)"
         },
         {
           "label": "Approval boundary",
-          "meta": "draft_customer_outreach",
+          "meta": "customer outreach draft",
           "stage": "approval",
           "value": "Human approval required"
         }
@@ -5586,10 +5586,10 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "a4785f3a-65cf-434e-87ca-072adc5662d3",
+        "proposal_id": "22a80d95-57f1-47a1-9fec-7b6f8d998340",
         "status": "pending"
       },
-      "reason": "Sagebrush Transport has deterministic Time-to-Value score 30 from health_red=30; draft customer outreach. Evidence [evidence:751d5071-7c34-5cd1-bca9-178d0f38ad1d], [evidence:3acf0291-5b0b-55b9-8653-d042239fcc17], [evidence:f8504037-dc1a-50e4-bdd9-7900b1379444].",
+      "reason": "Sagebrush Transport has rule-based priority score 30 from critical health trend +30; prepared a customer outreach draft. Evidence: 3 cited source records.",
       "recipient_name": "Brett Sawyer",
       "recipient_resolution": "first_consenting_fallback",
       "recipient_role": "fleet_operations",
@@ -5614,41 +5614,41 @@
       "account_resolution": "exactly_one",
       "candidate_account_ids": [],
       "customer_contact_allowed": true,
-      "customer_draft": "Hi Gregory Foster, Harborview Fleet is showing an onboarding risk tied to health_yellow, feature_depth_gap. Can we check whether the current adoption gap is putting launch timing at risk?",
+      "customer_draft": "Hi Gregory Foster, Harborview Fleet is showing an onboarding risk tied to slipping health trend, paid features not yet in use. Can we check whether the current adoption gap is putting launch timing at risk?",
       "diagnostic_chain": [
         {
           "label": "Signal",
           "meta": "+15 priority from 5 evidence record(s)",
           "stage": "signal",
-          "value": "feature_depth_gap"
+          "value": "Paid features unused"
         },
         {
           "label": "Likely blocker",
-          "meta": "feature_shallow_depth",
+          "meta": "Paid features unused",
           "stage": "diagnosis",
           "value": "Paid capability has not reached operational use."
         },
         {
           "label": "Selected action",
-          "meta": "reactivate-stalled-module-live: Selected because this playbook trigger matched the strongest priority signal.",
+          "meta": "Selected because this playbook trigger matched the strongest priority signal.",
           "stage": "action",
-          "value": "working_session"
+          "value": "Working session"
         },
         {
           "label": "Recipient path",
-          "meta": "first_consenting_fallback",
+          "meta": "first consenting contact",
           "stage": "recipient",
           "value": "Gregory Foster (operations)"
         },
         {
           "label": "Evidence",
-          "meta": "4af5a5c0-f51a-5a83-9217-141f4333c6db, 625c9e2b-353d-5bc9-b866-91b2c536d104, 2f75e535-4d63-5289-8084-aa72fcf3b39a, +1 more",
+          "meta": "cs platform, crm records attached",
           "stage": "evidence",
           "value": "4 cited source record(s)"
         },
         {
           "label": "Approval boundary",
-          "meta": "draft_customer_outreach",
+          "meta": "customer outreach draft",
           "stage": "approval",
           "value": "Human approval required"
         }
@@ -5778,10 +5778,10 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "3c729907-0887-46db-867c-637ce92d3634",
+        "proposal_id": "86970d40-fabf-46fa-b2b4-0bc4f6302c8c",
         "status": "pending"
       },
-      "reason": "Harborview Fleet has deterministic Time-to-Value score 30 from health_yellow=15, feature_depth_gap=15; draft customer outreach. Evidence [evidence:4af5a5c0-f51a-5a83-9217-141f4333c6db], [evidence:625c9e2b-353d-5bc9-b866-91b2c536d104], [evidence:2f75e535-4d63-5289-8084-aa72fcf3b39a].",
+      "reason": "Harborview Fleet has rule-based priority score 30 from slipping health trend +15, paid features not yet in use +15; prepared a customer outreach draft. Evidence: 3 cited source records.",
       "recipient_name": "Gregory Foster",
       "recipient_resolution": "first_consenting_fallback",
       "recipient_role": "operations",
@@ -5826,41 +5826,41 @@
       "account_resolution": "exactly_one",
       "candidate_account_ids": [],
       "customer_contact_allowed": true,
-      "customer_draft": "Hi Diana Kowalski, Summit Industrial Supply is showing an onboarding risk tied to success_plan_overdue. Can we review the activation blockers and next steps?",
+      "customer_draft": "Hi Diana Kowalski, Summit Industrial Supply is showing an onboarding risk tied to overdue success plan. Can we review the activation blockers and next steps?",
       "diagnostic_chain": [
         {
           "label": "Signal",
           "meta": "+20 priority from 1 evidence record(s)",
           "stage": "signal",
-          "value": "success_plan_overdue"
+          "value": "Success plan overdue"
         },
         {
           "label": "Likely blocker",
-          "meta": "outcome_unknown",
+          "meta": "No proven results yet",
           "stage": "diagnosis",
           "value": "Usage exists, but the business outcome is not proven yet."
         },
         {
           "label": "Selected action",
-          "meta": "confirm-outcome-objective: Selected from the matched tenant playbook trigger.",
+          "meta": "Selected from the matched tenant playbook trigger.",
           "stage": "action",
-          "value": "personal_email"
+          "value": "Personal email"
         },
         {
           "label": "Recipient path",
-          "meta": "first_consenting_fallback",
+          "meta": "first consenting contact",
           "stage": "recipient",
           "value": "Diana Kowalski (operations)"
         },
         {
           "label": "Evidence",
-          "meta": "2b9e4aff-7f3e-5fd8-af1d-482d72f79fdc, 390eef5a-4d06-59ae-93cb-2c0a012e7ef8",
+          "meta": "cs platform records attached",
           "stage": "evidence",
           "value": "2 cited source record(s)"
         },
         {
           "label": "Approval boundary",
-          "meta": "draft_customer_outreach",
+          "meta": "customer outreach draft",
           "stage": "approval",
           "value": "Human approval required"
         }
@@ -5924,10 +5924,10 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "548b8340-9cbd-4ab5-8e26-fa7450c30597",
+        "proposal_id": "e9b27686-8fee-4a61-a1ab-92b62380edd2",
         "status": "pending"
       },
-      "reason": "Summit Industrial Supply has deterministic Time-to-Value score 20 from success_plan_overdue=20; draft customer outreach. Evidence [evidence:2b9e4aff-7f3e-5fd8-af1d-482d72f79fdc], [evidence:390eef5a-4d06-59ae-93cb-2c0a012e7ef8].",
+      "reason": "Summit Industrial Supply has rule-based priority score 20 from overdue success plan +20; prepared a customer outreach draft. Evidence: 2 cited source records.",
       "recipient_name": "Diana Kowalski",
       "recipient_resolution": "first_consenting_fallback",
       "recipient_role": "operations",
@@ -5941,41 +5941,41 @@
       "account_resolution": "exactly_one",
       "candidate_account_ids": [],
       "customer_contact_allowed": true,
-      "customer_draft": "Hi Alicia Fernandez, Meridian Fleet Group is showing an onboarding risk tied to arr_tier. Can we review the activation blockers and next steps?",
+      "customer_draft": "Hi Alicia Fernandez, Meridian Fleet Group is showing an onboarding risk tied to high-value account. Can we review the activation blockers and next steps?",
       "diagnostic_chain": [
         {
           "label": "Signal",
           "meta": "+5 priority from 1 evidence record(s)",
           "stage": "signal",
-          "value": "arr_tier"
+          "value": "High-value account"
         },
         {
           "label": "Likely blocker",
-          "meta": "outcome_unknown",
+          "meta": "No proven results yet",
           "stage": "diagnosis",
           "value": "Usage exists, but the business outcome is not proven yet."
         },
         {
           "label": "Selected action",
-          "meta": "confirm-outcome-objective: Selected from the matched tenant playbook trigger.",
+          "meta": "Selected from the matched tenant playbook trigger.",
           "stage": "action",
-          "value": "personal_email"
+          "value": "Personal email"
         },
         {
           "label": "Recipient path",
-          "meta": "role_graph",
+          "meta": "matched from role graph",
           "stage": "recipient",
           "value": "Alicia Fernandez (champion)"
         },
         {
           "label": "Evidence",
-          "meta": "30f4240b-e6c6-5bd2-b7b4-42a9b8d68cc1, 47f78943-7a8a-5bf1-9eeb-df74372085c7",
+          "meta": "cs platform records attached",
           "stage": "evidence",
           "value": "2 cited source record(s)"
         },
         {
           "label": "Approval boundary",
-          "meta": "draft_customer_outreach",
+          "meta": "customer outreach draft",
           "stage": "approval",
           "value": "Human approval required"
         }
@@ -6039,10 +6039,10 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "a33a463c-6e06-4ae0-a5ad-184f33b6707d",
+        "proposal_id": "fa249bae-e004-4b52-8540-b274e7dce86d",
         "status": "pending"
       },
-      "reason": "Meridian Fleet Group has deterministic Time-to-Value score 5 from arr_tier=5; draft customer outreach. Evidence [evidence:30f4240b-e6c6-5bd2-b7b4-42a9b8d68cc1], [evidence:47f78943-7a8a-5bf1-9eeb-df74372085c7].",
+      "reason": "Meridian Fleet Group has rule-based priority score 5 from high-value account +5; prepared a customer outreach draft. Evidence: 2 cited source records.",
       "recipient_name": "Alicia Fernandez",
       "recipient_resolution": "role_graph",
       "recipient_role": "champion",
@@ -6087,9 +6087,9 @@
       "diagnostic_chain": [
         {
           "label": "Signal",
-          "meta": "26 tech_touch account(s)",
+          "meta": "26 self-serve account(s)",
           "stage": "signal",
-          "value": "feature_shallow_depth"
+          "value": "Paid features unused"
         },
         {
           "label": "Likely blocker",
@@ -6099,9 +6099,9 @@
         },
         {
           "label": "Selected action",
-          "meta": "reactivate-stalled-module-cohort via tenant playbook cohort collapse",
+          "meta": "Selected by tenant playbook cohort collapse",
           "stage": "action",
-          "value": "cohort_action"
+          "value": "cohort action"
         },
         {
           "label": "Recipient path",
@@ -6111,9 +6111,9 @@
         },
         {
           "label": "Evidence",
-          "meta": "01249caa-fa87-5af1-b8ab-4f44a62e21d3, 0cb25224-f02a-5c79-b1d9-5239afd75933, 11163137-90eb-5134-8f64-aea8e0421e9e",
+          "meta": "account list attached to packet",
           "stage": "evidence",
-          "value": "26 account ids"
+          "value": "26 account(s) matched"
         },
         {
           "label": "Approval boundary",
@@ -6130,7 +6130,7 @@
       "motion_source": null,
       "priority": null,
       "proposal": null,
-      "reason": "Cohort collapse: feature_shallow_depth affects 26 tech_touch accounts via play 'reactivate-stalled-module-cohort' -- one cohort_action covers all, not 26 individual motions.",
+      "reason": "Paid features unused affects 26 self-serve accounts. One operator packet covers the group instead of 26 separate account actions.",
       "recipient_name": null,
       "recipient_resolution": null,
       "recipient_role": null,

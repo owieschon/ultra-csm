@@ -70,11 +70,18 @@ interface StakeholderRow {
 // Plain-English role labels (two-register rule) -- mono relationship_type
 // rides along as the title attribute, never as the primary label.
 const ROLE_LABELS: Record<string, string> = {
+  admin: "Admin",
   champion: "Champion",
+  fleet_operations: "Fleet ops",
+  information_technology: "IT",
   executive_sponsor: "Exec sponsor",
   technical_lead: "Technical lead",
   end_user: "End user",
-  admin: "Admin",
+};
+
+const RECIPIENT_RESOLUTION_LABELS: Record<string, string> = {
+  first_consenting_fallback: "first consenting contact",
+  role_graph: "matched from role graph",
 };
 
 // Per-drawer row formatter: plain-language primary text + optional mono/
@@ -220,8 +227,8 @@ export function QueueDetail({ item, day }: { item: WorkItem; day: number | undef
                 +{factor.contribution}
               </span>
               <span className="fmeta">
-                <span className="mono" style={{ fontSize: 10, color: "var(--fg-2)" }}>
-                  {factor.name}
+                <span title={factor.name}>
+                  priority signal
                 </span>
                 <span>{factor.evidence?.length ?? 0} records</span>
               </span>
@@ -243,8 +250,12 @@ export function QueueDetail({ item, day }: { item: WorkItem; day: number | undef
                       {personName ? (
                         <span className="eval">
                           {label(TRIGGER_LABELS, factor.name)} — {personName}
-                          <span className="mono" style={{ marginLeft: 6, color: "var(--fg-2)" }}>
-                            {(ev.source as string) ?? "crm"} · {String(ev.source_id ?? "").slice(0, 8)}
+                          <span
+                            className="chip-det"
+                            style={{ marginLeft: 6 }}
+                            title={`${(ev.source as string) ?? "crm"} · ${String(ev.source_id ?? "")}`}
+                          >
+                            source receipt
                           </span>
                         </span>
                       ) : (
@@ -257,8 +268,12 @@ export function QueueDetail({ item, day }: { item: WorkItem; day: number | undef
                         // fields.
                         <span className="eval">
                           {humanizeCode((ev.field as string) ?? "record")} · observed {(ev.observed_at as string) ?? "—"}
-                          <span className="mono" style={{ marginLeft: 6, color: "var(--fg-2)" }}>
-                            {(ev.source as string) ?? "evidence"} · {String(ev.source_id ?? "").slice(0, 8)}
+                          <span
+                            className="chip-det"
+                            style={{ marginLeft: 6 }}
+                            title={`${(ev.source as string) ?? "evidence"} · ${String(ev.source_id ?? "")}`}
+                          >
+                            source receipt
                           </span>
                         </span>
                       )}
@@ -290,7 +305,7 @@ export function QueueDetail({ item, day }: { item: WorkItem; day: number | undef
             {item.recipient_name && (
               <span
                 className="chip-det"
-                title={`resolution: ${item.recipient_resolution ?? "unknown"}`}
+                title={`resolution: ${recipientResolutionLabel(item.recipient_resolution)}`}
               >
                 to: {item.recipient_name}
                 {item.recipient_role ? ` · ${label(ROLE_LABELS, item.recipient_role)}` : ""}
@@ -390,25 +405,25 @@ function fallbackDiagnosticChain(item: WorkItem): NonNullable<WorkItem["diagnost
       value: source.trigger_factor,
       meta: matchedFactor
         ? `+${matchedFactor.contribution} priority · ${matchedFactor.evidence?.length ?? 0} records`
-        : source.play_id,
+        : "tenant playbook",
     },
     {
       stage: "diagnosis",
       label: "Likely blocker",
       value: blockerLabel(source.trigger_factor),
-      meta: source.matched_priority_factor ?? source.trigger_factor,
+      meta: label(TRIGGER_LABELS, source.matched_priority_factor ?? source.trigger_factor),
     },
     {
       stage: "action",
       label: "Selected action",
       value: item.motion ?? "Prepared review",
-      meta: source.play_id,
+      meta: "selected from tenant playbook",
     },
     {
       stage: "recipient",
       label: "Recipient path",
       value: contact,
-      meta: item.recipient_resolution ?? "unresolved",
+      meta: recipientResolutionLabel(item.recipient_resolution),
     },
   ];
 }
@@ -417,6 +432,12 @@ function diagnosticValue(stage: string, value: string): string {
   if (stage === "signal") return label(TRIGGER_LABELS, value);
   if (stage === "action") return label(MOTION_LABELS, value);
   return value;
+}
+
+function recipientResolutionLabel(resolution: string | null | undefined): string {
+  return label(RECIPIENT_RESOLUTION_LABELS, resolution) === "—"
+    ? "unresolved"
+    : label(RECIPIENT_RESOLUTION_LABELS, resolution);
 }
 
 function DiagnosisStep({
