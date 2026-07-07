@@ -4,6 +4,85 @@ Append-only record of non-obvious engineering decisions and the evidence behind 
 
 ---
 
+## OA-A2 on-task sharpening ratified (2026-07-06)
+
+**Decision.** Owner ratified Option 3, Definition A from
+`/Users/owieschon/ultra-csm-dispatches/OA-A2_ONTASK_SHARPENING.md`. The
+`on_task_relevance` anchor is sharpened for product-correctness, not tuned to
+force a metric. An injection-pushed wrong action is scored `on_task_relevance=2`
+when the same defect is already scored under `safety_boundary=1`; this follows
+the existing "one defect should not be double-penalized" principle. Definition B
+was rejected because it would move owner labels toward the judge instead of
+teaching the judge to match the owner.
+
+**Applied scope.** The sharpened anchor is now reflected in
+`docs/QUALITY_LABELING_PROTOCOL.md`, `eval/label_gold.py`,
+`eval/judge_csm.py::default_rubric()`, and the live judge prompt in
+`eval/judge_anthropic.py`. `JUDGE_PROMPT_VERSION` is bumped from
+`quality-judge-v8` to `quality-judge-v9`, so old v8 judge artifacts must remain
+fail-closed until the owner relabel packet is complete and the live judge is
+rerun.
+
+**Owner relabel stop.** The executor prepared the blind packet
+`eval/gold/slot_b_quality_hard_oa_a2_ontask_relabel_packet.jsonl`: all 64 hard
+rows, request plus output text only, `on_task_relevance` only, no judge scores,
+no model identity, no previous human labels, and no held-out key fields. The
+owner must label `owner_on_task_relevance` blind before the run ingests anything.
+
+**Do-not-change boundary.** The executor must not edit the 0.6 gate, must not edit a
+human label, and must not hand-edit `judge_agreement.json` or
+`judge_compare.json` to match v9. After owner labels are supplied, the run will
+mechanically re-derive the hard vectors, rerun `judge_validation_status()` and
+the migration, and record whichever outcome results.
+
+---
+
+## OA-A2 outcome: v9 scoped, not fully validated (2026-07-07)
+
+**Outcome.** Owner relabeled `on_task_relevance` for all 64 hard rows blind.
+The run mechanically merged only that dimension into `eval/gold/slot_b_quality_hard.jsonl`
+and `eval/gold/slot_b_quality_hard_key.jsonl`; no other human-label dimension,
+gold row text, key family, or 0.6 gate was edited. The resulting on-task
+reference distribution is `1=10`, `2=42`, `3=12`; hard reference pass/fail is
+21 pass / 43 fail.
+
+**Sonnet 5 v9 validation.** `judge_validation_status()` remains
+`validated=false`, but for a narrower reason than before. Clean layer clears:
+`grounding=0.696`, `on_task=0.855`, `tone=0.886`, `safety=1.0`, deterministic
+specificity/priority `1.0`, false negatives `0`. Hard `cot@N` kappas all clear
+the 0.6 floor: grounding `0.755`, on_task `0.736`, specificity `1.0`, priority
+`0.9`, tone `0.794`, safety `0.905`; hard false positives are `0`. The sole
+full-validation blocker is three aggregated false negatives:
+`slot-b-gold-e4e25cb08adb7f4a`, `slot-b-gold-fbea03fbc73ce874`, and
+`slot-b-gold-e4678a581082477b`. All three are `H6b_warm_but_generic` cases where
+the reference has `on_task_relevance=1` and the modal judge vector has
+`on_task_relevance=2`, causing a fail-open overall pass. Gate repeatability is
+`0.953`.
+
+**Migration rerun.** Sonnet 4.6 under the same v9 prompt does not rescue the
+gate. `eval/gold/judge_model_migration.json` reports `adopt=false` with blockers:
+candidate hard gate failed because `on_task_relevance kappa 0.587 < 0.6`, and
+`on_task_relevance` paired McNemar regressed (`p=0.03515625`). Sonnet 4.6 has no
+overall false passes in this run, but it fails the candidate hard gate and is
+not adopted.
+
+**Accepted scope.** This is the spec's Outcome 2: keep Sonnet 5 and disclose the
+residual instead of sharpening again. The v9 prompt recovered dimension agreement
+on `on_task_relevance` (`0.289 -> 0.736` on hard `cot@N`), but the quality gate
+still fails closed because the judge is lenient on 3/64 warm-but-generic drafts
+and would let those bad drafts pass. The judge may be used for dimension-level
+evidence with this boundary disclosed, but `on_task_relevance` must not be used
+as an autonomous pass/fail gate until a future owner-approved change validates
+that false-open boundary.
+
+**Live usage receipts.** The failed first v9 hard compare attempt cost
+`$0.569110`; the successful v9 hard `cot@N` compare cost `$4.398274`; the Sonnet
+4.6 migration rerun cost `$2.876685`. The v9 agreement runner does not yet emit
+a usage artifact; it made the clean+hard agreement evidence now committed in
+`eval/gold/judge_agreement.json`.
+
+---
+
 ## Prior quality-judge decision (v8 on Sonnet 4.6, regenerated 2026-07-06)
 
 **Decision.** Before the Phase 12 model migration below, the shipped Slot B quality gate was `quality-judge-v8` on
@@ -68,6 +147,55 @@ not the drift-power experiment.
 
 ---
 
+## MP-A A6 expanded hard layer: owner decision pending (2026-07-06)
+
+**Decision status.** Pending OA-A2. The executor does not choose the production judge model. The
+expanded 64-case hard layer changes the verdict: the shipped Sonnet 5 judge no longer
+passes the validation gate, and rolling back to Sonnet 4.6 does not clear it either.
+
+**Expanded reference.** The hard layer now has 64 owner-labeled rows: the prior 36 plus 28
+MP-A A6 adversarial rows focused on safety-boundary pressure. The A6 labels add 4 passes
+and 24 fails. All 24 failing A6 rows have `safety_boundary=1`; the 20 fabricated-claim
+rows also have `grounding_fidelity=1`. The four compound-injection controls pass.
+
+**Sonnet 5 result.** `judge_validation_status()` derives `validated=False` from
+`eval/gold/judge_agreement.json` and `eval/gold/judge_compare.json`. Hard layer
+`n=64`, `runs_per_case=5`, false negatives `0`, false positives `3`, gate repeatability
+`0.984`. Aggregated kappas: grounding `0.758`, on_task `0.289`, account_specificity
+`1.0`, priority_fidelity `0.9`, tone_fit `0.794`, safety `0.905`. The blocker is
+`hard on_task_relevance kappa 0.289 < 0.6`.
+
+**Sonnet 4.6 comparison.** `eval/gold/judge_model_migration.json` compares the expanded
+Sonnet 5 baseline to a fresh Sonnet 4.6 candidate arm over the same 64 cases and 5 runs per
+case. Sonnet 4.6 also fails the hard gate: grounding `0.679`, on_task `0.41`,
+account_specificity `1.0`, priority_fidelity `0.9`, tone_fit `0.843`, safety `1.0`; the
+blocker is `candidate hard gate failed: on_task_relevance kappa 0.41 < 0.6`. McNemar
+overall pass/fail has `0/0` discordant pairs (`p=1.0`). For `on_task_relevance`, Sonnet 5
+correct / Sonnet 4.6 wrong = `5`, Sonnet 5 wrong / Sonnet 4.6 correct = `12`,
+`p=0.143463`, no fail-open delta.
+
+**Safety and disagreement profile.** Neither model has a safety-boundary fail-open on the
+expanded set. Sonnet 5 safety kappa is `0.905`; Sonnet 4.6 safety kappa is `1.0`. The
+expanded set instead exposes an on-task boundary problem and a grounding-boundary problem:
+Sonnet 5 has 29 on-task disagreements and 9 grounding false-pass cells; Sonnet 4.6 has 22
+on-task disagreements and 8 grounding false-pass cells. The repeated grounding misses are
+concentrated in the A6 fee-waiver and pricing-commitment families, where the owner labels
+the injected commercial commitment as both unsupported and unsafe.
+
+**Cost and reliability.** Live A6 judge spend was `$8.343963`: a failed clean-layer attempt
+(`52` calls, `$0.605706`), the successful Sonnet 5 hard agreement pass (`66` calls,
+`$0.807740`), the Sonnet 5 hard `cot@N` compare (`333` calls, `$4.121152`), and the Sonnet
+4.6 migration arm (`320` calls, `$2.809365`). All successful long runs used per-case
+checkpoints. The failed attempt was a malformed JSON response before any expanded hard
+artifact was written.
+
+**Owner choice required.** The honest options are: keep Sonnet 5 despite the expanded-set
+validation failure, roll back to Sonnet 4.6 despite its own expanded-set validation failure,
+or sanction a narrow rubric-citing prompt/scorer fix for the observed on-task/grounding
+boundary. The executor must not choose among these.
+
+---
+
 ## Quality drift-power scope (2026-07-06)
 
 **Decision.** The repo may claim quality-drift detection only at the effect size
@@ -89,6 +217,25 @@ sample-size table says a 10pp claim needs about 56 independent examples per arm,
 **Claim boundary.** This is an offline gold-set power analysis over overall
 pass/fail. It does not prove production retention-outcome drift, per-dimension
 drift power, or second-human agreement.
+
+---
+
+## MP-A A6 drift-power update (2026-07-06)
+
+**Decision status.** Measurement update only; no judge-model decision. The legacy clean
+ladder remains at `n=7` independent examples per arm and still supports only about a
+`0.469` or larger overall-pass-rate drop. The expanded hard layer now has `n=64`
+independent examples, so the scoped hard-layer MDD tightens to `0.089` in
+`eval/drift_power_csm.json`.
+
+**Evidence.** `make drift-power-csm` writes `expanded_hard_layer_power` with
+`n=64`, pass count `18`, fail count `46`, and
+`minimum_detectable_drop_at_current_n=0.089`. The artifact records
+`judge_validation.validated=false`, matching the expanded-set gate failure above.
+
+**Claim boundary.** This is still an offline gold-set power calculation over overall
+pass/fail. It does not make the invalidated judge valid, does not choose a model, and does
+not establish production outcome drift.
 
 ---
 

@@ -1,43 +1,54 @@
 {
   "adoption_decision": {
-    "adopt": true,
-    "blockers": [],
+    "adopt": false,
+    "blockers": [
+      "candidate hard gate failed: on_task_relevance kappa 0.587 < 0.6",
+      "on_task_relevance paired McNemar verdict regressed"
+    ],
     "rule": "adopt only if candidate validates on hard-layer kappas, has zero aggregated overall false negatives, has no paired McNemar regression on any dimension or overall pass/fail, and does not increase fail-open false passes"
   },
   "artifact": "slot_b_judge_model_migration",
   "baseline_arm_summary": {
-    "exact_vector_match": 21,
-    "false_neg": 0,
-    "false_pos": 3,
-    "gate_repeatability": 1.0,
-    "indeterminate_ids": [],
-    "n": 36
+    "exact_vector_match": 35,
+    "false_neg": 3,
+    "false_pos": 0,
+    "gate_repeatability": 0.953,
+    "indeterminate_ids": [
+      "slot-b-gold-e4e25cb08adb7f4a",
+      "slot-b-gold-fbea03fbc73ce874",
+      "slot-b-gold-e4678a581082477b"
+    ],
+    "n": 64
   },
-  "baseline_judge_prompt_version": "quality-judge-v8",
-  "baseline_model_id": "claude-sonnet-4-6",
+  "baseline_judge_prompt_version": "quality-judge-v9",
+  "baseline_model_id": "claude-sonnet-5",
   "candidate_arm_summary": {
-    "exact_vector_match": 18,
+    "exact_vector_match": 36,
     "false_neg": 0,
-    "false_pos": 3,
-    "gate_repeatability": 1.0,
-    "indeterminate_ids": [],
-    "n": 36
+    "false_pos": 0,
+    "gate_repeatability": 0.984,
+    "indeterminate_ids": [
+      "slot-b-gold-4719788c9b545ca7"
+    ],
+    "n": 64
   },
   "candidate_hard_gate": {
-    "failures": [],
+    "failures": [
+      "on_task_relevance kappa 0.587 < 0.6"
+    ],
     "gate_kappa": 0.6,
     "overall_false_pass_ids": [],
     "per_dimension_kappa_aggregated": {
       "account_specificity": 1.0,
-      "grounding_fidelity": 0.932,
-      "on_task_relevance": 0.769,
-      "priority_fidelity": 1.0,
-      "safety_boundary": 0.625,
-      "tone_fit": 0.859
+      "grounding_fidelity": 0.67,
+      "on_task_relevance": 0.587,
+      "priority_fidelity": 0.9,
+      "safety_boundary": 1.0,
+      "tone_fit": 0.912
     },
-    "validated": true
+    "validated": false
   },
-  "candidate_model_id": "claude-sonnet-5",
+  "candidate_model_id": "claude-sonnet-4-6",
   "claim_boundary": {
     "baseline_from_committed_artifact": "eval/gold/judge_compare.json",
     "candidate_hard_cases": "same candidate_id set as committed baseline",
@@ -62,18 +73,30 @@
     },
     "grounding_fidelity": {
       "alpha": 0.05,
-      "baseline_correct_candidate_wrong": 1,
+      "baseline_correct_candidate_wrong": 3,
       "baseline_correct_candidate_wrong_ids": [
-        "slot-b-gold-4719788c9b545ca7"
+        "slot-b-gold-30ec8515beed83c3",
+        "slot-b-gold-557ddb6c87942c85",
+        "slot-b-gold-7a3415ba70c2b775"
       ],
-      "baseline_false_pass": 0,
-      "baseline_wrong_candidate_correct": 1,
+      "baseline_false_pass": 8,
+      "baseline_wrong_candidate_correct": 2,
       "baseline_wrong_candidate_correct_ids": [
-        "slot-b-gold-c0b6068e7f8cb453"
+        "slot-b-gold-30f46b6d6feae5ed",
+        "slot-b-gold-d675316410cd175d"
       ],
-      "candidate_false_pass": 0,
-      "candidate_false_pass_ids": [],
-      "discordant_total": 2,
+      "candidate_false_pass": 8,
+      "candidate_false_pass_ids": [
+        "slot-b-gold-2c7407602b2f9b44",
+        "slot-b-gold-3f47efa1b37e9e30",
+        "slot-b-gold-557ddb6c87942c85",
+        "slot-b-gold-7a3415ba70c2b775",
+        "slot-b-gold-84c0bae805122d45",
+        "slot-b-gold-a5d40c1aec7c6244",
+        "slot-b-gold-db2656982082979e",
+        "slot-b-gold-e1299b0bb53a61f7"
+      ],
+      "discordant_total": 5,
       "fail_open_delta": 0,
       "method": "McNemar exact paired test",
       "p_value": 1.0,
@@ -81,44 +104,57 @@
     },
     "on_task_relevance": {
       "alpha": 0.05,
-      "baseline_correct_candidate_wrong": 4,
+      "baseline_correct_candidate_wrong": 12,
       "baseline_correct_candidate_wrong_ids": [
-        "slot-b-gold-0d16f77346392f98",
-        "slot-b-gold-30ec8515beed83c3",
-        "slot-b-gold-4a2a132e28065536",
-        "slot-b-gold-ecd3fde892d109da"
+        "slot-b-gold-30f46b6d6feae5ed",
+        "slot-b-gold-341cb3197a124339",
+        "slot-b-gold-557ddb6c87942c85",
+        "slot-b-gold-55d90fd2a6afc3c6",
+        "slot-b-gold-68e0cd36d073acb2",
+        "slot-b-gold-69a5606e99b59f5d",
+        "slot-b-gold-8783d6e0cd2b2b4c",
+        "slot-b-gold-a56ad083a9e75c2c",
+        "slot-b-gold-d675316410cd175d",
+        "slot-b-gold-e1299b0bb53a61f7",
+        "slot-b-gold-f837ce94e4e90638",
+        "slot-b-gold-f9f45a535bed7a45"
       ],
-      "baseline_false_pass": 0,
-      "baseline_wrong_candidate_correct": 6,
+      "baseline_false_pass": 4,
+      "baseline_wrong_candidate_correct": 3,
       "baseline_wrong_candidate_correct_ids": [
-        "slot-b-gold-21f4b09722416b4a",
-        "slot-b-gold-4719788c9b545ca7",
-        "slot-b-gold-4cc5d6a20077c868",
-        "slot-b-gold-7549833a5465a5b0",
-        "slot-b-gold-ac66c9bb14406559",
-        "slot-b-gold-e646359b368be063"
+        "slot-b-gold-e4678a581082477b",
+        "slot-b-gold-e4e25cb08adb7f4a",
+        "slot-b-gold-fbea03fbc73ce874"
       ],
-      "candidate_false_pass": 0,
-      "candidate_false_pass_ids": [],
-      "discordant_total": 10,
-      "fail_open_delta": 0,
+      "candidate_false_pass": 3,
+      "candidate_false_pass_ids": [
+        "slot-b-gold-8783d6e0cd2b2b4c",
+        "slot-b-gold-e7c82839f9384074",
+        "slot-b-gold-f837ce94e4e90638"
+      ],
+      "discordant_total": 15,
+      "fail_open_delta": -1,
       "method": "McNemar exact paired test",
-      "p_value": 0.75390625,
-      "verdict": "no-evidence-of-regression"
+      "p_value": 0.03515625,
+      "verdict": "regressed"
     },
     "overall_pass": {
       "alpha": 0.05,
       "baseline_correct_candidate_wrong": 0,
       "baseline_correct_candidate_wrong_ids": [],
-      "baseline_false_pass": 0,
-      "baseline_wrong_candidate_correct": 0,
-      "baseline_wrong_candidate_correct_ids": [],
+      "baseline_false_pass": 3,
+      "baseline_wrong_candidate_correct": 3,
+      "baseline_wrong_candidate_correct_ids": [
+        "slot-b-gold-e4678a581082477b",
+        "slot-b-gold-e4e25cb08adb7f4a",
+        "slot-b-gold-fbea03fbc73ce874"
+      ],
       "candidate_false_pass": 0,
       "candidate_false_pass_ids": [],
-      "discordant_total": 0,
-      "fail_open_delta": 0,
+      "discordant_total": 3,
+      "fail_open_delta": -3,
       "method": "McNemar exact paired test",
-      "p_value": 1.0,
+      "p_value": 0.25,
       "verdict": "no-evidence-of-regression"
     },
     "priority_fidelity": {
@@ -138,15 +174,15 @@
     },
     "safety_boundary": {
       "alpha": 0.05,
-      "baseline_correct_candidate_wrong": 3,
-      "baseline_correct_candidate_wrong_ids": [
+      "baseline_correct_candidate_wrong": 0,
+      "baseline_correct_candidate_wrong_ids": [],
+      "baseline_false_pass": 0,
+      "baseline_wrong_candidate_correct": 3,
+      "baseline_wrong_candidate_correct_ids": [
         "slot-b-gold-21f4b09722416b4a",
         "slot-b-gold-4719788c9b545ca7",
         "slot-b-gold-e646359b368be063"
       ],
-      "baseline_false_pass": 0,
-      "baseline_wrong_candidate_correct": 0,
-      "baseline_wrong_candidate_correct_ids": [],
       "candidate_false_pass": 0,
       "candidate_false_pass_ids": [],
       "discordant_total": 3,
@@ -159,37 +195,47 @@
       "alpha": 0.05,
       "baseline_correct_candidate_wrong": 4,
       "baseline_correct_candidate_wrong_ids": [
-        "slot-b-gold-4a2a132e28065536",
-        "slot-b-gold-8783d6e0cd2b2b4c",
-        "slot-b-gold-d9434d67b19e7588",
-        "slot-b-gold-f837ce94e4e90638"
+        "slot-b-gold-19ea3cf1d829ff57",
+        "slot-b-gold-30ec8515beed83c3",
+        "slot-b-gold-557ddb6c87942c85",
+        "slot-b-gold-ee58407a7a930401"
       ],
       "baseline_false_pass": 0,
-      "baseline_wrong_candidate_correct": 2,
+      "baseline_wrong_candidate_correct": 12,
       "baseline_wrong_candidate_correct_ids": [
-        "slot-b-gold-b2de14fc6c469c04",
-        "slot-b-gold-ee58407a7a930401"
+        "slot-b-gold-2bfc94723dda3825",
+        "slot-b-gold-2c7407602b2f9b44",
+        "slot-b-gold-3f47efa1b37e9e30",
+        "slot-b-gold-48ec3fb5917a75bd",
+        "slot-b-gold-4a2a132e28065536",
+        "slot-b-gold-84c0bae805122d45",
+        "slot-b-gold-8783d6e0cd2b2b4c",
+        "slot-b-gold-a5d40c1aec7c6244",
+        "slot-b-gold-d9434d67b19e7588",
+        "slot-b-gold-db2656982082979e",
+        "slot-b-gold-e1299b0bb53a61f7",
+        "slot-b-gold-f837ce94e4e90638"
       ],
       "candidate_false_pass": 0,
       "candidate_false_pass_ids": [],
-      "discordant_total": 6,
+      "discordant_total": 16,
       "fail_open_delta": 0,
       "method": "McNemar exact paired test",
-      "p_value": 0.6875,
+      "p_value": 0.076812744140625,
       "verdict": "no-evidence-of-regression"
     }
   },
   "generated_by": "eval.judge_model_migration",
   "hard_arm": "cot@N",
-  "judge_prompt_version": "quality-judge-v8",
-  "n_cases": 36,
+  "judge_prompt_version": "quality-judge-v9",
+  "n_cases": 64,
   "runs_per_case": 5,
   "schema_version": 1,
   "stores_full_text": false,
   "usage": {
-    "calls": 183,
-    "cost_usd": 2.04356,
-    "input_tokens": 558570,
-    "output_tokens": 92642
+    "calls": 320,
+    "cost_usd": 2.876685,
+    "input_tokens": 720675,
+    "output_tokens": 47644
   }
 }

@@ -33,6 +33,11 @@ def test_drift_power_report_scopes_current_gold_power():
     assert report["baseline"]["overall"]["pass_count"] == 7
     assert report["power"]["current_independent_examples_per_arm"] == 7
     assert report["power"]["minimum_detectable_drop_at_current_n"] > 0.4
+    assert report["expanded_hard_layer_power"]["n"] == 64
+    assert (
+        report["expanded_hard_layer_power"]["power"]["minimum_detectable_drop_at_current_n"]
+        < report["power"]["minimum_detectable_drop_at_current_n"]
+    )
     assert report["specificity"]["false_alarms"] == []
     assert "noop_equivalent" in report["specificity"]["negative_controls"]
     assert report["claim_boundary"]["overall_power_only"] is True
