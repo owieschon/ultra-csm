@@ -1,4 +1,7 @@
-<!doctype html><html lang="en" data-theme="dark"><head><meta charset="utf-8" /><title>F4 proposals</title><style>
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Agent run queue</title><style>
 :root, [data-theme="dark"] {
   --canvas: #222321; --chrome: #1B1C1A; --card: #2A2B28; --card-2: #33342F;
   --hair: rgba(255,255,255,.09); --hair-soft: rgba(255,255,255,.05);
@@ -33,8 +36,20 @@ h1, h2, h3 { margin: 0; font-weight: 650; }
 .step { display: grid; grid-template-columns: 42px 1fr; gap: 14px; align-items: start; }
 .num { width: 34px; height: 34px; border: 1px solid var(--accent-line); border-radius: 50%; display: grid; place-items: center; font-family: ui-monospace, "SF Mono", Menlo, monospace; color: var(--accent); }
 .proposal-note { margin-top: 18px; color: var(--fg-2); font-size: 12px; }
- body{padding:28px} .mock{display:block;min-height:auto} li{margin:10px 0;font-size:18px} a{color:var(--accent)} </style></head><body>
-<h1>F4 human-anchor proposals</h1>
-<p class="muted">Revised to avoid relationship-intelligence/product-map territory. These proposals foreground agent-generated CSM work, evidence, routing, handoff packets, and human approval.</p>
-<ol><li><a href="01_agent_run_queue.html">01 agent run queue</a> <a href="01_agent_run_queue.png">(png)</a></li><li><a href="02_action_packet.html">02 action packet</a> <a href="02_action_packet.png">(png)</a></li><li><a href="03_route_decision.html">03 route decision</a> <a href="03_route_decision.png">(png)</a></li><li><a href="04_sales_handoff_packet.html">04 sales handoff packet</a> <a href="04_sales_handoff_packet.png">(png)</a></li><li><a href="05_approval_audit_trail.html">05 approval audit trail</a> <a href="05_approval_audit_trail.png">(png)</a></li></ol>
-</body></html>
+</style></head>
+<body><main class="mock">
+<aside class="queue">
+  <h2>Agent work queue</h2>
+  <p class="muted">drafted work, waiting for owner</p>
+  <div class="row "><span class="state">approval</span><strong>Harborview Fleet</strong><span class="muted">sales handoff</span></div>
+  <div class="row "><span class="state">review</span><strong>Pinehill Transport</strong><span class="muted">route to enablement</span></div>
+  <div class="row sel"><span class="state">approval</span><strong>Ironhorse Freight Co</strong><span class="muted">CSM action packet</span></div>
+  <div class="row "><span class="state">ready</span><strong>Trailhead Logistics</strong><span class="muted">evidence receipt</span></div>
+  <div class="row "><span class="state">logged</span><strong>Meridian Fleet Group</strong><span class="muted">post-action audit</span></div>
+</aside>
+<section class="detail">
+<h1>Agent run queue</h1><p class="muted">Not a dashboard: a work surface for customer-success actions already prepared by agents.</p>
+<div class="hero"><p class="muted">Ironhorse Freight Co</p><h2>Schedule a technical working session with Marcus and Lisa before rollout stalls.</h2><span class="chip warn">human approval required</span><span class="chip">evidence attached</span></div>
+<div class="section"><div class="card"><h3>Owner controls</h3><div class="button">Approve send</div><div class="button">Edit draft</div><div class="button">Route to engineering</div><div class="button">Reject with reason</div></div><div class="card"><h3>Evidence</h3><p>Open GPS hardware case, 104 active assets, active driver-onboarding objective.</p></div></div>
+<p class="proposal-note">Hypothesis: show agents scaling the CSM function by preparing work, while the human remains the release authority.</p>
+</section></main></body></html>
