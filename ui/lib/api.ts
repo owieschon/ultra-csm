@@ -164,6 +164,132 @@ export interface InternalBridgeDecision {
   reason: string;
 }
 
+export interface DiagnosticHypothesis {
+  summary: string;
+  signals: string[];
+  counter_signals: string[];
+  unknowns: string[];
+  confidence: number;
+  source_ids: string[];
+}
+
+export interface RecommendedAction {
+  action_id: string;
+  action_type: string;
+  label: string;
+  objective: string;
+  recipient_role: string | null;
+  recipient_contact_id: string | null;
+  message_strategy: string;
+  success_criteria: string[];
+  blocked_by: string[];
+  source_ids: string[];
+}
+
+export interface ContactPlan {
+  primary_contact: Record<string, unknown> | null;
+  backup_contact: Record<string, unknown> | null;
+  internal_owner: string | null;
+  tone: string;
+  channel: string;
+  reason_for_contact_choice: string;
+  source_ids: string[];
+}
+
+export interface PreparedArtifact {
+  artifact_id: string;
+  artifact_type: string;
+  title: string;
+  body_or_outline: string;
+  intended_audience: string;
+  requires_approval: boolean;
+  source_ids: string[];
+}
+
+export interface AllowedCTA {
+  cta_id: string;
+  label: string;
+  kind: "inspect" | "preview" | "copy" | "edit" | "approve" | "reject" | "assign" | "simulate" | "deep_link" | "mark_reviewed" | "leave_feedback";
+  enabled: boolean;
+  disabled_reason: string | null;
+  governance_requirement: string | null;
+  readonly_behavior: string;
+  source_ids: string[];
+}
+
+export interface GovernanceBoundary {
+  mode: string;
+  requires_human_principal: boolean;
+  requires_action_gate: boolean;
+  can_execute_from_ui: boolean;
+  audit_requirements: string[];
+}
+
+export interface EvidenceChainStep {
+  step_id: string;
+  claim: string;
+  source_type: string;
+  source_id: string;
+  field: string;
+  observed_value: string;
+  interpretation: string;
+  supports: string;
+  strength: "weak" | "medium" | "strong";
+}
+
+export interface BucketTrace {
+  lane: string;
+  rule_id: string;
+  rule_label: string;
+  inputs: Record<string, unknown>;
+  thresholds: Record<string, unknown>;
+  matched: string[];
+  near_misses: string[];
+  source_ids: string[];
+}
+
+export interface CoverageTrace {
+  book_size: number;
+  accounts_scanned: number;
+  included_reason: string;
+  excluded_or_suppressed_reason: string | null;
+  last_reviewed_at: string | null;
+  freshness: string;
+}
+
+export interface FeedbackHook {
+  category: string;
+  label: string;
+  local_only: boolean;
+  readonly_behavior: string;
+}
+
+export interface CSMWorkPacket {
+  packet_id: string;
+  account_id: string | null;
+  account_name: string;
+  generated_at: string;
+  as_of_day: string;
+  cadence: string;
+  job_type: string;
+  lane: string;
+  primary_next_step: string;
+  why_now: string;
+  diagnostic_hypothesis: DiagnosticHypothesis;
+  implied_customer_state: string;
+  recommended_action: RecommendedAction;
+  contact_plan: ContactPlan;
+  prepared_artifacts: PreparedArtifact[];
+  allowed_ctas: AllowedCTA[];
+  governance: GovernanceBoundary;
+  evidence_chain: EvidenceChainStep[];
+  bucket_trace: BucketTrace;
+  coverage_trace: CoverageTrace;
+  open_questions: string[];
+  confidence: number;
+  feedback_hooks: FeedbackHook[];
+}
+
 export interface WorkItem {
   tenant_id: string;
   account_resolution: string;
@@ -184,6 +310,7 @@ export interface WorkItem {
   recipient_resolution: string | null;
   recipient_name: string | null;
   recipient_role: string | null;
+  work_packet: CSMWorkPacket | null;
 }
 
 export interface SweepResponse {
@@ -191,6 +318,7 @@ export interface SweepResponse {
   work_items: WorkItem[];
   escalations: Record<string, unknown>[];
   swept_accounts: string[];
+  coverage_packets: CSMWorkPacket[];
   degraded_items: number;
   auth: string | null;
 }

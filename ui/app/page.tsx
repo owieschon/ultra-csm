@@ -3,11 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import { TopBar } from "@/components/TopBar";
 import { BookView } from "@/components/BookView";
-import { QueueView } from "@/components/QueueView";
+import { QueueSelection, QueueView } from "@/components/QueueView";
 import { ActionRail, ActionRailHandle } from "@/components/ActionRail";
 import { CommandPalette } from "@/components/CommandPalette";
 import { ShortcutsOverlay } from "@/components/ShortcutsOverlay";
-import { api, AccountSummary, isReadOnlyDemo, WorkItem } from "@/lib/api";
+import { api, AccountSummary, isReadOnlyDemo } from "@/lib/api";
 import { useSweep } from "@/lib/useSweep";
 import { toggleTheme } from "@/lib/theme";
 
@@ -24,7 +24,7 @@ export default function Home() {
   const [selectedProposalId, setSelectedProposalId] = useState<string | null>(
     null
   );
-  const [selectedItem, setSelectedItem] = useState<WorkItem | null>(null);
+  const [selectedItem, setSelectedItem] = useState<QueueSelection | null>(null);
   const [refreshToken, setRefreshToken] = useState(0);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
@@ -57,14 +57,14 @@ export default function Home() {
       .catch((e) => setError(String(e)));
   }, [servedDay, healthKnown]);
 
-  const pendingProposalIds = (sweep?.work_items ?? [])
-    .filter((i) => i.proposal?.status === "pending")
-    .map((i) => i.proposal!.proposal_id);
-  const needsCount = pendingProposalIds.length;
+  const pendingPacketIds = (sweep?.work_items ?? [])
+    .filter((i) => i.work_packet?.lane === "needs_judgment")
+    .map((i) => i.work_packet!.packet_id);
+  const needsCount = pendingPacketIds.length;
 
   function jumpToAccount(accountId: string) {
     const item = (sweep?.work_items ?? []).find((i) => i.account_id === accountId);
-    if (item?.proposal) setSelectedProposalId(item.proposal.proposal_id);
+    if (item?.work_packet) setSelectedProposalId(item.work_packet.packet_id);
     setView("queue");
   }
 
@@ -91,13 +91,13 @@ export default function Home() {
       } else if (view === "queue") {
         if (e.key === "j" || e.key === "k") {
           e.preventDefault();
-          const idx = pendingProposalIds.indexOf(selectedProposalId ?? "");
+          const idx = pendingPacketIds.indexOf(selectedProposalId ?? "");
           const delta = e.key === "j" ? 1 : -1;
           const nextIdx = Math.min(
             Math.max(idx + delta, 0),
-            pendingProposalIds.length - 1
+            pendingPacketIds.length - 1
           );
-          if (pendingProposalIds[nextIdx]) setSelectedProposalId(pendingProposalIds[nextIdx]);
+          if (pendingPacketIds[nextIdx]) setSelectedProposalId(pendingPacketIds[nextIdx]);
         } else if (e.key === "a") {
           railRef.current?.approve();
         } else if (e.key === "e") {
@@ -109,7 +109,7 @@ export default function Home() {
     }
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
-  }, [view, paletteOpen, helpOpen, pendingProposalIds, selectedProposalId]);
+  }, [view, paletteOpen, helpOpen, pendingPacketIds, selectedProposalId]);
 
   return (
     <div className="app">
@@ -154,7 +154,7 @@ export default function Home() {
           {view === "queue" && (
             <ActionRail
               ref={railRef}
-              item={selectedItem}
+              selection={selectedItem}
               onVerdict={() => setRefreshToken((t) => t + 1)}
               readOnly={isReadOnlyDemo}
             />

@@ -244,6 +244,7 @@ class SweepResponse(BaseModel):
     work_items: list[dict[str, Any]]
     escalations: list[dict[str, Any]]
     swept_accounts: list[str]
+    coverage_packets: list[dict[str, Any]] = Field(default_factory=list)
     degraded_items: int = 0
     auth: str | None = None
 
@@ -1696,6 +1697,7 @@ async def trigger_sweep(
         work_items=list(result.get("work_items", ())),
         escalations=list(result.get("escalations", ())),
         swept_accounts=list(result.get("swept_accounts", ())),
+        coverage_packets=list(result.get("coverage_packets", ())),
         degraded_items=result.get("degraded_items", 0),
         auth=auth_principal.auth,
     )

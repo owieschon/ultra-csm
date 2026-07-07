@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { api, WorkItem } from "@/lib/api";
+import { api, CSMWorkPacket, WorkItem } from "@/lib/api";
 
 export interface SweepData {
   work_items: WorkItem[];
   escalations: Record<string, unknown>[];
   swept_accounts: string[];
+  coverage_packets: CSMWorkPacket[];
 }
 
 // A sweep (POST /sweep) creates real ActionGate proposals as a side effect —
@@ -31,6 +32,7 @@ export function useSweep(
           work_items: r.work_items,
           escalations: r.escalations,
           swept_accounts: r.swept_accounts,
+          coverage_packets: r.coverage_packets,
         })
       )
       .catch((e) => setError(String(e)));

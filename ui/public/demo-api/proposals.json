@@ -9,7 +9,7 @@
         "account_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
         "account_name": "Ironhorse Freight Co",
         "as_of": "2026-11-08",
-        "body": "Hi Marcus Webb, Ironhorse Freight Co is showing an onboarding risk tied to milestones_overdue, days_overdue. Can we review the overdue activation steps and agree on owners?",
+        "body": "Hi Marcus Webb, Ironhorse Freight Co is blocked on 50% asset activation plus gps hardware compatibility issue with older vehicles. Can we confirm the owner, decide the next technical step, and reset the activation date?",
         "contact_email": "marcus.webb@ironhorse-freight.example",
         "contact_id": "3610a030-a5cd-55db-80b7-7b89d66203a4",
         "draft_channel": "email",
@@ -153,7 +153,7 @@
         },
         "subject": "Time-to-Value follow-up for Ironhorse Freight Co"
       },
-      "proposal_id": "4b1ef23b-970b-4c1a-8356-955cec5c0532",
+      "proposal_id": "cf7df05b-9b4f-480e-8c14-dfe38926443f",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -165,7 +165,7 @@
         "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
         "account_name": "Pinehill Transport",
         "as_of": "2026-11-08",
-        "body": "Hi Dennis Gruber, Pinehill Transport is showing an onboarding risk tied to success_plan_overdue, health_yellow. Can we map the missing users needed for a complete rollout?",
+        "body": "Hi Dennis Gruber, Pinehill Transport is blocked on integration with legacy dispatch system failing. Can we confirm the owner, decide the next technical step, and reset the activation date?",
         "contact_email": "dennis.gruber@pinehill-transport.example",
         "contact_id": "fdd4645a-e0b6-53d8-ba03-249f260574d8",
         "draft_channel": "email",
@@ -278,7 +278,7 @@
         },
         "subject": "Time-to-Value follow-up for Pinehill Transport"
       },
-      "proposal_id": "01d4ede0-0ee8-4d63-bd0e-9da7e62d6fe0",
+      "proposal_id": "f840a507-0dc6-4e11-8d90-8b63fa0dff29",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -290,7 +290,7 @@
         "account_id": "081b380c-99e7-5073-992a-9e0d8b27d8c0",
         "account_name": "Ridgeline Warehousing",
         "as_of": "2026-11-08",
-        "body": "Hi Jared Nolan, Ridgeline Warehousing is showing an onboarding risk tied to success_plan_overdue, health_yellow. Can we map the missing users needed for a complete rollout?",
+        "body": "Hi Jared Nolan, Ridgeline Warehousing is blocked on success plan target 2026-07-14. Can we confirm the owner, decide the next technical step, and reset the activation date?",
         "contact_email": "jared.nolan@ridgeline-wh.example",
         "contact_id": "3e482549-264d-5a2d-b368-ca08b272ac98",
         "draft_channel": "email",
@@ -356,7 +356,7 @@
         },
         "subject": "Time-to-Value follow-up for Ridgeline Warehousing"
       },
-      "proposal_id": "e84c3a38-81c5-47db-8ed7-bf3ac74d71be",
+      "proposal_id": "5258bd3c-5ff3-4373-b8dd-3385ccd1ca36",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -368,7 +368,7 @@
         "account_id": "162a9085-8e63-53f0-bb1b-b48426911d34",
         "account_name": "Northstar Couriers",
         "as_of": "2026-11-08",
-        "body": "Hi Sandra Faulkner, Northstar Couriers is showing an onboarding risk tied to success_plan_overdue, health_yellow. Can we check whether the current adoption gap is putting launch timing at risk?",
+        "body": "Hi Sandra Faulkner, Northstar Couriers is blocked on success plan target 2026-07-05. Can we confirm the owner, decide the next technical step, and reset the activation date?",
         "contact_email": "sandra.faulkner@northstar-couriers.example",
         "contact_id": "9d346d73-1e66-5964-8f42-066caec9010a",
         "draft_channel": "email",
@@ -417,7 +417,7 @@
         },
         "subject": "Time-to-Value follow-up for Northstar Couriers"
       },
-      "proposal_id": "9565e8a7-4905-458b-abd1-f28ef3adc8eb",
+      "proposal_id": "96889291-6747-4956-ad75-2b67406da670",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -429,7 +429,7 @@
         "account_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32",
         "account_name": "Clearwater Field Ops",
         "as_of": "2026-11-08",
-        "body": "Hi Kelly Vance, Clearwater Field Ops is showing an onboarding risk tied to success_plan_overdue, health_yellow. Can we map the missing users needed for a complete rollout?",
+        "body": "Hi Kelly Vance, Clearwater Field Ops is blocked on question about mobile app setup for technicians. Can we confirm the owner, decide the next technical step, and reset the activation date?",
         "contact_email": "kelly.vance@clearwater-fo.example",
         "contact_id": "4294e961-ee2d-536b-9a91-136ef3e39fbd",
         "draft_channel": "email",
@@ -525,7 +525,7 @@
         },
         "subject": "Time-to-Value follow-up for Clearwater Field Ops"
       },
-      "proposal_id": "ee3d9831-2268-4c35-8591-bbd9fd35e37b",
+      "proposal_id": "8b8ce166-9b1e-43d2-9874-3f00ce0e0f71",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -537,7 +537,7 @@
         "account_id": "390eef5a-4d06-59ae-93cb-2c0a012e7ef8",
         "account_name": "Summit Industrial Supply",
         "as_of": "2026-11-08",
-        "body": "Hi Diana Kowalski, Summit Industrial Supply is showing an onboarding risk tied to success_plan_overdue. Can we review the activation blockers and next steps?",
+        "body": "Hi Diana Kowalski, Summit Industrial Supply is blocked on success plan target 2026-07-20. Can we confirm the owner, decide the next technical step, and reset the activation date?",
         "contact_email": "diana.kowalski@summit-industrial.example",
         "contact_id": "e3d2b93a-4221-5c8e-8f95-1f00cc780df1",
         "draft_channel": "email",
@@ -569,7 +569,7 @@
         },
         "subject": "Time-to-Value follow-up for Summit Industrial Supply"
       },
-      "proposal_id": "645daaae-05bb-4820-a781-51a549ca0faf",
+      "proposal_id": "6e256357-50f0-4e60-869a-c761498eaf28",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -581,7 +581,7 @@
         "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
         "account_name": "Trailhead Logistics",
         "as_of": "2026-11-08",
-        "body": "Hi Vanessa Torres, Trailhead Logistics is showing an onboarding risk tied to success_plan_overdue, arr_tier. Can we review the activation blockers and next steps?",
+        "body": "Hi Vanessa Torres, Trailhead Logistics is blocked on feature request: custom compliance report template. Can we confirm the owner, decide the next technical step, and reset the activation date?",
         "contact_email": "vanessa.torres@trailhead-logistics.example",
         "contact_id": "5ba7aa51-a5eb-5220-9d3b-71bbe67377a1",
         "draft_channel": "email",
@@ -670,7 +670,7 @@
         },
         "subject": "Time-to-Value follow-up for Trailhead Logistics"
       },
-      "proposal_id": "8ed38d74-c973-4cdf-bced-fce54c6b2ad0",
+      "proposal_id": "8824d23d-844b-45b2-b2c5-a3bc110c8aec",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -682,7 +682,7 @@
         "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
         "account_name": "Meridian Fleet Group",
         "as_of": "2026-11-08",
-        "body": "Hi Alicia Fernandez, Meridian Fleet Group is showing an onboarding risk tied to arr_tier. Can we review the activation blockers and next steps?",
+        "body": "Hi Alicia Fernandez, Meridian Fleet Group is blocked on arr tier. Can we confirm the owner, decide the next technical step, and reset the activation date?",
         "contact_email": "alicia.fernandez@meridian-fleet.example",
         "contact_id": "b2d52039-fa63-5981-8b9b-e08ee50e8a14",
         "draft_channel": "email",
@@ -714,7 +714,7 @@
         },
         "subject": "Time-to-Value follow-up for Meridian Fleet Group"
       },
-      "proposal_id": "ac774127-5450-4615-a361-8a7f9610f9f3",
+      "proposal_id": "6a1eb137-5f86-4524-8ce2-0beeff598407",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -726,7 +726,7 @@
         "account_id": "f8504037-dc1a-50e4-bdd9-7900b1379444",
         "account_name": "Sagebrush Transport",
         "as_of": "2026-11-08",
-        "body": "Hi Brett Sawyer, Sagebrush Transport is showing an onboarding risk tied to health_red. Can we review the blocker behind the red health signal?",
+        "body": "Hi Brett Sawyer, Sagebrush Transport is blocked on frustrated with slow reporting performance. Can we confirm the owner, decide the next technical step, and reset the activation date?",
         "contact_email": "brett.sawyer@sagebrush-transport.example",
         "contact_id": "66c4d941-3342-5f92-8ea5-4c8c6764ef1e",
         "draft_channel": "email",
@@ -759,7 +759,7 @@
         },
         "subject": "Time-to-Value follow-up for Sagebrush Transport"
       },
-      "proposal_id": "b0272f32-48b6-40db-8d53-ef17eff90b75",
+      "proposal_id": "c5230682-b6c6-46de-81a5-a9b051d90a62",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -771,7 +771,7 @@
         "account_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18",
         "account_name": "Harborview Fleet",
         "as_of": "2026-11-08",
-        "body": "Hi Gregory Foster, Harborview Fleet is showing an onboarding risk tied to health_yellow, feature_depth_gap. Can we check whether the current adoption gap is putting launch timing at risk?",
+        "body": "Hi Gregory Foster, Harborview Fleet is blocked on integration with new erp system not working as expected. Can we confirm the owner, decide the next technical step, and reset the activation date?",
         "contact_email": "gregory.foster@harborview-fleet.example",
         "contact_id": "5d346e9f-08bb-5736-9b51-e3be8b8c9cad",
         "draft_channel": "email",
@@ -846,7 +846,7 @@
         },
         "subject": "Time-to-Value follow-up for Harborview Fleet"
       },
-      "proposal_id": "f00fdfd2-54a2-428c-bbd9-22d7aa20cfe0",
+      "proposal_id": "5db9b779-4aed-4b34-9fc5-0bf84104c45c",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -866,7 +866,7 @@
         "content_title": "5 Ways Fleets Cut Deadhead Miles with Route Optimizer",
         "draft_channel": "email"
       },
-      "proposal_id": "f0b9b85d-8f81-4979-a19f-9cf2375eef36",
+      "proposal_id": "873d99e7-7dee-469d-a20a-04fa5e0dd937",
       "required_permission": "content.route",
       "status": "pending"
     }
