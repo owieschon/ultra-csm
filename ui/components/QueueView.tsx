@@ -51,6 +51,10 @@ export function QueueView({
   const resolved: LaneItem[] = withProposal
     .filter((i) => i.proposal!.status !== "pending")
     .map(laneItem);
+  const defaultItem =
+    needsDecision[0]?.item ?? prepared[0]?.item ?? resolved[0]?.item ?? null;
+  const defaultSelectedId = defaultItem ? workItemKey(defaultItem) : null;
+  const effectiveSelectedId = selectedProposalId ?? defaultSelectedId;
 
   const coveredCount = Math.max(
     0,
@@ -59,8 +63,9 @@ export function QueueView({
   );
 
   const selectedItem =
-    workItems.find((i) => workItemKey(i) === selectedProposalId) ??
-    workItems.find((i) => i.proposal?.proposal_id === selectedProposalId) ??
+    workItems.find((i) => workItemKey(i) === effectiveSelectedId) ??
+    workItems.find((i) => i.proposal?.proposal_id === effectiveSelectedId) ??
+    defaultItem ??
     null;
 
   useEffect(() => {
@@ -82,7 +87,7 @@ export function QueueView({
         resolved={resolved}
         escalations={sweep?.escalations ?? []}
         coveredCount={coveredCount}
-        selectedId={selectedProposalId}
+        selectedId={effectiveSelectedId}
         onSelect={onSelect}
       />
       <main className="col detail">
