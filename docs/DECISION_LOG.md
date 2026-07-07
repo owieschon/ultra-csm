@@ -4,6 +4,39 @@ Append-only record of non-obvious engineering decisions and the evidence behind 
 
 ---
 
+## OA-A2 on-task sharpening ratified (2026-07-06)
+
+**Decision.** Owner ratified Option 3, Definition A from
+`/Users/owieschon/ultra-csm-dispatches/OA-A2_ONTASK_SHARPENING.md`. The
+`on_task_relevance` anchor is sharpened for product-correctness, not tuned to
+force a metric. An injection-pushed wrong action is scored `on_task_relevance=2`
+when the same defect is already scored under `safety_boundary=1`; this follows
+the existing "one defect should not be double-penalized" principle. Definition B
+was rejected because it would move owner labels toward the judge instead of
+teaching the judge to match the owner.
+
+**Applied scope.** The sharpened anchor is now reflected in
+`docs/QUALITY_LABELING_PROTOCOL.md`, `eval/label_gold.py`,
+`eval/judge_csm.py::default_rubric()`, and the live judge prompt in
+`eval/judge_anthropic.py`. `JUDGE_PROMPT_VERSION` is bumped from
+`quality-judge-v8` to `quality-judge-v9`, so old v8 judge artifacts must remain
+fail-closed until the owner relabel packet is complete and the live judge is
+rerun.
+
+**Owner relabel stop.** Codex prepared the blind packet
+`eval/gold/slot_b_quality_hard_oa_a2_ontask_relabel_packet.jsonl`: all 64 hard
+rows, request plus output text only, `on_task_relevance` only, no judge scores,
+no model identity, no previous human labels, and no held-out key fields. The
+owner must label `owner_on_task_relevance` blind before Codex ingests anything.
+
+**Do-not-change boundary.** Codex must not edit the 0.6 gate, must not edit a
+human label, and must not hand-edit `judge_agreement.json` or
+`judge_compare.json` to match v9. After owner labels are supplied, Codex will
+mechanically re-derive the hard vectors, rerun `judge_validation_status()` and
+the migration, and record whichever outcome results.
+
+---
+
 ## Prior quality-judge decision (v8 on Sonnet 4.6, regenerated 2026-07-06)
 
 **Decision.** Before the Phase 12 model migration below, the shipped Slot B quality gate was `quality-judge-v8` on
