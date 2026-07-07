@@ -55,6 +55,7 @@ function demoPath(path: string): string {
     const accountId = accountMatch[1];
     const leaf = accountMatch[2];
     if (leaf === "brief") return `account-${accountId}-brief-day-${day}.json`;
+    if (leaf === "centralize-telemetry") return `account-${accountId}-centralize-telemetry-day-${day}.json`;
     if (leaf === "trajectory") return `account-${accountId}-trajectory.json`;
     if (leaf === "reconciliation") return `account-${accountId}-reconciliation-day-${day}.json`;
   }
@@ -401,6 +402,17 @@ export interface ReconciliationResponse {
   candidate_divergences: CandidateDivergenceRow[];
 }
 
+export interface CentralizeTelemetryResponse {
+  account_id: string;
+  account_slug: string;
+  account_name: string;
+  day_offset: number;
+  as_of: string;
+  app_events: Record<string, unknown>[];
+  posthog_events: Record<string, unknown>[];
+  derived_usage_signals: Record<string, unknown>[];
+}
+
 export interface HealthResponse {
   status: string;
   db_connected: boolean;
@@ -420,6 +432,10 @@ export const api = {
   accountBrief: (accountId: string, day?: number) =>
     request<Record<string, unknown>>(
       `/accounts/${accountId}/brief${day != null ? `?day=${day}` : ""}`
+    ),
+  accountCentralizeTelemetry: (accountId: string, day?: number) =>
+    request<CentralizeTelemetryResponse>(
+      `/accounts/${accountId}/centralize-telemetry${day != null ? `?day=${day}` : ""}`
     ),
   accountTrajectory: (accountId: string, window = 30) =>
     request<Record<string, unknown>>(

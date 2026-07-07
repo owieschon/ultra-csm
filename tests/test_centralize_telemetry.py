@@ -4,6 +4,7 @@ import pytest
 
 from ultra_csm.data_plane.centralize_telemetry import (
     CENTRALIZE_ARC_PROFILES,
+    centralize_account_slugs,
     centralize_telemetry_timeline,
     centralize_telemetry_bundle,
     centralize_usage_signals_for_day,
@@ -156,6 +157,29 @@ def test_timeline_includes_identity_gaps_and_console_log_noise_without_breaking_
     } <= signal_names
 
 
-def test_unscripted_account_fails_closed():
+def test_centralize_telemetry_covers_the_full_synthetic_book_with_jitter():
+    slugs = centralize_account_slugs()
+    assert len(slugs) == 181
+
+    seen_shapes_by_archetype: dict[str, set[tuple[int, int, int]]] = {}
+    for slug in slugs:
+        bundle = centralize_telemetry_bundle(slug, 140)
+        assert bundle.app_events
+        assert bundle.posthog_events
+        assert bundle.usage_signals
+        archetype = dict(bundle.app_events[0].properties).get("archetype", "scripted")
+        seen_shapes_by_archetype.setdefault(archetype, set()).add(
+            (
+                len(bundle.app_events),
+                len(bundle.posthog_events),
+                sum(event.contains_exception for event in bundle.posthog_events),
+            )
+        )
+
+    assert len(seen_shapes_by_archetype) >= 6
+    assert any(len(shapes) > 3 for shapes in seen_shapes_by_archetype.values())
+
+
+def test_unknown_account_fails_closed():
     with pytest.raises(ValueError):
-        centralize_telemetry_bundle("ironhorse-freight", 30)
+        centralize_telemetry_bundle("not-a-real-account", 30)

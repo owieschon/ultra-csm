@@ -61,6 +61,7 @@ def main() -> int:
                 if item.get("account_id") is not None
             }
         )
+        all_account_ids = sorted(account["account_id"] for account in accounts["accounts"])
         for account_id in account_ids:
             _write(
                 f"account-{account_id}-brief-day-{DAY}.json",
@@ -75,6 +76,12 @@ def main() -> int:
                     reconciliation.json(),
                 )
 
+        for account_id in all_account_ids:
+            _write(
+                f"account-{account_id}-centralize-telemetry-day-{DAY}.json",
+                _get(client, f"/accounts/{account_id}/centralize-telemetry?day={DAY}"),
+            )
+
         _write(
             "manifest.json",
             {
@@ -84,6 +91,7 @@ def main() -> int:
                 "work_item_count": len(sweep["work_items"]),
                 "proposal_count": len(proposals["proposals"]),
                 "exported_account_detail_count": len(account_ids),
+                "centralize_telemetry_account_count": len(all_account_ids),
                 "write_routes_exported": False,
             },
         )

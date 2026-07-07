@@ -1,8 +1,10 @@
 """Materialized FleetOps + PostHog telemetry dataset.
 
 The dataset is fixture-only: it simulates FleetOps app usage and PostHog
-telemetry for the six named Synthetic Universe Bible arcs, with raw events and
-derived ``UsageSignal`` rows kept separate.
+telemetry for every live synthetic account. The six named Synthetic Universe
+Bible arcs keep their hand-scripted story exhaust; the rest use deterministic
+persona/lifecycle telemetry with account/day perturbation. Raw events and
+derived ``UsageSignal`` rows stay separate.
 """
 
 from __future__ import annotations
@@ -17,6 +19,7 @@ from ultra_csm.data_plane.centralize_telemetry import (
     CENTRALIZE_ARC_PROFILES,
     FleetOpsAppEvent,
     FleetOpsPostHogEvent,
+    centralize_account_slugs,
     centralize_telemetry_bundle,
     centralize_telemetry_timeline,
 )
@@ -30,9 +33,11 @@ def build_centralize_simulated_telemetry_artifact(
     *, output_path: Path = DEFAULT_OUTPUT
 ) -> dict[str, Any]:
     accounts: dict[str, Any] = {}
-    for slug, profile in CENTRALIZE_ARC_PROFILES.items():
+    for slug in centralize_account_slugs():
+        profile = CENTRALIZE_ARC_PROFILES.get(slug)
+        checkpoint_days = profile.checkpoint_days if profile is not None else (30, 90, 140)
         checkpoints = []
-        for day in profile.checkpoint_days:
+        for day in checkpoint_days:
             bundle = centralize_telemetry_bundle(slug, day)
             checkpoints.append(
                 {
@@ -45,7 +50,7 @@ def build_centralize_simulated_telemetry_artifact(
                 }
             )
         timeline = []
-        for bundle in centralize_telemetry_timeline(slug, max(profile.checkpoint_days)):
+        for bundle in centralize_telemetry_timeline(slug, max(checkpoint_days)):
             timeline.append(
                 {
                     "day_offset": bundle.day_offset,
@@ -56,11 +61,21 @@ def build_centralize_simulated_telemetry_artifact(
                     ],
                 }
             )
+        first_props = dict(checkpoints[0]["app_events"][0]["properties"])
+        arc = profile.arc if profile is not None else first_props.get("archetype", "generic_account")
         accounts[slug] = {
-            "arc": profile.arc,
-            "centralize_truth": profile.centralize_truth,
-            "posthog_truth": profile.posthog_truth,
-            "checkpoint_days": list(profile.checkpoint_days),
+            "arc": arc,
+            "centralize_truth": (
+                profile.centralize_truth
+                if profile is not None
+                else "deterministic lifecycle/persona app exhaust with account-level perturbation"
+            ),
+            "posthog_truth": (
+                profile.posthog_truth
+                if profile is not None
+                else "PostHog-shaped pageview/autocapture/session replay exhaust with identity and noise jitter"
+            ),
+            "checkpoint_days": list(checkpoint_days),
             "checkpoints": checkpoints,
             "timeline": timeline,
         }
@@ -77,10 +92,12 @@ def build_centralize_simulated_telemetry_artifact(
         },
         "measurement_scope": (
             "FleetOps app/domain events plus PostHog-shaped raw telemetry for "
-            "the six named fleetops bible arcs. Each account includes compact "
-            "checkpoint snapshots plus a bounded sampled timeline over the arc. "
-            "Raw PostHog events are not treated as semantic product truth; "
-            "UsageSignal rows are derived separately."
+            "all live synthetic accounts. Six named fleetops bible arcs are "
+            "hand-scripted; the remaining accounts use deterministic archetypes "
+            "with per-account/day perturbation. Each account includes compact "
+            "checkpoint snapshots plus a bounded sampled timeline. Raw PostHog "
+            "events are not treated as semantic product truth; UsageSignal rows "
+            "are derived separately."
         ),
         "source_boundaries": {
             "centralize_app": "simulated app/backend/extension events",

@@ -1,0 +1,277 @@
+{
+  "account_id": "178428cd-5dfc-53d3-8d32-cac2f692cf18",
+  "account_name": "Emberfield Delivery",
+  "account_slug": "emberfield-delivery",
+  "app_events": [
+    {
+      "account_id": "178428cd-5dfc-53d3-8d32-cac2f692cf18",
+      "confidence": "synthetic_truth",
+      "day_offset": 140,
+      "event_id": "963cde28-8f78-59b7-bd57-3900a7e0e39d",
+      "event_type": "account_viewed",
+      "feature": "account_workspace",
+      "object_id": "2162d51d-7301-5148-94fd-11d4785d276e",
+      "object_type": "account",
+      "observed_at": "2026-11-08T01:00:00Z",
+      "properties": {
+        "archetype": "tech_touch",
+        "health_band": "green",
+        "lifecycle_stage": "steady_state",
+        "perturbation_bucket": 1
+      },
+      "route": "/account/178428cd-5dfc-53d3-8d32-cac2f692cf18",
+      "source_ref": "centralize_app:mcp_api_simulated",
+      "user_id": "csm-101"
+    },
+    {
+      "account_id": "178428cd-5dfc-53d3-8d32-cac2f692cf18",
+      "confidence": "synthetic_truth",
+      "day_offset": 140,
+      "event_id": "ab3e8115-3e5b-5ac4-82a7-2dcbb9e337d1",
+      "event_type": "saved_view_opened",
+      "feature": "accounts",
+      "object_id": "652d539c-f6a7-5e12-810f-eab6689d9463",
+      "object_type": "saved_view",
+      "observed_at": "2026-11-08T01:00:00Z",
+      "properties": {
+        "archetype": "tech_touch",
+        "cohort": "tech_touch",
+        "health_band": "green",
+        "lifecycle_stage": "steady_state",
+        "perturbation_bucket": 1
+      },
+      "route": "/accounts",
+      "source_ref": "centralize_app:mcp_api_simulated",
+      "user_id": "csm-101"
+    },
+    {
+      "account_id": "178428cd-5dfc-53d3-8d32-cac2f692cf18",
+      "confidence": "inferred_route",
+      "day_offset": 140,
+      "event_id": "693e659b-3eb7-520c-94e5-532ecec19d23",
+      "event_type": "saved_view_opened",
+      "feature": "accounts",
+      "object_id": "049ae7a4-3c89-5180-b522-41d9a3a9ff25",
+      "object_type": "saved_view",
+      "observed_at": "2026-11-08T04:00:00Z",
+      "properties": {
+        "active_users": 4,
+        "archetype": "tech_touch",
+        "health_band": "green",
+        "lifecycle_stage": "steady_state",
+        "noise_class": "perturbed_app_exhaust",
+        "perturbation_bucket": 1
+      },
+      "route": "/accounts",
+      "source_ref": "centralize_app:mcp_api_simulated",
+      "user_id": "csm-101"
+    },
+    {
+      "account_id": "178428cd-5dfc-53d3-8d32-cac2f692cf18",
+      "confidence": "inferred_route",
+      "day_offset": 140,
+      "event_id": "916cb1ed-7331-5a76-8a01-981f4355416b",
+      "event_type": "contact_search_performed",
+      "feature": "contacts",
+      "object_id": "160804b0-1825-5c71-9f3f-2ef3d6848782",
+      "object_type": "search",
+      "observed_at": "2026-11-08T05:00:00Z",
+      "properties": {
+        "active_users": 4,
+        "archetype": "tech_touch",
+        "health_band": "green",
+        "lifecycle_stage": "steady_state",
+        "noise_class": "perturbed_app_exhaust",
+        "perturbation_bucket": 1
+      },
+      "route": "/contacts",
+      "source_ref": "centralize_app:mcp_api_simulated",
+      "user_id": "csm-101"
+    }
+  ],
+  "as_of": "2026-11-08",
+  "day_offset": 140,
+  "derived_usage_signals": [
+    {
+      "account_id": "178428cd-5dfc-53d3-8d32-cac2f692cf18",
+      "grain": "company",
+      "metric_name": "centralize_account_views",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "75db6dd7-3822-5b58-a378-97ec16399e5e",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 1.0
+    },
+    {
+      "account_id": "178428cd-5dfc-53d3-8d32-cac2f692cf18",
+      "grain": "company",
+      "metric_name": "centralize_action_completions",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "d0b09c77-044e-535d-846c-b3d26c5cf31d",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 0.0
+    },
+    {
+      "account_id": "178428cd-5dfc-53d3-8d32-cac2f692cf18",
+      "grain": "company",
+      "metric_name": "centralize_integration_sync_failures",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "7da1e981-ede0-5125-b3a2-a5a36d92b771",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 0.0
+    },
+    {
+      "account_id": "178428cd-5dfc-53d3-8d32-cac2f692cf18",
+      "grain": "company",
+      "metric_name": "centralize_relationship_events",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "c1f42063-9035-5174-829a-03f2b2648bdf",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 0.0
+    },
+    {
+      "account_id": "178428cd-5dfc-53d3-8d32-cac2f692cf18",
+      "grain": "company",
+      "metric_name": "posthog_autocapture_events",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "b1f26a68-afa6-5a2c-9b21-f200deadc9e4",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 2.0
+    },
+    {
+      "account_id": "178428cd-5dfc-53d3-8d32-cac2f692cf18",
+      "grain": "company",
+      "metric_name": "posthog_frontend_exceptions",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "b420f5a8-9879-5a94-b3f3-bc3455794196",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 0.0
+    },
+    {
+      "account_id": "178428cd-5dfc-53d3-8d32-cac2f692cf18",
+      "grain": "company",
+      "metric_name": "posthog_session_recordings",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "0e8e9b4d-d6bf-5ea6-9f7b-ba48e8c17325",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 2.0
+    }
+  ],
+  "posthog_events": [
+    {
+      "account_id": "178428cd-5dfc-53d3-8d32-cac2f692cf18",
+      "confidence": "observed_config",
+      "contains_console_logs": false,
+      "contains_exception": false,
+      "current_url": "https://app.usecentralize.com/accounts",
+      "day_offset": 140,
+      "distinct_id": "5a46d838-bdf9-5dcd-808b-943f35d0f8f8",
+      "event": "$pageview",
+      "event_id": "eb72cb67-92c7-5177-874b-5b6a0ed31398",
+      "observed_at": "2026-11-08T00:00:00Z",
+      "properties": {
+        "$browser": "Chrome",
+        "$pathname": "/accounts",
+        "$session_id": "e1f8fc9c-3e36-56f1-8cf1-be0369784089",
+        "account_archetype": "tech_touch",
+        "centralize_account_id": "178428cd-5dfc-53d3-8d32-cac2f692cf18",
+        "network_timing_ms": 558,
+        "organization_id": "org_fleetops",
+        "perturbation_bucket": 13,
+        "posthog_surface": "web_app"
+      },
+      "replay_ref": "posthog:recording:e1f8fc9c-3e36-56f1-8cf1-be0369784089",
+      "session_id": "e1f8fc9c-3e36-56f1-8cf1-be0369784089"
+    },
+    {
+      "account_id": "178428cd-5dfc-53d3-8d32-cac2f692cf18",
+      "confidence": "observed_config",
+      "contains_console_logs": false,
+      "contains_exception": false,
+      "current_url": "https://app.usecentralize.com/accounts",
+      "day_offset": 140,
+      "distinct_id": "5a46d838-bdf9-5dcd-808b-943f35d0f8f8",
+      "event": "$autocapture",
+      "event_id": "83629a7f-6521-5dc1-b47d-371163562698",
+      "observed_at": "2026-11-08T01:00:00Z",
+      "properties": {
+        "$browser": "Chrome",
+        "$pathname": "/accounts",
+        "$session_id": "e1f8fc9c-3e36-56f1-8cf1-be0369784089",
+        "account_archetype": "tech_touch",
+        "centralize_account_id": "178428cd-5dfc-53d3-8d32-cac2f692cf18",
+        "element": "link",
+        "network_timing_ms": 558,
+        "organization_id": "org_fleetops",
+        "perturbation_bucket": 13,
+        "text": "Saved view"
+      },
+      "replay_ref": "posthog:recording:e1f8fc9c-3e36-56f1-8cf1-be0369784089",
+      "session_id": "e1f8fc9c-3e36-56f1-8cf1-be0369784089"
+    },
+    {
+      "account_id": null,
+      "confidence": "observed_config",
+      "contains_console_logs": false,
+      "contains_exception": false,
+      "current_url": "https://app.usecentralize.com/account/178428cd-5dfc-53d3-8d32-cac2f692cf18",
+      "day_offset": 140,
+      "distinct_id": "5a46d838-bdf9-5dcd-808b-943f35d0f8f8",
+      "event": "$pageview",
+      "event_id": "a284e17d-242a-5ba5-ac9c-e9e6d2d21c55",
+      "observed_at": "2026-11-08T00:00:00Z",
+      "properties": {
+        "$browser": "Chrome",
+        "$pathname": "/account/178428cd-5dfc-53d3-8d32-cac2f692cf18",
+        "$session_id": "1246fd53-686a-5359-8ee2-d0cb2a34c102",
+        "account_archetype": "tech_touch",
+        "centralize_account_id": "178428cd-5dfc-53d3-8d32-cac2f692cf18",
+        "network_timing_ms": 841,
+        "organization_id": "org_fleetops",
+        "perturbation_bucket": 13,
+        "posthog_surface": "web_app"
+      },
+      "replay_ref": "posthog:recording:1246fd53-686a-5359-8ee2-d0cb2a34c102",
+      "session_id": "1246fd53-686a-5359-8ee2-d0cb2a34c102"
+    },
+    {
+      "account_id": null,
+      "confidence": "observed_config",
+      "contains_console_logs": false,
+      "contains_exception": false,
+      "current_url": "https://app.usecentralize.com/account/178428cd-5dfc-53d3-8d32-cac2f692cf18",
+      "day_offset": 140,
+      "distinct_id": "5a46d838-bdf9-5dcd-808b-943f35d0f8f8",
+      "event": "$autocapture",
+      "event_id": "508dc19b-9419-5ca1-956b-c8e0c800e23d",
+      "observed_at": "2026-11-08T01:00:00Z",
+      "properties": {
+        "$browser": "Chrome",
+        "$pathname": "/account/178428cd-5dfc-53d3-8d32-cac2f692cf18",
+        "$session_id": "1246fd53-686a-5359-8ee2-d0cb2a34c102",
+        "account_archetype": "tech_touch",
+        "centralize_account_id": "178428cd-5dfc-53d3-8d32-cac2f692cf18",
+        "element": "button",
+        "network_timing_ms": 841,
+        "organization_id": "org_fleetops",
+        "perturbation_bucket": 13,
+        "text": "Open account"
+      },
+      "replay_ref": "posthog:recording:1246fd53-686a-5359-8ee2-d0cb2a34c102",
+      "session_id": "1246fd53-686a-5359-8ee2-d0cb2a34c102"
+    }
+  ]
+}

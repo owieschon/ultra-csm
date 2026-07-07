@@ -1,0 +1,322 @@
+{
+  "account_id": "38e47995-eebd-51f5-a010-5f74edcb0745",
+  "account_name": "Kirkfield Line Haul",
+  "account_slug": "kirkfield-line-haul",
+  "app_events": [
+    {
+      "account_id": "38e47995-eebd-51f5-a010-5f74edcb0745",
+      "confidence": "synthetic_truth",
+      "day_offset": 140,
+      "event_id": "463da298-4397-5766-aa11-882ed1aeada7",
+      "event_type": "account_viewed",
+      "feature": "account_workspace",
+      "object_id": "ccd7ccc5-7e22-5a9d-9559-39fe3039d3c4",
+      "object_type": "account",
+      "observed_at": "2026-11-08T00:00:00Z",
+      "properties": {
+        "archetype": "risk_watch",
+        "health_band": "green",
+        "lifecycle_stage": "steady_state",
+        "perturbation_bucket": 2
+      },
+      "route": "/account/38e47995-eebd-51f5-a010-5f74edcb0745",
+      "source_ref": "centralize_app:mcp_api_simulated",
+      "user_id": "csm-102"
+    },
+    {
+      "account_id": "38e47995-eebd-51f5-a010-5f74edcb0745",
+      "confidence": "synthetic_truth",
+      "day_offset": 140,
+      "event_id": "da66131e-c7d6-5980-b064-1b7787c0d459",
+      "event_type": "health_record_viewed",
+      "feature": "health",
+      "object_id": "6e90af8e-9f73-51d4-b114-1a5178ad5f43",
+      "object_type": "health_score",
+      "observed_at": "2026-11-08T01:00:00Z",
+      "properties": {
+        "acted": false,
+        "archetype": "risk_watch",
+        "current_band": "green",
+        "health_band": "green",
+        "lifecycle_stage": "steady_state",
+        "perturbation_bucket": 2
+      },
+      "route": "/account/38e47995-eebd-51f5-a010-5f74edcb0745/reporting",
+      "source_ref": "centralize_app:mcp_api_simulated",
+      "user_id": "csm-102"
+    },
+    {
+      "account_id": "38e47995-eebd-51f5-a010-5f74edcb0745",
+      "confidence": "synthetic_truth",
+      "day_offset": 140,
+      "event_id": "74f6b893-18ea-51dc-a8ea-2509eff0a316",
+      "event_type": "contact_profile_opened",
+      "feature": "contacts",
+      "object_id": "3f939c8e-7c52-5d9b-af85-4ee929a44125",
+      "object_type": "contact",
+      "observed_at": "2026-11-08T02:00:00Z",
+      "properties": {
+        "archetype": "risk_watch",
+        "contact_role": "champion",
+        "engagement_state": "active",
+        "health_band": "green",
+        "lifecycle_stage": "steady_state",
+        "perturbation_bucket": 2
+      },
+      "route": "/account/38e47995-eebd-51f5-a010-5f74edcb0745/contacts",
+      "source_ref": "centralize_app:mcp_api_simulated",
+      "user_id": "csm-102"
+    },
+    {
+      "account_id": "38e47995-eebd-51f5-a010-5f74edcb0745",
+      "confidence": "inferred_route",
+      "day_offset": 140,
+      "event_id": "31126581-e512-588b-af7d-e16872039d08",
+      "event_type": "saved_view_opened",
+      "feature": "accounts",
+      "object_id": "7ae9ca4d-2e29-543c-9ce7-da3fe9087691",
+      "object_type": "saved_view",
+      "observed_at": "2026-11-08T04:00:00Z",
+      "properties": {
+        "active_users": 3,
+        "archetype": "risk_watch",
+        "health_band": "green",
+        "lifecycle_stage": "steady_state",
+        "noise_class": "perturbed_app_exhaust",
+        "perturbation_bucket": 2
+      },
+      "route": "/accounts",
+      "source_ref": "centralize_app:mcp_api_simulated",
+      "user_id": "csm-102"
+    },
+    {
+      "account_id": "38e47995-eebd-51f5-a010-5f74edcb0745",
+      "confidence": "inferred_route",
+      "day_offset": 140,
+      "event_id": "87868abb-d7d8-5c6f-9393-fa379ef57354",
+      "event_type": "contact_search_performed",
+      "feature": "contacts",
+      "object_id": "87034b39-d225-5896-af34-d3f184e35ccd",
+      "object_type": "search",
+      "observed_at": "2026-11-08T05:00:00Z",
+      "properties": {
+        "active_users": 3,
+        "archetype": "risk_watch",
+        "health_band": "green",
+        "lifecycle_stage": "steady_state",
+        "noise_class": "perturbed_app_exhaust",
+        "perturbation_bucket": 2
+      },
+      "route": "/contacts",
+      "source_ref": "centralize_app:mcp_api_simulated",
+      "user_id": "csm-102"
+    },
+    {
+      "account_id": "38e47995-eebd-51f5-a010-5f74edcb0745",
+      "confidence": "inferred_route",
+      "day_offset": 140,
+      "event_id": "d181466b-e17c-5632-b964-066e10ccdd97",
+      "event_type": "note_viewed",
+      "feature": "notes",
+      "object_id": "e4314018-b5b5-5e96-a724-986c2ae0d917",
+      "object_type": "note",
+      "observed_at": "2026-11-08T06:00:00Z",
+      "properties": {
+        "active_users": 3,
+        "archetype": "risk_watch",
+        "health_band": "green",
+        "lifecycle_stage": "steady_state",
+        "noise_class": "perturbed_app_exhaust",
+        "perturbation_bucket": 2
+      },
+      "route": "/account/38e47995-eebd-51f5-a010-5f74edcb0745/notes",
+      "source_ref": "centralize_app:mcp_api_simulated",
+      "user_id": "csm-102"
+    }
+  ],
+  "as_of": "2026-11-08",
+  "day_offset": 140,
+  "derived_usage_signals": [
+    {
+      "account_id": "38e47995-eebd-51f5-a010-5f74edcb0745",
+      "grain": "company",
+      "metric_name": "centralize_account_views",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "77973bb9-70a8-5f94-ab09-de9c587ba01f",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 1.0
+    },
+    {
+      "account_id": "38e47995-eebd-51f5-a010-5f74edcb0745",
+      "grain": "company",
+      "metric_name": "centralize_action_completions",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "ef03426f-896f-56e4-bb52-4a222c1c5424",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 0.0
+    },
+    {
+      "account_id": "38e47995-eebd-51f5-a010-5f74edcb0745",
+      "grain": "company",
+      "metric_name": "centralize_integration_sync_failures",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "6f59bce6-bf2e-586c-be91-1b07c68dfad8",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 0.0
+    },
+    {
+      "account_id": "38e47995-eebd-51f5-a010-5f74edcb0745",
+      "grain": "company",
+      "metric_name": "centralize_relationship_events",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "a2663361-5a83-5bc8-b50b-f117f51a3b74",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 0.0
+    },
+    {
+      "account_id": "38e47995-eebd-51f5-a010-5f74edcb0745",
+      "grain": "company",
+      "metric_name": "posthog_autocapture_events",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "611bb568-9265-5bb5-8d5d-d009ebee1e21",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 2.0
+    },
+    {
+      "account_id": "38e47995-eebd-51f5-a010-5f74edcb0745",
+      "grain": "company",
+      "metric_name": "posthog_frontend_exceptions",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "812953ac-3a17-544a-a667-189ba340a42a",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 0.0
+    },
+    {
+      "account_id": "38e47995-eebd-51f5-a010-5f74edcb0745",
+      "grain": "company",
+      "metric_name": "posthog_session_recordings",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "7dfe4730-4bc0-55e5-8d22-7badbff5eec2",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 2.0
+    }
+  ],
+  "posthog_events": [
+    {
+      "account_id": "38e47995-eebd-51f5-a010-5f74edcb0745",
+      "confidence": "observed_config",
+      "contains_console_logs": false,
+      "contains_exception": false,
+      "current_url": "https://app.usecentralize.com/account/38e47995-eebd-51f5-a010-5f74edcb0745/reporting",
+      "day_offset": 140,
+      "distinct_id": "95769632-eaa5-562b-b7d1-a1662636d807",
+      "event": "$pageview",
+      "event_id": "45aa08b2-f248-5a0b-9ff7-a1a95dcfc298",
+      "observed_at": "2026-11-08T00:00:00Z",
+      "properties": {
+        "$browser": "Chrome",
+        "$pathname": "/account/38e47995-eebd-51f5-a010-5f74edcb0745/reporting",
+        "$session_id": "9c3b5f5d-7d3d-5837-98ca-3735b1eb732f",
+        "account_archetype": "risk_watch",
+        "centralize_account_id": "38e47995-eebd-51f5-a010-5f74edcb0745",
+        "network_timing_ms": 978,
+        "organization_id": "org_fleetops",
+        "perturbation_bucket": 5,
+        "posthog_surface": "web_app"
+      },
+      "replay_ref": "posthog:recording:9c3b5f5d-7d3d-5837-98ca-3735b1eb732f",
+      "session_id": "9c3b5f5d-7d3d-5837-98ca-3735b1eb732f"
+    },
+    {
+      "account_id": "38e47995-eebd-51f5-a010-5f74edcb0745",
+      "confidence": "observed_config",
+      "contains_console_logs": false,
+      "contains_exception": false,
+      "current_url": "https://app.usecentralize.com/account/38e47995-eebd-51f5-a010-5f74edcb0745/reporting",
+      "day_offset": 140,
+      "distinct_id": "95769632-eaa5-562b-b7d1-a1662636d807",
+      "event": "$autocapture",
+      "event_id": "00fd4565-f0ff-5184-b02d-61813feedf80",
+      "observed_at": "2026-11-08T01:00:00Z",
+      "properties": {
+        "$browser": "Chrome",
+        "$pathname": "/account/38e47995-eebd-51f5-a010-5f74edcb0745/reporting",
+        "$session_id": "9c3b5f5d-7d3d-5837-98ca-3735b1eb732f",
+        "account_archetype": "risk_watch",
+        "centralize_account_id": "38e47995-eebd-51f5-a010-5f74edcb0745",
+        "element": "button",
+        "network_timing_ms": 978,
+        "organization_id": "org_fleetops",
+        "perturbation_bucket": 5,
+        "text": "Risk action"
+      },
+      "replay_ref": "posthog:recording:9c3b5f5d-7d3d-5837-98ca-3735b1eb732f",
+      "session_id": "9c3b5f5d-7d3d-5837-98ca-3735b1eb732f"
+    },
+    {
+      "account_id": "38e47995-eebd-51f5-a010-5f74edcb0745",
+      "confidence": "observed_config",
+      "contains_console_logs": false,
+      "contains_exception": false,
+      "current_url": "https://app.usecentralize.com/account/38e47995-eebd-51f5-a010-5f74edcb0745/contacts",
+      "day_offset": 140,
+      "distinct_id": "95769632-eaa5-562b-b7d1-a1662636d807",
+      "event": "$pageview",
+      "event_id": "480fb7de-97a3-53a3-ac50-a81d8480f1bd",
+      "observed_at": "2026-11-08T00:00:00Z",
+      "properties": {
+        "$browser": "Chrome",
+        "$pathname": "/account/38e47995-eebd-51f5-a010-5f74edcb0745/contacts",
+        "$session_id": "1f4e91f2-95f9-5a5b-9180-21c688fba583",
+        "account_archetype": "risk_watch",
+        "centralize_account_id": "38e47995-eebd-51f5-a010-5f74edcb0745",
+        "network_timing_ms": 948,
+        "organization_id": "org_fleetops",
+        "perturbation_bucket": 5,
+        "posthog_surface": "web_app"
+      },
+      "replay_ref": "posthog:recording:1f4e91f2-95f9-5a5b-9180-21c688fba583",
+      "session_id": "1f4e91f2-95f9-5a5b-9180-21c688fba583"
+    },
+    {
+      "account_id": "38e47995-eebd-51f5-a010-5f74edcb0745",
+      "confidence": "observed_config",
+      "contains_console_logs": false,
+      "contains_exception": false,
+      "current_url": "https://app.usecentralize.com/account/38e47995-eebd-51f5-a010-5f74edcb0745/contacts",
+      "day_offset": 140,
+      "distinct_id": "95769632-eaa5-562b-b7d1-a1662636d807",
+      "event": "$autocapture",
+      "event_id": "0c463083-6f6e-5a24-ab4c-f0f58dadf37d",
+      "observed_at": "2026-11-08T01:00:00Z",
+      "properties": {
+        "$browser": "Chrome",
+        "$pathname": "/account/38e47995-eebd-51f5-a010-5f74edcb0745/contacts",
+        "$session_id": "1f4e91f2-95f9-5a5b-9180-21c688fba583",
+        "account_archetype": "risk_watch",
+        "centralize_account_id": "38e47995-eebd-51f5-a010-5f74edcb0745",
+        "element": "tab",
+        "network_timing_ms": 948,
+        "organization_id": "org_fleetops",
+        "perturbation_bucket": 5,
+        "text": "Champion"
+      },
+      "replay_ref": "posthog:recording:1f4e91f2-95f9-5a5b-9180-21c688fba583",
+      "session_id": "1f4e91f2-95f9-5a5b-9180-21c688fba583"
+    }
+  ]
+}

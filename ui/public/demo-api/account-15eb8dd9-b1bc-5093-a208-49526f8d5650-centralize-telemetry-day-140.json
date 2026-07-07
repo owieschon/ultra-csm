@@ -1,0 +1,347 @@
+{
+  "account_id": "15eb8dd9-b1bc-5093-a208-49526f8d5650",
+  "account_name": "Aspenridge Supply Chain",
+  "account_slug": "aspenridge-supply",
+  "app_events": [
+    {
+      "account_id": "15eb8dd9-b1bc-5093-a208-49526f8d5650",
+      "confidence": "synthetic_truth",
+      "day_offset": 140,
+      "event_id": "68dede0e-e04e-51b3-ad8c-fb495254e0c6",
+      "event_type": "account_viewed",
+      "feature": "account_workspace",
+      "object_id": "001eae15-1d19-5e5e-81af-97b14a0c2280",
+      "object_type": "account",
+      "observed_at": "2026-11-08T00:00:00Z",
+      "properties": {
+        "lifecycle_arc": "silent_decline"
+      },
+      "route": "/account/15eb8dd9-b1bc-5093-a208-49526f8d5650",
+      "source_ref": "centralize_app:mcp_api_simulated",
+      "user_id": "csm-102"
+    },
+    {
+      "account_id": "15eb8dd9-b1bc-5093-a208-49526f8d5650",
+      "confidence": "synthetic_truth",
+      "day_offset": 140,
+      "event_id": "28ec0ba9-8303-5cc3-95dd-8d096e2e34fb",
+      "event_type": "usage_report_viewed",
+      "feature": "usage_reporting",
+      "object_id": "fea97fe5-44a8-5f42-9128-17d938991da0",
+      "object_type": "usage_report",
+      "observed_at": "2026-11-08T01:00:00Z",
+      "properties": {
+        "health_band": "green",
+        "trend": "declining"
+      },
+      "route": "/account/15eb8dd9-b1bc-5093-a208-49526f8d5650/reporting",
+      "source_ref": "centralize_app:mcp_api_simulated",
+      "user_id": "csm-102"
+    },
+    {
+      "account_id": "15eb8dd9-b1bc-5093-a208-49526f8d5650",
+      "confidence": "inferred_route",
+      "day_offset": 140,
+      "event_id": "ce1c3c21-9e06-58d6-8429-9258607dcaa9",
+      "event_type": "saved_view_opened",
+      "feature": "accounts",
+      "object_id": "f3eab92d-72e6-5321-825e-22852ab3f5ab",
+      "object_type": "saved_view",
+      "observed_at": "2026-11-08T04:00:00Z",
+      "properties": {
+        "lifecycle_arc": "silent_decline",
+        "noise_class": "realistic_app_exhaust"
+      },
+      "route": "/accounts",
+      "source_ref": "centralize_app:mcp_api_simulated",
+      "user_id": "csm-102"
+    },
+    {
+      "account_id": "15eb8dd9-b1bc-5093-a208-49526f8d5650",
+      "confidence": "inferred_route",
+      "day_offset": 140,
+      "event_id": "e376f824-e1e9-5013-ba1d-4ff5baf17703",
+      "event_type": "contact_search_performed",
+      "feature": "contacts",
+      "object_id": "2f7b9e57-ad4a-54e6-9c0b-442affd82ec1",
+      "object_type": "search",
+      "observed_at": "2026-11-08T05:00:00Z",
+      "properties": {
+        "lifecycle_arc": "silent_decline",
+        "noise_class": "realistic_app_exhaust"
+      },
+      "route": "/contacts",
+      "source_ref": "centralize_app:mcp_api_simulated",
+      "user_id": "csm-102"
+    }
+  ],
+  "as_of": "2026-11-08",
+  "day_offset": 140,
+  "derived_usage_signals": [
+    {
+      "account_id": "15eb8dd9-b1bc-5093-a208-49526f8d5650",
+      "grain": "company",
+      "metric_name": "centralize_account_views",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "9d3f5206-7e34-59cd-adeb-dedd94163204",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 1.0
+    },
+    {
+      "account_id": "15eb8dd9-b1bc-5093-a208-49526f8d5650",
+      "grain": "company",
+      "metric_name": "centralize_action_completions",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "bf69b4b2-9888-5c04-9ff6-659f7fb23296",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 0.0
+    },
+    {
+      "account_id": "15eb8dd9-b1bc-5093-a208-49526f8d5650",
+      "grain": "company",
+      "metric_name": "centralize_integration_sync_failures",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "2a3347c3-6ce8-5196-b154-96f5c05b6a4f",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 0.0
+    },
+    {
+      "account_id": "15eb8dd9-b1bc-5093-a208-49526f8d5650",
+      "grain": "company",
+      "metric_name": "centralize_relationship_events",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "7ac10e4f-9dd5-525a-9a2d-4d04956ee3f8",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 0.0
+    },
+    {
+      "account_id": "15eb8dd9-b1bc-5093-a208-49526f8d5650",
+      "grain": "company",
+      "metric_name": "posthog_autocapture_events",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "b411331a-8d6e-562a-bc83-b1c08cec9479",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 5.0
+    },
+    {
+      "account_id": "15eb8dd9-b1bc-5093-a208-49526f8d5650",
+      "grain": "company",
+      "metric_name": "posthog_frontend_exceptions",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "def3d635-4ee6-5225-bebf-7b64275401e9",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 0.0
+    },
+    {
+      "account_id": "15eb8dd9-b1bc-5093-a208-49526f8d5650",
+      "grain": "company",
+      "metric_name": "posthog_session_recordings",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "0ba02faa-6f31-5a0d-97f7-19df39e2b4c6",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 3.0
+    }
+  ],
+  "posthog_events": [
+    {
+      "account_id": "15eb8dd9-b1bc-5093-a208-49526f8d5650",
+      "confidence": "observed_config",
+      "contains_console_logs": false,
+      "contains_exception": false,
+      "current_url": "https://app.usecentralize.com/account/15eb8dd9-b1bc-5093-a208-49526f8d5650/reporting",
+      "day_offset": 140,
+      "distinct_id": "743a74ec-9bce-5629-8a8b-e655e802fd18",
+      "event": "$pageview",
+      "event_id": "c86df01a-4ebf-5ee5-a95f-98ec10309c9b",
+      "observed_at": "2026-11-08T00:00:00Z",
+      "properties": {
+        "$browser": "Chrome",
+        "$pathname": "/account/15eb8dd9-b1bc-5093-a208-49526f8d5650/reporting",
+        "$session_id": "abce39d9-7dbb-59cc-88d2-9fef95cc2f3d",
+        "centralize_account_id": "15eb8dd9-b1bc-5093-a208-49526f8d5650",
+        "organization_id": "org_fleetops",
+        "posthog_surface": "web_app"
+      },
+      "replay_ref": "posthog:recording:abce39d9-7dbb-59cc-88d2-9fef95cc2f3d",
+      "session_id": "abce39d9-7dbb-59cc-88d2-9fef95cc2f3d"
+    },
+    {
+      "account_id": "15eb8dd9-b1bc-5093-a208-49526f8d5650",
+      "confidence": "observed_config",
+      "contains_console_logs": false,
+      "contains_exception": false,
+      "current_url": "https://app.usecentralize.com/account/15eb8dd9-b1bc-5093-a208-49526f8d5650/reporting",
+      "day_offset": 140,
+      "distinct_id": "743a74ec-9bce-5629-8a8b-e655e802fd18",
+      "event": "$autocapture",
+      "event_id": "b6076b4b-313d-53f6-b06e-f5fa1d445101",
+      "observed_at": "2026-11-08T01:00:00Z",
+      "properties": {
+        "$browser": "Chrome",
+        "$pathname": "/account/15eb8dd9-b1bc-5093-a208-49526f8d5650/reporting",
+        "$session_id": "abce39d9-7dbb-59cc-88d2-9fef95cc2f3d",
+        "centralize_account_id": "15eb8dd9-b1bc-5093-a208-49526f8d5650",
+        "element": "button",
+        "organization_id": "org_fleetops",
+        "text": "Open usage report"
+      },
+      "replay_ref": "posthog:recording:abce39d9-7dbb-59cc-88d2-9fef95cc2f3d",
+      "session_id": "abce39d9-7dbb-59cc-88d2-9fef95cc2f3d"
+    },
+    {
+      "account_id": "15eb8dd9-b1bc-5093-a208-49526f8d5650",
+      "confidence": "inferred_route",
+      "contains_console_logs": false,
+      "contains_exception": false,
+      "current_url": "https://app.usecentralize.com/account/15eb8dd9-b1bc-5093-a208-49526f8d5650/reporting",
+      "day_offset": 140,
+      "distinct_id": "743a74ec-9bce-5629-8a8b-e655e802fd18",
+      "event": "$autocapture",
+      "event_id": "3359d1dc-3938-5247-ab74-a3985ec09240",
+      "observed_at": "2026-11-08T02:00:00Z",
+      "properties": {
+        "$browser": "Chrome",
+        "$pathname": "/account/15eb8dd9-b1bc-5093-a208-49526f8d5650/reporting",
+        "$session_id": "abce39d9-7dbb-59cc-88d2-9fef95cc2f3d",
+        "centralize_account_id": "15eb8dd9-b1bc-5093-a208-49526f8d5650",
+        "element": "tab",
+        "network_timing_ms": 620,
+        "organization_id": "org_fleetops",
+        "text": "Usage"
+      },
+      "replay_ref": "posthog:recording:abce39d9-7dbb-59cc-88d2-9fef95cc2f3d",
+      "session_id": "abce39d9-7dbb-59cc-88d2-9fef95cc2f3d"
+    },
+    {
+      "account_id": null,
+      "confidence": "observed_config",
+      "contains_console_logs": false,
+      "contains_exception": false,
+      "current_url": "https://app.usecentralize.com/account/15eb8dd9-b1bc-5093-a208-49526f8d5650/reporting",
+      "day_offset": 140,
+      "distinct_id": "743a74ec-9bce-5629-8a8b-e655e802fd18",
+      "event": "$autocapture",
+      "event_id": "7c058a8b-5575-5704-8ed9-3f1fcb26037a",
+      "observed_at": "2026-11-08T04:00:00Z",
+      "properties": {
+        "$browser": "Chrome",
+        "$pathname": "/account/15eb8dd9-b1bc-5093-a208-49526f8d5650/reporting",
+        "$session_id": "abce39d9-7dbb-59cc-88d2-9fef95cc2f3d",
+        "centralize_account_id": "15eb8dd9-b1bc-5093-a208-49526f8d5650",
+        "element": "svg",
+        "organization_id": "org_fleetops",
+        "text": "relationship-map-canvas"
+      },
+      "replay_ref": "posthog:recording:abce39d9-7dbb-59cc-88d2-9fef95cc2f3d",
+      "session_id": "abce39d9-7dbb-59cc-88d2-9fef95cc2f3d"
+    },
+    {
+      "account_id": "15eb8dd9-b1bc-5093-a208-49526f8d5650",
+      "confidence": "observed_config",
+      "contains_console_logs": false,
+      "contains_exception": false,
+      "current_url": "https://app.usecentralize.com/accounts",
+      "day_offset": 140,
+      "distinct_id": "743a74ec-9bce-5629-8a8b-e655e802fd18",
+      "event": "$pageview",
+      "event_id": "0dff3562-8191-5864-beac-9a70e28a1bc6",
+      "observed_at": "2026-11-08T00:00:00Z",
+      "properties": {
+        "$browser": "Chrome",
+        "$pathname": "/accounts",
+        "$session_id": "a3b79866-de32-52f2-9d46-ab57e3dcdd42",
+        "centralize_account_id": "15eb8dd9-b1bc-5093-a208-49526f8d5650",
+        "network_timing_ms": 737,
+        "organization_id": "org_fleetops",
+        "posthog_surface": "web_app"
+      },
+      "replay_ref": "posthog:recording:a3b79866-de32-52f2-9d46-ab57e3dcdd42",
+      "session_id": "a3b79866-de32-52f2-9d46-ab57e3dcdd42"
+    },
+    {
+      "account_id": "15eb8dd9-b1bc-5093-a208-49526f8d5650",
+      "confidence": "observed_config",
+      "contains_console_logs": false,
+      "contains_exception": false,
+      "current_url": "https://app.usecentralize.com/accounts",
+      "day_offset": 140,
+      "distinct_id": "743a74ec-9bce-5629-8a8b-e655e802fd18",
+      "event": "$autocapture",
+      "event_id": "1bc867b2-c5e4-5bf1-a6c3-4df9e650812a",
+      "observed_at": "2026-11-08T01:00:00Z",
+      "properties": {
+        "$browser": "Chrome",
+        "$pathname": "/accounts",
+        "$session_id": "a3b79866-de32-52f2-9d46-ab57e3dcdd42",
+        "centralize_account_id": "15eb8dd9-b1bc-5093-a208-49526f8d5650",
+        "element": "tab",
+        "network_timing_ms": 737,
+        "organization_id": "org_fleetops",
+        "text": "Green accounts"
+      },
+      "replay_ref": "posthog:recording:a3b79866-de32-52f2-9d46-ab57e3dcdd42",
+      "session_id": "a3b79866-de32-52f2-9d46-ab57e3dcdd42"
+    },
+    {
+      "account_id": "15eb8dd9-b1bc-5093-a208-49526f8d5650",
+      "confidence": "observed_config",
+      "contains_console_logs": false,
+      "contains_exception": false,
+      "current_url": "https://app.usecentralize.com/account/15eb8dd9-b1bc-5093-a208-49526f8d5650/engagement",
+      "day_offset": 140,
+      "distinct_id": "743a74ec-9bce-5629-8a8b-e655e802fd18",
+      "event": "$pageview",
+      "event_id": "e73038ee-7a58-52b3-9510-c1e6a954ba24",
+      "observed_at": "2026-11-08T01:00:00Z",
+      "properties": {
+        "$browser": "Chrome",
+        "$pathname": "/account/15eb8dd9-b1bc-5093-a208-49526f8d5650/engagement",
+        "$session_id": "cc5bc523-25c3-5d98-bee8-2562c411f6f6",
+        "centralize_account_id": "15eb8dd9-b1bc-5093-a208-49526f8d5650",
+        "network_timing_ms": 656,
+        "organization_id": "org_fleetops",
+        "posthog_surface": "web_app"
+      },
+      "replay_ref": "posthog:recording:cc5bc523-25c3-5d98-bee8-2562c411f6f6",
+      "session_id": "cc5bc523-25c3-5d98-bee8-2562c411f6f6"
+    },
+    {
+      "account_id": "15eb8dd9-b1bc-5093-a208-49526f8d5650",
+      "confidence": "observed_config",
+      "contains_console_logs": false,
+      "contains_exception": false,
+      "current_url": "https://app.usecentralize.com/account/15eb8dd9-b1bc-5093-a208-49526f8d5650/engagement",
+      "day_offset": 140,
+      "distinct_id": "743a74ec-9bce-5629-8a8b-e655e802fd18",
+      "event": "$autocapture",
+      "event_id": "a05a03ae-94c3-5b4a-a487-79094bbfa62a",
+      "observed_at": "2026-11-08T02:00:00Z",
+      "properties": {
+        "$browser": "Chrome",
+        "$pathname": "/account/15eb8dd9-b1bc-5093-a208-49526f8d5650/engagement",
+        "$session_id": "cc5bc523-25c3-5d98-bee8-2562c411f6f6",
+        "centralize_account_id": "15eb8dd9-b1bc-5093-a208-49526f8d5650",
+        "element": "link",
+        "network_timing_ms": 656,
+        "organization_id": "org_fleetops",
+        "text": "Trend"
+      },
+      "replay_ref": "posthog:recording:cc5bc523-25c3-5d98-bee8-2562c411f6f6",
+      "session_id": "cc5bc523-25c3-5d98-bee8-2562c411f6f6"
+    }
+  ]
+}

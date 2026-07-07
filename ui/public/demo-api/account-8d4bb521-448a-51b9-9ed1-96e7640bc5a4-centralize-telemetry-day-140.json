@@ -1,0 +1,226 @@
+{
+  "account_id": "8d4bb521-448a-51b9-9ed1-96e7640bc5a4",
+  "account_name": "Netherfield Industrial Supply",
+  "account_slug": "netherfield-industrial-supply",
+  "app_events": [
+    {
+      "account_id": "8d4bb521-448a-51b9-9ed1-96e7640bc5a4",
+      "confidence": "synthetic_truth",
+      "day_offset": 140,
+      "event_id": "ddf56589-fb29-5dd8-a5ed-7e62a3df2723",
+      "event_type": "account_viewed",
+      "feature": "account_workspace",
+      "object_id": "57ecb889-3f3d-528f-8310-cc6b544cf379",
+      "object_type": "account",
+      "observed_at": "2026-11-08T00:00:00Z",
+      "properties": {
+        "archetype": "tech_touch",
+        "health_band": "green",
+        "lifecycle_stage": "steady_state",
+        "perturbation_bucket": 2
+      },
+      "route": "/account/8d4bb521-448a-51b9-9ed1-96e7640bc5a4",
+      "source_ref": "centralize_app:mcp_api_simulated",
+      "user_id": "csm-103"
+    },
+    {
+      "account_id": "8d4bb521-448a-51b9-9ed1-96e7640bc5a4",
+      "confidence": "synthetic_truth",
+      "day_offset": 140,
+      "event_id": "8c9fbd13-3a29-59d7-9254-398367715a57",
+      "event_type": "saved_view_opened",
+      "feature": "accounts",
+      "object_id": "80161426-6770-583f-9dd1-9a7d76a808b0",
+      "object_type": "saved_view",
+      "observed_at": "2026-11-08T01:00:00Z",
+      "properties": {
+        "archetype": "tech_touch",
+        "cohort": "tech_touch",
+        "health_band": "green",
+        "lifecycle_stage": "steady_state",
+        "perturbation_bucket": 2
+      },
+      "route": "/accounts",
+      "source_ref": "centralize_app:mcp_api_simulated",
+      "user_id": "csm-103"
+    },
+    {
+      "account_id": "8d4bb521-448a-51b9-9ed1-96e7640bc5a4",
+      "confidence": "inferred_route",
+      "day_offset": 140,
+      "event_id": "5eae5d18-fdf6-5bf7-a687-4c344f56d48e",
+      "event_type": "saved_view_opened",
+      "feature": "accounts",
+      "object_id": "e5e37b28-54a3-56ad-80e9-852af0ed9c10",
+      "object_type": "saved_view",
+      "observed_at": "2026-11-08T04:00:00Z",
+      "properties": {
+        "active_users": 3,
+        "archetype": "tech_touch",
+        "health_band": "green",
+        "lifecycle_stage": "steady_state",
+        "noise_class": "perturbed_app_exhaust",
+        "perturbation_bucket": 2
+      },
+      "route": "/accounts",
+      "source_ref": "centralize_app:mcp_api_simulated",
+      "user_id": "csm-103"
+    },
+    {
+      "account_id": "8d4bb521-448a-51b9-9ed1-96e7640bc5a4",
+      "confidence": "inferred_route",
+      "day_offset": 140,
+      "event_id": "e73b58b9-02e0-5be5-b0bd-143b41039121",
+      "event_type": "contact_search_performed",
+      "feature": "contacts",
+      "object_id": "f168b753-151b-5758-8836-c6c3a407cd8a",
+      "object_type": "search",
+      "observed_at": "2026-11-08T05:00:00Z",
+      "properties": {
+        "active_users": 3,
+        "archetype": "tech_touch",
+        "health_band": "green",
+        "lifecycle_stage": "steady_state",
+        "noise_class": "perturbed_app_exhaust",
+        "perturbation_bucket": 2
+      },
+      "route": "/contacts",
+      "source_ref": "centralize_app:mcp_api_simulated",
+      "user_id": "csm-103"
+    }
+  ],
+  "as_of": "2026-11-08",
+  "day_offset": 140,
+  "derived_usage_signals": [
+    {
+      "account_id": "8d4bb521-448a-51b9-9ed1-96e7640bc5a4",
+      "grain": "company",
+      "metric_name": "centralize_account_views",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "d76ab7ea-fa64-54af-9f13-faeeb5f1e828",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 1.0
+    },
+    {
+      "account_id": "8d4bb521-448a-51b9-9ed1-96e7640bc5a4",
+      "grain": "company",
+      "metric_name": "centralize_action_completions",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "95456453-6992-540e-8ffd-777266d3643a",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 0.0
+    },
+    {
+      "account_id": "8d4bb521-448a-51b9-9ed1-96e7640bc5a4",
+      "grain": "company",
+      "metric_name": "centralize_integration_sync_failures",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "4177a22e-2632-5038-94ae-6de07b3e117f",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 0.0
+    },
+    {
+      "account_id": "8d4bb521-448a-51b9-9ed1-96e7640bc5a4",
+      "grain": "company",
+      "metric_name": "centralize_relationship_events",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "65325a86-a495-5f8e-809a-ea591f6a389f",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 0.0
+    },
+    {
+      "account_id": "8d4bb521-448a-51b9-9ed1-96e7640bc5a4",
+      "grain": "company",
+      "metric_name": "posthog_autocapture_events",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "1c3220d3-51d4-52bb-b9b6-05d11f0fd399",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 1.0
+    },
+    {
+      "account_id": "8d4bb521-448a-51b9-9ed1-96e7640bc5a4",
+      "grain": "company",
+      "metric_name": "posthog_frontend_exceptions",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "008cdcbb-4350-5960-9484-d2195f0c7107",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 0.0
+    },
+    {
+      "account_id": "8d4bb521-448a-51b9-9ed1-96e7640bc5a4",
+      "grain": "company",
+      "metric_name": "posthog_session_recordings",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "21ee4402-192f-5d11-8c72-1abcbfc4c084",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 1.0
+    }
+  ],
+  "posthog_events": [
+    {
+      "account_id": "8d4bb521-448a-51b9-9ed1-96e7640bc5a4",
+      "confidence": "observed_config",
+      "contains_console_logs": false,
+      "contains_exception": false,
+      "current_url": "https://app.usecentralize.com/accounts",
+      "day_offset": 140,
+      "distinct_id": "44e2fbdf-5113-556f-8f49-4e2b78d7c95e",
+      "event": "$pageview",
+      "event_id": "82c59363-607b-5507-a617-d638913e00bb",
+      "observed_at": "2026-11-08T00:00:00Z",
+      "properties": {
+        "$browser": "Chrome",
+        "$pathname": "/accounts",
+        "$session_id": "d87590c6-dee9-590a-88cd-5ef6d7f71bac",
+        "account_archetype": "tech_touch",
+        "centralize_account_id": "8d4bb521-448a-51b9-9ed1-96e7640bc5a4",
+        "network_timing_ms": 810,
+        "organization_id": "org_fleetops",
+        "perturbation_bucket": 16,
+        "posthog_surface": "web_app"
+      },
+      "replay_ref": "posthog:recording:d87590c6-dee9-590a-88cd-5ef6d7f71bac",
+      "session_id": "d87590c6-dee9-590a-88cd-5ef6d7f71bac"
+    },
+    {
+      "account_id": "8d4bb521-448a-51b9-9ed1-96e7640bc5a4",
+      "confidence": "observed_config",
+      "contains_console_logs": false,
+      "contains_exception": false,
+      "current_url": "https://app.usecentralize.com/accounts",
+      "day_offset": 140,
+      "distinct_id": "44e2fbdf-5113-556f-8f49-4e2b78d7c95e",
+      "event": "$autocapture",
+      "event_id": "5c1c8921-aadb-5897-9bd2-d259d5eeb3a2",
+      "observed_at": "2026-11-08T01:00:00Z",
+      "properties": {
+        "$browser": "Chrome",
+        "$pathname": "/accounts",
+        "$session_id": "d87590c6-dee9-590a-88cd-5ef6d7f71bac",
+        "account_archetype": "tech_touch",
+        "centralize_account_id": "8d4bb521-448a-51b9-9ed1-96e7640bc5a4",
+        "element": "link",
+        "network_timing_ms": 810,
+        "organization_id": "org_fleetops",
+        "perturbation_bucket": 16,
+        "text": "Saved view"
+      },
+      "replay_ref": "posthog:recording:d87590c6-dee9-590a-88cd-5ef6d7f71bac",
+      "session_id": "d87590c6-dee9-590a-88cd-5ef6d7f71bac"
+    }
+  ]
+}

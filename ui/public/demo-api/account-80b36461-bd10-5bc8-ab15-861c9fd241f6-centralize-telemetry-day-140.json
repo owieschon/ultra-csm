@@ -1,0 +1,226 @@
+{
+  "account_id": "80b36461-bd10-5bc8-ab15-861c9fd241f6",
+  "account_name": "Driftwood2 Haulage",
+  "account_slug": "driftwood2-haulage",
+  "app_events": [
+    {
+      "account_id": "80b36461-bd10-5bc8-ab15-861c9fd241f6",
+      "confidence": "synthetic_truth",
+      "day_offset": 140,
+      "event_id": "08d6dbcf-524e-560a-bdb2-12dc6caad33a",
+      "event_type": "account_viewed",
+      "feature": "account_workspace",
+      "object_id": "3d95d7e5-ce21-55e9-bda4-28164fbb0e06",
+      "object_type": "account",
+      "observed_at": "2026-11-08T00:00:00Z",
+      "properties": {
+        "archetype": "tech_touch",
+        "health_band": "green",
+        "lifecycle_stage": "steady_state",
+        "perturbation_bucket": 8
+      },
+      "route": "/account/80b36461-bd10-5bc8-ab15-861c9fd241f6",
+      "source_ref": "centralize_app:mcp_api_simulated",
+      "user_id": "csm-103"
+    },
+    {
+      "account_id": "80b36461-bd10-5bc8-ab15-861c9fd241f6",
+      "confidence": "synthetic_truth",
+      "day_offset": 140,
+      "event_id": "e71644df-7d38-5aac-bbad-50f48a900bc2",
+      "event_type": "saved_view_opened",
+      "feature": "accounts",
+      "object_id": "690fa560-4dec-5000-bbf0-d6d2befc16f1",
+      "object_type": "saved_view",
+      "observed_at": "2026-11-08T01:00:00Z",
+      "properties": {
+        "archetype": "tech_touch",
+        "cohort": "tech_touch",
+        "health_band": "green",
+        "lifecycle_stage": "steady_state",
+        "perturbation_bucket": 8
+      },
+      "route": "/accounts",
+      "source_ref": "centralize_app:mcp_api_simulated",
+      "user_id": "csm-103"
+    },
+    {
+      "account_id": "80b36461-bd10-5bc8-ab15-861c9fd241f6",
+      "confidence": "inferred_route",
+      "day_offset": 140,
+      "event_id": "499ef3da-00df-599c-a621-7dc5bfc5bcc1",
+      "event_type": "saved_view_opened",
+      "feature": "accounts",
+      "object_id": "1b86b1e4-93ef-5695-bffe-b7681bcf9874",
+      "object_type": "saved_view",
+      "observed_at": "2026-11-08T04:00:00Z",
+      "properties": {
+        "active_users": 5,
+        "archetype": "tech_touch",
+        "health_band": "green",
+        "lifecycle_stage": "steady_state",
+        "noise_class": "perturbed_app_exhaust",
+        "perturbation_bucket": 8
+      },
+      "route": "/accounts",
+      "source_ref": "centralize_app:mcp_api_simulated",
+      "user_id": "csm-103"
+    },
+    {
+      "account_id": "80b36461-bd10-5bc8-ab15-861c9fd241f6",
+      "confidence": "inferred_route",
+      "day_offset": 140,
+      "event_id": "3fcf07cc-10eb-578d-b173-915b09c1dff9",
+      "event_type": "contact_search_performed",
+      "feature": "contacts",
+      "object_id": "3a700d92-324e-54b3-bc98-976517462627",
+      "object_type": "search",
+      "observed_at": "2026-11-08T05:00:00Z",
+      "properties": {
+        "active_users": 5,
+        "archetype": "tech_touch",
+        "health_band": "green",
+        "lifecycle_stage": "steady_state",
+        "noise_class": "perturbed_app_exhaust",
+        "perturbation_bucket": 8
+      },
+      "route": "/contacts",
+      "source_ref": "centralize_app:mcp_api_simulated",
+      "user_id": "csm-103"
+    }
+  ],
+  "as_of": "2026-11-08",
+  "day_offset": 140,
+  "derived_usage_signals": [
+    {
+      "account_id": "80b36461-bd10-5bc8-ab15-861c9fd241f6",
+      "grain": "company",
+      "metric_name": "centralize_account_views",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "f95bebb8-e33c-53ed-a019-ff0bc2f68f8f",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 1.0
+    },
+    {
+      "account_id": "80b36461-bd10-5bc8-ab15-861c9fd241f6",
+      "grain": "company",
+      "metric_name": "centralize_action_completions",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "6000a686-4132-5310-bf08-87b1992657d9",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 0.0
+    },
+    {
+      "account_id": "80b36461-bd10-5bc8-ab15-861c9fd241f6",
+      "grain": "company",
+      "metric_name": "centralize_integration_sync_failures",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "7463507a-59f0-5929-a9a6-8497892b9ff7",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 0.0
+    },
+    {
+      "account_id": "80b36461-bd10-5bc8-ab15-861c9fd241f6",
+      "grain": "company",
+      "metric_name": "centralize_relationship_events",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "633e0d2d-3630-5445-bd01-ebbbf0a27627",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 0.0
+    },
+    {
+      "account_id": "80b36461-bd10-5bc8-ab15-861c9fd241f6",
+      "grain": "company",
+      "metric_name": "posthog_autocapture_events",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "39e1be2e-6551-58e5-8176-f6ca45b9f527",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 1.0
+    },
+    {
+      "account_id": "80b36461-bd10-5bc8-ab15-861c9fd241f6",
+      "grain": "company",
+      "metric_name": "posthog_frontend_exceptions",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "beacadbf-e4ef-5816-b9ba-7bc9ee99c513",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 0.0
+    },
+    {
+      "account_id": "80b36461-bd10-5bc8-ab15-861c9fd241f6",
+      "grain": "company",
+      "metric_name": "posthog_session_recordings",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "a02974dd-e41c-5923-8c11-a9e01cf11886",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 1.0
+    }
+  ],
+  "posthog_events": [
+    {
+      "account_id": "80b36461-bd10-5bc8-ab15-861c9fd241f6",
+      "confidence": "observed_config",
+      "contains_console_logs": false,
+      "contains_exception": false,
+      "current_url": "https://app.usecentralize.com/accounts",
+      "day_offset": 140,
+      "distinct_id": "44e2fbdf-5113-556f-8f49-4e2b78d7c95e",
+      "event": "$pageview",
+      "event_id": "6616598f-4a68-5d9f-a0dd-3d8d076d255b",
+      "observed_at": "2026-11-08T00:00:00Z",
+      "properties": {
+        "$browser": "Chrome",
+        "$pathname": "/accounts",
+        "$session_id": "064091ce-5ce3-5454-8204-03a8c53f4c87",
+        "account_archetype": "tech_touch",
+        "centralize_account_id": "80b36461-bd10-5bc8-ab15-861c9fd241f6",
+        "network_timing_ms": 667,
+        "organization_id": "org_fleetops",
+        "perturbation_bucket": 9,
+        "posthog_surface": "web_app"
+      },
+      "replay_ref": "posthog:recording:064091ce-5ce3-5454-8204-03a8c53f4c87",
+      "session_id": "064091ce-5ce3-5454-8204-03a8c53f4c87"
+    },
+    {
+      "account_id": "80b36461-bd10-5bc8-ab15-861c9fd241f6",
+      "confidence": "observed_config",
+      "contains_console_logs": false,
+      "contains_exception": false,
+      "current_url": "https://app.usecentralize.com/accounts",
+      "day_offset": 140,
+      "distinct_id": "44e2fbdf-5113-556f-8f49-4e2b78d7c95e",
+      "event": "$autocapture",
+      "event_id": "1261a728-280a-5762-8430-35e43f9a7e78",
+      "observed_at": "2026-11-08T01:00:00Z",
+      "properties": {
+        "$browser": "Chrome",
+        "$pathname": "/accounts",
+        "$session_id": "064091ce-5ce3-5454-8204-03a8c53f4c87",
+        "account_archetype": "tech_touch",
+        "centralize_account_id": "80b36461-bd10-5bc8-ab15-861c9fd241f6",
+        "element": "link",
+        "network_timing_ms": 667,
+        "organization_id": "org_fleetops",
+        "perturbation_bucket": 9,
+        "text": "Saved view"
+      },
+      "replay_ref": "posthog:recording:064091ce-5ce3-5454-8204-03a8c53f4c87",
+      "session_id": "064091ce-5ce3-5454-8204-03a8c53f4c87"
+    }
+  ]
+}
