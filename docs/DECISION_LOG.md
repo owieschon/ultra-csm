@@ -23,15 +23,15 @@ teaching the judge to match the owner.
 fail-closed until the owner relabel packet is complete and the live judge is
 rerun.
 
-**Owner relabel stop.** Codex prepared the blind packet
+**Owner relabel stop.** The executor prepared the blind packet
 `eval/gold/slot_b_quality_hard_oa_a2_ontask_relabel_packet.jsonl`: all 64 hard
 rows, request plus output text only, `on_task_relevance` only, no judge scores,
 no model identity, no previous human labels, and no held-out key fields. The
-owner must label `owner_on_task_relevance` blind before Codex ingests anything.
+owner must label `owner_on_task_relevance` blind before the run ingests anything.
 
-**Do-not-change boundary.** Codex must not edit the 0.6 gate, must not edit a
+**Do-not-change boundary.** The executor must not edit the 0.6 gate, must not edit a
 human label, and must not hand-edit `judge_agreement.json` or
-`judge_compare.json` to match v9. After owner labels are supplied, Codex will
+`judge_compare.json` to match v9. After owner labels are supplied, the run will
 mechanically re-derive the hard vectors, rerun `judge_validation_status()` and
 the migration, and record whichever outcome results.
 
@@ -40,7 +40,7 @@ the migration, and record whichever outcome results.
 ## OA-A2 outcome: v9 scoped, not fully validated (2026-07-07)
 
 **Outcome.** Owner relabeled `on_task_relevance` for all 64 hard rows blind.
-Codex mechanically merged only that dimension into `eval/gold/slot_b_quality_hard.jsonl`
+The run mechanically merged only that dimension into `eval/gold/slot_b_quality_hard.jsonl`
 and `eval/gold/slot_b_quality_hard_key.jsonl`; no other human-label dimension,
 gold row text, key family, or 0.6 gate was edited. The resulting on-task
 reference distribution is `1=10`, `2=42`, `3=12`; hard reference pass/fail is
@@ -149,7 +149,7 @@ not the drift-power experiment.
 
 ## MP-A A6 expanded hard layer: owner decision pending (2026-07-06)
 
-**Decision status.** Pending OA-A2. Codex does not choose the production judge model. The
+**Decision status.** Pending OA-A2. The executor does not choose the production judge model. The
 expanded 64-case hard layer changes the verdict: the shipped Sonnet 5 judge no longer
 passes the validation gate, and rolling back to Sonnet 4.6 does not clear it either.
 
@@ -192,7 +192,7 @@ artifact was written.
 **Owner choice required.** The honest options are: keep Sonnet 5 despite the expanded-set
 validation failure, roll back to Sonnet 4.6 despite its own expanded-set validation failure,
 or sanction a narrow rubric-citing prompt/scorer fix for the observed on-task/grounding
-boundary. Codex must not choose among these.
+boundary. The executor must not choose among these.
 
 ---
 

@@ -48,6 +48,6 @@ For each JSONL row:
 5. Do not look up the candidate in any key, judge artifact, disagreement report, or
    prior human-label file while labeling.
 
-After all 64 rows have `owner_on_task_relevance` filled, hand the file back. Codex
+After all 64 rows have `owner_on_task_relevance` filled, hand the file back. The run
 will mechanically merge only this dimension into the hard labels/key, recompute
 overall pass from the six dimensions, and rerun validation.
