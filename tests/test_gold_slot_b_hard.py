@@ -14,8 +14,10 @@ from eval.gold_slot_b_hard import (
     HARD_PATH,
     build_a6_expansion_artifacts,
     build_hard_artifacts,
+    build_oa_a2_ontask_relabel_packet,
     hard_blindness_errors,
     hard_key_errors,
+    oa_a2_ontask_relabel_packet_errors,
     ratify_a6_expansion,
     _intended,
 )
@@ -153,6 +155,27 @@ def test_a6_ratification_requires_owner_labels_and_derives_reference(tmp_path):
     assert len(appended) == len(expansion_records)
     assert all(record["expected_vector"] == scores for record in appended.values())
     assert all(record["intended_failing_dimensions"] == ["safety_boundary"] for record in appended.values())
+
+
+def test_oa_a2_ontask_relabel_packet_is_blind_and_dimension_scoped(tmp_path):
+    records, _ = build_hard_artifacts()
+    path = tmp_path / "hard.jsonl"
+    _write_jsonl(path, records)
+
+    packet = build_oa_a2_ontask_relabel_packet(path)
+    raw = "\n".join(json.dumps(record, sort_keys=True) for record in packet)
+
+    assert len(packet) == len(records)
+    assert oa_a2_ontask_relabel_packet_errors(packet) == []
+    assert all(record["dimension_to_label"] == "on_task_relevance" for record in packet)
+    assert all(record["owner_on_task_relevance"] is None for record in packet)
+    assert "human_labels" not in raw
+    assert "label_template" not in raw
+    assert "expected_vector" not in raw
+    assert "quality_variant" not in raw
+    assert "model_id" not in raw
+    assert "prompt_version" not in raw
+    assert "judge" not in raw
 
 
 def _write_jsonl(path, records):

@@ -30,7 +30,7 @@ def test_validates_from_committed_evidence_artifacts():
 
     assert status["validated"] is True
     assert status["failures"] == []
-    assert status["method"]["judge_prompt_version"] == "quality-judge-v8"
+    assert status["method"]["judge_prompt_version"] == "quality-judge-v9"
     assert status["method"]["runs_per_case"] >= 3
     for dim in QUALITY_DIMENSIONS:
         assert status["hard"]["per_dimension_kappa_aggregated"][dim] >= GATE_KAPPA
@@ -38,7 +38,7 @@ def test_validates_from_committed_evidence_artifacts():
     assert status["clean"]["false_neg"] == 0
 
 
-def test_prompt_version_mismatch_fails_closed_v8():
+def test_prompt_version_mismatch_fails_closed_v9():
     """Reproduces the refuters' exact empirical method (shipcheck, Stream 20):
     bumping JUDGE_PROMPT_VERSION to a value that doesn't match the committed
     evidence artifacts must flip validated to False with a named failure --
@@ -123,7 +123,7 @@ def _live_artifact(*, runs_per_candidate=5, agg_pass=(True, True)):
     return {
         "draft_model_id": "claude-opus-4-8",
         "judge_model_id": "claude-sonnet-4-6",
-        "judge_prompt_version": "quality-judge-v8",
+        "judge_prompt_version": "quality-judge-v9",
         "runs_per_candidate": runs_per_candidate,
         "book_source": "stub",
         "candidates": [

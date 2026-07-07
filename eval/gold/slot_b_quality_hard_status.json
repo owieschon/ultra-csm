@@ -26,6 +26,8 @@
         "compare": "eval/gold/judge_compare.json"
       },
       "failures": [
+        "agreement judge_prompt_version 'quality-judge-v8' != shipped 'quality-judge-v9'",
+        "compare judge_prompt_version 'quality-judge-v8' != shipped 'quality-judge-v9'",
         "hard on_task_relevance kappa 0.289 < 0.6"
       ],
       "hard": {

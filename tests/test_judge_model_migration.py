@@ -21,7 +21,7 @@ def _case(candidate_id: str, reference: dict[str, int], vector: dict[str, int]) 
 def _compare(cases: list[dict]) -> dict:
     return {
         "model_id": "baseline",
-        "judge_prompt_version": "quality-judge-v8",
+        "judge_prompt_version": "quality-judge-v9",
         "runs_per_case": 3,
         "arms": {
             "cot@N": {
