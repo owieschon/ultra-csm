@@ -710,9 +710,14 @@ def _stable_item_dict(item: CSMWorkItem) -> dict:
         ]
     proposal = data.get("proposal")
     if proposal is not None:
-        proposal["proposal_id"] = (
-            f"runtime-generated:{item.account_id}:{proposal['action_type']}"
-        )
+        stable_proposal_id = f"runtime-generated:{item.account_id}:{proposal['action_type']}"
+        proposal["proposal_id"] = stable_proposal_id
+        work_packet = data.get("work_packet")
+        if work_packet is not None:
+            for cta in work_packet.get("allowed_ctas", []):
+                requirement = cta.get("governance_requirement")
+                if isinstance(requirement, str) and requirement.startswith("ActionGate proposal "):
+                    cta["governance_requirement"] = f"ActionGate proposal {stable_proposal_id}"
     return data
 
 

@@ -31,7 +31,211 @@
       "recommended_action": null,
       "slot_a_classifications": [],
       "swept_at": "2026-06-27",
-      "tenant_id": "ultra-demo"
+      "tenant_id": "ultra-demo",
+      "work_packet": {
+        "account_id": null,
+        "account_name": "Ambiguous account identity",
+        "allowed_ctas": [
+          {
+            "cta_id": "cta:identity-escalation:2026-06-27:inspect",
+            "disabled_reason": null,
+            "enabled": true,
+            "governance_requirement": null,
+            "kind": "inspect",
+            "label": "Inspect candidates",
+            "readonly_behavior": "Open local candidate details only.",
+            "source_ids": [
+              "dd638660-a13a-595c-a117-72a1ed5f15d0"
+            ]
+          },
+          {
+            "cta_id": "cta:identity-escalation:2026-06-27:feedback",
+            "disabled_reason": null,
+            "enabled": true,
+            "governance_requirement": null,
+            "kind": "leave_feedback",
+            "label": "Leave feedback",
+            "readonly_behavior": "Record local packet feedback only.",
+            "source_ids": [
+              "dd638660-a13a-595c-a117-72a1ed5f15d0"
+            ]
+          }
+        ],
+        "as_of_day": "2026-06-27",
+        "bucket_trace": {
+          "inputs": {
+            "candidate_account_count": 2
+          },
+          "lane": "blocked",
+          "matched": [
+            "ambiguous_identity",
+            "blocked"
+          ],
+          "near_misses": [],
+          "rule_id": "lane:identity:ambiguous-account",
+          "rule_label": "Ambiguous account identity blocks external action",
+          "source_ids": [
+            "dd638660-a13a-595c-a117-72a1ed5f15d0"
+          ],
+          "thresholds": {
+            "exactly_one_account_required": true
+          }
+        },
+        "cadence": "event_driven",
+        "confidence": 0.35,
+        "contact_plan": {
+          "backup_contact": null,
+          "channel": "operator review",
+          "internal_owner": null,
+          "primary_contact": null,
+          "reason_for_contact_choice": "No customer contact is safe until identity is resolved.",
+          "source_ids": [
+            "dd638660-a13a-595c-a117-72a1ed5f15d0"
+          ],
+          "tone": "internal only"
+        },
+        "coverage_trace": {
+          "accounts_scanned": 2,
+          "book_size": 2,
+          "excluded_or_suppressed_reason": null,
+          "freshness": "current_sweep",
+          "included_reason": "identity_escalation",
+          "last_reviewed_at": null
+        },
+        "diagnostic_hypothesis": {
+          "confidence": 0.35,
+          "counter_signals": [],
+          "signals": [
+            "contact resolution returned multiple candidate accounts"
+          ],
+          "source_ids": [
+            "dd638660-a13a-595c-a117-72a1ed5f15d0"
+          ],
+          "summary": "Ambiguous contact identity; no account was auto-selected.",
+          "unknowns": [
+            "correct account identity"
+          ]
+        },
+        "evidence_chain": [
+          {
+            "claim": "Contact evidence dd638660-a13a-595c-a117-72a1ed5f15d0 maps ambiguously.",
+            "field": "email",
+            "interpretation": "Identity is not safe enough for an external action.",
+            "observed_value": "dd638660-a13a-595c-a117-72a1ed5f15d0",
+            "source_id": "dd638660-a13a-595c-a117-72a1ed5f15d0",
+            "source_type": "crm",
+            "step_id": "evidence:identity:1",
+            "strength": "strong",
+            "supports": "internal_escalation"
+          }
+        ],
+        "feedback_hooks": [
+          {
+            "category": "wrong_diagnosis",
+            "label": "Wrong diagnosis",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "wrong_contact",
+            "label": "Wrong contact",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "wrong_action",
+            "label": "Wrong action",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "missing_evidence",
+            "label": "Missing evidence",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "wrong_bucket",
+            "label": "Wrong bucket",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "stale_data",
+            "label": "Stale data",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "product_feedback_candidate",
+            "label": "Product feedback candidate",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "education_resource_candidate",
+            "label": "Education resource candidate",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "dismiss_monitor",
+            "label": "Dismiss or monitor",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          }
+        ],
+        "generated_at": "2026-06-27",
+        "governance": {
+          "audit_requirements": [
+            "identity_resolution_required"
+          ],
+          "can_execute_from_ui": false,
+          "mode": "blocked",
+          "requires_action_gate": false,
+          "requires_human_principal": true
+        },
+        "implied_customer_state": "Customer state is unknown until identity is resolved.",
+        "job_type": "internal_escalation",
+        "lane": "blocked",
+        "open_questions": [
+          "which account owns this contact"
+        ],
+        "packet_id": "packet:identity-escalation:2026-06-27:2",
+        "prepared_artifacts": [
+          {
+            "artifact_id": "artifact:identity-escalation:2026-06-27",
+            "artifact_type": "internal_brief",
+            "body_or_outline": "Candidate accounts: 00d7906a-f1fc-5921-af5f-a709e69c308f, f64a581c-ddfe-52ef-be7b-fda9987c3514",
+            "intended_audience": "CS operator",
+            "requires_approval": false,
+            "source_ids": [
+              "dd638660-a13a-595c-a117-72a1ed5f15d0"
+            ],
+            "title": "Resolve ambiguous account identity"
+          }
+        ],
+        "primary_next_step": "Resolve the account identity before any customer action",
+        "recommended_action": {
+          "action_id": "action:identity-escalation:2026-06-27",
+          "action_type": "internal_escalation",
+          "blocked_by": [
+            "ambiguous_account_identity"
+          ],
+          "label": "Resolve identity",
+          "message_strategy": "Keep the work internal until account identity is exact.",
+          "objective": "Prevent an agent from writing to the wrong account.",
+          "recipient_contact_id": null,
+          "recipient_role": null,
+          "source_ids": [
+            "dd638660-a13a-595c-a117-72a1ed5f15d0"
+          ],
+          "success_criteria": [
+            "One account is selected by a human or source mapping."
+          ]
+        },
+        "why_now": "Ambiguous contact identity; no account was auto-selected."
+      }
     }
   ],
   "generated_by": "eval.scorecard_csm",
@@ -55,7 +259,7 @@
       "account_resolution": "exactly_one",
       "candidate_account_ids": [],
       "customer_contact_allowed": true,
-      "customer_draft": "Hi Jordan Lee, Acme Logistics is showing an onboarding risk tied to milestones_overdue, days_overdue. Can we review the overdue activation steps and agree on owners?",
+      "customer_draft": "Hi Jordan Lee, Acme Logistics is blocked on activate 50 percent of assets plus implementation blocker on remaining fleet rollout. Can we confirm the owner, decide the next technical step, and reset the activation date?",
       "disposition": "propose_customer_action",
       "draft_mode": "fixture",
       "evidence": [
@@ -273,7 +477,346 @@
         }
       ],
       "swept_at": "2026-06-27",
-      "tenant_id": "ultra-demo"
+      "tenant_id": "ultra-demo",
+      "work_packet": {
+        "account_id": "a317f5e7-575e-5879-8256-9082e40ef19f",
+        "account_name": "Acme Logistics",
+        "allowed_ctas": [
+          {
+            "cta_id": "cta:a317f5e7-575e-5879-8256-9082e40ef19f:inspect",
+            "disabled_reason": null,
+            "enabled": true,
+            "governance_requirement": null,
+            "kind": "inspect",
+            "label": "Inspect evidence",
+            "readonly_behavior": "Open packet evidence and source drawers locally.",
+            "source_ids": [
+              "6dcc1c92-e0fd-5d6f-808f-d2e747f04415",
+              "d2212e35-9ab1-52ff-af61-7ed49fe36086",
+              "e8171967-d726-5c85-814a-73aaa19dc2cf",
+              "4ddf4d0e-2600-56f7-9edc-a5a0071d8186",
+              "a317f5e7-575e-5879-8256-9082e40ef19f"
+            ]
+          },
+          {
+            "cta_id": "cta:a317f5e7-575e-5879-8256-9082e40ef19f:preview",
+            "disabled_reason": null,
+            "enabled": true,
+            "governance_requirement": null,
+            "kind": "preview",
+            "label": "Preview artifact",
+            "readonly_behavior": "Render the prepared artifact without sending it.",
+            "source_ids": [
+              "6dcc1c92-e0fd-5d6f-808f-d2e747f04415",
+              "d2212e35-9ab1-52ff-af61-7ed49fe36086",
+              "e8171967-d726-5c85-814a-73aaa19dc2cf",
+              "4ddf4d0e-2600-56f7-9edc-a5a0071d8186",
+              "a317f5e7-575e-5879-8256-9082e40ef19f"
+            ]
+          },
+          {
+            "cta_id": "cta:a317f5e7-575e-5879-8256-9082e40ef19f:copy",
+            "disabled_reason": null,
+            "enabled": true,
+            "governance_requirement": "human reviews copied text before external use",
+            "kind": "copy",
+            "label": "Copy artifact",
+            "readonly_behavior": "Copy local text only; no connector write.",
+            "source_ids": [
+              "6dcc1c92-e0fd-5d6f-808f-d2e747f04415",
+              "d2212e35-9ab1-52ff-af61-7ed49fe36086",
+              "e8171967-d726-5c85-814a-73aaa19dc2cf",
+              "4ddf4d0e-2600-56f7-9edc-a5a0071d8186",
+              "a317f5e7-575e-5879-8256-9082e40ef19f"
+            ]
+          },
+          {
+            "cta_id": "cta:a317f5e7-575e-5879-8256-9082e40ef19f:approve",
+            "disabled_reason": "Readonly demo cannot execute external actions; use ActionGate metadata for review.",
+            "enabled": false,
+            "governance_requirement": "ActionGate proposal runtime-generated:a317f5e7-575e-5879-8256-9082e40ef19f:draft_customer_outreach",
+            "kind": "approve",
+            "label": "Approve through ActionGate",
+            "readonly_behavior": "Explain approval requirement; no send in hosted demo.",
+            "source_ids": [
+              "6dcc1c92-e0fd-5d6f-808f-d2e747f04415",
+              "d2212e35-9ab1-52ff-af61-7ed49fe36086",
+              "e8171967-d726-5c85-814a-73aaa19dc2cf",
+              "4ddf4d0e-2600-56f7-9edc-a5a0071d8186",
+              "a317f5e7-575e-5879-8256-9082e40ef19f"
+            ]
+          },
+          {
+            "cta_id": "cta:a317f5e7-575e-5879-8256-9082e40ef19f:feedback",
+            "disabled_reason": null,
+            "enabled": true,
+            "governance_requirement": null,
+            "kind": "leave_feedback",
+            "label": "Leave feedback",
+            "readonly_behavior": "Record local packet feedback only.",
+            "source_ids": [
+              "6dcc1c92-e0fd-5d6f-808f-d2e747f04415",
+              "d2212e35-9ab1-52ff-af61-7ed49fe36086",
+              "e8171967-d726-5c85-814a-73aaa19dc2cf",
+              "4ddf4d0e-2600-56f7-9edc-a5a0071d8186",
+              "a317f5e7-575e-5879-8256-9082e40ef19f"
+            ]
+          }
+        ],
+        "as_of_day": "2026-06-27",
+        "bucket_trace": {
+          "inputs": {
+            "action": "draft_customer_outreach",
+            "evidence_count": 5,
+            "motion": null,
+            "priority_score": 162,
+            "proposal_status": "pending"
+          },
+          "lane": "needs_judgment",
+          "matched": [
+            "daily_high_priority",
+            "pending_action_gate",
+            "human_judgment_required"
+          ],
+          "near_misses": [],
+          "rule_id": "lane:needs_judgment:score-action-evidence",
+          "rule_label": "Lane chosen from priority, proposal state, job type, and evidence",
+          "source_ids": [
+            "6dcc1c92-e0fd-5d6f-808f-d2e747f04415",
+            "d2212e35-9ab1-52ff-af61-7ed49fe36086",
+            "e8171967-d726-5c85-814a-73aaa19dc2cf",
+            "4ddf4d0e-2600-56f7-9edc-a5a0071d8186",
+            "a317f5e7-575e-5879-8256-9082e40ef19f"
+          ],
+          "thresholds": {
+            "daily_high_priority": 70,
+            "evidence_required_for_confident_action": true,
+            "weekly_priority": 30
+          }
+        },
+        "cadence": "daily",
+        "confidence": 0.88,
+        "contact_plan": {
+          "backup_contact": null,
+          "channel": "email",
+          "internal_owner": "csm-001",
+          "primary_contact": {
+            "consent_to_contact": true,
+            "contact_id": "a55a57ea-b19d-5955-8dbc-e84ee4a60335",
+            "email": "ops@acme-logistics.example",
+            "name": "Jordan Lee",
+            "role": "operations",
+            "title": "Operations Lead"
+          },
+          "reason_for_contact_choice": "Jordan Lee is the consented operations selected by first_consenting_fallback for this blocker.",
+          "source_ids": [
+            "6dcc1c92-e0fd-5d6f-808f-d2e747f04415",
+            "d2212e35-9ab1-52ff-af61-7ed49fe36086",
+            "e8171967-d726-5c85-814a-73aaa19dc2cf",
+            "4ddf4d0e-2600-56f7-9edc-a5a0071d8186",
+            "a317f5e7-575e-5879-8256-9082e40ef19f"
+          ],
+          "tone": "specific, operational, and approval-safe"
+        },
+        "coverage_trace": {
+          "accounts_scanned": 9,
+          "book_size": 9,
+          "excluded_or_suppressed_reason": null,
+          "freshness": "latest_evidence_at:2026-06-28",
+          "included_reason": "selected_for_internal_escalation_score_162",
+          "last_reviewed_at": null
+        },
+        "diagnostic_hypothesis": {
+          "confidence": 0.88,
+          "counter_signals": [],
+          "signals": [
+            "Product telemetry anchors the activation/adoption gap.",
+            "cs_platform evidence supports the packet diagnosis.",
+            "Success plan timing is stale or due.",
+            "Open customer case may explain adoption friction.",
+            "Health score gives counter/context for the recommendation."
+          ],
+          "source_ids": [
+            "6dcc1c92-e0fd-5d6f-808f-d2e747f04415",
+            "d2212e35-9ab1-52ff-af61-7ed49fe36086",
+            "e8171967-d726-5c85-814a-73aaa19dc2cf",
+            "4ddf4d0e-2600-56f7-9edc-a5a0071d8186",
+            "a317f5e7-575e-5879-8256-9082e40ef19f"
+          ],
+          "summary": "The likely blocker is activate 50 percent of assets plus implementation blocker on remaining fleet rollout.",
+          "unknowns": []
+        },
+        "evidence_chain": [
+          {
+            "claim": "telemetry.daily_active_assets reports daily_active_assets=10 assets at 2026-06-20T00:00:00Z",
+            "field": "daily_active_assets",
+            "interpretation": "Product telemetry anchors the activation/adoption gap.",
+            "observed_value": "daily_active_assets=10 assets at 2026-06-20T00:00:00Z",
+            "source_id": "6dcc1c92-e0fd-5d6f-808f-d2e747f04415",
+            "source_type": "telemetry",
+            "step_id": "evidence:a317f5e7-575e-5879-8256-9082e40ef19f:1",
+            "strength": "strong",
+            "supports": "activate 50 percent of assets plus implementation blocker on remaining fleet rollout"
+          },
+          {
+            "claim": "cs_platform.due_date reports 2026-06-28",
+            "field": "due_date",
+            "interpretation": "cs_platform evidence supports the packet diagnosis.",
+            "observed_value": "2026-06-28",
+            "source_id": "d2212e35-9ab1-52ff-af61-7ed49fe36086",
+            "source_type": "cs_platform",
+            "step_id": "evidence:a317f5e7-575e-5879-8256-9082e40ef19f:2",
+            "strength": "medium",
+            "supports": "activate 50 percent of assets plus implementation blocker on remaining fleet rollout"
+          },
+          {
+            "claim": "cs_platform.target_date reports status=active; target=2026-06-12; objectives=activate_core_fleet, complete_driver_rollout",
+            "field": "target_date",
+            "interpretation": "Success plan timing is stale or due.",
+            "observed_value": "status=active; target=2026-06-12; objectives=activate_core_fleet, complete_driver_rollout",
+            "source_id": "e8171967-d726-5c85-814a-73aaa19dc2cf",
+            "source_type": "cs_platform",
+            "step_id": "evidence:a317f5e7-575e-5879-8256-9082e40ef19f:3",
+            "strength": "medium",
+            "supports": "activate 50 percent of assets plus implementation blocker on remaining fleet rollout"
+          },
+          {
+            "claim": "crm.status reports Implementation blocker on remaining fleet rollout; status=Open; priority=High",
+            "field": "status",
+            "interpretation": "Open customer case may explain adoption friction.",
+            "observed_value": "Implementation blocker on remaining fleet rollout; status=Open; priority=High",
+            "source_id": "4ddf4d0e-2600-56f7-9edc-a5a0071d8186",
+            "source_type": "crm",
+            "step_id": "evidence:a317f5e7-575e-5879-8256-9082e40ef19f:4",
+            "strength": "strong",
+            "supports": "activate 50 percent of assets plus implementation blocker on remaining fleet rollout"
+          },
+          {
+            "claim": "cs_platform.health_score reports account=Acme Logistics",
+            "field": "health_score",
+            "interpretation": "Health score gives counter/context for the recommendation.",
+            "observed_value": "account=Acme Logistics",
+            "source_id": "a317f5e7-575e-5879-8256-9082e40ef19f",
+            "source_type": "cs_platform",
+            "step_id": "evidence:a317f5e7-575e-5879-8256-9082e40ef19f:5",
+            "strength": "medium",
+            "supports": "activate 50 percent of assets plus implementation blocker on remaining fleet rollout"
+          }
+        ],
+        "feedback_hooks": [
+          {
+            "category": "wrong_diagnosis",
+            "label": "Wrong diagnosis",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "wrong_contact",
+            "label": "Wrong contact",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "wrong_action",
+            "label": "Wrong action",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "missing_evidence",
+            "label": "Missing evidence",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "wrong_bucket",
+            "label": "Wrong bucket",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "stale_data",
+            "label": "Stale data",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "product_feedback_candidate",
+            "label": "Product feedback candidate",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "education_resource_candidate",
+            "label": "Education resource candidate",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "dismiss_monitor",
+            "label": "Dismiss or monitor",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          }
+        ],
+        "generated_at": "2026-06-27",
+        "governance": {
+          "audit_requirements": [
+            "action_gate.proposal_id",
+            "human_approval_before_external_write"
+          ],
+          "can_execute_from_ui": false,
+          "mode": "readonly_demo",
+          "requires_action_gate": true,
+          "requires_human_principal": true
+        },
+        "implied_customer_state": "Activation is stalled against dated milestones despite usage evidence.",
+        "job_type": "internal_escalation",
+        "lane": "needs_judgment",
+        "open_questions": [],
+        "packet_id": "packet:a317f5e7-575e-5879-8256-9082e40ef19f:2026-06-27",
+        "prepared_artifacts": [
+          {
+            "artifact_id": "artifact:a317f5e7-575e-5879-8256-9082e40ef19f:internal_brief",
+            "artifact_type": "internal_brief",
+            "body_or_outline": "Ask Jordan Lee to resolve activate 50 percent of assets plus implementation blocker on remaining fleet rollout and reset the activation plan\n\nEvidence to inspect: telemetry.daily_active_assets reports daily_active_assets=10 assets at 2026-06-20T00:00:00Z; cs_platform.due_date reports 2026-06-28; cs_platform.target_date reports status=active; target=2026-06-12; objectives=activate_core_fleet, complete_driver_rollout; crm.status reports Implementation blocker on remaining fleet rollout; status=Open; priority=High",
+            "intended_audience": "internal CS/product/sales operator",
+            "requires_approval": false,
+            "source_ids": [
+              "6dcc1c92-e0fd-5d6f-808f-d2e747f04415",
+              "d2212e35-9ab1-52ff-af61-7ed49fe36086",
+              "e8171967-d726-5c85-814a-73aaa19dc2cf",
+              "4ddf4d0e-2600-56f7-9edc-a5a0071d8186",
+              "a317f5e7-575e-5879-8256-9082e40ef19f"
+            ],
+            "title": "Acme Logistics: Ask Jordan Lee to resolve activate 50 percent of assets plus implementation blocker on remaining fleet rollout and reset the activation plan"
+          }
+        ],
+        "primary_next_step": "Ask Jordan Lee to resolve activate 50 percent of assets plus implementation blocker on remaining fleet rollout and reset the activation plan",
+        "recommended_action": {
+          "action_id": "action:a317f5e7-575e-5879-8256-9082e40ef19f:internal_escalation",
+          "action_type": "draft_customer_outreach",
+          "blocked_by": [],
+          "label": "Ask Jordan Lee to resolve activate 50 percent of assets plus implementation blocker on remaining fleet rollout and reset the activation plan",
+          "message_strategy": "Be concrete about activate 50 percent of assets plus implementation blocker on remaining fleet rollout, ask for owner/date, and avoid generic check-in language.",
+          "objective": "Resolve activate 50 percent of assets plus implementation blocker on remaining fleet rollout with an accountable owner and date.",
+          "recipient_contact_id": "a55a57ea-b19d-5955-8dbc-e84ee4a60335",
+          "recipient_role": "operations",
+          "source_ids": [
+            "6dcc1c92-e0fd-5d6f-808f-d2e747f04415",
+            "d2212e35-9ab1-52ff-af61-7ed49fe36086",
+            "e8171967-d726-5c85-814a-73aaa19dc2cf",
+            "4ddf4d0e-2600-56f7-9edc-a5a0071d8186",
+            "a317f5e7-575e-5879-8256-9082e40ef19f"
+          ],
+          "success_criteria": [
+            "Owner is identified.",
+            "Next date or decision is recorded.",
+            "External action remains approval-gated."
+          ]
+        },
+        "why_now": "Priority score 162 is driven by milestones_overdue, days_overdue, success_plan_overdue; evidence is present in the source chain."
+      }
     },
     {
       "account_id": "9bbdd7b2-55b0-5257-acf8-808ad224e276",
@@ -439,14 +982,330 @@
       "recommended_action": "recommend_next_best_action",
       "slot_a_classifications": [],
       "swept_at": "2026-06-27",
-      "tenant_id": "ultra-demo"
+      "tenant_id": "ultra-demo",
+      "work_packet": {
+        "account_id": "9bbdd7b2-55b0-5257-acf8-808ad224e276",
+        "account_name": "Cyberdyne Transport",
+        "allowed_ctas": [
+          {
+            "cta_id": "cta:9bbdd7b2-55b0-5257-acf8-808ad224e276:inspect",
+            "disabled_reason": null,
+            "enabled": true,
+            "governance_requirement": null,
+            "kind": "inspect",
+            "label": "Inspect evidence",
+            "readonly_behavior": "Open packet evidence and source drawers locally.",
+            "source_ids": [
+              "947b1c03-4cfd-57d1-8734-96a9a1d0580a",
+              "094d20f6-589f-523d-8c1a-57ee263b4b15",
+              "7c951754-708e-54c9-a308-927f4898a051",
+              "9bbdd7b2-55b0-5257-acf8-808ad224e276"
+            ]
+          },
+          {
+            "cta_id": "cta:9bbdd7b2-55b0-5257-acf8-808ad224e276:preview",
+            "disabled_reason": null,
+            "enabled": true,
+            "governance_requirement": null,
+            "kind": "preview",
+            "label": "Preview artifact",
+            "readonly_behavior": "Render the prepared artifact without sending it.",
+            "source_ids": [
+              "947b1c03-4cfd-57d1-8734-96a9a1d0580a",
+              "094d20f6-589f-523d-8c1a-57ee263b4b15",
+              "7c951754-708e-54c9-a308-927f4898a051",
+              "9bbdd7b2-55b0-5257-acf8-808ad224e276"
+            ]
+          },
+          {
+            "cta_id": "cta:9bbdd7b2-55b0-5257-acf8-808ad224e276:copy",
+            "disabled_reason": null,
+            "enabled": true,
+            "governance_requirement": "human reviews copied text before external use",
+            "kind": "copy",
+            "label": "Copy artifact",
+            "readonly_behavior": "Copy local text only; no connector write.",
+            "source_ids": [
+              "947b1c03-4cfd-57d1-8734-96a9a1d0580a",
+              "094d20f6-589f-523d-8c1a-57ee263b4b15",
+              "7c951754-708e-54c9-a308-927f4898a051",
+              "9bbdd7b2-55b0-5257-acf8-808ad224e276"
+            ]
+          },
+          {
+            "cta_id": "cta:9bbdd7b2-55b0-5257-acf8-808ad224e276:approve",
+            "disabled_reason": "Readonly demo cannot execute this action.",
+            "enabled": false,
+            "governance_requirement": "ActionGate proposal required",
+            "kind": "approve",
+            "label": "Approve through ActionGate",
+            "readonly_behavior": "Explain approval requirement; no send in hosted demo.",
+            "source_ids": [
+              "947b1c03-4cfd-57d1-8734-96a9a1d0580a",
+              "094d20f6-589f-523d-8c1a-57ee263b4b15",
+              "7c951754-708e-54c9-a308-927f4898a051",
+              "9bbdd7b2-55b0-5257-acf8-808ad224e276"
+            ]
+          },
+          {
+            "cta_id": "cta:9bbdd7b2-55b0-5257-acf8-808ad224e276:feedback",
+            "disabled_reason": null,
+            "enabled": true,
+            "governance_requirement": null,
+            "kind": "leave_feedback",
+            "label": "Leave feedback",
+            "readonly_behavior": "Record local packet feedback only.",
+            "source_ids": [
+              "947b1c03-4cfd-57d1-8734-96a9a1d0580a",
+              "094d20f6-589f-523d-8c1a-57ee263b4b15",
+              "7c951754-708e-54c9-a308-927f4898a051",
+              "9bbdd7b2-55b0-5257-acf8-808ad224e276"
+            ]
+          }
+        ],
+        "as_of_day": "2026-06-27",
+        "bucket_trace": {
+          "inputs": {
+            "action": "recommend_next_best_action",
+            "evidence_count": 4,
+            "motion": null,
+            "priority_score": 109,
+            "proposal_status": null
+          },
+          "lane": "prepared",
+          "matched": [
+            "daily_high_priority"
+          ],
+          "near_misses": [
+            "customer_contact_allowed"
+          ],
+          "rule_id": "lane:prepared:score-action-evidence",
+          "rule_label": "Lane chosen from priority, proposal state, job type, and evidence",
+          "source_ids": [
+            "947b1c03-4cfd-57d1-8734-96a9a1d0580a",
+            "094d20f6-589f-523d-8c1a-57ee263b4b15",
+            "7c951754-708e-54c9-a308-927f4898a051",
+            "9bbdd7b2-55b0-5257-acf8-808ad224e276"
+          ],
+          "thresholds": {
+            "daily_high_priority": 70,
+            "evidence_required_for_confident_action": true,
+            "weekly_priority": 30
+          }
+        },
+        "cadence": "monthly",
+        "confidence": 0.71,
+        "contact_plan": {
+          "backup_contact": null,
+          "channel": "internal_note",
+          "internal_owner": "csm-005",
+          "primary_contact": null,
+          "reason_for_contact_choice": "No consented contact was selected; keep work internal.",
+          "source_ids": [
+            "947b1c03-4cfd-57d1-8734-96a9a1d0580a",
+            "094d20f6-589f-523d-8c1a-57ee263b4b15",
+            "7c951754-708e-54c9-a308-927f4898a051",
+            "9bbdd7b2-55b0-5257-acf8-808ad224e276"
+          ],
+          "tone": "internal only"
+        },
+        "coverage_trace": {
+          "accounts_scanned": 9,
+          "book_size": 9,
+          "excluded_or_suppressed_reason": null,
+          "freshness": "latest_evidence_at:2026-06-28",
+          "included_reason": "selected_for_renewal_risk_review_score_109",
+          "last_reviewed_at": null
+        },
+        "diagnostic_hypothesis": {
+          "confidence": 0.71,
+          "counter_signals": [],
+          "signals": [
+            "Product telemetry anchors the activation/adoption gap.",
+            "cs_platform evidence supports the packet diagnosis.",
+            "Success plan timing is stale or due.",
+            "Health score gives counter/context for the recommendation."
+          ],
+          "source_ids": [
+            "947b1c03-4cfd-57d1-8734-96a9a1d0580a",
+            "094d20f6-589f-523d-8c1a-57ee263b4b15",
+            "7c951754-708e-54c9-a308-927f4898a051",
+            "9bbdd7b2-55b0-5257-acf8-808ad224e276"
+          ],
+          "summary": "The likely blocker is activate 50 percent of assets.",
+          "unknowns": [
+            "whether there is an open support blocker",
+            "No live engineering defect or product-feedback capability gap found."
+          ]
+        },
+        "evidence_chain": [
+          {
+            "claim": "telemetry.daily_active_assets reports daily_active_assets=9 assets at 2026-06-20T00:00:00Z",
+            "field": "daily_active_assets",
+            "interpretation": "Product telemetry anchors the activation/adoption gap.",
+            "observed_value": "daily_active_assets=9 assets at 2026-06-20T00:00:00Z",
+            "source_id": "947b1c03-4cfd-57d1-8734-96a9a1d0580a",
+            "source_type": "telemetry",
+            "step_id": "evidence:9bbdd7b2-55b0-5257-acf8-808ad224e276:1",
+            "strength": "strong",
+            "supports": "activate 50 percent of assets"
+          },
+          {
+            "claim": "cs_platform.due_date reports 2026-06-28",
+            "field": "due_date",
+            "interpretation": "cs_platform evidence supports the packet diagnosis.",
+            "observed_value": "2026-06-28",
+            "source_id": "094d20f6-589f-523d-8c1a-57ee263b4b15",
+            "source_type": "cs_platform",
+            "step_id": "evidence:9bbdd7b2-55b0-5257-acf8-808ad224e276:2",
+            "strength": "medium",
+            "supports": "activate 50 percent of assets"
+          },
+          {
+            "claim": "cs_platform.target_date reports status=active; target=2026-06-18; objectives=activate_core_fleet",
+            "field": "target_date",
+            "interpretation": "Success plan timing is stale or due.",
+            "observed_value": "status=active; target=2026-06-18; objectives=activate_core_fleet",
+            "source_id": "7c951754-708e-54c9-a308-927f4898a051",
+            "source_type": "cs_platform",
+            "step_id": "evidence:9bbdd7b2-55b0-5257-acf8-808ad224e276:3",
+            "strength": "medium",
+            "supports": "activate 50 percent of assets"
+          },
+          {
+            "claim": "cs_platform.health_score reports account=Cyberdyne Transport",
+            "field": "health_score",
+            "interpretation": "Health score gives counter/context for the recommendation.",
+            "observed_value": "account=Cyberdyne Transport",
+            "source_id": "9bbdd7b2-55b0-5257-acf8-808ad224e276",
+            "source_type": "cs_platform",
+            "step_id": "evidence:9bbdd7b2-55b0-5257-acf8-808ad224e276:4",
+            "strength": "medium",
+            "supports": "activate 50 percent of assets"
+          }
+        ],
+        "feedback_hooks": [
+          {
+            "category": "wrong_diagnosis",
+            "label": "Wrong diagnosis",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "wrong_contact",
+            "label": "Wrong contact",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "wrong_action",
+            "label": "Wrong action",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "missing_evidence",
+            "label": "Missing evidence",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "wrong_bucket",
+            "label": "Wrong bucket",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "stale_data",
+            "label": "Stale data",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "product_feedback_candidate",
+            "label": "Product feedback candidate",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "education_resource_candidate",
+            "label": "Education resource candidate",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "dismiss_monitor",
+            "label": "Dismiss or monitor",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          }
+        ],
+        "generated_at": "2026-06-27",
+        "governance": {
+          "audit_requirements": [
+            "operator.review",
+            "local_feedback_only"
+          ],
+          "can_execute_from_ui": false,
+          "mode": "readonly_demo",
+          "requires_action_gate": false,
+          "requires_human_principal": false
+        },
+        "implied_customer_state": "Activation is stalled against dated milestones despite usage evidence.",
+        "job_type": "renewal_risk_review",
+        "lane": "prepared",
+        "open_questions": [
+          "whether there is an open support blocker",
+          "No live engineering defect or product-feedback capability gap found."
+        ],
+        "packet_id": "packet:9bbdd7b2-55b0-5257-acf8-808ad224e276:2026-06-27",
+        "prepared_artifacts": [
+          {
+            "artifact_id": "artifact:9bbdd7b2-55b0-5257-acf8-808ad224e276:renewal_risk_note",
+            "artifact_type": "renewal_risk_note",
+            "body_or_outline": "Review renewal risk tied to activate 50 percent of assets\n\nEvidence to inspect: telemetry.daily_active_assets reports daily_active_assets=9 assets at 2026-06-20T00:00:00Z; cs_platform.due_date reports 2026-06-28; cs_platform.target_date reports status=active; target=2026-06-18; objectives=activate_core_fleet; cs_platform.health_score reports account=Cyberdyne Transport",
+            "intended_audience": "CS operator",
+            "requires_approval": true,
+            "source_ids": [
+              "947b1c03-4cfd-57d1-8734-96a9a1d0580a",
+              "094d20f6-589f-523d-8c1a-57ee263b4b15",
+              "7c951754-708e-54c9-a308-927f4898a051",
+              "9bbdd7b2-55b0-5257-acf8-808ad224e276"
+            ],
+            "title": "Cyberdyne Transport: Review renewal risk tied to activate 50 percent of assets"
+          }
+        ],
+        "primary_next_step": "Review renewal risk tied to activate 50 percent of assets",
+        "recommended_action": {
+          "action_id": "action:9bbdd7b2-55b0-5257-acf8-808ad224e276:renewal_risk_review",
+          "action_type": "recommend_next_best_action",
+          "blocked_by": [],
+          "label": "Review renewal risk tied to activate 50 percent of assets",
+          "message_strategy": "Keep the work internal until a consented contact or owner is identified.",
+          "objective": "Resolve activate 50 percent of assets with an accountable owner and date.",
+          "recipient_contact_id": null,
+          "recipient_role": null,
+          "source_ids": [
+            "947b1c03-4cfd-57d1-8734-96a9a1d0580a",
+            "094d20f6-589f-523d-8c1a-57ee263b4b15",
+            "7c951754-708e-54c9-a308-927f4898a051",
+            "9bbdd7b2-55b0-5257-acf8-808ad224e276"
+          ],
+          "success_criteria": [
+            "Owner is identified.",
+            "Next date or decision is recorded.",
+            "External action remains approval-gated."
+          ]
+        },
+        "why_now": "Priority score 109 is driven by milestones_overdue, days_overdue, success_plan_overdue; evidence is present in the source chain."
+      }
     },
     {
       "account_id": "ac5ddaea-764f-57ef-866d-593d57a20a00",
       "account_resolution": "exactly_one",
       "candidate_account_ids": [],
       "customer_contact_allowed": true,
-      "customer_draft": "Hi Avery Kim, Soylent Distribution is showing an onboarding risk tied to milestones_overdue, days_overdue. Can we review the overdue activation steps and agree on owners?",
+      "customer_draft": "Hi Avery Kim, Soylent Distribution is blocked on activate 50 percent of assets plus customer-reported case content withheld pending review. Can we confirm the owner, decide the next technical step, and reset the activation date?",
       "disposition": "propose_customer_action",
       "draft_mode": "fixture",
       "evidence": [
@@ -628,14 +1487,357 @@
         }
       ],
       "swept_at": "2026-06-27",
-      "tenant_id": "ultra-demo"
+      "tenant_id": "ultra-demo",
+      "work_packet": {
+        "account_id": "ac5ddaea-764f-57ef-866d-593d57a20a00",
+        "account_name": "Soylent Distribution",
+        "allowed_ctas": [
+          {
+            "cta_id": "cta:ac5ddaea-764f-57ef-866d-593d57a20a00:inspect",
+            "disabled_reason": null,
+            "enabled": true,
+            "governance_requirement": null,
+            "kind": "inspect",
+            "label": "Inspect evidence",
+            "readonly_behavior": "Open packet evidence and source drawers locally.",
+            "source_ids": [
+              "a6a68e4b-b7af-5b71-8e33-8964271ee848",
+              "de370721-fcfe-5b52-9682-fa7b8e79a07a",
+              "ef71210b-a3d3-5953-ad04-71bc869c6789",
+              "fefff49b-e3f3-5127-86dd-970eedbf8ce1",
+              "ac5ddaea-764f-57ef-866d-593d57a20a00"
+            ]
+          },
+          {
+            "cta_id": "cta:ac5ddaea-764f-57ef-866d-593d57a20a00:preview",
+            "disabled_reason": null,
+            "enabled": true,
+            "governance_requirement": null,
+            "kind": "preview",
+            "label": "Preview artifact",
+            "readonly_behavior": "Render the prepared artifact without sending it.",
+            "source_ids": [
+              "a6a68e4b-b7af-5b71-8e33-8964271ee848",
+              "de370721-fcfe-5b52-9682-fa7b8e79a07a",
+              "ef71210b-a3d3-5953-ad04-71bc869c6789",
+              "fefff49b-e3f3-5127-86dd-970eedbf8ce1",
+              "ac5ddaea-764f-57ef-866d-593d57a20a00"
+            ]
+          },
+          {
+            "cta_id": "cta:ac5ddaea-764f-57ef-866d-593d57a20a00:copy",
+            "disabled_reason": null,
+            "enabled": true,
+            "governance_requirement": "human reviews copied text before external use",
+            "kind": "copy",
+            "label": "Copy artifact",
+            "readonly_behavior": "Copy local text only; no connector write.",
+            "source_ids": [
+              "a6a68e4b-b7af-5b71-8e33-8964271ee848",
+              "de370721-fcfe-5b52-9682-fa7b8e79a07a",
+              "ef71210b-a3d3-5953-ad04-71bc869c6789",
+              "fefff49b-e3f3-5127-86dd-970eedbf8ce1",
+              "ac5ddaea-764f-57ef-866d-593d57a20a00"
+            ]
+          },
+          {
+            "cta_id": "cta:ac5ddaea-764f-57ef-866d-593d57a20a00:approve",
+            "disabled_reason": "Readonly demo cannot execute external actions; use ActionGate metadata for review.",
+            "enabled": false,
+            "governance_requirement": "ActionGate proposal runtime-generated:ac5ddaea-764f-57ef-866d-593d57a20a00:draft_customer_outreach",
+            "kind": "approve",
+            "label": "Approve through ActionGate",
+            "readonly_behavior": "Explain approval requirement; no send in hosted demo.",
+            "source_ids": [
+              "a6a68e4b-b7af-5b71-8e33-8964271ee848",
+              "de370721-fcfe-5b52-9682-fa7b8e79a07a",
+              "ef71210b-a3d3-5953-ad04-71bc869c6789",
+              "fefff49b-e3f3-5127-86dd-970eedbf8ce1",
+              "ac5ddaea-764f-57ef-866d-593d57a20a00"
+            ]
+          },
+          {
+            "cta_id": "cta:ac5ddaea-764f-57ef-866d-593d57a20a00:feedback",
+            "disabled_reason": null,
+            "enabled": true,
+            "governance_requirement": null,
+            "kind": "leave_feedback",
+            "label": "Leave feedback",
+            "readonly_behavior": "Record local packet feedback only.",
+            "source_ids": [
+              "a6a68e4b-b7af-5b71-8e33-8964271ee848",
+              "de370721-fcfe-5b52-9682-fa7b8e79a07a",
+              "ef71210b-a3d3-5953-ad04-71bc869c6789",
+              "fefff49b-e3f3-5127-86dd-970eedbf8ce1",
+              "ac5ddaea-764f-57ef-866d-593d57a20a00"
+            ]
+          }
+        ],
+        "as_of_day": "2026-06-27",
+        "bucket_trace": {
+          "inputs": {
+            "action": "draft_customer_outreach",
+            "evidence_count": 5,
+            "motion": null,
+            "priority_score": 105,
+            "proposal_status": "pending"
+          },
+          "lane": "needs_judgment",
+          "matched": [
+            "daily_high_priority",
+            "pending_action_gate",
+            "human_judgment_required"
+          ],
+          "near_misses": [],
+          "rule_id": "lane:needs_judgment:score-action-evidence",
+          "rule_label": "Lane chosen from priority, proposal state, job type, and evidence",
+          "source_ids": [
+            "a6a68e4b-b7af-5b71-8e33-8964271ee848",
+            "de370721-fcfe-5b52-9682-fa7b8e79a07a",
+            "ef71210b-a3d3-5953-ad04-71bc869c6789",
+            "fefff49b-e3f3-5127-86dd-970eedbf8ce1",
+            "ac5ddaea-764f-57ef-866d-593d57a20a00"
+          ],
+          "thresholds": {
+            "daily_high_priority": 70,
+            "evidence_required_for_confident_action": true,
+            "weekly_priority": 30
+          }
+        },
+        "cadence": "monthly",
+        "confidence": 0.88,
+        "contact_plan": {
+          "backup_contact": null,
+          "channel": "email",
+          "internal_owner": "csm-006",
+          "primary_contact": {
+            "consent_to_contact": true,
+            "contact_id": "7f95a31d-d720-551a-9cff-a36c206df93e",
+            "email": "ops@soylent.example",
+            "name": "Avery Kim",
+            "role": "operations",
+            "title": "Operations Lead"
+          },
+          "reason_for_contact_choice": "Avery Kim is the consented operations selected by first_consenting_fallback for this blocker.",
+          "source_ids": [
+            "a6a68e4b-b7af-5b71-8e33-8964271ee848",
+            "de370721-fcfe-5b52-9682-fa7b8e79a07a",
+            "ef71210b-a3d3-5953-ad04-71bc869c6789",
+            "fefff49b-e3f3-5127-86dd-970eedbf8ce1",
+            "ac5ddaea-764f-57ef-866d-593d57a20a00"
+          ],
+          "tone": "specific, operational, and approval-safe"
+        },
+        "coverage_trace": {
+          "accounts_scanned": 9,
+          "book_size": 9,
+          "excluded_or_suppressed_reason": null,
+          "freshness": "latest_evidence_at:2026-06-28",
+          "included_reason": "selected_for_renewal_risk_review_score_105",
+          "last_reviewed_at": null
+        },
+        "diagnostic_hypothesis": {
+          "confidence": 0.88,
+          "counter_signals": [],
+          "signals": [
+            "Product telemetry anchors the activation/adoption gap.",
+            "cs_platform evidence supports the packet diagnosis.",
+            "Success plan timing is stale or due.",
+            "Open customer case may explain adoption friction.",
+            "Health score gives counter/context for the recommendation."
+          ],
+          "source_ids": [
+            "a6a68e4b-b7af-5b71-8e33-8964271ee848",
+            "de370721-fcfe-5b52-9682-fa7b8e79a07a",
+            "ef71210b-a3d3-5953-ad04-71bc869c6789",
+            "fefff49b-e3f3-5127-86dd-970eedbf8ce1",
+            "ac5ddaea-764f-57ef-866d-593d57a20a00"
+          ],
+          "summary": "The likely blocker is activate 50 percent of assets plus customer-reported case content withheld pending review.",
+          "unknowns": [
+            "No live engineering defect or product-feedback capability gap found."
+          ]
+        },
+        "evidence_chain": [
+          {
+            "claim": "telemetry.daily_active_assets reports daily_active_assets=11 assets at 2026-06-20T00:00:00Z",
+            "field": "daily_active_assets",
+            "interpretation": "Product telemetry anchors the activation/adoption gap.",
+            "observed_value": "daily_active_assets=11 assets at 2026-06-20T00:00:00Z",
+            "source_id": "a6a68e4b-b7af-5b71-8e33-8964271ee848",
+            "source_type": "telemetry",
+            "step_id": "evidence:ac5ddaea-764f-57ef-866d-593d57a20a00:1",
+            "strength": "strong",
+            "supports": "activate 50 percent of assets plus customer-reported case content withheld pending review"
+          },
+          {
+            "claim": "cs_platform.due_date reports 2026-06-28",
+            "field": "due_date",
+            "interpretation": "cs_platform evidence supports the packet diagnosis.",
+            "observed_value": "2026-06-28",
+            "source_id": "de370721-fcfe-5b52-9682-fa7b8e79a07a",
+            "source_type": "cs_platform",
+            "step_id": "evidence:ac5ddaea-764f-57ef-866d-593d57a20a00:2",
+            "strength": "medium",
+            "supports": "activate 50 percent of assets plus customer-reported case content withheld pending review"
+          },
+          {
+            "claim": "cs_platform.target_date reports status=active; target=2026-06-19; objectives=activate_core_fleet",
+            "field": "target_date",
+            "interpretation": "Success plan timing is stale or due.",
+            "observed_value": "status=active; target=2026-06-19; objectives=activate_core_fleet",
+            "source_id": "ef71210b-a3d3-5953-ad04-71bc869c6789",
+            "source_type": "cs_platform",
+            "step_id": "evidence:ac5ddaea-764f-57ef-866d-593d57a20a00:3",
+            "strength": "medium",
+            "supports": "activate 50 percent of assets plus customer-reported case content withheld pending review"
+          },
+          {
+            "claim": "crm.status reports customer-reported case content withheld pending review; status=Open; priority=Medium",
+            "field": "status",
+            "interpretation": "Open customer case may explain adoption friction.",
+            "observed_value": "customer-reported case content withheld pending review; status=Open; priority=Medium",
+            "source_id": "fefff49b-e3f3-5127-86dd-970eedbf8ce1",
+            "source_type": "crm",
+            "step_id": "evidence:ac5ddaea-764f-57ef-866d-593d57a20a00:4",
+            "strength": "strong",
+            "supports": "activate 50 percent of assets plus customer-reported case content withheld pending review"
+          },
+          {
+            "claim": "cs_platform.health_score reports account=Soylent Distribution",
+            "field": "health_score",
+            "interpretation": "Health score gives counter/context for the recommendation.",
+            "observed_value": "account=Soylent Distribution",
+            "source_id": "ac5ddaea-764f-57ef-866d-593d57a20a00",
+            "source_type": "cs_platform",
+            "step_id": "evidence:ac5ddaea-764f-57ef-866d-593d57a20a00:5",
+            "strength": "medium",
+            "supports": "activate 50 percent of assets plus customer-reported case content withheld pending review"
+          }
+        ],
+        "feedback_hooks": [
+          {
+            "category": "wrong_diagnosis",
+            "label": "Wrong diagnosis",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "wrong_contact",
+            "label": "Wrong contact",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "wrong_action",
+            "label": "Wrong action",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "missing_evidence",
+            "label": "Missing evidence",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "wrong_bucket",
+            "label": "Wrong bucket",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "stale_data",
+            "label": "Stale data",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "product_feedback_candidate",
+            "label": "Product feedback candidate",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "education_resource_candidate",
+            "label": "Education resource candidate",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "dismiss_monitor",
+            "label": "Dismiss or monitor",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          }
+        ],
+        "generated_at": "2026-06-27",
+        "governance": {
+          "audit_requirements": [
+            "action_gate.proposal_id",
+            "human_approval_before_external_write"
+          ],
+          "can_execute_from_ui": false,
+          "mode": "readonly_demo",
+          "requires_action_gate": true,
+          "requires_human_principal": true
+        },
+        "implied_customer_state": "Activation is stalled against dated milestones despite usage evidence.",
+        "job_type": "renewal_risk_review",
+        "lane": "needs_judgment",
+        "open_questions": [
+          "No live engineering defect or product-feedback capability gap found."
+        ],
+        "packet_id": "packet:ac5ddaea-764f-57ef-866d-593d57a20a00:2026-06-27",
+        "prepared_artifacts": [
+          {
+            "artifact_id": "artifact:ac5ddaea-764f-57ef-866d-593d57a20a00:renewal_risk_note",
+            "artifact_type": "renewal_risk_note",
+            "body_or_outline": "Review renewal risk tied to activate 50 percent of assets plus customer-reported case content withheld pending review\n\nEvidence to inspect: telemetry.daily_active_assets reports daily_active_assets=11 assets at 2026-06-20T00:00:00Z; cs_platform.due_date reports 2026-06-28; cs_platform.target_date reports status=active; target=2026-06-19; objectives=activate_core_fleet; crm.status reports customer-reported case content withheld pending review; status=Open; priority=Medium",
+            "intended_audience": "Avery Kim (ops@soylent.example)",
+            "requires_approval": true,
+            "source_ids": [
+              "a6a68e4b-b7af-5b71-8e33-8964271ee848",
+              "de370721-fcfe-5b52-9682-fa7b8e79a07a",
+              "ef71210b-a3d3-5953-ad04-71bc869c6789",
+              "fefff49b-e3f3-5127-86dd-970eedbf8ce1",
+              "ac5ddaea-764f-57ef-866d-593d57a20a00"
+            ],
+            "title": "Soylent Distribution: Review renewal risk tied to activate 50 percent of assets plus customer-reported case content withheld pending review"
+          }
+        ],
+        "primary_next_step": "Review renewal risk tied to activate 50 percent of assets plus customer-reported case content withheld pending review",
+        "recommended_action": {
+          "action_id": "action:ac5ddaea-764f-57ef-866d-593d57a20a00:renewal_risk_review",
+          "action_type": "draft_customer_outreach",
+          "blocked_by": [],
+          "label": "Review renewal risk tied to activate 50 percent of assets plus customer-reported case content withheld pending review",
+          "message_strategy": "Be concrete about activate 50 percent of assets plus customer-reported case content withheld pending review, ask for owner/date, and avoid generic check-in language.",
+          "objective": "Resolve activate 50 percent of assets plus customer-reported case content withheld pending review with an accountable owner and date.",
+          "recipient_contact_id": "7f95a31d-d720-551a-9cff-a36c206df93e",
+          "recipient_role": "operations",
+          "source_ids": [
+            "a6a68e4b-b7af-5b71-8e33-8964271ee848",
+            "de370721-fcfe-5b52-9682-fa7b8e79a07a",
+            "ef71210b-a3d3-5953-ad04-71bc869c6789",
+            "fefff49b-e3f3-5127-86dd-970eedbf8ce1",
+            "ac5ddaea-764f-57ef-866d-593d57a20a00"
+          ],
+          "success_criteria": [
+            "Owner is identified.",
+            "Next date or decision is recorded.",
+            "External action remains approval-gated."
+          ]
+        },
+        "why_now": "Priority score 105 is driven by milestones_overdue, days_overdue, success_plan_overdue; evidence is present in the source chain."
+      }
     },
     {
       "account_id": "b2178254-7d72-55e3-84af-27846a0cb7d5",
       "account_resolution": "exactly_one",
       "candidate_account_ids": [],
       "customer_contact_allowed": true,
-      "customer_draft": "Hi Alex Rivers, Globex Fleet is showing an onboarding risk tied to milestones_overdue, days_overdue. Can we review the overdue activation steps and agree on owners?",
+      "customer_draft": "Hi Alex Rivers, Globex Fleet is blocked on activate 50 percent of assets. Can we confirm the owner, decide the next technical step, and reset the activation date?",
       "disposition": "propose_customer_action",
       "draft_mode": "fixture",
       "evidence": [
@@ -777,14 +1979,315 @@
       "recommended_action": "draft_customer_outreach",
       "slot_a_classifications": [],
       "swept_at": "2026-06-27",
-      "tenant_id": "ultra-demo"
+      "tenant_id": "ultra-demo",
+      "work_packet": {
+        "account_id": "b2178254-7d72-55e3-84af-27846a0cb7d5",
+        "account_name": "Globex Fleet",
+        "allowed_ctas": [
+          {
+            "cta_id": "cta:b2178254-7d72-55e3-84af-27846a0cb7d5:inspect",
+            "disabled_reason": null,
+            "enabled": true,
+            "governance_requirement": null,
+            "kind": "inspect",
+            "label": "Inspect evidence",
+            "readonly_behavior": "Open packet evidence and source drawers locally.",
+            "source_ids": [
+              "85b3431d-1fe0-5c97-86da-c33dbc2d01c8",
+              "0f5ea32b-c798-5a0d-b21b-28f3eb5f85ee",
+              "b2178254-7d72-55e3-84af-27846a0cb7d5"
+            ]
+          },
+          {
+            "cta_id": "cta:b2178254-7d72-55e3-84af-27846a0cb7d5:preview",
+            "disabled_reason": null,
+            "enabled": true,
+            "governance_requirement": null,
+            "kind": "preview",
+            "label": "Preview artifact",
+            "readonly_behavior": "Render the prepared artifact without sending it.",
+            "source_ids": [
+              "85b3431d-1fe0-5c97-86da-c33dbc2d01c8",
+              "0f5ea32b-c798-5a0d-b21b-28f3eb5f85ee",
+              "b2178254-7d72-55e3-84af-27846a0cb7d5"
+            ]
+          },
+          {
+            "cta_id": "cta:b2178254-7d72-55e3-84af-27846a0cb7d5:copy",
+            "disabled_reason": null,
+            "enabled": true,
+            "governance_requirement": "human reviews copied text before external use",
+            "kind": "copy",
+            "label": "Copy artifact",
+            "readonly_behavior": "Copy local text only; no connector write.",
+            "source_ids": [
+              "85b3431d-1fe0-5c97-86da-c33dbc2d01c8",
+              "0f5ea32b-c798-5a0d-b21b-28f3eb5f85ee",
+              "b2178254-7d72-55e3-84af-27846a0cb7d5"
+            ]
+          },
+          {
+            "cta_id": "cta:b2178254-7d72-55e3-84af-27846a0cb7d5:approve",
+            "disabled_reason": "Readonly demo cannot execute external actions; use ActionGate metadata for review.",
+            "enabled": false,
+            "governance_requirement": "ActionGate proposal runtime-generated:b2178254-7d72-55e3-84af-27846a0cb7d5:draft_customer_outreach",
+            "kind": "approve",
+            "label": "Approve through ActionGate",
+            "readonly_behavior": "Explain approval requirement; no send in hosted demo.",
+            "source_ids": [
+              "85b3431d-1fe0-5c97-86da-c33dbc2d01c8",
+              "0f5ea32b-c798-5a0d-b21b-28f3eb5f85ee",
+              "b2178254-7d72-55e3-84af-27846a0cb7d5"
+            ]
+          },
+          {
+            "cta_id": "cta:b2178254-7d72-55e3-84af-27846a0cb7d5:feedback",
+            "disabled_reason": null,
+            "enabled": true,
+            "governance_requirement": null,
+            "kind": "leave_feedback",
+            "label": "Leave feedback",
+            "readonly_behavior": "Record local packet feedback only.",
+            "source_ids": [
+              "85b3431d-1fe0-5c97-86da-c33dbc2d01c8",
+              "0f5ea32b-c798-5a0d-b21b-28f3eb5f85ee",
+              "b2178254-7d72-55e3-84af-27846a0cb7d5"
+            ]
+          }
+        ],
+        "as_of_day": "2026-06-27",
+        "bucket_trace": {
+          "inputs": {
+            "action": "draft_customer_outreach",
+            "evidence_count": 3,
+            "motion": null,
+            "priority_score": 91,
+            "proposal_status": "pending"
+          },
+          "lane": "needs_judgment",
+          "matched": [
+            "daily_high_priority",
+            "pending_action_gate",
+            "human_judgment_required"
+          ],
+          "near_misses": [],
+          "rule_id": "lane:needs_judgment:score-action-evidence",
+          "rule_label": "Lane chosen from priority, proposal state, job type, and evidence",
+          "source_ids": [
+            "85b3431d-1fe0-5c97-86da-c33dbc2d01c8",
+            "0f5ea32b-c798-5a0d-b21b-28f3eb5f85ee",
+            "b2178254-7d72-55e3-84af-27846a0cb7d5"
+          ],
+          "thresholds": {
+            "daily_high_priority": 70,
+            "evidence_required_for_confident_action": true,
+            "weekly_priority": 30
+          }
+        },
+        "cadence": "monthly",
+        "confidence": 0.75,
+        "contact_plan": {
+          "backup_contact": null,
+          "channel": "email",
+          "internal_owner": "csm-001",
+          "primary_contact": {
+            "consent_to_contact": true,
+            "contact_id": "5fed2e03-53af-5439-a9d1-b3d9dfdd5f32",
+            "email": "ops@globex.example",
+            "name": "Alex Rivers",
+            "role": "operations",
+            "title": "Operations Lead"
+          },
+          "reason_for_contact_choice": "Alex Rivers is the consented operations selected by first_consenting_fallback for this blocker.",
+          "source_ids": [
+            "85b3431d-1fe0-5c97-86da-c33dbc2d01c8",
+            "0f5ea32b-c798-5a0d-b21b-28f3eb5f85ee",
+            "b2178254-7d72-55e3-84af-27846a0cb7d5"
+          ],
+          "tone": "specific, operational, and approval-safe"
+        },
+        "coverage_trace": {
+          "accounts_scanned": 9,
+          "book_size": 9,
+          "excluded_or_suppressed_reason": null,
+          "freshness": "latest_evidence_at:2026-06-28",
+          "included_reason": "selected_for_renewal_risk_review_score_91",
+          "last_reviewed_at": null
+        },
+        "diagnostic_hypothesis": {
+          "confidence": 0.75,
+          "counter_signals": [],
+          "signals": [
+            "Product telemetry anchors the activation/adoption gap.",
+            "cs_platform evidence supports the packet diagnosis.",
+            "Health score gives counter/context for the recommendation."
+          ],
+          "source_ids": [
+            "85b3431d-1fe0-5c97-86da-c33dbc2d01c8",
+            "0f5ea32b-c798-5a0d-b21b-28f3eb5f85ee",
+            "b2178254-7d72-55e3-84af-27846a0cb7d5"
+          ],
+          "summary": "The likely blocker is activate 50 percent of assets.",
+          "unknowns": [
+            "whether there is an open support blocker",
+            "No live engineering defect or product-feedback capability gap found."
+          ]
+        },
+        "evidence_chain": [
+          {
+            "claim": "telemetry.daily_active_assets reports daily_active_assets=8 assets at 2026-06-20T00:00:00Z",
+            "field": "daily_active_assets",
+            "interpretation": "Product telemetry anchors the activation/adoption gap.",
+            "observed_value": "daily_active_assets=8 assets at 2026-06-20T00:00:00Z",
+            "source_id": "85b3431d-1fe0-5c97-86da-c33dbc2d01c8",
+            "source_type": "telemetry",
+            "step_id": "evidence:b2178254-7d72-55e3-84af-27846a0cb7d5:1",
+            "strength": "strong",
+            "supports": "activate 50 percent of assets"
+          },
+          {
+            "claim": "cs_platform.due_date reports 2026-06-28",
+            "field": "due_date",
+            "interpretation": "cs_platform evidence supports the packet diagnosis.",
+            "observed_value": "2026-06-28",
+            "source_id": "0f5ea32b-c798-5a0d-b21b-28f3eb5f85ee",
+            "source_type": "cs_platform",
+            "step_id": "evidence:b2178254-7d72-55e3-84af-27846a0cb7d5:2",
+            "strength": "medium",
+            "supports": "activate 50 percent of assets"
+          },
+          {
+            "claim": "cs_platform.health_score reports account=Globex Fleet",
+            "field": "health_score",
+            "interpretation": "Health score gives counter/context for the recommendation.",
+            "observed_value": "account=Globex Fleet",
+            "source_id": "b2178254-7d72-55e3-84af-27846a0cb7d5",
+            "source_type": "cs_platform",
+            "step_id": "evidence:b2178254-7d72-55e3-84af-27846a0cb7d5:3",
+            "strength": "medium",
+            "supports": "activate 50 percent of assets"
+          }
+        ],
+        "feedback_hooks": [
+          {
+            "category": "wrong_diagnosis",
+            "label": "Wrong diagnosis",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "wrong_contact",
+            "label": "Wrong contact",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "wrong_action",
+            "label": "Wrong action",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "missing_evidence",
+            "label": "Missing evidence",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "wrong_bucket",
+            "label": "Wrong bucket",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "stale_data",
+            "label": "Stale data",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "product_feedback_candidate",
+            "label": "Product feedback candidate",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "education_resource_candidate",
+            "label": "Education resource candidate",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "dismiss_monitor",
+            "label": "Dismiss or monitor",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          }
+        ],
+        "generated_at": "2026-06-27",
+        "governance": {
+          "audit_requirements": [
+            "action_gate.proposal_id",
+            "human_approval_before_external_write"
+          ],
+          "can_execute_from_ui": false,
+          "mode": "readonly_demo",
+          "requires_action_gate": true,
+          "requires_human_principal": true
+        },
+        "implied_customer_state": "Activation is stalled against dated milestones despite usage evidence.",
+        "job_type": "renewal_risk_review",
+        "lane": "needs_judgment",
+        "open_questions": [
+          "whether there is an open support blocker",
+          "No live engineering defect or product-feedback capability gap found."
+        ],
+        "packet_id": "packet:b2178254-7d72-55e3-84af-27846a0cb7d5:2026-06-27",
+        "prepared_artifacts": [
+          {
+            "artifact_id": "artifact:b2178254-7d72-55e3-84af-27846a0cb7d5:renewal_risk_note",
+            "artifact_type": "renewal_risk_note",
+            "body_or_outline": "Review renewal risk tied to activate 50 percent of assets\n\nEvidence to inspect: telemetry.daily_active_assets reports daily_active_assets=8 assets at 2026-06-20T00:00:00Z; cs_platform.due_date reports 2026-06-28; cs_platform.health_score reports account=Globex Fleet",
+            "intended_audience": "Alex Rivers (ops@globex.example)",
+            "requires_approval": true,
+            "source_ids": [
+              "85b3431d-1fe0-5c97-86da-c33dbc2d01c8",
+              "0f5ea32b-c798-5a0d-b21b-28f3eb5f85ee",
+              "b2178254-7d72-55e3-84af-27846a0cb7d5"
+            ],
+            "title": "Globex Fleet: Review renewal risk tied to activate 50 percent of assets"
+          }
+        ],
+        "primary_next_step": "Review renewal risk tied to activate 50 percent of assets",
+        "recommended_action": {
+          "action_id": "action:b2178254-7d72-55e3-84af-27846a0cb7d5:renewal_risk_review",
+          "action_type": "draft_customer_outreach",
+          "blocked_by": [],
+          "label": "Review renewal risk tied to activate 50 percent of assets",
+          "message_strategy": "Be concrete about activate 50 percent of assets, ask for owner/date, and avoid generic check-in language.",
+          "objective": "Resolve activate 50 percent of assets with an accountable owner and date.",
+          "recipient_contact_id": "5fed2e03-53af-5439-a9d1-b3d9dfdd5f32",
+          "recipient_role": "operations",
+          "source_ids": [
+            "85b3431d-1fe0-5c97-86da-c33dbc2d01c8",
+            "0f5ea32b-c798-5a0d-b21b-28f3eb5f85ee",
+            "b2178254-7d72-55e3-84af-27846a0cb7d5"
+          ],
+          "success_criteria": [
+            "Owner is identified.",
+            "Next date or decision is recorded.",
+            "External action remains approval-gated."
+          ]
+        },
+        "why_now": "Priority score 91 is driven by milestones_overdue, days_overdue, health_yellow; evidence is present in the source chain."
+      }
     },
     {
       "account_id": "efe1d86f-af21-5ca6-8719-3ba8b4429292",
       "account_resolution": "exactly_one",
       "candidate_account_ids": [],
       "customer_contact_allowed": true,
-      "customer_draft": "Hi Samir Rao, Initech Services is showing an onboarding risk tied to success_plan_overdue, health_yellow. Can we map the missing users needed for a complete rollout?",
+      "customer_draft": "Hi Samir Rao, Initech Services is blocked on success plan target 2026-06-17. Can we confirm the owner, decide the next technical step, and reset the activation date?",
       "disposition": "propose_customer_action",
       "draft_mode": "fixture",
       "evidence": [
@@ -903,7 +2406,285 @@
       "recommended_action": "draft_customer_outreach",
       "slot_a_classifications": [],
       "swept_at": "2026-06-27",
-      "tenant_id": "ultra-demo"
+      "tenant_id": "ultra-demo",
+      "work_packet": {
+        "account_id": "efe1d86f-af21-5ca6-8719-3ba8b4429292",
+        "account_name": "Initech Services",
+        "allowed_ctas": [
+          {
+            "cta_id": "cta:efe1d86f-af21-5ca6-8719-3ba8b4429292:inspect",
+            "disabled_reason": null,
+            "enabled": true,
+            "governance_requirement": null,
+            "kind": "inspect",
+            "label": "Inspect evidence",
+            "readonly_behavior": "Open packet evidence and source drawers locally.",
+            "source_ids": [
+              "7dd6a2dc-67d4-5087-9708-7d3c5a83df44",
+              "efe1d86f-af21-5ca6-8719-3ba8b4429292"
+            ]
+          },
+          {
+            "cta_id": "cta:efe1d86f-af21-5ca6-8719-3ba8b4429292:preview",
+            "disabled_reason": null,
+            "enabled": true,
+            "governance_requirement": null,
+            "kind": "preview",
+            "label": "Preview artifact",
+            "readonly_behavior": "Render the prepared artifact without sending it.",
+            "source_ids": [
+              "7dd6a2dc-67d4-5087-9708-7d3c5a83df44",
+              "efe1d86f-af21-5ca6-8719-3ba8b4429292"
+            ]
+          },
+          {
+            "cta_id": "cta:efe1d86f-af21-5ca6-8719-3ba8b4429292:copy",
+            "disabled_reason": null,
+            "enabled": true,
+            "governance_requirement": "human reviews copied text before external use",
+            "kind": "copy",
+            "label": "Copy artifact",
+            "readonly_behavior": "Copy local text only; no connector write.",
+            "source_ids": [
+              "7dd6a2dc-67d4-5087-9708-7d3c5a83df44",
+              "efe1d86f-af21-5ca6-8719-3ba8b4429292"
+            ]
+          },
+          {
+            "cta_id": "cta:efe1d86f-af21-5ca6-8719-3ba8b4429292:approve",
+            "disabled_reason": "Readonly demo cannot execute external actions; use ActionGate metadata for review.",
+            "enabled": false,
+            "governance_requirement": "ActionGate proposal runtime-generated:efe1d86f-af21-5ca6-8719-3ba8b4429292:draft_customer_outreach",
+            "kind": "approve",
+            "label": "Approve through ActionGate",
+            "readonly_behavior": "Explain approval requirement; no send in hosted demo.",
+            "source_ids": [
+              "7dd6a2dc-67d4-5087-9708-7d3c5a83df44",
+              "efe1d86f-af21-5ca6-8719-3ba8b4429292"
+            ]
+          },
+          {
+            "cta_id": "cta:efe1d86f-af21-5ca6-8719-3ba8b4429292:feedback",
+            "disabled_reason": null,
+            "enabled": true,
+            "governance_requirement": null,
+            "kind": "leave_feedback",
+            "label": "Leave feedback",
+            "readonly_behavior": "Record local packet feedback only.",
+            "source_ids": [
+              "7dd6a2dc-67d4-5087-9708-7d3c5a83df44",
+              "efe1d86f-af21-5ca6-8719-3ba8b4429292"
+            ]
+          }
+        ],
+        "as_of_day": "2026-06-27",
+        "bucket_trace": {
+          "inputs": {
+            "action": "draft_customer_outreach",
+            "evidence_count": 2,
+            "motion": null,
+            "priority_score": 62,
+            "proposal_status": "pending"
+          },
+          "lane": "needs_judgment",
+          "matched": [
+            "pending_action_gate",
+            "human_judgment_required"
+          ],
+          "near_misses": [],
+          "rule_id": "lane:needs_judgment:score-action-evidence",
+          "rule_label": "Lane chosen from priority, proposal state, job type, and evidence",
+          "source_ids": [
+            "7dd6a2dc-67d4-5087-9708-7d3c5a83df44",
+            "efe1d86f-af21-5ca6-8719-3ba8b4429292"
+          ],
+          "thresholds": {
+            "daily_high_priority": 70,
+            "evidence_required_for_confident_action": true,
+            "weekly_priority": 30
+          }
+        },
+        "cadence": "monthly",
+        "confidence": 0.71,
+        "contact_plan": {
+          "backup_contact": null,
+          "channel": "email",
+          "internal_owner": "csm-002",
+          "primary_contact": {
+            "consent_to_contact": true,
+            "contact_id": "a5bdd738-d55a-59eb-bc38-22ca5acb7375",
+            "email": "ops@initech.example",
+            "name": "Samir Rao",
+            "role": "operations",
+            "title": "Operations Lead"
+          },
+          "reason_for_contact_choice": "Samir Rao is the consented operations selected by first_consenting_fallback for this blocker.",
+          "source_ids": [
+            "7dd6a2dc-67d4-5087-9708-7d3c5a83df44",
+            "efe1d86f-af21-5ca6-8719-3ba8b4429292"
+          ],
+          "tone": "specific, operational, and approval-safe"
+        },
+        "coverage_trace": {
+          "accounts_scanned": 9,
+          "book_size": 9,
+          "excluded_or_suppressed_reason": null,
+          "freshness": "latest_evidence_at:2026-06-21T00:00:00Z",
+          "included_reason": "selected_for_renewal_risk_review_score_62",
+          "last_reviewed_at": null
+        },
+        "diagnostic_hypothesis": {
+          "confidence": 0.71,
+          "counter_signals": [],
+          "signals": [
+            "Success plan timing is stale or due.",
+            "Health score gives counter/context for the recommendation."
+          ],
+          "source_ids": [
+            "7dd6a2dc-67d4-5087-9708-7d3c5a83df44",
+            "efe1d86f-af21-5ca6-8719-3ba8b4429292"
+          ],
+          "summary": "The likely blocker is success plan target 2026-06-17.",
+          "unknowns": [
+            "whether there is an open support blocker",
+            "No live engineering defect or product-feedback capability gap found."
+          ]
+        },
+        "evidence_chain": [
+          {
+            "claim": "cs_platform.target_date reports status=active; target=2026-06-17; objectives=complete_admin_training",
+            "field": "target_date",
+            "interpretation": "Success plan timing is stale or due.",
+            "observed_value": "status=active; target=2026-06-17; objectives=complete_admin_training",
+            "source_id": "7dd6a2dc-67d4-5087-9708-7d3c5a83df44",
+            "source_type": "cs_platform",
+            "step_id": "evidence:efe1d86f-af21-5ca6-8719-3ba8b4429292:1",
+            "strength": "medium",
+            "supports": "success plan target 2026-06-17"
+          },
+          {
+            "claim": "cs_platform.health_score reports account=Initech Services",
+            "field": "health_score",
+            "interpretation": "Health score gives counter/context for the recommendation.",
+            "observed_value": "account=Initech Services",
+            "source_id": "efe1d86f-af21-5ca6-8719-3ba8b4429292",
+            "source_type": "cs_platform",
+            "step_id": "evidence:efe1d86f-af21-5ca6-8719-3ba8b4429292:2",
+            "strength": "medium",
+            "supports": "success plan target 2026-06-17"
+          }
+        ],
+        "feedback_hooks": [
+          {
+            "category": "wrong_diagnosis",
+            "label": "Wrong diagnosis",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "wrong_contact",
+            "label": "Wrong contact",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "wrong_action",
+            "label": "Wrong action",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "missing_evidence",
+            "label": "Missing evidence",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "wrong_bucket",
+            "label": "Wrong bucket",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "stale_data",
+            "label": "Stale data",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "product_feedback_candidate",
+            "label": "Product feedback candidate",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "education_resource_candidate",
+            "label": "Education resource candidate",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          },
+          {
+            "category": "dismiss_monitor",
+            "label": "Dismiss or monitor",
+            "local_only": true,
+            "readonly_behavior": "Store as local demo feedback; does not approve or execute work."
+          }
+        ],
+        "generated_at": "2026-06-27",
+        "governance": {
+          "audit_requirements": [
+            "action_gate.proposal_id",
+            "human_approval_before_external_write"
+          ],
+          "can_execute_from_ui": false,
+          "mode": "readonly_demo",
+          "requires_action_gate": true,
+          "requires_human_principal": true
+        },
+        "implied_customer_state": "Customer state is monitorable, but the current evidence does not justify escalation beyond this packet.",
+        "job_type": "renewal_risk_review",
+        "lane": "needs_judgment",
+        "open_questions": [
+          "whether there is an open support blocker",
+          "No live engineering defect or product-feedback capability gap found."
+        ],
+        "packet_id": "packet:efe1d86f-af21-5ca6-8719-3ba8b4429292:2026-06-27",
+        "prepared_artifacts": [
+          {
+            "artifact_id": "artifact:efe1d86f-af21-5ca6-8719-3ba8b4429292:renewal_risk_note",
+            "artifact_type": "renewal_risk_note",
+            "body_or_outline": "Review renewal risk tied to success plan target 2026-06-17\n\nEvidence to inspect: cs_platform.target_date reports status=active; target=2026-06-17; objectives=complete_admin_training; cs_platform.health_score reports account=Initech Services",
+            "intended_audience": "Samir Rao (ops@initech.example)",
+            "requires_approval": true,
+            "source_ids": [
+              "7dd6a2dc-67d4-5087-9708-7d3c5a83df44",
+              "efe1d86f-af21-5ca6-8719-3ba8b4429292"
+            ],
+            "title": "Initech Services: Review renewal risk tied to success plan target 2026-06-17"
+          }
+        ],
+        "primary_next_step": "Review renewal risk tied to success plan target 2026-06-17",
+        "recommended_action": {
+          "action_id": "action:efe1d86f-af21-5ca6-8719-3ba8b4429292:renewal_risk_review",
+          "action_type": "draft_customer_outreach",
+          "blocked_by": [],
+          "label": "Review renewal risk tied to success plan target 2026-06-17",
+          "message_strategy": "Be concrete about success plan target 2026-06-17, ask for owner/date, and avoid generic check-in language.",
+          "objective": "Resolve success plan target 2026-06-17 with an accountable owner and date.",
+          "recipient_contact_id": "a5bdd738-d55a-59eb-bc38-22ca5acb7375",
+          "recipient_role": "operations",
+          "source_ids": [
+            "7dd6a2dc-67d4-5087-9708-7d3c5a83df44",
+            "efe1d86f-af21-5ca6-8719-3ba8b4429292"
+          ],
+          "success_criteria": [
+            "Owner is identified.",
+            "Next date or decision is recorded.",
+            "External action remains approval-gated."
+          ]
+        },
+        "why_now": "Priority score 62 is driven by success_plan_overdue, health_yellow, low_seat_penetration; evidence is present in the source chain."
+      }
     }
   ]
 }
