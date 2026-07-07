@@ -62,7 +62,7 @@ export function QueueLanes({
         <span className="badge">need judgment</span>
       </div>
       {escalations.length === 0 && (
-        <div className="row" style={{ color: "var(--fg-3)", fontSize: 12 }}>
+        <div className="row" style={{ color: "var(--fg-2)", fontSize: 12 }}>
           none this sweep
         </div>
       )}

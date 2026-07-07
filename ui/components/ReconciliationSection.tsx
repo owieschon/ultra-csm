@@ -29,7 +29,7 @@ function DeterministicSignalRowView({ signal }: { signal: DeterministicSignalRow
           +{signal.contribution}
         </span>
         <span className="fmeta">
-          <span className="mono" style={{ fontSize: 10, color: "var(--fg-3)" }}>
+          <span className="mono" style={{ fontSize: 10, color: "var(--fg-2)" }}>
             {signal.name}
           </span>
           <span>{signal.surfaced_by_lenses.join(", ")}</span>
@@ -42,7 +42,7 @@ function DeterministicSignalRowView({ signal }: { signal: DeterministicSignalRow
               <span className="esys">{ref.source}</span>
               <span className="eval">
                 {evidenceLine(ref)}
-                <span className="mono" style={{ marginLeft: 6, color: "var(--fg-3)" }}>
+                <span className="mono" style={{ marginLeft: 6, color: "var(--fg-2)" }}>
                   {ref.source_id.slice(0, 8)}
                 </span>
               </span>
@@ -71,7 +71,7 @@ function CandidateDivergenceRowView({ candidate }: { candidate: CandidateDiverge
               <span className="esys">{ref.source}</span>
               <span className="eval">
                 {evidenceLine(ref)}
-                <span className="mono" style={{ marginLeft: 6, color: "var(--fg-3)" }}>
+                <span className="mono" style={{ marginLeft: 6, color: "var(--fg-2)" }}>
                   {ref.source_id.slice(0, 8)}
                 </span>
               </span>
@@ -118,7 +118,7 @@ export function ReconciliationSection({
 
       {failed && (
         <div className="evid-row">
-          <span className="eval" style={{ color: "var(--fg-3)" }}>
+          <span className="eval" style={{ color: "var(--fg-2)" }}>
             no reconciliation signal for this account
           </span>
         </div>
@@ -126,7 +126,7 @@ export function ReconciliationSection({
 
       {data && noSignal && (
         <div className="evid-row">
-          <span className="eval" style={{ color: "var(--fg-3)" }}>
+          <span className="eval" style={{ color: "var(--fg-2)" }}>
             no reconciliation signal for this account
           </span>
         </div>

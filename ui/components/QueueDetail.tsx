@@ -106,6 +106,28 @@ function caseRowText(row: CaseRow): { name: string; meta: string } {
   return { name: row.subject, meta: `${row.status} · ${row.priority} priority` };
 }
 
+function genericDrawerRowText(row: unknown): { name: string; meta: string } {
+  if (!row || typeof row !== "object") {
+    return { name: "Record available", meta: "unformatted source row" };
+  }
+  const record = row as Record<string, unknown>;
+  const name =
+    firstString(record, ["subject", "title", "name", "milestone", "metric_name", "status"]) ??
+    "Record available";
+  const meta =
+    firstString(record, ["observed_at", "timestamp", "expected_by", "target_date", "priority"]) ??
+    "unformatted source row";
+  return { name: humanizeCode(name), meta };
+}
+
+function firstString(record: Record<string, unknown>, keys: string[]): string | null {
+  for (const key of keys) {
+    const value = record[key];
+    if (typeof value === "string" && value.trim()) return value;
+  }
+  return null;
+}
+
 // Drawer -> brief field mapping, verified against api.py's AccountBriefResponse
 // (Phase 1's contract table). Stakeholders now reads the additive
 // `stakeholders` field (per-person role graph) instead of raw `contacts`.
@@ -235,7 +257,7 @@ export function QueueDetail({ item, day }: { item: WorkItem; day: number | undef
                 +{factor.contribution}
               </span>
               <span className="fmeta">
-                <span className="mono" style={{ fontSize: 10, color: "var(--fg-3)" }}>
+                <span className="mono" style={{ fontSize: 10, color: "var(--fg-2)" }}>
                   {factor.name}
                 </span>
                 <span>{factor.evidence?.length ?? 0} records</span>
@@ -258,7 +280,7 @@ export function QueueDetail({ item, day }: { item: WorkItem; day: number | undef
                       {personName ? (
                         <span className="eval">
                           {label(TRIGGER_LABELS, factor.name)} — {personName}
-                          <span className="mono" style={{ marginLeft: 6, color: "var(--fg-3)" }}>
+                          <span className="mono" style={{ marginLeft: 6, color: "var(--fg-2)" }}>
                             {(ev.source as string) ?? "crm"} · {String(ev.source_id ?? "").slice(0, 8)}
                           </span>
                         </span>
@@ -272,7 +294,7 @@ export function QueueDetail({ item, day }: { item: WorkItem; day: number | undef
                         // fields.
                         <span className="eval">
                           {humanizeCode((ev.field as string) ?? "record")} · observed {(ev.observed_at as string) ?? "—"}
-                          <span className="mono" style={{ marginLeft: 6, color: "var(--fg-3)" }}>
+                          <span className="mono" style={{ marginLeft: 6, color: "var(--fg-2)" }}>
                             {(ev.source as string) ?? "evidence"} · {String(ev.source_id ?? "").slice(0, 8)}
                           </span>
                         </span>
@@ -407,22 +429,11 @@ function Drawer({
       {open && !dormant && (
         <div className="drawer-b">
           {(rows ?? []).map((row, i) =>
-            formatter ? (
-              <DrawerRow key={i} row={row} formatter={formatter} />
-            ) : (
-              // Fallback path only -- every DRAWERS entry with a non-null
-              // briefField now carries a formatter (Phase 1, dispatch 28);
-              // this branch is unreachable today and stays as the honest
-              // degrade for any future drawer wired without one yet, rather
-              // than crashing or hiding the record.
-              <div className="evid-row" key={i}>
-                <span className="eval">{JSON.stringify(row).slice(0, 160)}</span>
-              </div>
-            )
+            <DrawerRow key={i} row={row} formatter={formatter ?? genericDrawerRowText} />
           )}
           {(rows ?? []).length === 0 && (
             <div className="evid-row">
-              <span className="eval" style={{ color: "var(--fg-3)" }}>
+              <span className="eval" style={{ color: "var(--fg-2)" }}>
                 none
               </span>
             </div>
@@ -485,7 +496,7 @@ function StakeholderDrawer({
         <div className="drawer-b">
           {rows.length === 0 && (
             <div className="evid-row">
-              <span className="eval" style={{ color: "var(--fg-3)" }}>
+              <span className="eval" style={{ color: "var(--fg-2)" }}>
                 no stakeholder graph for this account
               </span>
             </div>
@@ -617,7 +628,7 @@ function CommsDrawer({
           })}
           {active.rows.length === 0 && (
             <div className="evid-row">
-              <span className="eval" style={{ color: "var(--fg-3)" }}>
+              <span className="eval" style={{ color: "var(--fg-2)" }}>
                 none
               </span>
             </div>
