@@ -33,6 +33,8 @@ from ultra_csm.data_plane.synthetic_book import (
     SEED_DATE,
     _ADOPTION,
     _id,
+    synthetic_communication_signals_as_of,
+    synthetic_internal_notes_as_of,
 )
 
 
@@ -1032,4 +1034,6 @@ def simulate_book(
         tenant_accounts=base_book.tenant_accounts,
         stakeholder_relationships=stakeholder_relationships,
         job_change_signals=job_change_signals,
+        communication_signals=synthetic_communication_signals_as_of(day_offset),
+        internal_notes=synthetic_internal_notes_as_of(day_offset),
     )

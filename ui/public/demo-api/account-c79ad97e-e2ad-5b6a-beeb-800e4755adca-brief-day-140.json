@@ -12,8 +12,38 @@
     "underused_capabilities": []
   },
   "comms_call_transcripts": [],
-  "comms_gmail": [],
-  "comms_internal": [],
+  "comms_gmail": [
+    {
+      "account_id": "c79ad97e-e2ad-5b6a-beeb-800e4755adca",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "0cde8be1-1ecf-5092-96ec-411f8f8a40c9",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "6316ce15-0a32-5b07-ba8d-bc8b953d4b3b",
+      "timestamp": "2026-06-21T00:00:00Z"
+    },
+    {
+      "account_id": "c79ad97e-e2ad-5b6a-beeb-800e4755adca",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "0cde8be1-1ecf-5092-96ec-411f8f8a40c9",
+      "direction": "inbound",
+      "response_time_hours": 7.0,
+      "signal_id": "9c16ea1f-2786-50c3-b803-62d277e945cb",
+      "timestamp": "2026-06-21T07:00:00Z"
+    }
+  ],
+  "comms_internal": [
+    {
+      "account_id": "c79ad97e-e2ad-5b6a-beeb-800e4755adca",
+      "author": "csm-104",
+      "content": "No customer reply since the admin-transfer exchange; preserve the champion-departure read and do not imply a live relationship.",
+      "note_id": "f3b263ff-e617-5dee-b352-58a60620e076",
+      "source": "slack",
+      "timestamp": "2026-11-08T07:00:00Z"
+    }
+  ],
   "company": {
     "arr_cents": 2000000,
     "csm_owner_id": "csm-104",

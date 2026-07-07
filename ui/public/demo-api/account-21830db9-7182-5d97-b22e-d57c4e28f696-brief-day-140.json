@@ -11,9 +11,193 @@
     "measured_at": "2026-11-08T00:00:00Z",
     "underused_capabilities": []
   },
-  "comms_call_transcripts": [],
-  "comms_gmail": [],
-  "comms_internal": [],
+  "comms_call_transcripts": [
+    {
+      "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+      "attendees": [
+        "5ba7aa51-a5eb-5220-9d3b-71bbe67377a1",
+        "csm-101"
+      ],
+      "channel": "call",
+      "contact_id": "5ba7aa51-a5eb-5220-9d3b-71bbe67377a1",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "1f6af559-93e3-5547-a696-41727c2529f9",
+      "timestamp": "2026-11-04T02:00:00Z"
+    }
+  ],
+  "comms_gmail": [
+    {
+      "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "5ba7aa51-a5eb-5220-9d3b-71bbe67377a1",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "e49848e6-9e71-5fff-b914-b8b31d386ce6",
+      "timestamp": "2026-07-01T00:00:00Z"
+    },
+    {
+      "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "5ba7aa51-a5eb-5220-9d3b-71bbe67377a1",
+      "direction": "inbound",
+      "response_time_hours": 4.0,
+      "signal_id": "2aaec3c9-4fb2-5d0b-9544-9af37672b9d6",
+      "timestamp": "2026-07-01T04:00:00Z"
+    },
+    {
+      "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "5ba7aa51-a5eb-5220-9d3b-71bbe67377a1",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "71170d17-c942-590e-a24c-a5b3e8696e7d",
+      "timestamp": "2026-07-16T00:00:00Z"
+    },
+    {
+      "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "5ba7aa51-a5eb-5220-9d3b-71bbe67377a1",
+      "direction": "inbound",
+      "response_time_hours": 3.0,
+      "signal_id": "3dd4c81e-f2c3-5a98-9ece-dad921af0c03",
+      "timestamp": "2026-07-16T03:00:00Z"
+    },
+    {
+      "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "5ba7aa51-a5eb-5220-9d3b-71bbe67377a1",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "8842d8f2-cdc2-53a8-a661-9eb840bd71db",
+      "timestamp": "2026-08-05T00:00:00Z"
+    },
+    {
+      "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "5ba7aa51-a5eb-5220-9d3b-71bbe67377a1",
+      "direction": "inbound",
+      "response_time_hours": 3.0,
+      "signal_id": "986c5613-cbb5-52e4-869d-d8adf5e58cc1",
+      "timestamp": "2026-08-05T03:00:00Z"
+    },
+    {
+      "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "5ba7aa51-a5eb-5220-9d3b-71bbe67377a1",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "b2185051-b5c6-5dd7-b828-a20a716ad86b",
+      "timestamp": "2026-08-15T01:00:00Z"
+    },
+    {
+      "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "c8836191-bc7e-54ac-ac00-d010e2adb93b",
+      "direction": "inbound",
+      "response_time_hours": 3.0,
+      "signal_id": "d30930a9-4ccd-5ec5-9ee2-cb41dd358bda",
+      "timestamp": "2026-08-15T04:00:00Z"
+    },
+    {
+      "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "5ba7aa51-a5eb-5220-9d3b-71bbe67377a1",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "393c7b56-f321-59eb-805b-b6d561477f21",
+      "timestamp": "2026-09-24T00:00:00Z"
+    },
+    {
+      "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "5ba7aa51-a5eb-5220-9d3b-71bbe67377a1",
+      "direction": "inbound",
+      "response_time_hours": 2.0,
+      "signal_id": "62e5664a-2700-528f-b619-b54973ef1848",
+      "timestamp": "2026-09-24T02:00:00Z"
+    },
+    {
+      "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "5ba7aa51-a5eb-5220-9d3b-71bbe67377a1",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "584d4ec8-fdf4-5042-8374-8125727c48c8",
+      "timestamp": "2026-10-19T00:00:00Z"
+    },
+    {
+      "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "5ba7aa51-a5eb-5220-9d3b-71bbe67377a1",
+      "direction": "inbound",
+      "response_time_hours": 4.0,
+      "signal_id": "2c42dd73-cc21-51ca-9577-663f70d06ec2",
+      "timestamp": "2026-10-19T04:00:00Z"
+    },
+    {
+      "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "5ba7aa51-a5eb-5220-9d3b-71bbe67377a1",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "83e8d8e5-8892-5f3b-b79b-d166c9b429f4",
+      "timestamp": "2026-10-29T00:00:00Z"
+    },
+    {
+      "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "5ba7aa51-a5eb-5220-9d3b-71bbe67377a1",
+      "direction": "inbound",
+      "response_time_hours": 4.0,
+      "signal_id": "8805af0d-5fcf-5db1-b2e1-3eb6b6e68b90",
+      "timestamp": "2026-10-29T04:00:00Z"
+    },
+    {
+      "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "5ba7aa51-a5eb-5220-9d3b-71bbe67377a1",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "5f90b3a8-5633-52e2-9b06-32732b251ec5",
+      "timestamp": "2026-11-08T00:00:00Z"
+    },
+    {
+      "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "5ba7aa51-a5eb-5220-9d3b-71bbe67377a1",
+      "direction": "inbound",
+      "response_time_hours": 4.0,
+      "signal_id": "05912246-f640-58c8-bddd-e538272b46ac",
+      "timestamp": "2026-11-08T04:00:00Z"
+    }
+  ],
+  "comms_internal": [
+    {
+      "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+      "author": "csm-101",
+      "content": "Vanessa and Mike are active; keep the recap concise and point to the compliance reporting expansion path.",
+      "note_id": "bf17359c-e037-50a8-b3bf-4ef684d9a808",
+      "source": "csm_note",
+      "timestamp": "2026-11-08T07:00:00Z"
+    }
+  ],
   "company": {
     "arr_cents": 31000000,
     "csm_owner_id": "csm-101",

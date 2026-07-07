@@ -14,9 +14,53 @@
       "maintenance_alerts"
     ]
   },
-  "comms_call_transcripts": [],
-  "comms_gmail": [],
-  "comms_internal": [],
+  "comms_call_transcripts": [
+    {
+      "account_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+      "attendees": [
+        "c1c67c21-2110-5d2a-a805-2c495b9bb031",
+        "csm-101"
+      ],
+      "channel": "call",
+      "contact_id": "c1c67c21-2110-5d2a-a805-2c495b9bb031",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "2c4ad077-7b2d-5844-84ca-0572073a25ca",
+      "timestamp": "2026-11-06T02:00:00Z"
+    }
+  ],
+  "comms_gmail": [
+    {
+      "account_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "3610a030-a5cd-55db-80b7-7b89d66203a4",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "7703133c-6a9c-5fe5-ae74-63a60c27a0d2",
+      "timestamp": "2026-11-04T00:00:00Z"
+    },
+    {
+      "account_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "3610a030-a5cd-55db-80b7-7b89d66203a4",
+      "direction": "inbound",
+      "response_time_hours": 3.0,
+      "signal_id": "9486a35a-57f1-5852-ba02-1cbfd7cd3169",
+      "timestamp": "2026-11-04T03:00:00Z"
+    }
+  ],
+  "comms_internal": [
+    {
+      "account_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+      "author": "csm-101",
+      "content": "Hardware compatibility remains the blocker; Marcus asked for a working session with Lisa on the driver app rollout.",
+      "note_id": "b0795311-b04a-5652-80e2-afaa5a7954d9",
+      "source": "slack",
+      "timestamp": "2026-11-07T07:00:00Z"
+    }
+  ],
   "company": {
     "arr_cents": 14800000,
     "csm_owner_id": "csm-101",
