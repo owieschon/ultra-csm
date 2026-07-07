@@ -12,6 +12,7 @@ from eval.gold_slot_b_hard import (
     DIMS,
     FAMILIES,
     HARD_PATH,
+    apply_oa_a2_ontask_relabels,
     build_a6_expansion_artifacts,
     build_hard_artifacts,
     build_oa_a2_ontask_relabel_packet,
@@ -176,6 +177,53 @@ def test_oa_a2_ontask_relabel_packet_is_blind_and_dimension_scoped(tmp_path):
     assert "model_id" not in raw
     assert "prompt_version" not in raw
     assert "judge" not in raw
+
+
+def test_oa_a2_ontask_relabel_apply_only_updates_on_task_and_derivatives(tmp_path):
+    hard_records, hard_key = build_hard_artifacts()
+    labeled_records = []
+    for record, key_record in zip(hard_records, hard_key, strict=True):
+        labeled = copy.deepcopy(record)
+        scores = dict(key_record["expected_vector"])
+        labeled["human_labels"] = {
+            "candidate_id": record["candidate_id"],
+            "dimension_scores": scores,
+            "overall_pass": all(scores[dimension] >= PASSING_SCORE for dimension in DIMS),
+            "labeler": "unit-owner-labeler",
+            "notes": "preexisting label note",
+        }
+        labeled_records.append(labeled)
+
+    hard_path = tmp_path / "hard.jsonl"
+    hard_key_path = tmp_path / "hard_key.jsonl"
+    packet_path = tmp_path / "packet.jsonl"
+    _write_jsonl(hard_path, labeled_records)
+    _write_jsonl(hard_key_path, hard_key)
+    packet = []
+    for row in build_oa_a2_ontask_relabel_packet(hard_path):
+        relabeled = dict(row)
+        relabeled["owner_on_task_relevance"] = 2
+        relabeled["owner_notes"] = "unit relabel"
+        packet.append(relabeled)
+    _write_jsonl(packet_path, packet)
+
+    records, keys = apply_oa_a2_ontask_relabels(
+        hard_path=hard_path,
+        hard_key_path=hard_key_path,
+        packet_path=packet_path,
+    )
+
+    for before, after, key_after in zip(labeled_records, records, keys, strict=True):
+        before_scores = before["human_labels"]["dimension_scores"]
+        after_scores = after["human_labels"]["dimension_scores"]
+        for dimension in DIMS:
+            expected = 2 if dimension == "on_task_relevance" else before_scores[dimension]
+            assert after_scores[dimension] == expected
+            assert key_after["expected_vector"][dimension] == expected
+        assert after["human_labels"]["notes"] == "preexisting label note"
+        assert after["human_labels"]["overall_pass"] is all(
+            after_scores[dimension] >= PASSING_SCORE for dimension in DIMS
+        )
 
 
 def _write_jsonl(path, records):
