@@ -79,12 +79,12 @@ export function TopBar({
           className={view === "queue" ? "on" : ""}
           onClick={() => onViewChange("queue")}
         >
-          Queue{queueCount > 0 && <span className="cnt num">{queueCount}</span>}
+          Today{queueCount > 0 && <span className="cnt num">{queueCount}</span>}
         </button>
       </div>
 
       <Link className="navlink" href="/comms-review">
-        Comms
+        Integrity
       </Link>
 
       <div className="search" onClick={onOpenPalette} style={{ cursor: "pointer" }}>

@@ -3,6 +3,7 @@
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { api, LedgerEvent, WorkItem } from "@/lib/api";
 import { PROPOSAL_STATUS_LABELS, label } from "@/lib/labels";
+import { describeWork } from "@/lib/work";
 
 export interface ActionRailHandle {
   approve: () => void;
@@ -41,6 +42,7 @@ export const ActionRail = forwardRef<
   const status = item?.proposal?.status ?? null;
   const canAct = proposalId != null && status === "pending";
   const canEdit = canAct && item?.proposal?.action_type === "draft_customer_outreach";
+  const descriptor = item ? describeWork(item) : null;
 
   useEffect(() => {
     if (!canEdit) {
@@ -96,7 +98,7 @@ export const ActionRail = forwardRef<
   return (
     <>
       <div className="rail-top">
-        <div className="t">Decision</div>
+        <div className="t">Human control</div>
         <div className="gate">
           {item ? (
             proposalId ? (
@@ -105,12 +107,17 @@ export const ActionRail = forwardRef<
                 <span className="st">{label(PROPOSAL_STATUS_LABELS, status)}</span>
               </>
             ) : (
-              "no gate-tracked proposal for this item"
+              "prepared work has no customer-facing release"
             )
           ) : (
             "select an item"
           )}
         </div>
+        {descriptor && (
+          <div className="gate">
+            {descriptor.cadenceLabel} · {descriptor.packetLabel}
+          </div>
+        )}
         {error && (
           <div className="gate" style={{ color: "var(--danger)" }}>
             {error}

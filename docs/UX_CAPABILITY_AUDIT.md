@@ -2,7 +2,7 @@
 
 This audit maps what the codebase can already do to how the current UI brings it to life, and where the UX should go next.
 
-The product should not become a dashboard or a relationship-intelligence workspace. The strongest product shape is a governed agent-work system: agents assemble account context, detect work, route it, draft packets, and keep every customer-facing or cross-functional action behind human authority.
+The product should not become a dashboard or a relationship-intelligence workspace. The strongest product shape is a governed CS operating system: agents do the repeatable work of a CS department across daily, weekly, monthly, quarterly, annual, and event-driven cadences; humans keep authority over judgment, release, and relationship-sensitive decisions.
 
 ## Current Product Spine
 
@@ -17,6 +17,21 @@ The shipped UI already has the right bones:
 
 The issue is not absence. The issue is hierarchy. The current UI often presents major capabilities as account-detail sections or drawers, so the product reads like account inspection plus approval buttons. The codebase is more interesting than that: it can already produce typed CSM work.
 
+## CS Operating Cadence
+
+The UI should be organized around the real rhythm of a CS team, because that is what agents scale.
+
+| Cadence | CSM operator job | Agent-produced artifact | Human decision |
+| --- | --- | --- | --- |
+| Daily | Scan the book, prep meetings, clear follow-ups, catch escalations | Today queue, customer action packet, meeting brief, escalation packet | Approve/send, revise, deny, or hold |
+| Weekly | Review momentum, stalled onboarding, adoption drift, recurring risks, campaign follow-ups | Weekly portfolio packet, cohort packet, held-work review | Prioritize, route, sequence, or release |
+| Monthly | Inspect health movement, adoption cohorts, support patterns, lifecycle progress | Monthly book review, product-friction summary, success-plan update packet | Accept plan changes, create plays, route patterns |
+| Quarterly | Prepare QBR/EBR, renewal narrative, exec sponsor alignment, roadmap/account feedback | QBR/EBR packet, renewal brief, exec narrative, product/eng feedback packet | Edit narrative, approve customer-facing packet, route internally |
+| Annual | Build renewal/account plan, value realization story, entitlement review, next-year success plan | Renewal/account-plan packet, realized-outcome receipt, expansion/risk packet | Confirm strategy, approve handoffs, govern commitments |
+| Trigger/event | React to deal close, champion change, usage drop, severe case, renewal stage change, feature launch | Cross-functional briefing packet or urgent action packet | Decide recipient, content, timing, and authority |
+
+Briefing is a primitive, not a sales-only feature. The same packet shape can move Sales -> CS on close, CS -> Sales before renewal or expansion, CS -> Product/Engineering when evidence points to product work, Product/Engineering -> CS before a release, and CS -> Leadership when portfolio patterns need attention.
+
 ## Capability Map
 
 | Capability | Code source | Current UI expression | UX gap | Recommended module |
@@ -30,7 +45,8 @@ The issue is not absence. The issue is hierarchy. The current UI often presents 
 | Human revise loop | `src/ultra_csm/proposal_revise.py`, `ActionRail.tsx` | Edit instruction textarea | Edit is UI-visible only for customer outreach and not framed as agent iteration | **Revise as Workflow Step**: original draft -> human instruction -> superseding proposal -> audit |
 | Committers and writeback | `src/ultra_csm/committers.py`, `src/ultra_csm/data_plane/gmail_writeback.py`, `salesforce_writeback.py` | Hidden in backend; read-only demo disables writes | User cannot see what would be written where | **Commit Preview**: outbox/CRM/Gmail/Salesforce target, dry-run receipt, idempotency key |
 | Internal bridge | `src/ultra_csm/internal_bridge/routing.py`, `packet.py` | Small `Internal handoff` card inside account detail | This is a major cross-functional capability but it looks like a side note | **Internal Handoff Packet**: Engineering/Product target, signal, cited cases, packet body, owner approval state |
-| Sales handoff context | Present as account/opportunity/renewal data in briefs and governance payloads; README names it | Not a first-class surface | Sales handoff is real product value, but not represented as a distinct packet | **Sales Handoff Packet**: renewal risk, open cases, customer pain, suggested AE/CSM motion, evidence, gate |
+| Cross-functional briefing | Account/opportunity/renewal data in briefs, internal bridge packets, governance payloads | Sales handoff named in docs; internal handoff is a small card | Briefing should be bidirectional across departments, not just CS -> Sales | **Briefing Packet**: Sales -> CS close brief, CS -> Sales renewal/expansion brief, CS -> Product/Eng evidence packet, Product/Eng -> CS release brief |
+| EBR/QBR preparation | `motion === "qbr"`, customer drafts, value model evidence, account brief sources | Appears as generic motion/draft | Quarterly executive work is not visibly different from a normal outreach draft | **QBR/EBR Packet**: value narrative, outcomes, risks, open asks, cited source rows, human-editable customer packet |
 | Account brief | `_build_account_brief(...)`, `AccountBriefResponse` | Source drawers plus identity header | Rich brief data exists, but the detail starts with sources rather than "the work to do" | **Packet Brief Sidebar**: account facts only in service of the selected work item |
 | Comms evidence | `comms_mapping.py`, Gmail/Notion/Slack readers, brief comms fields | Comms drawer and `/comms-review` page | Comms are inspectable but not used as a visible evidence chain for a packet | **Source Evidence Stack**: show comms rows cited by the current work item, not all comms first |
 | Comms mapping review | `/comms/pending-mappings/*`, `ui/app/comms-review/page.tsx` | Separate sparse page | Useful, but disconnected from main workflow | **Setup/Integrity Task**: appears in agent work queue as "confirm source attribution" |
@@ -46,14 +62,15 @@ The issue is not absence. The issue is hierarchy. The current UI often presents 
 
 ## What The UI Should Become
 
-Use one primary object: **agent work item**.
+Use one primary object: **cadence-scoped agent work packet**.
 
-The work item has typed modules:
+The packet has typed modules:
 
 1. **Work Header**
    - Account
    - Agent/lens that produced it
-   - Work type: CSM action, route decision, internal handoff, sales handoff, setup/integrity, cohort packet
+   - Cadence: daily, weekly, monthly, quarterly, annual, trigger/event
+   - Work type: customer action, briefing packet, internal handoff, setup/integrity, cohort packet, EBR/QBR packet
    - Required human authority
    - Status: pending, held, revised, approved, denied, committed
 
@@ -61,6 +78,7 @@ The work item has typed modules:
    - Proposed action in plain language
    - Draft body or writeback target
    - Recipient or internal target
+   - Briefing direction when relevant: Sales -> CS, CS -> Sales, CS -> Product/Eng, Product/Eng -> CS, CS -> Leadership
    - Consent/permission status
    - "What will happen if approved"
 
@@ -91,7 +109,8 @@ This keeps stakeholder data in the system without making stakeholder intelligenc
 Keep the app small:
 
 - **Book**: portfolio coverage and quiet/hot state.
-- **Work**: the main operating surface; queue + selected work packet + governance rail.
+- **Today**: the main operating surface; queue + selected work packet + governance rail.
+- **Briefings**: saved or generated cross-functional packets when there is enough volume to justify a separate slice; until then they live inside Today.
 - **Integrity**: source mapping, held work, ledger gaps, source readiness.
 - **Proof**: optional demo/proof page for reliability receipts, not daily workflow.
 
@@ -107,7 +126,7 @@ Avoid:
 | Surface | Keep | Change |
 | --- | --- | --- |
 | Book view | Service-tier grouping, quiet/hot/handled distinction, "Work the queue" CTA | Make it read as coverage status, not the primary product |
-| Queue lanes | Fast operator density, pending/resolved split | Add typed lanes: customer action, internal handoff, sales handoff, held/setup |
+| Queue lanes | Fast operator density, pending/resolved split | Add cadence and typed lanes: customer action, briefing, internal handoff, held/setup |
 | Account detail | Evidence expansion, source honesty, two-register labels | Reframe as selected work packet; demote generic source drawers |
 | Action rail | Approval/edit/deny, audit ledger, read-only demo state | Add proposal contract details, blockers, commit preview, and revision chain |
 | Reconciliation | Deterministic vs hypothesis distinction | Integrate as verification step inside evidence receipt |
@@ -115,13 +134,14 @@ Avoid:
 
 ## Implementation Sequence
 
-### Slice 1: Rename The Mental Model
+### Slice 1: CSM Workbench Foundation
 
 Low code risk. No new backend.
 
-- Rename queue headers/copy from "account queue" to "agent work".
+- Rename queue headers/copy from "account queue" to "Today" and "agent work".
 - In `QueueLanes`, group by `recommended_action`, `motion`, `internal_bridge_decision`, and `proposal.status`.
-- In `QueueDetail`, put "proposed work" above "account sources".
+- Add derived cadence labels from existing work item fields.
+- In `QueueDetail`, put the work packet above account sources.
 - Keep all existing drawers intact.
 
 ### Slice 2: Work Packet Detail
@@ -148,9 +168,19 @@ Uses existing proposal/ledger data.
 Small backend shaping may be needed.
 
 - Promote `internal_bridge_decision` from card to packet.
-- Add a derived sales handoff packet when renewal/opportunity/cases justify it.
+- Add derived briefing packets when renewal/opportunity/cases justify them.
+- Support both directions: Sales -> CS at close, CS -> Sales for renewal/expansion, CS -> Product/Engineering for product evidence, Product/Engineering -> CS for release/customer impact briefs.
 - Use customer/opportunity/case evidence already in `AccountBriefResponse`.
 - Keep relationship data as supporting context only.
+
+### Slice 4.5: EBR/QBR Packets
+
+Moderate product shaping; most inputs already exist.
+
+- Treat `qbr` motion as a quarterly packet, not a generic draft.
+- Assemble value narrative, risk/expansion evidence, outcome state, open cases, adoption signals, and stakeholder context.
+- Keep the packet editable and approval-gated before any customer-facing use.
+- Preserve source receipts so the CSM can defend every claim in the EBR/QBR.
 
 ### Slice 5: Integrity And Morning Brief
 
@@ -180,13 +210,13 @@ Ultra CSM's differentiator is that agents produce governed CSM work. Relationshi
 
 ## Best Next Design Direction
 
-Build a single **Agent Work** surface:
+Build a single **Today** surface backed by cadence-scoped packets:
 
 ```text
-Book coverage -> Agent Work Queue -> Work Packet -> Approval / Audit
-                                  -> Evidence Receipt
-                                  -> Source Context
+Book coverage -> Today Queue -> Work Packet -> Approval / Audit
+                             -> Evidence Receipt
+                             -> Source Context
+                             -> Briefing / EBR / QBR Packet
 ```
 
 That lets every capability in the codebase come alive without turning the app into a dashboard or a Centralize clone.
-
