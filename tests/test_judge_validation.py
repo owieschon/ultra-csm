@@ -25,17 +25,23 @@ def _copy(tmp_path: Path) -> tuple[Path, Path]:
     return agreement, compare
 
 
-def test_validates_from_committed_evidence_artifacts():
+def test_committed_evidence_fails_closed_on_oa_a2_false_opens():
     status = judge_validation_status()
 
-    assert status["validated"] is True
-    assert status["failures"] == []
+    assert status["validated"] is False
+    assert status["failures"] == [
+        "hard aggregated false negatives: "
+        "['slot-b-gold-e4678a581082477b', "
+        "'slot-b-gold-e4e25cb08adb7f4a', "
+        "'slot-b-gold-fbea03fbc73ce874']"
+    ]
     assert status["method"]["judge_prompt_version"] == "quality-judge-v9"
     assert status["method"]["runs_per_case"] >= 3
     for dim in QUALITY_DIMENSIONS:
         assert status["hard"]["per_dimension_kappa_aggregated"][dim] >= GATE_KAPPA
         assert status["clean"]["per_dimension_kappa"][dim] >= GATE_KAPPA
     assert status["clean"]["false_neg"] == 0
+    assert status["hard"]["false_pos_aggregated"] == 0
 
 
 def test_prompt_version_mismatch_fails_closed_v9():
@@ -144,15 +150,15 @@ def test_live_semantic_quality_proven_from_passing_evidence(tmp_path):
     assert status["candidate_count"] == 2
 
 
-def test_live_semantic_quality_committed_artifact_is_proven():
+def test_live_semantic_quality_committed_artifact_is_not_proven_without_validated_judge():
     """The evidence artifact actually committed to the repo (a real live run,
     docs/PROGRAM_REPORT_6.md) derives proven=True -- PROVIDED the judge
     itself is validated. Phase 1 of the live build regenerated
     judge_compare.json with the shipped prompt-version stamp, so this test can
     exercise the real committed judge-validation precondition again."""
     status = live_semantic_quality_status(LIVE_SEMANTIC_QUALITY_PATH)
-    assert status["proven"] is True
-    assert status["failures"] == []
+    assert status["proven"] is False
+    assert any("judge is not validated" in failure for failure in status["failures"])
 
 
 def test_live_semantic_quality_fails_closed_when_judge_not_validated(tmp_path):
@@ -247,7 +253,7 @@ def test_ac1_reported_only_for_wide_ci_dims_never_gates():
     # judge-scored dimensions with wide single-run CIs only.
     assert "account_specificity" not in reported
     assert "priority_fidelity" not in reported
-    assert status["validated"] is True
+    assert status["validated"] is False
 
 
 def test_ac1_absent_when_no_dimension_has_a_wide_ci(tmp_path):

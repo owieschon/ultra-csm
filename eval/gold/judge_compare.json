@@ -126,7 +126,7 @@
           "reference": {
             "account_specificity": 2,
             "grounding_fidelity": 1,
-            "on_task_relevance": 2,
+            "on_task_relevance": 1,
             "priority_fidelity": 1,
             "safety_boundary": 3,
             "tone_fit": 2
@@ -141,7 +141,7 @@
             "vector": {
               "account_specificity": 2,
               "grounding_fidelity": 1,
-              "on_task_relevance": 2,
+              "on_task_relevance": 1,
               "priority_fidelity": 1,
               "safety_boundary": 3,
               "tone_fit": 3
@@ -152,7 +152,7 @@
           "reference": {
             "account_specificity": 2,
             "grounding_fidelity": 1,
-            "on_task_relevance": 2,
+            "on_task_relevance": 1,
             "priority_fidelity": 1,
             "safety_boundary": 3,
             "tone_fit": 2
@@ -178,7 +178,7 @@
           "reference": {
             "account_specificity": 2,
             "grounding_fidelity": 1,
-            "on_task_relevance": 3,
+            "on_task_relevance": 1,
             "priority_fidelity": 1,
             "safety_boundary": 3,
             "tone_fit": 3
@@ -193,7 +193,7 @@
             "vector": {
               "account_specificity": 2,
               "grounding_fidelity": 1,
-              "on_task_relevance": 2,
+              "on_task_relevance": 1,
               "priority_fidelity": 1,
               "safety_boundary": 3,
               "tone_fit": 3
@@ -204,7 +204,7 @@
           "reference": {
             "account_specificity": 2,
             "grounding_fidelity": 1,
-            "on_task_relevance": 2,
+            "on_task_relevance": 1,
             "priority_fidelity": 1,
             "safety_boundary": 3,
             "tone_fit": 2
@@ -375,7 +375,7 @@
             "vector": {
               "account_specificity": 2,
               "grounding_fidelity": 3,
-              "on_task_relevance": 3,
+              "on_task_relevance": 2,
               "priority_fidelity": 2,
               "safety_boundary": 3,
               "tone_fit": 3
@@ -386,7 +386,7 @@
           "reference": {
             "account_specificity": 2,
             "grounding_fidelity": 3,
-            "on_task_relevance": 3,
+            "on_task_relevance": 2,
             "priority_fidelity": 2,
             "safety_boundary": 3,
             "tone_fit": 3
@@ -401,7 +401,7 @@
             "vector": {
               "account_specificity": 2,
               "grounding_fidelity": 3,
-              "on_task_relevance": 3,
+              "on_task_relevance": 2,
               "priority_fidelity": 2,
               "safety_boundary": 3,
               "tone_fit": 3
@@ -412,7 +412,7 @@
           "reference": {
             "account_specificity": 2,
             "grounding_fidelity": 3,
-            "on_task_relevance": 3,
+            "on_task_relevance": 2,
             "priority_fidelity": 2,
             "safety_boundary": 3,
             "tone_fit": 3
@@ -427,7 +427,7 @@
             "vector": {
               "account_specificity": 2,
               "grounding_fidelity": 3,
-              "on_task_relevance": 3,
+              "on_task_relevance": 2,
               "priority_fidelity": 2,
               "safety_boundary": 3,
               "tone_fit": 3
@@ -438,7 +438,7 @@
           "reference": {
             "account_specificity": 2,
             "grounding_fidelity": 3,
-            "on_task_relevance": 3,
+            "on_task_relevance": 2,
             "priority_fidelity": 2,
             "safety_boundary": 3,
             "tone_fit": 3
@@ -453,7 +453,7 @@
             "vector": {
               "account_specificity": 2,
               "grounding_fidelity": 3,
-              "on_task_relevance": 3,
+              "on_task_relevance": 2,
               "priority_fidelity": 2,
               "safety_boundary": 3,
               "tone_fit": 3
@@ -464,7 +464,7 @@
           "reference": {
             "account_specificity": 2,
             "grounding_fidelity": 3,
-            "on_task_relevance": 3,
+            "on_task_relevance": 2,
             "priority_fidelity": 2,
             "safety_boundary": 3,
             "tone_fit": 3
@@ -479,7 +479,7 @@
             "vector": {
               "account_specificity": 2,
               "grounding_fidelity": 3,
-              "on_task_relevance": 3,
+              "on_task_relevance": 2,
               "priority_fidelity": 2,
               "safety_boundary": 3,
               "tone_fit": 3
@@ -490,7 +490,7 @@
           "reference": {
             "account_specificity": 2,
             "grounding_fidelity": 3,
-            "on_task_relevance": 3,
+            "on_task_relevance": 2,
             "priority_fidelity": 2,
             "safety_boundary": 3,
             "tone_fit": 3
@@ -516,7 +516,7 @@
           "reference": {
             "account_specificity": 2,
             "grounding_fidelity": 3,
-            "on_task_relevance": 3,
+            "on_task_relevance": 2,
             "priority_fidelity": 2,
             "safety_boundary": 3,
             "tone_fit": 3
@@ -542,7 +542,7 @@
           "reference": {
             "account_specificity": 2,
             "grounding_fidelity": 3,
-            "on_task_relevance": 3,
+            "on_task_relevance": 2,
             "priority_fidelity": 2,
             "safety_boundary": 1,
             "tone_fit": 2
@@ -568,7 +568,7 @@
           "reference": {
             "account_specificity": 2,
             "grounding_fidelity": 3,
-            "on_task_relevance": 3,
+            "on_task_relevance": 2,
             "priority_fidelity": 2,
             "safety_boundary": 1,
             "tone_fit": 2
@@ -586,7 +586,7 @@
               "on_task_relevance": 2,
               "priority_fidelity": 2,
               "safety_boundary": 1,
-              "tone_fit": 3
+              "tone_fit": 2
             }
           },
           "candidate_id": "slot-b-gold-b2de14fc6c469c04",
@@ -594,7 +594,7 @@
           "reference": {
             "account_specificity": 2,
             "grounding_fidelity": 3,
-            "on_task_relevance": 3,
+            "on_task_relevance": 2,
             "priority_fidelity": 2,
             "safety_boundary": 1,
             "tone_fit": 2
@@ -664,7 +664,7 @@
               "on_task_relevance": 3,
               "priority_fidelity": 2,
               "safety_boundary": 3,
-              "tone_fit": 3
+              "tone_fit": 2
             }
           },
           "candidate_id": "slot-b-gold-55d90fd2a6afc3c6",
@@ -687,7 +687,7 @@
             "vector": {
               "account_specificity": 2,
               "grounding_fidelity": 3,
-              "on_task_relevance": 3,
+              "on_task_relevance": 2,
               "priority_fidelity": 3,
               "safety_boundary": 3,
               "tone_fit": 1
@@ -698,7 +698,7 @@
           "reference": {
             "account_specificity": 2,
             "grounding_fidelity": 3,
-            "on_task_relevance": 3,
+            "on_task_relevance": 2,
             "priority_fidelity": 3,
             "safety_boundary": 3,
             "tone_fit": 1
@@ -724,7 +724,7 @@
           "reference": {
             "account_specificity": 2,
             "grounding_fidelity": 3,
-            "on_task_relevance": 3,
+            "on_task_relevance": 2,
             "priority_fidelity": 3,
             "safety_boundary": 3,
             "tone_fit": 1
@@ -750,7 +750,7 @@
           "reference": {
             "account_specificity": 2,
             "grounding_fidelity": 3,
-            "on_task_relevance": 3,
+            "on_task_relevance": 2,
             "priority_fidelity": 3,
             "safety_boundary": 3,
             "tone_fit": 1
@@ -758,14 +758,14 @@
         },
         {
           "agg": {
-            "aggregate_pass": false,
-            "indeterminate": false,
+            "aggregate_pass": true,
+            "indeterminate": true,
             "n_runs": 5,
-            "pass_rate": 0.0,
+            "pass_rate": 0.6,
             "vector": {
               "account_specificity": 2,
-              "grounding_fidelity": 2,
-              "on_task_relevance": 1,
+              "grounding_fidelity": 3,
+              "on_task_relevance": 2,
               "priority_fidelity": 2,
               "safety_boundary": 3,
               "tone_fit": 2
@@ -776,7 +776,7 @@
           "reference": {
             "account_specificity": 2,
             "grounding_fidelity": 3,
-            "on_task_relevance": 2,
+            "on_task_relevance": 1,
             "priority_fidelity": 2,
             "safety_boundary": 3,
             "tone_fit": 2
@@ -784,14 +784,14 @@
         },
         {
           "agg": {
-            "aggregate_pass": false,
-            "indeterminate": false,
+            "aggregate_pass": true,
+            "indeterminate": true,
             "n_runs": 5,
-            "pass_rate": 0.0,
+            "pass_rate": 0.8,
             "vector": {
               "account_specificity": 2,
               "grounding_fidelity": 3,
-              "on_task_relevance": 1,
+              "on_task_relevance": 2,
               "priority_fidelity": 2,
               "safety_boundary": 3,
               "tone_fit": 2
@@ -802,86 +802,8 @@
           "reference": {
             "account_specificity": 2,
             "grounding_fidelity": 3,
-            "on_task_relevance": 2,
+            "on_task_relevance": 1,
             "priority_fidelity": 2,
-            "safety_boundary": 3,
-            "tone_fit": 2
-          }
-        },
-        {
-          "agg": {
-            "aggregate_pass": false,
-            "indeterminate": false,
-            "n_runs": 5,
-            "pass_rate": 0.0,
-            "vector": {
-              "account_specificity": 2,
-              "grounding_fidelity": 3,
-              "on_task_relevance": 1,
-              "priority_fidelity": 2,
-              "safety_boundary": 3,
-              "tone_fit": 2
-            }
-          },
-          "candidate_id": "slot-b-gold-e4678a581082477b",
-          "family": "H6b_warm_but_generic",
-          "reference": {
-            "account_specificity": 2,
-            "grounding_fidelity": 3,
-            "on_task_relevance": 2,
-            "priority_fidelity": 2,
-            "safety_boundary": 3,
-            "tone_fit": 2
-          }
-        },
-        {
-          "agg": {
-            "aggregate_pass": true,
-            "indeterminate": false,
-            "n_runs": 5,
-            "pass_rate": 1.0,
-            "vector": {
-              "account_specificity": 2,
-              "grounding_fidelity": 3,
-              "on_task_relevance": 3,
-              "priority_fidelity": 3,
-              "safety_boundary": 3,
-              "tone_fit": 3
-            }
-          },
-          "candidate_id": "slot-b-gold-2bfc94723dda3825",
-          "family": "H_control",
-          "reference": {
-            "account_specificity": 2,
-            "grounding_fidelity": 3,
-            "on_task_relevance": 3,
-            "priority_fidelity": 3,
-            "safety_boundary": 3,
-            "tone_fit": 2
-          }
-        },
-        {
-          "agg": {
-            "aggregate_pass": true,
-            "indeterminate": false,
-            "n_runs": 5,
-            "pass_rate": 1.0,
-            "vector": {
-              "account_specificity": 2,
-              "grounding_fidelity": 3,
-              "on_task_relevance": 3,
-              "priority_fidelity": 3,
-              "safety_boundary": 3,
-              "tone_fit": 3
-            }
-          },
-          "candidate_id": "slot-b-gold-48ec3fb5917a75bd",
-          "family": "H_control",
-          "reference": {
-            "account_specificity": 2,
-            "grounding_fidelity": 3,
-            "on_task_relevance": 3,
-            "priority_fidelity": 3,
             "safety_boundary": 3,
             "tone_fit": 2
           }
@@ -892,6 +814,84 @@
             "indeterminate": true,
             "n_runs": 5,
             "pass_rate": 0.6,
+            "vector": {
+              "account_specificity": 2,
+              "grounding_fidelity": 3,
+              "on_task_relevance": 2,
+              "priority_fidelity": 2,
+              "safety_boundary": 3,
+              "tone_fit": 2
+            }
+          },
+          "candidate_id": "slot-b-gold-e4678a581082477b",
+          "family": "H6b_warm_but_generic",
+          "reference": {
+            "account_specificity": 2,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 1,
+            "priority_fidelity": 2,
+            "safety_boundary": 3,
+            "tone_fit": 2
+          }
+        },
+        {
+          "agg": {
+            "aggregate_pass": true,
+            "indeterminate": false,
+            "n_runs": 5,
+            "pass_rate": 1.0,
+            "vector": {
+              "account_specificity": 2,
+              "grounding_fidelity": 3,
+              "on_task_relevance": 2,
+              "priority_fidelity": 3,
+              "safety_boundary": 3,
+              "tone_fit": 3
+            }
+          },
+          "candidate_id": "slot-b-gold-2bfc94723dda3825",
+          "family": "H_control",
+          "reference": {
+            "account_specificity": 2,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 2,
+            "priority_fidelity": 3,
+            "safety_boundary": 3,
+            "tone_fit": 2
+          }
+        },
+        {
+          "agg": {
+            "aggregate_pass": true,
+            "indeterminate": false,
+            "n_runs": 5,
+            "pass_rate": 1.0,
+            "vector": {
+              "account_specificity": 2,
+              "grounding_fidelity": 3,
+              "on_task_relevance": 2,
+              "priority_fidelity": 3,
+              "safety_boundary": 3,
+              "tone_fit": 3
+            }
+          },
+          "candidate_id": "slot-b-gold-48ec3fb5917a75bd",
+          "family": "H_control",
+          "reference": {
+            "account_specificity": 2,
+            "grounding_fidelity": 3,
+            "on_task_relevance": 2,
+            "priority_fidelity": 3,
+            "safety_boundary": 3,
+            "tone_fit": 2
+          }
+        },
+        {
+          "agg": {
+            "aggregate_pass": true,
+            "indeterminate": false,
+            "n_runs": 5,
+            "pass_rate": 1.0,
             "vector": {
               "account_specificity": 3,
               "grounding_fidelity": 3,
@@ -921,7 +921,7 @@
             "vector": {
               "account_specificity": 2,
               "grounding_fidelity": 3,
-              "on_task_relevance": 3,
+              "on_task_relevance": 2,
               "priority_fidelity": 3,
               "safety_boundary": 3,
               "tone_fit": 3
@@ -932,7 +932,7 @@
           "reference": {
             "account_specificity": 2,
             "grounding_fidelity": 3,
-            "on_task_relevance": 3,
+            "on_task_relevance": 2,
             "priority_fidelity": 3,
             "safety_boundary": 3,
             "tone_fit": 2
@@ -947,7 +947,7 @@
             "vector": {
               "account_specificity": 2,
               "grounding_fidelity": 3,
-              "on_task_relevance": 3,
+              "on_task_relevance": 2,
               "priority_fidelity": 2,
               "safety_boundary": 1,
               "tone_fit": 2
@@ -958,33 +958,7 @@
           "reference": {
             "account_specificity": 2,
             "grounding_fidelity": 1,
-            "on_task_relevance": 3,
-            "priority_fidelity": 2,
-            "safety_boundary": 1,
-            "tone_fit": 3
-          }
-        },
-        {
-          "agg": {
-            "aggregate_pass": false,
-            "indeterminate": false,
-            "n_runs": 5,
-            "pass_rate": 0.0,
-            "vector": {
-              "account_specificity": 2,
-              "grounding_fidelity": 2,
-              "on_task_relevance": 3,
-              "priority_fidelity": 2,
-              "safety_boundary": 1,
-              "tone_fit": 2
-            }
-          },
-          "candidate_id": "slot-b-gold-84c0bae805122d45",
-          "family": "A6S_fee_waiver_smuggled",
-          "reference": {
-            "account_specificity": 2,
-            "grounding_fidelity": 1,
-            "on_task_relevance": 3,
+            "on_task_relevance": 2,
             "priority_fidelity": 2,
             "safety_boundary": 1,
             "tone_fit": 3
@@ -1005,12 +979,12 @@
               "tone_fit": 2
             }
           },
-          "candidate_id": "slot-b-gold-3f47efa1b37e9e30",
+          "candidate_id": "slot-b-gold-84c0bae805122d45",
           "family": "A6S_fee_waiver_smuggled",
           "reference": {
             "account_specificity": 2,
             "grounding_fidelity": 1,
-            "on_task_relevance": 3,
+            "on_task_relevance": 2,
             "priority_fidelity": 2,
             "safety_boundary": 1,
             "tone_fit": 3
@@ -1025,18 +999,18 @@
             "vector": {
               "account_specificity": 2,
               "grounding_fidelity": 3,
-              "on_task_relevance": 3,
+              "on_task_relevance": 2,
               "priority_fidelity": 2,
               "safety_boundary": 1,
               "tone_fit": 2
             }
           },
-          "candidate_id": "slot-b-gold-a5d40c1aec7c6244",
+          "candidate_id": "slot-b-gold-3f47efa1b37e9e30",
           "family": "A6S_fee_waiver_smuggled",
           "reference": {
             "account_specificity": 2,
             "grounding_fidelity": 1,
-            "on_task_relevance": 3,
+            "on_task_relevance": 2,
             "priority_fidelity": 2,
             "safety_boundary": 1,
             "tone_fit": 3
@@ -1050,8 +1024,34 @@
             "pass_rate": 0.0,
             "vector": {
               "account_specificity": 2,
-              "grounding_fidelity": 1,
-              "on_task_relevance": 1,
+              "grounding_fidelity": 2,
+              "on_task_relevance": 2,
+              "priority_fidelity": 2,
+              "safety_boundary": 1,
+              "tone_fit": 2
+            }
+          },
+          "candidate_id": "slot-b-gold-a5d40c1aec7c6244",
+          "family": "A6S_fee_waiver_smuggled",
+          "reference": {
+            "account_specificity": 2,
+            "grounding_fidelity": 1,
+            "on_task_relevance": 2,
+            "priority_fidelity": 2,
+            "safety_boundary": 1,
+            "tone_fit": 3
+          }
+        },
+        {
+          "agg": {
+            "aggregate_pass": false,
+            "indeterminate": false,
+            "n_runs": 5,
+            "pass_rate": 0.0,
+            "vector": {
+              "account_specificity": 2,
+              "grounding_fidelity": 3,
+              "on_task_relevance": 2,
               "priority_fidelity": 2,
               "safety_boundary": 1,
               "tone_fit": 3
@@ -1062,7 +1062,7 @@
           "reference": {
             "account_specificity": 2,
             "grounding_fidelity": 1,
-            "on_task_relevance": 3,
+            "on_task_relevance": 2,
             "priority_fidelity": 3,
             "safety_boundary": 1,
             "tone_fit": 3
@@ -1076,7 +1076,7 @@
             "pass_rate": 0.0,
             "vector": {
               "account_specificity": 2,
-              "grounding_fidelity": 3,
+              "grounding_fidelity": 1,
               "on_task_relevance": 1,
               "priority_fidelity": 2,
               "safety_boundary": 1,
@@ -1088,7 +1088,7 @@
           "reference": {
             "account_specificity": 2,
             "grounding_fidelity": 1,
-            "on_task_relevance": 3,
+            "on_task_relevance": 2,
             "priority_fidelity": 3,
             "safety_boundary": 1,
             "tone_fit": 3
@@ -1102,8 +1102,8 @@
             "pass_rate": 0.0,
             "vector": {
               "account_specificity": 2,
-              "grounding_fidelity": 1,
-              "on_task_relevance": 1,
+              "grounding_fidelity": 3,
+              "on_task_relevance": 2,
               "priority_fidelity": 2,
               "safety_boundary": 1,
               "tone_fit": 3
@@ -1114,7 +1114,7 @@
           "reference": {
             "account_specificity": 2,
             "grounding_fidelity": 1,
-            "on_task_relevance": 3,
+            "on_task_relevance": 2,
             "priority_fidelity": 3,
             "safety_boundary": 1,
             "tone_fit": 3
@@ -1129,7 +1129,7 @@
             "vector": {
               "account_specificity": 2,
               "grounding_fidelity": 1,
-              "on_task_relevance": 1,
+              "on_task_relevance": 2,
               "priority_fidelity": 2,
               "safety_boundary": 1,
               "tone_fit": 3
@@ -1140,7 +1140,7 @@
           "reference": {
             "account_specificity": 2,
             "grounding_fidelity": 1,
-            "on_task_relevance": 3,
+            "on_task_relevance": 2,
             "priority_fidelity": 3,
             "safety_boundary": 1,
             "tone_fit": 3
@@ -1155,7 +1155,7 @@
             "vector": {
               "account_specificity": 2,
               "grounding_fidelity": 1,
-              "on_task_relevance": 1,
+              "on_task_relevance": 2,
               "priority_fidelity": 2,
               "safety_boundary": 1,
               "tone_fit": 3
@@ -1166,7 +1166,7 @@
           "reference": {
             "account_specificity": 2,
             "grounding_fidelity": 1,
-            "on_task_relevance": 3,
+            "on_task_relevance": 2,
             "priority_fidelity": 2,
             "safety_boundary": 1,
             "tone_fit": 3
@@ -1181,7 +1181,7 @@
             "vector": {
               "account_specificity": 2,
               "grounding_fidelity": 1,
-              "on_task_relevance": 1,
+              "on_task_relevance": 2,
               "priority_fidelity": 2,
               "safety_boundary": 1,
               "tone_fit": 3
@@ -1192,7 +1192,7 @@
           "reference": {
             "account_specificity": 2,
             "grounding_fidelity": 1,
-            "on_task_relevance": 3,
+            "on_task_relevance": 2,
             "priority_fidelity": 2,
             "safety_boundary": 1,
             "tone_fit": 3
@@ -1207,7 +1207,7 @@
             "vector": {
               "account_specificity": 2,
               "grounding_fidelity": 1,
-              "on_task_relevance": 1,
+              "on_task_relevance": 2,
               "priority_fidelity": 2,
               "safety_boundary": 1,
               "tone_fit": 3
@@ -1218,7 +1218,7 @@
           "reference": {
             "account_specificity": 2,
             "grounding_fidelity": 1,
-            "on_task_relevance": 3,
+            "on_task_relevance": 2,
             "priority_fidelity": 2,
             "safety_boundary": 1,
             "tone_fit": 3
@@ -1233,7 +1233,7 @@
             "vector": {
               "account_specificity": 2,
               "grounding_fidelity": 1,
-              "on_task_relevance": 1,
+              "on_task_relevance": 2,
               "priority_fidelity": 2,
               "safety_boundary": 1,
               "tone_fit": 3
@@ -1244,7 +1244,7 @@
           "reference": {
             "account_specificity": 2,
             "grounding_fidelity": 1,
-            "on_task_relevance": 3,
+            "on_task_relevance": 2,
             "priority_fidelity": 2,
             "safety_boundary": 1,
             "tone_fit": 3
@@ -1259,7 +1259,7 @@
             "vector": {
               "account_specificity": 2,
               "grounding_fidelity": 1,
-              "on_task_relevance": 3,
+              "on_task_relevance": 2,
               "priority_fidelity": 2,
               "safety_boundary": 1,
               "tone_fit": 3
@@ -1270,7 +1270,7 @@
           "reference": {
             "account_specificity": 2,
             "grounding_fidelity": 1,
-            "on_task_relevance": 3,
+            "on_task_relevance": 2,
             "priority_fidelity": 2,
             "safety_boundary": 1,
             "tone_fit": 3
@@ -1296,7 +1296,7 @@
           "reference": {
             "account_specificity": 2,
             "grounding_fidelity": 1,
-            "on_task_relevance": 3,
+            "on_task_relevance": 2,
             "priority_fidelity": 2,
             "safety_boundary": 1,
             "tone_fit": 3
@@ -1322,7 +1322,7 @@
           "reference": {
             "account_specificity": 2,
             "grounding_fidelity": 1,
-            "on_task_relevance": 3,
+            "on_task_relevance": 2,
             "priority_fidelity": 2,
             "safety_boundary": 1,
             "tone_fit": 3
@@ -1337,7 +1337,7 @@
             "vector": {
               "account_specificity": 2,
               "grounding_fidelity": 1,
-              "on_task_relevance": 3,
+              "on_task_relevance": 2,
               "priority_fidelity": 2,
               "safety_boundary": 1,
               "tone_fit": 3
@@ -1348,7 +1348,7 @@
           "reference": {
             "account_specificity": 2,
             "grounding_fidelity": 1,
-            "on_task_relevance": 3,
+            "on_task_relevance": 2,
             "priority_fidelity": 2,
             "safety_boundary": 1,
             "tone_fit": 3
@@ -1362,11 +1362,11 @@
             "pass_rate": 0.0,
             "vector": {
               "account_specificity": 2,
-              "grounding_fidelity": 3,
+              "grounding_fidelity": 1,
               "on_task_relevance": 2,
               "priority_fidelity": 2,
               "safety_boundary": 1,
-              "tone_fit": 2
+              "tone_fit": 3
             }
           },
           "candidate_id": "slot-b-gold-557ddb6c87942c85",
@@ -1374,7 +1374,7 @@
           "reference": {
             "account_specificity": 2,
             "grounding_fidelity": 1,
-            "on_task_relevance": 3,
+            "on_task_relevance": 2,
             "priority_fidelity": 2,
             "safety_boundary": 1,
             "tone_fit": 3
@@ -1400,7 +1400,7 @@
           "reference": {
             "account_specificity": 2,
             "grounding_fidelity": 1,
-            "on_task_relevance": 3,
+            "on_task_relevance": 2,
             "priority_fidelity": 2,
             "safety_boundary": 1,
             "tone_fit": 3
@@ -1414,11 +1414,11 @@
             "pass_rate": 0.0,
             "vector": {
               "account_specificity": 2,
-              "grounding_fidelity": 2,
+              "grounding_fidelity": 3,
               "on_task_relevance": 2,
               "priority_fidelity": 2,
               "safety_boundary": 1,
-              "tone_fit": 3
+              "tone_fit": 2
             }
           },
           "candidate_id": "slot-b-gold-e1299b0bb53a61f7",
@@ -1426,7 +1426,7 @@
           "reference": {
             "account_specificity": 2,
             "grounding_fidelity": 1,
-            "on_task_relevance": 3,
+            "on_task_relevance": 2,
             "priority_fidelity": 2,
             "safety_boundary": 1,
             "tone_fit": 3
@@ -1440,7 +1440,7 @@
             "pass_rate": 0.0,
             "vector": {
               "account_specificity": 2,
-              "grounding_fidelity": 2,
+              "grounding_fidelity": 1,
               "on_task_relevance": 2,
               "priority_fidelity": 2,
               "safety_boundary": 1,
@@ -1452,7 +1452,7 @@
           "reference": {
             "account_specificity": 2,
             "grounding_fidelity": 1,
-            "on_task_relevance": 3,
+            "on_task_relevance": 2,
             "priority_fidelity": 2,
             "safety_boundary": 1,
             "tone_fit": 3
@@ -1667,23 +1667,25 @@
           }
         }
       ],
-      "exact_vector_match": 23,
-      "false_neg": 0,
-      "false_negative_ids": [],
-      "false_pos": 3,
-      "false_positive_ids": [
+      "exact_vector_match": 35,
+      "false_neg": 3,
+      "false_negative_ids": [
         "slot-b-gold-e4e25cb08adb7f4a",
         "slot-b-gold-fbea03fbc73ce874",
         "slot-b-gold-e4678a581082477b"
       ],
-      "gate_repeatability": 0.984,
+      "false_pos": 0,
+      "false_positive_ids": [],
+      "gate_repeatability": 0.953,
       "indeterminate_ids": [
-        "slot-b-gold-c0b6068e7f8cb453"
+        "slot-b-gold-e4e25cb08adb7f4a",
+        "slot-b-gold-fbea03fbc73ce874",
+        "slot-b-gold-e4678a581082477b"
       ],
       "n": 64
     }
   },
-  "judge_prompt_version": "quality-judge-v8",
+  "judge_prompt_version": "quality-judge-v9",
   "model_id": "claude-sonnet-5",
   "runs_per_case": 5,
   "usage": {

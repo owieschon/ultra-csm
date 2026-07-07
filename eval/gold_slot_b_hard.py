@@ -552,7 +552,64 @@ def write_oa_a2_ontask_relabel_packet(
     return packet
 
 
-def oa_a2_ontask_relabel_packet_errors(packet: tuple[dict, ...]) -> list[str]:
+def apply_oa_a2_ontask_relabels(
+    *,
+    hard_path: Path = HARD_PATH,
+    hard_key_path: Path = HARD_KEY_PATH,
+    packet_path: Path = OA_A2_ONTASK_RELABEL_PACKET_PATH,
+) -> tuple[tuple[dict, ...], tuple[dict, ...]]:
+    hard_records = list(read_gold_label_candidates(hard_path))
+    hard_key_records = list(read_gold_label_key(hard_key_path))
+    packet = tuple(
+        json.loads(line)
+        for line in packet_path.read_text(encoding="utf-8").splitlines()
+        if line.strip()
+    )
+    packet_errors = oa_a2_ontask_relabel_packet_errors(packet, require_labels=True)
+    if packet_errors:
+        raise ValueError(f"OA-A2 relabel packet invalid: {packet_errors}")
+    if [row["candidate_id"] for row in packet] != [row["candidate_id"] for row in hard_records]:
+        raise ValueError("OA-A2 relabel packet ids/order must match hard layer")
+
+    key_by_id = {record["candidate_id"]: record for record in hard_key_records}
+    for record, relabel in zip(hard_records, packet, strict=True):
+        _assert_packet_row_matches_record(relabel, record)
+        score = int(relabel["owner_on_task_relevance"])
+        labels = record.get("human_labels")
+        if not isinstance(labels, dict):
+            raise ValueError(f"{record['candidate_id']}: existing human_labels required")
+        scores = labels.get("dimension_scores")
+        if not isinstance(scores, dict) or set(scores) != set(DIMS):
+            raise ValueError(f"{record['candidate_id']}: existing dimension_scores malformed")
+        scores["on_task_relevance"] = score
+        labels["overall_pass"] = all(scores[d] >= PASSING_SCORE for d in DIMS)
+
+        key_record = key_by_id[record["candidate_id"]]
+        vector = key_record.get("expected_vector")
+        if not isinstance(vector, dict) or set(vector) != set(DIMS):
+            raise ValueError(f"{record['candidate_id']}: expected_vector malformed")
+        vector["on_task_relevance"] = score
+        key_record["intended_failing_dimensions"] = _intended([int(vector[d]) for d in DIMS])
+
+    records = tuple(hard_records)
+    keys = tuple(hard_key_records)
+    key_errors = hard_key_errors(records, keys)
+    if key_errors:
+        raise ValueError(f"OA-A2 relabeled hard key invalid: {key_errors}")
+    with hard_path.open("w", encoding="utf-8") as fh:
+        for record in records:
+            fh.write(json.dumps(record, sort_keys=True) + "\n")
+    with hard_key_path.open("w", encoding="utf-8") as fh:
+        for record in keys:
+            fh.write(json.dumps(record, sort_keys=True) + "\n")
+    return records, keys
+
+
+def oa_a2_ontask_relabel_packet_errors(
+    packet: tuple[dict, ...],
+    *,
+    require_labels: bool = False,
+) -> list[str]:
     errors = []
     prohibited_keys = {
         "human_labels",
@@ -588,12 +645,29 @@ def oa_a2_ontask_relabel_packet_errors(packet: tuple[dict, ...]) -> list[str]:
             errors.append(f"row {index}: unexpected packet keys")
         if row.get("dimension_to_label") != "on_task_relevance":
             errors.append(f"row {index}: dimension_to_label must be on_task_relevance")
-        if row.get("owner_on_task_relevance") is not None:
+        score = row.get("owner_on_task_relevance")
+        if require_labels and score not in ORDINAL_SCORES:
+            errors.append(f"row {index}: owner_on_task_relevance must be 1, 2, or 3")
+        if not require_labels and score is not None:
             errors.append(f"row {index}: owner_on_task_relevance must be blank")
         output_text = row.get("output_text")
         if not isinstance(output_text, dict) or set(output_text) != {"reason", "customer_draft"}:
             errors.append(f"row {index}: output_text must contain only reason and customer_draft")
     return sorted(set(errors))
+
+
+def _assert_packet_row_matches_record(packet_row: dict, record: dict) -> None:
+    expected_request = dict(record["request"])
+    expected_request.pop("prompt_version", None)
+    expected_request.pop("tenant_id", None)
+    expected_output = {
+        "reason": record["output"].get("reason"),
+        "customer_draft": record["output"].get("customer_draft"),
+    }
+    if packet_row.get("request") != expected_request:
+        raise ValueError(f"{record['candidate_id']}: packet request changed")
+    if packet_row.get("output_text") != expected_output:
+        raise ValueError(f"{record['candidate_id']}: packet output_text changed")
 
 
 def _json_keys(value) -> set[str]:
@@ -736,6 +810,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--a6-expansion", action="store_true")
     parser.add_argument("--ratify-a6-expansion", action="store_true")
     parser.add_argument("--oa-a2-ontask-relabel-packet", action="store_true")
+    parser.add_argument("--apply-oa-a2-ontask-relabels", action="store_true")
     args = parser.parse_args(argv)
     path = Path(args.output)
     key_path = Path(args.key_output)
@@ -756,6 +831,18 @@ def main(argv: list[str] | None = None) -> int:
             f"wrote {len(packet)} OA-A2 on_task_relevance relabel rows -> "
             f"{_display_path(OA_A2_ONTASK_RELABEL_PACKET_PATH)}"
         )
+        return 0
+    if args.apply_oa_a2_ontask_relabels:
+        records, _ = apply_oa_a2_ontask_relabels(
+            hard_path=path,
+            hard_key_path=key_path,
+            packet_path=OA_A2_ONTASK_RELABEL_PACKET_PATH,
+        )
+        print(
+            f"applied {len(records)} OA-A2 on_task_relevance relabels -> "
+            f"{_display_path(path)}"
+        )
+        print(f"updated held-out key -> {_display_path(key_path)}")
         return 0
     if args.check:
         current = check_hard_status(path, output=status_output, key_path=key_path)

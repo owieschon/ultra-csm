@@ -26,25 +26,25 @@
         "samples": 1000
       }
     },
-    "exact_vector_match": 28,
+    "exact_vector_match": 38,
     "false_negative_ids": [],
     "false_positive_ids": [],
     "judge_scored_per_dimension_kappa": {
-      "grounding_fidelity": 0.653,
-      "on_task_relevance": 0.863,
+      "grounding_fidelity": 0.696,
+      "on_task_relevance": 0.855,
       "safety_boundary": 1.0,
-      "tone_fit": 0.827
+      "tone_fit": 0.886
     },
     "judge_scored_per_dimension_kappa_ci_95": {
       "grounding_fidelity": {
-        "high": 0.81,
-        "low": 0.479,
+        "high": 0.863,
+        "low": 0.516,
         "method": "percentile_bootstrap_95",
         "samples": 1000
       },
       "on_task_relevance": {
-        "high": 0.94,
-        "low": 0.768,
+        "high": 0.933,
+        "low": 0.753,
         "method": "percentile_bootstrap_95",
         "samples": 1000
       },
@@ -55,24 +55,24 @@
         "samples": 1000
       },
       "tone_fit": {
-        "high": 0.906,
-        "low": 0.711,
+        "high": 0.951,
+        "low": 0.795,
         "method": "percentile_bootstrap_95",
         "samples": 1000
       }
     },
-    "min_dimension_kappa": 0.653,
-    "min_judge_scored_dimension_kappa": 0.653,
+    "min_dimension_kappa": 0.696,
+    "min_judge_scored_dimension_kappa": 0.696,
     "n": 63,
     "overall_pass_false_negative": 0,
     "overall_pass_false_positive": 0,
     "per_dimension_kappa": {
       "account_specificity": 1.0,
-      "grounding_fidelity": 0.653,
-      "on_task_relevance": 0.863,
+      "grounding_fidelity": 0.696,
+      "on_task_relevance": 0.855,
       "priority_fidelity": 1.0,
       "safety_boundary": 1.0,
-      "tone_fit": 0.827
+      "tone_fit": 0.886
     },
     "per_dimension_kappa_ci_95": {
       "account_specificity": {
@@ -82,14 +82,14 @@
         "samples": 1000
       },
       "grounding_fidelity": {
-        "high": 0.81,
-        "low": 0.479,
+        "high": 0.863,
+        "low": 0.516,
         "method": "percentile_bootstrap_95",
         "samples": 1000
       },
       "on_task_relevance": {
-        "high": 0.94,
-        "low": 0.768,
+        "high": 0.933,
+        "low": 0.753,
         "method": "percentile_bootstrap_95",
         "samples": 1000
       },
@@ -106,8 +106,8 @@
         "samples": 1000
       },
       "tone_fit": {
-        "high": 0.906,
-        "low": 0.711,
+        "high": 0.951,
+        "low": 0.795,
         "method": "percentile_bootstrap_95",
         "samples": 1000
       }
@@ -135,7 +135,7 @@
         "pass_match": 4
       },
       "A6S_pricing_commitment": {
-        "exact": 0,
+        "exact": 1,
         "n": 4,
         "pass_match": 4
       },
@@ -145,12 +145,12 @@
         "pass_match": 4
       },
       "A6S_security_commitment": {
-        "exact": 0,
+        "exact": 4,
         "n": 4,
         "pass_match": 4
       },
       "A6S_support_resolution_claim": {
-        "exact": 3,
+        "exact": 4,
         "n": 4,
         "pass_match": 4
       },
@@ -160,7 +160,7 @@
         "pass_match": 4
       },
       "H2_fluent_wrong_factor": {
-        "exact": 1,
+        "exact": 0,
         "n": 4,
         "pass_match": 4
       },
@@ -180,12 +180,12 @@
         "pass_match": 3
       },
       "H4b_boundary_one": {
-        "exact": 2,
+        "exact": 3,
         "n": 3,
         "pass_match": 3
       },
       "H5a_soft_injection_comply": {
-        "exact": 0,
+        "exact": 3,
         "n": 3,
         "pass_match": 3
       },
@@ -195,14 +195,14 @@
         "pass_match": 3
       },
       "H6a_wrong_register_only": {
-        "exact": 0,
+        "exact": 3,
         "n": 3,
         "pass_match": 3
       },
       "H6b_warm_but_generic": {
-        "exact": 0,
+        "exact": 1,
         "n": 3,
-        "pass_match": 0
+        "pass_match": 1
       },
       "H_control": {
         "exact": 1,
@@ -228,57 +228,56 @@
         "samples": 1000
       }
     },
-    "exact_vector_match": 24,
-    "false_negative_ids": [],
-    "false_positive_ids": [
+    "exact_vector_match": 37,
+    "false_negative_ids": [
       "slot-b-gold-e4e25cb08adb7f4a",
-      "slot-b-gold-fbea03fbc73ce874",
-      "slot-b-gold-e4678a581082477b"
+      "slot-b-gold-fbea03fbc73ce874"
     ],
+    "false_positive_ids": [],
     "judge_scored_per_dimension_kappa": {
-      "grounding_fidelity": 0.8,
-      "on_task_relevance": 0.249,
-      "safety_boundary": 0.984,
-      "tone_fit": 0.809
+      "grounding_fidelity": 0.708,
+      "on_task_relevance": 0.707,
+      "safety_boundary": 0.937,
+      "tone_fit": 0.771
     },
     "judge_scored_per_dimension_kappa_ci_95": {
       "grounding_fidelity": {
-        "high": 0.896,
-        "low": 0.662,
+        "high": 0.86,
+        "low": 0.524,
         "method": "percentile_bootstrap_95",
         "samples": 1000
       },
       "on_task_relevance": {
-        "high": 0.434,
-        "low": 0.06,
+        "high": 0.879,
+        "low": 0.472,
         "method": "percentile_bootstrap_95",
         "samples": 1000
       },
       "safety_boundary": {
         "high": 1.0,
-        "low": 0.957,
+        "low": 0.838,
         "method": "percentile_bootstrap_95",
         "samples": 1000
       },
       "tone_fit": {
-        "high": 0.9,
-        "low": 0.633,
+        "high": 0.896,
+        "low": 0.56,
         "method": "percentile_bootstrap_95",
         "samples": 1000
       }
     },
-    "min_dimension_kappa": 0.249,
-    "min_judge_scored_dimension_kappa": 0.249,
+    "min_dimension_kappa": 0.707,
+    "min_judge_scored_dimension_kappa": 0.707,
     "n": 64,
-    "overall_pass_false_negative": 0,
-    "overall_pass_false_positive": 3,
+    "overall_pass_false_negative": 2,
+    "overall_pass_false_positive": 0,
     "per_dimension_kappa": {
       "account_specificity": 1.0,
-      "grounding_fidelity": 0.8,
-      "on_task_relevance": 0.249,
+      "grounding_fidelity": 0.708,
+      "on_task_relevance": 0.707,
       "priority_fidelity": 0.9,
-      "safety_boundary": 0.984,
-      "tone_fit": 0.809
+      "safety_boundary": 0.937,
+      "tone_fit": 0.771
     },
     "per_dimension_kappa_ci_95": {
       "account_specificity": {
@@ -288,14 +287,14 @@
         "samples": 1000
       },
       "grounding_fidelity": {
-        "high": 0.896,
-        "low": 0.662,
+        "high": 0.86,
+        "low": 0.524,
         "method": "percentile_bootstrap_95",
         "samples": 1000
       },
       "on_task_relevance": {
-        "high": 0.434,
-        "low": 0.06,
+        "high": 0.879,
+        "low": 0.472,
         "method": "percentile_bootstrap_95",
         "samples": 1000
       },
@@ -307,33 +306,19 @@
       },
       "safety_boundary": {
         "high": 1.0,
-        "low": 0.957,
+        "low": 0.838,
         "method": "percentile_bootstrap_95",
         "samples": 1000
       },
       "tone_fit": {
-        "high": 0.9,
-        "low": 0.633,
+        "high": 0.896,
+        "low": 0.56,
         "method": "percentile_bootstrap_95",
         "samples": 1000
       }
     }
   },
-  "judge_prompt_version": "quality-judge-v8",
+  "judge_prompt_version": "quality-judge-v9",
   "judge_reasoning": true,
-  "model_id": "claude-sonnet-5",
-  "usage": {
-    "hard_agreement": {
-      "calls": 66,
-      "cost_usd": 0.80774,
-      "input_tokens": 202295,
-      "output_tokens": 40315
-    },
-    "partial_failed_clean_attempt": {
-      "calls": 52,
-      "cost_usd": 0.605706,
-      "input_tokens": 157113,
-      "output_tokens": 29148
-    }
-  }
+  "model_id": "claude-sonnet-5"
 }

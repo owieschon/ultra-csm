@@ -37,6 +37,49 @@ the migration, and record whichever outcome results.
 
 ---
 
+## OA-A2 outcome: v9 scoped, not fully validated (2026-07-07)
+
+**Outcome.** Owner relabeled `on_task_relevance` for all 64 hard rows blind.
+Codex mechanically merged only that dimension into `eval/gold/slot_b_quality_hard.jsonl`
+and `eval/gold/slot_b_quality_hard_key.jsonl`; no other human-label dimension,
+gold row text, key family, or 0.6 gate was edited. The resulting on-task
+reference distribution is `1=10`, `2=42`, `3=12`; hard reference pass/fail is
+21 pass / 43 fail.
+
+**Sonnet 5 v9 validation.** `judge_validation_status()` remains
+`validated=false`, but for a narrower reason than before. Clean layer clears:
+`grounding=0.696`, `on_task=0.855`, `tone=0.886`, `safety=1.0`, deterministic
+specificity/priority `1.0`, false negatives `0`. Hard `cot@N` kappas all clear
+the 0.6 floor: grounding `0.755`, on_task `0.736`, specificity `1.0`, priority
+`0.9`, tone `0.794`, safety `0.905`; hard false positives are `0`. The sole
+full-validation blocker is three aggregated false negatives:
+`slot-b-gold-e4e25cb08adb7f4a`, `slot-b-gold-fbea03fbc73ce874`, and
+`slot-b-gold-e4678a581082477b`. All three are `H6b_warm_but_generic` cases where
+the reference has `on_task_relevance=1` and the modal judge vector has
+`on_task_relevance=2`, causing a fail-open overall pass. Gate repeatability is
+`0.953`.
+
+**Migration rerun.** Sonnet 4.6 under the same v9 prompt does not rescue the
+gate. `eval/gold/judge_model_migration.json` reports `adopt=false` with blockers:
+candidate hard gate failed because `on_task_relevance kappa 0.587 < 0.6`, and
+`on_task_relevance` paired McNemar regressed (`p=0.03515625`). Sonnet 4.6 has no
+overall false passes in this run, but it fails the candidate hard gate and is
+not adopted.
+
+**Accepted scope.** This is the spec's Outcome 2: keep Sonnet 5, disclose that
+the judge is validated for the other five dimensions but not safe to use as an
+autonomous gate on `on_task_relevance`. The full `judge_validation_status()`
+continues to fail closed; downstream live semantic quality remains unproven
+unless a caller explicitly adopts a scoped, non-on-task use.
+
+**Live usage receipts.** The failed first v9 hard compare attempt cost
+`$0.569110`; the successful v9 hard `cot@N` compare cost `$4.398274`; the Sonnet
+4.6 migration rerun cost `$2.876685`. The v9 agreement runner does not yet emit
+a usage artifact; it made the clean+hard agreement evidence now committed in
+`eval/gold/judge_agreement.json`.
+
+---
+
 ## Prior quality-judge decision (v8 on Sonnet 4.6, regenerated 2026-07-06)
 
 **Decision.** Before the Phase 12 model migration below, the shipped Slot B quality gate was `quality-judge-v8` on

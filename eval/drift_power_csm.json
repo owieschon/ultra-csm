@@ -1017,7 +1017,7 @@
       "gate_kappa": 0.6,
       "hard_arm": "cot@N",
       "hard_gate": "per-dimension kappa of cot@N N-run modal-aggregated vectors vs held-out key, recomputed from per-case vectors",
-      "judge_prompt_version": "quality-judge-v8",
+      "judge_prompt_version": "quality-judge-v9",
       "model_id": "claude-sonnet-5",
       "runs_per_case": 5,
       "single_labeler": true
