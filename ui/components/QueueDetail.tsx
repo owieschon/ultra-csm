@@ -288,6 +288,8 @@ export function QueueDetail({ item, day }: { item: WorkItem; day: number | undef
 
       <ReconciliationSection accountId={item.account_id} day={day} />
 
+      <InternalHandoff decision={item.internal_bridge_decision ?? null} />
+
       <div className="sec">
         <div className="sec-h">
           <span className="t">Chosen action — and why</span>
@@ -328,6 +330,48 @@ export function QueueDetail({ item, day }: { item: WorkItem; day: number | undef
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+function InternalHandoff({
+  decision,
+}: {
+  decision: WorkItem["internal_bridge_decision"] | null;
+}) {
+  if (!decision) return null;
+  const target = decision.abstained ? "No internal handoff" : label(
+    { engineering: "Engineering", product: "Product" },
+    decision.target ?? "unknown"
+  );
+  const motion = decision.motion ? humanizeCode(decision.motion) : null;
+  const signal = decision.signal ? humanizeCode(decision.signal) : null;
+
+  return (
+    <div className="sec">
+      <div className="sec-h">
+        <span className="t">Internal handoff</span>
+        <span className="prov">
+          <span className="chip-det">Rule-based · CRM evidence</span>
+        </span>
+      </div>
+      <div className={`handoff-card${decision.abstained ? " abstain" : ""}`}>
+        <div className="handoff-line">
+          <span className="handoff-target">{target}</span>
+          {motion && <span className="chip-det">{motion}</span>}
+          {signal && <span className="chip-det">{signal}</span>}
+        </div>
+        <div className="handoff-reason">{decision.reason}</div>
+        {decision.evidence.length > 0 && (
+          <div className="handoff-evidence">
+            {decision.evidence.map((ev, idx) => (
+              <span key={`${ev.source_id}-${idx}`} className="mono">
+                {ev.source}:{ev.source_id.slice(0, 8)}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

@@ -221,6 +221,14 @@
           "source_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43"
         }
       ],
+      "internal_bridge_decision": {
+        "abstained": true,
+        "evidence": [],
+        "motion": null,
+        "reason": "No live engineering defect or product-feedback capability gap found.",
+        "signal": null,
+        "target": null
+      },
       "motion": "working_session",
       "priority": {
         "factors": [
@@ -358,7 +366,7 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "473c6c8b-0f8b-4563-9404-efe48164b6b5",
+        "proposal_id": "c6667d42-98da-4aa1-a00f-d342e17c33b3",
         "status": "pending"
       },
       "reason": "Ironhorse Freight Co has deterministic Time-to-Value score 143 from milestones_overdue=50, days_overdue=40, success_plan_overdue=20; draft customer outreach. Evidence [evidence:4635cdb7-5bb5-5c43-acc1-5dc989d4d583], [evidence:afbc6091-985b-50e5-8522-e1a916af56c9], [evidence:7d61c11f-73d4-52f6-a738-33ab96634a61].",
@@ -409,6 +417,21 @@
           "source_id": "ae0a5970-d69b-5c18-ad60-8015524e565c"
         }
       ],
+      "internal_bridge_decision": {
+        "abstained": false,
+        "evidence": [
+          {
+            "field": "subject",
+            "observed_at": "2026-11-08",
+            "source": "crm",
+            "source_id": "4e2db753-f222-5f7b-8356-0a2f59fae1e3"
+          }
+        ],
+        "motion": "escalation",
+        "reason": "Active or recurring technical failure requires engineering handoff.",
+        "signal": "active_technical_failure",
+        "target": "engineering"
+      },
       "motion": "content_route",
       "priority": {
         "factors": [
@@ -517,7 +540,7 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "13b8e527-9928-49cd-95df-c69cb51b871a",
+        "proposal_id": "9a2f3575-3678-49a8-b79b-1e83a05c979f",
         "status": "pending"
       },
       "reason": "Pinehill Transport has deterministic Time-to-Value score 82 from success_plan_overdue=20, health_yellow=15, low_seat_penetration=12; draft customer outreach. Evidence [evidence:df3f3e70-7ed8-5d10-9b05-395fd3d1a0f1], [evidence:4e2db753-f222-5f7b-8356-0a2f59fae1e3], [evidence:ae0a5970-d69b-5c18-ad60-8015524e565c].",
@@ -562,6 +585,21 @@
           "source_id": "21830db9-7182-5d97-b22e-d57c4e28f696"
         }
       ],
+      "internal_bridge_decision": {
+        "abstained": false,
+        "evidence": [
+          {
+            "field": "subject",
+            "observed_at": "2026-11-08",
+            "source": "crm",
+            "source_id": "12b20f2f-8a7f-50a7-9f8f-85222f7a853a"
+          }
+        ],
+        "motion": "content_route",
+        "reason": "Feature or format request is durable product-feedback evidence.",
+        "signal": "feature_request_cluster",
+        "target": "product"
+      },
       "motion": "personal_email",
       "priority": {
         "factors": [
@@ -647,7 +685,7 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "35936e0a-f802-47e3-8e52-1747eb18fb46",
+        "proposal_id": "033bbcfc-b5ac-48ee-a759-3e5f6b27b091",
         "status": "pending"
       },
       "reason": "Trailhead Logistics has deterministic Time-to-Value score 63 from success_plan_overdue=20, arr_tier=5, single_threaded_risk=20; draft customer outreach. Evidence [evidence:20527c0a-8156-5119-934a-4017e19fc39d], [evidence:21830db9-7182-5d97-b22e-d57c4e28f696].",
@@ -698,6 +736,14 @@
           "source_id": "c79ad97e-e2ad-5b6a-beeb-800e4755adca"
         }
       ],
+      "internal_bridge_decision": {
+        "abstained": true,
+        "evidence": [],
+        "motion": null,
+        "reason": "No live engineering defect or product-feedback capability gap found.",
+        "signal": null,
+        "target": null
+      },
       "motion": "campaign_enroll",
       "priority": {
         "factors": [
@@ -805,6 +851,14 @@
           "source_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32"
         }
       ],
+      "internal_bridge_decision": {
+        "abstained": true,
+        "evidence": [],
+        "motion": null,
+        "reason": "No live engineering defect or product-feedback capability gap found.",
+        "signal": null,
+        "target": null
+      },
       "motion": "content_route",
       "priority": {
         "factors": [
@@ -895,7 +949,7 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "171001df-c1f5-4869-b17f-6aa3d0a92bed",
+        "proposal_id": "9f52b689-20bd-421d-90ae-04ad944cdf32",
         "status": "pending"
       },
       "reason": "Clearwater Field Ops has deterministic Time-to-Value score 62 from success_plan_overdue=20, health_yellow=15, low_seat_penetration=12; draft customer outreach. Evidence [evidence:3ea4da77-9a46-57ce-aa0a-36440aed7192], [evidence:33509b75-de98-51fa-90a0-c68c90fe9324], [evidence:865e1e03-cb2f-524d-b572-1eeabebb8d32].",
@@ -940,6 +994,14 @@
           "source_id": "081b380c-99e7-5073-992a-9e0d8b27d8c0"
         }
       ],
+      "internal_bridge_decision": {
+        "abstained": true,
+        "evidence": [],
+        "motion": null,
+        "reason": "No live engineering defect or product-feedback capability gap found.",
+        "signal": null,
+        "target": null
+      },
       "motion": "campaign_enroll",
       "priority": {
         "factors": [
@@ -1001,7 +1063,7 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "65797631-bb0c-46ba-99f8-1e64742f15df",
+        "proposal_id": "1f79f2b2-4a58-4010-ad45-39bb1cc4cf31",
         "status": "pending"
       },
       "reason": "Ridgeline Warehousing has deterministic Time-to-Value score 47 from success_plan_overdue=20, health_yellow=15, low_seat_penetration=12; draft customer outreach. Evidence [evidence:eb6f3bbc-1ea8-5b0c-b6d5-ad15afda0e34], [evidence:081b380c-99e7-5073-992a-9e0d8b27d8c0].",
@@ -1035,6 +1097,14 @@
           "source_id": "162a9085-8e63-53f0-bb1b-b48426911d34"
         }
       ],
+      "internal_bridge_decision": {
+        "abstained": true,
+        "evidence": [],
+        "motion": null,
+        "reason": "No live engineering defect or product-feedback capability gap found.",
+        "signal": null,
+        "target": null
+      },
       "motion": "personal_email",
       "priority": {
         "factors": [
@@ -1079,7 +1149,7 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "eae56b66-33fa-4848-8014-e3c6ba770042",
+        "proposal_id": "25db0229-a736-4328-ace1-d07a6e5495ad",
         "status": "pending"
       },
       "reason": "Northstar Couriers has deterministic Time-to-Value score 35 from success_plan_overdue=20, health_yellow=15; draft customer outreach. Evidence [evidence:023f694d-e8cb-593b-8053-b69e06c2f22d], [evidence:162a9085-8e63-53f0-bb1b-b48426911d34].",
@@ -1119,6 +1189,21 @@
           "source_id": "f8504037-dc1a-50e4-bdd9-7900b1379444"
         }
       ],
+      "internal_bridge_decision": {
+        "abstained": false,
+        "evidence": [
+          {
+            "field": "subject",
+            "observed_at": "2026-11-08",
+            "source": "crm",
+            "source_id": "3acf0291-5b0b-55b9-8653-d042239fcc17"
+          }
+        ],
+        "motion": "escalation",
+        "reason": "Active or recurring technical failure requires engineering handoff.",
+        "signal": "active_technical_failure",
+        "target": "engineering"
+      },
       "motion": "personal_email",
       "priority": {
         "factors": [
@@ -1146,7 +1231,7 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "87e36b65-ce9a-473c-8c9a-fb34e472a070",
+        "proposal_id": "db6639d5-bdee-4ce6-9cc2-632ae13696ed",
         "status": "pending"
       },
       "reason": "Sagebrush Transport has deterministic Time-to-Value score 30 from health_red=30; draft customer outreach. Evidence [evidence:751d5071-7c34-5cd1-bca9-178d0f38ad1d], [evidence:3acf0291-5b0b-55b9-8653-d042239fcc17], [evidence:f8504037-dc1a-50e4-bdd9-7900b1379444].",
@@ -1203,6 +1288,27 @@
           "source_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18"
         }
       ],
+      "internal_bridge_decision": {
+        "abstained": false,
+        "evidence": [
+          {
+            "field": "subject",
+            "observed_at": "2026-11-08",
+            "source": "crm",
+            "source_id": "625c9e2b-353d-5bc9-b866-91b2c536d104"
+          },
+          {
+            "field": "subject",
+            "observed_at": "2026-11-08",
+            "source": "crm",
+            "source_id": "77c0ecda-2bae-5cec-b591-12257b829556"
+          }
+        ],
+        "motion": "escalation",
+        "reason": "Active or recurring technical failure requires engineering handoff.",
+        "signal": "recurring_technical_case_pattern",
+        "target": "engineering"
+      },
       "motion": "working_session",
       "priority": {
         "factors": [
@@ -1271,7 +1377,7 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "28b8614f-c371-4735-a94c-eb7e7ff57efa",
+        "proposal_id": "5eac8d28-5488-4106-bd91-636ebe5771b5",
         "status": "pending"
       },
       "reason": "Harborview Fleet has deterministic Time-to-Value score 30 from health_yellow=15, feature_depth_gap=15; draft customer outreach. Evidence [evidence:4af5a5c0-f51a-5a83-9217-141f4333c6db], [evidence:625c9e2b-353d-5bc9-b866-91b2c536d104], [evidence:2f75e535-4d63-5289-8084-aa72fcf3b39a].",
@@ -1336,6 +1442,14 @@
           "source_id": "390eef5a-4d06-59ae-93cb-2c0a012e7ef8"
         }
       ],
+      "internal_bridge_decision": {
+        "abstained": true,
+        "evidence": [],
+        "motion": null,
+        "reason": "No live engineering defect or product-feedback capability gap found.",
+        "signal": null,
+        "target": null
+      },
       "motion": "personal_email",
       "priority": {
         "factors": [
@@ -1363,7 +1477,7 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "feff3e51-4754-4ba6-86c4-14165331a515",
+        "proposal_id": "074e55d4-2673-4823-85c9-2034853795ba",
         "status": "pending"
       },
       "reason": "Summit Industrial Supply has deterministic Time-to-Value score 20 from success_plan_overdue=20; draft customer outreach. Evidence [evidence:2b9e4aff-7f3e-5fd8-af1d-482d72f79fdc], [evidence:390eef5a-4d06-59ae-93cb-2c0a012e7ef8].",
@@ -1397,6 +1511,14 @@
           "source_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7"
         }
       ],
+      "internal_bridge_decision": {
+        "abstained": true,
+        "evidence": [],
+        "motion": null,
+        "reason": "No live engineering defect or product-feedback capability gap found.",
+        "signal": null,
+        "target": null
+      },
       "motion": "personal_email",
       "priority": {
         "factors": [
@@ -1424,7 +1546,7 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "9a53cb2a-83da-4f54-80b5-9b881dc4cce6",
+        "proposal_id": "0b8fbaae-e8f3-4a5c-8b85-48edf74f79c5",
         "status": "pending"
       },
       "reason": "Meridian Fleet Group has deterministic Time-to-Value score 5 from arr_tier=5; draft customer outreach. Evidence [evidence:30f4240b-e6c6-5bd2-b7b4-42a9b8d68cc1], [evidence:47f78943-7a8a-5bf1-9eeb-df74372085c7].",
@@ -1472,6 +1594,7 @@
       "disposition": "propose_customer_action",
       "draft_mode": "none",
       "evidence": [],
+      "internal_bridge_decision": null,
       "motion": "cohort_action",
       "priority": null,
       "proposal": null,
