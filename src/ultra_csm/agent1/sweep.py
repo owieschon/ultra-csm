@@ -488,6 +488,7 @@ def _slot_b_inputs_for_account(
     ctas = tuple(data_plane.cs.list_ctas(account.account_id, status="open"))
     plans = tuple(data_plane.cs.list_success_plans(account.account_id))
     cases = tuple(data_plane.crm.list_cases(account.account_id))
+    opportunities = tuple(data_plane.crm.list_opportunities(account.account_id))
     slot_a_classifications = _classify_case_notes(
         case_note_classifier,
         tenant_id=tenant_id,
@@ -566,6 +567,7 @@ def _slot_b_inputs_for_account(
         entitlements=entitlements,
         usage_signals=signals,
         success_plans=plans,
+        opportunities=opportunities,
         onboarding_milestones=onboarding_milestones,
         stakeholders=stakeholders,
         job_changes=job_changes,
@@ -784,6 +786,7 @@ def _account_tier_and_triggers(
 
     success_plans = tuple(data_plane.cs.list_success_plans(account.account_id))
     usage_signals = tuple(data_plane.telemetry.list_usage_signals(account.account_id))
+    opportunities = tuple(data_plane.crm.list_opportunities(account.account_id))
     onboarding_milestones = _onboarding_milestones(data_plane, account.account_id)
     value_model = build_customer_value_model(
         account=account,
@@ -793,7 +796,9 @@ def _account_tier_and_triggers(
         entitlements=entitlements,
         usage_signals=usage_signals,
         success_plans=success_plans,
+        opportunities=opportunities,
         onboarding_milestones=onboarding_milestones,
+        as_of=as_of,
         config=value_model_config,
     )
     open_milestone_gaps: tuple[TimeToValueMilestone, ...] = ()

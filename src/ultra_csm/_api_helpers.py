@@ -285,6 +285,7 @@ def _score_one_account(
     signals = tuple(data_plane.telemetry.list_usage_signals(account_id))
     plans = tuple(data_plane.cs.list_success_plans(account_id))
     milestones = tuple(data_plane.telemetry.list_ttv_milestones(account_id))
+    opportunities = tuple(data_plane.crm.list_opportunities(account_id))
 
     model = build_customer_value_model(
         account=account,
@@ -294,6 +295,8 @@ def _score_one_account(
         entitlements=entitlements,
         usage_signals=signals,
         success_plans=plans,
+        opportunities=opportunities,
+        as_of=as_of,
     )
 
     open_gaps = tuple(m for m in milestones if m.achieved_at is None)
@@ -463,6 +466,8 @@ def _build_account_brief(
         entitlements=entitlements,
         usage_signals=signals,
         success_plans=plans,
+        opportunities=tuple(opportunities),
+        as_of=as_of,
     )
 
     open_gaps = tuple(m for m in milestones if m.achieved_at is None)

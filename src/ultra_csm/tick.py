@@ -477,6 +477,7 @@ def _trigger_state_from_data(
         entitlements = tuple(data_plane.telemetry.list_entitlements(account.account_id))
         signals = tuple(data_plane.telemetry.list_usage_signals(account.account_id))
         plans = tuple(data_plane.cs.list_success_plans(account.account_id))
+        opportunities = tuple(data_plane.crm.list_opportunities(account.account_id))
         milestones = tuple(data_plane.telemetry.list_ttv_milestones(account.account_id))
         model = build_customer_value_model(
             account=account,
@@ -486,6 +487,8 @@ def _trigger_state_from_data(
             entitlements=entitlements,
             usage_signals=signals,
             success_plans=plans,
+            opportunities=opportunities,
+            as_of=as_of,
         )
         open_milestones = tuple(
             milestone for milestone in milestones

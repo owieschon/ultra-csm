@@ -255,6 +255,8 @@ def _item_for_account(
         entitlements=entitlements,
         usage_signals=signals,
         success_plans=plans,
+        opportunities=opportunities,
+        as_of=as_of,
     )
     factors = _expansion_factors(
         model,

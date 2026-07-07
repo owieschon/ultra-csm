@@ -14,6 +14,7 @@ from ultra_csm.data_plane.contracts import (
     AdoptionSummary,
     CommunicationSignal,
     CRMAccount,
+    CRMOpportunity,
     CSCompany,
     Entitlement,
     EvidenceRef,
@@ -337,6 +338,7 @@ def build_customer_value_model(
     entitlements: tuple[Entitlement, ...],
     usage_signals: tuple[UsageSignal, ...],
     success_plans: tuple[SuccessPlan, ...],
+    opportunities: tuple[CRMOpportunity, ...] = (),
     onboarding_milestones: tuple[TimeToValueMilestone, ...] = (),
     stakeholders: tuple[StakeholderRelationship, ...] = (),
     job_changes: tuple[JobChangeSignal, ...] = (),
@@ -351,6 +353,12 @@ def build_customer_value_model(
     empty -- no onboarding source mapped for this account, or a connector
     outage that fails closed upstream -- the outcome rail degrades exactly as
     it always has (success-plan-only), never fabricating a milestone.
+
+    ``opportunities`` is optional CRM renewal evidence. Only terminal
+    Renewal opportunities count as realized outcome evidence, and when
+    ``as_of`` is supplied their close date must be in scope. Non-terminal,
+    non-renewal, missing, or future-dated opportunities leave the rail's
+    degradation behavior unchanged.
 
     ``stakeholders``/``job_changes``/``communication_signals`` are optional
     person-layer inputs (Harvest 16, additive -- default empty so every
@@ -368,7 +376,13 @@ def build_customer_value_model(
 
     penetration = _penetration_rail(adoption, resolved)
     feature_depth = _feature_depth_rail(adoption, entitlements, resolved)
-    outcome = _outcome_rail(success_plans, resolved, onboarding_milestones=onboarding_milestones)
+    outcome = _outcome_rail(
+        success_plans,
+        resolved,
+        opportunities=opportunities,
+        onboarding_milestones=onboarding_milestones,
+        as_of=as_of,
+    )
     usage = UsageRail(
         adoption_rate=adoption.adoption_rate if adoption else None,
         active_users=adoption.active_users if adoption else None,
@@ -578,7 +592,9 @@ def _outcome_rail(
     success_plans: tuple[SuccessPlan, ...],
     resolved: ResolvedThresholds,
     *,
+    opportunities: tuple[CRMOpportunity, ...] = (),
     onboarding_milestones: tuple[TimeToValueMilestone, ...] = (),
+    as_of: str | None = None,
 ) -> OutcomeRail:
     objectives = tuple(
         objective
@@ -603,6 +619,11 @@ def _outcome_rail(
     plan_realized = any(
         plan.status in {"realized", "achieved", "complete"} for plan in success_plans
     )
+    renewal_outcome_factors = _terminal_renewal_outcome_factors(
+        opportunities,
+        resolved,
+        as_of=as_of,
+    )
     # A mapped onboarding source (Rocketlane) is real, cited milestone
     # evidence -- an achieved milestone is as valid an outcome signal as a
     # realized success plan. Absence of onboarding_milestones changes
@@ -610,10 +631,12 @@ def _outcome_rail(
     onboarding_achieved = tuple(
         m for m in onboarding_milestones if m.achieved_at is not None
     )
-    if plan_realized or onboarding_achieved:
+    if plan_realized or renewal_outcome_factors or onboarding_achieved:
         realized_state: OutcomeState = "known"
     else:
         realized_state = "not_instrumented"
+    if renewal_outcome_factors:
+        factors = (*factors, *renewal_outcome_factors)
     if onboarding_achieved:
         factors = (*factors, _factor(
             "onboarding_milestone_achieved",
@@ -633,6 +656,48 @@ def _outcome_rail(
         realized_state=realized_state,
         factors=factors,
     )
+
+
+def _terminal_renewal_outcome_factors(
+    opportunities: tuple[CRMOpportunity, ...],
+    resolved: ResolvedThresholds,
+    *,
+    as_of: str | None,
+) -> tuple[ValueFactor, ...]:
+    as_of_date = iso_date(as_of) if as_of is not None else None
+    factors: list[ValueFactor] = []
+    for opportunity in opportunities:
+        if "renew" not in opportunity.opportunity_type.lower():
+            continue
+        stage = opportunity.stage_name.strip().lower()
+        if stage == "closed won":
+            name = "renewal_outcome_closed_won"
+            value = 1.0
+        elif stage == "closed lost":
+            name = "renewal_outcome_closed_lost"
+            value = -1.0
+        else:
+            continue
+        close_date = iso_date(opportunity.close_date)
+        if as_of_date is not None and close_date > as_of_date:
+            continue
+        factors.append(_factor(
+            name,
+            value,
+            0,
+            (
+                EvidenceRef(
+                    "crm",
+                    opportunity.opportunity_id,
+                    "stage_name",
+                    opportunity.close_date,
+                ),
+            ),
+            resolved,
+            None,
+            None,
+        ))
+    return tuple(factors)
 
 
 def _ttv_base_factors(

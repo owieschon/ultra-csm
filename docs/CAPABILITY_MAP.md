@@ -16,14 +16,14 @@ D9 Eval & Observability
 
 ## D1: Value Model
 
-VM-1: Four-rail health scoring (usage, penetration, feature-depth, outcome) — Built (outcome rail is stub). Depends on D2 data plane outputs.
+VM-1: Four-rail health scoring (usage, penetration, feature-depth, outcome) — Built (outcome rail is partial: stated objectives, success-plan/Rocketlane realization, and synthetic renewal outcome evidence). Depends on D2 data plane outputs.
 VM-2: Configurable thresholds by account tier — Built.
 VM-3: Diagnostic divergence detection (cross-rail contradictions) — Built. Depends on VM-1.
 VM-4: TTV priority projection — Built. Depends on VM-1, VM-3.
 VM-5: Lifecycle state classification (onboarding, adopted, expanding, renewing, at-risk) — Partially built (TTV only). Depends on VM-1.
 VM-6: Snapshot persistence (store value model output per evaluation) — Not built. Depends on VM-1, D2 database.
 VM-7: Trajectory computation (compare snapshots over time windows) — Not built. Depends on VM-6.
-VM-8: Outcome rail instrumentation (connect business metrics to stated objectives) — Not built. Depends on D2 connectors, VM-1.
+VM-8: Outcome rail instrumentation (connect business metrics to stated objectives) — Partially built (Slice 0/1 only: terminal Renewal `CRMOpportunity` evidence can mark outcome known with won/lost direction; broader business metrics, attribution, and UI/ops depth remain unbuilt). Depends on D2 connectors, VM-1.
 VM-9: Trend-based factor generation (decline_slope, activation_window_days) — Not built. Depends on VM-7.
 
 ## D2: Data Plane
