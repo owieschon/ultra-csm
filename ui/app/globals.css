@@ -106,7 +106,40 @@ svg { display: block; }
 .tile .tdone { display: inline-flex; align-items: center; gap: 4px; font-size: 10.5px; color: var(--ok); margin-top: auto; font-weight: 600; }
 .tile.more { align-items: center; justify-content: center; border-style: dashed; color: var(--fg-2); font-size: 12px; font-weight: 550; cursor: pointer; flex-direction: row; gap: 7px; }
 .tile.more:hover { color: var(--fg-2); border-color: var(--hair); }
+.tile.coverage-source_degraded,
+.tile.coverage-not_scanned,
+.tile.coverage-insufficient_evidence { border-color: rgba(217,164,82,.36); background: var(--warn-dim); }
 .lens { font-size: 10px; font-weight: 650; letter-spacing: .03em; padding: 1px 6px; border-radius: 4px; border: 1px solid var(--hair); color: var(--fg-2); text-transform: uppercase; }
+.coverage-panel { border: 1px solid var(--hair); border-radius: 12px; background: var(--card); margin-bottom: 18px; overflow: hidden; }
+.coverage-head { display: flex; align-items: flex-start; gap: 10px; padding: 14px 16px 12px; border-bottom: 1px solid var(--hair-soft); }
+.coverage-head .chip-det,
+.coverage-head .chip-llm { margin-left: auto; flex: 0 0 auto; }
+.coverage-head .chip-llm + .chip-det,
+.coverage-head .chip-det + .chip-llm { margin-left: 0; }
+.coverage-filters { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; padding: 11px 14px; border-bottom: 1px solid var(--hair-soft); }
+.coverage-filter { display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--hair); border-radius: 7px; background: var(--canvas); color: var(--fg-2); padding: 5px 9px; font-size: 11.5px; font-weight: 600; }
+.coverage-filter:hover,
+.coverage-filter.on { border-color: var(--accent-line); color: var(--fg); background: var(--accent-dim); }
+.coverage-filter .num { color: var(--fg-2); font-size: 10.5px; }
+.coverage-receipt { padding: 14px 16px 15px; border-left: 3px solid var(--hair); background: var(--card); }
+.coverage-receipt.coverage-needs_human { border-left-color: var(--accent); }
+.coverage-receipt.coverage-prepared_work { border-left-color: var(--ok); }
+.coverage-receipt.coverage-reviewed,
+.coverage-receipt.coverage-covered { border-left-color: var(--hair); }
+.coverage-receipt.coverage-source_degraded,
+.coverage-receipt.coverage-not_scanned,
+.coverage-receipt.coverage-insufficient_evidence { border-left-color: var(--warn); background: var(--warn-dim); }
+.receipt-main { display: flex; align-items: flex-start; gap: 14px; }
+.receipt-state { font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--fg-3); }
+.receipt-name { margin-top: 3px; font-size: 15px; font-weight: 650; color: var(--fg); }
+.receipt-reason { margin-top: 3px; font-size: 12.5px; color: var(--fg-2); line-height: 1.45; }
+.receipt-score { margin-left: auto; white-space: nowrap; color: var(--fg-2); font-size: 12px; font-weight: 650; }
+.receipt-lines { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+.receipt-lines span { border: 1px solid var(--hair); border-radius: 5px; padding: 2px 7px; font-size: 10.5px; color: var(--fg-2); background: var(--canvas); }
+.receipt-lines .warn-line { color: var(--warn); border-color: rgba(217,164,82,.45); background: var(--warn-dim); }
+.receipt-actions { display: flex; align-items: center; gap: 8px; margin-top: 11px; }
+.mini-cta { margin-left: auto; border: 1px solid var(--accent-line); border-radius: 7px; padding: 6px 10px; background: var(--accent-dim); color: var(--fg); font-size: 12px; font-weight: 650; }
+.mini-cta:hover { background: var(--accent); color: var(--accent-fg); }
 
 /* ===== QUEUE VIEW ===== */
 .queue { flex: 1; min-height: 0; display: grid; grid-template-columns: 316px 1fr; }

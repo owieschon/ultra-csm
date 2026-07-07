@@ -1,0 +1,171 @@
+import { AccountSummary, WorkItem } from "@/lib/api";
+import { label, MOTION_LABELS } from "@/lib/labels";
+import { describeWork } from "@/lib/work";
+
+export type CoverageState =
+  | "needs_human"
+  | "prepared_work"
+  | "reviewed"
+  | "covered"
+  | "insufficient_evidence"
+  | "source_degraded"
+  | "not_scanned";
+
+export interface CoverageReceipt {
+  account: AccountSummary;
+  state: CoverageState;
+  label: string;
+  actionLabel: string;
+  reason: string;
+  scoreLabel: string;
+  scanned: boolean;
+  workItem: WorkItem | null;
+  evidenceLines: string[];
+  missingLines: string[];
+}
+
+export const COVERAGE_FILTERS: { key: CoverageState | "all"; label: string }[] = [
+  { key: "all", label: "All" },
+  { key: "needs_human", label: "Needs human" },
+  { key: "prepared_work", label: "Prepared" },
+  { key: "covered", label: "Covered" },
+  { key: "reviewed", label: "Reviewed" },
+  { key: "insufficient_evidence", label: "Insufficient" },
+  { key: "source_degraded", label: "Source degraded" },
+  { key: "not_scanned", label: "Not scanned" },
+];
+
+export function buildCoverageReceipts({
+  accounts,
+  workItems,
+  sweptAccounts,
+}: {
+  accounts: AccountSummary[];
+  workItems: WorkItem[];
+  sweptAccounts: string[];
+}): CoverageReceipt[] {
+  const workByAccount = new Map<string, WorkItem>();
+  workItems.forEach((item) => {
+    if (item.account_id) workByAccount.set(item.account_id, item);
+  });
+  const swept = new Set(sweptAccounts);
+  return accounts.map((account) => {
+    const item = workByAccount.get(account.account_id) ?? null;
+    return receiptForAccount(account, item, swept.has(account.account_id));
+  });
+}
+
+function receiptForAccount(
+  account: AccountSummary,
+  item: WorkItem | null,
+  scanned: boolean
+): CoverageReceipt {
+  if (!scanned) {
+    return baseReceipt(account, item, "not_scanned", scanned, {
+      reason: "This account is in the book but is absent from the latest sweep receipt.",
+      actionLabel: "Review source coverage",
+      missingLines: ["No swept_accounts receipt for this account."],
+    });
+  }
+  if (account.priority_score_error) {
+    return baseReceipt(account, item, "source_degraded", scanned, {
+      reason: `Priority scoring failed with ${account.priority_score_error}.`,
+      actionLabel: "Review degraded source",
+      missingLines: [`priority_score_error: ${account.priority_score_error}`],
+    });
+  }
+  if (account.priority_score == null) {
+    return baseReceipt(account, item, "insufficient_evidence", scanned, {
+      reason: "The account was swept, but no priority score is available.",
+      actionLabel: "Inspect missing evidence",
+      missingLines: ["priority_score is null."],
+    });
+  }
+  if (item?.proposal?.status === "pending") {
+    const descriptor = describeWork(item);
+    return baseReceipt(account, item, "needs_human", scanned, {
+      reason: `${descriptor.packetLabel} is waiting for human approval.`,
+      actionLabel: "Open packet",
+    });
+  }
+  if (item && !item.proposal) {
+    const descriptor = describeWork(item);
+    return baseReceipt(account, item, "prepared_work", scanned, {
+      reason: `${descriptor.packetLabel} was prepared without a customer-facing release.`,
+      actionLabel: "Inspect packet",
+    });
+  }
+  if (item?.proposal) {
+    return baseReceipt(account, item, "reviewed", scanned, {
+      reason: `The proposal was ${item.proposal.status}.`,
+      actionLabel: "Review audit receipt",
+    });
+  }
+  return baseReceipt(account, item, "covered", scanned, {
+    reason: "Swept this run; no work item was emitted for the account.",
+    actionLabel: "Review receipt",
+    missingLines: [
+      "Per-factor non-promotion thresholds are not exposed by the current API.",
+    ],
+  });
+}
+
+function baseReceipt(
+  account: AccountSummary,
+  item: WorkItem | null,
+  state: CoverageState,
+  scanned: boolean,
+  overrides: {
+    reason: string;
+    actionLabel: string;
+    missingLines?: string[];
+  }
+): CoverageReceipt {
+  const factors = item?.priority?.factors ?? [];
+  const factorLines = factors.slice(0, 3).map((factor) => {
+    const threshold =
+      factor.threshold_name && factor.threshold_value != null
+        ? ` · threshold ${factor.threshold_name}=${factor.threshold_value}`
+        : "";
+    return `${factor.name}: value ${factor.value}, contribution ${factor.contribution}${threshold}`;
+  });
+  const motion = item?.motion ? label(MOTION_LABELS, item.motion) : null;
+  return {
+    account,
+    state,
+    label: stateLabel(state),
+    actionLabel: overrides.actionLabel,
+    reason: overrides.reason,
+    scoreLabel:
+      account.priority_score == null
+        ? "score unavailable"
+        : `priority score ${account.priority_score}`,
+    scanned,
+    workItem: item,
+    evidenceLines: [
+      scanned ? "Included in latest swept_accounts receipt." : "Not included in latest sweep.",
+      motion ? `Motion: ${motion}.` : "No motion emitted.",
+      ...factorLines,
+    ],
+    missingLines: overrides.missingLines ?? [],
+  };
+}
+
+export function stateLabel(state: CoverageState): string {
+  switch (state) {
+    case "needs_human":
+      return "Needs human";
+    case "prepared_work":
+      return "Prepared work";
+    case "reviewed":
+      return "Reviewed";
+    case "covered":
+      return "Covered";
+    case "insufficient_evidence":
+      return "Insufficient evidence";
+    case "source_degraded":
+      return "Source degraded";
+    case "not_scanned":
+      return "Not scanned";
+  }
+}

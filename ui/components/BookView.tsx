@@ -4,6 +4,12 @@ import { useMemo, useState } from "react";
 import { AccountSummary, WorkItem } from "@/lib/api";
 import { SweepData } from "@/lib/useSweep";
 import { label, MOTION_LABELS, TIER_LABELS } from "@/lib/labels";
+import {
+  buildCoverageReceipts,
+  COVERAGE_FILTERS,
+  CoverageReceipt,
+  CoverageState,
+} from "@/lib/coverage";
 
 const TIER_ORDER = ["high_touch", "mid_touch", "tech_touch"];
 const QUIET_VISIBLE = 6;
@@ -28,6 +34,8 @@ export function BookView({
   onSelectAccount: (accountId: string) => void;
 }) {
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+  const [coverageFilter, setCoverageFilter] = useState<CoverageState | "all">("all");
+  const [selectedAccountId, setSelectedAccountId] = useState<string | null>(null);
 
   const workItemByAccount = useMemo(() => {
     const map = new Map<string, WorkItem>();
@@ -36,6 +44,32 @@ export function BookView({
     });
     return map;
   }, [sweep]);
+  const coverageReceipts = useMemo(
+    () =>
+      buildCoverageReceipts({
+        accounts: accounts ?? [],
+        workItems: sweep?.work_items ?? [],
+        sweptAccounts: sweep?.swept_accounts ?? [],
+      }),
+    [accounts, sweep]
+  );
+  const coverageByAccount = useMemo(() => {
+    const map = new Map<string, CoverageReceipt>();
+    coverageReceipts.forEach((receipt) => map.set(receipt.account.account_id, receipt));
+    return map;
+  }, [coverageReceipts]);
+  const coverageCounts = useMemo(() => {
+    const counts = new Map<CoverageState | "all", number>([["all", coverageReceipts.length]]);
+    coverageReceipts.forEach((receipt) => {
+      counts.set(receipt.state, (counts.get(receipt.state) ?? 0) + 1);
+    });
+    return counts;
+  }, [coverageReceipts]);
+  const selectedReceipt = selectedAccountId
+    ? coverageByAccount.get(selectedAccountId) ?? null
+    : coverageReceipts.find((receipt) => receipt.state === "needs_human") ??
+      coverageReceipts[0] ??
+      null;
 
   const bands: Band[] = useMemo(() => {
     if (!accounts) return [];
@@ -89,9 +123,48 @@ export function BookView({
             </span>
           </div>
         </div>
-        <button className="cta" onClick={onWorkQueue} disabled={needsCount === 0}>
+        <button className="cta" onClick={onWorkQueue} disabled={(sweep?.work_items.length ?? 0) === 0}>
           Work today{needsCount ? ` (${needsCount})` : ""}
         </button>
+      </div>
+
+      <div className="coverage-panel">
+        <div className="coverage-head">
+          <div>
+            <div className="eyebrow">Book coverage</div>
+            <div className="intro-title">
+              {coverageCounts.get("all") ?? 0} accounted for · {coverageCounts.get("covered") ?? 0} covered ·{" "}
+              {(coverageCounts.get("source_degraded") ?? 0) + (coverageCounts.get("not_scanned") ?? 0)} need source review
+            </div>
+          </div>
+          <span className="chip-det">prioritization is filterable, not hidden</span>
+          {(sweep?.degraded_items ?? 0) > 0 && (
+            <span className="chip-llm">{sweep?.degraded_items} degraded</span>
+          )}
+        </div>
+        <div className="coverage-filters">
+          {COVERAGE_FILTERS.map((filter) => (
+            <button
+              key={filter.key}
+              className={`coverage-filter${coverageFilter === filter.key ? " on" : ""}`}
+              onClick={() => setCoverageFilter(filter.key)}
+            >
+              <span>{filter.label}</span>
+              <span className="num">{coverageCounts.get(filter.key) ?? 0}</span>
+            </button>
+          ))}
+        </div>
+        {selectedReceipt && (
+          <CoverageReceiptCard
+            receipt={selectedReceipt}
+            onOpenPacket={() => {
+              if (selectedReceipt.workItem?.account_id) {
+                onSelectAccount(selectedReceipt.workItem.account_id);
+                onWorkQueue();
+              }
+            }}
+          />
+        )}
       </div>
 
       <div className="sec">
@@ -119,11 +192,14 @@ export function BookView({
           key={band.tier}
           band={band}
           workItemByAccount={workItemByAccount}
+          coverageByAccount={coverageByAccount}
+          coverageFilter={coverageFilter}
           expanded={expanded[band.tier] ?? false}
           onToggleExpand={() =>
             setExpanded((e) => ({ ...e, [band.tier]: !e[band.tier] }))
           }
-          onSelectAccount={(accountId) => {
+          onSelectAccount={setSelectedAccountId}
+          onOpenPacket={(accountId) => {
             onSelectAccount(accountId);
             onWorkQueue();
           }}
@@ -136,20 +212,30 @@ export function BookView({
 function BandView({
   band,
   workItemByAccount,
+  coverageByAccount,
+  coverageFilter,
   expanded,
   onToggleExpand,
   onSelectAccount,
+  onOpenPacket,
 }: {
   band: Band;
   workItemByAccount: Map<string, WorkItem>;
+  coverageByAccount: Map<string, CoverageReceipt>;
+  coverageFilter: CoverageState | "all";
   expanded: boolean;
   onToggleExpand: () => void;
   onSelectAccount: (accountId: string) => void;
+  onOpenPacket: (accountId: string) => void;
 }) {
-  const hot = band.accounts.filter(
+  const accounts =
+    coverageFilter === "all"
+      ? band.accounts
+      : band.accounts.filter((a) => coverageByAccount.get(a.account_id)?.state === coverageFilter);
+  const hot = accounts.filter(
     (a) => workItemByAccount.get(a.account_id)?.proposal?.status === "pending"
   );
-  const handled = band.accounts.filter((a) => {
+  const handled = accounts.filter((a) => {
     const status = workItemByAccount.get(a.account_id)?.proposal?.status;
     return status === "approved" || status === "denied";
   });
@@ -157,12 +243,14 @@ function BandView({
   // human to approve/deny) -- distinct from "quiet" (no work item fired at
   // all): rendering these as quiet would silently drop a real finding from
   // the wall entirely.
-  const internal = band.accounts.filter((a) => {
+  const internal = accounts.filter((a) => {
     const item = workItemByAccount.get(a.account_id);
     return item && !item.proposal;
   });
-  const quiet = band.accounts.filter((a) => !workItemByAccount.has(a.account_id));
+  const quiet = accounts.filter((a) => !workItemByAccount.has(a.account_id));
   const shownQuiet = expanded ? quiet : quiet.slice(0, QUIET_VISIBLE);
+
+  if (accounts.length === 0) return null;
 
   return (
     <div className="band" style={{ marginBottom: 22 }}>
@@ -185,39 +273,88 @@ function BandView({
           >
             <span className="tname">{a.account_name}</span>
             <span className="tsub">
-              {label(MOTION_LABELS, workItemByAccount.get(a.account_id)?.motion)}
+              {coverageByAccount.get(a.account_id)?.label ?? label(MOTION_LABELS, workItemByAccount.get(a.account_id)?.motion)}
             </span>
           </button>
         ))}
         {handled.map((a) => (
-          <div key={a.account_id} className="tile handled">
+          <button
+            key={a.account_id}
+            className="tile handled"
+            onClick={() => onSelectAccount(a.account_id)}
+          >
             <span className="tname">{a.account_name}</span>
             <span className="tdone">
               {workItemByAccount.get(a.account_id)?.proposal?.status === "denied"
                 ? "denied"
                 : "sent"}
             </span>
-          </div>
+          </button>
         ))}
         {internal.map((a) => (
-          <div
+          <button
             key={a.account_id}
             className="tile handled"
             title={workItemByAccount.get(a.account_id)?.reason}
+            onClick={() => onOpenPacket(a.account_id)}
           >
             <span className="tname">{a.account_name}</span>
-            <span className="tsub">internal review · no customer action</span>
-          </div>
+            <span className="tsub">{coverageByAccount.get(a.account_id)?.label ?? "prepared work"}</span>
+          </button>
         ))}
         {shownQuiet.map((a) => (
-          <div key={a.account_id} className="tile quiet" title="Swept today — no trigger fired">
+          <button
+            key={a.account_id}
+            className={`tile quiet coverage-${coverageByAccount.get(a.account_id)?.state ?? "covered"}`}
+            title={coverageByAccount.get(a.account_id)?.reason ?? "Swept today — no trigger fired"}
+            onClick={() => onSelectAccount(a.account_id)}
+          >
             <span className="tname">{a.account_name}</span>
-            <span className="tsub">quiet</span>
-          </div>
+            <span className="tsub">{coverageByAccount.get(a.account_id)?.label ?? "covered"}</span>
+          </button>
         ))}
         {quiet.length > QUIET_VISIBLE && (
           <button className="tile more" onClick={onToggleExpand}>
             {expanded ? "show less" : `+${quiet.length - QUIET_VISIBLE} quiet`}
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function CoverageReceiptCard({
+  receipt,
+  onOpenPacket,
+}: {
+  receipt: CoverageReceipt;
+  onOpenPacket: () => void;
+}) {
+  return (
+    <div className={`coverage-receipt coverage-${receipt.state}`}>
+      <div className="receipt-main">
+        <div>
+          <div className="receipt-state">{receipt.label}</div>
+          <div className="receipt-name">{receipt.account.account_name}</div>
+          <div className="receipt-reason">{receipt.reason}</div>
+        </div>
+        <div className="receipt-score num">{receipt.scoreLabel}</div>
+      </div>
+      <div className="receipt-lines">
+        {receipt.evidenceLines.map((line) => (
+          <span key={line}>{line}</span>
+        ))}
+        {receipt.missingLines.map((line) => (
+          <span key={line} className="warn-line">
+            {line}
+          </span>
+        ))}
+      </div>
+      <div className="receipt-actions">
+        <span className="chip-det">coverage receipt</span>
+        {receipt.workItem && (
+          <button className="mini-cta" onClick={onOpenPacket}>
+            {receipt.actionLabel}
           </button>
         )}
       </div>
