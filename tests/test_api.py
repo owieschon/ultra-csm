@@ -327,13 +327,35 @@ class TestSweepEndpoint:
         assert "work_items" in body
         assert "escalations" in body
         assert "swept_accounts" in body
+        assert "coverage_receipts" in body
         assert len(body["swept_accounts"]) > 0
+        assert len(body["coverage_receipts"]) == len(body["swept_accounts"])
         assert body["auth"] == "bearer-token"
 
     def test_sweep_produces_work_items(self, client: TestClient):
         body = client.post("/sweep", headers=AUTH_HEADERS).json()
         # The fixture data should produce at least one work item.
         assert len(body["work_items"]) > 0
+
+    def test_sweep_coverage_receipts_explain_surfaced_and_unsurfaced_accounts(
+        self, client: TestClient,
+    ):
+        body = client.post("/sweep?day=140", headers=AUTH_HEADERS).json()
+        receipts = body["coverage_receipts"]
+        states = {receipt["state"] for receipt in receipts}
+
+        assert "needs_human" in states
+        assert "covered" in states
+        surfaced = next(receipt for receipt in receipts if receipt["state"] == "needs_human")
+        covered = next(receipt for receipt in receipts if receipt["state"] == "covered")
+
+        assert surfaced["work_item_key"]
+        assert surfaced["proposal_status"] == "pending"
+        assert any("Included in latest swept_accounts" in line for line in surfaced["evidence_lines"])
+        assert covered["work_item_key"] is None
+        assert any(
+            "non-promotion thresholds" in line for line in covered["missing_lines"]
+        )
 
     def test_sweep_person_cited_evidence(self, client: TestClient):
         """Person UI depth (Harvest 17): a fired person-derived factor's

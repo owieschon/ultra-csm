@@ -1,4 +1,4 @@
-import { AccountSummary, WorkItem } from "@/lib/api";
+import { AccountSummary, CoverageReceiptResponse, WorkItem } from "@/lib/api";
 import { label, MOTION_LABELS } from "@/lib/labels";
 import { describeWork } from "@/lib/work";
 
@@ -39,11 +39,16 @@ export function buildCoverageReceipts({
   accounts,
   workItems,
   sweptAccounts,
+  backendReceipts,
 }: {
   accounts: AccountSummary[];
   workItems: WorkItem[];
   sweptAccounts: string[];
+  backendReceipts?: CoverageReceiptResponse[];
 }): CoverageReceipt[] {
+  if (backendReceipts?.length) {
+    return fromBackendReceipts(accounts, workItems, backendReceipts);
+  }
   const workByAccount = new Map<string, WorkItem>();
   workItems.forEach((item) => {
     if (item.account_id) workByAccount.set(item.account_id, item);
@@ -52,6 +57,34 @@ export function buildCoverageReceipts({
   return accounts.map((account) => {
     const item = workByAccount.get(account.account_id) ?? null;
     return receiptForAccount(account, item, swept.has(account.account_id));
+  });
+}
+
+function fromBackendReceipts(
+  accounts: AccountSummary[],
+  workItems: WorkItem[],
+  backendReceipts: CoverageReceiptResponse[]
+): CoverageReceipt[] {
+  const accountsById = new Map(accounts.map((account) => [account.account_id, account]));
+  const workByAccount = new Map<string, WorkItem>();
+  workItems.forEach((item) => {
+    if (item.account_id) workByAccount.set(item.account_id, item);
+  });
+  return backendReceipts.flatMap((receipt) => {
+    const account = accountsById.get(receipt.account_id);
+    if (!account) return [];
+    return [{
+      account,
+      state: receipt.state,
+      label: receipt.label,
+      actionLabel: receipt.action_label,
+      reason: receipt.reason,
+      scoreLabel: receipt.score_label,
+      scanned: receipt.scanned,
+      workItem: workByAccount.get(receipt.account_id) ?? null,
+      evidenceLines: receipt.evidence_lines,
+      missingLines: receipt.missing_lines,
+    }];
   });
 }
 

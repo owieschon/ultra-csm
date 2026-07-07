@@ -50,6 +50,7 @@ export function BookView({
         accounts: accounts ?? [],
         workItems: sweep?.work_items ?? [],
         sweptAccounts: sweep?.swept_accounts ?? [],
+        backendReceipts: sweep?.coverage_receipts,
       }),
     [accounts, sweep]
   );

@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { api, WorkItem } from "@/lib/api";
+import { api, CoverageReceiptResponse, WorkItem } from "@/lib/api";
 
 export interface SweepData {
   work_items: WorkItem[];
   escalations: Record<string, unknown>[];
   swept_accounts: string[];
+  coverage_receipts?: CoverageReceiptResponse[];
   degraded_items: number;
 }
 
@@ -32,6 +33,7 @@ export function useSweep(
           work_items: r.work_items,
           escalations: r.escalations,
           swept_accounts: r.swept_accounts,
+          coverage_receipts: r.coverage_receipts,
           degraded_items: r.degraded_items,
         })
       )
