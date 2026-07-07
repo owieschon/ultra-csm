@@ -9,7 +9,7 @@
         "account_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
         "account_name": "Ironhorse Freight Co",
         "as_of": "2026-11-08",
-        "body": "Hi Marcus Webb, Ironhorse Freight Co is showing an onboarding risk tied to milestones_overdue, days_overdue. Can we confirm whether the remaining activation work is blocked by configuration, data import, or enablement, then agree on owners?",
+        "body": "Hi Marcus Webb, Ironhorse Freight Co is showing an onboarding risk tied to overdue onboarding milestones, overdue activation timeline. Can we confirm whether the remaining activation work is blocked by configuration, data import, or enablement, then agree on owners?",
         "contact_email": "marcus.webb@ironhorse-freight.example",
         "contact_id": "3610a030-a5cd-55db-80b7-7b89d66203a4",
         "diagnostic_chain": [
@@ -17,35 +17,35 @@
             "label": "Signal",
             "meta": "+50 priority from 2 evidence record(s)",
             "stage": "signal",
-            "value": "milestones_overdue"
+            "value": "Onboarding running late"
           },
           {
             "label": "Likely blocker",
-            "meta": "milestones_overdue",
+            "meta": "Onboarding running late",
             "stage": "diagnosis",
             "value": "Activation is stalled; inspect overdue milestones before outreach."
           },
           {
             "label": "Selected action",
-            "meta": "close-milestone-gap: Selected because this playbook trigger matched the strongest priority signal.",
+            "meta": "Selected because this playbook trigger matched the strongest priority signal.",
             "stage": "action",
-            "value": "escalation"
+            "value": "Escalate to human"
           },
           {
             "label": "Recipient path",
-            "meta": "first_consenting_fallback",
+            "meta": "first consenting contact",
             "stage": "recipient",
-            "value": "Marcus Webb (fleet_operations)"
+            "value": "Marcus Webb (fleet operations)"
           },
           {
             "label": "Evidence",
-            "meta": "4635cdb7-5bb5-5c43-acc1-5dc989d4d583, afbc6091-985b-50e5-8522-e1a916af56c9, 7d61c11f-73d4-52f6-a738-33ab96634a61, +1 more",
+            "meta": "telemetry, cs platform, crm records attached",
             "stage": "evidence",
             "value": "4 cited source record(s)"
           },
           {
             "label": "Approval boundary",
-            "meta": "draft_customer_outreach",
+            "meta": "customer outreach draft",
             "stage": "approval",
             "value": "Human approval required"
           }
@@ -191,7 +191,7 @@
         },
         "subject": "Time-to-Value follow-up for Ironhorse Freight Co"
       },
-      "proposal_id": "a41bbbdc-1cf0-43ee-a003-3ef6883b363e",
+      "proposal_id": "ae649bb7-8013-4146-a6ec-1b6280940482",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -203,7 +203,7 @@
         "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
         "account_name": "Pinehill Transport",
         "as_of": "2026-11-08",
-        "body": "Hi Dennis Gruber, Pinehill Transport is showing an onboarding risk tied to success_plan_overdue, health_yellow. Can we map the missing users needed for a complete rollout?",
+        "body": "Hi Dennis Gruber, Pinehill Transport is showing an onboarding risk tied to overdue success plan, slipping health trend. Can we map the missing users needed for a complete rollout?",
         "contact_email": "dennis.gruber@pinehill-transport.example",
         "contact_id": "fdd4645a-e0b6-53d8-ba03-249f260574d8",
         "diagnostic_chain": [
@@ -211,35 +211,35 @@
             "label": "Signal",
             "meta": "+15 priority from 3 evidence record(s)",
             "stage": "signal",
-            "value": "feature_depth_gap"
+            "value": "Paid features unused"
           },
           {
             "label": "Likely blocker",
-            "meta": "feature_shallow_depth",
+            "meta": "Paid features unused",
             "stage": "diagnosis",
             "value": "Paid capability has not reached operational use."
           },
           {
             "label": "Selected action",
-            "meta": "reactivate-stalled-module: Selected because this playbook trigger matched the strongest priority signal.",
+            "meta": "Selected because this playbook trigger matched the strongest priority signal.",
             "stage": "action",
-            "value": "content_route"
+            "value": "Send help content"
           },
           {
             "label": "Recipient path",
-            "meta": "first_consenting_fallback",
+            "meta": "first consenting contact",
             "stage": "recipient",
             "value": "Dennis Gruber (champion)"
           },
           {
             "label": "Evidence",
-            "meta": "df3f3e70-7ed8-5d10-9b05-395fd3d1a0f1, 4e2db753-f222-5f7b-8356-0a2f59fae1e3, ae0a5970-d69b-5c18-ad60-8015524e565c",
+            "meta": "cs platform, crm records attached",
             "stage": "evidence",
             "value": "3 cited source record(s)"
           },
           {
             "label": "Approval boundary",
-            "meta": "draft_customer_outreach",
+            "meta": "customer outreach draft",
             "stage": "approval",
             "value": "Human approval required"
           }
@@ -354,7 +354,7 @@
         },
         "subject": "Time-to-Value follow-up for Pinehill Transport"
       },
-      "proposal_id": "d6dc45e6-2646-4157-8880-714d71fed09a",
+      "proposal_id": "4ac4e21f-20b3-48a5-9813-a6c155316cf6",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -366,7 +366,7 @@
         "account_id": "081b380c-99e7-5073-992a-9e0d8b27d8c0",
         "account_name": "Ridgeline Warehousing",
         "as_of": "2026-11-08",
-        "body": "Hi Jared Nolan, Ridgeline Warehousing is showing an onboarding risk tied to success_plan_overdue, health_yellow. Can we map the missing users needed for a complete rollout?",
+        "body": "Hi Jared Nolan, Ridgeline Warehousing is showing an onboarding risk tied to overdue success plan, slipping health trend. Can we map the missing users needed for a complete rollout?",
         "contact_email": "jared.nolan@ridgeline-wh.example",
         "contact_id": "3e482549-264d-5a2d-b368-ca08b272ac98",
         "diagnostic_chain": [
@@ -374,35 +374,35 @@
             "label": "Signal",
             "meta": "+12 priority from 1 evidence record(s)",
             "stage": "signal",
-            "value": "low_seat_penetration"
+            "value": "Seats not activated"
           },
           {
             "label": "Likely blocker",
-            "meta": "low_seat_penetration",
+            "meta": "Seats not activated",
             "stage": "diagnosis",
             "value": "Licensed seats are not activated deeply enough."
           },
           {
             "label": "Selected action",
-            "meta": "widen-seat-penetration: Selected because this playbook trigger matched the strongest priority signal.",
+            "meta": "Selected because this playbook trigger matched the strongest priority signal.",
             "stage": "action",
-            "value": "campaign_enroll"
+            "value": "Add to campaign"
           },
           {
             "label": "Recipient path",
-            "meta": "first_consenting_fallback",
+            "meta": "first consenting contact",
             "stage": "recipient",
             "value": "Jared Nolan (operations)"
           },
           {
             "label": "Evidence",
-            "meta": "eb6f3bbc-1ea8-5b0c-b6d5-ad15afda0e34, 081b380c-99e7-5073-992a-9e0d8b27d8c0",
+            "meta": "cs platform records attached",
             "stage": "evidence",
             "value": "2 cited source record(s)"
           },
           {
             "label": "Approval boundary",
-            "meta": "draft_customer_outreach",
+            "meta": "customer outreach draft",
             "stage": "approval",
             "value": "Human approval required"
           }
@@ -470,7 +470,7 @@
         },
         "subject": "Time-to-Value follow-up for Ridgeline Warehousing"
       },
-      "proposal_id": "0397f8ef-06b6-4a77-90d7-2b6eb7aa572f",
+      "proposal_id": "c2ba2d82-4450-4744-a337-11aa2e6ca132",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -482,7 +482,7 @@
         "account_id": "162a9085-8e63-53f0-bb1b-b48426911d34",
         "account_name": "Northstar Couriers",
         "as_of": "2026-11-08",
-        "body": "Hi Sandra Faulkner, Northstar Couriers is showing an onboarding risk tied to success_plan_overdue, health_yellow. Can we check whether the current adoption gap is putting launch timing at risk?",
+        "body": "Hi Sandra Faulkner, Northstar Couriers is showing an onboarding risk tied to overdue success plan, slipping health trend. Can we check whether the current adoption gap is putting launch timing at risk?",
         "contact_email": "sandra.faulkner@northstar-couriers.example",
         "contact_id": "9d346d73-1e66-5964-8f42-066caec9010a",
         "diagnostic_chain": [
@@ -490,35 +490,35 @@
             "label": "Signal",
             "meta": "+20 priority from 1 evidence record(s)",
             "stage": "signal",
-            "value": "success_plan_overdue"
+            "value": "Success plan overdue"
           },
           {
             "label": "Likely blocker",
-            "meta": "outcome_unknown",
+            "meta": "No proven results yet",
             "stage": "diagnosis",
             "value": "Usage exists, but the business outcome is not proven yet."
           },
           {
             "label": "Selected action",
-            "meta": "confirm-outcome-objective: Selected from the matched tenant playbook trigger.",
+            "meta": "Selected from the matched tenant playbook trigger.",
             "stage": "action",
-            "value": "personal_email"
+            "value": "Personal email"
           },
           {
             "label": "Recipient path",
-            "meta": "first_consenting_fallback",
+            "meta": "first consenting contact",
             "stage": "recipient",
             "value": "Sandra Faulkner (logistics)"
           },
           {
             "label": "Evidence",
-            "meta": "023f694d-e8cb-593b-8053-b69e06c2f22d, 162a9085-8e63-53f0-bb1b-b48426911d34",
+            "meta": "cs platform records attached",
             "stage": "evidence",
             "value": "2 cited source record(s)"
           },
           {
             "label": "Approval boundary",
-            "meta": "draft_customer_outreach",
+            "meta": "customer outreach draft",
             "stage": "approval",
             "value": "Human approval required"
           }
@@ -569,7 +569,7 @@
         },
         "subject": "Time-to-Value follow-up for Northstar Couriers"
       },
-      "proposal_id": "32a0fc0c-651c-49fd-b7f3-1a74dd6295e6",
+      "proposal_id": "ff822e5b-d0b5-4027-b22a-87c1e8923f5e",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -581,7 +581,7 @@
         "account_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32",
         "account_name": "Clearwater Field Ops",
         "as_of": "2026-11-08",
-        "body": "Hi Kelly Vance, Clearwater Field Ops is showing an onboarding risk tied to success_plan_overdue, health_yellow. Can we map the missing users needed for a complete rollout?",
+        "body": "Hi Kelly Vance, Clearwater Field Ops is showing an onboarding risk tied to overdue success plan, slipping health trend. Can we map the missing users needed for a complete rollout?",
         "contact_email": "kelly.vance@clearwater-fo.example",
         "contact_id": "4294e961-ee2d-536b-9a91-136ef3e39fbd",
         "diagnostic_chain": [
@@ -589,35 +589,35 @@
             "label": "Signal",
             "meta": "+15 priority from 3 evidence record(s)",
             "stage": "signal",
-            "value": "feature_depth_gap"
+            "value": "Paid features unused"
           },
           {
             "label": "Likely blocker",
-            "meta": "feature_shallow_depth",
+            "meta": "Paid features unused",
             "stage": "diagnosis",
             "value": "Paid capability has not reached operational use."
           },
           {
             "label": "Selected action",
-            "meta": "reactivate-stalled-module: Selected because this playbook trigger matched the strongest priority signal.",
+            "meta": "Selected because this playbook trigger matched the strongest priority signal.",
             "stage": "action",
-            "value": "content_route"
+            "value": "Send help content"
           },
           {
             "label": "Recipient path",
-            "meta": "first_consenting_fallback",
+            "meta": "first consenting contact",
             "stage": "recipient",
             "value": "Kelly Vance (operations)"
           },
           {
             "label": "Evidence",
-            "meta": "3ea4da77-9a46-57ce-aa0a-36440aed7192, 33509b75-de98-51fa-90a0-c68c90fe9324, 865e1e03-cb2f-524d-b572-1eeabebb8d32",
+            "meta": "cs platform, crm records attached",
             "stage": "evidence",
             "value": "3 cited source record(s)"
           },
           {
             "label": "Approval boundary",
-            "meta": "draft_customer_outreach",
+            "meta": "customer outreach draft",
             "stage": "approval",
             "value": "Human approval required"
           }
@@ -715,7 +715,7 @@
         },
         "subject": "Time-to-Value follow-up for Clearwater Field Ops"
       },
-      "proposal_id": "abf380b9-867e-405e-8b67-4a6be095ae01",
+      "proposal_id": "d49d38c3-4cda-4f7a-b1c7-8bc738a2676e",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -727,7 +727,7 @@
         "account_id": "390eef5a-4d06-59ae-93cb-2c0a012e7ef8",
         "account_name": "Summit Industrial Supply",
         "as_of": "2026-11-08",
-        "body": "Hi Diana Kowalski, Summit Industrial Supply is showing an onboarding risk tied to success_plan_overdue. Can we review the activation blockers and next steps?",
+        "body": "Hi Diana Kowalski, Summit Industrial Supply is showing an onboarding risk tied to overdue success plan. Can we review the activation blockers and next steps?",
         "contact_email": "diana.kowalski@summit-industrial.example",
         "contact_id": "e3d2b93a-4221-5c8e-8f95-1f00cc780df1",
         "diagnostic_chain": [
@@ -735,35 +735,35 @@
             "label": "Signal",
             "meta": "+20 priority from 1 evidence record(s)",
             "stage": "signal",
-            "value": "success_plan_overdue"
+            "value": "Success plan overdue"
           },
           {
             "label": "Likely blocker",
-            "meta": "outcome_unknown",
+            "meta": "No proven results yet",
             "stage": "diagnosis",
             "value": "Usage exists, but the business outcome is not proven yet."
           },
           {
             "label": "Selected action",
-            "meta": "confirm-outcome-objective: Selected from the matched tenant playbook trigger.",
+            "meta": "Selected from the matched tenant playbook trigger.",
             "stage": "action",
-            "value": "personal_email"
+            "value": "Personal email"
           },
           {
             "label": "Recipient path",
-            "meta": "first_consenting_fallback",
+            "meta": "first consenting contact",
             "stage": "recipient",
             "value": "Diana Kowalski (operations)"
           },
           {
             "label": "Evidence",
-            "meta": "2b9e4aff-7f3e-5fd8-af1d-482d72f79fdc, 390eef5a-4d06-59ae-93cb-2c0a012e7ef8",
+            "meta": "cs platform records attached",
             "stage": "evidence",
             "value": "2 cited source record(s)"
           },
           {
             "label": "Approval boundary",
-            "meta": "draft_customer_outreach",
+            "meta": "customer outreach draft",
             "stage": "approval",
             "value": "Human approval required"
           }
@@ -797,7 +797,7 @@
         },
         "subject": "Time-to-Value follow-up for Summit Industrial Supply"
       },
-      "proposal_id": "548b8340-9cbd-4ab5-8e26-fa7450c30597",
+      "proposal_id": "e9b27686-8fee-4a61-a1ab-92b62380edd2",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -820,19 +820,19 @@
             "label": "Signal",
             "meta": "+15 priority from 3 evidence record(s)",
             "stage": "signal",
-            "value": "feature_depth_gap"
+            "value": "Paid features unused"
           },
           {
             "label": "Likely blocker",
-            "meta": "feature_shallow_depth",
+            "meta": "Paid features unused",
             "stage": "diagnosis",
             "value": "Paid capability has not reached operational use."
           },
           {
             "label": "Selected action",
-            "meta": "reactivate-stalled-module: Selected because this playbook trigger matched the strongest priority signal.",
+            "meta": "Selected because this playbook trigger matched the strongest priority signal.",
             "stage": "action",
-            "value": "content_route"
+            "value": "Send help content"
           },
           {
             "label": "Recipient path",
@@ -842,20 +842,20 @@
           },
           {
             "label": "Evidence",
-            "meta": "8fa09998-518a-576e-a1ce-21da0e8e7edc, dbb5d1ad-a08a-57bf-9d16-00c94f82fe8b",
+            "meta": "cs platform records attached",
             "stage": "evidence",
             "value": "2 cited source record(s)"
           },
           {
             "label": "Approval boundary",
-            "meta": "content_route",
+            "meta": "help-content route",
             "stage": "approval",
             "value": "No customer-facing release"
           }
         ],
         "draft_channel": "email"
       },
-      "proposal_id": "e7c82719-9c0f-4408-9751-fc599dc045e0",
+      "proposal_id": "42f93cb2-21bc-4761-8499-00ddc3d39474",
       "required_permission": "content.route",
       "status": "pending"
     },
@@ -867,7 +867,7 @@
         "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
         "account_name": "Trailhead Logistics",
         "as_of": "2026-11-08",
-        "body": "Hi Vanessa Torres, Trailhead Logistics is showing an onboarding risk tied to success_plan_overdue, arr_tier. Can we review the activation blockers and next steps?",
+        "body": "Hi Vanessa Torres, Trailhead Logistics is showing an onboarding risk tied to overdue success plan, high-value account. Can we review the activation blockers and next steps?",
         "contact_email": "vanessa.torres@trailhead-logistics.example",
         "contact_id": "5ba7aa51-a5eb-5220-9d3b-71bbe67377a1",
         "diagnostic_chain": [
@@ -875,35 +875,35 @@
             "label": "Signal",
             "meta": "+18 priority from 2 evidence record(s)",
             "stage": "signal",
-            "value": "usage_outcome_unverified"
+            "value": "Usage without a proven outcome"
           },
           {
             "label": "Likely blocker",
-            "meta": "outcome_unknown",
+            "meta": "No proven results yet",
             "stage": "diagnosis",
             "value": "Usage exists, but the business outcome is not proven yet."
           },
           {
             "label": "Selected action",
-            "meta": "confirm-outcome-objective: Selected because this playbook trigger matched the strongest priority signal.",
+            "meta": "Selected because this playbook trigger matched the strongest priority signal.",
             "stage": "action",
-            "value": "personal_email"
+            "value": "Personal email"
           },
           {
             "label": "Recipient path",
-            "meta": "role_graph",
+            "meta": "matched from role graph",
             "stage": "recipient",
             "value": "Vanessa Torres (champion)"
           },
           {
             "label": "Evidence",
-            "meta": "20527c0a-8156-5119-934a-4017e19fc39d, 21830db9-7182-5d97-b22e-d57c4e28f696",
+            "meta": "cs platform records attached",
             "stage": "evidence",
             "value": "2 cited source record(s)"
           },
           {
             "label": "Approval boundary",
-            "meta": "draft_customer_outreach",
+            "meta": "customer outreach draft",
             "stage": "approval",
             "value": "Human approval required"
           }
@@ -994,7 +994,7 @@
         },
         "subject": "Time-to-Value follow-up for Trailhead Logistics"
       },
-      "proposal_id": "5da976f4-d13d-4f03-a5a1-a76f62e1130f",
+      "proposal_id": "7956cd70-88bc-49b6-adcd-e68f33771fab",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -1006,7 +1006,7 @@
         "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
         "account_name": "Meridian Fleet Group",
         "as_of": "2026-11-08",
-        "body": "Hi Alicia Fernandez, Meridian Fleet Group is showing an onboarding risk tied to arr_tier. Can we review the activation blockers and next steps?",
+        "body": "Hi Alicia Fernandez, Meridian Fleet Group is showing an onboarding risk tied to high-value account. Can we review the activation blockers and next steps?",
         "contact_email": "alicia.fernandez@meridian-fleet.example",
         "contact_id": "b2d52039-fa63-5981-8b9b-e08ee50e8a14",
         "diagnostic_chain": [
@@ -1014,35 +1014,35 @@
             "label": "Signal",
             "meta": "+5 priority from 1 evidence record(s)",
             "stage": "signal",
-            "value": "arr_tier"
+            "value": "High-value account"
           },
           {
             "label": "Likely blocker",
-            "meta": "outcome_unknown",
+            "meta": "No proven results yet",
             "stage": "diagnosis",
             "value": "Usage exists, but the business outcome is not proven yet."
           },
           {
             "label": "Selected action",
-            "meta": "confirm-outcome-objective: Selected from the matched tenant playbook trigger.",
+            "meta": "Selected from the matched tenant playbook trigger.",
             "stage": "action",
-            "value": "personal_email"
+            "value": "Personal email"
           },
           {
             "label": "Recipient path",
-            "meta": "role_graph",
+            "meta": "matched from role graph",
             "stage": "recipient",
             "value": "Alicia Fernandez (champion)"
           },
           {
             "label": "Evidence",
-            "meta": "30f4240b-e6c6-5bd2-b7b4-42a9b8d68cc1, 47f78943-7a8a-5bf1-9eeb-df74372085c7",
+            "meta": "cs platform records attached",
             "stage": "evidence",
             "value": "2 cited source record(s)"
           },
           {
             "label": "Approval boundary",
-            "meta": "draft_customer_outreach",
+            "meta": "customer outreach draft",
             "stage": "approval",
             "value": "Human approval required"
           }
@@ -1076,7 +1076,7 @@
         },
         "subject": "Time-to-Value follow-up for Meridian Fleet Group"
       },
-      "proposal_id": "a33a463c-6e06-4ae0-a5ad-184f33b6707d",
+      "proposal_id": "fa249bae-e004-4b52-8540-b274e7dce86d",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -1088,7 +1088,7 @@
         "account_id": "f8504037-dc1a-50e4-bdd9-7900b1379444",
         "account_name": "Sagebrush Transport",
         "as_of": "2026-11-08",
-        "body": "Hi Brett Sawyer, Sagebrush Transport is showing an onboarding risk tied to health_red. Can we review the blocker behind the red health signal?",
+        "body": "Hi Brett Sawyer, Sagebrush Transport is showing an onboarding risk tied to critical health trend. Can we review the blocker behind the red health signal?",
         "contact_email": "brett.sawyer@sagebrush-transport.example",
         "contact_id": "66c4d941-3342-5f92-8ea5-4c8c6764ef1e",
         "diagnostic_chain": [
@@ -1096,35 +1096,35 @@
             "label": "Signal",
             "meta": "+30 priority from 1 evidence record(s)",
             "stage": "signal",
-            "value": "health_red"
+            "value": "Health critical"
           },
           {
             "label": "Likely blocker",
-            "meta": "outcome_unknown",
+            "meta": "No proven results yet",
             "stage": "diagnosis",
             "value": "Usage exists, but the business outcome is not proven yet."
           },
           {
             "label": "Selected action",
-            "meta": "confirm-outcome-objective: Selected from the matched tenant playbook trigger.",
+            "meta": "Selected from the matched tenant playbook trigger.",
             "stage": "action",
-            "value": "personal_email"
+            "value": "Personal email"
           },
           {
             "label": "Recipient path",
-            "meta": "first_consenting_fallback",
+            "meta": "first consenting contact",
             "stage": "recipient",
-            "value": "Brett Sawyer (fleet_operations)"
+            "value": "Brett Sawyer (fleet operations)"
           },
           {
             "label": "Evidence",
-            "meta": "751d5071-7c34-5cd1-bca9-178d0f38ad1d, 3acf0291-5b0b-55b9-8653-d042239fcc17, f8504037-dc1a-50e4-bdd9-7900b1379444",
+            "meta": "cs platform, crm records attached",
             "stage": "evidence",
             "value": "3 cited source record(s)"
           },
           {
             "label": "Approval boundary",
-            "meta": "draft_customer_outreach",
+            "meta": "customer outreach draft",
             "stage": "approval",
             "value": "Human approval required"
           }
@@ -1159,7 +1159,7 @@
         },
         "subject": "Time-to-Value follow-up for Sagebrush Transport"
       },
-      "proposal_id": "a4785f3a-65cf-434e-87ca-072adc5662d3",
+      "proposal_id": "22a80d95-57f1-47a1-9fec-7b6f8d998340",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -1171,7 +1171,7 @@
         "account_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18",
         "account_name": "Harborview Fleet",
         "as_of": "2026-11-08",
-        "body": "Hi Gregory Foster, Harborview Fleet is showing an onboarding risk tied to health_yellow, feature_depth_gap. Can we check whether the current adoption gap is putting launch timing at risk?",
+        "body": "Hi Gregory Foster, Harborview Fleet is showing an onboarding risk tied to slipping health trend, paid features not yet in use. Can we check whether the current adoption gap is putting launch timing at risk?",
         "contact_email": "gregory.foster@harborview-fleet.example",
         "contact_id": "5d346e9f-08bb-5736-9b51-e3be8b8c9cad",
         "diagnostic_chain": [
@@ -1179,35 +1179,35 @@
             "label": "Signal",
             "meta": "+15 priority from 5 evidence record(s)",
             "stage": "signal",
-            "value": "feature_depth_gap"
+            "value": "Paid features unused"
           },
           {
             "label": "Likely blocker",
-            "meta": "feature_shallow_depth",
+            "meta": "Paid features unused",
             "stage": "diagnosis",
             "value": "Paid capability has not reached operational use."
           },
           {
             "label": "Selected action",
-            "meta": "reactivate-stalled-module-live: Selected because this playbook trigger matched the strongest priority signal.",
+            "meta": "Selected because this playbook trigger matched the strongest priority signal.",
             "stage": "action",
-            "value": "working_session"
+            "value": "Working session"
           },
           {
             "label": "Recipient path",
-            "meta": "first_consenting_fallback",
+            "meta": "first consenting contact",
             "stage": "recipient",
             "value": "Gregory Foster (operations)"
           },
           {
             "label": "Evidence",
-            "meta": "4af5a5c0-f51a-5a83-9217-141f4333c6db, 625c9e2b-353d-5bc9-b866-91b2c536d104, 2f75e535-4d63-5289-8084-aa72fcf3b39a, +1 more",
+            "meta": "cs platform, crm records attached",
             "stage": "evidence",
             "value": "4 cited source record(s)"
           },
           {
             "label": "Approval boundary",
-            "meta": "draft_customer_outreach",
+            "meta": "customer outreach draft",
             "stage": "approval",
             "value": "Human approval required"
           }
@@ -1284,7 +1284,7 @@
         },
         "subject": "Time-to-Value follow-up for Harborview Fleet"
       },
-      "proposal_id": "3c729907-0887-46db-867c-637ce92d3634",
+      "proposal_id": "86970d40-fabf-46fa-b2b4-0bc4f6302c8c",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     }

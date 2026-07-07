@@ -1,311 +1,311 @@
 {
   "events": [
     {
-      "detail": "agent1_time_to_value_sweep \u00b7 draft_customer_outreach",
+      "detail": "Time-to-value sweep - customer outreach draft",
       "event": "gate.propose",
       "label": "Proposed",
-      "proposal_id": "a41bbbdc-1cf0-43ee-a003-3ef6883b363e",
+      "proposal_id": "ae649bb7-8013-4146-a6ec-1b6280940482",
       "ts": "2026-06-07T08:00:00-04:00"
     },
     {
-      "detail": "agent1_time_to_value_sweep \u00b7 draft_customer_outreach",
+      "detail": "Time-to-value sweep - customer outreach draft",
       "event": "gate.propose",
       "label": "Proposed",
-      "proposal_id": "d6dc45e6-2646-4157-8880-714d71fed09a",
+      "proposal_id": "4ac4e21f-20b3-48a5-9813-a6c155316cf6",
       "ts": "2026-06-07T08:00:00-04:00"
     },
     {
-      "detail": "agent1_time_to_value_sweep \u00b7 draft_customer_outreach",
+      "detail": "Time-to-value sweep - customer outreach draft",
       "event": "gate.propose",
       "label": "Proposed",
-      "proposal_id": "0397f8ef-06b6-4a77-90d7-2b6eb7aa572f",
+      "proposal_id": "c2ba2d82-4450-4744-a337-11aa2e6ca132",
       "ts": "2026-06-07T08:00:00-04:00"
     },
     {
-      "detail": "agent1_time_to_value_sweep \u00b7 draft_customer_outreach",
+      "detail": "Time-to-value sweep - customer outreach draft",
       "event": "gate.propose",
       "label": "Proposed",
-      "proposal_id": "32a0fc0c-651c-49fd-b7f3-1a74dd6295e6",
+      "proposal_id": "ff822e5b-d0b5-4027-b22a-87c1e8923f5e",
       "ts": "2026-06-07T08:00:00-04:00"
     },
     {
-      "detail": "agent1_time_to_value_sweep \u00b7 draft_customer_outreach",
+      "detail": "Time-to-value sweep - customer outreach draft",
       "event": "gate.propose",
       "label": "Proposed",
-      "proposal_id": "abf380b9-867e-405e-8b67-4a6be095ae01",
+      "proposal_id": "d49d38c3-4cda-4f7a-b1c7-8bc738a2676e",
       "ts": "2026-06-07T08:00:00-04:00"
     },
     {
-      "detail": "agent1_time_to_value_sweep \u00b7 draft_customer_outreach",
+      "detail": "Time-to-value sweep - customer outreach draft",
       "event": "gate.propose",
       "label": "Proposed",
-      "proposal_id": "548b8340-9cbd-4ab5-8e26-fa7450c30597",
+      "proposal_id": "e9b27686-8fee-4a61-a1ab-92b62380edd2",
       "ts": "2026-06-07T08:00:00-04:00"
     },
     {
-      "detail": "agent1_time_to_value_sweep \u00b7 content_route",
+      "detail": "Time-to-value sweep - help content route",
       "event": "gate.propose",
       "label": "Proposed",
-      "proposal_id": "e7c82719-9c0f-4408-9751-fc599dc045e0",
+      "proposal_id": "42f93cb2-21bc-4761-8499-00ddc3d39474",
       "ts": "2026-06-07T08:00:00-04:00"
     },
     {
-      "detail": "agent1_time_to_value_sweep \u00b7 draft_customer_outreach",
+      "detail": "Time-to-value sweep - customer outreach draft",
       "event": "gate.propose",
       "label": "Proposed",
-      "proposal_id": "5da976f4-d13d-4f03-a5a1-a76f62e1130f",
+      "proposal_id": "7956cd70-88bc-49b6-adcd-e68f33771fab",
       "ts": "2026-06-07T08:00:00-04:00"
     },
     {
-      "detail": "agent1_time_to_value_sweep \u00b7 draft_customer_outreach",
+      "detail": "Time-to-value sweep - customer outreach draft",
       "event": "gate.propose",
       "label": "Proposed",
-      "proposal_id": "a33a463c-6e06-4ae0-a5ad-184f33b6707d",
+      "proposal_id": "fa249bae-e004-4b52-8540-b274e7dce86d",
       "ts": "2026-06-07T08:00:00-04:00"
     },
     {
-      "detail": "agent1_time_to_value_sweep \u00b7 draft_customer_outreach",
+      "detail": "Time-to-value sweep - customer outreach draft",
       "event": "gate.propose",
       "label": "Proposed",
-      "proposal_id": "a4785f3a-65cf-434e-87ca-072adc5662d3",
+      "proposal_id": "22a80d95-57f1-47a1-9fec-7b6f8d998340",
       "ts": "2026-06-07T08:00:00-04:00"
     },
     {
-      "detail": "agent1_time_to_value_sweep \u00b7 draft_customer_outreach",
+      "detail": "Time-to-value sweep - customer outreach draft",
       "event": "gate.propose",
       "label": "Proposed",
-      "proposal_id": "3c729907-0887-46db-867c-637ce92d3634",
+      "proposal_id": "86970d40-fabf-46fa-b2b4-0bc4f6302c8c",
       "ts": "2026-06-07T08:00:00-04:00"
     },
     {
-      "detail": "Slot B contract validator passed",
+      "detail": "Safety contract passed",
       "event": "judge.score",
       "label": "Judged",
-      "proposal_id": "a33a463c-6e06-4ae0-a5ad-184f33b6707d",
+      "proposal_id": "fa249bae-e004-4b52-8540-b274e7dce86d",
       "ts": "2026-06-07T08:00:00-04:00"
     },
     {
-      "detail": "Slot B produced fixture draft output",
+      "detail": "Agent prepared draft text with fixture writer",
       "event": "slot_b.draft",
       "label": "Drafted",
-      "proposal_id": "a33a463c-6e06-4ae0-a5ad-184f33b6707d",
+      "proposal_id": "fa249bae-e004-4b52-8540-b274e7dce86d",
       "ts": "2026-06-07T08:00:00-04:00"
     },
     {
-      "detail": "Value model scored 5",
+      "detail": "Priority score 5",
       "event": "value_model",
       "label": "Value model",
-      "proposal_id": "a33a463c-6e06-4ae0-a5ad-184f33b6707d",
+      "proposal_id": "fa249bae-e004-4b52-8540-b274e7dce86d",
       "ts": "2026-06-07T08:00:00-04:00"
     },
     {
-      "detail": "Slot B contract validator passed",
+      "detail": "Safety contract passed",
       "event": "judge.score",
       "label": "Judged",
-      "proposal_id": "548b8340-9cbd-4ab5-8e26-fa7450c30597",
+      "proposal_id": "e9b27686-8fee-4a61-a1ab-92b62380edd2",
       "ts": "2026-06-07T08:00:00-04:00"
     },
     {
-      "detail": "Slot B produced fixture draft output",
+      "detail": "Agent prepared draft text with fixture writer",
       "event": "slot_b.draft",
       "label": "Drafted",
-      "proposal_id": "548b8340-9cbd-4ab5-8e26-fa7450c30597",
+      "proposal_id": "e9b27686-8fee-4a61-a1ab-92b62380edd2",
       "ts": "2026-06-07T08:00:00-04:00"
     },
     {
-      "detail": "Value model scored 20",
+      "detail": "Priority score 20",
       "event": "value_model",
       "label": "Value model",
-      "proposal_id": "548b8340-9cbd-4ab5-8e26-fa7450c30597",
+      "proposal_id": "e9b27686-8fee-4a61-a1ab-92b62380edd2",
       "ts": "2026-06-07T08:00:00-04:00"
     },
     {
-      "detail": "Slot B contract validator passed",
+      "detail": "Safety contract passed",
       "event": "judge.score",
       "label": "Judged",
-      "proposal_id": "3c729907-0887-46db-867c-637ce92d3634",
+      "proposal_id": "86970d40-fabf-46fa-b2b4-0bc4f6302c8c",
       "ts": "2026-06-07T08:00:00-04:00"
     },
     {
-      "detail": "Slot B produced fixture draft output",
+      "detail": "Agent prepared draft text with fixture writer",
       "event": "slot_b.draft",
       "label": "Drafted",
-      "proposal_id": "3c729907-0887-46db-867c-637ce92d3634",
+      "proposal_id": "86970d40-fabf-46fa-b2b4-0bc4f6302c8c",
       "ts": "2026-06-07T08:00:00-04:00"
     },
     {
-      "detail": "Value model scored 30",
+      "detail": "Priority score 30",
       "event": "value_model",
       "label": "Value model",
-      "proposal_id": "3c729907-0887-46db-867c-637ce92d3634",
+      "proposal_id": "86970d40-fabf-46fa-b2b4-0bc4f6302c8c",
       "ts": "2026-06-07T08:00:00-04:00"
     },
     {
-      "detail": "Slot B contract validator passed",
+      "detail": "Safety contract passed",
       "event": "judge.score",
       "label": "Judged",
-      "proposal_id": "a4785f3a-65cf-434e-87ca-072adc5662d3",
+      "proposal_id": "22a80d95-57f1-47a1-9fec-7b6f8d998340",
       "ts": "2026-06-07T08:00:00-04:00"
     },
     {
-      "detail": "Slot B produced fixture draft output",
+      "detail": "Agent prepared draft text with fixture writer",
       "event": "slot_b.draft",
       "label": "Drafted",
-      "proposal_id": "a4785f3a-65cf-434e-87ca-072adc5662d3",
+      "proposal_id": "22a80d95-57f1-47a1-9fec-7b6f8d998340",
       "ts": "2026-06-07T08:00:00-04:00"
     },
     {
-      "detail": "Value model scored 30",
+      "detail": "Priority score 30",
       "event": "value_model",
       "label": "Value model",
-      "proposal_id": "a4785f3a-65cf-434e-87ca-072adc5662d3",
+      "proposal_id": "22a80d95-57f1-47a1-9fec-7b6f8d998340",
       "ts": "2026-06-07T08:00:00-04:00"
     },
     {
-      "detail": "Slot B contract validator passed",
+      "detail": "Safety contract passed",
       "event": "judge.score",
       "label": "Judged",
-      "proposal_id": "32a0fc0c-651c-49fd-b7f3-1a74dd6295e6",
+      "proposal_id": "ff822e5b-d0b5-4027-b22a-87c1e8923f5e",
       "ts": "2026-06-07T08:00:00-04:00"
     },
     {
-      "detail": "Slot B produced fixture draft output",
+      "detail": "Agent prepared draft text with fixture writer",
       "event": "slot_b.draft",
       "label": "Drafted",
-      "proposal_id": "32a0fc0c-651c-49fd-b7f3-1a74dd6295e6",
+      "proposal_id": "ff822e5b-d0b5-4027-b22a-87c1e8923f5e",
       "ts": "2026-06-07T08:00:00-04:00"
     },
     {
-      "detail": "Value model scored 35",
+      "detail": "Priority score 35",
       "event": "value_model",
       "label": "Value model",
-      "proposal_id": "32a0fc0c-651c-49fd-b7f3-1a74dd6295e6",
+      "proposal_id": "ff822e5b-d0b5-4027-b22a-87c1e8923f5e",
       "ts": "2026-06-07T08:00:00-04:00"
     },
     {
-      "detail": "Slot B contract validator passed",
+      "detail": "Safety contract passed",
       "event": "judge.score",
       "label": "Judged",
-      "proposal_id": "0397f8ef-06b6-4a77-90d7-2b6eb7aa572f",
+      "proposal_id": "c2ba2d82-4450-4744-a337-11aa2e6ca132",
       "ts": "2026-06-07T08:00:00-04:00"
     },
     {
-      "detail": "Slot B produced fixture draft output",
+      "detail": "Agent prepared draft text with fixture writer",
       "event": "slot_b.draft",
       "label": "Drafted",
-      "proposal_id": "0397f8ef-06b6-4a77-90d7-2b6eb7aa572f",
+      "proposal_id": "c2ba2d82-4450-4744-a337-11aa2e6ca132",
       "ts": "2026-06-07T08:00:00-04:00"
     },
     {
-      "detail": "Value model scored 47",
+      "detail": "Priority score 47",
       "event": "value_model",
       "label": "Value model",
-      "proposal_id": "0397f8ef-06b6-4a77-90d7-2b6eb7aa572f",
+      "proposal_id": "c2ba2d82-4450-4744-a337-11aa2e6ca132",
       "ts": "2026-06-07T08:00:00-04:00"
     },
     {
-      "detail": "Slot B contract validator passed",
+      "detail": "Safety contract passed",
       "event": "judge.score",
       "label": "Judged",
-      "proposal_id": "abf380b9-867e-405e-8b67-4a6be095ae01",
+      "proposal_id": "d49d38c3-4cda-4f7a-b1c7-8bc738a2676e",
       "ts": "2026-06-07T08:00:00-04:00"
     },
     {
-      "detail": "Slot B produced fixture draft output",
+      "detail": "Agent prepared draft text with fixture writer",
       "event": "slot_b.draft",
       "label": "Drafted",
-      "proposal_id": "abf380b9-867e-405e-8b67-4a6be095ae01",
+      "proposal_id": "d49d38c3-4cda-4f7a-b1c7-8bc738a2676e",
       "ts": "2026-06-07T08:00:00-04:00"
     },
     {
-      "detail": "Value model scored 62",
+      "detail": "Priority score 62",
       "event": "value_model",
       "label": "Value model",
-      "proposal_id": "abf380b9-867e-405e-8b67-4a6be095ae01",
+      "proposal_id": "d49d38c3-4cda-4f7a-b1c7-8bc738a2676e",
       "ts": "2026-06-07T08:00:00-04:00"
     },
     {
-      "detail": "Slot B contract validator passed",
+      "detail": "Safety contract passed",
       "event": "judge.score",
       "label": "Judged",
       "proposal_id": null,
       "ts": "2026-06-07T08:00:00-04:00"
     },
     {
-      "detail": "Slot B produced fixture draft output",
+      "detail": "Agent prepared draft text with fixture writer",
       "event": "slot_b.draft",
       "label": "Drafted",
       "proposal_id": null,
       "ts": "2026-06-07T08:00:00-04:00"
     },
     {
-      "detail": "Value model scored 62",
+      "detail": "Priority score 62",
       "event": "value_model",
       "label": "Value model",
       "proposal_id": null,
       "ts": "2026-06-07T08:00:00-04:00"
     },
     {
-      "detail": "Slot B contract validator passed",
+      "detail": "Safety contract passed",
       "event": "judge.score",
       "label": "Judged",
-      "proposal_id": "5da976f4-d13d-4f03-a5a1-a76f62e1130f",
+      "proposal_id": "7956cd70-88bc-49b6-adcd-e68f33771fab",
       "ts": "2026-06-07T08:00:00-04:00"
     },
     {
-      "detail": "Slot B produced fixture draft output",
+      "detail": "Agent prepared draft text with fixture writer",
       "event": "slot_b.draft",
       "label": "Drafted",
-      "proposal_id": "5da976f4-d13d-4f03-a5a1-a76f62e1130f",
+      "proposal_id": "7956cd70-88bc-49b6-adcd-e68f33771fab",
       "ts": "2026-06-07T08:00:00-04:00"
     },
     {
-      "detail": "Value model scored 63",
+      "detail": "Priority score 63",
       "event": "value_model",
       "label": "Value model",
-      "proposal_id": "5da976f4-d13d-4f03-a5a1-a76f62e1130f",
+      "proposal_id": "7956cd70-88bc-49b6-adcd-e68f33771fab",
       "ts": "2026-06-07T08:00:00-04:00"
     },
     {
-      "detail": "Slot B contract validator passed",
+      "detail": "Safety contract passed",
       "event": "judge.score",
       "label": "Judged",
-      "proposal_id": "d6dc45e6-2646-4157-8880-714d71fed09a",
+      "proposal_id": "4ac4e21f-20b3-48a5-9813-a6c155316cf6",
       "ts": "2026-06-07T08:00:00-04:00"
     },
     {
-      "detail": "Slot B produced fixture draft output",
+      "detail": "Agent prepared draft text with fixture writer",
       "event": "slot_b.draft",
       "label": "Drafted",
-      "proposal_id": "d6dc45e6-2646-4157-8880-714d71fed09a",
+      "proposal_id": "4ac4e21f-20b3-48a5-9813-a6c155316cf6",
       "ts": "2026-06-07T08:00:00-04:00"
     },
     {
-      "detail": "Value model scored 82",
+      "detail": "Priority score 82",
       "event": "value_model",
       "label": "Value model",
-      "proposal_id": "d6dc45e6-2646-4157-8880-714d71fed09a",
+      "proposal_id": "4ac4e21f-20b3-48a5-9813-a6c155316cf6",
       "ts": "2026-06-07T08:00:00-04:00"
     },
     {
-      "detail": "Slot B contract validator passed",
+      "detail": "Safety contract passed",
       "event": "judge.score",
       "label": "Judged",
-      "proposal_id": "a41bbbdc-1cf0-43ee-a003-3ef6883b363e",
+      "proposal_id": "ae649bb7-8013-4146-a6ec-1b6280940482",
       "ts": "2026-06-07T08:00:00-04:00"
     },
     {
-      "detail": "Slot B produced fixture draft output",
+      "detail": "Agent prepared draft text with fixture writer",
       "event": "slot_b.draft",
       "label": "Drafted",
-      "proposal_id": "a41bbbdc-1cf0-43ee-a003-3ef6883b363e",
+      "proposal_id": "ae649bb7-8013-4146-a6ec-1b6280940482",
       "ts": "2026-06-07T08:00:00-04:00"
     },
     {
-      "detail": "Value model scored 143",
+      "detail": "Priority score 143",
       "event": "value_model",
       "label": "Value model",
-      "proposal_id": "a41bbbdc-1cf0-43ee-a003-3ef6883b363e",
+      "proposal_id": "ae649bb7-8013-4146-a6ec-1b6280940482",
       "ts": "2026-06-07T08:00:00-04:00"
     },
     {

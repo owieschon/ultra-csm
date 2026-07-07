@@ -956,43 +956,41 @@ def _account_diagnostic_chain(
     )
     trigger = motion_source.trigger_factor if motion_source else signal.name
     contact_value = (
-        f"{contact.name} ({recipient_role})"
+        f"{contact.name} ({_role_label(recipient_role)})"
         if contact is not None and recipient_role
         else contact.name
         if contact is not None
         else "No eligible customer contact resolved"
     )
-    evidence_preview = ", ".join(ref.source_id for ref in evidence[:3])
-    if len(evidence) > 3:
-        evidence_preview = f"{evidence_preview}, +{len(evidence) - 3} more"
+    evidence_preview = _evidence_label(evidence)
     return (
         DiagnosticStep(
             stage="signal",
             label="Signal",
-            value=signal.name,
+            value=_signal_label(signal.name),
             meta=f"+{signal.contribution} priority from {len(signal.evidence)} evidence record(s)",
         ),
         DiagnosticStep(
             stage="diagnosis",
             label="Likely blocker",
             value=_diagnosis_for_trigger(trigger),
-            meta=trigger,
+            meta=_signal_label(trigger),
         ),
         DiagnosticStep(
             stage="action",
             label="Selected action",
-            value=motion or action,
+            value=_motion_or_action_label(motion, action),
             meta=(
-                f"{motion_source.play_id}: {motion_source.selection_reason}"
+                motion_source.selection_reason
                 if motion_source is not None
-                else f"{disposition} via deterministic sweep disposition"
+                else f"{_disposition_label(disposition)} from the deterministic sweep"
             ),
         ),
         DiagnosticStep(
             stage="recipient",
             label="Recipient path",
             value=contact_value,
-            meta=recipient_resolution or "unresolved",
+            meta=_recipient_resolution_label(recipient_resolution),
         ),
         DiagnosticStep(
             stage="evidence",
@@ -1004,7 +1002,7 @@ def _account_diagnostic_chain(
             stage="approval",
             label="Approval boundary",
             value="Human approval required" if proposal_required else "No customer-facing release",
-            meta=action,
+            meta=_action_label(action),
         ),
     )
 
@@ -1014,8 +1012,8 @@ def _cohort_diagnostic_chain(cohort: dict) -> tuple[DiagnosticStep, ...]:
         DiagnosticStep(
             stage="signal",
             label="Signal",
-            value=cohort["trigger_factor"],
-            meta=f"{len(cohort['account_ids'])} {cohort['tier']} account(s)",
+            value=_signal_label(cohort["trigger_factor"]),
+            meta=f"{len(cohort['account_ids'])} {_tier_label(cohort['tier'])} account(s)",
         ),
         DiagnosticStep(
             stage="diagnosis",
@@ -1026,8 +1024,8 @@ def _cohort_diagnostic_chain(cohort: dict) -> tuple[DiagnosticStep, ...]:
         DiagnosticStep(
             stage="action",
             label="Selected action",
-            value="cohort_action",
-            meta=f"{cohort['play_id']} via tenant playbook cohort collapse",
+            value=_action_label("cohort_action"),
+            meta="Selected by tenant playbook cohort collapse",
         ),
         DiagnosticStep(
             stage="recipient",
@@ -1038,8 +1036,8 @@ def _cohort_diagnostic_chain(cohort: dict) -> tuple[DiagnosticStep, ...]:
         DiagnosticStep(
             stage="evidence",
             label="Evidence",
-            value=f"{len(cohort['account_ids'])} account ids",
-            meta=", ".join(cohort["account_ids"][:3]),
+            value=f"{len(cohort['account_ids'])} account(s) matched",
+            meta="account list attached to packet",
         ),
         DiagnosticStep(
             stage="approval",
@@ -1065,12 +1063,12 @@ def _ambiguous_account_diagnostic_chain(
             stage="diagnosis",
             label="Likely blocker",
             value="The system cannot safely choose one account.",
-            meta="account_resolution=ambiguous",
+            meta="account identity needs operator review",
         ),
         DiagnosticStep(
             stage="action",
             label="Selected action",
-            value="escalate",
+            value="Escalate to operator",
             meta="fail-closed identity guard",
         ),
         DiagnosticStep(
@@ -1083,7 +1081,7 @@ def _ambiguous_account_diagnostic_chain(
             stage="evidence",
             label="Evidence",
             value=f"{len(evidence)} contact record(s)",
-            meta=", ".join(ref.source_id for ref in evidence[:3]),
+            meta=_evidence_label(evidence),
         ),
         DiagnosticStep(
             stage="approval",
@@ -1105,6 +1103,104 @@ def _diagnosis_for_trigger(trigger_factor: str) -> str:
         "champion_inactive": "Primary relationship has gone quiet.",
     }
     return labels.get(trigger_factor, "Review the cited signal before taking action.")
+
+
+def _signal_label(name: str) -> str:
+    labels = {
+        "arr_tier": "High-value account",
+        "champion_inactive": "Champion has gone quiet",
+        "days_overdue": "Overdue activation timeline",
+        "feature_depth_gap": "Paid features unused",
+        "feature_shallow_depth": "Paid features unused",
+        "health_red": "Health critical",
+        "health_yellow": "Health slipping",
+        "low_seat_penetration": "Seats not activated",
+        "milestones_overdue": "Onboarding running late",
+        "outcome_unknown": "No proven results yet",
+        "single_threaded_risk": "Usage concentrated in one person",
+        "success_plan_overdue": "Success plan overdue",
+        "usage_outcome_unverified": "Usage without a proven outcome",
+    }
+    return labels.get(name, name.replace("_", " ").capitalize())
+
+
+def _motion_or_action_label(motion: str | None, action: str) -> str:
+    return _motion_label(motion) if motion else _action_label(action)
+
+
+def _motion_label(motion: str | None) -> str:
+    labels = {
+        "campaign_enroll": "Add to campaign",
+        "cohort_action": "One campaign for many accounts",
+        "content_route": "Send help content",
+        "escalation": "Escalate to human",
+        "personal_email": "Personal email",
+        "qbr": "QBR",
+        "working_session": "Working session",
+    }
+    return labels.get(motion or "", (motion or "Prepared review").replace("_", " ").capitalize())
+
+
+def _action_label(action: str) -> str:
+    labels = {
+        "cohort_action": "cohort action",
+        "content_route": "help-content route",
+        "draft_customer_outreach": "customer outreach draft",
+        "recommend_next_best_action": "operator review",
+    }
+    return labels.get(action, action.replace("_", " "))
+
+
+def _disposition_label(disposition: str) -> str:
+    labels = {
+        "escalate": "escalation",
+        "internal_review": "internal review",
+        "propose_customer_action": "customer action proposal",
+    }
+    return labels.get(disposition, disposition.replace("_", " "))
+
+
+def _recipient_resolution_label(resolution: str | None) -> str:
+    labels = {
+        "first_consenting_fallback": "first consenting contact",
+        "role_graph": "matched from role graph",
+    }
+    return labels.get(resolution or "", "unresolved")
+
+
+def _role_label(role: str | None) -> str:
+    labels = {
+        "admin": "admin",
+        "champion": "champion",
+        "end_user": "end user",
+        "executive_sponsor": "executive sponsor",
+        "fleet_operations": "fleet operations",
+        "information_technology": "IT",
+        "technical_lead": "technical lead",
+    }
+    return labels.get(role or "", (role or "").replace("_", " "))
+
+
+def _tier_label(tier: str) -> str:
+    labels = {
+        "high_touch": "high-touch",
+        "mid_touch": "mid-touch",
+        "tech_touch": "self-serve",
+    }
+    return labels.get(tier, tier.replace("_", " "))
+
+
+def _evidence_label(evidence: tuple[EvidenceRef, ...]) -> str:
+    if not evidence:
+        return ""
+    sources = []
+    for ref in evidence:
+        if ref.source not in sources:
+            sources.append(ref.source)
+    source_text = ", ".join(source.replace("_", " ") for source in sources[:3])
+    if len(sources) > 3:
+        source_text = f"{source_text}, +{len(sources) - 3} more"
+    return f"{source_text} records attached"
 
 
 def _diagnostic_payload(chain: tuple[DiagnosticStep, ...]) -> list[dict]:
@@ -1175,10 +1271,10 @@ def collapse_cohorts(
             disposition="propose_customer_action",
             recommended_action="cohort_action",
             reason=(
-                f"Cohort collapse: {cohort['trigger_factor']} affects "
-                f"{len(cohort['account_ids'])} {cohort['tier']} accounts via play "
-                f"{cohort['play_id']!r} -- one cohort_action covers all, not "
-                f"{len(cohort['account_ids'])} individual motions."
+                f"{_signal_label(cohort['trigger_factor'])} affects "
+                f"{len(cohort['account_ids'])} {_tier_label(cohort['tier'])} accounts. "
+                f"One operator packet covers the group instead of "
+                f"{len(cohort['account_ids'])} separate account actions."
             ),
             priority=None,
             evidence=(),

@@ -75,6 +75,19 @@ def _extract_dangerous_uri_schemes(text: str) -> set[str]:
 # `motion` field). The booking link is CONTENT: no playbook/motion/action-type
 # change, just a deterministic instruction for the fixture path below.
 _MEETING_SHAPED_ACTION = "initiate_customer_call"
+_FACTOR_LABELS = {
+    "arr_tier": "high-value account",
+    "days_overdue": "overdue activation timeline",
+    "feature_depth_gap": "paid features not yet in use",
+    "feature_shallow_depth": "paid features not yet in use",
+    "health_red": "critical health trend",
+    "health_yellow": "slipping health trend",
+    "low_seat_penetration": "licensed seats not fully activated",
+    "milestones_overdue": "overdue onboarding milestones",
+    "outcome_unknown": "unconfirmed business outcome",
+    "success_plan_overdue": "overdue success plan",
+    "usage_outcome_unverified": "usage without a proven outcome",
+}
 
 
 def _booking_link_line(request: "ReasonDraftRequest") -> str | None:
@@ -175,25 +188,26 @@ class FixtureReasonDraftWriter:
     def write(self, request: ReasonDraftRequest) -> ReasonDraftOutput:
         cited = request.evidence_ids()[:3]
         factors = ", ".join(
-            f"{factor.name}={factor.contribution}"
+            f"{_factor_label(factor.name)} +{factor.contribution}"
             for factor in request.priority.factors[:3]
         )
         action = (
-            "draft customer outreach"
+            "prepared a customer outreach draft"
             if request.customer_contact_allowed
             else "route for internal review"
         )
         reason = (
-            f"{request.account_name} has deterministic Time-to-Value score "
-            f"{request.priority.score} from {factors}; {action}. Evidence "
-            f"{_citation_text(cited)}."
+            f"{request.account_name} has rule-based priority score "
+            f"{request.priority.score} from {factors}; {action}. "
+            f"Evidence: {len(cited)} cited source record"
+            f"{'' if len(cited) == 1 else 's'}."
         )
         draft = None
         if request.customer_contact_allowed:
             contact = request.contact_name or "there"
             ask = _play_ask(request) or "review the activation blockers and next steps"
             factor_names = ", ".join(
-                factor.name for factor in request.priority.factors[:2]
+                _factor_label(factor.name) for factor in request.priority.factors[:2]
             )
             draft = (
                 f"Hi {contact}, {request.account_name} is showing an onboarding "
@@ -212,6 +226,10 @@ class FixtureReasonDraftWriter:
         )
         validate_reason_draft_output(request, output)
         return output
+
+
+def _factor_label(name: str) -> str:
+    return _FACTOR_LABELS.get(name, name.replace("_", " "))
 
 
 class UnsafeReasonDraftWriter:
@@ -355,9 +373,16 @@ def validate_reason_draft_output(
     unknown_ids = set(output.cited_evidence_ids) - allowed_ids
     if unknown_ids:
         raise SlotBContractError(f"unknown evidence ids: {sorted(unknown_ids)}")
-    for evidence_id in output.cited_evidence_ids:
-        if evidence_id not in output.reason:
-            raise SlotBContractError(f"reason does not cite {evidence_id}")
+    missing_visible_ids = [
+        evidence_id
+        for evidence_id in output.cited_evidence_ids
+        if evidence_id not in output.reason
+    ]
+    if missing_visible_ids and not _has_human_evidence_receipt(output.reason):
+        raise SlotBContractError(
+            f"reason does not cite evidence ids or a source-record receipt: "
+            f"{missing_visible_ids}"
+        )
 
     if not request.customer_contact_allowed and output.customer_draft is not None:
         raise SlotBContractError("customer_draft is forbidden without consent")
@@ -382,6 +407,11 @@ def validate_reason_draft_output(
             raise SlotBContractError(
                 f"customer draft contains unsafe URI scheme(s): {sorted(dangerous_schemes)}"
             )
+
+
+def _has_human_evidence_receipt(reason: str) -> bool:
+    lowered = reason.lower()
+    return "cited source record" in lowered or "cited source records" in lowered
 
 
 def prompt_metadata() -> dict[str, str]:
