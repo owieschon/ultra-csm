@@ -640,7 +640,10 @@ def _data_plane_for_day(
         crm=FixtureCRMDataConnector(data=data),
         cs=FixtureCSPlatformConnector(data=data),
         telemetry=FixtureProductTelemetryConnector(data=data),
-        comms=FixtureCommsConnector(data=data, conn=_conn, tenant_id=_TENANT_ID),
+        # Day-scoped synthetic snapshots own their comms rows in-memory; using
+        # the demo Postgres connection here would query the empty live-ingest
+        # tables and erase the authored day-140 drawer data.
+        comms=FixtureCommsConnector(data=data),
     )
     return dp, as_of
 

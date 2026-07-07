@@ -13,9 +13,203 @@
       "route_optimization"
     ]
   },
-  "comms_call_transcripts": [],
-  "comms_gmail": [],
-  "comms_internal": [],
+  "comms_call_transcripts": [
+    {
+      "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
+      "attendees": [
+        "fdd4645a-e0b6-53d8-ba03-249f260574d8",
+        "csm-102"
+      ],
+      "channel": "call",
+      "contact_id": "fdd4645a-e0b6-53d8-ba03-249f260574d8",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "2c7615d8-38d3-5e3b-997d-c5aaf8527875",
+      "timestamp": "2026-10-29T02:00:00Z"
+    }
+  ],
+  "comms_gmail": [
+    {
+      "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "fdd4645a-e0b6-53d8-ba03-249f260574d8",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "9bd654f8-a77c-5b07-9d84-67791a6c0972",
+      "timestamp": "2026-06-22T00:00:00Z"
+    },
+    {
+      "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "fdd4645a-e0b6-53d8-ba03-249f260574d8",
+      "direction": "inbound",
+      "response_time_hours": 5.0,
+      "signal_id": "8cc10c40-f40f-577b-8c39-eca16f1ec542",
+      "timestamp": "2026-06-22T05:00:00Z"
+    },
+    {
+      "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "fdd4645a-e0b6-53d8-ba03-249f260574d8",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "7ff3283f-ae65-5396-ae13-df77e928c498",
+      "timestamp": "2026-06-29T00:00:00Z"
+    },
+    {
+      "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "fdd4645a-e0b6-53d8-ba03-249f260574d8",
+      "direction": "inbound",
+      "response_time_hours": 6.0,
+      "signal_id": "6f4261e6-47bb-5bbd-8641-09ede170369b",
+      "timestamp": "2026-06-29T06:00:00Z"
+    },
+    {
+      "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "fdd4645a-e0b6-53d8-ba03-249f260574d8",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "54d21b38-948b-5708-a62e-21cee0a36c77",
+      "timestamp": "2026-07-13T00:00:00Z"
+    },
+    {
+      "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "fdd4645a-e0b6-53d8-ba03-249f260574d8",
+      "direction": "inbound",
+      "response_time_hours": 30.0,
+      "signal_id": "a6e5f561-81bd-5c6f-b58f-025315cf0bf5",
+      "timestamp": "2026-07-14T06:00:00Z"
+    },
+    {
+      "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "fdd4645a-e0b6-53d8-ba03-249f260574d8",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "e7033c64-8e00-5f10-877c-0c5a55e5ca4f",
+      "timestamp": "2026-07-23T00:00:00Z"
+    },
+    {
+      "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "fdd4645a-e0b6-53d8-ba03-249f260574d8",
+      "direction": "inbound",
+      "response_time_hours": 50.0,
+      "signal_id": "c84b06ee-e286-508f-8612-93378f0df2a2",
+      "timestamp": "2026-07-25T02:00:00Z"
+    },
+    {
+      "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "fdd4645a-e0b6-53d8-ba03-249f260574d8",
+      "direction": "inbound",
+      "response_time_hours": 217.0,
+      "signal_id": "ec637c0b-8a2d-5ea7-8bf2-01fb8eabfd1c",
+      "timestamp": "2026-08-01T01:00:00Z"
+    },
+    {
+      "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "fdd4645a-e0b6-53d8-ba03-249f260574d8",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "92ca747a-e659-5148-a54e-d4638572ed55",
+      "timestamp": "2026-08-20T00:00:00Z"
+    },
+    {
+      "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "fdd4645a-e0b6-53d8-ba03-249f260574d8",
+      "direction": "inbound",
+      "response_time_hours": 78.0,
+      "signal_id": "a085b6e9-5563-56f3-aca1-c2d69afd5cab",
+      "timestamp": "2026-08-23T06:00:00Z"
+    },
+    {
+      "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "fdd4645a-e0b6-53d8-ba03-249f260574d8",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "f69b462f-d6db-5211-bed4-564b08a16c83",
+      "timestamp": "2026-09-14T00:00:00Z"
+    },
+    {
+      "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "fdd4645a-e0b6-53d8-ba03-249f260574d8",
+      "direction": "inbound",
+      "response_time_hours": 60.0,
+      "signal_id": "b81e90c1-e4db-5d68-9cfb-3b1b87e7926c",
+      "timestamp": "2026-09-16T12:00:00Z"
+    },
+    {
+      "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "fdd4645a-e0b6-53d8-ba03-249f260574d8",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "5bc71b44-1384-5832-b26e-df3fdfcf6c31",
+      "timestamp": "2026-09-29T00:00:00Z"
+    },
+    {
+      "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "fdd4645a-e0b6-53d8-ba03-249f260574d8",
+      "direction": "inbound",
+      "response_time_hours": 6.0,
+      "signal_id": "f8c4ce81-f277-5611-829f-cebdd0fab900",
+      "timestamp": "2026-09-29T06:00:00Z"
+    },
+    {
+      "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "fdd4645a-e0b6-53d8-ba03-249f260574d8",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "8ec8fac5-67aa-564d-b73a-54f0617fb837",
+      "timestamp": "2026-10-29T00:00:00Z"
+    },
+    {
+      "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "fdd4645a-e0b6-53d8-ba03-249f260574d8",
+      "direction": "inbound",
+      "response_time_hours": 5.0,
+      "signal_id": "0ca5d530-a93c-5038-9d70-c15b4ea53f83",
+      "timestamp": "2026-10-29T05:00:00Z"
+    }
+  ],
+  "comms_internal": [
+    {
+      "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
+      "author": "csm-102",
+      "content": "Dennis is still engaged, but the API integration is behind plan; route help content should be targeted to the legacy dispatch workflow.",
+      "note_id": "19e92137-0488-5f3b-90e2-23a57b98023a",
+      "source": "csm_note",
+      "timestamp": "2026-11-07T07:00:00Z"
+    }
+  ],
   "company": {
     "arr_cents": 8500000,
     "csm_owner_id": "csm-102",
