@@ -67,7 +67,8 @@ function demoPath(path: string): string {
 
 async function demoRequest<T>(path: string, init?: RequestInit): Promise<T> {
   const method = init?.method ?? "GET";
-  if (method !== "GET" && path !== "/sweep") {
+  const [rawPath] = path.split("?");
+  if (method !== "GET" && rawPath !== "/sweep") {
     throw new ApiError(405, {
       error: "The hosted demo is read-only.",
       code: "READONLY_DEMO",
@@ -147,6 +148,22 @@ export interface WorkItemProposalRef {
   created_by_principal: string;
 }
 
+export interface InternalBridgeEvidence {
+  source: string;
+  source_id: string;
+  field: string;
+  observed_at: string;
+}
+
+export interface InternalBridgeDecision {
+  target: "engineering" | "product" | null;
+  motion: string | null;
+  signal: string | null;
+  evidence: InternalBridgeEvidence[];
+  abstained: boolean;
+  reason: string;
+}
+
 export interface WorkItem {
   tenant_id: string;
   account_resolution: string;
@@ -163,6 +180,7 @@ export interface WorkItem {
   draft_mode: string;
   customer_draft: string | null;
   motion: string | null;
+  internal_bridge_decision?: InternalBridgeDecision | null;
   recipient_resolution: string | null;
   recipient_name: string | null;
   recipient_role: string | null;

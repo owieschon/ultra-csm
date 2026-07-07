@@ -27,7 +27,8 @@ def test_hosted_demo_exports_no_write_routes():
     assert manifest["mode"] == "hosted-readonly"
     assert manifest["write_routes_exported"] is False
     assert "The hosted demo is read-only." in api_source
-    assert 'method !== "GET" && path !== "/sweep"' in api_source
+    assert 'method !== "GET" && rawPath !== "/sweep"' in api_source
+    assert 'const [rawPath] = path.split("?")' in api_source
 
 
 def test_hosted_demo_has_core_fixtures():
