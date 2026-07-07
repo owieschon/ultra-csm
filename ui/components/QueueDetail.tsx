@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { api, WorkItem } from "@/lib/api";
+import { api, CSMWorkPacket, WorkItem } from "@/lib/api";
 import { label, MOTION_LABELS, TRIGGER_LABELS } from "@/lib/labels";
 import { ReconciliationSection } from "./ReconciliationSection";
 
@@ -172,41 +172,43 @@ const DRAWERS: {
   { key: "agent", name: "Agent history", briefField: null },
 ];
 
-export function QueueDetail({ item, day }: { item: WorkItem; day: number | undefined }) {
+export function QueueDetail({
+  item,
+  packet,
+  day,
+}: {
+  item: WorkItem | null;
+  packet: CSMWorkPacket;
+  day: number | undefined;
+}) {
   const [brief, setBrief] = useState<Brief | null>(null);
   const [openDrawer, setOpenDrawer] = useState<string | null>(null);
   const [openFactor, setOpenFactor] = useState<number | null>(null);
 
   useEffect(() => {
     setBrief(null);
-    if (!item.account_id) return;
+    if (!item?.account_id) return;
     api
       .accountBrief(item.account_id, day)
       .then(setBrief)
       .catch(() => setBrief(null));
-  }, [item.account_id, day]);
+  }, [item?.account_id, day]);
 
-  if (item.account_id === null) {
-    return <ProgramDetail item={item} />;
+  if (!item || item.account_id === null) {
+    return (
+      <div className="detail-scroll">
+        <PacketIdentity packet={packet} />
+        <PacketActionBrief packet={packet} />
+        <PacketTrace packet={packet} />
+      </div>
+    );
   }
 
   return (
     <div className="detail-scroll">
-      <div className="identity">
-        <div className="mono-avatar">
-          {(brief?.account_name as string | undefined)?.slice(0, 2).toUpperCase() ?? "··"}
-        </div>
-        <div>
-          <div className="id-name">
-            {(brief?.account_name as string) ?? item.account_id}
-          </div>
-          <div className="id-meta">
-            <span className="tierpill">
-              {(brief?.lifecycle_stage as string) ?? "—"}
-            </span>
-          </div>
-        </div>
-      </div>
+      <PacketIdentity packet={packet} lifecycle={(brief?.lifecycle_stage as string | undefined) ?? null} />
+      <PacketActionBrief packet={packet} />
+      <PacketTrace packet={packet} />
 
       <div className="sec">
         <div className="sec-h">
@@ -352,6 +354,164 @@ export function QueueDetail({ item, day }: { item: WorkItem; day: number | undef
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+function PacketIdentity({
+  packet,
+  lifecycle,
+}: {
+  packet: CSMWorkPacket;
+  lifecycle?: string | null;
+}) {
+  return (
+    <div className="identity">
+      <div className="mono-avatar">
+        {packet.account_name.slice(0, 2).toUpperCase()}
+      </div>
+      <div>
+        <div className="id-name">{packet.account_name}</div>
+        <div className="id-meta">
+          <span className="tierpill">{packet.job_type.replace(/_/g, " ")}</span>
+          <span className="tierpill">{packet.lane.replace(/_/g, " ")}</span>
+          <span className="tierpill">{packet.cadence.replace(/_/g, " ")}</span>
+          {lifecycle && <span className="tierpill">{lifecycle}</span>}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PacketActionBrief({ packet }: { packet: CSMWorkPacket }) {
+  const contact = packet.contact_plan.primary_contact;
+  const backup = packet.contact_plan.backup_contact;
+  const artifact = packet.prepared_artifacts[0];
+  return (
+    <div className="packet-brief">
+      <div className="packet-main">
+        <div className="packet-kicker">Here is what the human can do</div>
+        <h2>{packet.primary_next_step}</h2>
+        <p>{packet.why_now}</p>
+      </div>
+      <div className="packet-grid">
+        <BriefCell label="What it implies" value={packet.implied_customer_state} />
+        <BriefCell label="Agent recommendation" value={packet.recommended_action.objective} />
+        <BriefCell
+          label="Contact / owner"
+          value={
+            contact
+              ? `${String(contact.name)} · ${String(contact.role ?? contact.title ?? "contact")}`
+              : packet.contact_plan.internal_owner ?? "internal review"
+          }
+          meta={backup ? `backup: ${String(backup.name)}` : packet.contact_plan.reason_for_contact_choice}
+        />
+        <BriefCell
+          label="Gate state"
+          value={
+            packet.governance.requires_action_gate
+              ? "ActionGate required before execution"
+              : "local review only"
+          }
+          meta={packet.governance.can_execute_from_ui ? "executable" : "not executable from UI"}
+        />
+      </div>
+      {artifact && (
+        <div className="packet-artifact">
+          <div className="packet-kicker">Here is what the agent prepared</div>
+          <div className="artifact-title">{artifact.title}</div>
+          <div className="artifact-body">{artifact.body_or_outline}</div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function BriefCell({
+  label,
+  value,
+  meta,
+}: {
+  label: string;
+  value: string;
+  meta?: string;
+}) {
+  return (
+    <div className="brief-cell">
+      <span>{label}</span>
+      <strong>{value}</strong>
+      {meta && <em>{meta}</em>}
+    </div>
+  );
+}
+
+function PacketTrace({ packet }: { packet: CSMWorkPacket }) {
+  return (
+    <div className="sec packet-trace">
+      <div className="sec-h">
+        <span className="t">Drill down</span>
+        <span className="prov">
+          <span className="chip-det">{Math.round(packet.confidence * 100)}% confidence</span>
+        </span>
+      </div>
+      <details open>
+        <summary>Diagnostic chain</summary>
+        <div className="trace-body">
+          <p>{packet.diagnostic_hypothesis.summary}</p>
+          {packet.diagnostic_hypothesis.signals.map((signal) => (
+            <div className="trace-line" key={signal}>{signal}</div>
+          ))}
+          {packet.open_questions.length > 0 && (
+            <div className="trace-muted">Open: {packet.open_questions.join("; ")}</div>
+          )}
+        </div>
+      </details>
+      <details>
+        <summary>Evidence</summary>
+        <div className="trace-body">
+          {packet.evidence_chain.length === 0 && (
+            <div className="trace-muted">No confident evidence chain for this packet.</div>
+          )}
+          {packet.evidence_chain.map((step) => (
+            <div className="source-card" key={step.step_id}>
+              <div className="source-head">
+                <span>{step.source_type}</span>
+                <span className="mono">{step.source_id.slice(0, 10)}</span>
+                <span>{step.strength}</span>
+              </div>
+              <strong>{step.claim}</strong>
+              <p>{step.interpretation}</p>
+              <em>{step.observed_value}</em>
+            </div>
+          ))}
+        </div>
+      </details>
+      <details>
+        <summary>Why this bucket?</summary>
+        <div className="trace-body">
+          <div className="trace-line">{packet.bucket_trace.rule_label}</div>
+          <div className="trace-muted">Matched: {packet.bucket_trace.matched.join(", ")}</div>
+          <div className="trace-muted">
+            Coverage: {packet.coverage_trace.included_reason}
+            {packet.coverage_trace.excluded_or_suppressed_reason
+              ? ` · ${packet.coverage_trace.excluded_or_suppressed_reason}`
+              : ""}
+          </div>
+          <div className="trace-muted">
+            Scanned {packet.coverage_trace.accounts_scanned} of {packet.coverage_trace.book_size}
+          </div>
+        </div>
+      </details>
+      <details>
+        <summary>Leave feedback</summary>
+        <div className="feedback-grid">
+          {packet.feedback_hooks.map((hook) => (
+            <button className="feedback-chip" key={hook.category} title={hook.readonly_behavior}>
+              {hook.label}
+            </button>
+          ))}
+        </div>
+      </details>
     </div>
   );
 }

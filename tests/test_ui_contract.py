@@ -7,6 +7,8 @@ test_api.py's TestClient/fixture conventions exactly (no second pattern).
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
 
 httpx = pytest.importorskip("httpx")
@@ -159,3 +161,10 @@ class TestCorsConfigured:
         )
         assert resp.status_code in (200, 204)
         assert resp.headers.get("access-control-allow-origin") == "http://localhost:3000"
+
+
+def test_action_rail_uses_backend_ctas():
+    source = (Path(__file__).resolve().parents[1] / "ui" / "components" / "ActionRail.tsx").read_text()
+    assert "allowed_ctas" in source
+    assert "ctas.map" in source
+    assert "Approve &amp; send" not in source

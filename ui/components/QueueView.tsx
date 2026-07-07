@@ -1,10 +1,15 @@
 "use client";
 
 import { useEffect, useMemo } from "react";
-import { AccountSummary, WorkItem } from "@/lib/api";
+import { AccountSummary, CSMWorkPacket, WorkItem } from "@/lib/api";
 import { SweepData } from "@/lib/useSweep";
 import { QueueLanes, LaneItem } from "@/components/QueueLanes";
 import { QueueDetail } from "@/components/QueueDetail";
+
+export interface QueueSelection {
+  item: WorkItem | null;
+  packet: CSMWorkPacket;
+}
 
 export function QueueView({
   day,
@@ -20,8 +25,8 @@ export function QueueView({
   sweep: SweepData | null;
   sweepError: string | null;
   selectedProposalId: string | null;
-  onSelect: (proposalId: string) => void;
-  onSelectedItemChange: (item: WorkItem | null) => void;
+  onSelect: (packetId: string) => void;
+  onSelectedItemChange: (selection: QueueSelection | null) => void;
 }) {
   const tierByAccount = useMemo(() => {
     const map = new Map<string, string | null>();
@@ -29,31 +34,50 @@ export function QueueView({
     return map;
   }, [accounts]);
 
-  const withProposal = (sweep?.work_items ?? []).filter((i) => i.proposal);
-  const needsDecision: LaneItem[] = withProposal
-    .filter((i) => i.proposal!.status === "pending")
-    .map((item) => ({ item, tier: item.account_id ? tierByAccount.get(item.account_id) ?? null : null }));
-  const resolved: LaneItem[] = withProposal
-    .filter((i) => i.proposal!.status !== "pending")
-    .map((item) => ({ item, tier: item.account_id ? tierByAccount.get(item.account_id) ?? null : null }));
+  const workEntries: LaneItem[] = useMemo(
+    () =>
+      (sweep?.work_items ?? [])
+        .filter((item) => item.work_packet)
+        .map((item) => ({
+          item,
+          packet: item.work_packet!,
+          tier: item.account_id ? tierByAccount.get(item.account_id) ?? null : null,
+        })),
+    [sweep?.work_items, tierByAccount]
+  );
+  const coverageEntries: LaneItem[] = useMemo(
+    () =>
+      (sweep?.coverage_packets ?? []).map((packet) => ({
+        item: null,
+        packet,
+        tier: packet.account_id ? tierByAccount.get(packet.account_id) ?? null : null,
+      })),
+    [sweep?.coverage_packets, tierByAccount]
+  );
+  const needsJudgment = useMemo(
+    () => workEntries.filter(({ packet }) => packet.lane === "needs_judgment" || packet.lane === "blocked"),
+    [workEntries]
+  );
+  const prepared = useMemo(
+    () => workEntries.filter(({ packet }) => packet.lane !== "needs_judgment" && packet.lane !== "blocked"),
+    [workEntries]
+  );
+  const wholeBook = coverageEntries;
 
-  const coveredCount = Math.max(
-    0,
-    (sweep?.swept_accounts.length ?? 0) -
-      new Set((sweep?.work_items ?? []).map((i) => i.account_id).filter(Boolean)).size
+  const selectedEntry = useMemo(
+    () =>
+      [...workEntries, ...coverageEntries].find(
+        ({ packet }) => packet.packet_id === selectedProposalId
+      ) ?? null,
+    [workEntries, coverageEntries, selectedProposalId]
   );
 
-  const selectedItem =
-    (sweep?.work_items ?? []).find(
-      (i) => i.proposal?.proposal_id === selectedProposalId
-    ) ?? null;
-
   useEffect(() => {
-    onSelectedItemChange(selectedItem);
+    onSelectedItemChange(selectedEntry ? { item: selectedEntry.item, packet: selectedEntry.packet } : null);
     // onSelectedItemChange is a setState setter passed from the parent
     // (stable identity); only the derived item itself should retrigger this.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedItem]);
+  }, [selectedEntry]);
 
   if (sweepError) {
     return <div className="placeholder-view">Error: {sweepError}</div>;
@@ -62,16 +86,15 @@ export function QueueView({
   return (
     <div className="queue">
       <QueueLanes
-        needsDecision={needsDecision}
-        resolved={resolved}
-        escalations={sweep?.escalations ?? []}
-        coveredCount={coveredCount}
+        needsJudgment={needsJudgment}
+        prepared={prepared}
+        wholeBook={wholeBook}
         selectedId={selectedProposalId}
         onSelect={onSelect}
       />
       <main className="col detail">
-        {selectedItem ? (
-          <QueueDetail item={selectedItem} day={day} />
+        {selectedEntry ? (
+          <QueueDetail item={selectedEntry.item} packet={selectedEntry.packet} day={day} />
         ) : (
           <div className="empty">
             <h2>
@@ -79,8 +102,7 @@ export function QueueView({
             </h2>
             {sweep && (
               <div className="sub">
-                {needsDecision.length} need you · {coveredCount} covered, no
-                action needed
+                {needsJudgment.length} need judgment · {wholeBook.length} whole-book packets
               </div>
             )}
           </div>

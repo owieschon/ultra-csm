@@ -1,128 +1,129 @@
 "use client";
 
-import { WorkItem } from "@/lib/api";
-import { label, MOTION_LABELS, TIER_LABELS, TRIGGER_LABELS } from "@/lib/labels";
+import { CSMWorkPacket, WorkItem } from "@/lib/api";
 
 export interface LaneItem {
-  item: WorkItem;
+  item: WorkItem | null;
+  packet: CSMWorkPacket;
   tier: string | null;
 }
 
 export function QueueLanes({
-  needsDecision,
-  resolved,
-  escalations,
-  coveredCount,
+  needsJudgment,
+  prepared,
+  wholeBook,
   selectedId,
   onSelect,
 }: {
-  needsDecision: LaneItem[];
-  resolved: LaneItem[];
-  escalations: Record<string, unknown>[];
-  coveredCount: number;
+  needsJudgment: LaneItem[];
+  prepared: LaneItem[];
+  wholeBook: LaneItem[];
   selectedId: string | null;
-  onSelect: (proposalId: string) => void;
+  onSelect: (packetId: string) => void;
 }) {
   return (
     <aside className="lanes">
-      <div className="lane-h">
-        <span className="t">Needs your decision</span>
-        <span className="c num">{needsDecision.length}</span>
-        <span className="badge">needs your approval</span>
-      </div>
-      {needsDecision.map(({ item, tier }) => (
-        <Row
-          key={item.proposal!.proposal_id as unknown as string}
-          item={item}
-          tier={tier}
-          selected={selectedId === item.proposal!.proposal_id}
-          onSelect={onSelect}
-        />
-      ))}
-
-      <div className="lane-h">
-        <span className="t">Resolved this session</span>
-        <span className="c num">{resolved.length}</span>
-        <span className="badge">approved/denied · logged</span>
-      </div>
-      {resolved.map(({ item, tier }) => (
-        <Row
-          key={item.proposal!.proposal_id as unknown as string}
-          item={item}
-          tier={tier}
-          selected={selectedId === item.proposal!.proposal_id}
-          onSelect={onSelect}
-          resolved
-        />
-      ))}
-
-      <div className="lane-h">
-        <span className="t">Escalations</span>
-        <span className="c num">{escalations.length}</span>
-        <span className="badge">need judgment</span>
-      </div>
-      {escalations.length === 0 && (
-        <div className="row" style={{ color: "var(--fg-2)", fontSize: 12 }}>
-          none this sweep
-        </div>
-      )}
-
-      <div className="lane-h">
-        <span className="t">Covered — no action</span>
-        <span className="c num">{coveredCount}</span>
-        <span className="badge">receipts</span>
-      </div>
+      <LaneSection
+        title="Needs judgment"
+        badge="human decision"
+        items={needsJudgment}
+        selectedId={selectedId}
+        onSelect={onSelect}
+      />
+      <LaneSection
+        title="Prepared work"
+        badge="ready to inspect"
+        items={prepared}
+        selectedId={selectedId}
+        onSelect={onSelect}
+      />
+      <LaneSection
+        title="Whole book"
+        badge="covered / blocked"
+        items={wholeBook}
+        selectedId={selectedId}
+        onSelect={onSelect}
+        limit={40}
+      />
     </aside>
+  );
+}
+
+function LaneSection({
+  title,
+  badge,
+  items,
+  selectedId,
+  onSelect,
+  limit,
+}: {
+  title: string;
+  badge: string;
+  items: LaneItem[];
+  selectedId: string | null;
+  onSelect: (packetId: string) => void;
+  limit?: number;
+}) {
+  const shown = typeof limit === "number" ? items.slice(0, limit) : items;
+  return (
+    <>
+      <div className="lane-h">
+        <span className="t">{title}</span>
+        <span className="c num">{items.length}</span>
+        <span className="badge">{badge}</span>
+      </div>
+      {shown.length === 0 && (
+        <div className="row muted-row">none in this lane</div>
+      )}
+      {shown.map(({ item, packet, tier }) => (
+        <Row
+          key={packet.packet_id}
+          item={item}
+          packet={packet}
+          tier={tier}
+          selected={selectedId === packet.packet_id}
+          onSelect={onSelect}
+        />
+      ))}
+      {limit && items.length > shown.length && (
+        <div className="row muted-row">{items.length - shown.length} more covered accounts</div>
+      )}
+    </>
   );
 }
 
 function Row({
   item,
+  packet,
   tier,
   selected,
   onSelect,
-  resolved,
 }: {
-  item: WorkItem;
+  item: WorkItem | null;
+  packet: CSMWorkPacket;
   tier: string | null;
   selected: boolean;
-  onSelect: (proposalId: string) => void;
-  resolved?: boolean;
+  onSelect: (packetId: string) => void;
 }) {
-  const proposalId = item.proposal?.proposal_id;
-  if (!proposalId) return null;
-  const trigger = item.priority?.factors?.[0]?.name ?? null;
-  const status = item.proposal?.status;
+  const score = item?.priority?.score;
   return (
     <button
-      className={`row${selected ? " sel" : ""}${resolved ? " resolved" : ""}`}
-      onClick={() => onSelect(proposalId)}
+      className={`row${selected ? " sel" : ""} packet-${packet.lane}`}
+      onClick={() => onSelect(packet.packet_id)}
+      title={packet.bucket_trace.rule_label}
     >
       <div className="l1">
-        <span className="acct">{item.account_id?.slice(0, 8) ?? "cohort"}</span>
-        {tier && (
-          <span className="tier" title={tier}>
-            {label(TIER_LABELS, tier)}
-          </span>
-        )}
-        <span className="score num">{item.priority?.score ?? "—"}</span>
+        <span className="acct">{packet.account_name}</span>
+        {tier && <span className="tier">{tier.replace(/_/g, " ")}</span>}
+        {typeof score === "number" && <span className="score num">{score}</span>}
       </div>
       <div className="l2">
-        {trigger && (
-          <span className="trig" title={trigger}>
-            {label(TRIGGER_LABELS, trigger)}
-          </span>
-        )}
-        {item.motion && (
-          <span className="motion" title={item.motion}>
-            {label(MOTION_LABELS, item.motion)}
-          </span>
-        )}
-        {resolved && status && (
-          <span className={`res-chip ${status === "denied" ? "dn" : "ap"}`}>
-            {status === "denied" ? "denied" : "sent"}
-          </span>
-        )}
+        <span className="trig">{packet.primary_next_step}</span>
+      </div>
+      <div className="packet-row-meta">
+        <span>{packet.job_type.replace(/_/g, " ")}</span>
+        <span>{packet.cadence.replace(/_/g, " ")}</span>
+        <span>{Math.round(packet.confidence * 100)}%</span>
       </div>
     </button>
   );
