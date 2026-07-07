@@ -11,6 +11,7 @@ import json
 import logging
 import time
 from contextlib import asynccontextmanager
+from dataclasses import asdict
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any, Literal
@@ -226,6 +227,17 @@ class AccountBriefResponse(BaseModel):
     comms_gmail: list[dict[str, Any]]
     comms_call_transcripts: list[dict[str, Any]]
     comms_internal: list[dict[str, Any]]
+
+
+class CentralizeTelemetryResponse(BaseModel):
+    account_id: str
+    account_slug: str
+    account_name: str
+    day_offset: int
+    as_of: str
+    app_events: list[dict[str, Any]]
+    posthog_events: list[dict[str, Any]]
+    derived_usage_signals: list[dict[str, Any]]
 
 
 class DerivedHealthResponse(BaseModel):
@@ -593,6 +605,13 @@ def _require_account(account_id: str, dp: CustomerDataPlane | None = None):
                     "account_id": account_id},
         )
     return account
+
+
+def _telemetry_row(event: Any) -> dict[str, Any]:
+    row = asdict(event)
+    if "properties" in row:
+        row["properties"] = dict(row["properties"])
+    return row
 
 
 def _data_plane_for_day(
@@ -1401,6 +1420,44 @@ async def get_account_brief(
         }
 
     return brief
+
+
+@app.get(
+    "/accounts/{account_id}/centralize-telemetry",
+    response_model=CentralizeTelemetryResponse,
+)
+async def get_account_centralize_telemetry(
+    account_id: str,
+    day: int | None = Query(None, ge=0, le=365),
+    deep: bool = Query(False, description="Use deep data simulation layer"),
+):
+    """Raw FleetOps/Centralize app exhaust plus PostHog-shaped telemetry."""
+
+    resolved_day = day if day is not None else 0
+    dp, as_of = _data_plane_for_day(day, deep=deep)
+    account = _require_account(account_id, dp)
+
+    from ultra_csm.data_plane.centralize_telemetry import (
+        centralize_account_slug_for_id,
+        centralize_telemetry_bundle_for_account_id,
+    )
+
+    try:
+        account_slug = centralize_account_slug_for_id(account_id)
+        bundle = centralize_telemetry_bundle_for_account_id(account_id, resolved_day)
+    except ValueError:
+        raise _account_data_http_error(AccountNotFoundError(account_id))
+
+    return CentralizeTelemetryResponse(
+        account_id=account_id,
+        account_slug=account_slug,
+        account_name=account.name,
+        day_offset=resolved_day,
+        as_of=as_of,
+        app_events=[_telemetry_row(event) for event in bundle.app_events],
+        posthog_events=[_telemetry_row(event) for event in bundle.posthog_events],
+        derived_usage_signals=[asdict(signal) for signal in bundle.usage_signals],
+    )
 
 
 @app.get("/accounts/{account_id}/reconciliation")

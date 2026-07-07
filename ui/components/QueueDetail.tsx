@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { api, CSMWorkPacket, WorkItem } from "@/lib/api";
+import { api, CentralizeTelemetryResponse, CSMWorkPacket, WorkItem } from "@/lib/api";
 import { label, MOTION_LABELS, TRIGGER_LABELS } from "@/lib/labels";
 import { ReconciliationSection } from "./ReconciliationSection";
 
@@ -143,6 +143,7 @@ const DRAWERS: {
   formatter?: (row: unknown) => { name: string; meta: string };
 }[] = [
   { key: "comms", name: "Comms", briefField: null },
+  { key: "centralize", name: "Centralize", briefField: null },
   { key: "calendar", name: "Calendar", briefField: null },
   { key: "people", name: "Stakeholders", briefField: "stakeholders" },
   {
@@ -182,16 +183,22 @@ export function QueueDetail({
   day: number | undefined;
 }) {
   const [brief, setBrief] = useState<Brief | null>(null);
+  const [centralizeTelemetry, setCentralizeTelemetry] = useState<CentralizeTelemetryResponse | null>(null);
   const [openDrawer, setOpenDrawer] = useState<string | null>(null);
   const [openFactor, setOpenFactor] = useState<number | null>(null);
 
   useEffect(() => {
     setBrief(null);
+    setCentralizeTelemetry(null);
     if (!item?.account_id) return;
     api
       .accountBrief(item.account_id, day)
       .then(setBrief)
       .catch(() => setBrief(null));
+    api
+      .accountCentralizeTelemetry(item.account_id, day)
+      .then(setCentralizeTelemetry)
+      .catch(() => setCentralizeTelemetry(null));
   }, [item?.account_id, day]);
 
   if (!item || item.account_id === null) {
@@ -214,7 +221,7 @@ export function QueueDetail({
         <div className="sec-h">
           <span className="t">Account sources</span>
           <span className="prov">
-            <span className="chip-det">8 systems — 5 live, 3 no source yet</span>
+            <span className="chip-det">9 systems — 6 live, 3 no source yet</span>
           </span>
         </div>
         {DRAWERS.map((d) =>
@@ -228,6 +235,13 @@ export function QueueDetail({
           ) : d.key === "comms" ? (
             <CommsDrawer key={d.key} brief={brief} open={openDrawer === d.key}
               onToggle={() => setOpenDrawer(openDrawer === d.key ? null : d.key)} />
+          ) : d.key === "centralize" ? (
+            <CentralizeDrawer
+              key={d.key}
+              telemetry={centralizeTelemetry}
+              open={openDrawer === d.key}
+              onToggle={() => setOpenDrawer(openDrawer === d.key ? null : d.key)}
+            />
           ) : (
             <Drawer key={d.key} name={d.name} field={d.briefField} brief={brief} formatter={d.formatter} open={openDrawer === d.key}
               onToggle={() => setOpenDrawer(openDrawer === d.key ? null : d.key)} />
@@ -797,6 +811,122 @@ function CommsDrawer({
       )}
     </div>
   );
+}
+
+function CentralizeDrawer({
+  telemetry,
+  open,
+  onToggle,
+}: {
+  telemetry: CentralizeTelemetryResponse | null;
+  open: boolean;
+  onToggle: () => void;
+}) {
+  const appEvents = telemetry?.app_events ?? null;
+  const posthogEvents = telemetry?.posthog_events ?? null;
+  const derivedSignals = telemetry?.derived_usage_signals ?? null;
+  const total =
+    appEvents === null || posthogEvents === null || derivedSignals === null
+      ? null
+      : appEvents.length + posthogEvents.length + derivedSignals.length;
+  const summary =
+    total === null
+      ? "…"
+      : `${appEvents?.length ?? 0} app · ${posthogEvents?.length ?? 0} posthog · ${derivedSignals?.length ?? 0} rollups`;
+
+  return (
+    <div className="drawer">
+      <div className="drawer-h" onClick={onToggle}>
+        <span className="dn">Centralize</span>
+        <span className="ds">{summary}</span>
+      </div>
+      {open && (
+        <div className="drawer-b">
+          {telemetry === null ? (
+            <div className="evid-row">
+              <span className="eval" style={{ color: "var(--fg-2)" }}>
+                loading
+              </span>
+            </div>
+          ) : (
+            <>
+              <CentralizeRows
+                label="app"
+                rows={telemetry.app_events.slice(0, 5)}
+                formatter={centralizeAppEventText}
+              />
+              <CentralizeRows
+                label="posthog"
+                rows={telemetry.posthog_events.slice(0, 5)}
+                formatter={centralizePosthogEventText}
+              />
+              <CentralizeRows
+                label="rollup"
+                rows={telemetry.derived_usage_signals.slice(0, 4)}
+                formatter={centralizeUsageSignalText}
+              />
+            </>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function CentralizeRows({
+  label,
+  rows,
+  formatter,
+}: {
+  label: string;
+  rows: Record<string, unknown>[];
+  formatter: (row: Record<string, unknown>) => { name: string; meta: string };
+}) {
+  return (
+    <>
+      {rows.map((row, i) => {
+        const text = formatter(row);
+        return (
+          <div className="stake-row" key={`${label}-${i}`}>
+            <span className="sname">{text.name}</span>
+            <span className="smeta">
+              <span className="mono" style={{ color: "var(--fg-2)" }}>{label}</span> · {text.meta}
+            </span>
+          </div>
+        );
+      })}
+      {rows.length === 0 && (
+        <div className="evid-row">
+          <span className="eval" style={{ color: "var(--fg-2)" }}>
+            no {label} records
+          </span>
+        </div>
+      )}
+    </>
+  );
+}
+
+function centralizeAppEventText(row: Record<string, unknown>): { name: string; meta: string } {
+  const eventType = String(row.event_type ?? "app event");
+  const feature = String(row.feature ?? "centralize");
+  const at = String(row.observed_at ?? "").slice(0, 10);
+  return { name: humanizeCode(eventType), meta: `${feature} · ${at}` };
+}
+
+function centralizePosthogEventText(row: Record<string, unknown>): { name: string; meta: string } {
+  const event = String(row.event ?? "posthog event");
+  const url = String(row.current_url ?? "");
+  const path = url ? url.replace("https://app.usecentralize.com", "") : "session";
+  const flags = row.contains_exception ? " · exception" : row.contains_console_logs ? " · console" : "";
+  return { name: event, meta: `${path}${flags}` };
+}
+
+function centralizeUsageSignalText(row: Record<string, unknown>): { name: string; meta: string } {
+  const metric = String(row.metric_name ?? "usage signal");
+  const value = typeof row.value === "number" ? row.value : Number(row.value ?? 0);
+  const unit = String(row.unit ?? "events");
+  const at = String(row.observed_at ?? "").slice(0, 10);
+  return { name: humanizeCode(metric), meta: `${value} ${unit} · ${at}` };
 }
 
 function ProgramDetail({ item }: { item: WorkItem }) {

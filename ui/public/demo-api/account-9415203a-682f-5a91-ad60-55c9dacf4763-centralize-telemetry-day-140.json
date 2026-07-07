@@ -1,0 +1,182 @@
+{
+  "account_id": "9415203a-682f-5a91-ad60-55c9dacf4763",
+  "account_name": "Ivorygate Freight",
+  "account_slug": "ivorygate-freight",
+  "app_events": [
+    {
+      "account_id": "9415203a-682f-5a91-ad60-55c9dacf4763",
+      "confidence": "synthetic_truth",
+      "day_offset": 140,
+      "event_id": "b8707b97-78e5-553b-9ce7-af06d5df304f",
+      "event_type": "account_viewed",
+      "feature": "account_workspace",
+      "object_id": "5e65f9ed-efd3-5a03-91d3-c7c1ea2a1ea0",
+      "object_type": "account",
+      "observed_at": "2026-11-08T01:00:00Z",
+      "properties": {
+        "archetype": "tech_touch",
+        "health_band": "green",
+        "lifecycle_stage": "steady_state",
+        "perturbation_bucket": 1
+      },
+      "route": "/account/9415203a-682f-5a91-ad60-55c9dacf4763",
+      "source_ref": "centralize_app:mcp_api_simulated",
+      "user_id": "csm-101"
+    },
+    {
+      "account_id": "9415203a-682f-5a91-ad60-55c9dacf4763",
+      "confidence": "synthetic_truth",
+      "day_offset": 140,
+      "event_id": "2a150cf4-b8cc-5274-91f4-e3c5a307d61e",
+      "event_type": "saved_view_opened",
+      "feature": "accounts",
+      "object_id": "fb84416a-5da3-5b57-a6d4-0bd8bf88701a",
+      "object_type": "saved_view",
+      "observed_at": "2026-11-08T01:00:00Z",
+      "properties": {
+        "archetype": "tech_touch",
+        "cohort": "tech_touch",
+        "health_band": "green",
+        "lifecycle_stage": "steady_state",
+        "perturbation_bucket": 1
+      },
+      "route": "/accounts",
+      "source_ref": "centralize_app:mcp_api_simulated",
+      "user_id": "csm-101"
+    }
+  ],
+  "as_of": "2026-11-08",
+  "day_offset": 140,
+  "derived_usage_signals": [
+    {
+      "account_id": "9415203a-682f-5a91-ad60-55c9dacf4763",
+      "grain": "company",
+      "metric_name": "centralize_account_views",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "57f980f5-788c-54a8-ba11-7c288f6138d7",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 1.0
+    },
+    {
+      "account_id": "9415203a-682f-5a91-ad60-55c9dacf4763",
+      "grain": "company",
+      "metric_name": "centralize_action_completions",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "d27ac9a9-a90c-5642-85f1-2958c2820dba",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 0.0
+    },
+    {
+      "account_id": "9415203a-682f-5a91-ad60-55c9dacf4763",
+      "grain": "company",
+      "metric_name": "centralize_integration_sync_failures",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "4859c0b3-cf2f-5af7-9896-446f3d9fd824",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 0.0
+    },
+    {
+      "account_id": "9415203a-682f-5a91-ad60-55c9dacf4763",
+      "grain": "company",
+      "metric_name": "centralize_relationship_events",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "88b8d3ee-a68d-55d2-b633-0b16379618f1",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 0.0
+    },
+    {
+      "account_id": "9415203a-682f-5a91-ad60-55c9dacf4763",
+      "grain": "company",
+      "metric_name": "posthog_autocapture_events",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "1153a72d-7c65-592a-a9d9-e8316fb05184",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 1.0
+    },
+    {
+      "account_id": "9415203a-682f-5a91-ad60-55c9dacf4763",
+      "grain": "company",
+      "metric_name": "posthog_frontend_exceptions",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "20943c8a-3de4-5850-9096-358dd62e14ea",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 0.0
+    },
+    {
+      "account_id": "9415203a-682f-5a91-ad60-55c9dacf4763",
+      "grain": "company",
+      "metric_name": "posthog_session_recordings",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "7d3b3794-157e-51ea-9579-616778ac9f3a",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 1.0
+    }
+  ],
+  "posthog_events": [
+    {
+      "account_id": "9415203a-682f-5a91-ad60-55c9dacf4763",
+      "confidence": "observed_config",
+      "contains_console_logs": false,
+      "contains_exception": false,
+      "current_url": "https://app.usecentralize.com/accounts",
+      "day_offset": 140,
+      "distinct_id": "5a46d838-bdf9-5dcd-808b-943f35d0f8f8",
+      "event": "$pageview",
+      "event_id": "91d72450-93d9-50e2-bbc9-dcee1615e822",
+      "observed_at": "2026-11-08T00:00:00Z",
+      "properties": {
+        "$browser": "Edge",
+        "$pathname": "/accounts",
+        "$session_id": "ab23c447-4d7a-5a8e-a500-927ef80d7a6f",
+        "account_archetype": "tech_touch",
+        "centralize_account_id": "9415203a-682f-5a91-ad60-55c9dacf4763",
+        "network_timing_ms": 615,
+        "organization_id": "org_fleetops",
+        "perturbation_bucket": 11,
+        "posthog_surface": "web_app"
+      },
+      "replay_ref": "posthog:recording:ab23c447-4d7a-5a8e-a500-927ef80d7a6f",
+      "session_id": "ab23c447-4d7a-5a8e-a500-927ef80d7a6f"
+    },
+    {
+      "account_id": "9415203a-682f-5a91-ad60-55c9dacf4763",
+      "confidence": "observed_config",
+      "contains_console_logs": false,
+      "contains_exception": false,
+      "current_url": "https://app.usecentralize.com/accounts",
+      "day_offset": 140,
+      "distinct_id": "5a46d838-bdf9-5dcd-808b-943f35d0f8f8",
+      "event": "$autocapture",
+      "event_id": "547637da-e0f0-56db-b2ed-6e9872b05c7f",
+      "observed_at": "2026-11-08T01:00:00Z",
+      "properties": {
+        "$browser": "Edge",
+        "$pathname": "/accounts",
+        "$session_id": "ab23c447-4d7a-5a8e-a500-927ef80d7a6f",
+        "account_archetype": "tech_touch",
+        "centralize_account_id": "9415203a-682f-5a91-ad60-55c9dacf4763",
+        "element": "link",
+        "network_timing_ms": 615,
+        "organization_id": "org_fleetops",
+        "perturbation_bucket": 11,
+        "text": "Saved view"
+      },
+      "replay_ref": "posthog:recording:ab23c447-4d7a-5a8e-a500-927ef80d7a6f",
+      "session_id": "ab23c447-4d7a-5a8e-a500-927ef80d7a6f"
+    }
+  ]
+}

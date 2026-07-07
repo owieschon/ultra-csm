@@ -196,7 +196,7 @@ def centralize_app_events_for_day(
     account_slug: str, day_offset: int
 ) -> tuple[FleetOpsAppEvent, ...]:
     if account_slug not in CENTRALIZE_ARC_PROFILES:
-        raise ValueError(f"FleetOps telemetry has no synthetic account for {account_slug!r}")
+        return _generic_app_events_for_day(account_slug, day_offset)
     profile = CENTRALIZE_ARC_PROFILES[account_slug]
     account_id = account_id_for(account_slug)
     primary_user, secondary_user = _USERS_BY_ARC[profile.arc]
@@ -438,7 +438,7 @@ def centralize_posthog_events_for_day(
     account_slug: str, day_offset: int
 ) -> tuple[FleetOpsPostHogEvent, ...]:
     if account_slug not in CENTRALIZE_ARC_PROFILES:
-        raise ValueError(f"FleetOps telemetry has no synthetic account for {account_slug!r}")
+        return _generic_posthog_events_for_day(account_slug, day_offset)
     profile = CENTRALIZE_ARC_PROFILES[account_slug]
     account_id = account_id_for(account_slug)
     user_id = _USERS_BY_ARC[profile.arc][0]
@@ -656,9 +656,11 @@ def centralize_usage_signals_through_day(
 
 def _checkpoint_days(account_slug: str) -> tuple[int, ...]:
     profile = CENTRALIZE_ARC_PROFILES.get(account_slug)
-    if profile is None:
+    if profile is not None:
+        return profile.checkpoint_days
+    if account_slug not in centralize_account_slugs():
         raise ValueError(f"FleetOps telemetry has no synthetic account for {account_slug!r}")
-    return profile.checkpoint_days
+    return (30, 90, 140)
 
 
 def centralize_sample_days(account_slug: str, as_of_day: int) -> tuple[int, ...]:
@@ -685,6 +687,684 @@ def centralize_telemetry_timeline(
 ) -> tuple[FleetOpsTelemetryBundle, ...]:
     days = sample_days if sample_days is not None else centralize_sample_days(account_slug, as_of_day)
     return tuple(centralize_telemetry_bundle(account_slug, day) for day in days if day <= as_of_day)
+
+
+def _generic_context(account_slug: str, day_offset: int) -> GenericTelemetryContext:
+    base = build_synthetic_book()
+    data = simulate_book(base, day_offset=day_offset) if day_offset > 0 else base
+    account_id = account_id_for(account_slug)
+    account = next((a for a in data.accounts if a.account_id == account_id), None)
+    company = next((c for c in data.companies if c.company_id == account_id), None)
+    health = next((h for h in data.health_scores if h.account_id == account_id), None)
+    adoption = next((a for a in data.adoption_summaries if a.account_id == account_id), None)
+    if account is None or company is None or health is None or adoption is None:
+        raise ValueError(f"FleetOps telemetry has no synthetic account for {account_slug!r}")
+
+    archetype = _generic_archetype(
+        lifecycle_stage=company.lifecycle_stage,
+        status=company.status,
+        arr_cents=company.arr_cents,
+        health_score=health.score,
+        health_band=health.band,
+        adoption_rate=adoption.adoption_rate,
+    )
+    return GenericTelemetryContext(
+        account_slug=account_slug,
+        account_id=account_id,
+        account_name=account.name,
+        industry=account.industry,
+        csm_owner_id=company.csm_owner_id,
+        lifecycle_stage=company.lifecycle_stage,
+        status=company.status,
+        arr_cents=company.arr_cents,
+        health_score=health.score,
+        health_band=health.band,
+        adoption_rate=adoption.adoption_rate,
+        active_users=adoption.active_users,
+        licensed_users=adoption.licensed_users,
+        archetype=archetype,
+    )
+
+
+def _generic_archetype(
+    *,
+    lifecycle_stage: str,
+    status: str,
+    arr_cents: int,
+    health_score: float,
+    health_band: str,
+    adoption_rate: float,
+) -> str:
+    if status == "Churned":
+        return "inactive_churned"
+    if lifecycle_stage in {"onboarding", "adopting"} and (
+        health_band in {"red", "yellow"} or adoption_rate < 0.45
+    ):
+        return "onboarding_attention"
+    if lifecycle_stage in {"onboarding", "adopting"}:
+        return "onboarding_progress"
+    if lifecycle_stage == "renewal":
+        return "renewal_focus"
+    if health_band in {"red", "yellow"} or health_score < 65:
+        return "risk_watch"
+    if arr_cents >= 10_000_000 and adoption_rate >= 0.65 and health_score >= 75:
+        return "expansion_scan"
+    if arr_cents <= 1_500_000:
+        return "tech_touch"
+    if health_score >= 80 and adoption_rate >= 0.70:
+        return "healthy_operating"
+    return "steady_monitoring"
+
+
+def _generic_app_events_for_day(
+    account_slug: str, day_offset: int
+) -> tuple[FleetOpsAppEvent, ...]:
+    ctx = _generic_context(account_slug, day_offset)
+    events: list[FleetOpsAppEvent] = []
+    primary_user = ctx.csm_owner_id
+    specialist_user = _generic_specialist_user(ctx)
+    jitter = _det_int("centralize-generic-app-jitter", account_slug, day_offset)
+
+    def add(
+        event_type: str,
+        feature: str,
+        route: str,
+        object_type: str,
+        object_slug: str,
+        hour: int,
+        user_id: str = primary_user,
+        confidence: str = "synthetic_truth",
+        **properties: PropertyValue,
+    ) -> None:
+        events.append(
+            FleetOpsAppEvent(
+                event_id=det_id(
+                    "centralize-generic-app-event",
+                    ctx.account_id,
+                    day_offset,
+                    event_type,
+                    feature,
+                    object_slug,
+                    hour,
+                    user_id,
+                ),
+                account_id=ctx.account_id,
+                user_id=user_id,
+                event_type=event_type,
+                feature=feature,
+                route=route,
+                object_type=object_type,
+                object_id=det_id("centralize-object", ctx.account_id, object_slug),
+                day_offset=day_offset,
+                observed_at=rfc3339(day_offset, hour),
+                source_ref="centralize_app:mcp_api_simulated",
+                confidence=confidence,
+                properties=_props(
+                    lifecycle_stage=ctx.lifecycle_stage,
+                    health_band=ctx.health_band,
+                    archetype=ctx.archetype,
+                    perturbation_bucket=jitter % 11,
+                    **properties,
+                ),
+            )
+        )
+
+    if ctx.archetype == "inactive_churned":
+        add(
+            "account_viewed",
+            "account_workspace",
+            f"/account/{ctx.account_id}",
+            "account",
+            "account",
+            10,
+            status=ctx.status,
+            archival_review=True,
+        )
+        if jitter % 3 == 0:
+            add(
+                "health_record_viewed",
+                "health",
+                f"/account/{ctx.account_id}/reporting",
+                "health_score",
+                "churned-health",
+                11,
+                current_band=ctx.health_band,
+                acted=False,
+            )
+        return tuple(events)
+
+    add(
+        "account_viewed",
+        "account_workspace",
+        f"/account/{ctx.account_id}",
+        "account",
+        "account",
+        9 + jitter % 2,
+    )
+
+    if ctx.archetype == "onboarding_attention":
+        failure_count = 1 + jitter % 6
+        add(
+            "integration_sync_reviewed",
+            "integration_status",
+            f"/account/{ctx.account_id}/engagement",
+            "integration",
+            "implementation-connector",
+            10,
+            user_id=specialist_user,
+            sync_status="failing" if jitter % 5 != 0 else "degraded",
+            failure_count=failure_count,
+            blocker_state="active_blocker" if failure_count >= 3 else "watching",
+        )
+        add(
+            "account_plan_updated",
+            "account_plan",
+            f"/account/{ctx.account_id}/plan/onboarding",
+            "plan",
+            "onboarding-plan",
+            11,
+            milestone="activation",
+            status="at_risk",
+        )
+        if jitter % 4 != 1:
+            add(
+                "support_case_linked",
+                "support_context",
+                f"/account/{ctx.account_id}/notes",
+                "case",
+                f"implementation-case-{day_offset}",
+                12,
+                user_id=specialist_user,
+                priority="high" if ctx.health_band == "red" else "medium",
+            )
+
+    elif ctx.archetype == "onboarding_progress":
+        add(
+            "onboarding_checklist_viewed",
+            "onboarding",
+            f"/account/{ctx.account_id}/plan/onboarding",
+            "checklist",
+            "activation-checklist",
+            10,
+            checklist_completion=round(min(0.98, ctx.adoption_rate + (jitter % 9) / 100), 2),
+        )
+        add(
+            "account_plan_updated",
+            "account_plan",
+            f"/account/{ctx.account_id}/plan/onboarding",
+            "plan",
+            "onboarding-plan",
+            11,
+            milestone="activation",
+            status="on_track",
+        )
+
+    elif ctx.archetype == "renewal_focus":
+        add(
+            "renewal_case_viewed",
+            "renewal",
+            f"/account/{ctx.account_id}/engagement",
+            "case",
+            "renewal-review",
+            10,
+            response_state="active_thread" if jitter % 4 else "unanswered",
+        )
+        add(
+            "report_exported",
+            "reporting",
+            f"/account/{ctx.account_id}/reporting",
+            "report",
+            "renewal-health",
+            11,
+            report_type="renewal_health",
+        )
+
+    elif ctx.archetype == "risk_watch":
+        add(
+            "health_record_viewed",
+            "health",
+            f"/account/{ctx.account_id}/reporting",
+            "health_score",
+            "risk-health",
+            10,
+            current_band=ctx.health_band,
+            acted=jitter % 3 == 0,
+        )
+        add(
+            "contact_profile_opened",
+            "contacts",
+            f"/account/{ctx.account_id}/contacts",
+            "contact",
+            "primary-contact",
+            11,
+            contact_role="champion",
+            engagement_state="quiet" if jitter % 2 else "active",
+        )
+        if jitter % 3 == 0:
+            add(
+                "recommended_action_completed",
+                "recommended_actions",
+                f"/account/{ctx.account_id}/actions",
+                "recommended_action",
+                "risk-followup",
+                12,
+                action="risk_triage",
+            )
+
+    elif ctx.archetype == "expansion_scan":
+        add(
+            "relationship_map_updated",
+            "relationship_map",
+            f"/account/{ctx.account_id}/relationships",
+            "relationship_map",
+            "growth-map",
+            10,
+            stakeholder_width=2 + jitter % 4,
+            department_count=1 + jitter % 3,
+        )
+        add(
+            "opportunity_viewed",
+            "opportunities",
+            f"/account/{ctx.account_id}/opportunities",
+            "opportunity",
+            "expansion",
+            11,
+            stage="discovery" if jitter % 5 else "pre_close",
+        )
+        if jitter % 4 != 2:
+            add(
+                "recommended_action_completed",
+                "recommended_actions",
+                f"/account/{ctx.account_id}/actions",
+                "recommended_action",
+                "expansion-readiness",
+                12,
+                action="multi_threaded_expansion_brief",
+            )
+
+    elif ctx.archetype == "healthy_operating":
+        add(
+            "relationship_map_viewed",
+            "relationship_map",
+            f"/account/{ctx.account_id}/relationships",
+            "relationship_map",
+            "map",
+            10,
+            stakeholder_width=3 + jitter % 3,
+            strongest_relationship="strong",
+        )
+        add(
+            "report_exported",
+            "reporting",
+            f"/account/{ctx.account_id}/reporting",
+            "report",
+            "qbr-adoption",
+            11,
+            report_type="qbr_adoption",
+            risk_flag=False,
+        )
+
+    elif ctx.archetype == "tech_touch":
+        add(
+            "saved_view_opened",
+            "accounts",
+            "/accounts",
+            "saved_view",
+            "tech-touch-book",
+            10,
+            cohort="tech_touch",
+        )
+
+    else:
+        add(
+            "usage_report_viewed",
+            "usage_reporting",
+            f"/account/{ctx.account_id}/reporting",
+            "usage_report",
+            "adoption-trend",
+            10,
+            trend="steady" if jitter % 4 else "uneven",
+        )
+        if jitter % 2 == 0:
+            add(
+                "relationship_map_viewed",
+                "relationship_map",
+                f"/account/{ctx.account_id}/relationships",
+                "relationship_map",
+                "map",
+                11,
+                stakeholder_width=1 + jitter % 4,
+            )
+
+    for idx in range(_generic_extra_app_event_count(ctx, day_offset)):
+        event_type, feature, route_suffix, object_type = _generic_extra_app_event(ctx, idx)
+        add(
+            event_type,
+            feature,
+            route_suffix.format(account_id=ctx.account_id),
+            object_type,
+            f"{event_type}-{idx}",
+            13 + idx % 6,
+            confidence="inferred_route",
+            noise_class="perturbed_app_exhaust",
+            active_users=ctx.active_users,
+        )
+
+    return tuple(events)
+
+
+def _generic_posthog_events_for_day(
+    account_slug: str, day_offset: int
+) -> tuple[FleetOpsPostHogEvent, ...]:
+    ctx = _generic_context(account_slug, day_offset)
+    distinct_id = det_id("posthog-person", ctx.csm_owner_id, ctx.archetype)
+    base_path = _generic_dominant_path(ctx)
+    events: list[FleetOpsPostHogEvent] = []
+    jitter = _det_int("centralize-generic-posthog-jitter", account_slug, day_offset)
+
+    def add(
+        event: str,
+        hour: int,
+        path: str = base_path,
+        session_index: int = 0,
+        contains_console_logs: bool = False,
+        contains_exception: bool = False,
+        account_known: bool = True,
+        confidence: str = "observed_config",
+        **properties: PropertyValue,
+    ) -> None:
+        session_id = det_id("posthog-session", ctx.account_id, day_offset, session_index)
+        replay_ref = f"posthog:recording:{session_id}"
+        events.append(
+            FleetOpsPostHogEvent(
+                event_id=det_id("centralize-posthog-event", session_id, event, hour, path),
+                account_id=ctx.account_id if account_known else None,
+                distinct_id=distinct_id,
+                session_id=session_id,
+                event=event,
+                current_url=f"https://app.usecentralize.com{path}",
+                day_offset=day_offset,
+                observed_at=rfc3339(day_offset, hour),
+                replay_ref=replay_ref,
+                contains_console_logs=contains_console_logs,
+                contains_exception=contains_exception,
+                confidence=confidence,
+                properties=_props(
+                    **{
+                        "$session_id": session_id,
+                        "$pathname": path,
+                        "$browser": _generic_browser(jitter, session_index),
+                        "organization_id": "org_fleetops",
+                        "centralize_account_id": ctx.account_id,
+                        "account_archetype": ctx.archetype,
+                        "perturbation_bucket": jitter % 17,
+                        **properties,
+                    }
+                ),
+            )
+        )
+
+    add(
+        "$pageview",
+        9,
+        posthog_surface="web_app",
+        network_timing_ms=_generic_network_timing_ms(ctx, day_offset, 0),
+    )
+    add(
+        "$autocapture",
+        10,
+        element=_generic_autocapture_element(ctx, 0),
+        text=_generic_autocapture_text(ctx, 0),
+        network_timing_ms=_generic_network_timing_ms(ctx, day_offset, 0),
+    )
+
+    if ctx.archetype == "onboarding_attention" and jitter % 5 != 0:
+        add(
+            "$exception",
+            10,
+            contains_console_logs=True,
+            contains_exception=True,
+            exception_type="TRPCClientError",
+            exception_message="Implementation connector sync degraded",
+            network_timing_ms=_generic_network_timing_ms(ctx, day_offset, 0) + 900,
+        )
+    elif ctx.archetype == "risk_watch" and jitter % 7 == 0:
+        add(
+            "$console_log",
+            11,
+            contains_console_logs=True,
+            level="warn",
+            message_class="risk_panel_slow_query",
+        )
+    elif ctx.archetype == "expansion_scan":
+        add(
+            "centralize.relationship_map_updated",
+            11,
+            confidence="inferred_route",
+            stakeholder_width=2 + jitter % 4,
+        )
+        if jitter % 4 != 2:
+            add(
+                "centralize.recommended_action_completed",
+                12,
+                path=f"/account/{ctx.account_id}/actions",
+                confidence="inferred_route",
+                action="multi_threaded_expansion_brief",
+            )
+
+    for session_index in range(1, _generic_posthog_session_count(ctx, day_offset)):
+        path = _generic_session_path(ctx, session_index)
+        missing_identity = (
+            _det_int("centralize-generic-identity-gap", ctx.account_id, day_offset, session_index) % 11 == 0
+        )
+        network_timing_ms = _generic_network_timing_ms(ctx, day_offset, session_index)
+        add(
+            "$pageview",
+            8 + session_index % 10,
+            path=path,
+            session_index=session_index,
+            account_known=not missing_identity,
+            posthog_surface="web_app",
+            network_timing_ms=network_timing_ms,
+        )
+        add(
+            "$autocapture",
+            9 + session_index % 10,
+            path=path,
+            session_index=session_index,
+            account_known=not missing_identity,
+            element=_generic_autocapture_element(ctx, session_index),
+            text=_generic_autocapture_text(ctx, session_index),
+            network_timing_ms=network_timing_ms,
+        )
+        if _generic_has_console_log(ctx, day_offset, session_index):
+            add(
+                "$console_log",
+                10 + session_index % 10,
+                path=path,
+                session_index=session_index,
+                contains_console_logs=True,
+                account_known=not missing_identity,
+                level="warn",
+                message_class=f"{ctx.archetype}_client_notice",
+            )
+
+    return tuple(events)
+
+
+def _generic_specialist_user(ctx: GenericTelemetryContext) -> str:
+    if ctx.archetype == "onboarding_attention":
+        return "usr_centralize_support_engineer"
+    if ctx.archetype == "expansion_scan":
+        return "usr_centralize_expansion"
+    if ctx.archetype == "renewal_focus":
+        return "usr_centralize_renewals"
+    return "usr_centralize_growth_csm"
+
+
+def _generic_extra_app_event_count(ctx: GenericTelemetryContext, day_offset: int) -> int:
+    base = {
+        "inactive_churned": 0,
+        "tech_touch": 1,
+        "onboarding_attention": 2,
+        "onboarding_progress": 2,
+        "renewal_focus": 2,
+        "risk_watch": 2,
+        "expansion_scan": 4,
+        "healthy_operating": 3,
+        "steady_monitoring": 2,
+    }[ctx.archetype]
+    account_jitter = _det_int("centralize-extra-app-count", ctx.account_id, day_offset) % 3
+    user_weight = 1 if ctx.active_users >= 20 else 0
+    return max(0, base + account_jitter - 1 + user_weight)
+
+
+def _generic_extra_app_event(ctx: GenericTelemetryContext, index: int) -> tuple[str, str, str, str]:
+    if ctx.archetype == "expansion_scan":
+        rotation = (
+            ("buying_role_viewed", "relationship_map", "/account/{account_id}/relationships", "buying_role"),
+            ("opportunity_stage_inspected", "opportunities", "/account/{account_id}/opportunities", "opportunity"),
+            ("account_plan_section_viewed", "account_plan", "/account/{account_id}/plan/expansion", "plan"),
+            *_EXTRA_APP_EVENTS,
+        )
+    elif ctx.archetype in {"onboarding_attention", "onboarding_progress"}:
+        rotation = (
+            ("implementation_step_viewed", "onboarding", "/account/{account_id}/plan/onboarding", "checklist"),
+            ("integration_retry_opened", "integration_status", "/account/{account_id}/engagement", "integration"),
+            *_EXTRA_APP_EVENTS,
+        )
+    elif ctx.archetype == "renewal_focus":
+        rotation = (
+            ("renewal_case_viewed", "renewal", "/account/{account_id}/engagement", "case"),
+            ("health_record_viewed", "health", "/account/{account_id}/reporting", "health_score"),
+            *_EXTRA_APP_EVENTS,
+        )
+    else:
+        rotation = _EXTRA_APP_EVENTS
+    return rotation[index % len(rotation)]
+
+
+def _generic_dominant_path(ctx: GenericTelemetryContext) -> str:
+    if ctx.archetype in {"expansion_scan", "healthy_operating"}:
+        return f"/account/{ctx.account_id}/relationships"
+    if ctx.archetype in {"onboarding_attention", "onboarding_progress"}:
+        return f"/account/{ctx.account_id}/engagement"
+    if ctx.archetype in {"renewal_focus", "risk_watch", "inactive_churned"}:
+        return f"/account/{ctx.account_id}/reporting"
+    return "/accounts" if ctx.archetype == "tech_touch" else f"/account/{ctx.account_id}/reporting"
+
+
+def _generic_posthog_session_count(ctx: GenericTelemetryContext, day_offset: int) -> int:
+    base = {
+        "inactive_churned": 1,
+        "tech_touch": 2,
+        "onboarding_attention": 4,
+        "onboarding_progress": 4,
+        "renewal_focus": 3,
+        "risk_watch": 3,
+        "expansion_scan": 6,
+        "healthy_operating": 4,
+        "steady_monitoring": 3,
+    }[ctx.archetype]
+    jitter = _det_int("centralize-generic-session-count", ctx.account_id, day_offset) % 4
+    user_weight = 1 if ctx.active_users >= 25 else 0
+    return max(1, base + jitter - 1 + user_weight)
+
+
+def _generic_session_path(ctx: GenericTelemetryContext, session_index: int) -> str:
+    paths_by_archetype = {
+        "inactive_churned": (f"/account/{ctx.account_id}/reporting", "/accounts"),
+        "tech_touch": ("/accounts", f"/account/{ctx.account_id}"),
+        "onboarding_attention": (
+            f"/account/{ctx.account_id}/engagement",
+            f"/account/{ctx.account_id}/notes",
+            f"/account/{ctx.account_id}/plan/onboarding",
+        ),
+        "onboarding_progress": (
+            f"/account/{ctx.account_id}/plan/onboarding",
+            f"/account/{ctx.account_id}/engagement",
+            f"/account/{ctx.account_id}/reporting",
+        ),
+        "renewal_focus": (
+            f"/account/{ctx.account_id}/engagement",
+            f"/account/{ctx.account_id}/reporting",
+            f"/account/{ctx.account_id}/contacts",
+        ),
+        "risk_watch": (
+            f"/account/{ctx.account_id}/reporting",
+            f"/account/{ctx.account_id}/contacts",
+            f"/account/{ctx.account_id}/actions",
+        ),
+        "expansion_scan": (
+            f"/account/{ctx.account_id}/relationships",
+            f"/account/{ctx.account_id}/opportunities",
+            f"/account/{ctx.account_id}/actions",
+            f"/account/{ctx.account_id}/plan/expansion",
+        ),
+        "healthy_operating": (
+            f"/account/{ctx.account_id}/relationships",
+            f"/account/{ctx.account_id}/reporting",
+            f"/account/{ctx.account_id}/engagement",
+        ),
+        "steady_monitoring": (
+            f"/account/{ctx.account_id}/reporting",
+            f"/account/{ctx.account_id}/relationships",
+            "/accounts",
+        ),
+    }[ctx.archetype]
+    return paths_by_archetype[session_index % len(paths_by_archetype)]
+
+
+def _generic_network_timing_ms(ctx: GenericTelemetryContext, day_offset: int, session_index: int) -> int:
+    base = {
+        "inactive_churned": 460,
+        "tech_touch": 500,
+        "onboarding_attention": 1250,
+        "onboarding_progress": 760,
+        "renewal_focus": 680,
+        "risk_watch": 780,
+        "expansion_scan": 820,
+        "healthy_operating": 430,
+        "steady_monitoring": 590,
+    }[ctx.archetype]
+    jitter = _det_int("centralize-generic-network-jitter", ctx.account_id, day_offset, session_index) % 360
+    return base + jitter
+
+
+def _generic_browser(jitter: int, session_index: int) -> str:
+    return ("Chrome", "Chrome", "Chrome", "Edge", "Safari")[(jitter + session_index) % 5]
+
+
+def _generic_autocapture_element(ctx: GenericTelemetryContext, session_index: int) -> str:
+    if ctx.archetype in {"expansion_scan", "healthy_operating"}:
+        return ("button", "svg", "node", "menuitem")[session_index % 4]
+    if ctx.archetype == "tech_touch":
+        return ("link", "button", "input")[session_index % 3]
+    return ("button", "tab", "link", "input")[session_index % 4]
+
+
+def _generic_autocapture_text(ctx: GenericTelemetryContext, session_index: int) -> str:
+    labels = {
+        "inactive_churned": ("Archive", "Health", "Accounts"),
+        "tech_touch": ("Saved view", "Open account", "Filter"),
+        "onboarding_attention": ("Retry sync", "Open case", "Update plan", "Filter timeline"),
+        "onboarding_progress": ("Checklist", "Activation", "Usage", "Plan"),
+        "renewal_focus": ("Renewal", "Export", "Contacts", "Health"),
+        "risk_watch": ("Risk action", "Champion", "Health", "Timeline"),
+        "expansion_scan": ("Opportunity", "Buying roles", "Complete action", "Expansion plan"),
+        "healthy_operating": ("Export", "QBR", "Relationships", "Engagement"),
+        "steady_monitoring": ("Usage", "Relationships", "Accounts", "Report"),
+    }[ctx.archetype]
+    return labels[session_index % len(labels)]
+
+
+def _generic_has_console_log(ctx: GenericTelemetryContext, day_offset: int, session_index: int) -> bool:
+    seed = _det_int("centralize-generic-console-log", ctx.account_id, day_offset, session_index)
+    if ctx.archetype == "onboarding_attention":
+        return seed % 5 == 0
+    if ctx.archetype == "expansion_scan":
+        return seed % 13 == 0
+    return seed % 29 == 0
 
 
 def _dominant_path(account_id: str, arc: str) -> str:

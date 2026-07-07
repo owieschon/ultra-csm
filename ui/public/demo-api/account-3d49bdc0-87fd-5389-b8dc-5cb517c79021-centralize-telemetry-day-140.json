@@ -1,0 +1,255 @@
+{
+  "account_id": "3d49bdc0-87fd-5389-b8dc-5cb517c79021",
+  "account_name": "Frostmoor Supply Chain",
+  "account_slug": "frostmoor-supply-chain",
+  "app_events": [
+    {
+      "account_id": "3d49bdc0-87fd-5389-b8dc-5cb517c79021",
+      "confidence": "synthetic_truth",
+      "day_offset": 140,
+      "event_id": "e986c95d-e356-5883-af09-a618fa255166",
+      "event_type": "account_viewed",
+      "feature": "account_workspace",
+      "object_id": "a603b1dc-116a-5a06-9039-d19a6b64575a",
+      "object_type": "account",
+      "observed_at": "2026-11-08T00:00:00Z",
+      "properties": {
+        "archetype": "tech_touch",
+        "health_band": "green",
+        "lifecycle_stage": "steady_state",
+        "perturbation_bucket": 7
+      },
+      "route": "/account/3d49bdc0-87fd-5389-b8dc-5cb517c79021",
+      "source_ref": "centralize_app:mcp_api_simulated",
+      "user_id": "csm-102"
+    },
+    {
+      "account_id": "3d49bdc0-87fd-5389-b8dc-5cb517c79021",
+      "confidence": "synthetic_truth",
+      "day_offset": 140,
+      "event_id": "bf794fa2-66c8-54b3-8df0-a840cf83a3ef",
+      "event_type": "saved_view_opened",
+      "feature": "accounts",
+      "object_id": "d7eaffca-afd0-56c0-89d9-f13aa0fa5f75",
+      "object_type": "saved_view",
+      "observed_at": "2026-11-08T01:00:00Z",
+      "properties": {
+        "archetype": "tech_touch",
+        "cohort": "tech_touch",
+        "health_band": "green",
+        "lifecycle_stage": "steady_state",
+        "perturbation_bucket": 7
+      },
+      "route": "/accounts",
+      "source_ref": "centralize_app:mcp_api_simulated",
+      "user_id": "csm-102"
+    },
+    {
+      "account_id": "3d49bdc0-87fd-5389-b8dc-5cb517c79021",
+      "confidence": "inferred_route",
+      "day_offset": 140,
+      "event_id": "43c41715-6392-5764-befc-9159bc94f3ac",
+      "event_type": "saved_view_opened",
+      "feature": "accounts",
+      "object_id": "560d8584-d433-5fd8-8c9b-3a0ec3f0b998",
+      "object_type": "saved_view",
+      "observed_at": "2026-11-08T04:00:00Z",
+      "properties": {
+        "active_users": 6,
+        "archetype": "tech_touch",
+        "health_band": "green",
+        "lifecycle_stage": "steady_state",
+        "noise_class": "perturbed_app_exhaust",
+        "perturbation_bucket": 7
+      },
+      "route": "/accounts",
+      "source_ref": "centralize_app:mcp_api_simulated",
+      "user_id": "csm-102"
+    }
+  ],
+  "as_of": "2026-11-08",
+  "day_offset": 140,
+  "derived_usage_signals": [
+    {
+      "account_id": "3d49bdc0-87fd-5389-b8dc-5cb517c79021",
+      "grain": "company",
+      "metric_name": "centralize_account_views",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "ebaad37f-c85c-5771-b56e-c766c2cdd13d",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 1.0
+    },
+    {
+      "account_id": "3d49bdc0-87fd-5389-b8dc-5cb517c79021",
+      "grain": "company",
+      "metric_name": "centralize_action_completions",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "0c40da1d-488c-5a99-89bb-c5905294a44b",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 0.0
+    },
+    {
+      "account_id": "3d49bdc0-87fd-5389-b8dc-5cb517c79021",
+      "grain": "company",
+      "metric_name": "centralize_integration_sync_failures",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "cec273f6-afc9-561d-8313-b3547c4cc2dc",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 0.0
+    },
+    {
+      "account_id": "3d49bdc0-87fd-5389-b8dc-5cb517c79021",
+      "grain": "company",
+      "metric_name": "centralize_relationship_events",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "5d137acc-55a4-5136-b29e-8444abbe504a",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 0.0
+    },
+    {
+      "account_id": "3d49bdc0-87fd-5389-b8dc-5cb517c79021",
+      "grain": "company",
+      "metric_name": "posthog_autocapture_events",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "b1f69f3c-40f9-5491-8a3c-2e8806b62d1c",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 2.0
+    },
+    {
+      "account_id": "3d49bdc0-87fd-5389-b8dc-5cb517c79021",
+      "grain": "company",
+      "metric_name": "posthog_frontend_exceptions",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "36c89cd8-2368-5221-ae6c-0dc3719ac718",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 0.0
+    },
+    {
+      "account_id": "3d49bdc0-87fd-5389-b8dc-5cb517c79021",
+      "grain": "company",
+      "metric_name": "posthog_session_recordings",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "47e94a52-007f-5e00-bb17-1e7a929c3c92",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 2.0
+    }
+  ],
+  "posthog_events": [
+    {
+      "account_id": "3d49bdc0-87fd-5389-b8dc-5cb517c79021",
+      "confidence": "observed_config",
+      "contains_console_logs": false,
+      "contains_exception": false,
+      "current_url": "https://app.usecentralize.com/accounts",
+      "day_offset": 140,
+      "distinct_id": "c90211f6-1432-58eb-a669-e35f3c2df981",
+      "event": "$pageview",
+      "event_id": "6604a3f2-de55-533e-8e62-83a9e7f8d740",
+      "observed_at": "2026-11-08T00:00:00Z",
+      "properties": {
+        "$browser": "Chrome",
+        "$pathname": "/accounts",
+        "$session_id": "dcc03a4f-0e67-541e-88d2-56f37bf2ea37",
+        "account_archetype": "tech_touch",
+        "centralize_account_id": "3d49bdc0-87fd-5389-b8dc-5cb517c79021",
+        "network_timing_ms": 756,
+        "organization_id": "org_fleetops",
+        "perturbation_bucket": 7,
+        "posthog_surface": "web_app"
+      },
+      "replay_ref": "posthog:recording:dcc03a4f-0e67-541e-88d2-56f37bf2ea37",
+      "session_id": "dcc03a4f-0e67-541e-88d2-56f37bf2ea37"
+    },
+    {
+      "account_id": "3d49bdc0-87fd-5389-b8dc-5cb517c79021",
+      "confidence": "observed_config",
+      "contains_console_logs": false,
+      "contains_exception": false,
+      "current_url": "https://app.usecentralize.com/accounts",
+      "day_offset": 140,
+      "distinct_id": "c90211f6-1432-58eb-a669-e35f3c2df981",
+      "event": "$autocapture",
+      "event_id": "d0af9876-c341-5b14-a3da-ec3fe832a8fa",
+      "observed_at": "2026-11-08T01:00:00Z",
+      "properties": {
+        "$browser": "Chrome",
+        "$pathname": "/accounts",
+        "$session_id": "dcc03a4f-0e67-541e-88d2-56f37bf2ea37",
+        "account_archetype": "tech_touch",
+        "centralize_account_id": "3d49bdc0-87fd-5389-b8dc-5cb517c79021",
+        "element": "link",
+        "network_timing_ms": 756,
+        "organization_id": "org_fleetops",
+        "perturbation_bucket": 7,
+        "text": "Saved view"
+      },
+      "replay_ref": "posthog:recording:dcc03a4f-0e67-541e-88d2-56f37bf2ea37",
+      "session_id": "dcc03a4f-0e67-541e-88d2-56f37bf2ea37"
+    },
+    {
+      "account_id": "3d49bdc0-87fd-5389-b8dc-5cb517c79021",
+      "confidence": "observed_config",
+      "contains_console_logs": false,
+      "contains_exception": false,
+      "current_url": "https://app.usecentralize.com/account/3d49bdc0-87fd-5389-b8dc-5cb517c79021",
+      "day_offset": 140,
+      "distinct_id": "c90211f6-1432-58eb-a669-e35f3c2df981",
+      "event": "$pageview",
+      "event_id": "6a2e8ff5-79d3-5180-935f-3326cf287300",
+      "observed_at": "2026-11-08T00:00:00Z",
+      "properties": {
+        "$browser": "Chrome",
+        "$pathname": "/account/3d49bdc0-87fd-5389-b8dc-5cb517c79021",
+        "$session_id": "29a3d4ec-1298-5be8-9f42-f0d3f60e6fdf",
+        "account_archetype": "tech_touch",
+        "centralize_account_id": "3d49bdc0-87fd-5389-b8dc-5cb517c79021",
+        "network_timing_ms": 702,
+        "organization_id": "org_fleetops",
+        "perturbation_bucket": 7,
+        "posthog_surface": "web_app"
+      },
+      "replay_ref": "posthog:recording:29a3d4ec-1298-5be8-9f42-f0d3f60e6fdf",
+      "session_id": "29a3d4ec-1298-5be8-9f42-f0d3f60e6fdf"
+    },
+    {
+      "account_id": "3d49bdc0-87fd-5389-b8dc-5cb517c79021",
+      "confidence": "observed_config",
+      "contains_console_logs": false,
+      "contains_exception": false,
+      "current_url": "https://app.usecentralize.com/account/3d49bdc0-87fd-5389-b8dc-5cb517c79021",
+      "day_offset": 140,
+      "distinct_id": "c90211f6-1432-58eb-a669-e35f3c2df981",
+      "event": "$autocapture",
+      "event_id": "88d56eb1-c1d8-53b6-846b-62ef979969c5",
+      "observed_at": "2026-11-08T01:00:00Z",
+      "properties": {
+        "$browser": "Chrome",
+        "$pathname": "/account/3d49bdc0-87fd-5389-b8dc-5cb517c79021",
+        "$session_id": "29a3d4ec-1298-5be8-9f42-f0d3f60e6fdf",
+        "account_archetype": "tech_touch",
+        "centralize_account_id": "3d49bdc0-87fd-5389-b8dc-5cb517c79021",
+        "element": "button",
+        "network_timing_ms": 702,
+        "organization_id": "org_fleetops",
+        "perturbation_bucket": 7,
+        "text": "Open account"
+      },
+      "replay_ref": "posthog:recording:29a3d4ec-1298-5be8-9f42-f0d3f60e6fdf",
+      "session_id": "29a3d4ec-1298-5be8-9f42-f0d3f60e6fdf"
+    }
+  ]
+}

@@ -239,6 +239,32 @@ class TestAccountBriefEndpoint:
         assert body["comms_internal"] == []
 
 
+class TestCentralizeTelemetryEndpoint:
+    def test_centralize_telemetry_for_scripted_and_generic_accounts(self, client: TestClient):
+        from ultra_csm.data_plane.fixtures import account_id_for
+
+        scripted_id = account_id_for("pinehill-transport")
+        generic_id = account_id_for("ironhorse-freight")
+
+        for account_id in (scripted_id, generic_id):
+            resp = client.get(f"/accounts/{account_id}/centralize-telemetry?day=140")
+            assert resp.status_code == 200
+            body = resp.json()
+            assert body["account_id"] == account_id
+            assert body["day_offset"] == 140
+            assert body["app_events"]
+            assert body["posthog_events"]
+            assert body["derived_usage_signals"]
+            assert isinstance(body["app_events"][0]["properties"], dict)
+            assert isinstance(body["posthog_events"][0]["properties"], dict)
+
+    def test_centralize_telemetry_missing_account_404(self, client: TestClient):
+        resp = client.get(
+            "/accounts/00000000-0000-0000-0000-000000000000/centralize-telemetry?day=140"
+        )
+        assert resp.status_code == 404
+
+
 class TestAccountReconciliationEndpoint:
     """Reconciliation agent (Harvest 31 / report 52): read-only endpoint
     surfacing deterministic divergence/lens signals plus a fixture-mode

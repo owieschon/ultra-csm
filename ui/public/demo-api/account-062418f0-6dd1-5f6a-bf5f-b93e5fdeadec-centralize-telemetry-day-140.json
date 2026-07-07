@@ -1,0 +1,226 @@
+{
+  "account_id": "062418f0-6dd1-5f6a-bf5f-b93e5fdeadec",
+  "account_name": "Uplands Distribution",
+  "account_slug": "uplands-distribution",
+  "app_events": [
+    {
+      "account_id": "062418f0-6dd1-5f6a-bf5f-b93e5fdeadec",
+      "confidence": "synthetic_truth",
+      "day_offset": 140,
+      "event_id": "6cb901c6-5f70-56cf-afeb-0e7dbb0a2263",
+      "event_type": "account_viewed",
+      "feature": "account_workspace",
+      "object_id": "80b106c3-a2e3-5c11-88c6-8714c4c82e46",
+      "object_type": "account",
+      "observed_at": "2026-11-08T01:00:00Z",
+      "properties": {
+        "archetype": "tech_touch",
+        "health_band": "green",
+        "lifecycle_stage": "steady_state",
+        "perturbation_bucket": 10
+      },
+      "route": "/account/062418f0-6dd1-5f6a-bf5f-b93e5fdeadec",
+      "source_ref": "centralize_app:mcp_api_simulated",
+      "user_id": "csm-101"
+    },
+    {
+      "account_id": "062418f0-6dd1-5f6a-bf5f-b93e5fdeadec",
+      "confidence": "synthetic_truth",
+      "day_offset": 140,
+      "event_id": "c7f1d701-c313-5d1f-b05d-d775d008c76c",
+      "event_type": "saved_view_opened",
+      "feature": "accounts",
+      "object_id": "20bb464b-be75-5579-b976-cc4f6983013b",
+      "object_type": "saved_view",
+      "observed_at": "2026-11-08T01:00:00Z",
+      "properties": {
+        "archetype": "tech_touch",
+        "cohort": "tech_touch",
+        "health_band": "green",
+        "lifecycle_stage": "steady_state",
+        "perturbation_bucket": 10
+      },
+      "route": "/accounts",
+      "source_ref": "centralize_app:mcp_api_simulated",
+      "user_id": "csm-101"
+    },
+    {
+      "account_id": "062418f0-6dd1-5f6a-bf5f-b93e5fdeadec",
+      "confidence": "inferred_route",
+      "day_offset": 140,
+      "event_id": "370ce1f5-2175-5b5b-ad04-4116a31cba21",
+      "event_type": "saved_view_opened",
+      "feature": "accounts",
+      "object_id": "33793cb8-49bb-51a2-b5fa-0831ff8fb89c",
+      "object_type": "saved_view",
+      "observed_at": "2026-11-08T04:00:00Z",
+      "properties": {
+        "active_users": 1,
+        "archetype": "tech_touch",
+        "health_band": "green",
+        "lifecycle_stage": "steady_state",
+        "noise_class": "perturbed_app_exhaust",
+        "perturbation_bucket": 10
+      },
+      "route": "/accounts",
+      "source_ref": "centralize_app:mcp_api_simulated",
+      "user_id": "csm-101"
+    },
+    {
+      "account_id": "062418f0-6dd1-5f6a-bf5f-b93e5fdeadec",
+      "confidence": "inferred_route",
+      "day_offset": 140,
+      "event_id": "b9584af5-5be8-573c-b978-3fd4fe11c488",
+      "event_type": "contact_search_performed",
+      "feature": "contacts",
+      "object_id": "84c94329-3297-5495-bc76-67b42e921cd6",
+      "object_type": "search",
+      "observed_at": "2026-11-08T05:00:00Z",
+      "properties": {
+        "active_users": 1,
+        "archetype": "tech_touch",
+        "health_band": "green",
+        "lifecycle_stage": "steady_state",
+        "noise_class": "perturbed_app_exhaust",
+        "perturbation_bucket": 10
+      },
+      "route": "/contacts",
+      "source_ref": "centralize_app:mcp_api_simulated",
+      "user_id": "csm-101"
+    }
+  ],
+  "as_of": "2026-11-08",
+  "day_offset": 140,
+  "derived_usage_signals": [
+    {
+      "account_id": "062418f0-6dd1-5f6a-bf5f-b93e5fdeadec",
+      "grain": "company",
+      "metric_name": "centralize_account_views",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "eb9a53cc-a031-58c7-896a-719bbdfefb51",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 1.0
+    },
+    {
+      "account_id": "062418f0-6dd1-5f6a-bf5f-b93e5fdeadec",
+      "grain": "company",
+      "metric_name": "centralize_action_completions",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "356f896a-1729-5645-a31d-568f0e73142b",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 0.0
+    },
+    {
+      "account_id": "062418f0-6dd1-5f6a-bf5f-b93e5fdeadec",
+      "grain": "company",
+      "metric_name": "centralize_integration_sync_failures",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "c8204ee4-efb9-59a6-b0ed-d85daa0a9d94",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 0.0
+    },
+    {
+      "account_id": "062418f0-6dd1-5f6a-bf5f-b93e5fdeadec",
+      "grain": "company",
+      "metric_name": "centralize_relationship_events",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "12ab59bf-011b-55be-bce7-c3f190f5ff10",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 0.0
+    },
+    {
+      "account_id": "062418f0-6dd1-5f6a-bf5f-b93e5fdeadec",
+      "grain": "company",
+      "metric_name": "posthog_autocapture_events",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "64e9f248-11af-55b0-ac2a-8ebfb2e4bcc9",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 1.0
+    },
+    {
+      "account_id": "062418f0-6dd1-5f6a-bf5f-b93e5fdeadec",
+      "grain": "company",
+      "metric_name": "posthog_frontend_exceptions",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "c29dc684-5be0-5e87-96e5-7fbca6c52769",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 0.0
+    },
+    {
+      "account_id": "062418f0-6dd1-5f6a-bf5f-b93e5fdeadec",
+      "grain": "company",
+      "metric_name": "posthog_session_recordings",
+      "observed_at": "2026-11-08T14:00:00Z",
+      "signal_id": "48442857-cc19-595a-822d-f827a3a69b1f",
+      "source_ref": "centralize_posthog:derived_fixture",
+      "subject_id": null,
+      "unit": "events",
+      "value": 1.0
+    }
+  ],
+  "posthog_events": [
+    {
+      "account_id": "062418f0-6dd1-5f6a-bf5f-b93e5fdeadec",
+      "confidence": "observed_config",
+      "contains_console_logs": false,
+      "contains_exception": false,
+      "current_url": "https://app.usecentralize.com/accounts",
+      "day_offset": 140,
+      "distinct_id": "5a46d838-bdf9-5dcd-808b-943f35d0f8f8",
+      "event": "$pageview",
+      "event_id": "ebad9eed-70c5-5b74-9d79-4d84794c1f13",
+      "observed_at": "2026-11-08T00:00:00Z",
+      "properties": {
+        "$browser": "Safari",
+        "$pathname": "/accounts",
+        "$session_id": "25b04376-1f86-570e-b534-7837eb39cbcb",
+        "account_archetype": "tech_touch",
+        "centralize_account_id": "062418f0-6dd1-5f6a-bf5f-b93e5fdeadec",
+        "network_timing_ms": 739,
+        "organization_id": "org_fleetops",
+        "perturbation_bucket": 10,
+        "posthog_surface": "web_app"
+      },
+      "replay_ref": "posthog:recording:25b04376-1f86-570e-b534-7837eb39cbcb",
+      "session_id": "25b04376-1f86-570e-b534-7837eb39cbcb"
+    },
+    {
+      "account_id": "062418f0-6dd1-5f6a-bf5f-b93e5fdeadec",
+      "confidence": "observed_config",
+      "contains_console_logs": false,
+      "contains_exception": false,
+      "current_url": "https://app.usecentralize.com/accounts",
+      "day_offset": 140,
+      "distinct_id": "5a46d838-bdf9-5dcd-808b-943f35d0f8f8",
+      "event": "$autocapture",
+      "event_id": "68f1307b-b874-5905-b6d1-356a42303d1c",
+      "observed_at": "2026-11-08T01:00:00Z",
+      "properties": {
+        "$browser": "Safari",
+        "$pathname": "/accounts",
+        "$session_id": "25b04376-1f86-570e-b534-7837eb39cbcb",
+        "account_archetype": "tech_touch",
+        "centralize_account_id": "062418f0-6dd1-5f6a-bf5f-b93e5fdeadec",
+        "element": "link",
+        "network_timing_ms": 739,
+        "organization_id": "org_fleetops",
+        "perturbation_bucket": 10,
+        "text": "Saved view"
+      },
+      "replay_ref": "posthog:recording:25b04376-1f86-570e-b534-7837eb39cbcb",
+      "session_id": "25b04376-1f86-570e-b534-7837eb39cbcb"
+    }
+  ]
+}
