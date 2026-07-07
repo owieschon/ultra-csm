@@ -1362,6 +1362,8 @@ async def get_account_brief(
                     adoption=adoption, entitlements=tuple(telemetry.list_entitlements(account_id)),
                     usage_signals=tuple(telemetry.list_usage_signals(account_id)),
                     success_plans=tuple(cs.list_success_plans(account_id)),
+                    opportunities=tuple(crm.list_opportunities(account_id)),
+                    as_of=td_as_of,
                 )
                 priority = project_ttv_lens(
                     model, company=company, health=health,
@@ -1562,12 +1564,15 @@ async def get_account_trajectory(
             entitlements = tuple(telemetry.list_entitlements(account_id))
             signals = tuple(telemetry.list_usage_signals(account_id))
             plans = tuple(cs.list_success_plans(account_id))
+            opportunities = tuple(crm.list_opportunities(account_id))
             milestones = tuple(telemetry.list_ttv_milestones(account_id))
 
             model = build_customer_value_model(
                 account=account, company=company, health=health,
                 adoption=adoption, entitlements=entitlements,
                 usage_signals=signals, success_plans=plans,
+                opportunities=opportunities,
+                as_of=as_of,
             )
             open_milestones = tuple(m for m in milestones if m.achieved_at is None and m.expected_by < as_of)
             overdue_plans = tuple(p for p in plans if p.status in ("active",) and p.target_date < as_of)

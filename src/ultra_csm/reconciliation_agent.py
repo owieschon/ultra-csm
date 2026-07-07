@@ -123,6 +123,7 @@ def gather_signals(
         entitlements=entitlements,
         usage_signals=usage_signals,
         success_plans=plans,
+        opportunities=opportunities,
         stakeholders=stakeholders,
         job_changes=job_changes,
         as_of=as_of,
