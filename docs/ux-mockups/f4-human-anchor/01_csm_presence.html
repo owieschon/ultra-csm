@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CSM presence</title>
+  <style>
+:root, [data-theme="dark"] {
+  --canvas: #222321; --chrome: #1B1C1A; --card: #2A2B28; --card-2: #33342F;
+  --hair: rgba(255,255,255,.09); --hair-soft: rgba(255,255,255,.05);
+  --fg: #F1F0EC; --fg-2: #B7B5AC; --fg-3: #858379;
+  --accent: #8189E6; --accent-fg: #fff; --accent-dim: rgba(129,137,230,.15); --accent-line: rgba(129,137,230,.45);
+  --ok: #5DBE93; --warn: #D9A452; --danger: #E67B80; --amber: #D9A452;
+  --ok-dim: rgba(93,190,147,.12); --warn-dim: rgba(217,164,82,.11); --danger-dim: rgba(230,123,128,.11);
+  --shadow: 0 10px 34px -10px rgba(0,0,0,.65);
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--canvas); color: var(--fg); font-family: -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif; font-size: 13.5px; line-height: 1.5; }
+.mock { min-height: 100vh; padding: 26px; display: grid; grid-template-columns: 324px 1fr; gap: 22px; }
+.queue, .detail, .card { background: var(--chrome); border: 1px solid var(--hair); border-radius: 12px; }
+.queue { padding: 14px; }
+.queue h2, .detail h1, .card h3 { margin: 0; font-weight: 650; }
+.muted { color: var(--fg-2); }
+.row { padding: 11px 12px; border: 1px solid var(--hair-soft); border-radius: 9px; margin-top: 8px; background: transparent; }
+.row.sel { background: var(--card); border-color: var(--accent-line); }
+.row strong, .person strong { display: block; font-size: 13px; }
+.score { float: right; font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+.detail { padding: 28px; }
+.hero { border: 1px solid var(--accent-line); background: var(--card); border-radius: 12px; padding: 24px; margin: 22px 0; }
+.hero.danger { border-color: rgba(230,123,128,.6); }
+.hero h2 { margin: 0; font-size: 30px; line-height: 1.18; font-weight: 650; max-width: 980px; }
+.section { margin-top: 22px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.card { padding: 18px; background: var(--card); }
+.person { display: grid; grid-template-columns: 36px 1fr auto; gap: 12px; align-items: center; padding: 10px 0; border-top: 1px solid var(--hair-soft); }
+.person:first-of-type { border-top: 0; }
+.avatar { width: 36px; height: 36px; border-radius: 9px; border: 1px solid var(--hair); display: grid; place-items: center; background: var(--card-2); font-weight: 700; }
+.chip { display: inline-flex; align-items: center; border: 1px solid var(--hair); border-radius: 6px; padding: 2px 8px; color: var(--fg-2); font-size: 11px; margin: 0 6px 6px 0; white-space: nowrap; }
+.ok { color: var(--ok); border-color: rgba(93,190,147,.45); }
+.warn { color: var(--warn); border-color: rgba(217,164,82,.45); }
+.danger-text { color: var(--danger); border-color: rgba(230,123,128,.5); }
+.factor { padding: 10px 12px; border: 1px solid var(--hair); border-radius: 8px; margin-top: 8px; background: var(--canvas); }
+.factor b { float: right; font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+.map { position: relative; min-height: 430px; }
+.node { position: absolute; width: 136px; height: 92px; border: 1px solid var(--hair); border-radius: 14px; background: var(--card); display: grid; place-items: center; text-align: center; padding: 10px; }
+.node.account { left: calc(50% - 95px); top: 170px; width: 190px; border-color: var(--accent-line); }
+.n1 { left: calc(50% - 68px); top: 12px; }
+.n2 { left: 12%; top: 175px; }
+.n3 { right: 12%; top: 175px; }
+.n4 { left: calc(50% - 68px); bottom: 10px; }
+.proposal-note { margin-top: 18px; color: var(--fg-2); font-size: 12px; }
+</style>
+</head>
+<body>
+  <main class="mock">
+    
+<aside class="queue">
+  <h2>Queue</h2>
+  <p class="muted">human-reviewed actions</p>
+  <div class="row "><span class="score">35</span><strong>Harborview Fleet</strong><span class="muted">renewal risk</span></div>
+  <div class="row sel"><span class="score">90</span><strong>Trailhead Logistics</strong><span class="muted">champion active</span></div>
+  <div class="row "><span class="score">74</span><strong>Ironhorse Freight Co</strong><span class="muted">hardware blocker</span></div>
+  <div class="row"><span class="score">69</span><strong>Pinehill Transport</strong><span class="muted">training drift</span></div>
+  <div class="row"><span class="score">52</span><strong>Quarry Stone Logistics</strong><span class="muted">silent account</span></div>
+</aside>
+
+    <section class="detail">
+      
+<h1>Your book, Maya</h1>
+<p class="muted">The agents have drafted 7 customer moves. You are approving the work, not hunting for it.</p>
+<div class="hero"><p class="muted">Next customer to protect</p><h2>Trailhead Logistics: Vanessa is active, but Mike has gone quiet.</h2><p class="muted">Expansion stays safe if the relationship is widened this week.</p></div>
+<div class="section"><div class="card"><h3>People in the motion</h3><div class="person"><div class="avatar">V</div><div><strong>Vanessa Torres</strong><span class="muted">VP Ops, champion</span></div><span class="chip ok">active today</span></div>
+<div class="person"><div class="avatar">M</div><div><strong>Mike Lindgren</strong><span class="muted">Fleet Director</span></div><span class="chip warn">quiet 85d</span></div>
+<div class="person"><div class="avatar">S</div><div><strong>Samira Ali</strong><span class="muted">Safety Manager</span></div><span class="chip ok">engaged</span></div></div><div class="card"><h3>Agent draft waiting on you</h3><p>Send Vanessa the compliance-reporting expansion brief and ask her to pull Mike into the next review.</p><span class="chip warn">approval required</span></div></div>
+<p class="proposal-note">Hypothesis: make the CSM operator explicit so the product reads as agents scaling a human book of business, not as an anonymous dashboard.</p>
+
+    </section>
+  </main>
+</body>
+</html>
