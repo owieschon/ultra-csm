@@ -34,6 +34,50 @@ HARD_ARM = "cot@N"
 MIN_RUNS_PER_CASE = 3
 
 
+class UnvalidatedGatingDimension(ValueError):
+    """Raised when a scoped judge gate asks for an unvalidated dimension."""
+
+    def __init__(
+        self,
+        requested_dimensions: set[str],
+        validated_dimensions: set[str],
+        excluded_dimensions: dict[str, str],
+    ) -> None:
+        self.requested_dimensions = requested_dimensions
+        self.validated_dimensions = validated_dimensions
+        self.excluded_dimensions = excluded_dimensions
+        unavailable = sorted(requested_dimensions - validated_dimensions)
+        super().__init__(
+            "unvalidated judge gating dimensions requested: "
+            + ", ".join(unavailable)
+        )
+
+
+def assert_gating_dimensions(
+    required_dimensions: set[str] | list[str] | tuple[str, ...],
+    *,
+    status: dict[str, Any] | None = None,
+) -> tuple[str, ...]:
+    """Return the required dimensions when all are validated for scoped gating.
+
+    This guard is intentionally narrower than ``status["validated"]``. It
+    allows callers to declare a scoped set only when every requested dimension
+    is in ``validated_gating_dimensions``; asking for ``on_task_relevance`` (or
+    any other excluded/unknown dimension) raises and therefore fails closed.
+    """
+
+    judge_status = status if status is not None else judge_validation_status()
+    requested = set(required_dimensions)
+    known_dimensions = set(QUALITY_DIMENSIONS)
+    validated = set(judge_status.get("validated_gating_dimensions", ()))
+    excluded = judge_status.get("excluded_gating_dimensions", {})
+    if not isinstance(excluded, dict):
+        excluded = {}
+    if not requested or requested - known_dimensions or requested - validated:
+        raise UnvalidatedGatingDimension(requested, validated, excluded)
+    return tuple(sorted(requested))
+
+
 def judge_validation_status(
     agreement_path: Path = AGREEMENT_PATH,
     compare_path: Path = COMPARE_PATH,
@@ -46,6 +90,10 @@ def judge_validation_status(
     from eval.judge_anthropic import JUDGE_PROMPT_VERSION
 
     failures: list[str] = []
+    dimension_failures: dict[str, list[str]] = {
+        dim: [] for dim in QUALITY_DIMENSIONS
+    }
+    structural_failures: list[str] = []
     agreement = _load(agreement_path, failures)
     compare = _load(compare_path, failures)
     if failures:
@@ -54,25 +102,34 @@ def judge_validation_status(
     clean = agreement.get("clean_layer") if isinstance(agreement, dict) else None
     if not isinstance(clean, dict):
         failures.append("agreement artifact has no clean_layer")
+        structural_failures.append("agreement artifact has no clean_layer")
     else:
         kappas = clean.get("per_dimension_kappa")
         if not isinstance(kappas, dict):
             failures.append("clean_layer has no per_dimension_kappa")
+            structural_failures.append("clean_layer has no per_dimension_kappa")
         else:
             for dim in QUALITY_DIMENSIONS:
                 value = kappas.get(dim)
                 if not isinstance(value, (int, float)) or value < GATE_KAPPA:
-                    failures.append(f"clean {dim} kappa {value} < {GATE_KAPPA}")
+                    failure = f"clean {dim} kappa {value} < {GATE_KAPPA}"
+                    failures.append(failure)
+                    dimension_failures[dim].append(failure)
         if clean.get("overall_pass_false_negative") != 0:
-            failures.append(
-                f"clean false_neg {clean.get('overall_pass_false_negative')} != 0"
-            )
+            failure = f"clean false_neg {clean.get('overall_pass_false_negative')} != 0"
+            failures.append(failure)
+            for dim in QUALITY_DIMENSIONS:
+                dimension_failures[dim].append(failure)
         if not isinstance(clean.get("n"), int) or clean["n"] <= 0:
             failures.append("clean_layer has no cases")
+            structural_failures.append("clean_layer has no cases")
 
     hard_kappas: dict[str, float] = {}
     hard_ac1: dict[str, float] = {}
     hard_false_neg: list[str] = []
+    hard_false_neg_by_dimension: dict[str, list[str]] = {
+        dim: [] for dim in QUALITY_DIMENSIONS
+    }
     hard_n = 0
     runs = compare.get("runs_per_case") if isinstance(compare, dict) else None
     arm = (
@@ -95,8 +152,10 @@ def judge_validation_status(
     )
     if not isinstance(runs, int) or runs < MIN_RUNS_PER_CASE:
         failures.append(f"compare runs_per_case {runs} < {MIN_RUNS_PER_CASE}")
+        structural_failures.append(f"compare runs_per_case {runs} < {MIN_RUNS_PER_CASE}")
     if not isinstance(cases, list) or not cases:
         failures.append(f"compare artifact has no {HARD_ARM} cases")
+        structural_failures.append(f"compare artifact has no {HARD_ARM} cases")
     else:
         hard_n = len(cases)
         try:
@@ -105,7 +164,9 @@ def judge_validation_status(
                 ref_col = [case["reference"][dim] for case in cases]
                 hard_kappas[dim] = round(weighted_cohen_kappa(judge_col, ref_col), 3)
                 if hard_kappas[dim] < GATE_KAPPA:
-                    failures.append(f"hard {dim} kappa {hard_kappas[dim]} < {GATE_KAPPA}")
+                    failure = f"hard {dim} kappa {hard_kappas[dim]} < {GATE_KAPPA}"
+                    failures.append(failure)
+                    dimension_failures[dim].append(failure)
                 ci = agreement_hard_ci.get(dim) if isinstance(agreement_hard_ci, dict) else None
                 ci_floor = ci.get("low") if isinstance(ci, dict) else None
                 if isinstance(ci_floor, (int, float)) and ci_floor < GATE_KAPPA:
@@ -118,37 +179,67 @@ def judge_validation_status(
                     case["agg"]["vector"][d] >= PASSING_SCORE for d in QUALITY_DIMENSIONS
                 )
                 if agg_pass and not ref_pass:
-                    hard_false_neg.append(str(case.get("candidate_id")))
+                    candidate_id = str(case.get("candidate_id"))
+                    family = str(case.get("family") or "unknown_family")
+                    hard_false_neg.append(candidate_id)
+                    for dim in QUALITY_DIMENSIONS:
+                        if (
+                            case["agg"]["vector"][dim] >= PASSING_SCORE
+                            and case["reference"][dim] < PASSING_SCORE
+                        ):
+                            hard_false_neg_by_dimension[dim].append(
+                                f"{candidate_id} ({family})"
+                            )
         except (KeyError, TypeError) as exc:
             failures.append(f"compare cases malformed: {exc!r}")
+            structural_failures.append(f"compare cases malformed: {exc!r}")
         if hard_false_neg:
-            failures.append(f"hard aggregated false negatives: {sorted(hard_false_neg)}")
+            failure = f"hard aggregated false negatives: {sorted(hard_false_neg)}"
+            failures.append(failure)
+            for dim, cases_for_dim in hard_false_neg_by_dimension.items():
+                if cases_for_dim:
+                    dimension_failures[dim].append(
+                        "aggregate false-negative floor failed for "
+                        f"{len(cases_for_dim)} case(s): {', '.join(sorted(cases_for_dim))}"
+                    )
 
     agreement_model = agreement.get("model_id") if isinstance(agreement, dict) else None
     compare_model = compare.get("model_id") if isinstance(compare, dict) else None
     if agreement_model != compare_model:
-        failures.append(
+        failure = (
             f"evidence model mismatch: agreement={agreement_model} compare={compare_model}"
         )
+        failures.append(failure)
+        structural_failures.append(failure)
     prompt_version = (
         agreement.get("judge_prompt_version") if isinstance(agreement, dict) else None
     )
     if not prompt_version:
         failures.append("agreement artifact has no judge_prompt_version")
+        structural_failures.append("agreement artifact has no judge_prompt_version")
     elif prompt_version != JUDGE_PROMPT_VERSION:
-        failures.append(
+        failure = (
             f"agreement judge_prompt_version {prompt_version!r} != shipped {JUDGE_PROMPT_VERSION!r}"
         )
+        failures.append(failure)
+        structural_failures.append(failure)
 
     compare_prompt_version = (
         compare.get("judge_prompt_version") if isinstance(compare, dict) else None
     )
     if compare_prompt_version is None:
         failures.append("compare artifact has no judge_prompt_version")
+        structural_failures.append("compare artifact has no judge_prompt_version")
     elif compare_prompt_version != JUDGE_PROMPT_VERSION:
-        failures.append(
+        failure = (
             f"compare judge_prompt_version {compare_prompt_version!r} != shipped {JUDGE_PROMPT_VERSION!r}"
         )
+        failures.append(failure)
+        structural_failures.append(failure)
+
+    if structural_failures:
+        for dim in QUALITY_DIMENSIONS:
+            dimension_failures[dim].extend(structural_failures)
 
     return _status(
         not failures,
@@ -160,6 +251,7 @@ def judge_validation_status(
         hard_n=hard_n,
         agreement_path=agreement_path,
         compare_path=compare_path,
+        dimension_failures=dimension_failures,
     )
 
 
@@ -174,12 +266,21 @@ def _status(
     hard_n: int = 0,
     agreement_path: Path | None = None,
     compare_path: Path | None = None,
+    dimension_failures: dict[str, list[str]] | None = None,
 ) -> dict[str, Any]:
     clean = agreement.get("clean_layer", {}) if isinstance(agreement, dict) else {}
     arm = compare.get("arms", {}).get(HARD_ARM, {}) if isinstance(compare, dict) else {}
+    per_dimension_validated, excluded_gating_dimensions = _dimension_scope(
+        dimension_failures,
+    )
     return {
         "validated": validated,
         "failures": sorted(failures),
+        "per_dimension_validated": per_dimension_validated,
+        "validated_gating_dimensions": [
+            dim for dim, is_valid in sorted(per_dimension_validated.items()) if is_valid
+        ],
+        "excluded_gating_dimensions": excluded_gating_dimensions,
         "method": {
             "clean_gate": "single-run per-dimension kappa vs approved human labels",
             "hard_gate": (
@@ -219,6 +320,25 @@ def _status(
             "compare": _rel(compare_path),
         },
     }
+
+
+def _dimension_scope(
+    dimension_failures: dict[str, list[str]] | None,
+) -> tuple[dict[str, bool], dict[str, str]]:
+    if dimension_failures is None:
+        return (
+            {dim: False for dim in QUALITY_DIMENSIONS},
+            {dim: "validation evidence unavailable" for dim in QUALITY_DIMENSIONS},
+        )
+    per_dimension_validated = {
+        dim: not dimension_failures.get(dim) for dim in QUALITY_DIMENSIONS
+    }
+    excluded = {
+        dim: "; ".join(sorted(set(dimension_failures.get(dim, ()))))
+        for dim in QUALITY_DIMENSIONS
+        if dimension_failures.get(dim)
+    }
+    return per_dimension_validated, excluded
 
 
 LIVE_SEMANTIC_QUALITY_PATH = REPO / "eval" / "gold" / "live_semantic_quality.json"

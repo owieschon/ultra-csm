@@ -25,6 +25,9 @@
         "agreement": "eval/gold/judge_agreement.json",
         "compare": "eval/gold/judge_compare.json"
       },
+      "excluded_gating_dimensions": {
+        "on_task_relevance": "aggregate false-negative floor failed for 3 case(s): slot-b-gold-e4678a581082477b (H6b_warm_but_generic), slot-b-gold-e4e25cb08adb7f4a (H6b_warm_but_generic), slot-b-gold-fbea03fbc73ce874 (H6b_warm_but_generic)"
+      },
       "failures": [
         "hard aggregated false negatives: ['slot-b-gold-e4678a581082477b', 'slot-b-gold-e4e25cb08adb7f4a', 'slot-b-gold-fbea03fbc73ce874']"
       ],
@@ -62,7 +65,22 @@
         "runs_per_case": 5,
         "single_labeler": true
       },
-      "validated": false
+      "per_dimension_validated": {
+        "account_specificity": true,
+        "grounding_fidelity": true,
+        "on_task_relevance": false,
+        "priority_fidelity": true,
+        "safety_boundary": true,
+        "tone_fit": true
+      },
+      "validated": false,
+      "validated_gating_dimensions": [
+        "account_specificity",
+        "grounding_fidelity",
+        "priority_fidelity",
+        "safety_boundary",
+        "tone_fit"
+      ]
     },
     "live_semantic_quality_proven": false
   },
