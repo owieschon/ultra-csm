@@ -121,6 +121,14 @@ class MotionSource:
 
 
 @dataclass(frozen=True)
+class DiagnosticStep:
+    stage: str
+    label: str
+    value: str
+    meta: str
+
+
+@dataclass(frozen=True)
 class CSMWorkItem:
     tenant_id: str
     account_resolution: ResolutionState
@@ -138,6 +146,7 @@ class CSMWorkItem:
     customer_draft: str | None = None
     motion: str | None = None
     motion_source: MotionSource | None = None
+    diagnostic_chain: tuple[DiagnosticStep, ...] = ()
     recipient_resolution: str | None = None
     slot_a_classifications: tuple[CaseNoteClassificationOutput, ...] = ()
     # Person UI depth (Harvest 17), additive: the resolved recipient's
@@ -926,6 +935,182 @@ def _priority_factor_for_trigger(
     return max(candidates, key=lambda factor: factor.contribution)
 
 
+def _account_diagnostic_chain(
+    *,
+    priority: Priority,
+    evidence: tuple[EvidenceRef, ...],
+    motion: str | None,
+    motion_source: MotionSource | None,
+    action: CSMActionType,
+    disposition: Disposition,
+    contact: CRMContact | None,
+    recipient_role: str | None,
+    recipient_resolution: str | None,
+    proposal_required: bool,
+) -> tuple[DiagnosticStep, ...]:
+    top_factor = max(priority.factors, key=lambda factor: factor.contribution)
+    signal_name = motion_source.matched_priority_factor if motion_source else top_factor.name
+    signal = next(
+        (factor for factor in priority.factors if factor.name == signal_name),
+        top_factor,
+    )
+    trigger = motion_source.trigger_factor if motion_source else signal.name
+    contact_value = (
+        f"{contact.name} ({recipient_role})"
+        if contact is not None and recipient_role
+        else contact.name
+        if contact is not None
+        else "No eligible customer contact resolved"
+    )
+    evidence_preview = ", ".join(ref.source_id for ref in evidence[:3])
+    if len(evidence) > 3:
+        evidence_preview = f"{evidence_preview}, +{len(evidence) - 3} more"
+    return (
+        DiagnosticStep(
+            stage="signal",
+            label="Signal",
+            value=signal.name,
+            meta=f"+{signal.contribution} priority from {len(signal.evidence)} evidence record(s)",
+        ),
+        DiagnosticStep(
+            stage="diagnosis",
+            label="Likely blocker",
+            value=_diagnosis_for_trigger(trigger),
+            meta=trigger,
+        ),
+        DiagnosticStep(
+            stage="action",
+            label="Selected action",
+            value=motion or action,
+            meta=(
+                f"{motion_source.play_id}: {motion_source.selection_reason}"
+                if motion_source is not None
+                else f"{disposition} via deterministic sweep disposition"
+            ),
+        ),
+        DiagnosticStep(
+            stage="recipient",
+            label="Recipient path",
+            value=contact_value,
+            meta=recipient_resolution or "unresolved",
+        ),
+        DiagnosticStep(
+            stage="evidence",
+            label="Evidence",
+            value=f"{len(evidence)} cited source record(s)",
+            meta=evidence_preview or "no cited records",
+        ),
+        DiagnosticStep(
+            stage="approval",
+            label="Approval boundary",
+            value="Human approval required" if proposal_required else "No customer-facing release",
+            meta=action,
+        ),
+    )
+
+
+def _cohort_diagnostic_chain(cohort: dict) -> tuple[DiagnosticStep, ...]:
+    return (
+        DiagnosticStep(
+            stage="signal",
+            label="Signal",
+            value=cohort["trigger_factor"],
+            meta=f"{len(cohort['account_ids'])} {cohort['tier']} account(s)",
+        ),
+        DiagnosticStep(
+            stage="diagnosis",
+            label="Likely blocker",
+            value=_diagnosis_for_trigger(cohort["trigger_factor"]),
+            meta="cohort threshold reached",
+        ),
+        DiagnosticStep(
+            stage="action",
+            label="Selected action",
+            value="cohort_action",
+            meta=f"{cohort['play_id']} via tenant playbook cohort collapse",
+        ),
+        DiagnosticStep(
+            stage="recipient",
+            label="Recipient path",
+            value="No single customer recipient",
+            meta="many accounts collapsed into one operator packet",
+        ),
+        DiagnosticStep(
+            stage="evidence",
+            label="Evidence",
+            value=f"{len(cohort['account_ids'])} account ids",
+            meta=", ".join(cohort["account_ids"][:3]),
+        ),
+        DiagnosticStep(
+            stage="approval",
+            label="Approval boundary",
+            value="Operator review required",
+            meta="no customer-facing release",
+        ),
+    )
+
+
+def _ambiguous_account_diagnostic_chain(
+    candidates: tuple[str, ...],
+    evidence: tuple[EvidenceRef, ...],
+) -> tuple[DiagnosticStep, ...]:
+    return (
+        DiagnosticStep(
+            stage="signal",
+            label="Signal",
+            value="Ambiguous account identity",
+            meta=f"{len(candidates)} candidate account(s)",
+        ),
+        DiagnosticStep(
+            stage="diagnosis",
+            label="Likely blocker",
+            value="The system cannot safely choose one account.",
+            meta="account_resolution=ambiguous",
+        ),
+        DiagnosticStep(
+            stage="action",
+            label="Selected action",
+            value="escalate",
+            meta="fail-closed identity guard",
+        ),
+        DiagnosticStep(
+            stage="recipient",
+            label="Recipient path",
+            value="Human operator",
+            meta="manual account resolution required",
+        ),
+        DiagnosticStep(
+            stage="evidence",
+            label="Evidence",
+            value=f"{len(evidence)} contact record(s)",
+            meta=", ".join(ref.source_id for ref in evidence[:3]),
+        ),
+        DiagnosticStep(
+            stage="approval",
+            label="Approval boundary",
+            value="No customer-facing release",
+            meta="account not auto-selected",
+        ),
+    )
+
+
+def _diagnosis_for_trigger(trigger_factor: str) -> str:
+    labels = {
+        "milestones_overdue": "Activation is stalled; inspect overdue milestones before outreach.",
+        "feature_shallow_depth": "Paid capability has not reached operational use.",
+        "health_red": "Health deterioration needs driver isolation before customer messaging.",
+        "health_yellow": "Timeline or adoption risk needs confirmation.",
+        "outcome_unknown": "Usage exists, but the business outcome is not proven yet.",
+        "low_seat_penetration": "Licensed seats are not activated deeply enough.",
+        "champion_inactive": "Primary relationship has gone quiet.",
+    }
+    return labels.get(trigger_factor, "Review the cited signal before taking action.")
+
+
+def _diagnostic_payload(chain: tuple[DiagnosticStep, ...]) -> list[dict]:
+    return [compact_asdict(step) for step in chain]
+
+
 def collapse_cohorts(
     sweep: SweepResult,
     data_plane: CustomerDataPlane,
@@ -981,6 +1166,7 @@ def collapse_cohorts(
     cohort_items: list[CSMWorkItem] = []
     for cohort in cohort_actions:
         cohort_account_ids.update(cohort["account_ids"])
+        diagnostic_chain = _cohort_diagnostic_chain(cohort)
         cohort_items.append(CSMWorkItem(
             tenant_id=tenant_id,
             account_resolution="ambiguous",
@@ -1000,6 +1186,7 @@ def collapse_cohorts(
             proposal=None,
             swept_at=as_of,
             motion="cohort_action",
+            diagnostic_chain=diagnostic_chain,
         ))
 
     kept_items = tuple(item for item in sweep.work_items if item.account_id not in cohort_account_ids)
@@ -1151,6 +1338,19 @@ def _work_item_for_account(
         timing.slot_b_calls += 1
     if customer_action_blocked:
         draft_mode = "template_fallback"
+    proposal_required = customer_contact_allowed and not customer_action_blocked
+    diagnostic_chain = _account_diagnostic_chain(
+        priority=inputs.priority,
+        evidence=inputs.evidence,
+        motion=motion,
+        motion_source=motion_source,
+        action=action,
+        disposition=disposition,
+        contact=contact if proposal_required else None,
+        recipient_role=recipient_role if proposal_required else None,
+        recipient_resolution=recipient_resolution if proposal_required else None,
+        proposal_required=proposal_required,
+    )
     proposal_ref = None
     if customer_contact_allowed and not customer_action_blocked:
         governance_start = time.perf_counter()
@@ -1163,6 +1363,7 @@ def _work_item_for_account(
             evidence=inputs.evidence,
             priority=inputs.priority,
             draft_body=slot_b.customer_draft,
+            diagnostic_chain=diagnostic_chain,
         )
         if timing is not None:
             timing.governance_ms += (time.perf_counter() - governance_start) * 1000.0
@@ -1175,6 +1376,7 @@ def _work_item_for_account(
             contact=contact,
             as_of=as_of,
             matched_entry=content_route_match,
+            diagnostic_chain=diagnostic_chain,
         )
         if timing is not None:
             timing.governance_ms += (time.perf_counter() - governance_start) * 1000.0
@@ -1197,6 +1399,7 @@ def _work_item_for_account(
         customer_draft=slot_b.customer_draft,
         motion=motion,
         motion_source=motion_source,
+        diagnostic_chain=diagnostic_chain,
         recipient_resolution=recipient_resolution,
         recipient_name=recipient_name,
         recipient_role=recipient_role,
@@ -1229,6 +1432,7 @@ def _propose_outreach(
     evidence: tuple[EvidenceRef, ...],
     priority: Priority,
     draft_body: str | None,
+    diagnostic_chain: tuple[DiagnosticStep, ...],
 ) -> ActionProposal:
     payload = {
         "account_id": account.account_id,
@@ -1244,6 +1448,7 @@ def _propose_outreach(
             "factors": [_priority_factor_payload(factor) for factor in priority.factors],
         },
         "evidence_ids": [ref.source_id for ref in evidence],
+        "diagnostic_chain": _diagnostic_payload(diagnostic_chain),
     }
     if action == "draft_customer_outreach":
         gate.record_outreach_contact_ref(
@@ -1270,6 +1475,7 @@ def _propose_content_route(
     contact: CRMContact,
     as_of: str,
     matched_entry: ContentCatalogEntry,
+    diagnostic_chain: tuple[DiagnosticStep, ...],
 ) -> ActionProposal:
     """Mirrors ``_propose_outreach``'s gate-integration shape exactly
     (same ``gate.propose`` call, same ``proposal_fields_for`` unpack), but
@@ -1289,6 +1495,7 @@ def _propose_content_route(
         "content_title": matched_entry.title,
         "content_format": matched_entry.format,
         "addresses_gap": matched_entry.addresses_gap,
+        "diagnostic_chain": _diagnostic_payload(diagnostic_chain),
     }
     return gate.propose(
         intent="agent1_time_to_value_sweep",
@@ -1329,6 +1536,7 @@ def _escalation_item(
         EvidenceRef("crm", contact.contact_id, "email", as_of)
         for contact in contacts
     )
+    diagnostic_chain = _ambiguous_account_diagnostic_chain(candidates, evidence)
     return CSMWorkItem(
         tenant_id=tenant_id,
         account_resolution="ambiguous",
@@ -1343,6 +1551,7 @@ def _escalation_item(
         proposal=None,
         swept_at=as_of,
         customer_draft=None,
+        diagnostic_chain=diagnostic_chain,
     )
 
 
