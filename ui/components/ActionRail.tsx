@@ -191,7 +191,7 @@ export const ActionRail = forwardRef<
         <div className="ledger">
           {ledger.length === 0 && (
             <div className="lg">
-              <span className="rest" style={{ color: "var(--fg-3)" }}>
+              <span className="rest" style={{ color: "var(--fg-2)" }}>
                 no proposal/verdict events yet this run
               </span>
             </div>
