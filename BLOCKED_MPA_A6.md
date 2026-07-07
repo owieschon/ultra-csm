@@ -65,6 +65,10 @@ Those boundaries were preserved.
 ## Claim Boundary
 
 This is OA-A2 Outcome 2. Keep Sonnet 5, but do not claim full autonomous judge
-validation and do not use `on_task_relevance` as an autonomous gate. The judge is
-usable only in a scoped way for the five non-on-task dimensions unless/until a
-future owner-approved change produces full validation.
+validation. The v9 prompt recovered `on_task_relevance` dimension agreement
+(`0.289 -> 0.736` on hard `cot@N`), but the quality gate still fails closed
+because the judge is lenient on 3/64 warm-but-generic drafts and would let those
+bad drafts pass. Do not sharpen again just to clear those three rows. Use the
+judge only with that boundary disclosed, and do not use `on_task_relevance` as an
+autonomous pass/fail gate until a future owner-approved change validates the
+false-open boundary.
