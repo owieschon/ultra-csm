@@ -7,7 +7,7 @@
       "action_label": "Open packet",
       "evidence_lines": [
         "Included in latest swept_accounts receipt.",
-        "Motion: working_session.",
+        "Motion: escalation.",
         "milestones_overdue: value 2.0, contribution 50 \u00b7 threshold milestone_overdue_points=25",
         "days_overdue: value 139.0, contribution 40 \u00b7 threshold days_overdue_cap=40",
         "success_plan_overdue: value 1.0, contribution 20 \u00b7 threshold success_plan_overdue_points=20"
@@ -22,7 +22,7 @@
       "score_label": "priority score 143",
       "state": "needs_human",
       "work_item_disposition": "propose_customer_action",
-      "work_item_key": "f7f8a9b0-07e0-4b5e-9e6f-be9c34c66dde"
+      "work_item_key": "43794b1e-b127-4110-91fa-61761373dee2"
     },
     {
       "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
@@ -45,7 +45,7 @@
       "score_label": "priority score 62",
       "state": "needs_human",
       "work_item_disposition": "propose_customer_action",
-      "work_item_key": "a4cdb71e-54bf-4661-9e8f-ba975a82df16"
+      "work_item_key": "62a516a3-34cb-4077-9600-fc5a243728f3"
     },
     {
       "account_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32",
@@ -68,7 +68,7 @@
       "score_label": "priority score 62",
       "state": "needs_human",
       "work_item_disposition": "propose_customer_action",
-      "work_item_key": "8c747266-7477-493f-bdef-1e50716ac905"
+      "work_item_key": "43566824-30b5-43e2-85d0-039812280257"
     },
     {
       "account_id": "639fb054-d926-5a1e-b2bd-49b75157817d",
@@ -157,7 +157,7 @@
       "score_label": "priority score 47",
       "state": "needs_human",
       "work_item_disposition": "propose_customer_action",
-      "work_item_key": "246df592-f7f4-4e21-84b2-698e580f9cb2"
+      "work_item_key": "2afcdf8a-264d-41b9-9f89-89fda861b481"
     },
     {
       "account_id": "f21afeb0-67ee-5adc-84c5-18782f7adcff",
@@ -224,7 +224,7 @@
       "score_label": "priority score 43",
       "state": "needs_human",
       "work_item_disposition": "propose_customer_action",
-      "work_item_key": "30772eb6-f4a1-45e1-acc9-700ebe13deca"
+      "work_item_key": "a718e9f5-c76f-4599-bfbb-a4ccaa931547"
     },
     {
       "account_id": "320ce2b9-8553-5335-8366-1575565db280",
@@ -291,7 +291,7 @@
       "score_label": "priority score 35",
       "state": "needs_human",
       "work_item_disposition": "propose_customer_action",
-      "work_item_key": "6f52d3f7-f4eb-457c-b71f-b93d685aca94"
+      "work_item_key": "ec8c64db-4afa-4616-86e1-5b85028288db"
     },
     {
       "account_id": "5740e7ab-4f6e-5a8d-8996-10ca4dc384ce",
@@ -334,7 +334,7 @@
       "score_label": "priority score 30",
       "state": "needs_human",
       "work_item_disposition": "propose_customer_action",
-      "work_item_key": "61e0bd47-dab0-442d-98a4-4180f9b242ae"
+      "work_item_key": "9bd72679-1cc5-4c01-ab72-bd538193544d"
     },
     {
       "account_id": "b939ef0b-fed4-5889-96e4-15c0357a8563",
@@ -378,7 +378,7 @@
       "score_label": "priority score 30",
       "state": "needs_human",
       "work_item_disposition": "propose_customer_action",
-      "work_item_key": "7447aea8-dd7c-47e3-bb9e-02466d0bf2d9"
+      "work_item_key": "68504e59-f9ef-42cb-a9b7-aa53dcaa83cb"
     },
     {
       "account_id": "a821ec8e-21a3-5f16-bd37-57947d324d62",
@@ -685,7 +685,7 @@
       "score_label": "priority score 20",
       "state": "needs_human",
       "work_item_disposition": "propose_customer_action",
-      "work_item_key": "306a8ec2-3a05-460b-bbd1-7b798cb61dff"
+      "work_item_key": "cf038cb0-b871-4560-86be-debc823088ae"
     },
     {
       "account_id": "0c0cb8e2-df1a-5fce-a45b-57e01bbe2efd",
@@ -2092,7 +2092,7 @@
       "score_label": "priority score 5",
       "state": "needs_human",
       "work_item_disposition": "propose_customer_action",
-      "work_item_key": "1b1fd095-4188-4ed3-afe9-1df59cdaa0ac"
+      "work_item_key": "b888d443-0300-4958-9c2a-09e7610a2b59"
     },
     {
       "account_id": "2c8f2a9e-eba9-5b4e-ba37-c78dd4ba2aae",
@@ -4179,7 +4179,7 @@
       "account_resolution": "exactly_one",
       "candidate_account_ids": [],
       "customer_contact_allowed": true,
-      "customer_draft": "Hi Marcus Webb, Ironhorse Freight Co is showing an onboarding risk tied to milestones_overdue, days_overdue. Can we review the overdue activation steps and agree on owners?",
+      "customer_draft": "Hi Marcus Webb, Ironhorse Freight Co is showing an onboarding risk tied to milestones_overdue, days_overdue. Can we confirm whether the remaining activation work is blocked by configuration, data import, or enablement, then agree on owners?",
       "disposition": "propose_customer_action",
       "draft_mode": "fixture",
       "evidence": [
@@ -4216,7 +4216,15 @@
         "signal": null,
         "target": null
       },
-      "motion": "working_session",
+      "motion": "escalation",
+      "motion_source": {
+        "matched_priority_factor": "milestones_overdue",
+        "motion": "escalation",
+        "play_id": "close-milestone-gap",
+        "priority_contribution": 50.0,
+        "selection_reason": "Selected because this playbook trigger matched the strongest priority signal.",
+        "trigger_factor": "milestones_overdue"
+      },
       "priority": {
         "factors": [
           {
@@ -4353,7 +4361,7 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "f7f8a9b0-07e0-4b5e-9e6f-be9c34c66dde",
+        "proposal_id": "43794b1e-b127-4110-91fa-61761373dee2",
         "status": "pending"
       },
       "reason": "Ironhorse Freight Co has deterministic Time-to-Value score 143 from milestones_overdue=50, days_overdue=40, success_plan_overdue=20; draft customer outreach. Evidence [evidence:4635cdb7-5bb5-5c43-acc1-5dc989d4d583], [evidence:afbc6091-985b-50e5-8522-e1a916af56c9], [evidence:7d61c11f-73d4-52f6-a738-33ab96634a61].",
@@ -4420,6 +4428,14 @@
         "target": "engineering"
       },
       "motion": "content_route",
+      "motion_source": {
+        "matched_priority_factor": "feature_depth_gap",
+        "motion": "content_route",
+        "play_id": "reactivate-stalled-module",
+        "priority_contribution": 15.0,
+        "selection_reason": "Selected because this playbook trigger matched the strongest priority signal.",
+        "trigger_factor": "feature_shallow_depth"
+      },
       "priority": {
         "factors": [
           {
@@ -4527,7 +4543,7 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "a4cdb71e-54bf-4661-9e8f-ba975a82df16",
+        "proposal_id": "62a516a3-34cb-4077-9600-fc5a243728f3",
         "status": "pending"
       },
       "reason": "Pinehill Transport has deterministic Time-to-Value score 82 from success_plan_overdue=20, health_yellow=15, low_seat_penetration=12; draft customer outreach. Evidence [evidence:df3f3e70-7ed8-5d10-9b05-395fd3d1a0f1], [evidence:4e2db753-f222-5f7b-8356-0a2f59fae1e3], [evidence:ae0a5970-d69b-5c18-ad60-8015524e565c].",
@@ -4588,6 +4604,14 @@
         "target": "product"
       },
       "motion": "personal_email",
+      "motion_source": {
+        "matched_priority_factor": "usage_outcome_unverified",
+        "motion": "personal_email",
+        "play_id": "confirm-outcome-objective",
+        "priority_contribution": 18.0,
+        "selection_reason": "Selected because this playbook trigger matched the strongest priority signal.",
+        "trigger_factor": "outcome_unknown"
+      },
       "priority": {
         "factors": [
           {
@@ -4672,7 +4696,7 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "30772eb6-f4a1-45e1-acc9-700ebe13deca",
+        "proposal_id": "a718e9f5-c76f-4599-bfbb-a4ccaa931547",
         "status": "pending"
       },
       "reason": "Trailhead Logistics has deterministic Time-to-Value score 63 from success_plan_overdue=20, arr_tier=5, single_threaded_risk=20; draft customer outreach. Evidence [evidence:20527c0a-8156-5119-934a-4017e19fc39d], [evidence:21830db9-7182-5d97-b22e-d57c4e28f696].",
@@ -4732,6 +4756,14 @@
         "target": null
       },
       "motion": "campaign_enroll",
+      "motion_source": {
+        "matched_priority_factor": "low_seat_penetration",
+        "motion": "campaign_enroll",
+        "play_id": "widen-seat-penetration",
+        "priority_contribution": 12.0,
+        "selection_reason": "Selected because this playbook trigger matched the strongest priority signal.",
+        "trigger_factor": "low_seat_penetration"
+      },
       "priority": {
         "factors": [
           {
@@ -4847,6 +4879,14 @@
         "target": null
       },
       "motion": "content_route",
+      "motion_source": {
+        "matched_priority_factor": "feature_depth_gap",
+        "motion": "content_route",
+        "play_id": "reactivate-stalled-module",
+        "priority_contribution": 15.0,
+        "selection_reason": "Selected because this playbook trigger matched the strongest priority signal.",
+        "trigger_factor": "feature_shallow_depth"
+      },
       "priority": {
         "factors": [
           {
@@ -4936,7 +4976,7 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "8c747266-7477-493f-bdef-1e50716ac905",
+        "proposal_id": "43566824-30b5-43e2-85d0-039812280257",
         "status": "pending"
       },
       "reason": "Clearwater Field Ops has deterministic Time-to-Value score 62 from success_plan_overdue=20, health_yellow=15, low_seat_penetration=12; draft customer outreach. Evidence [evidence:3ea4da77-9a46-57ce-aa0a-36440aed7192], [evidence:33509b75-de98-51fa-90a0-c68c90fe9324], [evidence:865e1e03-cb2f-524d-b572-1eeabebb8d32].",
@@ -4990,6 +5030,14 @@
         "target": null
       },
       "motion": "campaign_enroll",
+      "motion_source": {
+        "matched_priority_factor": "low_seat_penetration",
+        "motion": "campaign_enroll",
+        "play_id": "widen-seat-penetration",
+        "priority_contribution": 12.0,
+        "selection_reason": "Selected because this playbook trigger matched the strongest priority signal.",
+        "trigger_factor": "low_seat_penetration"
+      },
       "priority": {
         "factors": [
           {
@@ -5050,7 +5098,7 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "246df592-f7f4-4e21-84b2-698e580f9cb2",
+        "proposal_id": "2afcdf8a-264d-41b9-9f89-89fda861b481",
         "status": "pending"
       },
       "reason": "Ridgeline Warehousing has deterministic Time-to-Value score 47 from success_plan_overdue=20, health_yellow=15, low_seat_penetration=12; draft customer outreach. Evidence [evidence:eb6f3bbc-1ea8-5b0c-b6d5-ad15afda0e34], [evidence:081b380c-99e7-5073-992a-9e0d8b27d8c0].",
@@ -5093,6 +5141,14 @@
         "target": null
       },
       "motion": "personal_email",
+      "motion_source": {
+        "matched_priority_factor": null,
+        "motion": "personal_email",
+        "play_id": "confirm-outcome-objective",
+        "priority_contribution": null,
+        "selection_reason": "Selected from the matched tenant playbook trigger.",
+        "trigger_factor": "outcome_unknown"
+      },
       "priority": {
         "factors": [
           {
@@ -5136,7 +5192,7 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "6f52d3f7-f4eb-457c-b71f-b93d685aca94",
+        "proposal_id": "ec8c64db-4afa-4616-86e1-5b85028288db",
         "status": "pending"
       },
       "reason": "Northstar Couriers has deterministic Time-to-Value score 35 from success_plan_overdue=20, health_yellow=15; draft customer outreach. Evidence [evidence:023f694d-e8cb-593b-8053-b69e06c2f22d], [evidence:162a9085-8e63-53f0-bb1b-b48426911d34].",
@@ -5192,6 +5248,14 @@
         "target": "engineering"
       },
       "motion": "personal_email",
+      "motion_source": {
+        "matched_priority_factor": null,
+        "motion": "personal_email",
+        "play_id": "confirm-outcome-objective",
+        "priority_contribution": null,
+        "selection_reason": "Selected from the matched tenant playbook trigger.",
+        "trigger_factor": "outcome_unknown"
+      },
       "priority": {
         "factors": [
           {
@@ -5218,7 +5282,7 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "61e0bd47-dab0-442d-98a4-4180f9b242ae",
+        "proposal_id": "9bd72679-1cc5-4c01-ab72-bd538193544d",
         "status": "pending"
       },
       "reason": "Sagebrush Transport has deterministic Time-to-Value score 30 from health_red=30; draft customer outreach. Evidence [evidence:751d5071-7c34-5cd1-bca9-178d0f38ad1d], [evidence:3acf0291-5b0b-55b9-8653-d042239fcc17], [evidence:f8504037-dc1a-50e4-bdd9-7900b1379444].",
@@ -5297,6 +5361,14 @@
         "target": "engineering"
       },
       "motion": "working_session",
+      "motion_source": {
+        "matched_priority_factor": "feature_depth_gap",
+        "motion": "working_session",
+        "play_id": "reactivate-stalled-module-live",
+        "priority_contribution": 15.0,
+        "selection_reason": "Selected because this playbook trigger matched the strongest priority signal.",
+        "trigger_factor": "feature_shallow_depth"
+      },
       "priority": {
         "factors": [
           {
@@ -5364,7 +5436,7 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "7447aea8-dd7c-47e3-bb9e-02466d0bf2d9",
+        "proposal_id": "68504e59-f9ef-42cb-a9b7-aa53dcaa83cb",
         "status": "pending"
       },
       "reason": "Harborview Fleet has deterministic Time-to-Value score 30 from health_yellow=15, feature_depth_gap=15; draft customer outreach. Evidence [evidence:4af5a5c0-f51a-5a83-9217-141f4333c6db], [evidence:625c9e2b-353d-5bc9-b866-91b2c536d104], [evidence:2f75e535-4d63-5289-8084-aa72fcf3b39a].",
@@ -5438,6 +5510,14 @@
         "target": null
       },
       "motion": "personal_email",
+      "motion_source": {
+        "matched_priority_factor": null,
+        "motion": "personal_email",
+        "play_id": "confirm-outcome-objective",
+        "priority_contribution": null,
+        "selection_reason": "Selected from the matched tenant playbook trigger.",
+        "trigger_factor": "outcome_unknown"
+      },
       "priority": {
         "factors": [
           {
@@ -5464,7 +5544,7 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "306a8ec2-3a05-460b-bbd1-7b798cb61dff",
+        "proposal_id": "cf038cb0-b871-4560-86be-debc823088ae",
         "status": "pending"
       },
       "reason": "Summit Industrial Supply has deterministic Time-to-Value score 20 from success_plan_overdue=20; draft customer outreach. Evidence [evidence:2b9e4aff-7f3e-5fd8-af1d-482d72f79fdc], [evidence:390eef5a-4d06-59ae-93cb-2c0a012e7ef8].",
@@ -5507,6 +5587,14 @@
         "target": null
       },
       "motion": "personal_email",
+      "motion_source": {
+        "matched_priority_factor": null,
+        "motion": "personal_email",
+        "play_id": "confirm-outcome-objective",
+        "priority_contribution": null,
+        "selection_reason": "Selected from the matched tenant playbook trigger.",
+        "trigger_factor": "outcome_unknown"
+      },
       "priority": {
         "factors": [
           {
@@ -5533,7 +5621,7 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "1b1fd095-4188-4ed3-afe9-1df59cdaa0ac",
+        "proposal_id": "b888d443-0300-4958-9c2a-09e7610a2b59",
         "status": "pending"
       },
       "reason": "Meridian Fleet Group has deterministic Time-to-Value score 5 from arr_tier=5; draft customer outreach. Evidence [evidence:30f4240b-e6c6-5bd2-b7b4-42a9b8d68cc1], [evidence:47f78943-7a8a-5bf1-9eeb-df74372085c7].",
@@ -5583,6 +5671,7 @@
       "evidence": [],
       "internal_bridge_decision": null,
       "motion": "cohort_action",
+      "motion_source": null,
       "priority": null,
       "proposal": null,
       "reason": "Cohort collapse: feature_shallow_depth affects 26 tech_touch accounts via play 'reactivate-stalled-module-cohort' -- one cohort_action covers all, not 26 individual motions.",

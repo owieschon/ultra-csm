@@ -193,11 +193,15 @@ def check_real_sweep_guard_fleetops() -> dict[str, Any]:
                     if account is None:
                         continue
                     result = _account_tier_and_motion(
-                        data_plane, account, playbooks=playbooks, value_model_config=cfg
+                        data_plane,
+                        account,
+                        playbooks=playbooks,
+                        value_model_config=cfg,
+                        as_of=_as_of(day),
                     )
                     if result is None:
                         continue
-                    tier, _motion, _triggers = result
+                    tier, _motion, _triggers, _motion_source = result
                     if tier != "tech_touch" or not item.customer_contact_allowed:
                         continue
                     detail["accounts_checked"] += 1

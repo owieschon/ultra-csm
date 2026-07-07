@@ -16,6 +16,7 @@ export interface WorkDescriptor {
   kind: WorkKind;
   kindLabel: string;
   packetLabel: string;
+  shortPacketLabel: string;
   authorityLabel: string;
 }
 
@@ -57,6 +58,9 @@ export function describeWork(item: WorkItem): WorkDescriptor {
   } else if (motion === "qbr") {
     cadence = "quarterly";
     kind = "briefing_packet";
+  } else if (motion === "escalation") {
+    cadence = "event";
+    kind = "customer_action";
   } else if (motion === "cohort_action" || action === "cohort_action") {
     cadence = "monthly";
     kind = "cohort_packet";
@@ -69,6 +73,7 @@ export function describeWork(item: WorkItem): WorkDescriptor {
   }
 
   const motionLabel = motion ? label(MOTION_LABELS, motion) : null;
+  const diagnosticLabel = diagnosticPacketLabel(item);
   const packetLabel =
     kind === "briefing_packet"
       ? hasInternalTarget
@@ -80,6 +85,8 @@ export function describeWork(item: WorkItem): WorkDescriptor {
           ? "Integrity task"
           : kind === "cohort_packet"
             ? "Cohort packet"
+            : diagnosticLabel
+              ? diagnosticLabel
             : motionLabel
               ? `${motionLabel} packet`
               : "Customer action packet";
@@ -90,12 +97,25 @@ export function describeWork(item: WorkItem): WorkDescriptor {
     kind,
     kindLabel: kindLabel(kind),
     packetLabel,
+    shortPacketLabel: packetLabel.replace(/ packet$/, ""),
     authorityLabel: item.proposal
       ? item.proposal.status === "pending"
         ? "human approval required"
         : `proposal ${item.proposal.status}`
       : "no customer-facing release",
   };
+}
+
+function diagnosticPacketLabel(item: WorkItem): string | null {
+  const trigger = item.motion_source?.trigger_factor;
+  if (trigger === "milestones_overdue") return "Onboarding recovery packet";
+  if (trigger === "feature_shallow_depth") return "Adoption unblock packet";
+  if (trigger === "health_red") return "Critical-risk triage packet";
+  if (trigger === "health_yellow") return "Health-risk review packet";
+  if (trigger === "outcome_unknown") return "Outcome proof packet";
+  if (trigger === "low_seat_penetration") return "Seat activation packet";
+  if (trigger === "champion_inactive") return "Champion reactivation packet";
+  return null;
 }
 
 function kindLabel(kind: WorkKind): string {

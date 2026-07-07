@@ -194,6 +194,7 @@ export function QueueDetail({ item, day }: { item: WorkItem; day: number | undef
   return (
     <div className="detail-scroll">
       <WorkPacket item={item} brief={brief} />
+      <DiagnosticChain item={item} />
 
       <div className="sec">
         <div className="sec-h">
@@ -340,6 +341,86 @@ export function QueueDetail({ item, day }: { item: WorkItem; day: number | undef
       </div>
     </div>
   );
+}
+
+function DiagnosticChain({ item }: { item: WorkItem }) {
+  const source = item.motion_source;
+  if (!source) return null;
+  const matchedFactor = (item.priority?.factors ?? []).find(
+    (factor) => factor.name === source.matched_priority_factor
+  );
+  const contact = item.recipient_name
+    ? `${item.recipient_name}${item.recipient_role ? ` · ${label(ROLE_LABELS, item.recipient_role)}` : ""}`
+    : "No eligible customer contact resolved";
+
+  return (
+    <div className="sec">
+      <div className="sec-h">
+        <span className="t">CSM diagnosis</span>
+        <span className="prov">
+          <span className="chip-det">Telemetry + playbook</span>
+        </span>
+      </div>
+      <div className="diagnosis-grid">
+        <DiagnosisStep
+          label="Signal"
+          value={label(TRIGGER_LABELS, source.trigger_factor)}
+          meta={
+            matchedFactor
+              ? `+${matchedFactor.contribution} priority · ${matchedFactor.evidence?.length ?? 0} records`
+              : source.play_id
+          }
+        />
+        <DiagnosisStep
+          label="Likely blocker"
+          value={blockerLabel(source.trigger_factor)}
+          meta={source.matched_priority_factor ?? source.trigger_factor}
+        />
+        <DiagnosisStep
+          label="Contact path"
+          value={contact}
+          meta={item.recipient_resolution ?? "unresolved"}
+        />
+        <DiagnosisStep
+          label="Prepared motion"
+          value={item.motion ? label(MOTION_LABELS, item.motion) : "Prepared review"}
+          meta={source.play_id}
+        />
+      </div>
+      <div className="diagnosis-note">{source.selection_reason}</div>
+    </div>
+  );
+}
+
+function DiagnosisStep({
+  label,
+  value,
+  meta,
+}: {
+  label: string;
+  value: string;
+  meta: string;
+}) {
+  return (
+    <div className="diagnosis-step">
+      <div className="diagnosis-label">{label}</div>
+      <div className="diagnosis-value">{value}</div>
+      <div className="diagnosis-meta">{meta}</div>
+    </div>
+  );
+}
+
+function blockerLabel(triggerFactor: string): string {
+  const labels: Record<string, string> = {
+    milestones_overdue: "Activation is stalled; inspect overdue milestones before outreach.",
+    feature_shallow_depth: "Paid capability has not reached operational use.",
+    health_red: "Health deterioration needs driver isolation before customer messaging.",
+    health_yellow: "Timeline or adoption risk needs confirmation.",
+    outcome_unknown: "Usage exists, but the business outcome is not proven yet.",
+    low_seat_penetration: "Licensed seats are not activated deeply enough.",
+    champion_inactive: "Primary relationship has gone quiet.",
+  };
+  return labels[triggerFactor] ?? "Review the cited signal before taking action.";
 }
 
 function WorkPacket({ item, brief }: { item: WorkItem; brief: Brief | null }) {
