@@ -157,6 +157,13 @@ export interface MotionSource {
   selection_reason: string;
 }
 
+export interface DiagnosticStep {
+  stage: string;
+  label: string;
+  value: string;
+  meta: string;
+}
+
 export interface InternalBridgeEvidence {
   source: string;
   source_id: string;
@@ -190,6 +197,7 @@ export interface WorkItem {
   customer_draft: string | null;
   motion: string | null;
   motion_source?: MotionSource | null;
+  diagnostic_chain?: DiagnosticStep[];
   internal_bridge_decision?: InternalBridgeDecision | null;
   recipient_resolution: string | null;
   recipient_name: string | null;

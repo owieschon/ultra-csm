@@ -344,52 +344,79 @@ export function QueueDetail({ item, day }: { item: WorkItem; day: number | undef
 }
 
 function DiagnosticChain({ item }: { item: WorkItem }) {
-  const source = item.motion_source;
-  if (!source) return null;
-  const matchedFactor = (item.priority?.factors ?? []).find(
-    (factor) => factor.name === source.matched_priority_factor
-  );
-  const contact = item.recipient_name
-    ? `${item.recipient_name}${item.recipient_role ? ` · ${label(ROLE_LABELS, item.recipient_role)}` : ""}`
-    : "No eligible customer contact resolved";
+  const chain = item.diagnostic_chain?.length
+    ? item.diagnostic_chain
+    : fallbackDiagnosticChain(item);
+  if (chain.length === 0) return null;
 
   return (
     <div className="sec">
       <div className="sec-h">
         <span className="t">CSM diagnosis</span>
         <span className="prov">
-          <span className="chip-det">Telemetry + playbook</span>
+          <span className="chip-det">Traceable action chain</span>
         </span>
       </div>
       <div className="diagnosis-grid">
-        <DiagnosisStep
-          label="Signal"
-          value={label(TRIGGER_LABELS, source.trigger_factor)}
-          meta={
-            matchedFactor
-              ? `+${matchedFactor.contribution} priority · ${matchedFactor.evidence?.length ?? 0} records`
-              : source.play_id
-          }
-        />
-        <DiagnosisStep
-          label="Likely blocker"
-          value={blockerLabel(source.trigger_factor)}
-          meta={source.matched_priority_factor ?? source.trigger_factor}
-        />
-        <DiagnosisStep
-          label="Contact path"
-          value={contact}
-          meta={item.recipient_resolution ?? "unresolved"}
-        />
-        <DiagnosisStep
-          label="Prepared motion"
-          value={item.motion ? label(MOTION_LABELS, item.motion) : "Prepared review"}
-          meta={source.play_id}
-        />
+        {chain.map((step) => (
+          <DiagnosisStep
+            key={`${step.stage}-${step.label}`}
+            label={step.label}
+            value={diagnosticValue(step.stage, step.value)}
+            meta={step.meta}
+          />
+        ))}
       </div>
-      <div className="diagnosis-note">{source.selection_reason}</div>
+      <div className="diagnosis-note">
+        Every agent-prepared action keeps the signal, inference, route, evidence, and approval boundary attached.
+      </div>
     </div>
   );
+}
+
+function fallbackDiagnosticChain(item: WorkItem): NonNullable<WorkItem["diagnostic_chain"]> {
+  const source = item.motion_source;
+  if (!source) return [];
+  const matchedFactor = (item.priority?.factors ?? []).find(
+    (factor) => factor.name === source.matched_priority_factor
+  );
+  const contact = item.recipient_name
+    ? `${item.recipient_name}${item.recipient_role ? ` (${label(ROLE_LABELS, item.recipient_role)})` : ""}`
+    : "No eligible customer contact resolved";
+  return [
+    {
+      stage: "signal",
+      label: "Signal",
+      value: source.trigger_factor,
+      meta: matchedFactor
+        ? `+${matchedFactor.contribution} priority · ${matchedFactor.evidence?.length ?? 0} records`
+        : source.play_id,
+    },
+    {
+      stage: "diagnosis",
+      label: "Likely blocker",
+      value: blockerLabel(source.trigger_factor),
+      meta: source.matched_priority_factor ?? source.trigger_factor,
+    },
+    {
+      stage: "action",
+      label: "Selected action",
+      value: item.motion ?? "Prepared review",
+      meta: source.play_id,
+    },
+    {
+      stage: "recipient",
+      label: "Recipient path",
+      value: contact,
+      meta: item.recipient_resolution ?? "unresolved",
+    },
+  ];
+}
+
+function diagnosticValue(stage: string, value: string): string {
+  if (stage === "signal") return label(TRIGGER_LABELS, value);
+  if (stage === "action") return label(MOTION_LABELS, value);
+  return value;
 }
 
 function DiagnosisStep({

@@ -92,6 +92,39 @@ class TestSweepMotionLive:
                 "priority signal."
             ),
         }
+        chain = ironhorse["diagnostic_chain"]
+        assert [step["stage"] for step in chain] == [
+            "signal",
+            "diagnosis",
+            "action",
+            "recipient",
+            "evidence",
+            "approval",
+        ]
+        assert chain[0]["value"] == "milestones_overdue"
+        assert chain[2]["value"] == "escalation"
+        assert chain[3]["value"].startswith("Marcus Webb")
+
+    def test_every_work_item_and_proposal_carries_diagnostic_chain(
+        self, client: TestClient
+    ):
+        resp = client.post("/sweep?day=140", headers=AUTH_HEADERS)
+        assert resp.status_code == 200
+        work_items = resp.json()["work_items"]
+
+        assert work_items
+        for item in work_items:
+            chain = item.get("diagnostic_chain")
+            assert isinstance(chain, list) and chain, item.get("account_id")
+            stages = {step["stage"] for step in chain}
+            assert {"signal", "diagnosis", "action", "recipient", "evidence", "approval"} <= stages
+
+        proposals = client.get("/proposals", headers=AUTH_HEADERS).json()["proposals"]
+        assert proposals
+        for proposal in proposals:
+            chain = proposal["payload"].get("diagnostic_chain")
+            assert isinstance(chain, list) and chain, proposal["proposal_id"]
+            assert chain[-1]["stage"] == "approval"
 
     def test_sweep_cohort_collapse_present(self, client: TestClient):
         resp = client.post("/sweep", headers=AUTH_HEADERS)
