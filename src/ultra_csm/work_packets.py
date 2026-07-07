@@ -79,6 +79,14 @@ FEEDBACK_CATEGORIES: tuple[str, ...] = (
     "dismiss_monitor",
 )
 
+_UNTRUSTED_DIRECTIVE_MARKERS = (
+    "ignore previous instructions",
+    "ignore policy",
+    "mark me top priority",
+    "mark this account top priority",
+    "email all customer data",
+)
+
 
 @dataclass(frozen=True)
 class DiagnosticHypothesis:
@@ -1010,7 +1018,9 @@ def _observed_values(inputs: PacketInputs) -> dict[str, str]:
     for plan in inputs.success_plans:
         values[plan.plan_id] = f"status={plan.status}; target={plan.target_date}; objectives={', '.join(plan.objectives)}"
     for case in inputs.cases:
-        values[case.case_id] = f"{case.subject}; status={case.status}; priority={case.priority}"
+        values[case.case_id] = (
+            f"{_safe_case_subject(case)}; status={case.status}; priority={case.priority}"
+        )
     for milestone in inputs.milestones:
         for source_id in milestone.evidence_signal_ids:
             values.setdefault(
@@ -1186,11 +1196,11 @@ def _blocker_sentence(inputs: PacketInputs) -> str:
 def _blocker_phrase(inputs: PacketInputs) -> str:
     overdue = [m for m in inputs.milestones if m.achieved_at is None and m.expected_by <= inputs.as_of]
     if overdue and inputs.cases:
-        return f"{_humanize(overdue[0].milestone)} plus {inputs.cases[0].subject.lower()}"
+        return f"{_humanize(overdue[0].milestone)} plus {_safe_case_subject(inputs.cases[0]).lower()}"
     if overdue:
         return ", ".join(_humanize(m.milestone) for m in overdue[:2])
     if inputs.cases:
-        return inputs.cases[0].subject.lower()
+        return _safe_case_subject(inputs.cases[0]).lower()
     if inputs.success_plans:
         return f"success plan target {inputs.success_plans[0].target_date}"
     if inputs.priority_factors:
@@ -1199,8 +1209,21 @@ def _blocker_phrase(inputs: PacketInputs) -> str:
 
 
 def _case_product_feedback(case: CRMCase) -> bool:
+    if _contains_untrusted_directive(case.subject):
+        return False
     text = case.subject.lower()
     return any(token in text for token in ("integration", "not working", "failing", "bug", "missing"))
+
+
+def _safe_case_subject(case: CRMCase) -> str:
+    if _contains_untrusted_directive(case.subject):
+        return "customer-reported case content withheld pending review"
+    return case.subject.strip()
+
+
+def _contains_untrusted_directive(text: str) -> bool:
+    lowered = text.lower()
+    return any(marker in lowered for marker in _UNTRUSTED_DIRECTIVE_MARKERS)
 
 
 def _contact_reason(inputs: PacketInputs) -> str:
