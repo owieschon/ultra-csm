@@ -20,6 +20,7 @@
           "source_id": "dd638660-a13a-595c-a117-72a1ed5f15d0"
         }
       ],
+      "internal_bridge_decision": null,
       "motion": null,
       "priority": null,
       "proposal": null,
@@ -28,6 +29,7 @@
       "recipient_resolution": null,
       "recipient_role": null,
       "recommended_action": null,
+      "slot_a_classifications": [],
       "swept_at": "2026-06-27",
       "tenant_id": "ultra-demo"
     }
@@ -88,6 +90,21 @@
           "source_id": "a317f5e7-575e-5879-8256-9082e40ef19f"
         }
       ],
+      "internal_bridge_decision": {
+        "abstained": false,
+        "evidence": [
+          {
+            "field": "subject",
+            "observed_at": "2026-06-27",
+            "source": "crm",
+            "source_id": "4ddf4d0e-2600-56f7-9edc-a5a0071d8186"
+          }
+        ],
+        "motion": "escalation",
+        "reason": "Active or recurring technical failure requires engineering handoff.",
+        "signal": "active_technical_failure",
+        "target": "engineering"
+      },
       "motion": null,
       "priority": {
         "factors": [
@@ -243,6 +260,18 @@
       "recipient_resolution": "first_consenting_fallback",
       "recipient_role": "operations",
       "recommended_action": "draft_customer_outreach",
+      "slot_a_classifications": [
+        {
+          "account_id": "a317f5e7-575e-5879-8256-9082e40ef19f",
+          "case_id": "4ddf4d0e-2600-56f7-9edc-a5a0071d8186",
+          "cited_case_id": "4ddf4d0e-2600-56f7-9edc-a5a0071d8186",
+          "classification": "blocker",
+          "model_id": "fixture-agent1-slot-a-v1",
+          "prompt_version": "agent1-slot-a-case-note-v1",
+          "reason": "Matched blocker case-note signals: implementation blocker.",
+          "source": "slot_a"
+        }
+      ],
       "swept_at": "2026-06-27",
       "tenant_id": "ultra-demo"
     },
@@ -280,6 +309,14 @@
           "source_id": "9bbdd7b2-55b0-5257-acf8-808ad224e276"
         }
       ],
+      "internal_bridge_decision": {
+        "abstained": true,
+        "evidence": [],
+        "motion": null,
+        "reason": "No live engineering defect or product-feedback capability gap found.",
+        "signal": null,
+        "target": null
+      },
       "motion": null,
       "priority": {
         "factors": [
@@ -400,6 +437,7 @@
       "recipient_resolution": "first_consenting_fallback",
       "recipient_role": null,
       "recommended_action": "recommend_next_best_action",
+      "slot_a_classifications": [],
       "swept_at": "2026-06-27",
       "tenant_id": "ultra-demo"
     },
@@ -443,6 +481,14 @@
           "source_id": "ac5ddaea-764f-57ef-866d-593d57a20a00"
         }
       ],
+      "internal_bridge_decision": {
+        "abstained": true,
+        "evidence": [],
+        "motion": null,
+        "reason": "No live engineering defect or product-feedback capability gap found.",
+        "signal": null,
+        "target": null
+      },
       "motion": null,
       "priority": {
         "factors": [
@@ -569,6 +615,18 @@
       "recipient_resolution": "first_consenting_fallback",
       "recipient_role": "operations",
       "recommended_action": "draft_customer_outreach",
+      "slot_a_classifications": [
+        {
+          "account_id": "ac5ddaea-764f-57ef-866d-593d57a20a00",
+          "case_id": "fefff49b-e3f3-5127-86dd-970eedbf8ce1",
+          "cited_case_id": "fefff49b-e3f3-5127-86dd-970eedbf8ce1",
+          "classification": "unknown",
+          "model_id": "fixture-agent1-slot-a-v1",
+          "prompt_version": "agent1-slot-a-case-note-v1",
+          "reason": "No clear blocker or noise signal in the case note.",
+          "source": "slot_a"
+        }
+      ],
       "swept_at": "2026-06-27",
       "tenant_id": "ultra-demo"
     },
@@ -600,6 +658,14 @@
           "source_id": "b2178254-7d72-55e3-84af-27846a0cb7d5"
         }
       ],
+      "internal_bridge_decision": {
+        "abstained": true,
+        "evidence": [],
+        "motion": null,
+        "reason": "No live engineering defect or product-feedback capability gap found.",
+        "signal": null,
+        "target": null
+      },
       "motion": null,
       "priority": {
         "factors": [
@@ -709,6 +775,7 @@
       "recipient_resolution": "first_consenting_fallback",
       "recipient_role": "operations",
       "recommended_action": "draft_customer_outreach",
+      "slot_a_classifications": [],
       "swept_at": "2026-06-27",
       "tenant_id": "ultra-demo"
     },
@@ -734,6 +801,14 @@
           "source_id": "efe1d86f-af21-5ca6-8719-3ba8b4429292"
         }
       ],
+      "internal_bridge_decision": {
+        "abstained": true,
+        "evidence": [],
+        "motion": null,
+        "reason": "No live engineering defect or product-feedback capability gap found.",
+        "signal": null,
+        "target": null
+      },
       "motion": null,
       "priority": {
         "factors": [
@@ -826,6 +901,7 @@
       "recipient_resolution": "first_consenting_fallback",
       "recipient_role": "operations",
       "recommended_action": "draft_customer_outreach",
+      "slot_a_classifications": [],
       "swept_at": "2026-06-27",
       "tenant_id": "ultra-demo"
     }
