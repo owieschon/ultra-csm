@@ -244,6 +244,7 @@ class SweepResponse(BaseModel):
     work_items: list[dict[str, Any]]
     escalations: list[dict[str, Any]]
     swept_accounts: list[str]
+    coverage_receipts: list[dict[str, Any]] = Field(default_factory=list)
     degraded_items: int = 0
     auth: str | None = None
 
@@ -1024,6 +1025,272 @@ def _as_mapping(value: Any) -> dict[str, Any] | None:
     return None
 
 
+_COVERAGE_LABELS = {
+    "needs_human": "Needs human",
+    "prepared_work": "Prepared work",
+    "reviewed": "Reviewed",
+    "covered": "Covered",
+    "insufficient_evidence": "Insufficient evidence",
+    "source_degraded": "Source degraded",
+    "not_scanned": "Not scanned",
+}
+
+
+def _coverage_label(state: str) -> str:
+    return _COVERAGE_LABELS.get(state, state.replace("_", " "))
+
+
+def _account_summary_entries(
+    data_plane: CustomerDataPlane,
+    *,
+    as_of: str,
+) -> list[dict[str, Any]]:
+    """Account summary rows with the same score/tier posture everywhere.
+
+    Coverage receipts depend on these fields, so `/accounts` and `/sweep`
+    share this helper instead of each endpoint re-stating the scoring policy.
+    """
+
+    accounts = data_plane.crm.list_accounts(tenant_id=DEFAULT_TENANT)
+    results: list[dict[str, Any]] = []
+    for account in accounts:
+        company = data_plane.cs.get_company(account.account_id)
+        health = data_plane.cs.get_health_score(account.account_id)
+        adoption = data_plane.cs.get_adoption_summary(account.account_id)
+
+        entry: dict[str, Any] = {
+            "account_id": account.account_id,
+            "account_name": account.name,
+            "industry": account.industry,
+        }
+
+        if company:
+            entry["arr_cents"] = company.arr_cents
+            entry["lifecycle_stage"] = company.lifecycle_stage
+            try:
+                resolved = resolve_tenant_tier(
+                    account_attributes(account, company), _value_model_config
+                )
+                entry["tier"] = resolved.tier
+            except Exception as exc:
+                log.warning(
+                    "tier_resolution_failed",
+                    extra={
+                        "surface": "api.account_summary",
+                        "account_id": account.account_id,
+                        "error_type": exc.__class__.__name__,
+                    },
+                )
+
+        if health:
+            entry["health_band"] = health.band
+            entry["health_score"] = health.score
+
+        if company and health and adoption:
+            try:
+                priority_score, _divergences = score_account_priority(
+                    account.account_id,
+                    data_plane=data_plane,
+                    as_of=as_of,
+                )
+                entry["priority_score"] = priority_score
+            except Exception as exc:
+                log.warning(
+                    "priority_score_failed",
+                    extra={
+                        "surface": "api.account_summary",
+                        "account_id": account.account_id,
+                        "error_type": exc.__class__.__name__,
+                    },
+                )
+                entry["priority_score"] = None
+                entry["priority_score_error"] = exc.__class__.__name__
+
+        results.append(entry)
+
+    results.sort(
+        key=lambda r: r["priority_score"] if r.get("priority_score") is not None else -1,
+        reverse=True,
+    )
+    return results
+
+
+def _coverage_receipts_for_sweep(
+    *,
+    account_entries: list[dict[str, Any]],
+    sweep: SweepResponse,
+) -> list[dict[str, Any]]:
+    """Produce backend-owned account coverage receipts for a sweep.
+
+    The receipt states exactly what the current backend can prove. For
+    non-surfaced accounts, the current API can prove sweep inclusion and score
+    posture, but not a full per-factor "near miss" trace; that missing trace is
+    exposed as an explicit gap instead of being inferred client-side.
+    """
+
+    items = [_as_mapping(item) or {} for item in sweep.work_items]
+    work_by_account = {
+        str(item.get("account_id")): item
+        for item in items
+        if item.get("account_id")
+    }
+    swept = set(sweep.swept_accounts)
+    receipts: list[dict[str, Any]] = []
+    for account in account_entries:
+        account_id = str(account["account_id"])
+        item = work_by_account.get(account_id)
+        scanned = account_id in swept
+        state, reason, action_label = _coverage_state_reason_action(
+            account=account,
+            item=item,
+            scanned=scanned,
+        )
+        receipts.append({
+            "account_id": account_id,
+            "account_name": account.get("account_name"),
+            "state": state,
+            "label": _coverage_label(state),
+            "action_label": action_label,
+            "reason": reason,
+            "priority_score": account.get("priority_score"),
+            "priority_score_error": account.get("priority_score_error"),
+            "score_label": (
+                "score unavailable"
+                if account.get("priority_score") is None
+                else f"priority score {account.get('priority_score')}"
+            ),
+            "scanned": scanned,
+            "work_item_key": _coverage_work_item_key(item),
+            "work_item_disposition": item.get("disposition") if item else None,
+            "proposal_status": (
+                proposal.get("status")
+                if item and (proposal := _as_mapping(item.get("proposal"))) is not None
+                else None
+            ),
+            "evidence_lines": _coverage_evidence_lines(item=item, scanned=scanned),
+            "missing_lines": _coverage_missing_lines(
+                account=account,
+                item=item,
+                scanned=scanned,
+                state=state,
+            ),
+        })
+    return receipts
+
+
+def _coverage_state_reason_action(
+    *,
+    account: dict[str, Any],
+    item: dict[str, Any] | None,
+    scanned: bool,
+) -> tuple[str, str, str]:
+    if not scanned:
+        return (
+            "not_scanned",
+            "This account is in the book but is absent from the latest sweep receipt.",
+            "Review source coverage",
+        )
+    if account.get("priority_score_error"):
+        return (
+            "source_degraded",
+            f"Priority scoring failed with {account.get('priority_score_error')}.",
+            "Review degraded source",
+        )
+    if account.get("priority_score") is None:
+        return (
+            "insufficient_evidence",
+            "The account was swept, but no priority score is available.",
+            "Inspect missing evidence",
+        )
+    if item is None:
+        return (
+            "covered",
+            "Swept this run; no work item was emitted for the account.",
+            "Review receipt",
+        )
+    proposal = _as_mapping(item.get("proposal"))
+    if proposal is not None and proposal.get("status") == "pending":
+        return (
+            "needs_human",
+            "A work packet is waiting for human approval.",
+            "Open packet",
+        )
+    if proposal is None:
+        return (
+            "prepared_work",
+            "A work packet was prepared without a customer-facing release.",
+            "Inspect packet",
+        )
+    return (
+        "reviewed",
+        f"The proposal was {proposal.get('status')}.",
+        "Review audit receipt",
+    )
+
+
+def _coverage_work_item_key(item: dict[str, Any] | None) -> str | None:
+    if not item:
+        return None
+    proposal = _as_mapping(item.get("proposal"))
+    if proposal is not None and proposal.get("proposal_id"):
+        return str(proposal["proposal_id"])
+    subject = item.get("account_id") or ",".join(item.get("candidate_account_ids") or ()) or "program"
+    motion = item.get("motion") or item.get("recommended_action") or "work"
+    return ":".join([
+        str(item.get("disposition") or "work"),
+        str(subject),
+        str(motion),
+        str(item.get("swept_at") or ""),
+    ])
+
+
+def _coverage_evidence_lines(
+    *,
+    item: dict[str, Any] | None,
+    scanned: bool,
+) -> list[str]:
+    lines = [
+        "Included in latest swept_accounts receipt."
+        if scanned else "Not included in latest sweep."
+    ]
+    motion = item.get("motion") if item else None
+    lines.append(f"Motion: {motion}." if motion else "No motion emitted.")
+    priority = _as_mapping(item.get("priority")) if item else None
+    for factor in [_as_mapping(f) for f in (priority or {}).get("factors", ())][:3]:
+        if factor is None:
+            continue
+        threshold = (
+            f" · threshold {factor.get('threshold_name')}={factor.get('threshold_value')}"
+            if factor.get("threshold_name") and factor.get("threshold_value") is not None
+            else ""
+        )
+        lines.append(
+            f"{factor.get('name')}: value {factor.get('value')}, "
+            f"contribution {factor.get('contribution')}{threshold}"
+        )
+    return lines
+
+
+def _coverage_missing_lines(
+    *,
+    account: dict[str, Any],
+    item: dict[str, Any] | None,
+    scanned: bool,
+    state: str,
+) -> list[str]:
+    if not scanned:
+        return ["No swept_accounts receipt for this account."]
+    if account.get("priority_score_error"):
+        return [f"priority_score_error: {account.get('priority_score_error')}"]
+    if account.get("priority_score") is None:
+        return ["priority_score is null."]
+    if item is None and state == "covered":
+        return [
+            "Per-factor non-promotion thresholds are not exposed by the current API.",
+        ]
+    return []
+
+
 def _pending_proposal_packets() -> list[dict[str, Any]]:
     assert _conn is not None
     with session(
@@ -1166,70 +1433,7 @@ async def list_accounts(
     Add ``&deep=true`` to use the deep data simulation overlay.
     """
     dp, as_of = _data_plane_for_day(day, deep=deep)
-    accounts = dp.crm.list_accounts(tenant_id=DEFAULT_TENANT)
-    results: list[dict[str, Any]] = []
-
-    for account in accounts:
-        company = dp.cs.get_company(account.account_id)
-        health = dp.cs.get_health_score(account.account_id)
-        adoption = dp.cs.get_adoption_summary(account.account_id)
-
-        entry: dict[str, Any] = {
-            "account_id": account.account_id,
-            "account_name": account.name,
-            "industry": account.industry,
-        }
-
-        if company:
-            entry["arr_cents"] = company.arr_cents
-            entry["lifecycle_stage"] = company.lifecycle_stage
-            try:
-                resolved = resolve_tenant_tier(
-                    account_attributes(account, company), _value_model_config
-                )
-                entry["tier"] = resolved.tier
-            except Exception as exc:
-                log.warning(
-                    "tier_resolution_failed",
-                    extra={
-                        "surface": "api.list_accounts",
-                        "account_id": account.account_id,
-                        "error_type": exc.__class__.__name__,
-                    },
-                )
-
-        if health:
-            entry["health_band"] = health.band
-            entry["health_score"] = health.score
-
-        # Compute priority if we have enough data.
-        if company and health and adoption:
-            try:
-                priority_score, _divergences = score_account_priority(
-                    account.account_id,
-                    data_plane=dp,
-                    as_of=as_of,
-                )
-                entry["priority_score"] = priority_score
-            except Exception as exc:
-                log.warning(
-                    "priority_score_failed",
-                    extra={
-                        "surface": "api.list_accounts",
-                        "account_id": account.account_id,
-                        "error_type": exc.__class__.__name__,
-                    },
-                )
-                entry["priority_score"] = None
-                entry["priority_score_error"] = exc.__class__.__name__
-
-        results.append(entry)
-
-    # Sort by priority score descending.
-    results.sort(
-        key=lambda r: r["priority_score"] if r.get("priority_score") is not None else -1,
-        reverse=True,
-    )
+    results = _account_summary_entries(dp, as_of=as_of)
 
     return AccountListResponse(
         tenant_id=DEFAULT_TENANT,
@@ -1698,6 +1902,10 @@ async def trigger_sweep(
         swept_accounts=list(result.get("swept_accounts", ())),
         degraded_items=result.get("degraded_items", 0),
         auth=auth_principal.auth,
+    )
+    response.coverage_receipts = _coverage_receipts_for_sweep(
+        account_entries=_account_summary_entries(dp, as_of=as_of),
+        sweep=response,
     )
     _record_sweep_audit_events(
         sweep=response,

@@ -109,6 +109,7 @@ The packet has typed modules, and the full book has coverage receipts so the wor
    - Work item emitted or explicit "no work item emitted"
    - Factor thresholds when the current API exposes them
    - Honest gap when per-factor non-promotion thresholds are not yet exposed
+   - Backend source: `/sweep.coverage_receipts`; UI fallback derivation exists only for older static fixtures
 
 This keeps stakeholder data in the system without making stakeholder intelligence the product.
 
@@ -150,7 +151,7 @@ Low code risk. No new backend.
 - In `QueueLanes`, group by `recommended_action`, `motion`, `internal_bridge_decision`, and `proposal.status`.
 - Add derived cadence labels from existing work item fields.
 - In `QueueDetail`, put the work packet above account sources.
-- In `BookView`, expose coverage filters and per-account coverage receipts so Today is a prioritized worklist, not the only inspectable truth.
+- In `/sweep`, emit backend-owned coverage receipts, then render them in `BookView` as coverage filters and per-account receipts so Today is a prioritized worklist, not the only inspectable truth.
 - Keep all existing drawers intact.
 
 ### Slice 2: Work Packet Detail

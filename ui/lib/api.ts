@@ -186,11 +186,37 @@ export interface WorkItem {
   recipient_role: string | null;
 }
 
+export interface CoverageReceiptResponse {
+  account_id: string;
+  account_name: string;
+  state:
+    | "needs_human"
+    | "prepared_work"
+    | "reviewed"
+    | "covered"
+    | "insufficient_evidence"
+    | "source_degraded"
+    | "not_scanned";
+  label: string;
+  action_label: string;
+  reason: string;
+  priority_score: number | null;
+  priority_score_error: string | null;
+  score_label: string;
+  scanned: boolean;
+  work_item_key: string | null;
+  work_item_disposition: string | null;
+  proposal_status: string | null;
+  evidence_lines: string[];
+  missing_lines: string[];
+}
+
 export interface SweepResponse {
   tenant_id: string;
   work_items: WorkItem[];
   escalations: Record<string, unknown>[];
   swept_accounts: string[];
+  coverage_receipts?: CoverageReceiptResponse[];
   degraded_items: number;
   auth: string | null;
 }
