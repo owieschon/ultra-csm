@@ -29,7 +29,7 @@ def test_centralize_dataset_covers_all_six_bible_arcs_at_checkpoints():
     for slug, profile in CENTRALIZE_ARC_PROFILES.items():
         for day in profile.checkpoint_days:
             bundle = centralize_telemetry_bundle(slug, day)
-            assert bundle.app_events, f"{slug} day{day} missing Centralize app exhaust"
+            assert bundle.app_events, f"{slug} day{day} missing FleetOps app exhaust"
             assert bundle.posthog_events, f"{slug} day{day} missing PostHog exhaust"
             assert {signal.account_id for signal in bundle.usage_signals} == {
                 bundle.app_events[0].account_id

@@ -1,6 +1,6 @@
-"""Materialized Centralize + PostHog telemetry dataset.
+"""Materialized FleetOps + PostHog telemetry dataset.
 
-The dataset is fixture-only: it simulates Centralize app usage and PostHog
+The dataset is fixture-only: it simulates FleetOps app usage and PostHog
 telemetry for the six named Synthetic Universe Bible arcs, with raw events and
 derived ``UsageSignal`` rows kept separate.
 """
@@ -15,8 +15,8 @@ from typing import Any
 
 from ultra_csm.data_plane.centralize_telemetry import (
     CENTRALIZE_ARC_PROFILES,
-    CentralizeAppEvent,
-    CentralizePostHogEvent,
+    FleetOpsAppEvent,
+    FleetOpsPostHogEvent,
     centralize_telemetry_bundle,
     centralize_telemetry_timeline,
 )
@@ -76,7 +76,7 @@ def build_centralize_simulated_telemetry_artifact(
             "posthog_project_access_proven": False,
         },
         "measurement_scope": (
-            "Centralize app/domain events plus PostHog-shaped raw telemetry for "
+            "FleetOps app/domain events plus PostHog-shaped raw telemetry for "
             "the six named fleetops bible arcs. Each account includes compact "
             "checkpoint snapshots plus a bounded sampled timeline over the arc. "
             "Raw PostHog events are not treated as semantic product truth; "
@@ -84,7 +84,7 @@ def build_centralize_simulated_telemetry_artifact(
         ),
         "source_boundaries": {
             "centralize_app": "simulated app/backend/extension events",
-            "posthog": "simulated raw PostHog events emitted from Centralize app surfaces",
+            "posthog": "simulated raw PostHog events emitted from FleetOps app surfaces",
             "derived_usage_signals": "agent-facing rollups derived from raw events",
         },
         "accounts": accounts,
@@ -94,13 +94,13 @@ def build_centralize_simulated_telemetry_artifact(
     return artifact
 
 
-def _app_event(event: CentralizeAppEvent) -> dict[str, Any]:
+def _app_event(event: FleetOpsAppEvent) -> dict[str, Any]:
     data = asdict(event)
     data["properties"] = dict(event.properties)
     return data
 
 
-def _posthog_event(event: CentralizePostHogEvent) -> dict[str, Any]:
+def _posthog_event(event: FleetOpsPostHogEvent) -> dict[str, Any]:
     data = asdict(event)
     data["properties"] = dict(event.properties)
     return data
