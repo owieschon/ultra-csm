@@ -8,8 +8,11 @@ threaded risk, expansion signals, renewal pressure, and churn.
 
 from __future__ import annotations
 
+from datetime import datetime, timedelta, timezone
+
 from ultra_csm.data_plane.contracts import (
     AdoptionSummary,
+    CommunicationSignal,
     CRMAccount,
     CRMCase,
     CRMContact,
@@ -18,6 +21,7 @@ from ultra_csm.data_plane.contracts import (
     CTA,
     Entitlement,
     HealthScore,
+    InternalCommsNote,
     SuccessPlan,
     TimeToValueMilestone,
     UsageSignal,
@@ -33,6 +37,13 @@ SEED_DATE = "2026-06-21"
 
 def _sig(acct: str, metric: str, day: str = SEED_DATE) -> str:
     return det_id("signal", acct, metric, day)
+
+
+def _rfc3339(day_offset: int, hour: int = 9, minute: int = 0) -> str:
+    dt = datetime(2026, 6, 21, tzinfo=timezone.utc) + timedelta(
+        days=day_offset, hours=hour - 9, minutes=minute
+    )
+    return dt.strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 # ---------------------------------------------------------------------------
@@ -1361,6 +1372,223 @@ _MILESTONES: list[tuple[str, str, str, str | None]] = [
 ]
 
 
+_UX_EMAIL_EXCHANGES: tuple[tuple[str, str, int, str, float], ...] = (
+    ("ironhorse-freight", "marcus.webb@ironhorse-freight.example", 136, "hardware-readiness", 3.0),
+    ("ridgeline-warehousing", "jared.nolan@ridgeline-wh.example", 135, "warehouse-rollout", 4.0),
+    ("northstar-couriers", "sandra.faulkner@northstar-couriers.example", 132, "route-optimization", 2.5),
+    ("clearwater-field-ops", "kelly.vance@clearwater-fo.example", 136, "mobile-rollout", 5.0),
+    ("sagebrush-transport", "brett.sawyer@sagebrush-transport.example", 133, "usage-recovery", 7.0),
+    ("harborview-fleet", "gregory.foster@harborview-fleet.example", 137, "renewal-save-plan", 3.5),
+    ("summit-industrial", "diana.kowalski@summit-industrial.example", 134, "activation-review", 2.0),
+)
+
+_UX_CALLS: tuple[tuple[str, str, int, str, str], ...] = (
+    ("ironhorse-freight", "lisa.chang@ironhorse-freight.example", 138, "hardware-compatibility-sync", "csm-101"),
+    ("pinehill-transport", "dennis.gruber@pinehill-transport.example", 130, "integration-stabilization-sync", "csm-102"),
+    ("trailhead-logistics", "vanessa.torres@trailhead-logistics.example", 136, "mid-year-usage-recap", "csm-101"),
+    ("ridgeline-warehousing", "jared.nolan@ridgeline-wh.example", 137, "activation-path-review", "csm-104"),
+    ("northstar-couriers", "tom.briggs@northstar-couriers.example", 134, "route-optimization-checkin", "csm-103"),
+    ("clearwater-field-ops", "kelly.vance@clearwater-fo.example", 138, "technician-mobile-rollout", "csm-104"),
+    ("sagebrush-transport", "brett.sawyer@sagebrush-transport.example", 135, "health-recovery-checkin", "csm-103"),
+    ("harborview-fleet", "david.cross@harborview-fleet.example", 139, "renewal-risk-review", "csm-102"),
+    ("summit-industrial", "neil.drummond@summit-industrial.example", 136, "fleet-activation-review", "csm-103"),
+    ("meridian-fleet", "alicia.fernandez@meridian-fleet.example", 139, "expansion-close-review", "csm-101"),
+)
+
+_UX_INTERNAL_NOTES: tuple[tuple[str, int, str, str, str], ...] = (
+    (
+        "ironhorse-freight",
+        139,
+        "csm-101",
+        "Hardware compatibility remains the blocker; Marcus asked for a working session with Lisa on the driver app rollout.",
+        "slack",
+    ),
+    (
+        "pinehill-transport",
+        139,
+        "csm-102",
+        "Dennis is still engaged, but the API integration is behind plan; route help content should be targeted to the legacy dispatch workflow.",
+        "csm_note",
+    ),
+    (
+        "trailhead-logistics",
+        140,
+        "csm-101",
+        "Vanessa and Mike are active; keep the recap concise and point to the compliance reporting expansion path.",
+        "csm_note",
+    ),
+    (
+        "quarrystone-logistics",
+        140,
+        "csm-104",
+        "No customer reply since the admin-transfer exchange; preserve the champion-departure read and do not imply a live relationship.",
+        "slack",
+    ),
+    (
+        "clearwater-field-ops",
+        139,
+        "csm-104",
+        "Kelly needs technician setup examples before the content route; mobile rollout is the useful evidence, not a generic adoption nudge.",
+        "csm_note",
+    ),
+    (
+        "ridgeline-warehousing",
+        139,
+        "csm-104",
+        "Jared confirmed the warehouse team can start with core fleet activation; campaign enrollment should stay operational, not executive.",
+        "csm_note",
+    ),
+    (
+        "northstar-couriers",
+        139,
+        "csm-103",
+        "Sandra is responsive and Tom is using route optimization; the email should acknowledge the completed first activation milestone.",
+        "csm_note",
+    ),
+    (
+        "sagebrush-transport",
+        139,
+        "csm-103",
+        "Usage is sliding despite Brett staying reachable; keep outreach focused on the health recovery plan and next checkpoint.",
+        "slack",
+    ),
+    (
+        "harborview-fleet",
+        139,
+        "csm-102",
+        "Gregory wants ERP stability handled before renewal terms; David should see a concise risk recap, not a generic QBR ask.",
+        "slack",
+    ),
+    (
+        "summit-industrial",
+        139,
+        "csm-103",
+        "Diana is pushing activation ahead of schedule, but fuel analytics is not deployed; keep the next email practical.",
+        "csm_note",
+    ),
+    (
+        "meridian-fleet",
+        140,
+        "csm-101",
+        "Alicia and Sarah are both active on the expansion path; keep the outreach tied to close readiness, not generic account health.",
+        "csm_note",
+    ),
+)
+
+
+def _contact_id(slug: str, email: str) -> str:
+    return det_id("contact", _id[slug], email)
+
+
+def _exchange_signals(
+    slug: str,
+    email: str,
+    day_offset: int,
+    key: str,
+    response_hours: float,
+) -> tuple[CommunicationSignal, CommunicationSignal]:
+    account_id = _id[slug]
+    contact_id = _contact_id(slug, email)
+    outbound_id = det_id("comm-signal", account_id, key, "outbound", day_offset)
+    inbound_id = det_id("comm-signal", account_id, key, "inbound", day_offset)
+    hours = int(response_hours)
+    minutes = int(round((response_hours - hours) * 60))
+    return (
+        CommunicationSignal(
+            signal_id=outbound_id,
+            account_id=account_id,
+            contact_id=contact_id,
+            channel="email",
+            direction="outbound",
+            timestamp=_rfc3339(day_offset, 9),
+        ),
+        CommunicationSignal(
+            signal_id=inbound_id,
+            account_id=account_id,
+            contact_id=contact_id,
+            channel="email",
+            direction="inbound",
+            timestamp=_rfc3339(day_offset, 9 + hours, minutes),
+            response_time_hours=response_hours,
+        ),
+    )
+
+
+def _call_signal(slug: str, email: str, day_offset: int, key: str, csm_id: str) -> CommunicationSignal:
+    account_id = _id[slug]
+    contact_id = _contact_id(slug, email)
+    return CommunicationSignal(
+        signal_id=det_id("comm-signal", account_id, key, "call", day_offset),
+        account_id=account_id,
+        contact_id=contact_id,
+        channel="call",
+        direction="outbound",
+        timestamp=_rfc3339(day_offset, 11),
+        attendees=(contact_id, csm_id),
+    )
+
+
+def synthetic_communication_signals_as_of(day_offset: int) -> tuple[CommunicationSignal, ...]:
+    """Day-aware comms rows for the synthetic book.
+
+    Existing bible-authored account modules own their narrative arcs. The
+    short direct rows below fill only the day-140 hosted-demo accounts that
+    already have CRM/plan/usage context but no served comms surface.
+    """
+
+    from ultra_csm.data_plane.aspenridge_comms import aspenridge_communication_signals
+    from ultra_csm.data_plane.cedarfield_comms import cedarfield_communication_signals
+    from ultra_csm.data_plane.cobalt_comms import cobalt_communication_signals
+    from ultra_csm.data_plane.comms_fixtures import pinehill_communication_signals
+    from ultra_csm.data_plane.elmwood_comms import elmwood_communication_signals
+    from ultra_csm.data_plane.meridian_comms import meridian_communication_signals
+    from ultra_csm.data_plane.northbend_comms import northbend_communication_signals
+    from ultra_csm.data_plane.pinnacle_comms import pinnacle_communication_signals
+    from ultra_csm.data_plane.quarrystone_comms import quarrystone_communication_signals
+    from ultra_csm.data_plane.trailhead_comms import trailhead_communication_signals
+
+    signals: list[CommunicationSignal] = []
+    for reader in (
+        aspenridge_communication_signals,
+        cedarfield_communication_signals,
+        cobalt_communication_signals,
+        elmwood_communication_signals,
+        meridian_communication_signals,
+        northbend_communication_signals,
+        pinehill_communication_signals,
+        pinnacle_communication_signals,
+        quarrystone_communication_signals,
+        trailhead_communication_signals,
+    ):
+        signals.extend(reader(day_offset))
+    for slug, email, day, key, response_hours in _UX_EMAIL_EXCHANGES:
+        if day <= day_offset:
+            signals.extend(_exchange_signals(slug, email, day, key, response_hours))
+    for slug, email, day, key, csm_id in _UX_CALLS:
+        if day <= day_offset:
+            signals.append(_call_signal(slug, email, day, key, csm_id))
+    return tuple(signals)
+
+
+def synthetic_internal_notes_as_of(day_offset: int) -> tuple[InternalCommsNote, ...]:
+    notes: list[InternalCommsNote] = []
+    for slug, day, author, content, source in _UX_INTERNAL_NOTES:
+        if day > day_offset:
+            continue
+        account_id = _id[slug]
+        notes.append(
+            InternalCommsNote(
+                note_id=det_id("internal-note", account_id, day, author),
+                account_id=account_id,
+                author=author,
+                timestamp=_rfc3339(day, 16),
+                content=content,
+                source=source,  # type: ignore[arg-type]
+            )
+        )
+    return tuple(notes)
+
+
 # ===================================================================
 # Builder
 # ===================================================================
@@ -1591,6 +1819,8 @@ def build_synthetic_book() -> FixtureCustomerData:
         tenant_accounts={"ultra-demo": all_ids},
         stakeholder_relationships=stakeholder_relationships,
         job_change_signals=job_change_signals,
+        communication_signals=synthetic_communication_signals_as_of(0),
+        internal_notes=synthetic_internal_notes_as_of(0),
     )
 
 

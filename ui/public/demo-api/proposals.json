@@ -153,7 +153,7 @@
         },
         "subject": "Time-to-Value follow-up for Ironhorse Freight Co"
       },
-      "proposal_id": "c6667d42-98da-4aa1-a00f-d342e17c33b3",
+      "proposal_id": "4b1ef23b-970b-4c1a-8356-955cec5c0532",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -278,7 +278,7 @@
         },
         "subject": "Time-to-Value follow-up for Pinehill Transport"
       },
-      "proposal_id": "9a2f3575-3678-49a8-b79b-1e83a05c979f",
+      "proposal_id": "01d4ede0-0ee8-4d63-bd0e-9da7e62d6fe0",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -356,7 +356,7 @@
         },
         "subject": "Time-to-Value follow-up for Ridgeline Warehousing"
       },
-      "proposal_id": "1f79f2b2-4a58-4010-ad45-39bb1cc4cf31",
+      "proposal_id": "e84c3a38-81c5-47db-8ed7-bf3ac74d71be",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -417,7 +417,7 @@
         },
         "subject": "Time-to-Value follow-up for Northstar Couriers"
       },
-      "proposal_id": "25db0229-a736-4328-ace1-d07a6e5495ad",
+      "proposal_id": "9565e8a7-4905-458b-abd1-f28ef3adc8eb",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -525,7 +525,7 @@
         },
         "subject": "Time-to-Value follow-up for Clearwater Field Ops"
       },
-      "proposal_id": "9f52b689-20bd-421d-90ae-04ad944cdf32",
+      "proposal_id": "ee3d9831-2268-4c35-8591-bbd9fd35e37b",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -569,7 +569,7 @@
         },
         "subject": "Time-to-Value follow-up for Summit Industrial Supply"
       },
-      "proposal_id": "074e55d4-2673-4823-85c9-2034853795ba",
+      "proposal_id": "645daaae-05bb-4820-a781-51a549ca0faf",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -670,7 +670,7 @@
         },
         "subject": "Time-to-Value follow-up for Trailhead Logistics"
       },
-      "proposal_id": "033bbcfc-b5ac-48ee-a759-3e5f6b27b091",
+      "proposal_id": "8ed38d74-c973-4cdf-bced-fce54c6b2ad0",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -714,7 +714,7 @@
         },
         "subject": "Time-to-Value follow-up for Meridian Fleet Group"
       },
-      "proposal_id": "0b8fbaae-e8f3-4a5c-8b85-48edf74f79c5",
+      "proposal_id": "ac774127-5450-4615-a361-8a7f9610f9f3",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -759,7 +759,7 @@
         },
         "subject": "Time-to-Value follow-up for Sagebrush Transport"
       },
-      "proposal_id": "db6639d5-bdee-4ce6-9cc2-632ae13696ed",
+      "proposal_id": "b0272f32-48b6-40db-8d53-ef17eff90b75",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -846,7 +846,7 @@
         },
         "subject": "Time-to-Value follow-up for Harborview Fleet"
       },
-      "proposal_id": "5eac8d28-5488-4106-bd91-636ebe5771b5",
+      "proposal_id": "f00fdfd2-54a2-428c-bbd9-22d7aa20cfe0",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -866,7 +866,7 @@
         "content_title": "5 Ways Fleets Cut Deadhead Miles with Route Optimizer",
         "draft_channel": "email"
       },
-      "proposal_id": "8f1eba52-5589-4f1d-8d7e-ab235e21be66",
+      "proposal_id": "f0b9b85d-8f81-4979-a19f-9cf2375eef36",
       "required_permission": "content.route",
       "status": "pending"
     }
