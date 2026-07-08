@@ -6,6 +6,7 @@ import {
   CentralizeTelemetryResponse,
   CSMWorkPacket,
   EnterpriseOnboardingPacket,
+  SelfServeActivationPacket,
   WorkItem,
 } from "@/lib/api";
 import { label, MOTION_LABELS, TRIGGER_LABELS } from "@/lib/labels";
@@ -192,6 +193,8 @@ export function QueueDetail({
   const [centralizeTelemetry, setCentralizeTelemetry] = useState<CentralizeTelemetryResponse | null>(null);
   const [enterpriseOnboardingPacket, setEnterpriseOnboardingPacket] =
     useState<EnterpriseOnboardingPacket | null>(null);
+  const [selfServeActivationPacket, setSelfServeActivationPacket] =
+    useState<SelfServeActivationPacket | null>(null);
   const [openDrawer, setOpenDrawer] = useState<string | null>(null);
   const [openFactor, setOpenFactor] = useState<number | null>(null);
 
@@ -199,6 +202,7 @@ export function QueueDetail({
     setBrief(null);
     setCentralizeTelemetry(null);
     setEnterpriseOnboardingPacket(null);
+    setSelfServeActivationPacket(null);
     if (!item?.account_id) return;
     api
       .accountBrief(item.account_id, day)
@@ -212,6 +216,10 @@ export function QueueDetail({
       .enterpriseOnboardingPackets(item.account_id)
       .then((r) => setEnterpriseOnboardingPacket(r.packets[0] ?? null))
       .catch(() => setEnterpriseOnboardingPacket(null));
+    api
+      .selfServeActivationPackets(item.account_id)
+      .then((r) => setSelfServeActivationPacket(r.packets[0] ?? null))
+      .catch(() => setSelfServeActivationPacket(null));
   }, [item?.account_id, day]);
 
   if (!item || item.account_id === null) {
@@ -229,6 +237,7 @@ export function QueueDetail({
       <PacketIdentity packet={packet} lifecycle={(brief?.lifecycle_stage as string | undefined) ?? null} />
       <PacketActionBrief packet={packet} />
       <EnterpriseOnboardingPanel packet={enterpriseOnboardingPacket} />
+      <SelfServeActivationPanel packet={selfServeActivationPacket} />
       <PacketTrace packet={packet} />
 
       <div className="sec">
@@ -578,6 +587,109 @@ function EnterpriseOnboardingPanel({
           ))}
         </div>
       )}
+    </div>
+  );
+}
+
+function SelfServeActivationPanel({
+  packet,
+}: {
+  packet: SelfServeActivationPacket | null;
+}) {
+  if (!packet) return null;
+
+  const payload = asRecord(packet.packet);
+  const coverage = asRecord(payload.coverage);
+  const path = asRecord(payload.value_path);
+  const action = asRecord(payload.recommended_action);
+  const milestones = asArray(path.milestones).map(asRecord);
+  const missingSources = asArray(coverage.missing_required_sources)
+    .map((value) => String(value))
+    .filter(Boolean);
+  const blockers = [
+    ...asArray(coverage.customer_output_blockers),
+    ...asArray(action.suppression_reasons),
+  ].map((value) => String(value)).filter(Boolean);
+  const proposals = asArray(payload.proposals).map(asRecord);
+  const receipts = asArray(payload.source_receipts);
+  const packetStatus = String(payload.status ?? packet.status);
+  const isReady = packetStatus === "ready";
+  const firstValue = path.first_value_reached === true;
+  const currentMilestone = milestones.find((milestone) =>
+    ["current", "stale"].includes(String(milestone.status))
+  );
+
+  return (
+    <div className={`sec launch-packet activation-packet ${isReady ? "ready" : "blocked"}`}>
+      <div className="sec-h">
+        <span className="t">Self-serve value path</span>
+        <span className="prov">
+          <span className={isReady ? "chip-det launch-ok" : "chip-det launch-stop"}>
+            {packetStatus.replace(/_/g, " ")}
+          </span>
+        </span>
+      </div>
+      <div className="launch-head">
+        <div>
+          <div className="launch-title">{String(path.archetype ?? "Activation path")}</div>
+          <div className="launch-meta">
+            workspace {packet.workspace_id.slice(0, 12)} · {receipts.length} receipts · {proposals.length} gated proposal{proposals.length === 1 ? "" : "s"}
+          </div>
+        </div>
+        <div className="launch-score">
+          <span className="num">{firstValue ? "yes" : "no"}</span>
+          <em>first value</em>
+        </div>
+      </div>
+
+      <div className="launch-grid">
+        <LaunchMetric label="Path" value={String(path.path_id ?? "unknown").replace(/_/g, " ")} />
+        <LaunchMetric label="Current" value={String(path.current_milestone_id ?? "complete").replace(/_/g, " ")} />
+        <LaunchMetric label="Action trigger" value={String(action.trigger ?? "none").replace(/_/g, " ")} />
+        <LaunchMetric label="Confidence" value={`${Math.round((asNumber(path.confidence) ?? 0) * 100)}%`} />
+      </div>
+
+      {(missingSources.length > 0 || blockers.length > 0) && (
+        <div className="launch-alert">
+          {missingSources.map((source) => (
+            <span key={`missing-${source}`}>missing: {source.replace(/_/g, " ")}</span>
+          ))}
+          {blockers.slice(0, 4).map((blocker) => (
+            <span key={`blocker-${blocker}`}>blocked: {blocker.replace(/_/g, " ")}</span>
+          ))}
+        </div>
+      )}
+
+      <div className="activation-summary">
+        <span>{String(path.first_value_definition ?? "First value definition unavailable")}</span>
+        <em>{String(path.selection_reason ?? "No selection reason recorded")}</em>
+      </div>
+
+      {milestones.length > 0 && (
+        <div className="activation-milestones">
+          {milestones.map((milestone) => (
+            <div
+              className={`activation-step ${String(milestone.status)}`}
+              key={String(milestone.milestone_id)}
+              title={String(milestone.customer_safe_interpretation ?? "")}
+            >
+              <span>{String(milestone.label ?? milestone.milestone_id)}</span>
+              <em>{String(milestone.status ?? "unknown").replace(/_/g, " ")}</em>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div className="launch-list">
+        <div className="packet-kicker">Recommended action</div>
+        <div className="launch-row">
+          <span>{String(action.label ?? "Review activation packet")}</span>
+          <em>
+            {String(action.action_type ?? "internal_review").replace(/_/g, " ")}
+            {currentMilestone ? ` · ${String(currentMilestone.label ?? "")}` : ""}
+          </em>
+        </div>
+      </div>
     </div>
   );
 }

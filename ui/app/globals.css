@@ -190,6 +190,15 @@ svg { display: block; }
 .launch-integration { font-size: 10.5px; font-weight: 650; border: 1px solid var(--hair); color: var(--fg-2); border-radius: 5px; padding: 2px 7px; }
 .launch-integration.configured, .launch-integration.observed { color: var(--ok); border-color: rgba(93,190,147,.38); }
 .launch-integration.missing { color: var(--danger); border-color: rgba(230,123,128,.42); }
+.activation-summary { margin-top: 12px; border: 1px solid var(--hair-soft); border-radius: 7px; background: var(--canvas); padding: 10px 11px; }
+.activation-summary span { display: block; font-size: 12.5px; color: var(--fg); line-height: 1.45; }
+.activation-summary em { display: block; margin-top: 5px; font-size: 11.5px; color: var(--fg-2); font-style: normal; line-height: 1.45; }
+.activation-milestones { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 7px; margin-top: 12px; }
+.activation-step { border: 1px solid var(--hair-soft); border-radius: 7px; background: var(--canvas); padding: 8px 9px; min-width: 0; }
+.activation-step.completed { border-color: rgba(93,190,147,.38); }
+.activation-step.current, .activation-step.stale { border-color: rgba(217,164,82,.42); }
+.activation-step span { display: block; font-size: 11.5px; font-weight: 650; color: var(--fg); line-height: 1.35; overflow-wrap: anywhere; }
+.activation-step em { display: block; margin-top: 5px; font-size: 10.5px; color: var(--fg-2); font-style: normal; text-transform: uppercase; letter-spacing: .03em; }
 .packet-artifact { padding: 14px 18px 16px; }
 .artifact-title { font-size: 13px; font-weight: 650; margin-bottom: 8px; }
 .artifact-body { border: 1px solid var(--hair); border-radius: 8px; background: var(--canvas); padding: 12px 13px; font-size: 13px; line-height: 1.6; color: var(--fg); white-space: pre-wrap; overflow-wrap: anywhere; }
@@ -331,7 +340,7 @@ svg { display: block; }
   .lanes { border-right: 0; border-bottom: 1px solid var(--hair); }
   .detail-scroll { padding: 16px 14px 32px; }
   .packet-grid { grid-template-columns: 1fr; }
-  .launch-grid, .launch-rails { grid-template-columns: 1fr; }
+  .launch-grid, .launch-rails, .activation-milestones { grid-template-columns: 1fr; }
   .packet-main h2 { font-size: 18px; }
   .id-name { font-size: 19px; }
   .actions { display: grid; grid-template-columns: 1fr 1fr; }

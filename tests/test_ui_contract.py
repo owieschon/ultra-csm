@@ -176,3 +176,13 @@ def test_queue_detail_surfaces_enterprise_onboarding_packet():
     assert "Enterprise launch packet" in source
     assert "value_model_alignment" in source
     assert "Measured milestones" in source
+
+
+def test_queue_detail_surfaces_self_serve_activation_packet():
+    source = (Path(__file__).resolve().parents[1] / "ui" / "components" / "QueueDetail.tsx").read_text()
+    api_source = (Path(__file__).resolve().parents[1] / "ui" / "lib" / "api.ts").read_text()
+    assert "selfServeActivationPackets" in source
+    assert "Self-serve value path" in source
+    assert "first_value_definition" in source
+    assert "activation-milestones" in source
+    assert "/self-serve/activation/packets" in api_source
