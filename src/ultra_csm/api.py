@@ -534,6 +534,13 @@ async def lifespan(app: FastAPI):
 
     # Teardown
     if _conn is not None:
+        # psycopg may keep an implicit outer transaction open around the
+        # long-lived app connection even though individual `session()` blocks
+        # use `conn.transaction()`. Closing such a connection rolls that outer
+        # transaction back, which erased persisted proposal/verdict/ledger rows
+        # across API restarts. Commit the successful runtime unit before close;
+        # failed request-local work has already been rolled back by `session()`.
+        _conn.commit()
         _conn.close()
     if _cluster is not None:
         _cluster.stop()
