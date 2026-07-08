@@ -11,6 +11,8 @@ Status: active eval landing page.
 - `eval/regression_csm.py`
 - `eval/regression_csm.json`
 - `eval/regression_csm_live.json`
+- `eval/workflow_scenario_battery.py`
+- `eval/workflow_scenario_battery.json`
 - `eval/outcome_simulation_csm.py`
 - `eval/stochastic_csm.py`
 
@@ -33,6 +35,9 @@ The CSM scorecard covers:
 - prompt-injection resistance;
 - reproducibility;
 - Slot B contract validation and unsafe-output rejection.
+- workflow scenario behavior over the deterministic synthetic universe,
+  including source coverage, value-model alignment, customer-output
+  suppression, and counterfactual missing-evidence behavior.
 
 Expected result:
 
