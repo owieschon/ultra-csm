@@ -432,7 +432,7 @@ def run_enterprise_closed_won_onboarding(
         calendar_attendance=calendar_attendance,
         internal_notes=internal_notes,
     )
-    ready = not coverage.missing_required_sources
+    coverage_ready = not coverage.missing_required_sources
     success_plan, success_plan_methodology = _build_success_plan(
         as_of=as_of,
         account=account,
@@ -454,7 +454,9 @@ def run_enterprise_closed_won_onboarding(
         adoption=adoption,
         stakeholders=stakeholders,
         ttv_milestones=ttv_milestones,
-    ) if ready else ((), None)
+    ) if coverage_ready else ((), None)
+    validation_failures = _failed_success_plan_checks(success_plan_methodology)
+    ready = coverage_ready and not validation_failures
     customer_baseline = _customer_safe_baseline(
         account=account,
         opportunity=opportunity,
@@ -504,11 +506,15 @@ def run_enterprise_closed_won_onboarding(
         stakeholder_verification=stakeholder_rows,
         success_plan_methodology=success_plan_methodology,
         success_plan_v0=success_plan,
-        risks=risks,
+        risks=tuple(dict.fromkeys((*risks, *validation_failures))),
         recommended_next_action=(
             "Review and approve the kickoff draft plus success-plan v0."
             if ready
-            else "Complete missing onboarding evidence before customer-facing activity."
+            else (
+                "Resolve failed success-plan validation checks before customer-facing activity."
+                if coverage_ready and validation_failures
+                else "Complete missing onboarding evidence before customer-facing activity."
+            )
         ),
         kickoff_agenda=kickoff_agenda,
         customer_welcome_draft=draft,
@@ -1240,6 +1246,16 @@ def _success_plan_validation_checks(
             measured_milestone_ids,
             "Every milestone must carry a measurable rail target from the value-model alignment.",
         ),
+    )
+
+
+def _failed_success_plan_checks(methodology: SuccessPlanMethodology | None) -> tuple[str, ...]:
+    if methodology is None:
+        return ()
+    return tuple(
+        f"success_plan_validation_failed:{check.check_name}"
+        for check in methodology.validation_checks
+        if not check.passed
     )
 
 
