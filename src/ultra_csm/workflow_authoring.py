@@ -23,6 +23,7 @@ REQUIRED_TEST_OBLIGATIONS = (
     "suppression_or_missing_data_path",
     "execution_envelope_invariants",
     "action_gate_path",
+    "behavioral_quality_eval",
 )
 API_TEST_OBLIGATION = "api_trigger_persistence_ledger"
 UI_TEST_OBLIGATION = "ui_projection_contract"
@@ -113,6 +114,7 @@ WORKFLOW_AUTHORING_SPECS: dict[str, WorkflowAuthoringSpec] = {
             WorkflowTestAnchor("suppression_or_missing_data_path", "tests/test_enterprise_onboarding_workflow.py", "test_enterprise_closed_won_stops_before_customer_output_when_context_missing"),
             WorkflowTestAnchor("execution_envelope_invariants", "tests/test_enterprise_onboarding_workflow.py", "invariant_failures(packet.execution_envelope) == ()"),
             WorkflowTestAnchor("action_gate_path", "tests/test_enterprise_onboarding_workflow.py", "draft_customer_outreach"),
+            WorkflowTestAnchor("behavioral_quality_eval", "tests/test_workflow_quality_eval.py", "enterprise_closed_won_happy_path"),
             WorkflowTestAnchor(API_TEST_OBLIGATION, "tests/test_enterprise_onboarding_workflow.py", "test_salesforce_closed_won_endpoint_runs_workflow_against_served_data_plane"),
             WorkflowTestAnchor(UI_TEST_OBLIGATION, "tests/test_ui_contract.py", "test_queue_detail_surfaces_enterprise_onboarding_packet"),
         ),
@@ -127,6 +129,7 @@ WORKFLOW_AUTHORING_SPECS: dict[str, WorkflowAuthoringSpec] = {
             WorkflowTestAnchor("suppression_or_missing_data_path", "tests/test_self_serve_activation_workflow.py", "test_missing_product_telemetry_blocks_activation_judgment"),
             WorkflowTestAnchor("execution_envelope_invariants", "tests/test_self_serve_activation_workflow.py", "invariant_failures(packet.execution_envelope) == ()"),
             WorkflowTestAnchor("action_gate_path", "tests/test_self_serve_activation_workflow.py", "draft_customer_outreach"),
+            WorkflowTestAnchor("behavioral_quality_eval", "tests/test_workflow_quality_eval.py", "self_serve_signup_team_value_path"),
             WorkflowTestAnchor(API_TEST_OBLIGATION, "tests/test_self_serve_activation_workflow.py", "test_self_serve_signup_endpoint_runs_against_served_data_plane_and_persists"),
             WorkflowTestAnchor(UI_TEST_OBLIGATION, "tests/test_ui_contract.py", "test_queue_detail_surfaces_self_serve_activation_packet"),
         ),
@@ -141,6 +144,7 @@ WORKFLOW_AUTHORING_SPECS: dict[str, WorkflowAuthoringSpec] = {
             WorkflowTestAnchor("suppression_or_missing_data_path", "tests/test_adoption_regression_workflow.py", "test_adoption_regression_blocks_customer_output_without_current_window"),
             WorkflowTestAnchor("execution_envelope_invariants", "tests/test_adoption_regression_workflow.py", "invariant_failures(packet.execution_envelope) == ()"),
             WorkflowTestAnchor("action_gate_path", "tests/test_adoption_regression_workflow.py", "draft_customer_outreach"),
+            WorkflowTestAnchor("behavioral_quality_eval", "tests/test_workflow_quality_eval.py", "adoption_regression_support_friction"),
             WorkflowTestAnchor(API_TEST_OBLIGATION, "tests/test_adoption_regression_workflow.py", "test_adoption_regression_api_trigger_persists_packet_and_ledger"),
             WorkflowTestAnchor(UI_TEST_OBLIGATION, "tests/test_ui_contract.py", "test_queue_detail_surfaces_adoption_regression_packet"),
         ),
