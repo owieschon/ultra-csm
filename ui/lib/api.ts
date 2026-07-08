@@ -416,6 +416,16 @@ export interface SelfServeActivationPacket {
   workspace_id: string;
   signup_email: string;
   status: string;
+  customer_output_blockers: string[];
+  suppression_reasons: string[];
+  value_path: string | null;
+  current_milestone_id: string | null;
+  first_value_reached: boolean;
+  recommended_action_type: string;
+  action_trigger: string;
+  identity_state: string;
+  customer_language_present: boolean;
+  source_receipt_count: number;
   packet: Record<string, unknown>;
   created_at: string;
   updated_at: string;

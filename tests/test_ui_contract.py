@@ -187,6 +187,10 @@ def test_queue_detail_surfaces_self_serve_activation_packet():
     assert "secondary_hypotheses" in source
     assert "config_version" in source
     assert "activation-milestones" in source
+    assert "Customer output suppressed" in source
+    assert "Source receipts" in source
+    assert "customer_language_present" in source
+    assert "source_receipt_count" in source
     assert "/self-serve/activation/packets" in api_source
 
 
