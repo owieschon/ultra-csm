@@ -57,6 +57,7 @@ class RecommendedAction:
 class GovernanceBoundary:
     source_organ: Literal["governance.csm_actions"]
     action_type: CSMActionType | None
+    proposal_status: str | None
     release_condition: str | None
     required_permission: str | None
     autonomy_tier: int | None
@@ -468,6 +469,7 @@ def _governance_boundary(
     return GovernanceBoundary(
         source_organ="governance.csm_actions",
         action_type=inputs.recommended_action,
+        proposal_status=inputs.proposal_status,
         release_condition=action_spec.release_condition if action_spec else None,
         required_permission=action_spec.required_permission if action_spec else None,
         autonomy_tier=action_spec.autonomy_tier if action_spec else None,
@@ -602,17 +604,23 @@ def _feedback_hooks() -> tuple[FeedbackHook, ...]:
 
 def _field_validation() -> dict[str, str]:
     return {
+        "packet_version": "deterministic_oracle",
+        "tenant_id": "deterministic_oracle",
+        "account_id": "deterministic_oracle",
+        "account_name": "deterministic_oracle",
+        "as_of": "deterministic_oracle",
         "job_type": "deterministic_oracle",
         "cadence": "deterministic_oracle",
         "lane": "deterministic_oracle",
-        "allowed_ctas": "deterministic_oracle",
-        "governance_boundary": "deterministic_oracle",
-        "primary_next_step": "deterministic_oracle",
-        "customer_artifact": "judge_graded_in_domain_or_out_of_validated_domain",
         "diagnostic_hypothesis": "out_of_validated_domain",
-        "recommended_action_rationale": "out_of_validated_domain",
-        "confidence": "out_of_validated_domain",
-        "open_questions": "out_of_validated_domain",
+        "recommended_action": "deterministic_oracle",
+        "primary_next_step": "deterministic_oracle",
+        "governance_boundary": "deterministic_oracle",
+        "prepared_artifact": "judge_graded_in_domain_or_out_of_validated_domain",
         "evidence_chain": "deterministic_oracle",
+        "bucket_trace": "deterministic_oracle",
+        "coverage_trace": "deterministic_oracle",
+        "allowed_ctas": "deterministic_oracle",
         "feedback_hooks": "deterministic_oracle",
+        "field_validation": "deterministic_oracle",
     }
