@@ -1,0 +1,48 @@
+{
+  "tenant_id": "77daaa18-582a-5e4b-b1ef-ff37b4df0006",
+  "report": {
+    "ready": true,
+    "registry_issues": [],
+    "workflows": {
+      "account_adoption_regression": {
+        "workflow_id": "account_adoption_regression",
+        "ready": true,
+        "issues": [],
+        "declared_test_obligations": [
+          "happy_path",
+          "suppression_or_missing_data_path",
+          "execution_envelope_invariants",
+          "action_gate_path",
+          "api_trigger_persistence_ledger",
+          "ui_projection_contract"
+        ]
+      },
+      "enterprise_closed_won_onboarding": {
+        "workflow_id": "enterprise_closed_won_onboarding",
+        "ready": true,
+        "issues": [],
+        "declared_test_obligations": [
+          "happy_path",
+          "suppression_or_missing_data_path",
+          "execution_envelope_invariants",
+          "action_gate_path",
+          "api_trigger_persistence_ledger",
+          "ui_projection_contract"
+        ]
+      },
+      "self_serve_signup_activation": {
+        "workflow_id": "self_serve_signup_activation",
+        "ready": true,
+        "issues": [],
+        "declared_test_obligations": [
+          "happy_path",
+          "suppression_or_missing_data_path",
+          "execution_envelope_invariants",
+          "action_gate_path",
+          "api_trigger_persistence_ledger",
+          "ui_projection_contract"
+        ]
+      }
+    }
+  }
+}

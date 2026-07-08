@@ -49,6 +49,7 @@ function demoPath(path: string): string {
   if (rawPath === "/sweep") return `sweep-day-${day}.json`;
   if (rawPath === "/proposals") return "proposals.json";
   if (rawPath === "/ledger") return "ledger.json";
+  if (rawPath === "/workflow-authoring/readiness") return "workflow-authoring-readiness.json";
   if (rawPath === "/comms/pending-mappings/slack") return "comms-slack.json";
   if (rawPath === "/comms/pending-mappings/notion") return "comms-notion.json";
   if (accountMatch) {
@@ -369,6 +370,31 @@ export interface WorkflowPlaybookResponse {
   workflows: Record<string, unknown>;
 }
 
+export interface WorkflowAuthoringIssue {
+  workflow_id: string;
+  check_name: string;
+  severity: "error" | "warning";
+  detail: string;
+}
+
+export interface WorkflowReadiness {
+  workflow_id: string;
+  ready: boolean;
+  issues: WorkflowAuthoringIssue[];
+  declared_test_obligations: string[];
+}
+
+export interface WorkflowAuthoringReadinessReport {
+  ready: boolean;
+  workflows: Record<string, WorkflowReadiness>;
+  registry_issues: WorkflowAuthoringIssue[];
+}
+
+export interface WorkflowAuthoringReadinessResponse {
+  tenant_id: string;
+  report: WorkflowAuthoringReadinessReport;
+}
+
 export interface EnterpriseOnboardingPacket {
   packet_id: string;
   account_id: string;
@@ -522,6 +548,8 @@ export const api = {
     }),
   ledger: (limit = 50) => request<LedgerResponse>(`/ledger?limit=${limit}`),
   workflowPlaybooks: () => request<WorkflowPlaybookResponse>("/workflow-playbooks"),
+  workflowAuthoringReadiness: () =>
+    request<WorkflowAuthoringReadinessResponse>("/workflow-authoring/readiness"),
   enterpriseOnboardingPackets: (accountId?: string, opportunityId?: string) => {
     const params = new URLSearchParams();
     if (accountId) params.set("account_id", accountId);

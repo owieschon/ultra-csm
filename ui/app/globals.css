@@ -331,6 +331,41 @@ svg { display: block; }
 .help-row { display: flex; align-items: center; justify-content: space-between; font-size: 13px; color: var(--fg-2); }
 .help-row kbd { font-family: ui-monospace, monospace; font-size: 11px; border: 1px solid var(--hair); border-radius: 4px; padding: 1px 7px; color: var(--fg); background: var(--canvas); }
 
+/* ===== WORKFLOW READINESS ===== */
+.readiness-page { padding: 22px 28px 48px; }
+.readiness-shell { max-width: 1120px; }
+.readiness-top { display: flex; align-items: flex-start; gap: 16px; padding-bottom: 18px; border-bottom: 1px solid var(--hair); }
+.readiness-top h1 { font-size: 24px; line-height: 1.15; font-weight: 680; letter-spacing: 0; }
+.readiness-top .navlink { margin-left: auto; }
+.readiness-summary { margin-top: 18px; border: 1px solid var(--hair); border-radius: 8px; background: var(--card); padding: 14px 15px; display: flex; align-items: center; gap: 12px; }
+.readiness-summary.ready { border-left: 2px solid var(--ok); }
+.readiness-summary.blocked { border-left: 2px solid var(--danger); }
+.readiness-summary div { display: flex; align-items: center; gap: 9px; min-width: 0; }
+.readiness-summary strong { font-size: 14px; font-weight: 650; color: var(--fg); }
+.readiness-summary em { margin-left: auto; color: var(--fg-2); font-style: normal; font-size: 12px; }
+.readiness-dot { width: 8px; height: 8px; border-radius: 50%; flex: 0 0 auto; }
+.readiness-dot.ok { background: var(--ok); }
+.readiness-dot.danger { background: var(--danger); }
+.readiness-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
+.readiness-card { border: 1px solid var(--hair); border-radius: 8px; background: var(--card); padding: 13px 14px 14px; min-width: 0; }
+.readiness-card.ready { border-left: 2px solid var(--ok); }
+.readiness-card.blocked { border-left: 2px solid var(--danger); }
+.readiness-card-head { display: flex; align-items: flex-start; gap: 10px; padding-bottom: 11px; border-bottom: 1px solid var(--hair-soft); }
+.readiness-card-head h2 { font-size: 14px; line-height: 1.28; font-weight: 650; letter-spacing: 0; color: var(--fg); overflow-wrap: anywhere; }
+.readiness-card-head .chip-det { margin-left: auto; white-space: nowrap; }
+.readiness-obligations { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 11px; }
+.readiness-obligations span { font-size: 10.5px; font-weight: 650; color: var(--fg-2); border: 1px solid var(--hair-soft); border-radius: 5px; padding: 2px 7px; background: var(--canvas); }
+.readiness-empty { margin-top: 12px; border-top: 1px solid var(--hair-soft); padding-top: 11px; color: var(--fg-2); font-size: 12px; line-height: 1.5; }
+.readiness-issues { margin-top: 14px; border: 1px solid var(--hair); border-radius: 8px; background: var(--card); padding: 12px; }
+.readiness-issues.compact { border: 0; border-top: 1px solid var(--hair-soft); border-radius: 0; background: transparent; padding: 11px 0 0; }
+.readiness-issue { display: grid; grid-template-columns: 58px minmax(130px, .6fr) minmax(0, 1fr); gap: 9px; align-items: baseline; padding: 7px 0; border-bottom: 1px solid var(--hair-soft); }
+.readiness-issue:last-child { border-bottom: 0; }
+.readiness-issue span { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+.readiness-issue span.danger { color: var(--danger); }
+.readiness-issue span.warn { color: var(--warn); }
+.readiness-issue strong { font-size: 12px; color: var(--fg); font-weight: 650; overflow-wrap: anywhere; }
+.readiness-issue em { color: var(--fg-2); font-size: 12px; font-style: normal; line-height: 1.45; overflow-wrap: anywhere; }
+
 @media (max-width: 920px) {
   .topbar { height: auto; min-height: 52px; flex-wrap: wrap; padding: 8px 10px; gap: 8px; }
   .brand { flex: 1 1 160px; }
@@ -342,7 +377,8 @@ svg { display: block; }
   .lanes { border-right: 0; border-bottom: 1px solid var(--hair); }
   .detail-scroll { padding: 16px 14px 32px; }
   .packet-grid { grid-template-columns: 1fr; }
-  .launch-grid, .launch-rails, .activation-milestones { grid-template-columns: 1fr; }
+  .launch-grid, .launch-rails, .activation-milestones, .readiness-grid { grid-template-columns: 1fr; }
+  .readiness-issue { grid-template-columns: 1fr; gap: 3px; }
   .packet-main h2 { font-size: 18px; }
   .id-name { font-size: 19px; }
   .actions { display: grid; grid-template-columns: 1fr 1fr; }
