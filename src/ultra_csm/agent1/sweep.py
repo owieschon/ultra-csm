@@ -8,6 +8,10 @@ from dataclasses import asdict, dataclass, replace
 from typing import TYPE_CHECKING, Literal
 
 from ultra_csm._util import compact_asdict, iso_date
+from ultra_csm.blocked_value_path import (
+    BlockedValuePathAssessment,
+    assess_blocked_value_path,
+)
 from ultra_csm.agent1.content_route_matcher import (
     ContentCatalogEntry,
     load_tenant_content_catalog,
@@ -1029,6 +1033,16 @@ def _work_item_for_account(
 
     contact, recipient_resolution = resolve_recipient(motion, inputs.stakeholders, contacts)
     customer_contact_allowed = contact is not None
+    blocked_value_path = _blocked_value_path_assessment_for_account(
+        data_plane,
+        account,
+        as_of=as_of,
+        cases=inputs.cases,
+        contacts=contacts,
+        selected_contact=contact,
+        priority=inputs.priority,
+        stakeholders=inputs.stakeholders,
+    )
     recipient_name = contact.name if contact else None
     recipient_role = None
     if contact:
@@ -1049,11 +1063,19 @@ def _work_item_for_account(
         and playbooks is not None
         and implied_motion_for_action("draft_customer_outreach") in playbooks.tier_for(tier).forbidden_motions
     )
+    tier_forbids_recovery_motion = (
+        customer_contact_allowed
+        and blocked_value_path.triggered
+        and tier is not None
+        and playbooks is not None
+        and implied_motion_for_action("initiate_customer_call") in playbooks.tier_for(tier).forbidden_motions
+    )
     customer_action_blocked = (
         customer_contact_allowed
         and (
             (quality_breaker is not None and quality_breaker.triggered)
             or tier_forbids_motion
+            or tier_forbids_recovery_motion
         )
     )
     disposition: Disposition = (
@@ -1248,6 +1270,17 @@ def _packet_inputs_for_account(
     book_size: int,
     accounts_scanned: int,
 ) -> PacketInputs:
+    stakeholders, _job_changes = _person_layer_inputs(data_plane, account.account_id)
+    onboarding_projects, onboarding_phases, onboarding_tasks = _onboarding_evidence(
+        data_plane, account.account_id
+    )
+    communication_signals = ()
+    internal_notes = ()
+    if data_plane.comms is not None:
+        communication_signals = tuple(data_plane.comms.list_gmail_signals(account.account_id)) + tuple(
+            data_plane.comms.list_call_transcript_signals(account.account_id)
+        )
+        internal_notes = tuple(data_plane.comms.list_internal_notes(account.account_id))
     return PacketInputs(
         tenant_id=tenant_id,
         account=account,
@@ -1267,6 +1300,7 @@ def _packet_inputs_for_account(
         proposal_status=proposal_ref.status if proposal_ref else None,
         draft_body=draft_body,
         cases=tuple(cases),
+        ctas=tuple(data_plane.cs.list_ctas(account.account_id, status="open")),
         success_plans=tuple(data_plane.cs.list_success_plans(account.account_id)),
         usage_signals=tuple(data_plane.telemetry.list_usage_signals(account.account_id)),
         milestones=tuple(data_plane.telemetry.list_ttv_milestones(account.account_id)),
@@ -1275,6 +1309,61 @@ def _packet_inputs_for_account(
         content_route_title=content_route_match.title if content_route_match is not None else None,
         book_size=book_size,
         accounts_scanned=accounts_scanned,
+        company=data_plane.cs.get_company(account.account_id),
+        health=data_plane.cs.get_health_score(account.account_id),
+        adoption=data_plane.cs.get_adoption_summary(account.account_id),
+        entitlements=tuple(data_plane.telemetry.list_entitlements(account.account_id)),
+        stakeholders=stakeholders,
+        communication_signals=communication_signals,
+        internal_notes=internal_notes,
+        onboarding_projects=onboarding_projects,
+        onboarding_phases=onboarding_phases,
+        onboarding_tasks=onboarding_tasks,
+    )
+
+
+def _blocked_value_path_assessment_for_account(
+    data_plane: CustomerDataPlane,
+    account: CRMAccount,
+    *,
+    as_of: str,
+    cases: tuple,
+    contacts: tuple[CRMContact, ...],
+    selected_contact: CRMContact | None,
+    priority: Priority,
+    stakeholders: tuple,
+) -> BlockedValuePathAssessment:
+    onboarding_projects, onboarding_phases, onboarding_tasks = _onboarding_evidence(
+        data_plane, account.account_id
+    )
+    communication_signals = ()
+    internal_notes = ()
+    if data_plane.comms is not None:
+        communication_signals = tuple(data_plane.comms.list_gmail_signals(account.account_id)) + tuple(
+            data_plane.comms.list_call_transcript_signals(account.account_id)
+        )
+        internal_notes = tuple(data_plane.comms.list_internal_notes(account.account_id))
+    return assess_blocked_value_path(
+        account=account,
+        as_of=as_of,
+        cases=tuple(cases),
+        success_plans=tuple(data_plane.cs.list_success_plans(account.account_id)),
+        usage_signals=tuple(data_plane.telemetry.list_usage_signals(account.account_id)),
+        milestones=tuple(data_plane.telemetry.list_ttv_milestones(account.account_id)),
+        contacts=contacts,
+        selected_contact=selected_contact,
+        priority_factors=priority.factors,
+        adoption=data_plane.cs.get_adoption_summary(account.account_id),
+        entitlements=tuple(data_plane.telemetry.list_entitlements(account.account_id)),
+        stakeholders=tuple(stakeholders),
+        company=data_plane.cs.get_company(account.account_id),
+        health=data_plane.cs.get_health_score(account.account_id),
+        ctas=tuple(data_plane.cs.list_ctas(account.account_id, status="open")),
+        communication_signals=communication_signals,
+        internal_notes=internal_notes,
+        onboarding_projects=onboarding_projects,
+        onboarding_phases=onboarding_phases,
+        onboarding_tasks=onboarding_tasks,
     )
 
 

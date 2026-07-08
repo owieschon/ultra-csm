@@ -5,13 +5,28 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass
 from typing import Any, Literal
 
+from ultra_csm.blocked_value_path import (
+    BlockedValuePathAssessment,
+    assess_blocked_value_path,
+)
 from ultra_csm.data_plane import CustomerDataPlane
 from ultra_csm.data_plane.contracts import (
+    AdoptionSummary,
+    CommunicationSignal,
     CRMAccount,
     CRMCase,
     CRMContact,
     CRMOpportunity,
+    CSCompany,
+    CTA,
+    Entitlement,
     EvidenceRef,
+    HealthScore,
+    InternalCommsNote,
+    OnboardingPhase,
+    OnboardingProject,
+    OnboardingTask,
+    StakeholderRelationship,
     SuccessPlan,
     TimeToValueMilestone,
     UsageSignal,
@@ -256,11 +271,22 @@ class PacketInputs:
     content_route_title: str | None
     book_size: int
     accounts_scanned: int
+    company: CSCompany | None = None
+    health: HealthScore | None = None
+    adoption: AdoptionSummary | None = None
+    entitlements: tuple[Entitlement, ...] = ()
+    stakeholders: tuple[StakeholderRelationship, ...] = ()
+    ctas: tuple[CTA, ...] = ()
+    communication_signals: tuple[CommunicationSignal, ...] = ()
+    internal_notes: tuple[InternalCommsNote, ...] = ()
+    onboarding_projects: tuple[OnboardingProject, ...] = ()
+    onboarding_phases: tuple[OnboardingPhase, ...] = ()
+    onboarding_tasks: tuple[OnboardingTask, ...] = ()
 
 
 def build_work_packet(inputs: PacketInputs) -> CSMWorkPacket:
-    source_ids = _source_ids(inputs.evidence)
     evidence_chain = _evidence_chain(inputs)
+    source_ids = _source_ids(inputs.evidence, evidence_chain)
     job_type = _job_type(inputs)
     lane = _lane(inputs, job_type)
     primary_next_step = _primary_next_step(inputs, job_type)
@@ -731,6 +757,19 @@ def build_identity_escalation_packet(
 def planned_customer_draft(inputs: PacketInputs) -> str | None:
     if not inputs.customer_contact_allowed or inputs.selected_contact is None:
         return None
+    blocked_value_path = _blocked_value_path(inputs)
+    if blocked_value_path.missing_required_sources:
+        return None
+    if blocked_value_path.triggered:
+        return (
+            f"Hi {inputs.selected_contact.name}, {inputs.account.name} is blocked on "
+            f"{blocked_value_path.blocking_dependency}. I want to reset the "
+            f"{blocked_value_path.blocked_workflow} recovery plan. The data points to "
+            f"that dependency holding back {blocked_value_path.purchased_value_path}; "
+            "can we use a working session to "
+            "confirm the technical owner, the next corrective step, reset the activation date, "
+            "and record the recovery checkpoint?"
+        )
     blocker = _blocker_phrase(inputs)
     return (
         f"Hi {inputs.selected_contact.name}, {inputs.account.name} is blocked on {blocker}. "
@@ -738,17 +777,28 @@ def planned_customer_draft(inputs: PacketInputs) -> str | None:
     )
 
 
-def _source_ids(evidence: tuple[EvidenceRef, ...]) -> tuple[str, ...]:
+def _source_ids(
+    evidence: tuple[EvidenceRef, ...],
+    evidence_chain: tuple[EvidenceChainStep, ...] = (),
+) -> tuple[str, ...]:
     seen: list[str] = []
     for ref in evidence:
         if ref.source_id not in seen:
             seen.append(ref.source_id)
+    for step in evidence_chain:
+        if step.source_id not in seen:
+            seen.append(step.source_id)
     return tuple(seen)
 
 
 def _job_type(inputs: PacketInputs) -> JobType:
-    if not inputs.evidence:
+    blocked_value_path = _blocked_value_path(inputs)
+    if not inputs.evidence and not blocked_value_path.triggered:
         return "needs_data"
+    if blocked_value_path.missing_required_sources and blocked_value_path.blocking_dependency != "unconfirmed dependency":
+        return "needs_data"
+    if blocked_value_path.triggered:
+        return "customer_outreach" if inputs.customer_contact_allowed else "csm_onboarding_brief"
     if inputs.disposition == "escalate":
         return "internal_escalation"
     if inputs.internal_bridge_decision is not None and not getattr(inputs.internal_bridge_decision, "abstained", True):
@@ -784,6 +834,18 @@ def _lane(inputs: PacketInputs, job_type: JobType) -> Lane:
 
 
 def _primary_next_step(inputs: PacketInputs, job_type: JobType) -> str:
+    blocked_value_path = _blocked_value_path(inputs)
+    if blocked_value_path.missing_required_sources and blocked_value_path.blocking_dependency != "unconfirmed dependency":
+        return (
+            "Complete success-plan baseline and current-state evidence coverage before recommending "
+            "customer-facing recovery"
+        )
+    if blocked_value_path.triggered:
+        contact_name = inputs.selected_contact.name if inputs.selected_contact else "the accountable customer owner"
+        return (
+            f"Run blocked value path recovery with {contact_name}: confirm owner, corrective step, "
+            f"and date for {blocked_value_path.blocking_dependency}"
+        )
     blocker = _blocker_phrase(inputs)
     contact_name = inputs.selected_contact.name if inputs.selected_contact else "the right owner"
     if job_type == "product_feedback_synthesis":
@@ -805,6 +867,17 @@ def _primary_next_step(inputs: PacketInputs, job_type: JobType) -> str:
 
 
 def _why_now(inputs: PacketInputs) -> str:
+    blocked_value_path = _blocked_value_path(inputs)
+    if blocked_value_path.missing_required_sources and blocked_value_path.blocking_dependency != "unconfirmed dependency":
+        return (
+            "Potential blocked value path is present, but analysis coverage is insufficient: missing "
+            f"{', '.join(blocked_value_path.missing_required_sources)}."
+        )
+    if blocked_value_path.triggered:
+        return (
+            f"{blocked_value_path.blocking_dependency} is now tied to value realization: "
+            f"{'; '.join(blocked_value_path.evidence_claims[:3])}"
+        )
     score = inputs.priority_score
     factor_text = ", ".join(_factor_name(factor) for factor in inputs.priority_factors[:3])
     if score is not None and factor_text:
@@ -818,6 +891,29 @@ def _diagnostic_hypothesis(
     inputs: PacketInputs,
     evidence_chain: tuple[EvidenceChainStep, ...],
 ) -> DiagnosticHypothesis:
+    blocked_value_path = _blocked_value_path(inputs)
+    if blocked_value_path.missing_required_sources and blocked_value_path.blocking_dependency != "unconfirmed dependency":
+        return DiagnosticHypothesis(
+            summary="The agent has not completed the required baseline-plan and current-state evidence review.",
+            signals=blocked_value_path.evidence_claims,
+            counter_signals=(),
+            unknowns=blocked_value_path.missing_required_sources,
+            confidence=0.25,
+            source_ids=blocked_value_path.source_ids or tuple(step.source_id for step in evidence_chain),
+        )
+    if blocked_value_path.triggered:
+        return DiagnosticHypothesis(
+            summary=(
+                f"The account is in blocked value path recovery: "
+                f"{blocked_value_path.blocking_dependency} is preventing "
+                f"{blocked_value_path.purchased_value_path} from turning into realized value."
+            ),
+            signals=blocked_value_path.evidence_claims,
+            counter_signals=blocked_value_path.counter_signals,
+            unknowns=blocked_value_path.unknowns,
+            confidence=_confidence(inputs, evidence_chain),
+            source_ids=blocked_value_path.source_ids or tuple(step.source_id for step in evidence_chain),
+        )
     signals = tuple(step.interpretation for step in evidence_chain[:5])
     counter_signals = ()
     if inputs.priority_score is not None and inputs.priority_score < 30:
@@ -839,11 +935,23 @@ def _recommended_action(
     label: str,
     source_ids: tuple[str, ...],
 ) -> RecommendedAction:
-    action_type = inputs.action or job_type
+    blocked_value_path = _blocked_value_path(inputs)
+    action_type = (
+        "initiate_customer_call"
+        if blocked_value_path.triggered and inputs.customer_contact_allowed
+        else "recommend_next_best_action"
+        if blocked_value_path.missing_required_sources and blocked_value_path.blocking_dependency != "unconfirmed dependency"
+        else inputs.action or job_type
+    )
     blocked_by: tuple[str, ...] = ()
     if inputs.customer_contact_allowed and inputs.selected_contact is None:
         blocked_by = ("no_consented_contact",)
-    if inputs.proposal_status is None and action_type in {"draft_customer_outreach", "content_route", "cohort_action"}:
+    if inputs.proposal_status is None and action_type in {
+        "draft_customer_outreach",
+        "content_route",
+        "cohort_action",
+        "initiate_customer_call",
+    }:
         blocked_by = (*blocked_by, "no_action_gate_proposal")
     return RecommendedAction(
         action_id=f"action:{inputs.account.account_id}:{job_type}",
@@ -853,7 +961,7 @@ def _recommended_action(
         recipient_role=inputs.recipient_role,
         recipient_contact_id=inputs.selected_contact.contact_id if inputs.selected_contact else None,
         message_strategy=_message_strategy(inputs, job_type),
-        success_criteria=_success_criteria(job_type),
+        success_criteria=_success_criteria(inputs, job_type),
         blocked_by=blocked_by,
         source_ids=source_ids,
     )
@@ -870,7 +978,11 @@ def _contact_plan(inputs: PacketInputs, source_ids: tuple[str, ...]) -> ContactP
         backup_contact=_contact_row(backups[0]) if backups else None,
         internal_owner=inputs.account.owner_id,
         tone="specific, operational, and approval-safe" if inputs.selected_contact else "internal only",
-        channel="email" if inputs.selected_contact and inputs.customer_contact_allowed else "internal_note",
+        channel=(
+            "working_session_request"
+            if _blocked_value_path(inputs).triggered and inputs.selected_contact and inputs.customer_contact_allowed
+            else "email" if inputs.selected_contact and inputs.customer_contact_allowed else "internal_note"
+        ),
         reason_for_contact_choice=_contact_reason(inputs),
         source_ids=source_ids,
     )
@@ -911,7 +1023,12 @@ def _artifact(
 
 
 def _governance(inputs: PacketInputs) -> GovernanceBoundary:
-    executing_action = inputs.action in {"draft_customer_outreach", "content_route", "cohort_action"}
+    executing_action = inputs.action in {
+        "draft_customer_outreach",
+        "content_route",
+        "cohort_action",
+        "initiate_customer_call",
+    }
     return GovernanceBoundary(
         mode="readonly_demo",
         requires_human_principal=executing_action,
@@ -1008,6 +1125,25 @@ def _evidence_chain(inputs: PacketInputs) -> tuple[EvidenceChainStep, ...]:
             supports=_blocker_phrase(inputs),
             strength=_strength_for_ref(ref),
         ))
+    blocked_value_path = _blocked_value_path(inputs)
+    if blocked_value_path.triggered:
+        for claim_idx, claim in enumerate(blocked_value_path.evidence_claims, start=1):
+            source_id = (
+                blocked_value_path.source_ids[claim_idx - 1]
+                if claim_idx - 1 < len(blocked_value_path.source_ids)
+                else inputs.account.account_id
+            )
+            steps.append(EvidenceChainStep(
+                step_id=f"evidence:{inputs.account.account_id}:blocked-value-path:{claim_idx}",
+                claim=claim,
+                source_type=_source_type_for_blocked_value_claim(claim),
+                source_id=source_id,
+                field="blocked_value_path_assessment",
+                observed_value=claim,
+                interpretation="Purchased value is blocked by a dependency, not by generic awareness or motivation.",
+                supports="blocked_value_path_recovery",
+                strength="strong" if claim_idx <= 3 else "medium",
+            ))
     return tuple(steps)
 
 
@@ -1034,6 +1170,8 @@ def _observed_values(inputs: PacketInputs) -> dict[str, str]:
 def _bucket_trace(inputs: PacketInputs, lane: Lane, source_ids: tuple[str, ...]) -> BucketTrace:
     score = inputs.priority_score or 0
     matched = []
+    if _blocked_value_path(inputs).triggered:
+        matched.append("blocked_value_path_recovery")
     if score >= 70:
         matched.append("daily_high_priority")
     if inputs.proposal_status == "pending":
@@ -1052,6 +1190,7 @@ def _bucket_trace(inputs: PacketInputs, lane: Lane, source_ids: tuple[str, ...])
             "action": inputs.action,
             "motion": inputs.motion,
             "evidence_count": len(inputs.evidence),
+            "blocked_value_path": _blocked_value_path(inputs).triggered,
         },
         thresholds={
             "daily_high_priority": 70,
@@ -1106,6 +1245,17 @@ def _cadence(inputs: PacketInputs, job_type: JobType) -> Cadence:
 
 
 def _implied_customer_state(inputs: PacketInputs, job_type: JobType) -> str:
+    blocked_value_path = _blocked_value_path(inputs)
+    if blocked_value_path.missing_required_sources and blocked_value_path.blocking_dependency != "unconfirmed dependency":
+        return (
+            "Customer state cannot be safely assessed until the original success-plan baseline and "
+            "current evidence review are complete."
+        )
+    if blocked_value_path.triggered:
+        return (
+            f"Customer appears engaged enough for recovery, but {blocked_value_path.blocking_dependency} "
+            f"is blocking realized value from {blocked_value_path.purchased_value_path}."
+        )
     if job_type == "product_feedback_synthesis":
         return "Customer may be blocked by a product or integration issue that needs internal triage."
     if any(_factor_name(factor) in {"milestones_overdue", "days_overdue"} for factor in inputs.priority_factors):
@@ -1116,6 +1266,14 @@ def _implied_customer_state(inputs: PacketInputs, job_type: JobType) -> str:
 
 
 def _objective(inputs: PacketInputs, job_type: JobType) -> str:
+    blocked_value_path = _blocked_value_path(inputs)
+    if blocked_value_path.missing_required_sources and blocked_value_path.blocking_dependency != "unconfirmed dependency":
+        return "Complete multi-source evidence coverage before any customer-facing recovery recommendation."
+    if blocked_value_path.triggered:
+        return (
+            f"Restore the blocked value path by assigning an owner, corrective step, and date for "
+            f"{blocked_value_path.blocking_dependency}."
+        )
     if job_type == "product_feedback_synthesis":
         return "Convert customer blocker evidence into an internal product/technical triage brief."
     if job_type == "education_recommendation":
@@ -1126,6 +1284,14 @@ def _objective(inputs: PacketInputs, job_type: JobType) -> str:
 
 
 def _message_strategy(inputs: PacketInputs, job_type: JobType) -> str:
+    blocked_value_path = _blocked_value_path(inputs)
+    if blocked_value_path.missing_required_sources and blocked_value_path.blocking_dependency != "unconfirmed dependency":
+        return "Do not draft customer-facing language until missing source groups are reviewed."
+    if blocked_value_path.triggered:
+        return (
+            "Frame this as a recovery working session. Anchor every claim in the case, adoption, "
+            "entitlement, and milestone facts; avoid generic adoption nudges or unsupported blame."
+        )
     if job_type == "product_feedback_synthesis":
         return "Lead with the customer-reported blocker, then attach source evidence for product/engineering review."
     if job_type == "education_recommendation":
@@ -1136,7 +1302,21 @@ def _message_strategy(inputs: PacketInputs, job_type: JobType) -> str:
     return "Keep the work internal until a consented contact or owner is identified."
 
 
-def _success_criteria(job_type: JobType) -> tuple[str, ...]:
+def _success_criteria(inputs: PacketInputs, job_type: JobType) -> tuple[str, ...]:
+    blocked_value_path = _blocked_value_path(inputs)
+    if blocked_value_path.missing_required_sources and blocked_value_path.blocking_dependency != "unconfirmed dependency":
+        return (
+            "Original success-plan baseline is reconstructed from all required source groups.",
+            "Current state is assessed from all required current evidence groups.",
+            "Any missing source is named before customer-facing activity.",
+        )
+    if _blocked_value_path(inputs).triggered:
+        return (
+            "Customer-side owner is named.",
+            "Technical blocker has a corrective next step.",
+            "Recovery date and follow-up checkpoint are recorded.",
+            "Customer-facing action remains approval-gated.",
+        )
     if job_type == "product_feedback_synthesis":
         return ("Internal owner accepts or rejects the blocker hypothesis.", "Customer-facing follow-up is not sent until approved.")
     if job_type == "education_recommendation":
@@ -1153,6 +1333,8 @@ def _artifact_audience(inputs: PacketInputs, job_type: JobType) -> str:
 
 
 def _included_reason(inputs: PacketInputs, job_type: JobType) -> str:
+    if _blocked_value_path(inputs).triggered:
+        return "selected_for_blocked_value_path_recovery"
     if inputs.priority_score is not None:
         return f"selected_for_{job_type}_score_{inputs.priority_score}"
     return f"selected_for_{job_type}"
@@ -1177,6 +1359,11 @@ def _confidence(inputs: PacketInputs, evidence_chain: tuple[EvidenceChainStep, .
 
 
 def _unknowns(inputs: PacketInputs) -> tuple[str, ...]:
+    blocked_value_path = _blocked_value_path(inputs)
+    if blocked_value_path.missing_required_sources and blocked_value_path.blocking_dependency != "unconfirmed dependency":
+        return blocked_value_path.missing_required_sources
+    if blocked_value_path.triggered:
+        return blocked_value_path.unknowns
     unknowns: list[str] = []
     if not inputs.selected_contact and inputs.customer_contact_allowed:
         unknowns.append("which consented customer contact owns the next step")
@@ -1190,10 +1377,22 @@ def _unknowns(inputs: PacketInputs) -> tuple[str, ...]:
 
 
 def _blocker_sentence(inputs: PacketInputs) -> str:
+    blocked_value_path = _blocked_value_path(inputs)
+    if blocked_value_path.triggered:
+        return (
+            f"The likely blocker is {blocked_value_path.blocking_dependency}, which is holding back "
+            f"{blocked_value_path.purchased_value_path}."
+        )
     return f"The likely blocker is {_blocker_phrase(inputs)}."
 
 
 def _blocker_phrase(inputs: PacketInputs) -> str:
+    blocked_value_path = _blocked_value_path(inputs)
+    if blocked_value_path.triggered:
+        return (
+            f"{blocked_value_path.blocking_dependency} blocking "
+            f"{blocked_value_path.blocked_workflow}"
+        )
     overdue = [m for m in inputs.milestones if m.achieved_at is None and m.expected_by <= inputs.as_of]
     if overdue and inputs.cases:
         return f"{_humanize(overdue[0].milestone)} plus {_safe_case_subject(inputs.cases[0]).lower()}"
@@ -1229,6 +1428,13 @@ def _contains_untrusted_directive(text: str) -> bool:
 def _contact_reason(inputs: PacketInputs) -> str:
     if inputs.selected_contact is None:
         return "No consented contact was selected; keep work internal."
+    blocked_value_path = _blocked_value_path(inputs)
+    if blocked_value_path.triggered:
+        role = inputs.recipient_role or inputs.selected_contact.role or "customer stakeholder"
+        return (
+            f"{inputs.selected_contact.name} is the consented {role} for recovery coordination; "
+            f"{blocked_value_path.technical_owner_status}."
+        )
     role = inputs.recipient_role or inputs.selected_contact.role or "known stakeholder"
     resolution = inputs.recipient_resolution or "backend recipient resolver"
     return f"{inputs.selected_contact.name} is the consented {role} selected by {resolution} for this blocker."
@@ -1280,6 +1486,42 @@ def _strength_for_ref(ref: EvidenceRef) -> Literal["weak", "medium", "strong"]:
 
 def _factor_name(factor: Any) -> str:
     return str(getattr(factor, "name", "unknown"))
+
+
+def _blocked_value_path(inputs: PacketInputs) -> BlockedValuePathAssessment:
+    return assess_blocked_value_path(
+        account=inputs.account,
+        as_of=inputs.as_of,
+        cases=inputs.cases,
+        success_plans=inputs.success_plans,
+        usage_signals=inputs.usage_signals,
+        milestones=inputs.milestones,
+        contacts=inputs.contacts,
+        selected_contact=inputs.selected_contact,
+        priority_factors=inputs.priority_factors,
+        adoption=inputs.adoption,
+        entitlements=inputs.entitlements,
+        stakeholders=inputs.stakeholders,
+        company=inputs.company,
+        health=inputs.health,
+        ctas=inputs.ctas,
+        communication_signals=inputs.communication_signals,
+        internal_notes=inputs.internal_notes,
+        onboarding_projects=inputs.onboarding_projects,
+        onboarding_phases=inputs.onboarding_phases,
+        onboarding_tasks=inputs.onboarding_tasks,
+    )
+
+
+def _source_type_for_blocked_value_claim(claim: str) -> str:
+    lowered = claim.lower()
+    if "case" in lowered:
+        return "crm"
+    if "entitlement" in lowered or "adoption" in lowered or "health" in lowered:
+        return "cs_platform"
+    if "milestone" in lowered:
+        return "telemetry"
+    return "cs_platform"
 
 
 def _humanize(value: str) -> str:
