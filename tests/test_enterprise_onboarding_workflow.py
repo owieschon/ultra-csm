@@ -40,6 +40,7 @@ from ultra_csm.data_plane.rocketlane_fixtures import (
 from ultra_csm.data_plane.live_facade import DataPlaneAssembly
 from ultra_csm.enterprise_onboarding import (
     SalesforceClosedWonEvent,
+    resolve_account_by_calendar_attendee_domain,
     run_enterprise_closed_won_onboarding,
 )
 from ultra_csm.governance import ActionGate, FixtureVerdictSource
@@ -176,6 +177,45 @@ def test_non_enterprise_closed_won_event_is_ignored():
     assert "not enterprise-sized" in packet.recommended_next_action.lower() or packet.risks
 
 
+def test_calendar_domain_resolution_does_not_pick_ambiguous_customer_domain():
+    account_a = CRMAccount("acct-a", "Shared Domain North", "owner-a", "software")
+    account_b = CRMAccount("acct-b", "Shared Domain South", "owner-b", "software")
+    data = FixtureCustomerData(
+        accounts=(account_a, account_b),
+        companies=(),
+        contacts=(
+            CRMContact("contact-a", "acct-a", "admin@shared.example", "Admin A", "admin", None, True),
+            CRMContact("contact-b", "acct-b", "it@shared.example", "IT B", "technical", None, True),
+        ),
+        cases=(),
+        opportunities=(),
+        health_scores=(),
+        ctas=(),
+        success_plans=(),
+        adoption_summaries=(),
+        entitlements=(),
+        usage_signals=(),
+        milestones=(),
+        tenant_accounts={DEFAULT_TENANT: ("acct-a", "acct-b")},
+    )
+
+    resolution = resolve_account_by_calendar_attendee_domain(
+        FixtureCRMDataConnector(tenant=DEFAULT_TENANT, data=data),
+        {
+            "items": [{
+                "id": "cal-1",
+                "status": "confirmed",
+                "attendees": [{"email": "buyer@shared.example", "responseStatus": "accepted"}],
+            }],
+        },
+        tenant_id=DEFAULT_TENANT,
+    )
+
+    assert resolution.state == "ambiguous"
+    assert resolution.account_id is None
+    assert resolution.candidate_account_ids == ("acct-a", "acct-b")
+
+
 def test_salesforce_closed_won_endpoint_runs_workflow_against_served_data_plane(monkeypatch):
     def served_enterprise_plane(**_kwargs):
         return DataPlaneAssembly(
@@ -200,7 +240,6 @@ def test_salesforce_closed_won_endpoint_runs_workflow_against_served_data_plane(
             headers={"Authorization": "Bearer lane-a-token"},
             json={
                 "opportunity_id": OPPORTUNITY_ID,
-                "account_id": ACCOUNT_ID,
                 "stage_name": "Closed Won",
                 "observed_at": "2026-07-08T12:00:00Z",
                 "google_calendar_events": _calendar_events(),
@@ -210,9 +249,13 @@ def test_salesforce_closed_won_endpoint_runs_workflow_against_served_data_plane(
     assert resp.status_code == 200
     body = resp.json()
     assert body["status"] == "ready"
+    assert body["account_id"] == ACCOUNT_ID
     assert body["data_plane_mode"] == "live"
     assert body["missing_required_sources"] == []
     assert len(body["proposal_ids"]) == 2
+    assert body["calendar_account_resolution"]["state"] == "exactly_one"
+    assert body["calendar_account_resolution"]["account_id"] == ACCOUNT_ID
+    assert body["calendar_account_resolution"]["matched_domains"] == ["enterprise-launch.example"]
     packet = body["packet"]
     assert "google_calendar" in packet["coverage"]["original_success_plan_sources"]
     assert "google_calendar_attendance" in packet["coverage"]["stakeholder_verification_sources"]

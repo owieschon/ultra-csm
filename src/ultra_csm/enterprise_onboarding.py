@@ -15,6 +15,7 @@ from typing import Any, Literal, Protocol
 from ultra_csm.data_plane.contracts import (
     CRMAccount,
     CRMContact,
+    CRMDataConnector,
     CRMOpportunity,
     CustomerDataPlane,
     Entitlement,
@@ -35,6 +36,22 @@ SourceAuthority = Literal[
     "internal_unstructured",
     "inferred",
 ]
+AccountDomainResolutionState = Literal["exactly_one", "ambiguous", "none"]
+
+_PERSONAL_EMAIL_DOMAINS = frozenset({
+    "aol.com",
+    "gmail.com",
+    "googlemail.com",
+    "hotmail.com",
+    "icloud.com",
+    "live.com",
+    "me.com",
+    "msn.com",
+    "outlook.com",
+    "proton.me",
+    "protonmail.com",
+    "yahoo.com",
+})
 
 
 @dataclass(frozen=True)
@@ -67,6 +84,20 @@ class CalendarAttendance:
     response_status: str
     start_at: str
     status: str
+
+
+@dataclass(frozen=True)
+class CalendarAccountDomainResolution:
+    state: AccountDomainResolutionState
+    account_id: str | None
+    account_name: str | None
+    matched_domains: tuple[str, ...]
+    attendee_emails: tuple[str, ...]
+    candidate_account_ids: tuple[str, ...]
+    reason: str
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
 
 
 @dataclass(frozen=True)
@@ -873,6 +904,81 @@ def _comms_evidence(data_plane: CustomerDataPlane, account_id: str) -> tuple[tup
     return customer_emails, meetings, internal_notes
 
 
+def resolve_account_by_calendar_attendee_domain(
+    crm: CRMDataConnector,
+    calendar_events: dict[str, Any] | None,
+    *,
+    tenant_id: str | None = None,
+) -> CalendarAccountDomainResolution:
+    """Resolve a customer account from Google Calendar attendee email domains.
+
+    Salesforce remains the identity source. Calendar contributes observed email
+    domains only; those domains must map to exactly one Salesforce account's
+    Contact domain before the resolver returns an account UUID.
+    """
+
+    attendee_emails = _calendar_attendee_emails(calendar_events or {})
+    attendee_domains = tuple(sorted({
+        domain for email in attendee_emails
+        if (domain := _email_domain(email)) and domain not in _PERSONAL_EMAIL_DOMAINS
+    }))
+    if not attendee_domains:
+        return CalendarAccountDomainResolution(
+            state="none",
+            account_id=None,
+            account_name=None,
+            matched_domains=(),
+            attendee_emails=attendee_emails,
+            candidate_account_ids=(),
+            reason="No non-personal attendee email domains were present on the calendar events.",
+        )
+
+    accounts_by_domain: dict[str, set[str]] = {}
+    for account in crm.list_accounts(tenant_id=tenant_id):
+        for contact in crm.list_contacts(account.account_id):
+            domain = _email_domain(contact.email)
+            if domain and domain not in _PERSONAL_EMAIL_DOMAINS:
+                accounts_by_domain.setdefault(domain, set()).add(account.account_id)
+
+    matched: dict[str, set[str]] = {
+        domain: accounts_by_domain[domain]
+        for domain in attendee_domains
+        if domain in accounts_by_domain
+    }
+    candidate_ids = tuple(sorted({account_id for ids in matched.values() for account_id in ids}))
+    matched_domains = tuple(sorted(matched))
+    if len(candidate_ids) == 1:
+        account = crm.get_account(candidate_ids[0])
+        return CalendarAccountDomainResolution(
+            state="exactly_one",
+            account_id=candidate_ids[0],
+            account_name=account.name if account is not None else None,
+            matched_domains=matched_domains,
+            attendee_emails=attendee_emails,
+            candidate_account_ids=candidate_ids,
+            reason="Calendar attendee domain matched exactly one Salesforce account Contact domain.",
+        )
+    if len(candidate_ids) > 1:
+        return CalendarAccountDomainResolution(
+            state="ambiguous",
+            account_id=None,
+            account_name=None,
+            matched_domains=matched_domains,
+            attendee_emails=attendee_emails,
+            candidate_account_ids=candidate_ids,
+            reason="Calendar attendee domains matched multiple Salesforce accounts; no account was selected.",
+        )
+    return CalendarAccountDomainResolution(
+        state="none",
+        account_id=None,
+        account_name=None,
+        matched_domains=(),
+        attendee_emails=attendee_emails,
+        candidate_account_ids=(),
+        reason="Calendar attendee domains did not match Salesforce Contact domains.",
+    )
+
+
 def _calendar_attendance(
     calendar_provider: GoogleCalendarEventsProvider | None,
     account_id: str,
@@ -902,6 +1008,27 @@ def _calendar_attendance(
                 status=str(item.get("status") or "unknown"),
             ))
     return tuple(rows)
+
+
+def _calendar_attendee_emails(events: dict[str, Any]) -> tuple[str, ...]:
+    emails: list[str] = []
+    for item in events.get("items", ()):
+        if str(item.get("status") or "unknown") == "cancelled":
+            continue
+        for attendee in item.get("attendees") or ():
+            if str(attendee.get("responseStatus") or "unknown") == "declined":
+                continue
+            email = str(attendee.get("email") or "").strip().lower()
+            if email and "@" in email:
+                emails.append(email)
+    return tuple(sorted(set(emails)))
+
+
+def _email_domain(email: str) -> str | None:
+    parts = email.strip().lower().rsplit("@", 1)
+    if len(parts) != 2 or not parts[0] or "." not in parts[1]:
+        return None
+    return parts[1]
 
 
 def _list_stakeholders(

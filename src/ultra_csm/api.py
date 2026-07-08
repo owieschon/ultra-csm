@@ -47,6 +47,7 @@ from ultra_csm.data_plane.live_facade import DataPlaneAssembly, build_served_dat
 from ultra_csm.enterprise_onboarding import (
     GoogleCalendarEventsProvider,
     SalesforceClosedWonEvent,
+    resolve_account_by_calendar_attendee_domain,
     run_enterprise_closed_won_onboarding,
 )
 from ultra_csm.governance import (
@@ -337,7 +338,7 @@ class IngestCommsResponse(BaseModel):
 
 class SalesforceClosedWonTriggerRequest(BaseModel):
     opportunity_id: str
-    account_id: str
+    account_id: str | None = None
     stage_name: str
     observed_at: str | None = None
     tenant_id: str | None = None
@@ -353,6 +354,7 @@ class EnterpriseOnboardingLaunchResponse(BaseModel):
     missing_required_sources: list[str]
     proposal_ids: list[str]
     packet: dict[str, Any]
+    calendar_account_resolution: dict[str, Any]
     auth: str | None = None
     data_plane_mode: str = "fixture"
     data_plane_sources: dict[str, str] = Field(default_factory=dict)
@@ -1826,10 +1828,40 @@ async def salesforce_closed_won_onboarding_trigger(
     assert _data_plane is not None
     auth_principal = _require_write_auth(request)
     observed_at = body.observed_at or datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
+    calendar_resolution = resolve_account_by_calendar_attendee_domain(
+        _data_plane.crm,
+        body.google_calendar_events,
+        tenant_id=DEFAULT_TENANT,
+    )
+    account_id = body.account_id or calendar_resolution.account_id
+    if not account_id:
+        raise HTTPException(
+            status_code=409,
+            detail={
+                "error": "Salesforce account could not be resolved from the event or calendar attendee domains",
+                "code": "ACCOUNT_RESOLUTION_REQUIRED",
+                "calendar_account_resolution": calendar_resolution.to_dict(),
+            },
+        )
+    if (
+        body.account_id is not None
+        and calendar_resolution.state == "exactly_one"
+        and calendar_resolution.account_id != body.account_id
+    ):
+        raise HTTPException(
+            status_code=409,
+            detail={
+                "error": "Calendar attendee domain resolved to a different Salesforce account",
+                "code": "CALENDAR_ACCOUNT_MISMATCH",
+                "event_account_id": body.account_id,
+                "calendar_account_resolution": calendar_resolution.to_dict(),
+            },
+        )
+
     event = SalesforceClosedWonEvent(
         tenant_id=body.tenant_id or _TENANT_ID,
         opportunity_id=body.opportunity_id,
-        account_id=body.account_id,
+        account_id=account_id,
         stage_name=body.stage_name,
         observed_at=observed_at,
     )
@@ -1862,6 +1894,7 @@ async def salesforce_closed_won_onboarding_trigger(
         missing_required_sources=list(packet.coverage.missing_required_sources),
         proposal_ids=[proposal.proposal_id for proposal in packet.proposals],
         packet=packet_dict,
+        calendar_account_resolution=calendar_resolution.to_dict(),
         auth=auth_principal.auth,
         data_plane_mode=_data_plane_assembly.mode if _data_plane_assembly else "uninitialized",
         data_plane_sources=_data_plane_assembly.source_status if _data_plane_assembly else {},
