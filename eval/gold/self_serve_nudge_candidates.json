@@ -1,0 +1,214 @@
+[
+  {
+    "candidate_id": "ssn-001",
+    "tenant": "self_serve_activation",
+    "product_user_id": "usr_selfserve_001",
+    "checkpoint_day": 2,
+    "identity_state": "exactly_one",
+    "lifecycle_state": "aha_pending",
+    "moment": "signed_up_no_first_value",
+    "usage_facts": ["signup_completed", "no_first_project_created", "viewed_activation_home_twice"],
+    "frequency_context": {"touches_last_7d": 0, "cross_channel_cap": 1},
+    "candidate_action": {
+      "motion": "content_route",
+      "content_id": "ss-content-first-value-checklist",
+      "channel": "lifecycle_email"
+    },
+    "owner_label": null
+  },
+  {
+    "candidate_id": "ssn-002",
+    "tenant": "self_serve_activation",
+    "product_user_id": "usr_selfserve_002",
+    "checkpoint_day": 4,
+    "identity_state": "exactly_one",
+    "lifecycle_state": "aha_pending",
+    "moment": "stuck_at_admin_setup",
+    "usage_facts": ["admin_settings_viewed", "invite_flow_abandoned", "no_team_member_invited"],
+    "frequency_context": {"touches_last_7d": 0, "cross_channel_cap": 1},
+    "candidate_action": {
+      "motion": "content_route",
+      "content_id": "ss-content-admin-setup-guide",
+      "channel": "lifecycle_email"
+    },
+    "owner_label": null
+  },
+  {
+    "candidate_id": "ssn-003",
+    "tenant": "self_serve_activation",
+    "product_user_id": "usr_selfserve_003",
+    "checkpoint_day": 5,
+    "identity_state": "exactly_one",
+    "lifecycle_state": "aha_pending",
+    "moment": "repeated_import_failure",
+    "usage_facts": [
+      "csv_import_failed_three_times",
+      "template_page_not_viewed",
+      "support_chat_not_opened"
+    ],
+    "frequency_context": {"touches_last_7d": 0, "cross_channel_cap": 1},
+    "candidate_action": {
+      "motion": "content_route",
+      "content_id": "ss-content-import-template",
+      "channel": "lifecycle_email"
+    },
+    "owner_label": null
+  },
+  {
+    "candidate_id": "ssn-004",
+    "tenant": "self_serve_activation",
+    "product_user_id": "usr_selfserve_004",
+    "checkpoint_day": 10,
+    "identity_state": "exactly_one",
+    "lifecycle_state": "activated",
+    "moment": "already_progressing",
+    "usage_facts": [
+      "first_project_created",
+      "admin_setup_completed",
+      "three_active_sessions_last_3d"
+    ],
+    "frequency_context": {"touches_last_7d": 0, "cross_channel_cap": 1},
+    "candidate_action": {"motion": "none", "content_id": null, "channel": null},
+    "owner_label": null
+  },
+  {
+    "candidate_id": "ssn-005",
+    "tenant": "self_serve_activation",
+    "product_user_id": "usr_selfserve_005",
+    "checkpoint_day": 16,
+    "identity_state": "exactly_one",
+    "lifecycle_state": "inactive",
+    "moment": "churned_dead",
+    "usage_facts": ["no_session_last_14d", "trial_expired", "unsubscribe_record_present"],
+    "frequency_context": {"touches_last_7d": 0, "cross_channel_cap": 1},
+    "candidate_action": {"motion": "none", "content_id": null, "channel": null},
+    "owner_label": null
+  },
+  {
+    "candidate_id": "ssn-006",
+    "tenant": "self_serve_activation",
+    "product_user_id": "usr_selfserve_006",
+    "checkpoint_day": 7,
+    "identity_state": "exactly_one",
+    "lifecycle_state": "aha_pending",
+    "moment": "frequency_capped_after_recent_touch",
+    "usage_facts": [
+      "admin_setup_blocked",
+      "lifecycle_email_recorded_yesterday",
+      "no_new_blocker_since_touch"
+    ],
+    "frequency_context": {"touches_last_7d": 1, "cross_channel_cap": 1},
+    "candidate_action": {"motion": "none", "content_id": null, "channel": null},
+    "owner_label": null
+  },
+  {
+    "candidate_id": "ssn-007",
+    "tenant": "self_serve_activation",
+    "product_user_id": "usr_selfserve_007",
+    "checkpoint_day": 6,
+    "identity_state": "ambiguous",
+    "lifecycle_state": "aha_pending",
+    "moment": "ambiguous_identity",
+    "usage_facts": [
+      "signup_email_matches_two_crm_contacts",
+      "admin_setup_blocked",
+      "no_confirmed_account_id"
+    ],
+    "frequency_context": {"touches_last_7d": 0, "cross_channel_cap": 1},
+    "candidate_action": {"motion": "none", "content_id": null, "channel": null},
+    "owner_label": null
+  },
+  {
+    "candidate_id": "ssn-008",
+    "tenant": "self_serve_activation",
+    "product_user_id": "usr_selfserve_008",
+    "checkpoint_day": 3,
+    "identity_state": "none",
+    "lifecycle_state": "aha_pending",
+    "moment": "pure_self_serve_user",
+    "usage_facts": ["no_crm_contact_match", "signup_completed", "no_first_project_created"],
+    "frequency_context": {"touches_last_7d": 0, "cross_channel_cap": 1},
+    "candidate_action": {
+      "motion": "content_route",
+      "content_id": "ss-content-first-value-checklist",
+      "channel": "lifecycle_email"
+    },
+    "owner_label": null
+  },
+  {
+    "candidate_id": "ssn-009",
+    "tenant": "self_serve_activation",
+    "product_user_id": "usr_selfserve_009",
+    "checkpoint_day": 18,
+    "identity_state": "exactly_one",
+    "lifecycle_state": "habit",
+    "moment": "solo_user_needs_team_invite",
+    "usage_facts": ["daily_active_user_5_of_7d", "team_invites_zero", "workspace_limit_near"],
+    "frequency_context": {"touches_last_7d": 0, "cross_channel_cap": 1},
+    "candidate_action": {
+      "motion": "campaign_enroll",
+      "content_id": "ss-content-team-invite-playbook",
+      "channel": "sales_engagement"
+    },
+    "owner_label": null
+  },
+  {
+    "candidate_id": "ssn-010",
+    "tenant": "self_serve_activation",
+    "product_user_id": "usr_selfserve_010",
+    "checkpoint_day": 21,
+    "identity_state": "exactly_one",
+    "lifecycle_state": "converted",
+    "moment": "upgrade_intent_without_plan_fit",
+    "usage_facts": ["pricing_page_viewed_twice", "upgrade_modal_opened", "admin_setup_completed"],
+    "frequency_context": {"touches_last_7d": 0, "cross_channel_cap": 1},
+    "candidate_action": {
+      "motion": "campaign_enroll",
+      "content_id": "ss-content-upgrade-readiness-guide",
+      "channel": "sales_engagement"
+    },
+    "owner_label": null
+  },
+  {
+    "candidate_id": "ssn-011",
+    "tenant": "self_serve_activation",
+    "product_user_id": "usr_selfserve_011",
+    "checkpoint_day": 2,
+    "identity_state": "exactly_one",
+    "lifecycle_state": "aha_pending",
+    "moment": "low_touch_channel_foil",
+    "usage_facts": [
+      "signup_completed",
+      "no_first_project_created",
+      "educational_checklist_not_viewed"
+    ],
+    "frequency_context": {"touches_last_7d": 0, "cross_channel_cap": 1},
+    "candidate_action": {
+      "motion": "campaign_enroll",
+      "content_id": "ss-content-first-value-checklist",
+      "channel": "sales_engagement"
+    },
+    "owner_label": null
+  },
+  {
+    "candidate_id": "ssn-012",
+    "tenant": "self_serve_activation",
+    "product_user_id": "usr_selfserve_012",
+    "checkpoint_day": 8,
+    "identity_state": "exactly_one",
+    "lifecycle_state": "aha_pending",
+    "moment": "wrong_content_foil",
+    "usage_facts": [
+      "csv_import_failed_three_times",
+      "admin_setup_completed",
+      "upgrade_modal_never_opened"
+    ],
+    "frequency_context": {"touches_last_7d": 0, "cross_channel_cap": 1},
+    "candidate_action": {
+      "motion": "content_route",
+      "content_id": "ss-content-upgrade-readiness-guide",
+      "channel": "lifecycle_email"
+    },
+    "owner_label": null
+  }
+]

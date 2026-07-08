@@ -22,11 +22,20 @@ from typing import Literal, Protocol
 
 ResolutionState = Literal["exactly_one", "ambiguous", "none"]
 LifecycleStage = Literal["onboarding", "adopting", "steady_state", "renewal", "at_risk"]
+ProductUserLifecycleState = Literal[
+    "signed_up",
+    "aha_pending",
+    "activated",
+    "habit",
+    "converted",
+    "inactive",
+]
 CTAStatus = Literal["open", "in_progress", "closed"]
 HealthBand = Literal["green", "yellow", "red", "unknown"]
 SignalGrain = Literal["company", "person", "asset"]
 EvidenceSource = Literal["rocketlane", "telemetry", "cs_platform", "crm"]
 ProjectProgress = Literal["on_track", "ahead", "running_late", "none"]
+NudgeDeliveryChannel = Literal["lifecycle_email", "sales_engagement"]
 
 
 @dataclass(frozen=True)
@@ -46,6 +55,50 @@ class AccountResolution:
     state: ResolutionState
     account_id: str | None
     candidates: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
+class ProductUser:
+    """Product-led user identity before it is joined to CRM account context."""
+
+    user_id: str
+    email: str
+    account_id: str | None
+    signup_at: str
+    plan: str
+    tier: str
+    lifecycle_state: ProductUserLifecycleState
+
+
+@dataclass(frozen=True)
+class ProductUserUsageLink:
+    """User-grain linkage for a UsageSignal-shaped row.
+
+    Kept separate from ``UsageSignal`` so existing account-grain consumers do
+    not need to ingest a new required field before MP-D2's telemetry lane lands.
+    """
+
+    signal_id: str
+    user_id: str
+    account_id: str | None
+    source_ref: str
+
+
+@dataclass(frozen=True)
+class IdentityResolution:
+    """Product-user to CRM-contact/account resolution.
+
+    Reuses the shared ``ResolutionState`` vocabulary. ``ambiguous`` and
+    ``none`` are terminal abstention states for user-grain customer nudges.
+    """
+
+    state: ResolutionState
+    user_id: str
+    email: str
+    contact_id: str | None
+    account_id: str | None
+    candidate_contact_ids: tuple[str, ...] = ()
+    candidate_account_ids: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -214,6 +267,55 @@ class TimeToValueMilestone:
     expected_by: str
     achieved_at: str | None
     evidence_signal_ids: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class LifecycleEmailDraft:
+    """Loops-shaped lifecycle email draft record.
+
+    Fixture adapters may create these records, but this contract never
+    represents a real provider send.
+    """
+
+    draft_id: str
+    user_id: str
+    email: str
+    content_id: str
+    subject: str
+    body: str
+    idempotency_key: str
+    created_at: str
+    send_performed: bool = False
+
+
+@dataclass(frozen=True)
+class SalesEngagementEnrollmentDraft:
+    """Amplemarket-shaped sequence enrollment draft record."""
+
+    enrollment_id: str
+    user_id: str
+    email: str
+    sequence_id: str
+    content_id: str
+    step_metadata: tuple[tuple[str, str], ...]
+    idempotency_key: str
+    created_at: str
+    enrollment_performed: bool = False
+
+
+@dataclass(frozen=True)
+class CallTranscript:
+    """Call-intelligence transcript artifact for contract-only fixtures."""
+
+    transcript_id: str
+    account_id: str
+    external_call_id: str
+    provider: str
+    title: str
+    occurred_at: str
+    speaker_emails: tuple[str, ...]
+    transcript_text: str
+    source_ref: str
 
 
 # ---------------------------------------------------------------------------
@@ -488,6 +590,42 @@ class ProductTelemetryConnector(Protocol):
     def list_ttv_milestones(self, account_id: str) -> list[TimeToValueMilestone]: ...
 
 
+class LifecycleEmailConnector(Protocol):
+    """Lifecycle-email seam. Implementations are draft-only until owner opt-in."""
+
+    def create_draft(
+        self,
+        *,
+        user: ProductUser,
+        content_id: str,
+        subject: str,
+        body: str,
+        idempotency_key: str,
+        created_at: str,
+    ) -> LifecycleEmailDraft: ...
+
+
+class SalesEngagementConnector(Protocol):
+    """Sales-engagement seam. Implementations are draft-only until owner opt-in."""
+
+    def create_enrollment_draft(
+        self,
+        *,
+        user: ProductUser,
+        sequence_id: str,
+        content_id: str,
+        step_metadata: tuple[tuple[str, str], ...],
+        idempotency_key: str,
+        created_at: str,
+    ) -> SalesEngagementEnrollmentDraft: ...
+
+
+class CallIntelligenceConnector(Protocol):
+    """Call-intelligence seam. MP-E only adds a Gong-shaped fixture contract."""
+
+    def list_transcripts(self, account_id: str) -> list[CallTranscript]: ...
+
+
 class OnboardingConnector(Protocol):
     """Rocketlane-backed onboarding/PSA seam. Tenant-bound, fail-closed, read-mostly.
 
@@ -535,3 +673,6 @@ class CustomerDataPlane:
     telemetry: ProductTelemetryConnector
     onboarding: OnboardingConnector | None = None
     comms: CommsConnector | None = None
+    lifecycle_email: LifecycleEmailConnector | None = None
+    sales_engagement: SalesEngagementConnector | None = None
+    call_intelligence: CallIntelligenceConnector | None = None
