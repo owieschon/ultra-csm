@@ -45,6 +45,14 @@ from ultra_csm.value_model import (
     project_ttv_lens,
     resolve_tenant_tier,
 )
+from ultra_csm.workflow_core import (
+    WorkflowDecisionTrace,
+    WorkflowExecutionEnvelope,
+    WorkflowOutputContract,
+    WorkflowValidationResult,
+    build_evidence_bundle,
+    build_execution_envelope,
+)
 from ultra_csm.workflow_playbooks import (
     ENTERPRISE_CLOSED_WON_ONBOARDING,
     evaluate_source_coverage,
@@ -317,6 +325,7 @@ class LaunchProposalRef:
 class EnterpriseOnboardingLaunchPacket:
     workflow_id: str
     workflow_config_version: str
+    execution_envelope: WorkflowExecutionEnvelope
     packet_id: str
     tenant_id: str
     status: LaunchStatus
@@ -341,6 +350,7 @@ class EnterpriseOnboardingLaunchPacket:
 
     def to_dict(self) -> dict[str, Any]:
         payload = asdict(self)
+        payload["execution_envelope"] = self.execution_envelope.to_dict()
         payload["workflow"] = workflow_packet_metadata(ENTERPRISE_CLOSED_WON_ONBOARDING)
         return payload
 
@@ -511,10 +521,20 @@ def run_enterprise_closed_won_onboarding(
         success_plan=success_plan,
         receipts=receipts,
     ) if ready else ()
+    envelope = _execution_envelope(
+        event=event,
+        opportunity_id=opportunity.opportunity_id,
+        coverage=coverage,
+        receipts=receipts,
+        methodology=success_plan_methodology,
+        proposals=proposals,
+        status="ready" if ready else "needs_data",
+    )
 
     return EnterpriseOnboardingLaunchPacket(
         workflow_id=ENTERPRISE_CLOSED_WON_ONBOARDING.workflow_id,
         workflow_config_version=ENTERPRISE_CLOSED_WON_ONBOARDING.config_version,
+        execution_envelope=envelope,
         packet_id=f"enterprise-onboarding:{opportunity.opportunity_id}:{as_of}",
         tenant_id=event.tenant_id,
         status="ready" if ready else "needs_data",
@@ -2002,6 +2022,212 @@ def _propose_launch_actions(
     return tuple(refs)
 
 
+def _execution_envelope(
+    *,
+    event: SalesforceClosedWonEvent,
+    opportunity_id: str,
+    coverage: SourceCoverage,
+    receipts: tuple[SourceReceipt, ...],
+    methodology: SuccessPlanMethodology | None,
+    proposals: tuple[LaunchProposalRef, ...],
+    status: LaunchStatus,
+) -> WorkflowExecutionEnvelope:
+    reviewed_sources = [
+        *coverage.original_success_plan_sources,
+        *coverage.current_state_sources,
+        *coverage.stakeholder_verification_sources,
+    ]
+    if (
+        "customer_email" in coverage.original_success_plan_sources
+        or "call_or_meeting_context" in coverage.original_success_plan_sources
+        or "google_calendar" in coverage.original_success_plan_sources
+    ):
+        reviewed_sources.append("customer_email_or_call_or_calendar")
+    if methodology is not None and methodology.value_model_alignment is not None:
+        reviewed_sources.append("value_model_alignment")
+    evidence = build_evidence_bundle(
+        receipts=receipts,
+        reviewed_sources=tuple(reviewed_sources),
+        missing_required_sources=coverage.missing_required_sources,
+        customer_output_blockers=coverage.missing_required_sources,
+    )
+    evidence_ids = set(evidence.evidence_ids())
+    if methodology is None:
+        decisions = (
+            WorkflowDecisionTrace(
+                decision_kind="enterprise_success_plan",
+                selected_hypothesis="not_built",
+                alternatives=(),
+                confidence=0.0,
+                confidence_model=("Coverage gates must pass before building a customer-facing success plan.",),
+                source_ids=(receipts[0].source_id,),
+                limitations=coverage.missing_required_sources,
+                domain_payload={"status": status},
+            ),
+        )
+        validations = (
+            WorkflowValidationResult(
+                "coverage_ready",
+                not coverage.missing_required_sources,
+                True,
+                "Required enterprise onboarding evidence must be present.",
+                (receipts[0].source_id,),
+            ),
+        )
+    else:
+        selected = next(
+            (item for item in methodology.first_value_hypotheses if item.selection_state == "selected"),
+            None,
+        )
+        selected_sources = tuple(
+            source_id for source_id in (selected.evidence_source_ids if selected else ())
+            if source_id in evidence_ids
+        )
+        decisions = (
+            WorkflowDecisionTrace(
+                decision_kind="enterprise_success_plan",
+                selected_hypothesis=selected.capability if selected else "unknown_first_value",
+                alternatives=tuple(
+                    item.capability for item in methodology.first_value_hypotheses
+                    if item.selection_state != "selected"
+                ),
+                confidence=(
+                    methodology.outcome_hypotheses[0].confidence
+                    if methodology.outcome_hypotheses
+                    else None
+                ),
+                confidence_model=methodology.confidence_model,
+                source_ids=selected_sources or (receipts[0].source_id,),
+                limitations=methodology.open_questions,
+                domain_payload={
+                    "method_version": methodology.method_version,
+                    "method_config_version": methodology.method_config_version,
+                    "validation_checks": [check.check_name for check in methodology.validation_checks],
+                },
+            ),
+        )
+        validations = tuple(
+            WorkflowValidationResult(
+                check.check_name,
+                check.passed,
+                True,
+                check.detail,
+                tuple(source_id for source_id in check.evidence_source_ids if source_id in evidence_ids),
+            )
+            for check in methodology.validation_checks
+        )
+    outputs = _execution_outputs(
+        receipts=receipts,
+        proposals=proposals,
+        status=status,
+        blocking_failed=any(result.blocks_customer_output and not result.passed for result in validations),
+    )
+    return build_execution_envelope(
+        ENTERPRISE_CLOSED_WON_ONBOARDING,
+        trigger_ref=opportunity_id,
+        idempotency_key=f"{ENTERPRISE_CLOSED_WON_ONBOARDING.workflow_id}:{opportunity_id}:{event.observed_at}",
+        identity_state="exactly_one",
+        evidence=evidence,
+        decisions=decisions,
+        validations=validations,
+        outputs=outputs,
+    )
+
+
+def _ignored_execution_envelope(
+    *,
+    event: SalesforceClosedWonEvent,
+    as_of: str,
+    trigger: SourceReceipt,
+    reason: str,
+    identity_state: Literal["exactly_one", "none"],
+) -> WorkflowExecutionEnvelope:
+    evidence = build_evidence_bundle(
+        receipts=(trigger,),
+        reviewed_sources=(trigger.source_type,),
+        missing_required_sources=(reason,),
+        customer_output_blockers=(reason,),
+    )
+    return build_execution_envelope(
+        ENTERPRISE_CLOSED_WON_ONBOARDING,
+        trigger_ref=event.opportunity_id,
+        idempotency_key=f"{ENTERPRISE_CLOSED_WON_ONBOARDING.workflow_id}:{event.opportunity_id}:{as_of}",
+        identity_state=identity_state,
+        evidence=evidence,
+        decisions=(
+            WorkflowDecisionTrace(
+                decision_kind="enterprise_success_plan",
+                selected_hypothesis="ignored",
+                alternatives=(),
+                confidence=0.0,
+                confidence_model=("Ignored outcomes still record why no workflow launched.",),
+                source_ids=(trigger.source_id,),
+                limitations=(reason,),
+                domain_payload={"reason": reason},
+            ),
+        ),
+        validations=(
+            WorkflowValidationResult(
+                "launch_precondition_met",
+                False,
+                True,
+                reason,
+                (trigger.source_id,),
+            ),
+        ),
+        outputs=(
+            WorkflowOutputContract(
+                artifact_type="ignored_workflow_notice",
+                audience="agent_internal",
+                action_type=None,
+                customer_affecting=False,
+                gate_action=None,
+                status="not_applicable",
+                source_ids=(trigger.source_id,),
+                suppression_reasons=(reason,),
+            ),
+        ),
+    )
+
+
+def _execution_outputs(
+    *,
+    receipts: tuple[SourceReceipt, ...],
+    proposals: tuple[LaunchProposalRef, ...],
+    status: LaunchStatus,
+    blocking_failed: bool,
+) -> tuple[WorkflowOutputContract, ...]:
+    evidence_ids = tuple(receipt.source_id for receipt in receipts)
+    if not proposals:
+        return (
+            WorkflowOutputContract(
+                artifact_type="enterprise_launch_packet",
+                audience="csm_facing",
+                action_type="internal_review",
+                customer_affecting=False,
+                gate_action=None,
+                status="suppressed" if blocking_failed or status != "ready" else "prepared",
+                source_ids=evidence_ids[:1],
+                suppression_reasons=("blocking_validation_failed",) if blocking_failed else (),
+            ),
+        )
+    outputs: list[WorkflowOutputContract] = []
+    for proposal in proposals:
+        customer_affecting = proposal.action_type in {"draft_customer_outreach", "edit_success_plan"}
+        outputs.append(WorkflowOutputContract(
+            artifact_type=proposal.action_type,
+            audience="customer_facing" if proposal.action_type == "draft_customer_outreach" else "external_write",
+            action_type=proposal.action_type,
+            customer_affecting=customer_affecting,
+            gate_action=proposal.action_type if customer_affecting else None,
+            status="proposed",
+            source_ids=evidence_ids,
+            suppression_reasons=(),
+            proposal_id=proposal.proposal_id,
+        ))
+    return tuple(outputs)
+
+
 def _proposal_ref(proposal: ActionProposal) -> LaunchProposalRef:
     return LaunchProposalRef(
         proposal_id=proposal.proposal_id,
@@ -2031,6 +2257,13 @@ def _ignored_packet(
     return EnterpriseOnboardingLaunchPacket(
         workflow_id=ENTERPRISE_CLOSED_WON_ONBOARDING.workflow_id,
         workflow_config_version=ENTERPRISE_CLOSED_WON_ONBOARDING.config_version,
+        execution_envelope=_ignored_execution_envelope(
+            event=event,
+            as_of=as_of,
+            trigger=trigger,
+            reason=reason,
+            identity_state="exactly_one" if account is not None else "none",
+        ),
         packet_id=f"enterprise-onboarding:{event.opportunity_id}:{as_of}",
         tenant_id=event.tenant_id,
         status="ignored",
