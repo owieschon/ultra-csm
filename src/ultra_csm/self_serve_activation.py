@@ -12,7 +12,6 @@ from dataclasses import asdict, dataclass
 from datetime import date, datetime
 from typing import Any, Literal
 
-from ultra_csm.data_plane import DEFAULT_TENANT
 from ultra_csm.data_plane.contracts import (
     CRMAccount,
     CRMContact,
@@ -24,6 +23,8 @@ from ultra_csm.governance import ActionGate, ActionProposal, proposal_fields_for
 
 PacketStatus = Literal["ready", "needs_data", "internal_only", "ignored"]
 MilestoneStatus = Literal["completed", "current", "blocked", "stale", "not_started"]
+CompletionOperator = Literal["any", "all"]
+VALUE_PATH_CONFIG_VERSION = "self-serve-value-path-config-v2"
 
 PERSONAL_EMAIL_DOMAINS = {
     "aol.com",
@@ -107,6 +108,9 @@ class SelfServeValuePathMilestone:
     label: str
     completion_rule: str
     required_signals: tuple[str, ...]
+    completion_operator: CompletionOperator
+    min_signal_value: float
+    min_signal_occurrences: int
     target_day: int
     customer_safe_interpretation: str
     allowed_actions_if_incomplete: tuple[str, ...]
@@ -131,12 +135,28 @@ class SelfServeMilestoneProgress:
 
 
 @dataclass(frozen=True)
+class SelfServePathHypothesis:
+    path_id: str
+    archetype: str
+    score: float
+    evidence_source_ids: tuple[str, ...]
+    reason: str
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass(frozen=True)
 class SelfServeValuePath:
+    config_version: str
     path_id: str
     archetype: str
     first_value_definition: str
+    first_value_milestone_id: str
+    selection_rule: str
     selection_reason: str
     selection_evidence_ids: tuple[str, ...]
+    secondary_hypotheses: tuple[SelfServePathHypothesis, ...]
     milestones: tuple[SelfServeMilestoneProgress, ...]
     current_milestone_id: str | None
     completed_milestone_ids: tuple[str, ...]
@@ -242,6 +262,9 @@ class _PathDefinition:
     path_id: str
     archetype: str
     first_value_definition: str
+    first_value_milestone_id: str
+    selection_metrics: tuple[str, ...]
+    selection_reason: str
     milestones: tuple[SelfServeValuePathMilestone, ...]
 
 
@@ -357,7 +380,7 @@ def resolve_self_serve_account_identity(crm, event: SelfServeSignupEvent) -> Sel
         )
 
     candidates: set[str] = set()
-    for account in crm.list_accounts(tenant_id=DEFAULT_TENANT):
+    for account in crm.list_accounts(tenant_id=event.tenant_id):
         for contact in crm.list_contacts(account.account_id):
             if _email_domain(contact.email) == domain:
                 candidates.add(account.account_id)
@@ -596,20 +619,17 @@ def _build_value_path(
     *,
     as_of: str,
 ) -> SelfServeValuePath:
-    path_def, reason, selected_ids = _select_path_definition(evidence, receipts)
+    hypotheses = _rank_path_hypotheses(evidence, receipts)
+    primary = hypotheses[0]
+    path_def = _path_definitions()[primary.path_id]
+    selected_ids = primary.evidence_source_ids
     by_metric: dict[str, list[UsageSignal]] = {}
     for signal in evidence.usage_signals:
         by_metric.setdefault(signal.metric_name, []).append(signal)
     progress: list[SelfServeMilestoneProgress] = []
     first_incomplete: SelfServeValuePathMilestone | None = None
     for milestone in path_def.milestones:
-        matching = [
-            signal
-            for metric in milestone.required_signals
-            for signal in by_metric.get(metric, ())
-            if signal.value > 0
-        ]
-        completed = bool(matching)
+        matching, completed = _matching_milestone_signals(milestone, by_metric)
         overdue = _days_between(event.observed_at, as_of) > milestone.target_day
         status: MilestoneStatus
         if completed:
@@ -649,103 +669,109 @@ def _build_value_path(
     )
     confidence = _path_confidence(progress, evidence)
     open_questions = _open_questions(evidence, path_def.path_id)
+    first_value_reached = any(
+        item.milestone_id == path_def.first_value_milestone_id
+        and item.status == "completed"
+        for item in progress
+    )
     return SelfServeValuePath(
+        config_version=VALUE_PATH_CONFIG_VERSION,
         path_id=path_def.path_id,
         archetype=path_def.archetype,
         first_value_definition=path_def.first_value_definition,
-        selection_reason=reason,
+        first_value_milestone_id=path_def.first_value_milestone_id,
+        selection_rule="rank paths by source-backed metric fit; preserve non-primary hypotheses for review",
+        selection_reason=primary.reason,
         selection_evidence_ids=selected_ids,
+        secondary_hypotheses=tuple(hypotheses[1:4]),
         milestones=tuple(progress),
         current_milestone_id=current.milestone_id if current else None,
         completed_milestone_ids=completed_ids,
         blocked_milestone_ids=blocked_ids,
         next_best_milestone_id=current.milestone_id if current else None,
-        first_value_reached="first_value" in completed_ids or len(completed_ids) >= 3,
+        first_value_reached=first_value_reached,
         enterprise_interest_signals=enterprise_interest,
         confidence=confidence,
         open_questions=open_questions,
     )
 
 
-def _select_path_definition(
+def _matching_milestone_signals(
+    milestone: SelfServeValuePathMilestone,
+    by_metric: dict[str, list[UsageSignal]],
+) -> tuple[list[UsageSignal], bool]:
+    per_metric: dict[str, list[UsageSignal]] = {}
+    matching: list[UsageSignal] = []
+    for metric in milestone.required_signals:
+        accepted = [
+            signal for signal in by_metric.get(metric, ())
+            if signal.value >= milestone.min_signal_value
+        ]
+        if accepted:
+            per_metric[metric] = accepted
+            matching.extend(accepted)
+    enough_occurrences = len(matching) >= milestone.min_signal_occurrences
+    if milestone.completion_operator == "all":
+        completed = all(metric in per_metric for metric in milestone.required_signals) and enough_occurrences
+    else:
+        completed = bool(per_metric) and enough_occurrences
+    return matching, completed
+
+
+def _rank_path_hypotheses(
     evidence: _AccountEvidence,
     receipts: tuple[SelfServeSourceReceipt, ...],
-) -> tuple[_PathDefinition, str, tuple[str, ...]]:
-    signal_ids_by_metric = {
-        signal.metric_name: signal.signal_id
-        for signal in evidence.usage_signals
-        if signal.value > 0
-    }
-    metrics = set(signal_ids_by_metric)
-    if metrics & {"crm_integration_viewed", "crm_connect_clicked", "crm_connection_requested", "integration_boundary_hit"}:
-        selected = tuple(
-            signal_ids_by_metric[m]
-            for m in (
-                "crm_integration_viewed",
-                "crm_connect_clicked",
-                "crm_connection_requested",
-                "integration_boundary_hit",
+) -> tuple[SelfServePathHypothesis, ...]:
+    signal_ids_by_metric: dict[str, tuple[str, ...]] = {}
+    for signal in evidence.usage_signals:
+        if signal.value > 0:
+            signal_ids_by_metric.setdefault(signal.metric_name, ())
+            signal_ids_by_metric[signal.metric_name] = (
+                *signal_ids_by_metric[signal.metric_name],
+                signal.signal_id,
             )
+    hypotheses: list[SelfServePathHypothesis] = []
+    for definition in _path_definitions().values():
+        evidence_ids = tuple(
+            source_id
+            for metric in definition.selection_metrics
+            for source_id in signal_ids_by_metric.get(metric, ())
+        )
+        score = float(len(evidence_ids))
+        if definition.path_id == "support_friction_signup":
+            case_ids = tuple(
+                receipt.source_id for receipt in receipts
+                if receipt.source_type == "salesforce_case"
+            )
+            evidence_ids = (*evidence_ids, *case_ids)
+            score += len(case_ids) * 0.75
+        if definition.path_id == "crm_enterprise_curious" and evidence_ids:
+            score += 0.5
+        if definition.path_id == "team_workspace_creator" and evidence.adoption_summary is not None:
+            score += 0.25
+        if evidence_ids:
+            hypotheses.append(SelfServePathHypothesis(
+                path_id=definition.path_id,
+                archetype=definition.archetype,
+                score=round(score, 2),
+                evidence_source_ids=tuple(dict.fromkeys(evidence_ids)),
+                reason=definition.selection_reason,
+            ))
+    if not hypotheses:
+        definition = _path_definitions()["solo_evaluator"]
+        fallback_ids = tuple(
+            signal_ids_by_metric[m][0]
+            for m in ("workspace_created", "profile_completed", "first_search_run", "insight_viewed")
             if m in signal_ids_by_metric
         )
-        return _path_definitions()["crm_enterprise_curious"], (
-            "CRM interest was observed in self-serve telemetry; CRM remains an "
-            "enterprise-only connection, so the path treats this as expansion interest."
-        ), selected
-    if metrics & {"invite_sent", "invited_user_activated", "team_workspace_created"}:
-        selected = tuple(
-            signal_ids_by_metric[m]
-            for m in ("invite_sent", "invited_user_activated", "team_workspace_created")
-            if m in signal_ids_by_metric
-        )
-        return _path_definitions()["team_workspace_creator"], (
-            "Team creation and invite behavior indicate the user is trying to create shared value."
-        ), selected
-    if metrics & {"workflow_created", "workflow_run", "automation_success"}:
-        selected = tuple(
-            signal_ids_by_metric[m]
-            for m in ("workflow_created", "workflow_run", "automation_success")
-            if m in signal_ids_by_metric
-        )
-        return _path_definitions()["workflow_automation_evaluator"], (
-            "Workflow activity indicates the user is evaluating automation value."
-        ), selected
-    if metrics & {"dashboard_viewed", "report_created", "export_shared"}:
-        selected = tuple(
-            signal_ids_by_metric[m]
-            for m in ("dashboard_viewed", "report_created", "export_shared")
-            if m in signal_ids_by_metric
-        )
-        return _path_definitions()["reporting_visibility_evaluator"], (
-            "Reporting activity indicates the user is evaluating visibility and sharing."
-        ), selected
-    if metrics & {"integration_catalog_viewed", "integration_connected", "sync_succeeded"}:
-        selected = tuple(
-            signal_ids_by_metric[m]
-            for m in ("integration_catalog_viewed", "integration_connected", "sync_succeeded")
-            if m in signal_ids_by_metric
-        )
-        return _path_definitions()["integration_led_evaluator"], (
-            "Integration setup behavior indicates the user is trying to unlock connected-system value."
-        ), selected
-    if evidence.cases or metrics & {"support_chat_opened", "help_doc_viewed"}:
-        selected = tuple(
-            signal_ids_by_metric[m]
-            for m in ("support_chat_opened", "help_doc_viewed")
-            if m in signal_ids_by_metric
-        )
-        selected = selected or tuple(receipt.source_id for receipt in receipts if receipt.source_type == "salesforce_case")
-        return _path_definitions()["support_friction_signup"], (
-            "Support or help-seeking behavior indicates activation is gated by friction."
-        ), selected
-    selected = tuple(
-        signal_ids_by_metric[m]
-        for m in ("workspace_created", "profile_completed", "first_search_run", "insight_viewed")
-        if m in signal_ids_by_metric
-    )
-    return _path_definitions()["solo_evaluator"], (
-        "Individual setup and exploration signals are the strongest available path evidence."
-    ), selected
+        hypotheses.append(SelfServePathHypothesis(
+            path_id=definition.path_id,
+            archetype=definition.archetype,
+            score=0.1 if fallback_ids else 0.0,
+            evidence_source_ids=fallback_ids,
+            reason="No stronger path evidence was present; default to individual evaluation until telemetry narrows the path.",
+        ))
+    return tuple(sorted(hypotheses, key=lambda item: (-item.score, item.path_id)))
 
 
 def _path_definitions() -> dict[str, _PathDefinition]:
@@ -754,32 +780,41 @@ def _path_definitions() -> dict[str, _PathDefinition]:
             "solo_evaluator",
             "Solo evaluator",
             "The user reaches first value when they complete setup and produce one saved or reusable insight.",
+            "first_value",
+            ("workspace_created", "profile_completed", "context_added", "saved_view_created", "insight_saved", "first_search_run", "insight_viewed"),
+            "Individual setup and exploration signals indicate a solo evaluation path.",
             (
                 _milestone("signup", "Workspace created", ("workspace_created",), 0, "Your workspace is active.", ("surface_in_app_checklist",)),
                 _milestone("setup", "Profile and context completed", ("profile_completed", "context_added"), 1, "Your workspace has enough context to personalize the experience.", ("surface_in_app_checklist",)),
                 _milestone("first_value", "First useful insight saved", ("saved_view_created", "insight_saved", "first_search_run"), 3, "You have produced a reusable insight.", ("send_activation_nudge", "content_route")),
-                _milestone("habit", "Returned to use the result", ("return_session", "insight_viewed"), 7, "You came back to use the work again.", ("recommend_next_feature",)),
+                _milestone("habit", "Returned to use the result", ("return_session", "insight_viewed"), 7, "You came back to use the work again.", ("recommend_next_feature",), min_occurrences=2),
             ),
         ),
         "team_workspace_creator": _PathDefinition(
             "team_workspace_creator",
             "Team workspace creator",
             "The user reaches first value when at least one teammate activates and shared work exists.",
+            "first_value",
+            ("team_workspace_created", "invite_sent", "invited_user_activated", "shared_workflow_created", "weekly_active_team_members"),
+            "Team creation and invite behavior indicate the user is trying to create shared value.",
             (
                 _milestone("signup", "Workspace created", ("workspace_created", "team_workspace_created"), 0, "Your team workspace is active.", ("surface_in_app_checklist",)),
                 _milestone("invite", "Teammates invited", ("invite_sent",), 2, "A teammate has been invited into the workspace.", ("send_invite_followup",)),
                 _milestone("first_value", "Teammate activated or shared workflow used", ("invited_user_activated", "shared_workflow_created"), 5, "At least one teammate has started participating.", ("send_invite_followup", "content_route")),
-                _milestone("depth", "Shared workflow repeats", ("shared_workflow_run", "weekly_active_team_members"), 10, "The team is using a repeated shared workflow.", ("recommend_next_feature",)),
+                _milestone("depth", "Shared workflow repeats", ("shared_workflow_run", "weekly_active_team_members"), 10, "The team is using a repeated shared workflow.", ("recommend_next_feature",), min_occurrences=2),
             ),
         ),
         "integration_led_evaluator": _PathDefinition(
             "integration_led_evaluator",
             "Integration-led evaluator",
             "The user reaches first value when a non-enterprise integration syncs data and powers one workflow.",
+            "first_value",
+            ("integration_catalog_viewed", "integration_connected", "sync_succeeded", "workflow_run", "synced_record_used"),
+            "Integration setup behavior indicates the user is trying to unlock connected-system value.",
             (
                 _milestone("signup", "Workspace created", ("workspace_created",), 0, "Your workspace is active.", ("surface_in_app_checklist",)),
                 _milestone("integration_selected", "Integration selected", ("integration_catalog_viewed",), 2, "You found a connected-system path to try.", ("content_route",)),
-                _milestone("first_value", "Data synced into a workflow", ("integration_connected", "sync_succeeded"), 5, "Connected data is available in the workspace.", ("send_activation_nudge", "content_route")),
+                _milestone("first_value", "Data synced into a workflow", ("integration_connected", "sync_succeeded"), 5, "Connected data is available in the workspace.", ("send_activation_nudge", "content_route"), operator="all", min_occurrences=2),
                 _milestone("workflow", "Synced data used in workflow", ("workflow_run", "synced_record_used"), 8, "Connected data has been used in actual work.", ("recommend_next_feature",)),
             ),
         ),
@@ -787,6 +822,9 @@ def _path_definitions() -> dict[str, _PathDefinition]:
             "crm_enterprise_curious",
             "CRM-enterprise curious evaluator",
             "The user reaches first value when they clarify the enterprise CRM path or invite a stakeholder who can sponsor it.",
+            "first_value",
+            ("crm_integration_viewed", "crm_connect_clicked", "crm_connection_requested", "integration_boundary_hit", "enterprise_plan_viewed", "stakeholder_invited", "champion_invited"),
+            "CRM interest was observed in self-serve telemetry; CRM remains an enterprise-only connection, so the path treats this as expansion interest.",
             (
                 _milestone("signup", "Workspace created", ("workspace_created",), 0, "Your workspace is active.", ("surface_in_app_checklist",)),
                 _milestone("crm_interest", "CRM interest observed", ("crm_integration_viewed", "crm_connect_clicked", "crm_connection_requested"), 2, "You explored CRM connectivity.", ("offer_enterprise_crm_path", "content_route")),
@@ -798,28 +836,37 @@ def _path_definitions() -> dict[str, _PathDefinition]:
             "workflow_automation_evaluator",
             "Workflow automation evaluator",
             "The user reaches first value when a workflow runs successfully on real work.",
+            "first_value",
+            ("workflow_created", "workflow_run", "automation_success", "repeat_workflow_run"),
+            "Workflow activity indicates the user is evaluating automation value.",
             (
                 _milestone("signup", "Workspace created", ("workspace_created",), 0, "Your workspace is active.", ("surface_in_app_checklist",)),
                 _milestone("workflow_created", "Workflow created", ("workflow_created",), 2, "You created a workflow.", ("surface_in_app_checklist", "content_route")),
-                _milestone("first_value", "Workflow completed successfully", ("workflow_run", "automation_success"), 5, "A workflow completed successfully.", ("send_activation_nudge",)),
-                _milestone("habit", "Workflow repeated", ("repeat_workflow_run",), 10, "The workflow is starting to become repeatable.", ("recommend_next_feature",)),
+                _milestone("first_value", "Workflow completed successfully", ("workflow_run", "automation_success"), 5, "A workflow completed successfully.", ("send_activation_nudge",), operator="all", min_occurrences=2),
+                _milestone("habit", "Workflow repeated", ("repeat_workflow_run",), 10, "The workflow is starting to become repeatable.", ("recommend_next_feature",), min_occurrences=2),
             ),
         ),
         "reporting_visibility_evaluator": _PathDefinition(
             "reporting_visibility_evaluator",
             "Reporting and visibility evaluator",
             "The user reaches first value when a report is created and shared or revisited.",
+            "first_value",
+            ("dashboard_viewed", "report_viewed", "report_created", "export_shared", "report_revisited"),
+            "Reporting activity indicates the user is evaluating visibility and sharing.",
             (
                 _milestone("signup", "Workspace created", ("workspace_created",), 0, "Your workspace is active.", ("surface_in_app_checklist",)),
                 _milestone("report_viewed", "Dashboard or report viewed", ("dashboard_viewed", "report_viewed"), 2, "You reviewed operational visibility in the workspace.", ("content_route",)),
                 _milestone("first_value", "Report created or shared", ("report_created", "export_shared"), 5, "A reusable report was created or shared.", ("send_activation_nudge", "content_route")),
-                _milestone("habit", "Report revisited", ("return_session", "report_revisited"), 10, "The report was used again after creation.", ("recommend_next_feature",)),
+                _milestone("habit", "Report revisited", ("return_session", "report_revisited"), 10, "The report was used again after creation.", ("recommend_next_feature",), min_occurrences=2),
             ),
         ),
         "support_friction_signup": _PathDefinition(
             "support_friction_signup",
             "Support-friction signup",
             "The user reaches first value when the blocker is resolved and setup resumes.",
+            "first_value",
+            ("support_chat_opened", "help_doc_viewed", "resolution_confirmed", "profile_completed", "workflow_created"),
+            "Support or help-seeking behavior indicates activation is gated by friction.",
             (
                 _milestone("signup", "Workspace created", ("workspace_created",), 0, "Your workspace is active.", ("surface_in_app_checklist",)),
                 _milestone("friction", "Activation friction identified", ("support_chat_opened", "help_doc_viewed"), 1, "You asked for help during setup.", ("route_to_scaled_csm_review",)),
@@ -837,12 +884,22 @@ def _milestone(
     target_day: int,
     interpretation: str,
     actions: tuple[str, ...],
+    *,
+    operator: CompletionOperator = "any",
+    min_value: float = 1.0,
+    min_occurrences: int = 1,
 ) -> SelfServeValuePathMilestone:
     return SelfServeValuePathMilestone(
         milestone_id=milestone_id,
         label=label,
-        completion_rule="complete when any required signal is observed with value > 0",
+        completion_rule=(
+            f"complete when {operator} required signal set has at least "
+            f"{min_occurrences} observation(s) with value >= {min_value:g}"
+        ),
         required_signals=signals,
+        completion_operator=operator,
+        min_signal_value=min_value,
+        min_signal_occurrences=min_occurrences,
         target_day=target_day,
         customer_safe_interpretation=interpretation,
         allowed_actions_if_incomplete=actions,
@@ -1035,9 +1092,26 @@ def _path_confidence(progress: list[SelfServeMilestoneProgress], evidence: _Acco
     if not evidence.usage_signals:
         return 0.0
     completed = sum(1 for item in progress if item.status == "completed")
-    support = 0.15 if evidence.contacts else 0.0
-    support += 0.10 if evidence.adoption_summary is not None else 0.0
-    return min(0.95, 0.35 + (completed * 0.15) + support)
+    first_value_evidence = any(
+        item.milestone_id == "first_value" and item.evidence_source_ids
+        for item in progress
+    )
+    source_support = sum((
+        1 if evidence.contacts else 0,
+        1 if evidence.adoption_summary is not None else 0,
+        1 if evidence.entitlements else 0,
+        1 if evidence.gmail_signals or evidence.call_signals else 0,
+        1 if evidence.internal_notes else 0,
+    ))
+    stale_penalty = 0.1 * sum(1 for item in progress if item.status == "stale")
+    confidence = (
+        0.25
+        + min(0.30, completed * 0.08)
+        + (0.20 if first_value_evidence else 0.0)
+        + min(0.20, source_support * 0.04)
+        - stale_penalty
+    )
+    return round(max(0.0, min(0.95, confidence)), 2)
 
 
 def _open_questions(evidence: _AccountEvidence, path_id: str) -> tuple[str, ...]:
@@ -1048,6 +1122,12 @@ def _open_questions(evidence: _AccountEvidence, path_id: str) -> tuple[str, ...]
         questions.append("Who can sponsor the enterprise CRM connection evaluation?")
     if not evidence.usage_signals:
         questions.append("Which product telemetry events have fired since signup?")
+    if not evidence.entitlements:
+        questions.append("Which self-serve capabilities is this workspace entitled to use?")
+    if evidence.cases:
+        questions.append("Did the support issue block the next value-path milestone?")
+    if not evidence.gmail_signals and not evidence.call_signals and not evidence.internal_notes:
+        questions.append("Is there any customer or internal context explaining the signup intent?")
     return tuple(questions)
 
 

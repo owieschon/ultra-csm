@@ -48,6 +48,7 @@ from ultra_csm.value_model import (
 
 
 ENTERPRISE_AMOUNT_CENTS = 10_000_000
+ENTERPRISE_SUCCESS_PLAN_CONFIG_VERSION = "enterprise-success-plan-config-v2"
 
 LaunchStatus = Literal["ready", "needs_data", "ignored"]
 SourceAuthority = Literal[
@@ -247,6 +248,15 @@ class SuccessPlanOutcomeHypothesis:
 
 
 @dataclass(frozen=True)
+class SuccessPlanFirstValueHypothesis:
+    capability: str
+    selection_state: Literal["selected", "alternative"]
+    confidence: float
+    evidence_source_ids: tuple[str, ...]
+    rationale: str
+
+
+@dataclass(frozen=True)
 class SuccessPlanValidationCheck:
     check_name: str
     passed: bool
@@ -257,10 +267,13 @@ class SuccessPlanValidationCheck:
 @dataclass(frozen=True)
 class SuccessPlanMethodology:
     method_version: str
+    method_config_version: str
     lifecycle_stage: str
     construction_steps: tuple[str, ...]
     input_evidence: tuple[SuccessPlanInputEvidence, ...]
     outcome_hypotheses: tuple[SuccessPlanOutcomeHypothesis, ...]
+    first_value_hypotheses: tuple[SuccessPlanFirstValueHypothesis, ...]
+    confidence_model: tuple[str, ...]
     milestone_rationale: tuple[str, ...]
     validation_checks: tuple[SuccessPlanValidationCheck, ...]
     customer_fit_summary: str
@@ -868,7 +881,19 @@ def _build_success_plan(
     owner = _owner_name(contacts) or account.owner_id
     source_ids = (opportunity.opportunity_id, *(f"{e.account_id}:{e.capability}" for e in entitlements[:3]))
     kickoff_date = as_of
-    first_capability = entitlements[0].capability.replace("_", " ") if entitlements else "purchased workflow"
+    first_value_hypotheses = _first_value_hypotheses(
+        entitlements=entitlements,
+        success_plans=success_plans,
+        internal_notes=internal_notes,
+        usage_signals=usage_signals,
+    )
+    selected_first_value = next(
+        (item for item in first_value_hypotheses if item.selection_state == "selected"),
+        None,
+    )
+    first_capability = (
+        selected_first_value.capability if selected_first_value is not None else "purchased workflow"
+    )
     outcome = _primary_success_outcome(
         entitlements=entitlements,
         success_plans=success_plans,
@@ -961,6 +986,7 @@ def _build_success_plan(
         onboarding_tasks=onboarding_tasks,
         success_plans=success_plans,
         value_alignment=value_alignment,
+        first_value_hypotheses=first_value_hypotheses,
     )
     return milestones, methodology
 
@@ -986,6 +1012,7 @@ def _success_plan_methodology(
     onboarding_tasks: tuple[OnboardingTask, ...],
     success_plans: tuple[SuccessPlan, ...],
     value_alignment: SuccessPlanValueModelAlignment | None,
+    first_value_hypotheses: tuple[SuccessPlanFirstValueHypothesis, ...],
 ) -> SuccessPlanMethodology:
     input_evidence = (
         SuccessPlanInputEvidence(
@@ -1046,6 +1073,7 @@ def _success_plan_methodology(
         call_or_meeting_comms=call_or_meeting_comms,
         calendar_attendance=calendar_attendance,
         value_alignment=value_alignment,
+        first_value_hypotheses=first_value_hypotheses,
     )
     open_questions = _success_plan_open_questions(
         stakeholder_rows=stakeholder_rows,
@@ -1053,8 +1081,19 @@ def _success_plan_methodology(
         onboarding_projects=onboarding_projects,
         entitlements=entitlements,
     )
+    confidence = _success_plan_confidence(
+        success_plans=success_plans,
+        customer_comms=customer_comms,
+        call_or_meeting_comms=call_or_meeting_comms,
+        calendar_attendance=calendar_attendance,
+        internal_notes=internal_notes,
+        usage_signals=usage_signals,
+        value_alignment=value_alignment,
+        first_value_hypotheses=first_value_hypotheses,
+    )
     return SuccessPlanMethodology(
         method_version="enterprise_closed_won_success_plan_v1",
+        method_config_version=ENTERPRISE_SUCCESS_PLAN_CONFIG_VERSION,
         lifecycle_stage=lifecycle_stage,
         construction_steps=(
             "Confirm the opportunity is Closed Won and enterprise-sized from Salesforce.",
@@ -1064,7 +1103,7 @@ def _success_plan_methodology(
             "Resolve lifecycle-aware thresholds and tenant service tier before selecting targets.",
             "Project TTV priority from the value-model rails, open milestones, onboarding activation gaps, overdue plans, health, and ARR tier.",
             "Infer the primary outcome from existing success-plan objectives, internal handoff notes, and purchased capabilities.",
-            "Choose first value from the earliest purchased capability that can produce observable customer behavior.",
+            "Rank candidate first-value hypotheses from entitlements, success-plan objectives, internal notes, and telemetry; preserve alternatives instead of flattening them.",
             "Build milestones in CSM order and bind each milestone to a measurable rail target.",
             "Attach source IDs to every milestone and keep customer-facing language behind ActionGate.",
         ),
@@ -1072,7 +1111,7 @@ def _success_plan_methodology(
         outcome_hypotheses=(
             SuccessPlanOutcomeHypothesis(
                 outcome=outcome,
-                confidence=0.84 if success_plans and (customer_comms or call_or_meeting_comms or calendar_attendance) else 0.68,
+                confidence=confidence,
                 evidence_source_ids=tuple(
                     [plan.plan_id for plan in success_plans]
                     + [f"{item.account_id}:{item.capability}" for item in entitlements[:3]]
@@ -1080,6 +1119,13 @@ def _success_plan_methodology(
                 ),
                 unresolved_questions=open_questions,
             ),
+        ),
+        first_value_hypotheses=first_value_hypotheses,
+        confidence_model=(
+            "Start from source diversity and value-model availability.",
+            "Add confidence for customer/call/calendar context, success-plan objectives, telemetry, and explicit first-value evidence.",
+            "Subtract confidence when first-value alternatives exist without customer-confirmed selection.",
+            "Never infer first value from completed milestone count alone.",
         ),
         milestone_rationale=tuple(
             f"{item.milestone}: {item.acceptance_criteria}" for item in milestones
@@ -1117,6 +1163,111 @@ def _primary_success_outcome(
     return "confirm the customer success outcome during kickoff"
 
 
+def _first_value_hypotheses(
+    *,
+    entitlements: tuple[Entitlement, ...],
+    success_plans: tuple,
+    internal_notes: tuple,
+    usage_signals: tuple[UsageSignal, ...],
+) -> tuple[SuccessPlanFirstValueHypothesis, ...]:
+    objective_text = " ".join(
+        objective.replace("_", " ").lower()
+        for plan in success_plans
+        for objective in getattr(plan, "objectives", ())
+    )
+    note_text = " ".join(getattr(note, "content", "") for note in internal_notes).lower()
+    usage_metrics = {signal.metric_name.lower(): signal.signal_id for signal in usage_signals}
+    hypotheses: list[tuple[float, SuccessPlanFirstValueHypothesis]] = []
+    for idx, entitlement in enumerate(entitlements):
+        capability = entitlement.capability.replace("_", " ")
+        raw_capability = entitlement.capability.lower()
+        evidence = [f"{entitlement.account_id}:{entitlement.capability}"]
+        score = 0.35
+        rationale = ["purchased capability"]
+        if raw_capability in objective_text or capability in objective_text:
+            score += 0.2
+            rationale.append("named in existing success-plan objective")
+            evidence.extend(plan.plan_id for plan in success_plans)
+        if raw_capability in note_text or capability in note_text:
+            score += 0.15
+            rationale.append("referenced in internal handoff notes")
+            evidence.extend(note.note_id for note in internal_notes)
+        metric_matches = tuple(
+            signal_id for metric, signal_id in usage_metrics.items()
+            if raw_capability in metric or metric in raw_capability
+        )
+        if metric_matches:
+            score += 0.15
+            rationale.append("has related product telemetry")
+            evidence.extend(metric_matches)
+        score += max(0.0, 0.05 - (idx * 0.01))
+        hypotheses.append((
+            round(min(0.95, score), 2),
+            SuccessPlanFirstValueHypothesis(
+                capability=capability,
+                selection_state="alternative",
+                confidence=round(min(0.95, score), 2),
+                evidence_source_ids=_non_empty_sources(tuple(evidence)),
+                rationale=", ".join(rationale),
+            ),
+        ))
+    if not hypotheses:
+        return (SuccessPlanFirstValueHypothesis(
+            capability="purchased workflow",
+            selection_state="selected",
+            confidence=0.2,
+            evidence_source_ids=(),
+            rationale="No entitlement record was available; kickoff must confirm first value before customer-facing plan language.",
+        ),)
+    ranked = [item for _, item in sorted(hypotheses, key=lambda pair: (-pair[0], pair[1].capability))]
+    selected = ranked[0]
+    return (
+        SuccessPlanFirstValueHypothesis(
+            capability=selected.capability,
+            selection_state="selected",
+            confidence=selected.confidence,
+            evidence_source_ids=selected.evidence_source_ids,
+            rationale=selected.rationale,
+        ),
+        *ranked[1:],
+    )
+
+
+def _success_plan_confidence(
+    *,
+    success_plans: tuple[SuccessPlan, ...],
+    customer_comms: tuple,
+    call_or_meeting_comms: tuple,
+    calendar_attendance: tuple[CalendarAttendance, ...],
+    internal_notes: tuple,
+    usage_signals: tuple,
+    value_alignment: SuccessPlanValueModelAlignment | None,
+    first_value_hypotheses: tuple[SuccessPlanFirstValueHypothesis, ...],
+) -> float:
+    source_support = sum((
+        1 if success_plans else 0,
+        1 if customer_comms else 0,
+        1 if call_or_meeting_comms else 0,
+        1 if calendar_attendance else 0,
+        1 if internal_notes else 0,
+        1 if usage_signals else 0,
+        1 if value_alignment is not None else 0,
+    ))
+    selected = next(
+        (item for item in first_value_hypotheses if item.selection_state == "selected"),
+        None,
+    )
+    ambiguity_penalty = 0.05 if len(first_value_hypotheses) > 1 else 0.0
+    confidence = (
+        0.35
+        + min(0.28, source_support * 0.04)
+        + (selected.confidence * 0.25 if selected is not None else 0.0)
+        + (0.08 if value_alignment is not None else 0.0)
+        - ambiguity_penalty
+    )
+    return round(max(0.0, min(0.95, confidence)), 2)
+
+
 def _first_value_acceptance_criteria(first_capability: str, outcome: str) -> str:
     return (
         f"Customer completes one observable {first_capability} workflow tied to "
@@ -1135,6 +1286,7 @@ def _success_plan_validation_checks(
     call_or_meeting_comms: tuple[CommunicationSignal, ...],
     calendar_attendance: tuple[CalendarAttendance, ...],
     value_alignment: SuccessPlanValueModelAlignment | None,
+    first_value_hypotheses: tuple[SuccessPlanFirstValueHypothesis, ...],
 ) -> tuple[SuccessPlanValidationCheck, ...]:
     customer_context_ids = tuple(
         [signal.signal_id for signal in (*customer_comms, *call_or_meeting_comms)]
@@ -1160,6 +1312,20 @@ def _success_plan_validation_checks(
         for milestone in milestones
         if milestone.measurement is not None
         for source in milestone.measurement.evidence_source_ids
+    )
+    first_value_milestone = next(
+        (milestone for milestone in milestones if milestone.milestone == "First value event achieved"),
+        None,
+    )
+    selected_first_value = tuple(
+        hypothesis.capability for hypothesis in first_value_hypotheses
+        if hypothesis.selection_state == "selected"
+    )
+    selected_first_value_ids = tuple(
+        source
+        for hypothesis in first_value_hypotheses
+        if hypothesis.selection_state == "selected"
+        for source in hypothesis.evidence_source_ids
     )
     expected_rails = {
         "activation",
@@ -1245,6 +1411,27 @@ def _success_plan_validation_checks(
             and all(milestone.measurement is not None for milestone in milestones),
             measured_milestone_ids,
             "Every milestone must carry a measurable rail target from the value-model alignment.",
+        ),
+        SuccessPlanValidationCheck(
+            "first_value_milestone_explicit",
+            first_value_milestone is not None
+            and first_value_milestone.measurement is not None
+            and first_value_milestone.measurement.rail == "feature_depth"
+            and bool(selected_first_value)
+            and selected_first_value[0] in first_value_milestone.acceptance_criteria,
+            (*selected_first_value_ids, *(first_value_milestone.source_ids if first_value_milestone else ())),
+            "First value must be an explicit selected hypothesis bound to the feature-depth rail.",
+        ),
+        SuccessPlanValidationCheck(
+            "alternative_first_value_hypotheses_preserved",
+            bool(first_value_hypotheses)
+            and sum(1 for hypothesis in first_value_hypotheses if hypothesis.selection_state == "selected") == 1,
+            tuple(
+                source
+                for hypothesis in first_value_hypotheses
+                for source in hypothesis.evidence_source_ids
+            ),
+            "The plan must keep candidate first-value hypotheses instead of flattening them into one opaque choice.",
         ),
     )
 

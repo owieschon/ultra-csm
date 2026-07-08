@@ -115,6 +115,7 @@ def test_enterprise_closed_won_builds_launch_packet_from_connected_sources(runti
     assert packet.success_plan_methodology is not None
     method = packet.success_plan_methodology
     assert method.method_version == "enterprise_closed_won_success_plan_v1"
+    assert method.method_config_version == "enterprise-success-plan-config-v2"
     assert "relationship maps" in method.customer_fit_summary
     assert {item.input_name for item in method.input_evidence} >= {
         "commercial_trigger",
@@ -158,7 +159,18 @@ def test_enterprise_closed_won_builds_launch_packet_from_connected_sources(runti
         "resolved_thresholds_applied",
         "ttv_projection_calculated",
         "milestones_map_to_value_model_rails",
+        "first_value_milestone_explicit",
+        "alternative_first_value_hypotheses_preserved",
     }
+    assert all(check.passed for check in method.validation_checks)
+    selected_first_value = [
+        hypothesis for hypothesis in method.first_value_hypotheses
+        if hypothesis.selection_state == "selected"
+    ]
+    assert len(selected_first_value) == 1
+    assert selected_first_value[0].capability == "relationship maps"
+    assert selected_first_value[0].confidence > 0
+    assert method.confidence_model
     assert any(
         check.check_name == "milestones_have_evidence"
         and OPPORTUNITY_ID in check.evidence_source_ids

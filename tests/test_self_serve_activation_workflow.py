@@ -62,6 +62,8 @@ def test_self_serve_signup_selects_team_value_path_and_gates_customer_outreach(r
     assert packet.status == "ready"
     assert packet.identity_resolution.state == "exactly_one"
     assert packet.value_path.path_id == "team_workspace_creator"
+    assert packet.value_path.config_version == "self-serve-value-path-config-v2"
+    assert packet.value_path.first_value_milestone_id == "first_value"
     assert packet.value_path.first_value_reached is True
     assert packet.value_path.first_value_definition == (
         "The user reaches first value when at least one teammate activates and shared work exists."
@@ -75,6 +77,109 @@ def test_self_serve_signup_selects_team_value_path_and_gates_customer_outreach(r
     assert {proposal.action_type for proposal in packet.proposals} == {"draft_customer_outreach"}
     assert "product_telemetry" in packet.coverage.reviewed_sources
     assert "salesforce_contact" in packet.coverage.reviewed_sources
+
+
+def test_self_serve_first_value_is_not_inferred_from_completed_step_count(runtime_conn):
+    runtime_conn.execute("BEGIN")
+    try:
+        orch, _authority = setup_roster(runtime_conn, tenant=T1)
+        gate = ActionGate(
+            runtime_conn,
+            tenant_id=T1,
+            actor_principal_id=orch,
+            verdict_source=FixtureVerdictSource(),
+            now=CLOCK,
+        )
+        packet = run_self_serve_signup_activation(
+            data_plane=_self_serve_data_plane(
+                usage_metrics=("workspace_created", "profile_completed", "insight_viewed", "return_session")
+            ),
+            gate=gate,
+            event=_signup_event(),
+            as_of=AS_OF,
+        )
+    finally:
+        runtime_conn.rollback()
+
+    assert packet.value_path.path_id == "solo_evaluator"
+    completed = set(packet.value_path.completed_milestone_ids)
+    assert {"signup", "setup", "habit"} <= completed
+    assert "first_value" not in completed
+    assert packet.value_path.first_value_reached is False
+
+
+def test_self_serve_preserves_secondary_value_path_hypotheses(runtime_conn):
+    runtime_conn.execute("BEGIN")
+    try:
+        orch, _authority = setup_roster(runtime_conn, tenant=T1)
+        gate = ActionGate(
+            runtime_conn,
+            tenant_id=T1,
+            actor_principal_id=orch,
+            verdict_source=FixtureVerdictSource(),
+            now=CLOCK,
+        )
+        packet = run_self_serve_signup_activation(
+            data_plane=_self_serve_data_plane(
+                usage_metrics=("workspace_created", "invite_sent", "invited_user_activated", "crm_connect_clicked")
+            ),
+            gate=gate,
+            event=_signup_event(),
+            as_of=AS_OF,
+        )
+    finally:
+        runtime_conn.rollback()
+
+    assert packet.value_path.path_id == "team_workspace_creator"
+    secondary = {item.path_id: item for item in packet.value_path.secondary_hypotheses}
+    assert "crm_enterprise_curious" in secondary
+    assert secondary["crm_enterprise_curious"].evidence_source_ids
+
+
+def test_self_serve_domain_resolution_uses_event_tenant_scope():
+    tenant_account = "acct-tenant-scoped"
+    decoy_account = "acct-decoy"
+    data = FixtureCustomerData(
+        accounts=(
+            CRMAccount(tenant_account, "Tenant Scoped Co", "owner-a", "software"),
+            CRMAccount(decoy_account, "Default Decoy Co", "owner-b", "software"),
+        ),
+        companies=(),
+        contacts=(
+            CRMContact("contact-tenant", tenant_account, "operator@scoped.example", "Tenant User", "operator", None, True),
+            CRMContact("contact-decoy", decoy_account, "other@scoped.example", "Decoy User", "operator", None, True),
+        ),
+        cases=(),
+        opportunities=(),
+        health_scores=(),
+        ctas=(),
+        success_plans=(),
+        adoption_summaries=(),
+        entitlements=(),
+        usage_signals=(),
+        milestones=(),
+        tenant_accounts={T1: (tenant_account,), DEFAULT_TENANT: (decoy_account,)},
+    )
+
+    packet = run_self_serve_signup_activation(
+        data_plane=CustomerDataPlane(
+            crm=FixtureCRMDataConnector(tenant=DEFAULT_TENANT, data=data),
+            cs=FixtureCSPlatformConnector(data=data),
+            telemetry=FixtureProductTelemetryConnector(data=data),
+            comms=FixtureCommsConnector(data=data),
+        ),
+        gate=None,
+        event=SelfServeSignupEvent(
+            tenant_id=T1,
+            workspace_id="workspace-scoped",
+            signup_email="new@scoped.example",
+            observed_at="2026-07-08T12:00:00Z",
+        ),
+        as_of=AS_OF,
+    )
+
+    assert packet.identity_resolution.state == "exactly_one"
+    assert packet.account_id == tenant_account
 
 
 def test_crm_interest_is_enterprise_expansion_signal_not_self_serve_connect_action(runtime_conn):

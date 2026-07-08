@@ -184,5 +184,7 @@ def test_queue_detail_surfaces_self_serve_activation_packet():
     assert "selfServeActivationPackets" in source
     assert "Self-serve value path" in source
     assert "first_value_definition" in source
+    assert "secondary_hypotheses" in source
+    assert "config_version" in source
     assert "activation-milestones" in source
     assert "/self-serve/activation/packets" in api_source
