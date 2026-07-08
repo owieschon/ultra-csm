@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import pytest
 from fastapi.testclient import TestClient
 
 from tests._govhelpers import CLOCK, T1, setup_roster
@@ -253,6 +254,120 @@ def test_non_enterprise_closed_won_event_is_ignored():
     assert "not enterprise-sized" in packet.recommended_next_action.lower() or packet.risks
 
 
+def test_event_with_unresolved_salesforce_opportunity_is_ignored():
+    packet = run_enterprise_closed_won_onboarding(
+        data_plane=_enterprise_data_plane(include_context=True, include_usage=True),
+        gate=None,
+        event=SalesforceClosedWonEvent(
+            tenant_id=T1,
+            opportunity_id="missing-opportunity",
+            account_id=ACCOUNT_ID,
+            stage_name="Closed Won",
+            observed_at="2026-07-08T12:00:00Z",
+        ),
+        as_of=AS_OF,
+        calendar_provider=_GoogleCalendarProvider(_calendar_events()),
+    )
+
+    assert packet.status == "ignored"
+    assert packet.customer_welcome_draft is None
+    assert packet.success_plan_methodology is None
+    assert packet.proposals == ()
+    assert any(
+        "did not resolve to exactly one Salesforce account and opportunity" in risk
+        for risk in packet.risks
+    )
+
+
+@pytest.mark.parametrize(
+    ("missing_flag", "missing_source"),
+    (
+        ("include_company", "cs_company_value_model_context"),
+        ("include_health", "health_score_value_model_context"),
+        ("include_adoption", "adoption_summary_value_model_context"),
+    ),
+)
+def test_enterprise_closed_won_blocks_when_value_model_context_is_missing(missing_flag, missing_source):
+    kwargs = {
+        "include_context": True,
+        "include_usage": True,
+        "include_company": True,
+        "include_health": True,
+        "include_adoption": True,
+    }
+    kwargs[missing_flag] = False
+
+    packet = run_enterprise_closed_won_onboarding(
+        data_plane=_enterprise_data_plane(**kwargs),
+        gate=None,
+        event=_closed_won_event(),
+        as_of=AS_OF,
+        calendar_provider=_GoogleCalendarProvider(_calendar_events()),
+    )
+
+    assert packet.status == "needs_data"
+    assert missing_source in packet.coverage.missing_required_sources
+    assert packet.success_plan_methodology is None
+    assert packet.success_plan_v0 == ()
+    assert packet.customer_welcome_draft is None
+    assert packet.proposals == ()
+    assert packet.recommended_next_action == (
+        "Complete missing onboarding evidence before customer-facing activity."
+    )
+
+
+@pytest.mark.parametrize(
+    ("include_technical", "include_sponsor", "failed_check"),
+    (
+        (False, True, "technical_owner_identified"),
+        (True, False, "executive_sponsor_identified"),
+    ),
+)
+def test_failed_launch_validation_blocks_customer_facing_actions(
+    runtime_conn,
+    include_technical,
+    include_sponsor,
+    failed_check,
+):
+    runtime_conn.execute("BEGIN")
+    try:
+        orch, _authority = setup_roster(runtime_conn, tenant=T1)
+        gate = ActionGate(
+            runtime_conn,
+            tenant_id=T1,
+            actor_principal_id=orch,
+            verdict_source=FixtureVerdictSource(),
+            now=CLOCK,
+        )
+        packet = run_enterprise_closed_won_onboarding(
+            data_plane=_enterprise_data_plane(
+                include_context=True,
+                include_usage=True,
+                include_technical=include_technical,
+                include_sponsor=include_sponsor,
+            ),
+            gate=gate,
+            event=_closed_won_event(),
+            as_of=AS_OF,
+            calendar_provider=_GoogleCalendarProvider(_calendar_events()),
+        )
+    finally:
+        runtime_conn.rollback()
+
+    assert packet.status == "needs_data"
+    assert packet.coverage.missing_required_sources == ()
+    assert packet.success_plan_methodology is not None
+    checks = {check.check_name: check for check in packet.success_plan_methodology.validation_checks}
+    assert checks[failed_check].passed is False
+    assert f"success_plan_validation_failed:{failed_check}" in packet.risks
+    assert packet.customer_safe_baseline == ()
+    assert packet.customer_welcome_draft is None
+    assert packet.proposals == ()
+    assert packet.recommended_next_action == (
+        "Resolve failed success-plan validation checks before customer-facing activity."
+    )
+
+
 def test_calendar_domain_resolution_does_not_pick_ambiguous_customer_domain():
     account_a = CRMAccount("acct-a", "Shared Domain North", "owner-a", "software")
     account_b = CRMAccount("acct-b", "Shared Domain South", "owner-b", "software")
@@ -290,6 +405,134 @@ def test_calendar_domain_resolution_does_not_pick_ambiguous_customer_domain():
     assert resolution.state == "ambiguous"
     assert resolution.account_id is None
     assert resolution.candidate_account_ids == ("acct-a", "acct-b")
+
+
+def test_salesforce_closed_won_endpoint_rejects_ambiguous_calendar_account_resolution(monkeypatch):
+    data = FixtureCustomerData(
+        accounts=(
+            CRMAccount("acct-a", "Shared Domain North", "owner-a", "software"),
+            CRMAccount("acct-b", "Shared Domain South", "owner-b", "software"),
+        ),
+        companies=(),
+        contacts=(
+            CRMContact("contact-a", "acct-a", "admin@shared.example", "Admin A", "admin", None, True),
+            CRMContact("contact-b", "acct-b", "it@shared.example", "IT B", "technical", None, True),
+        ),
+        cases=(),
+        opportunities=(),
+        health_scores=(),
+        ctas=(),
+        success_plans=(),
+        adoption_summaries=(),
+        entitlements=(),
+        usage_signals=(),
+        milestones=(),
+        tenant_accounts={DEFAULT_TENANT: ("acct-a", "acct-b")},
+    )
+
+    def served_ambiguous_plane(**_kwargs):
+        return DataPlaneAssembly(
+            data_plane=CustomerDataPlane(
+                crm=FixtureCRMDataConnector(tenant=DEFAULT_TENANT, data=data),
+                cs=FixtureCSPlatformConnector(data=data),
+                telemetry=FixtureProductTelemetryConnector(data=data),
+            ),
+            mode="live",
+            source_status={"salesforce": "live", "google_calendar": "request_events_list"},
+            health_source="fixture_cs_platform",
+        )
+
+    monkeypatch.setenv("ULTRA_CSM_API_TOKENS", "lane-a-token:Lane A Manager")
+    monkeypatch.delenv("ULTRA_CSM_DEMO_NOAUTH", raising=False)
+    monkeypatch.setattr(api, "build_served_data_plane", served_ambiguous_plane)
+
+    with TestClient(api.app) as client:
+        resp = client.post(
+            "/integrations/salesforce/opportunity-closed-won",
+            headers={"Authorization": "Bearer lane-a-token"},
+            json={
+                "opportunity_id": OPPORTUNITY_ID,
+                "stage_name": "Closed Won",
+                "observed_at": "2026-07-08T12:00:00Z",
+                "google_calendar_events": {
+                    "items": [{
+                        "id": "cal-ambiguous",
+                        "status": "confirmed",
+                        "attendees": [{"email": "buyer@shared.example", "responseStatus": "accepted"}],
+                    }],
+                },
+            },
+        )
+
+    assert resp.status_code == 409
+    detail = resp.json()
+    assert detail["code"] == "ACCOUNT_RESOLUTION_REQUIRED"
+    assert detail["calendar_account_resolution"]["state"] == "ambiguous"
+    assert detail["calendar_account_resolution"]["candidate_account_ids"] == ["acct-a", "acct-b"]
+
+
+def test_salesforce_closed_won_endpoint_rejects_calendar_account_mismatch(monkeypatch):
+    primary = CRMAccount(ACCOUNT_ID, "Enterprise Launch Co", "owner-a", "software")
+    other = CRMAccount("acct-other", "Other Buyer Co", "owner-b", "software")
+    data = FixtureCustomerData(
+        accounts=(primary, other),
+        companies=(),
+        contacts=(
+            CRMContact(CHAMPION_ID, ACCOUNT_ID, "champion@enterprise-launch.example", "Ari", "champion", None, True),
+            CRMContact("contact-other", "acct-other", "buyer@other.example", "Other Buyer", "buyer", None, True),
+        ),
+        cases=(),
+        opportunities=(),
+        health_scores=(),
+        ctas=(),
+        success_plans=(),
+        adoption_summaries=(),
+        entitlements=(),
+        usage_signals=(),
+        milestones=(),
+        tenant_accounts={DEFAULT_TENANT: (ACCOUNT_ID, "acct-other")},
+    )
+
+    def served_mismatch_plane(**_kwargs):
+        return DataPlaneAssembly(
+            data_plane=CustomerDataPlane(
+                crm=FixtureCRMDataConnector(tenant=DEFAULT_TENANT, data=data),
+                cs=FixtureCSPlatformConnector(data=data),
+                telemetry=FixtureProductTelemetryConnector(data=data),
+            ),
+            mode="live",
+            source_status={"salesforce": "live", "google_calendar": "request_events_list"},
+            health_source="fixture_cs_platform",
+        )
+
+    monkeypatch.setenv("ULTRA_CSM_API_TOKENS", "lane-a-token:Lane A Manager")
+    monkeypatch.delenv("ULTRA_CSM_DEMO_NOAUTH", raising=False)
+    monkeypatch.setattr(api, "build_served_data_plane", served_mismatch_plane)
+
+    with TestClient(api.app) as client:
+        resp = client.post(
+            "/integrations/salesforce/opportunity-closed-won",
+            headers={"Authorization": "Bearer lane-a-token"},
+            json={
+                "account_id": ACCOUNT_ID,
+                "opportunity_id": OPPORTUNITY_ID,
+                "stage_name": "Closed Won",
+                "observed_at": "2026-07-08T12:00:00Z",
+                "google_calendar_events": {
+                    "items": [{
+                        "id": "cal-mismatch",
+                        "status": "confirmed",
+                        "attendees": [{"email": "buyer@other.example", "responseStatus": "accepted"}],
+                    }],
+                },
+            },
+        )
+
+    assert resp.status_code == 409
+    detail = resp.json()
+    assert detail["code"] == "CALENDAR_ACCOUNT_MISMATCH"
+    assert detail["event_account_id"] == ACCOUNT_ID
+    assert detail["calendar_account_resolution"]["account_id"] == "acct-other"
 
 
 def test_salesforce_closed_won_endpoint_runs_workflow_against_served_data_plane(monkeypatch):
@@ -404,6 +647,11 @@ def _enterprise_data_plane(
     include_context: bool,
     include_usage: bool,
     amount_cents: int = 18_000_000,
+    include_company: bool = True,
+    include_health: bool = True,
+    include_adoption: bool = True,
+    include_technical: bool = True,
+    include_sponsor: bool = True,
 ) -> CustomerDataPlane:
     account = CRMAccount(
         account_id=ACCOUNT_ID,
@@ -491,6 +739,12 @@ def _enterprise_data_plane(
             "csm_note",
         ),
     ) if include_context else ()
+    contacts = (champion, *((technical,) if include_technical else ()), *((sponsor,) if include_sponsor else ()))
+    stakeholder_relationships = (
+        StakeholderRelationship(ACCOUNT_ID, CHAMPION_ID, "champion", "strong", "2026-07-07", 2),
+        *((StakeholderRelationship(ACCOUNT_ID, TECH_ID, "technical_lead", "moderate", "2026-07-06", 2),) if include_technical else ()),
+        *((StakeholderRelationship(ACCOUNT_ID, SPONSOR_ID, "executive_sponsor", "strong", "2026-07-06", 3),) if include_sponsor else ()),
+    )
     data = FixtureCustomerData(
         accounts=(account,),
         companies=(
@@ -506,13 +760,13 @@ def _enterprise_data_plane(
                 "csm-enterprise",
                 70.0,
             ),
-        ),
-        contacts=(champion, technical, sponsor),
+        ) if include_company else (),
+        contacts=contacts,
         cases=(),
         opportunities=(opportunity,),
         health_scores=(
             HealthScore(ACCOUNT_ID, 70.0, "green", ("new_customer",), "2026-07-08T12:00:00Z"),
-        ),
+        ) if include_health else (),
         ctas=(
             CTA(
                 det_id("cta", ACCOUNT_ID, "kickoff"),
@@ -535,7 +789,7 @@ def _enterprise_data_plane(
         ),
         adoption_summaries=(
             AdoptionSummary(ACCOUNT_ID, 0, 75, 0, 75, 0.0, ("relationship_maps",), "2026-07-08"),
-        ),
+        ) if include_adoption else (),
         entitlements=(
             Entitlement(ACCOUNT_ID, "relationship_maps", 75, "seats", "2026-07-08"),
             Entitlement(ACCOUNT_ID, "deal_review_workflows", 75, "seats", "2026-07-08"),
@@ -551,11 +805,7 @@ def _enterprise_data_plane(
             ),
         ),
         tenant_accounts={DEFAULT_TENANT: (ACCOUNT_ID,)},
-        stakeholder_relationships=(
-            StakeholderRelationship(ACCOUNT_ID, CHAMPION_ID, "champion", "strong", "2026-07-07", 2),
-            StakeholderRelationship(ACCOUNT_ID, TECH_ID, "technical_lead", "moderate", "2026-07-06", 2),
-            StakeholderRelationship(ACCOUNT_ID, SPONSOR_ID, "executive_sponsor", "strong", "2026-07-06", 3),
-        ),
+        stakeholder_relationships=stakeholder_relationships,
         communication_signals=comms,
         internal_notes=notes,
     )
