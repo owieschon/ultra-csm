@@ -208,6 +208,8 @@ export function QueueDetail({ item, day }: { item: WorkItem; day: number | undef
         </div>
       </div>
 
+      <DecisionPacket packet={item.work_packet ?? null} />
+
       <div className="sec">
         <div className="sec-h">
           <span className="t">Account sources</span>
@@ -352,6 +354,110 @@ export function QueueDetail({ item, day }: { item: WorkItem; day: number | undef
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+function DecisionPacket({ packet }: { packet: WorkItem["work_packet"] | null }) {
+  if (!packet) return null;
+  const hypothesis = packet.diagnostic_hypothesis;
+  const evidence = packet.evidence_chain.slice(0, 6);
+  const hiddenEvidence = Math.max(0, packet.evidence_chain.length - evidence.length);
+  const artifact = packet.prepared_artifact;
+
+  return (
+    <div className="sec">
+      <div className="sec-h">
+        <span className="t">Decision packet</span>
+        <span className="prov">
+          <span className="chip-det">{packet.packet_version}</span>
+        </span>
+      </div>
+      <div className="packet">
+        <div className="packet-next">
+          <span className="packet-label">Next</span>
+          <span>{packet.primary_next_step}</span>
+        </div>
+
+        <div className="hyp-row packet-hyp">
+          <span className="hyp-badge">Hypothesis</span>
+          <span className="hyp-claim">{hypothesis.summary}</span>
+          <span className="hyp-conf">
+            {hypothesis.confidence_label} · {Math.round(hypothesis.confidence * 100)}%
+          </span>
+        </div>
+
+        <div className="packet-grid">
+          <PacketCell labelText="Job" value={humanizeCode(packet.job_type)} />
+          <PacketCell labelText="Lane" value={humanizeCode(packet.lane)} />
+          <PacketCell labelText="Cadence" value={humanizeCode(packet.cadence)} />
+          <PacketCell
+            labelText="Actor"
+            value={humanizeCode(packet.recommended_action.target_actor)}
+          />
+        </div>
+
+        <div className="packet-boundary">
+          <span className="chip-det">
+            {packet.governance_boundary.release_condition ?? "no governed action"}
+          </span>
+          {packet.governance_boundary.required_permission && (
+            <span className="mono">{packet.governance_boundary.required_permission}</span>
+          )}
+          {packet.governance_boundary.proposal_status && (
+            <span className="chip-det">
+              proposal {packet.governance_boundary.proposal_status}
+            </span>
+          )}
+          {packet.governance_boundary.customer_affecting && (
+            <span className="chip-llm">customer-affecting</span>
+          )}
+        </div>
+
+        <div className="packet-buckets">
+          {packet.bucket_trace.map((bucket) => (
+            <span
+              className={`packet-bucket ${bucket.state}`}
+              key={bucket.bucket}
+              title={`${bucket.evidence_ids.length} receipt${bucket.evidence_ids.length === 1 ? "" : "s"}`}
+            >
+              {humanizeCode(bucket.bucket)}
+            </span>
+          ))}
+        </div>
+
+        <div className="packet-evidence-list">
+          {evidence.map((step) => (
+            <div className={`packet-evidence ${step.provenance_tier}`} key={step.step_id}>
+              <span className="packet-tier">{humanizeCode(step.provenance_tier)}</span>
+              <span className="packet-claim">
+                {humanizeCode(step.field)} · observed {step.observed_at}
+              </span>
+              <span className="mono">{step.source}:{step.source_id.slice(0, 8)}</span>
+            </div>
+          ))}
+          {hiddenEvidence > 0 && (
+            <div className="packet-more">+{hiddenEvidence} more receipts</div>
+          )}
+        </div>
+
+        {artifact.artifact_type !== "none" && (
+          <div className="packet-artifact">
+            <span className="packet-label">Artifact</span>
+            <span>{artifact.title}</span>
+            <span className="chip-det">{humanizeCode(artifact.validation_status)}</span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function PacketCell({ labelText, value }: { labelText: string; value: string }) {
+  return (
+    <div className="packet-cell">
+      <span>{labelText}</span>
+      <b>{value}</b>
     </div>
   );
 }
@@ -652,6 +758,7 @@ function ProgramDetail({ item }: { item: WorkItem }) {
           </div>
         </div>
       </div>
+      <DecisionPacket packet={item.work_packet ?? null} />
       <div className="sec">
         <div className="sec-h">
           <span className="t">The pattern</span>

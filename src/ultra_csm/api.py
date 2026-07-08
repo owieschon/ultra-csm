@@ -486,12 +486,20 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# Ops surface (ui/) runs `next dev` on :3000 against this API on :8000 in
-# dev mode; the built static export is served same-origin via StaticFiles
-# in demo/prod, where this middleware is a no-op.
+# Ops surface (ui/) runs `next dev` against this API in dev mode; the built
+# static export is served same-origin via StaticFiles in demo/prod, where
+# this middleware is a no-op. Allow a few loopback ports so stacked worktrees
+# can be visually verified without touching a server already on :3000.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=[
+        "http://localhost:3000",
+        "http://localhost:3001",
+        "http://localhost:3002",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:3001",
+        "http://127.0.0.1:3002",
+    ],
     allow_methods=["GET", "POST"],
     allow_headers=["Authorization", "Content-Type"],
 )
