@@ -162,7 +162,7 @@ class OnboardingMilestone:
 @dataclass(frozen=True)
 class CustomerIntegrationFootprint:
     family: Literal[
-        "mp",
+        "mcp",
         "chrome_extension",
         "crm",
         "messaging",
@@ -743,13 +743,13 @@ def _customer_integrations(
 
     return (
         CustomerIntegrationFootprint(
-            family="mp",
-            label="MP",
-            status="configured" if _contains_any(capability_tokens, ("mp", "meeting_prep")) else "unknown",
-            provider="centralize_mp" if _contains_any(capability_tokens, ("mp", "meeting_prep")) else None,
-            provider_options=("centralize_mp",),
-            evidence_source_ids=_matching_entitlement_ids(entitlements, ("mp", "meeting_prep")),
-            note="Meeting-prep/MP connection should be verified before kickoff.",
+            family="mcp",
+            label="MCP",
+            status="configured" if _contains_any(capability_tokens, ("mcp", "meeting_prep")) else "unknown",
+            provider="centralize_mcp" if _contains_any(capability_tokens, ("mcp", "meeting_prep")) else None,
+            provider_options=("centralize_mcp",),
+            evidence_source_ids=_matching_entitlement_ids(entitlements, ("mcp", "meeting_prep")),
+            note="MCP connection should be verified before kickoff.",
         ),
         CustomerIntegrationFootprint(
             family="chrome_extension",

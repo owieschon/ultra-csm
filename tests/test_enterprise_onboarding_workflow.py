@@ -112,6 +112,9 @@ def test_enterprise_closed_won_builds_launch_packet_from_connected_sources(runti
     assert "kickoff" in packet.customer_welcome_draft.lower()
     assert len(packet.success_plan_v0) >= 5
     integrations = {item.family: item for item in packet.customer_integrations}
+    assert "mcp" in integrations
+    assert "mp" not in integrations
+    assert integrations["mcp"].label == "MCP"
     assert integrations["crm"].status == "configured"
     assert integrations["crm"].provider == "salesforce"
     assert integrations["email"].status == "observed"
