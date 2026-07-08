@@ -10,11 +10,17 @@
       "metric_name": "daily_active_assets",
       "notes": "Synthetic Universe Bible arc 4: silent decline remains under the health-band threshold, so the workflow should detect a watch-level shift but keep it internal.",
       "observed": {
+        "current_milestone": null,
         "customer_language_present": false,
         "customer_output_blockers": [],
         "drop_ratio": 0.125,
+        "first_value_definition": null,
+        "first_value_reached": null,
+        "identity_reason": null,
+        "identity_state": null,
         "missing_required_sources": [],
         "packet_id": "adoption-regression:15eb8dd9-b1bc-5093-a208-49526f8d5650:daily_active_assets:20270527T000000z",
+        "personal_email_domain": null,
         "recommended_action": "recommend_internal_review",
         "selected_hypothesis": "watch_level_usage_shift",
         "severity": "watch",
@@ -23,7 +29,8 @@
           "low_confidence_or_ambiguous_cause",
           "regression_below_customer_motion_threshold"
         ],
-        "trigger": "regression_detected_but_customer_output_unsafe"
+        "trigger": "regression_detected_but_customer_output_unsafe",
+        "value_path": null
       },
       "passed": true,
       "quality_failures": [],
@@ -39,11 +46,17 @@
       "metric_name": "daily_active_assets",
       "notes": "No-shift control: the workflow should not create internal review work.",
       "observed": {
+        "current_milestone": null,
         "customer_language_present": false,
         "customer_output_blockers": [],
         "drop_ratio": 0.0,
+        "first_value_definition": null,
+        "first_value_reached": null,
+        "identity_reason": null,
+        "identity_state": null,
         "missing_required_sources": [],
         "packet_id": "adoption-regression:15eb8dd9-b1bc-5093-a208-49526f8d5650:daily_active_assets:20260919T000000z",
+        "personal_email_domain": null,
         "recommended_action": "suppress_regression_motion",
         "selected_hypothesis": "insufficient_evidence",
         "severity": "none",
@@ -51,7 +64,8 @@
         "suppression_reasons": [
           "no_regression_observed"
         ],
-        "trigger": "no_regression_observed"
+        "trigger": "no_regression_observed",
+        "value_path": null
       },
       "passed": true,
       "quality_failures": [],
@@ -67,16 +81,22 @@
       "metric_name": "daily_active_assets",
       "notes": "Counterfactual: remove the current usage window and require fail-closed behavior.",
       "observed": {
+        "current_milestone": null,
         "customer_language_present": false,
         "customer_output_blockers": [
           "current_usage_window",
           "current_usage_window_missing"
         ],
         "drop_ratio": 0.0,
+        "first_value_definition": null,
+        "first_value_reached": null,
+        "identity_reason": null,
+        "identity_state": null,
         "missing_required_sources": [
           "current_usage_window"
         ],
         "packet_id": "adoption-regression:15eb8dd9-b1bc-5093-a208-49526f8d5650:daily_active_assets:20270527T000000z",
+        "personal_email_domain": null,
         "recommended_action": "recommend_internal_review",
         "selected_hypothesis": "insufficient_evidence",
         "severity": "none",
@@ -87,13 +107,230 @@
           "low_confidence_or_ambiguous_cause",
           "regression_below_customer_motion_threshold"
         ],
-        "trigger": "regression_detected_but_customer_output_unsafe"
+        "trigger": "regression_detected_but_customer_output_unsafe",
+        "value_path": null
       },
       "passed": true,
       "quality_failures": [],
       "scenario_id": "fleetops_aspenridge_missing_current_window",
       "tenant_id": "ultra-demo",
       "workflow_id": "account_adoption_regression"
+    },
+    {
+      "account_slug": "self-serve-team-first-value",
+      "baseline_day": null,
+      "current_day": 0,
+      "field_failures": [],
+      "metric_name": "daily_active_assets",
+      "notes": "Team activation reaches the configured first-value milestone, then recommends feature-depth progression.",
+      "observed": {
+        "current_milestone": "depth",
+        "customer_language_present": true,
+        "customer_output_blockers": [],
+        "drop_ratio": null,
+        "first_value_definition": "The user reaches first value when at least one teammate activates and shared work exists.",
+        "first_value_reached": true,
+        "identity_reason": "salesforce_contact_email_match",
+        "identity_state": "exactly_one",
+        "missing_required_sources": [],
+        "packet_id": "self-serve-activation:workspace-self-serve-team-first-value:20260708120000",
+        "personal_email_domain": false,
+        "recommended_action": "recommend_next_feature",
+        "selected_hypothesis": null,
+        "severity": null,
+        "status": "ready",
+        "suppression_reasons": [],
+        "trigger": "first_value_reached_with_feature_depth_gap",
+        "value_path": "team_workspace_creator"
+      },
+      "passed": true,
+      "quality_failures": [],
+      "scenario_id": "self_serve_team_first_value_reached",
+      "tenant_id": "ultra-demo",
+      "workflow_id": "self_serve_signup_activation"
+    },
+    {
+      "account_slug": "self-serve-activity-no-first-value",
+      "baseline_day": null,
+      "current_day": 0,
+      "field_failures": [],
+      "metric_name": "daily_active_assets",
+      "notes": "Completed step count cannot substitute for the explicit first-value milestone.",
+      "observed": {
+        "current_milestone": "first_value",
+        "customer_language_present": true,
+        "customer_output_blockers": [],
+        "drop_ratio": null,
+        "first_value_definition": "The user reaches first value when they complete setup and produce one saved or reusable insight.",
+        "first_value_reached": false,
+        "identity_reason": "salesforce_contact_email_match",
+        "identity_state": "exactly_one",
+        "missing_required_sources": [],
+        "packet_id": "self-serve-activation:workspace-self-serve-activity-no-first-value:20260708120000",
+        "personal_email_domain": false,
+        "recommended_action": "send_activation_nudge",
+        "selected_hypothesis": null,
+        "severity": null,
+        "status": "ready",
+        "suppression_reasons": [],
+        "trigger": "workspace_created_without_first_value",
+        "value_path": "solo_evaluator"
+      },
+      "passed": true,
+      "quality_failures": [],
+      "scenario_id": "self_serve_activity_without_first_value",
+      "tenant_id": "ultra-demo",
+      "workflow_id": "self_serve_signup_activation"
+    },
+    {
+      "account_slug": "self-serve-crm-interest",
+      "baseline_day": null,
+      "current_day": 0,
+      "field_failures": [],
+      "metric_name": "daily_active_assets",
+      "notes": "CRM interest is treated as an enterprise expansion signal, not a self-serve CRM connection instruction.",
+      "observed": {
+        "current_milestone": "first_value",
+        "customer_language_present": false,
+        "customer_output_blockers": [],
+        "drop_ratio": null,
+        "first_value_definition": "The user reaches first value when they clarify the enterprise CRM path or invite a stakeholder who can sponsor it.",
+        "first_value_reached": false,
+        "identity_reason": "salesforce_contact_email_match",
+        "identity_state": "exactly_one",
+        "missing_required_sources": [],
+        "packet_id": "self-serve-activation:workspace-self-serve-crm-interest:20260708120000",
+        "personal_email_domain": false,
+        "recommended_action": "internal_only_packet",
+        "selected_hypothesis": null,
+        "severity": null,
+        "status": "internal_only",
+        "suppression_reasons": [
+          "customer_outreach_requires_sales_assisted_review"
+        ],
+        "trigger": "strong_signal_but_unsafe_customer_action",
+        "value_path": "crm_enterprise_curious"
+      },
+      "passed": true,
+      "quality_failures": [],
+      "scenario_id": "self_serve_crm_interest_routes_internal_expansion",
+      "tenant_id": "ultra-demo",
+      "workflow_id": "self_serve_signup_activation"
+    },
+    {
+      "account_slug": "self-serve-personal-email",
+      "baseline_day": null,
+      "current_day": 0,
+      "field_failures": [],
+      "metric_name": "daily_active_assets",
+      "notes": "A personal-email signup cannot be used to infer organization-level outreach.",
+      "observed": {
+        "current_milestone": "depth",
+        "customer_language_present": false,
+        "customer_output_blockers": [
+          "personal_email_domain_suppresses_org_outreach"
+        ],
+        "drop_ratio": null,
+        "first_value_definition": "The user reaches first value when at least one teammate activates and shared work exists.",
+        "first_value_reached": true,
+        "identity_reason": "trigger_account_id",
+        "identity_state": "exactly_one",
+        "missing_required_sources": [],
+        "packet_id": "self-serve-activation:workspace-self-serve-personal-email:20260708120000",
+        "personal_email_domain": true,
+        "recommended_action": "internal_only_packet",
+        "selected_hypothesis": null,
+        "severity": null,
+        "status": "internal_only",
+        "suppression_reasons": [
+          "personal_email_domain_suppresses_org_outreach"
+        ],
+        "trigger": "strong_signal_but_unsafe_customer_action",
+        "value_path": "team_workspace_creator"
+      },
+      "passed": true,
+      "quality_failures": [],
+      "scenario_id": "self_serve_personal_email_suppresses_org_outreach",
+      "tenant_id": "ultra-demo",
+      "workflow_id": "self_serve_signup_activation"
+    },
+    {
+      "account_slug": "self-serve-missing-telemetry",
+      "baseline_day": null,
+      "current_day": 0,
+      "field_failures": [],
+      "metric_name": "daily_active_assets",
+      "notes": "No product telemetry means no activation judgment and no customer-facing output.",
+      "observed": {
+        "current_milestone": "signup",
+        "customer_language_present": false,
+        "customer_output_blockers": [
+          "product_telemetry",
+          "product_telemetry_required_for_activation_judgment"
+        ],
+        "drop_ratio": null,
+        "first_value_definition": "The user reaches first value when they complete setup and produce one saved or reusable insight.",
+        "first_value_reached": false,
+        "identity_reason": "salesforce_contact_email_match",
+        "identity_state": "exactly_one",
+        "missing_required_sources": [
+          "product_telemetry"
+        ],
+        "packet_id": "self-serve-activation:workspace-self-serve-missing-telemetry:20260708120000",
+        "personal_email_domain": false,
+        "recommended_action": "internal_only_packet",
+        "selected_hypothesis": null,
+        "severity": null,
+        "status": "needs_data",
+        "suppression_reasons": [
+          "product_telemetry",
+          "product_telemetry_required_for_activation_judgment"
+        ],
+        "trigger": "strong_signal_but_unsafe_customer_action",
+        "value_path": "solo_evaluator"
+      },
+      "passed": true,
+      "quality_failures": [],
+      "scenario_id": "self_serve_missing_telemetry_blocks_activation_judgment",
+      "tenant_id": "ultra-demo",
+      "workflow_id": "self_serve_signup_activation"
+    },
+    {
+      "account_slug": "self-serve-no-consent",
+      "baseline_day": null,
+      "current_day": 0,
+      "field_failures": [],
+      "metric_name": "daily_active_assets",
+      "notes": "Contact exists but no consent, so customer-facing output remains suppressed.",
+      "observed": {
+        "current_milestone": "depth",
+        "customer_language_present": false,
+        "customer_output_blockers": [
+          "no_consented_contact_for_customer_outreach"
+        ],
+        "drop_ratio": null,
+        "first_value_definition": "The user reaches first value when at least one teammate activates and shared work exists.",
+        "first_value_reached": true,
+        "identity_reason": "salesforce_contact_email_match",
+        "identity_state": "exactly_one",
+        "missing_required_sources": [],
+        "packet_id": "self-serve-activation:workspace-self-serve-no-consent:20260708120000",
+        "personal_email_domain": false,
+        "recommended_action": "internal_only_packet",
+        "selected_hypothesis": null,
+        "severity": null,
+        "status": "internal_only",
+        "suppression_reasons": [
+          "no_consented_contact_for_customer_outreach"
+        ],
+        "trigger": "strong_signal_but_unsafe_customer_action",
+        "value_path": "team_workspace_creator"
+      },
+      "passed": true,
+      "quality_failures": [],
+      "scenario_id": "self_serve_no_consent_suppresses_customer_output",
+      "tenant_id": "ultra-demo",
+      "workflow_id": "self_serve_signup_activation"
     }
   ],
   "claim_boundary": {
@@ -101,19 +338,22 @@
     "live": false,
     "llm_judge": false,
     "network": false,
-    "synthetic_universe": true
+    "synthetic_universe": true,
+    "workflow_fixture_conventions": true
   },
   "generated_at": "2026-07-08T00:00:00+00:00",
   "ground_truth_sources": [
     "docs/SYNTHETIC_UNIVERSE_BIBLE.md",
     "docs/UNIVERSE_V2_CONVENTIONS.md",
-    "eval/gold/fleetops_expected_actions.json"
+    "eval/gold/fleetops_expected_actions.json",
+    "src/ultra_csm/workflow_playbooks.py",
+    "tests/test_self_serve_activation_workflow.py"
   ],
   "hard_failures": [],
   "hard_ok": true,
-  "measurement_scope": "Runs real workflow code against deterministic fleetops synthetic universe snapshots, then scores workflow packets with behavioral quality criteria and scenario-specific field assertions. No live connectors, LLM calls, or customer writes.",
+  "measurement_scope": "Runs real workflow code against deterministic fleetops synthetic universe snapshots and deterministic workflow-specific self-serve fixtures, then scores workflow packets with behavioral quality criteria and scenario-specific field assertions. No live connectors, LLM calls, or customer writes.",
   "score": {
-    "passed": 3,
-    "total": 3
+    "passed": 9,
+    "total": 9
   }
 }
