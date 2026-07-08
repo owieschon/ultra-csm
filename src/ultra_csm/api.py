@@ -130,6 +130,7 @@ from ultra_csm._api_helpers import (
     sync_demo_accounts_to_postgres,
 )
 from ultra_csm import reconciliation_agent
+from ultra_csm.workflow_authoring import evaluate_workflow_authoring_readiness
 from ultra_csm.workflow_playbooks import WORKFLOW_REGISTRY
 
 # ---------------------------------------------------------------------------
@@ -524,6 +525,11 @@ class LedgerResponse(BaseModel):
 class WorkflowPlaybookResponse(BaseModel):
     tenant_id: str
     workflows: dict[str, Any]
+
+
+class WorkflowAuthoringReadinessResponse(BaseModel):
+    tenant_id: str
+    report: dict[str, Any]
 
 
 class DelegationResponse(BaseModel):
@@ -2728,6 +2734,18 @@ async def get_workflow_playbooks():
     return WorkflowPlaybookResponse(
         tenant_id=_TENANT_ID,
         workflows=WORKFLOW_REGISTRY.to_dict(),
+    )
+
+
+@app.get(
+    "/workflow-authoring/readiness",
+    response_model=WorkflowAuthoringReadinessResponse,
+)
+async def get_workflow_authoring_readiness():
+    """Return structural readiness for every registered workflow."""
+    return WorkflowAuthoringReadinessResponse(
+        tenant_id=_TENANT_ID,
+        report=evaluate_workflow_authoring_readiness(WORKFLOW_REGISTRY).to_dict(),
     )
 
 
