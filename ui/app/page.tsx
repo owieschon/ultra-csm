@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { TopBar } from "@/components/TopBar";
 import { BookView } from "@/components/BookView";
 import { QueueSelection, QueueView } from "@/components/QueueView";
+import { CentralizeDemoDashboard } from "@/components/CentralizeDemoDashboard";
 import { ActionRail, ActionRailHandle } from "@/components/ActionRail";
 import { CommandPalette } from "@/components/CommandPalette";
 import { ShortcutsOverlay } from "@/components/ShortcutsOverlay";
@@ -12,7 +13,7 @@ import { useSweep } from "@/lib/useSweep";
 import { toggleTheme } from "@/lib/theme";
 
 export default function Home() {
-  const [view, setView] = useState<"book" | "queue">("book");
+  const [view, setView] = useState<"demo" | "book" | "queue">("demo");
   const [day, setDay] = useState(140);
   const [health, setHealth] = useState<"ok" | "degraded" | "checking">(
     "checking"
@@ -83,7 +84,7 @@ export default function Home() {
       }
       if (paletteOpen) return; // CommandPalette's own input owns Escape/arrows/Enter
       if (e.key === "v") {
-        setView((v) => (v === "book" ? "queue" : "book"));
+        setView((v) => (v === "queue" ? "demo" : v === "demo" ? "book" : "queue"));
       } else if (e.key === "?") {
         setHelpOpen(true);
       } else if (e.key === "t") {
@@ -129,6 +130,12 @@ export default function Home() {
       <div className="main">
         <div className="stage">
           {error && <div className="placeholder-view">Error: {error}</div>}
+          {view === "demo" && (
+            <CentralizeDemoDashboard
+              day={servedDay}
+              onOpenQueue={() => setView("queue")}
+            />
+          )}
           {view === "book" && (
             <BookView
               accounts={accounts}
@@ -169,6 +176,7 @@ export default function Home() {
         commands={[
           { label: "Switch to Book view", action: () => setView("book") },
           { label: "Switch to Queue view", action: () => setView("queue") },
+          { label: "Switch to Centralize demo", action: () => setView("demo") },
           { label: "Toggle theme", action: () => toggleTheme() },
           { label: "Show shortcuts", action: () => setHelpOpen(true) },
         ]}
