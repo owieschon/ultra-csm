@@ -95,6 +95,9 @@ def test_enterprise_closed_won_builds_launch_packet_from_connected_sources(runti
         runtime_conn.rollback()
 
     assert packet.status == "ready"
+    assert packet.workflow_id == "enterprise_closed_won_onboarding"
+    assert packet.workflow_config_version == "enterprise-success-plan-config-v2"
+    assert packet.to_dict()["workflow"]["ui"]["renderer"] == "enterprise_launch_packet"
     assert calendar.calls == [(ACCOUNT_ID, OPPORTUNITY_ID, AS_OF)]
     assert packet.trigger_receipt.source_type == "salesforce_opportunity"
     assert set(packet.coverage.original_success_plan_sources) >= {
