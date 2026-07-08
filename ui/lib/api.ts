@@ -379,6 +379,22 @@ export interface EnterpriseOnboardingPacketListResponse {
   packets: EnterpriseOnboardingPacket[];
 }
 
+export interface SelfServeActivationPacket {
+  packet_id: string;
+  account_id: string;
+  workspace_id: string;
+  signup_email: string;
+  status: string;
+  packet: Record<string, unknown>;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface SelfServeActivationPacketListResponse {
+  tenant_id: string;
+  packets: SelfServeActivationPacket[];
+}
+
 // Reconciliation agent (Harvest 31/32, report 52/53): reported-vs-
 // experienced reconciliation for one account. EvidenceRefRow mirrors
 // EvidenceRef (contracts.py) -- source/source_id/field/observed_at.
@@ -497,6 +513,19 @@ export const api = {
   enterpriseOnboardingPacket: (packetId: string) =>
     request<EnterpriseOnboardingPacket>(
       `/enterprise-onboarding/packets/${encodeURIComponent(packetId)}`
+    ),
+  selfServeActivationPackets: (accountId?: string, workspaceId?: string) => {
+    const params = new URLSearchParams();
+    if (accountId) params.set("account_id", accountId);
+    if (workspaceId) params.set("workspace_id", workspaceId);
+    const query = params.toString();
+    return request<SelfServeActivationPacketListResponse>(
+      `/self-serve/activation/packets${query ? `?${query}` : ""}`
+    );
+  },
+  selfServeActivationPacket: (packetId: string) =>
+    request<SelfServeActivationPacket>(
+      `/self-serve/activation/packets/${encodeURIComponent(packetId)}`
     ),
   pendingSlackMappings: () =>
     request<PendingMappingsResponse>("/comms/pending-mappings/slack"),

@@ -25,6 +25,9 @@ EXPECTED_LEDGER_EVENTS = (
     "enterprise_onboarding.trigger",
     "enterprise_onboarding.packet",
     "enterprise_onboarding.success_plan",
+    "self_serve_activation.trigger",
+    "self_serve_activation.packet",
+    "self_serve_activation.value_path",
 )
 
 

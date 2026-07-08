@@ -59,6 +59,15 @@ from ultra_csm.enterprise_onboarding_store import (
     list_enterprise_onboarding_packets,
     upsert_enterprise_onboarding_packet,
 )
+from ultra_csm.self_serve_activation import (
+    SelfServeSignupEvent,
+    run_self_serve_signup_activation,
+)
+from ultra_csm.self_serve_activation_store import (
+    get_self_serve_activation_packet,
+    list_self_serve_activation_packets,
+    upsert_self_serve_activation_packet,
+)
 from ultra_csm.governance import (
     ActionGate,
     ActionProposal,
@@ -383,6 +392,48 @@ class EnterpriseOnboardingPacketSchema(BaseModel):
 class EnterpriseOnboardingPacketListResponse(BaseModel):
     tenant_id: str
     packets: list[EnterpriseOnboardingPacketSchema]
+
+
+class SelfServeSignupTriggerRequest(BaseModel):
+    workspace_id: str
+    signup_email: str
+    observed_at: str | None = None
+    account_id: str | None = None
+    plan: str | None = None
+    tenant_id: str | None = None
+    source: str = "product_signup"
+
+
+class SelfServeActivationLaunchResponse(BaseModel):
+    tenant_id: str
+    status: str
+    packet_id: str
+    account_id: str
+    workspace_id: str
+    signup_email: str
+    generated_at: str
+    missing_required_sources: list[str]
+    proposal_ids: list[str]
+    packet: dict[str, Any]
+    auth: str | None = None
+    data_plane_mode: str = "fixture"
+    data_plane_sources: dict[str, str] = Field(default_factory=dict)
+
+
+class SelfServeActivationPacketSchema(BaseModel):
+    packet_id: str
+    account_id: str
+    workspace_id: str
+    signup_email: str
+    status: str
+    packet: dict[str, Any]
+    created_at: str
+    updated_at: str
+
+
+class SelfServeActivationPacketListResponse(BaseModel):
+    tenant_id: str
+    packets: list[SelfServeActivationPacketSchema]
 
 
 class DigestAccountSchema(BaseModel):
@@ -1134,6 +1185,19 @@ def _stored_enterprise_packet_schema(stored) -> EnterpriseOnboardingPacketSchema
     )
 
 
+def _stored_self_serve_packet_schema(stored) -> SelfServeActivationPacketSchema:
+    return SelfServeActivationPacketSchema(
+        packet_id=stored.packet_id,
+        account_id=stored.account_id,
+        workspace_id=stored.workspace_id,
+        signup_email=stored.signup_email,
+        status=stored.status,
+        packet=stored.payload,
+        created_at=stored.created_at.isoformat() if stored.created_at else "",
+        updated_at=stored.updated_at.isoformat() if stored.updated_at else "",
+    )
+
+
 def _record_enterprise_onboarding_audit_events(
     *,
     packet: dict[str, Any],
@@ -1208,6 +1272,77 @@ def _record_enterprise_onboarding_audit_events(
                 "method_version": methodology.get("method_version"),
                 "customer_fit_summary": methodology.get("customer_fit_summary"),
                 "validation_checks": validation_checks,
+            },
+            now=_CLOCK,
+        )
+
+
+def _record_self_serve_activation_audit_events(
+    *,
+    packet: dict[str, Any],
+    actor_id: str,
+) -> None:
+    assert _conn is not None
+    packet_id = str(packet.get("packet_id") or "")
+    account_id = str(packet.get("account_id") or "")
+    workspace_id = str(packet.get("workspace_id") or "")
+    value_path = packet.get("value_path") if isinstance(packet.get("value_path"), dict) else {}
+    proposals = packet.get("proposals") if isinstance(packet.get("proposals"), list) else []
+
+    record_audit_event(
+        _conn,
+        tenant_id=_TENANT_ID,
+        actor_id=actor_id,
+        event_type="self_serve_activation.trigger",
+        account_ref=account_id or None,
+        source_ref=f"self_serve_activation.trigger:{workspace_id}:{packet.get('signup_email')}",
+        detail=f"Self-serve signup trigger resolved {account_id or 'no account'}",
+        payload={
+            "packet_id": packet_id,
+            "workspace_id": workspace_id,
+            "signup_email": packet.get("signup_email"),
+            "identity_resolution": packet.get("identity_resolution"),
+        },
+        now=_CLOCK,
+    )
+    record_audit_event(
+        _conn,
+        tenant_id=_TENANT_ID,
+        actor_id=actor_id,
+        event_type="self_serve_activation.packet",
+        account_ref=account_id or None,
+        source_ref=f"self_serve_activation.packet:{packet_id}",
+        detail=f"Self-serve activation packet {packet.get('status')} with {len(proposals)} proposal(s)",
+        payload={
+            "packet_id": packet_id,
+            "workspace_id": workspace_id,
+            "status": packet.get("status"),
+            "proposal_ids": [
+                item.get("proposal_id") for item in proposals if isinstance(item, dict)
+            ],
+            "missing_required_sources": (
+                packet.get("coverage", {}).get("missing_required_sources", [])
+                if isinstance(packet.get("coverage"), dict)
+                else []
+            ),
+        },
+        now=_CLOCK,
+    )
+    if value_path:
+        record_audit_event(
+            _conn,
+            tenant_id=_TENANT_ID,
+            actor_id=actor_id,
+            event_type="self_serve_activation.value_path",
+            account_ref=account_id or None,
+            source_ref=f"self_serve_activation.value_path:{packet_id}",
+            detail=f"Selected self-serve value path {value_path.get('path_id')}",
+            payload={
+                "packet_id": packet_id,
+                "path_id": value_path.get("path_id"),
+                "first_value_reached": value_path.get("first_value_reached"),
+                "current_milestone_id": value_path.get("current_milestone_id"),
+                "selection_evidence_ids": value_path.get("selection_evidence_ids"),
             },
             now=_CLOCK,
         )
@@ -2116,6 +2251,134 @@ async def get_enterprise_onboarding_packet_endpoint(packet_id: str):
     return _stored_enterprise_packet_schema(packet)
 
 
+@app.post(
+    "/integrations/self-serve/signup",
+    response_model=SelfServeActivationLaunchResponse,
+)
+@app.post(
+    "/integrations/product/self-serve-signup",
+    response_model=SelfServeActivationLaunchResponse,
+)
+async def self_serve_signup_activation_trigger(
+    body: SelfServeSignupTriggerRequest,
+    request: Request,
+):
+    """Handle a product-led self-serve signup event.
+
+    The trigger contains only signup/workspace identity. The workflow re-reads
+    CRM/CS/product/comms evidence from the served data plane, selects a value
+    path, evaluates milestone progress, and only creates customer-facing drafts
+    when evidence and consent are sufficient.
+    """
+
+    assert _data_plane is not None
+    auth_principal = _require_write_auth(request)
+    observed_at = body.observed_at or datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
+    event = SelfServeSignupEvent(
+        tenant_id=body.tenant_id or _TENANT_ID,
+        workspace_id=body.workspace_id,
+        signup_email=body.signup_email,
+        observed_at=observed_at,
+        account_id=body.account_id,
+        plan=body.plan,
+        source=body.source,
+    )
+    packet = run_self_serve_signup_activation(
+        data_plane=_data_plane,
+        gate=_gate(),
+        event=event,
+        as_of=observed_at[:10],
+    )
+    packet_dict = packet.to_dict()
+    assert _conn is not None
+    stored = upsert_self_serve_activation_packet(
+        _conn,
+        tenant_id=_TENANT_ID,
+        actor_id=auth_principal.principal_id,
+        packet=packet,
+        payload=packet_dict,
+        now=_CLOCK,
+    )
+    _record_self_serve_activation_audit_events(
+        packet=packet_dict,
+        actor_id=auth_principal.principal_id,
+    )
+    log.info(
+        "Self-serve signup activation trigger handled",
+        extra={
+            "account_id": packet.account_id,
+            "workspace_id": packet.workspace_id,
+            "status": packet.status,
+            "proposal_count": len(packet.proposals),
+            "auth": auth_principal.auth,
+            "data_plane_mode": _data_plane_assembly.mode if _data_plane_assembly else "uninitialized",
+        },
+    )
+    return SelfServeActivationLaunchResponse(
+        tenant_id=packet.tenant_id,
+        status=packet.status,
+        packet_id=stored.packet_id,
+        account_id=packet.account_id,
+        workspace_id=packet.workspace_id,
+        signup_email=packet.signup_email,
+        generated_at=packet.generated_at,
+        missing_required_sources=list(packet.coverage.missing_required_sources),
+        proposal_ids=[proposal.proposal_id for proposal in packet.proposals],
+        packet=packet_dict,
+        auth=auth_principal.auth,
+        data_plane_mode=_data_plane_assembly.mode if _data_plane_assembly else "uninitialized",
+        data_plane_sources=_data_plane_assembly.source_status if _data_plane_assembly else {},
+    )
+
+
+@app.get(
+    "/self-serve/activation/packets",
+    response_model=SelfServeActivationPacketListResponse,
+)
+async def list_self_serve_activation_packet_endpoint(
+    account_id: str | None = None,
+    workspace_id: str | None = None,
+    limit: int = Query(25, ge=1, le=100),
+):
+    """List persisted self-serve activation packets."""
+    assert _conn is not None
+    packets = list_self_serve_activation_packets(
+        _conn,
+        tenant_id=_TENANT_ID,
+        actor_id=_orch_principal or _SEED_AGENT,
+        account_id=account_id,
+        workspace_id=workspace_id,
+        limit=limit,
+        now=_CLOCK,
+    )
+    return SelfServeActivationPacketListResponse(
+        tenant_id=_TENANT_ID,
+        packets=[_stored_self_serve_packet_schema(packet) for packet in packets],
+    )
+
+
+@app.get(
+    "/self-serve/activation/packets/{packet_id}",
+    response_model=SelfServeActivationPacketSchema,
+)
+async def get_self_serve_activation_packet_endpoint(packet_id: str):
+    """Fetch one persisted self-serve activation packet."""
+    assert _conn is not None
+    packet = get_self_serve_activation_packet(
+        _conn,
+        tenant_id=_TENANT_ID,
+        actor_id=_orch_principal or _SEED_AGENT,
+        packet_id=packet_id,
+        now=_CLOCK,
+    )
+    if packet is None:
+        raise HTTPException(
+            status_code=404,
+            detail={"error": "Self-serve activation packet not found", "code": "PACKET_NOT_FOUND"},
+        )
+    return _stored_self_serve_packet_schema(packet)
+
+
 @app.get("/proposals", response_model=ProposalListResponse)
 async def list_proposals():
     """List pending governance proposals."""
@@ -2176,6 +2439,9 @@ _LEDGER_HUMAN = {
     "enterprise_onboarding.trigger": "Closed Won trigger",
     "enterprise_onboarding.packet": "Onboarding packet",
     "enterprise_onboarding.success_plan": "Success plan",
+    "self_serve_activation.trigger": "Self-serve signup",
+    "self_serve_activation.packet": "Activation packet",
+    "self_serve_activation.value_path": "Value path",
 }
 
 
