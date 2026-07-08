@@ -603,6 +603,7 @@ function SelfServeActivationPanel({
   const path = asRecord(payload.value_path);
   const action = asRecord(payload.recommended_action);
   const milestones = asArray(path.milestones).map(asRecord);
+  const secondaryHypotheses = asArray(path.secondary_hypotheses).map(asRecord);
   const missingSources = asArray(coverage.missing_required_sources)
     .map((value) => String(value))
     .filter(Boolean);
@@ -646,7 +647,7 @@ function SelfServeActivationPanel({
         <LaunchMetric label="Path" value={String(path.path_id ?? "unknown").replace(/_/g, " ")} />
         <LaunchMetric label="Current" value={String(path.current_milestone_id ?? "complete").replace(/_/g, " ")} />
         <LaunchMetric label="Action trigger" value={String(action.trigger ?? "none").replace(/_/g, " ")} />
-        <LaunchMetric label="Confidence" value={`${Math.round((asNumber(path.confidence) ?? 0) * 100)}%`} />
+        <LaunchMetric label="Config" value={String(path.config_version ?? "unversioned").replace(/_/g, " ")} />
       </div>
 
       {(missingSources.length > 0 || blockers.length > 0) && (
@@ -664,6 +665,16 @@ function SelfServeActivationPanel({
         <span>{String(path.first_value_definition ?? "First value definition unavailable")}</span>
         <em>{String(path.selection_reason ?? "No selection reason recorded")}</em>
       </div>
+
+      {secondaryHypotheses.length > 0 && (
+        <div className="activation-hypotheses">
+          {secondaryHypotheses.slice(0, 3).map((hypothesis) => (
+            <span key={String(hypothesis.path_id)}>
+              {String(hypothesis.path_id ?? "alternate").replace(/_/g, " ")} · {numberOrDash(hypothesis.score)}
+            </span>
+          ))}
+        </div>
+      )}
 
       {milestones.length > 0 && (
         <div className="activation-milestones">
