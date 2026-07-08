@@ -19,6 +19,14 @@ from ultra_csm.data_plane.contracts import (
     UsageSignal,
 )
 from ultra_csm.governance import ActionGate, ActionProposal, proposal_fields_for
+from ultra_csm.workflow_core import (
+    WorkflowDecisionTrace,
+    WorkflowExecutionEnvelope,
+    WorkflowOutputContract,
+    WorkflowValidationResult,
+    build_evidence_bundle,
+    build_execution_envelope,
+)
 from ultra_csm.workflow_playbooks import (
     SELF_SERVE_SIGNUP_ACTIVATION,
     evaluate_source_coverage,
@@ -206,6 +214,7 @@ class SelfServeProposalRef:
 class SelfServeActivationPacket:
     workflow_id: str
     workflow_config_version: str
+    execution_envelope: WorkflowExecutionEnvelope
     packet_id: str
     tenant_id: str
     status: PacketStatus
@@ -230,6 +239,7 @@ class SelfServeActivationPacket:
             "workflow": workflow_packet_metadata(SELF_SERVE_SIGNUP_ACTIVATION),
             "workflow_id": self.workflow_id,
             "workflow_config_version": self.workflow_config_version,
+            "execution_envelope": self.execution_envelope.to_dict(),
             "tenant_id": self.tenant_id,
             "status": self.status,
             "account_id": self.account_id,
@@ -324,9 +334,20 @@ def run_self_serve_signup_activation(
         f"self-serve-activation:{event.workspace_id}:"
         f"{_compact_timestamp(event.observed_at)}"
     )
+    envelope = _execution_envelope(
+        event=event,
+        identity=identity,
+        coverage=coverage,
+        path=path,
+        action=action,
+        receipts=receipts,
+        proposals=proposals,
+        status=status,
+    )
     return SelfServeActivationPacket(
         workflow_id=SELF_SERVE_SIGNUP_ACTIVATION.workflow_id,
         workflow_config_version=SELF_SERVE_SIGNUP_ACTIVATION.config_version,
+        execution_envelope=envelope,
         packet_id=packet_id,
         tenant_id=event.tenant_id,
         status=status,
@@ -1090,6 +1111,120 @@ def _proposals(
         **proposal_fields_for("recommend_next_best_action"),
     )
     return (_proposal_ref(proposal),)
+
+
+def _execution_envelope(
+    *,
+    event: SelfServeSignupEvent,
+    identity: SelfServeIdentityResolution,
+    coverage: SelfServeCoverage,
+    path: SelfServeValuePath,
+    action: SelfServeRecommendedAction,
+    receipts: tuple[SelfServeSourceReceipt, ...],
+    proposals: tuple[SelfServeProposalRef, ...],
+    status: PacketStatus,
+) -> WorkflowExecutionEnvelope:
+    evidence = build_evidence_bundle(
+        receipts=receipts,
+        reviewed_sources=coverage.reviewed_sources,
+        missing_required_sources=coverage.missing_required_sources,
+        customer_output_blockers=coverage.customer_output_blockers,
+    )
+    decision_source_ids = tuple(
+        source_id
+        for source_id in (
+            *path.selection_evidence_ids,
+            *(
+                source_id
+                for milestone in path.milestones
+                for source_id in milestone.evidence_source_ids
+            ),
+        )
+        if source_id in evidence.evidence_ids()
+    )
+    validations = (
+        WorkflowValidationResult(
+            "organization_identity_exact",
+            identity.state == "exactly_one",
+            True,
+            "Organization identity must resolve exactly for customer outreach.",
+            tuple(receipt.source_id for receipt in receipts if receipt.source_type == "salesforce_account"),
+        ),
+        WorkflowValidationResult(
+            "product_telemetry_present",
+            "product_telemetry" not in coverage.missing_required_sources,
+            True,
+            "Telemetry is required before activation claims.",
+            tuple(receipt.source_id for receipt in receipts if receipt.source_type == "product_telemetry"),
+        ),
+        WorkflowValidationResult(
+            "first_value_not_inferred_from_count",
+            path.first_value_reached
+            == ("first_value" in path.completed_milestone_ids),
+            True,
+            "First value can only come from the configured first-value milestone.",
+            decision_source_ids,
+        ),
+        WorkflowValidationResult(
+            "secondary_hypotheses_preserved",
+            bool(path.secondary_hypotheses) or path.confidence < 0.8,
+            False,
+            "Alternate interpretations should remain visible when confidence is not decisive.",
+            tuple(
+                source_id
+                for hypothesis in path.secondary_hypotheses
+                for source_id in hypothesis.evidence_source_ids
+                if source_id in evidence.evidence_ids()
+            ),
+        ),
+    )
+    customer_affecting = any(proposal.action_type == "draft_customer_outreach" for proposal in proposals)
+    proposed = next((proposal for proposal in proposals if proposal.action_type == "draft_customer_outreach"), None)
+    outputs = (
+        WorkflowOutputContract(
+            artifact_type="activation_recommendation",
+            audience="customer_facing" if customer_affecting else "csm_facing",
+            action_type=action.action_type,
+            customer_affecting=customer_affecting,
+            gate_action="draft_customer_outreach" if customer_affecting else "recommend_next_best_action",
+            status="proposed" if proposed is not None else "suppressed" if action.suppressed else "prepared",
+            source_ids=tuple(
+                source_id for source_id in action.source_ids if source_id in evidence.evidence_ids()
+            ) or (receipts[0].source_id,),
+            suppression_reasons=action.suppression_reasons,
+            proposal_id=proposed.proposal_id if proposed is not None else None,
+        ),
+    )
+    return build_execution_envelope(
+        SELF_SERVE_SIGNUP_ACTIVATION,
+        trigger_ref=event.workspace_id,
+        idempotency_key=f"{SELF_SERVE_SIGNUP_ACTIVATION.workflow_id}:{event.workspace_id}:{event.signup_email}:{event.observed_at}",
+        identity_state=identity.state,
+        evidence=evidence,
+        decisions=(
+            WorkflowDecisionTrace(
+                decision_kind="self_serve_value_path",
+                selected_hypothesis=path.path_id,
+                alternatives=tuple(item.path_id for item in path.secondary_hypotheses),
+                confidence=path.confidence,
+                confidence_model=(
+                    "Score path hypotheses from source-backed metrics.",
+                    "Require explicit first-value milestone completion.",
+                    "Calibrate confidence by source diversity and stale milestones.",
+                ),
+                source_ids=decision_source_ids or (receipts[0].source_id,),
+                limitations=path.open_questions,
+                domain_payload={
+                    "status": status,
+                    "first_value_reached": path.first_value_reached,
+                    "current_milestone_id": path.current_milestone_id,
+                    "recommended_action": action.action_type,
+                },
+            ),
+        ),
+        validations=validations,
+        outputs=outputs,
+    )
 
 
 def _proposal_ref(proposal: ActionProposal) -> SelfServeProposalRef:

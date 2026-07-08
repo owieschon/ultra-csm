@@ -45,6 +45,7 @@ from ultra_csm.enterprise_onboarding import (
     run_enterprise_closed_won_onboarding,
 )
 from ultra_csm.governance import ActionGate, FixtureVerdictSource
+from ultra_csm.workflow_core import invariant_failures
 
 
 ACCOUNT_ID = det_id("account", "enterprise-launch")
@@ -98,6 +99,8 @@ def test_enterprise_closed_won_builds_launch_packet_from_connected_sources(runti
     assert packet.workflow_id == "enterprise_closed_won_onboarding"
     assert packet.workflow_config_version == "enterprise-success-plan-config-v2"
     assert packet.to_dict()["workflow"]["ui"]["renderer"] == "enterprise_launch_packet"
+    assert packet.execution_envelope.workflow_id == packet.workflow_id
+    assert invariant_failures(packet.execution_envelope) == ()
     assert calendar.calls == [(ACCOUNT_ID, OPPORTUNITY_ID, AS_OF)]
     assert packet.trigger_receipt.source_type == "salesforce_opportunity"
     assert set(packet.coverage.original_success_plan_sources) >= {
