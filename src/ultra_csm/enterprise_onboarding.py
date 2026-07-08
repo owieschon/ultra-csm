@@ -12,17 +12,39 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass
 from typing import Any, Literal, Protocol
 
+from ultra_csm._util import iso_date
+from ultra_csm.data_plane import onboarding_activation_gap_ids
 from ultra_csm.data_plane.contracts import (
+    AdoptionSummary,
+    CommunicationSignal,
     CRMAccount,
     CRMContact,
     CRMDataConnector,
     CRMOpportunity,
+    CSCompany,
     CustomerDataPlane,
     Entitlement,
     EvidenceRef,
+    HealthScore,
+    OnboardingPhase,
+    OnboardingProject,
+    OnboardingTask,
     StakeholderRelationship,
+    SuccessPlan,
+    TimeToValueMilestone,
+    UsageSignal,
 )
 from ultra_csm.governance import ActionGate, ActionProposal, proposal_fields_for
+from ultra_csm.value_model import (
+    CustomerValueModel,
+    ProjectedPriority,
+    ValueFactor,
+    account_attributes,
+    build_customer_value_model,
+    load_value_model_config,
+    project_ttv_lens,
+    resolve_tenant_tier,
+)
 
 
 ENTERPRISE_AMOUNT_CENTS = 10_000_000
@@ -151,12 +173,61 @@ class StakeholderVerification:
 
 
 @dataclass(frozen=True)
+class MilestoneMeasurement:
+    metric_name: str
+    current_value: float | None
+    target_value: float | None
+    threshold_name: str | None
+    threshold_value: float | int | None
+    evidence_source_ids: tuple[str, ...]
+    rail: str
+
+
+@dataclass(frozen=True)
 class OnboardingMilestone:
     milestone: str
     owner: str
     target_date: str
     acceptance_criteria: str
     source_ids: tuple[str, ...]
+    measurement: MilestoneMeasurement | None = None
+
+
+@dataclass(frozen=True)
+class SuccessPlanValueFactor:
+    name: str
+    value: float
+    contribution: int
+    threshold_name: str | None
+    threshold_value: float | int | None
+    evidence_source_ids: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class SuccessPlanValueRail:
+    rail: str
+    state: str
+    current_value: float | None
+    target_value: float | None
+    threshold_name: str | None
+    threshold_value: float | int | None
+    factors: tuple[SuccessPlanValueFactor, ...]
+    evidence_source_ids: tuple[str, ...]
+    interpretation: str
+
+
+@dataclass(frozen=True)
+class SuccessPlanValueModelAlignment:
+    account_id: str
+    lifecycle_stage: str
+    service_tier: str | None
+    config_version: str
+    rule_name: str
+    thresholds: dict[str, float | int]
+    rails: tuple[SuccessPlanValueRail, ...]
+    ttv_priority_score: int
+    ttv_factors: tuple[SuccessPlanValueFactor, ...]
+    plan_target_formula: tuple[str, ...]
 
 
 @dataclass(frozen=True)
@@ -194,6 +265,7 @@ class SuccessPlanMethodology:
     validation_checks: tuple[SuccessPlanValidationCheck, ...]
     customer_fit_summary: str
     open_questions: tuple[str, ...]
+    value_model_alignment: SuccessPlanValueModelAlignment | None = None
 
 
 @dataclass(frozen=True)
@@ -288,6 +360,7 @@ def run_enterprise_closed_won_onboarding(
     success_plans = tuple(data_plane.cs.list_success_plans(account.account_id))
     entitlements = tuple(data_plane.telemetry.list_entitlements(account.account_id))
     usage_signals = tuple(data_plane.telemetry.list_usage_signals(account.account_id))
+    ttv_milestones = _ttv_milestones(data_plane, account.account_id)
     ctas = tuple(data_plane.cs.list_ctas(account.account_id, status="open"))
     health = data_plane.cs.get_health_score(account.account_id)
     adoption = data_plane.cs.get_adoption_summary(account.account_id)
@@ -314,7 +387,11 @@ def run_enterprise_closed_won_onboarding(
         calendar_attendance=calendar_attendance,
         internal_notes=internal_notes,
         usage_signals=usage_signals,
+        ttv_milestones=ttv_milestones,
         stakeholders=stakeholders,
+        company=company,
+        health=health,
+        adoption=adoption,
     )
     receipts = _source_receipts(
         trigger=trigger,
@@ -330,6 +407,7 @@ def run_enterprise_closed_won_onboarding(
         onboarding_projects=onboarding_projects,
         onboarding_phases=onboarding_phases,
         onboarding_tasks=onboarding_tasks,
+        ttv_milestones=ttv_milestones,
     )
     stakeholder_rows = _stakeholder_verification(
         contacts=contacts,
@@ -368,8 +446,14 @@ def run_enterprise_closed_won_onboarding(
         calendar_attendance=calendar_attendance,
         internal_notes=internal_notes,
         onboarding_projects=onboarding_projects,
+        onboarding_phases=onboarding_phases,
         onboarding_tasks=onboarding_tasks,
         success_plans=success_plans,
+        company=company,
+        health=health,
+        adoption=adoption,
+        stakeholders=stakeholders,
+        ttv_milestones=ttv_milestones,
     ) if ready else ((), None)
     customer_baseline = _customer_safe_baseline(
         account=account,
@@ -467,20 +551,30 @@ def _source_coverage(
     opportunity: CRMOpportunity,
     contacts: tuple[CRMContact, ...],
     entitlements: tuple[Entitlement, ...],
-    success_plans: tuple,
-    onboarding_projects: tuple,
-    onboarding_phases: tuple,
-    onboarding_tasks: tuple,
-    customer_comms: tuple,
-    call_or_meeting_comms: tuple,
+    success_plans: tuple[SuccessPlan, ...],
+    onboarding_projects: tuple[OnboardingProject, ...],
+    onboarding_phases: tuple[OnboardingPhase, ...],
+    onboarding_tasks: tuple[OnboardingTask, ...],
+    customer_comms: tuple[CommunicationSignal, ...],
+    call_or_meeting_comms: tuple[CommunicationSignal, ...],
     calendar_attendance: tuple[CalendarAttendance, ...],
     internal_notes: tuple,
-    usage_signals: tuple,
+    usage_signals: tuple[UsageSignal, ...],
+    ttv_milestones: tuple[TimeToValueMilestone, ...],
     stakeholders: tuple[StakeholderRelationship, ...],
+    company: CSCompany | None,
+    health: HealthScore | None,
+    adoption: AdoptionSummary | None,
 ) -> SourceCoverage:
     baseline = ["salesforce_opportunity", "salesforce_account"]
     if contacts:
         baseline.append("salesforce_contacts")
+    if company is not None:
+        baseline.append("cs_company")
+    if health is not None:
+        baseline.append("health_score")
+    if adoption is not None:
+        baseline.append("adoption_summary")
     if entitlements:
         baseline.append("entitlements")
     if success_plans:
@@ -501,6 +595,12 @@ def _source_coverage(
         current.append("provisioning_entitlements")
     if usage_signals:
         current.append("product_usage")
+    if adoption is not None:
+        current.append("adoption_summary")
+    if health is not None:
+        current.append("health_score")
+    if ttv_milestones:
+        current.append("time_to_value_milestones")
     if onboarding_projects or onboarding_tasks:
         current.append("onboarding_project_state")
 
@@ -525,6 +625,12 @@ def _source_coverage(
         missing.append("salesforce_contacts")
     if not entitlements:
         missing.append("entitlements_or_order_line_items")
+    if company is None:
+        missing.append("cs_company_value_model_context")
+    if health is None:
+        missing.append("health_score_value_model_context")
+    if adoption is None:
+        missing.append("adoption_summary_value_model_context")
     if not (customer_comms or call_or_meeting_comms or calendar_attendance or internal_notes):
         missing.append("sales_or_customer_context")
     if not (customer_comms or call_or_meeting_comms or calendar_attendance):
@@ -546,14 +652,15 @@ def _source_receipts(
     opportunity: CRMOpportunity,
     contacts: tuple[CRMContact, ...],
     entitlements: tuple[Entitlement, ...],
-    success_plans: tuple,
-    customer_comms: tuple,
-    call_or_meeting_comms: tuple,
+    success_plans: tuple[SuccessPlan, ...],
+    customer_comms: tuple[CommunicationSignal, ...],
+    call_or_meeting_comms: tuple[CommunicationSignal, ...],
     calendar_attendance: tuple[CalendarAttendance, ...],
     internal_notes: tuple,
-    onboarding_projects: tuple,
-    onboarding_phases: tuple,
-    onboarding_tasks: tuple,
+    onboarding_projects: tuple[OnboardingProject, ...],
+    onboarding_phases: tuple[OnboardingPhase, ...],
+    onboarding_tasks: tuple[OnboardingTask, ...],
+    ttv_milestones: tuple[TimeToValueMilestone, ...],
 ) -> tuple[SourceReceipt, ...]:
     receipts = [trigger]
     receipts.append(SourceReceipt(
@@ -658,6 +765,19 @@ def _source_receipts(
             claim=f"Onboarding task evidence: {task.name}.",
             customer_safe=False,
         ))
+    for milestone in ttv_milestones:
+        receipts.append(SourceReceipt(
+            source_id=f"{milestone.account_id}:{milestone.milestone}",
+            source_type="time_to_value_milestone",
+            field="expected_by",
+            authority="customer_observed",
+            observed_at=milestone.achieved_at or milestone.expected_by,
+            claim=(
+                f"TTV milestone {milestone.milestone} is expected by "
+                f"{milestone.expected_by}."
+            ),
+            customer_safe=False,
+        ))
     return tuple(receipts)
 
 
@@ -665,8 +785,8 @@ def _stakeholder_verification(
     *,
     contacts: tuple[CRMContact, ...],
     stakeholders: tuple[StakeholderRelationship, ...],
-    customer_comms: tuple,
-    call_or_meeting_comms: tuple,
+    customer_comms: tuple[CommunicationSignal, ...],
+    call_or_meeting_comms: tuple[CommunicationSignal, ...],
     calendar_attendance: tuple[CalendarAttendance, ...],
 ) -> tuple[StakeholderVerification, ...]:
     contact_by_id = {contact.contact_id: contact for contact in contacts}
@@ -724,14 +844,20 @@ def _build_success_plan(
     contacts: tuple[CRMContact, ...],
     stakeholder_rows: tuple[StakeholderVerification, ...],
     entitlements: tuple[Entitlement, ...],
-    usage_signals: tuple,
-    customer_comms: tuple,
-    call_or_meeting_comms: tuple,
+    usage_signals: tuple[UsageSignal, ...],
+    customer_comms: tuple[CommunicationSignal, ...],
+    call_or_meeting_comms: tuple[CommunicationSignal, ...],
     calendar_attendance: tuple[CalendarAttendance, ...],
     internal_notes: tuple,
-    onboarding_projects: tuple,
-    onboarding_tasks: tuple,
-    success_plans: tuple,
+    onboarding_projects: tuple[OnboardingProject, ...],
+    onboarding_phases: tuple[OnboardingPhase, ...],
+    onboarding_tasks: tuple[OnboardingTask, ...],
+    success_plans: tuple[SuccessPlan, ...],
+    company: CSCompany | None,
+    health: HealthScore | None,
+    adoption: AdoptionSummary | None,
+    stakeholders: tuple[StakeholderRelationship, ...],
+    ttv_milestones: tuple[TimeToValueMilestone, ...],
 ) -> tuple[tuple[OnboardingMilestone, ...], SuccessPlanMethodology]:
     owner = _owner_name(contacts) or account.owner_id
     source_ids = (opportunity.opportunity_id, *(f"{e.account_id}:{e.capability}" for e in entitlements[:3]))
@@ -743,6 +869,24 @@ def _build_success_plan(
         internal_notes=internal_notes,
     )
     first_value_criteria = _first_value_acceptance_criteria(first_capability, outcome)
+    value_alignment = _success_plan_value_model_alignment(
+        as_of=as_of,
+        account=account,
+        opportunity=opportunity,
+        company=company,
+        health=health,
+        adoption=adoption,
+        entitlements=entitlements,
+        usage_signals=usage_signals,
+        success_plans=success_plans,
+        ttv_milestones=ttv_milestones,
+        stakeholders=stakeholders,
+        customer_comms=customer_comms,
+        call_or_meeting_comms=call_or_meeting_comms,
+        onboarding_projects=onboarding_projects,
+        onboarding_phases=onboarding_phases,
+        onboarding_tasks=onboarding_tasks,
+    )
     milestones = (
         OnboardingMilestone(
             "Internal AE-to-CS handoff complete",
@@ -753,6 +897,7 @@ def _build_success_plan(
                 "purchased scope, integration footprint, and implementation dependencies."
             ),
             _non_empty_sources((opportunity.opportunity_id, *(note.note_id for note in internal_notes))),
+            _measurement_for_rail(value_alignment, "ttv_priority", "unresolved_priority_score"),
         ),
         OnboardingMilestone(
             "Customer kickoff scheduled",
@@ -760,6 +905,7 @@ def _build_success_plan(
             kickoff_date,
             "Kickoff invite includes verified champion, admin or technical owner, and executive sponsor if known.",
             _non_empty_sources(source_ids + tuple(row.person_key for row in stakeholder_rows if row.appearances)),
+            _measurement_for_rail(value_alignment, "relationship_coverage", "verified_relationship_roles"),
         ),
         OnboardingMilestone(
             "Entitlements and workspace provisioned",
@@ -767,6 +913,7 @@ def _build_success_plan(
             opportunity.close_date,
             "Purchased package is enabled and admin can access the workspace.",
             _non_empty_sources(source_ids + tuple(signal.signal_id for signal in usage_signals[:3])),
+            _measurement_for_rail(value_alignment, "activation", "adoption_rate"),
         ),
         OnboardingMilestone(
             "First value event achieved",
@@ -774,6 +921,7 @@ def _build_success_plan(
             opportunity.close_date,
             first_value_criteria,
             _non_empty_sources(source_ids + tuple(plan.plan_id for plan in success_plans[:2])),
+            _measurement_for_rail(value_alignment, "feature_depth", "entitled_capability_depth"),
         ),
         OnboardingMilestone(
             "Executive checkpoint completed",
@@ -784,6 +932,7 @@ def _build_success_plan(
                 opportunity.opportunity_id,
                 *(row.person_key for row in stakeholder_rows if row.relationship_role == "executive_sponsor"),
             )),
+            _measurement_for_rail(value_alignment, "outcome_realization", "realized_outcome_state"),
         ),
     )
     methodology = _success_plan_methodology(
@@ -802,8 +951,10 @@ def _build_success_plan(
         calendar_attendance=calendar_attendance,
         internal_notes=internal_notes,
         onboarding_projects=onboarding_projects,
+        onboarding_phases=onboarding_phases,
         onboarding_tasks=onboarding_tasks,
         success_plans=success_plans,
+        value_alignment=value_alignment,
     )
     return milestones, methodology
 
@@ -824,9 +975,11 @@ def _success_plan_methodology(
     call_or_meeting_comms: tuple,
     calendar_attendance: tuple[CalendarAttendance, ...],
     internal_notes: tuple,
-    onboarding_projects: tuple,
-    onboarding_tasks: tuple,
-    success_plans: tuple,
+    onboarding_projects: tuple[OnboardingProject, ...],
+    onboarding_phases: tuple[OnboardingPhase, ...],
+    onboarding_tasks: tuple[OnboardingTask, ...],
+    success_plans: tuple[SuccessPlan, ...],
+    value_alignment: SuccessPlanValueModelAlignment | None,
 ) -> SuccessPlanMethodology:
     input_evidence = (
         SuccessPlanInputEvidence(
@@ -863,6 +1016,19 @@ def _success_plan_methodology(
             False,
             "Usage/provisioning and onboarding tasks show what has already started.",
         ),
+        SuccessPlanInputEvidence(
+            "value_model_thresholds",
+            tuple(
+                item
+                for rail in value_alignment.rails
+                for item in rail.evidence_source_ids
+            ) if value_alignment is not None else (),
+            False,
+            (
+                "Lifecycle-aware value-model thresholds define the measurable targets "
+                "for activation, penetration, feature depth, outcome realization, and TTV priority."
+            ),
+        ),
     )
     validation_checks = _success_plan_validation_checks(
         opportunity=opportunity,
@@ -873,6 +1039,7 @@ def _success_plan_methodology(
         customer_comms=customer_comms,
         call_or_meeting_comms=call_or_meeting_comms,
         calendar_attendance=calendar_attendance,
+        value_alignment=value_alignment,
     )
     open_questions = _success_plan_open_questions(
         stakeholder_rows=stakeholder_rows,
@@ -887,9 +1054,12 @@ def _success_plan_methodology(
             "Confirm the opportunity is Closed Won and enterprise-sized from Salesforce.",
             "Resolve customer organization identity and verify stakeholders from CRM, email/call, and Calendar evidence.",
             "Use entitlements as the hard boundary for promised activation scope.",
+            "Build the deterministic customer value model from company, health, adoption, entitlement, telemetry, success-plan, stakeholder, communication, and TTV evidence.",
+            "Resolve lifecycle-aware thresholds and tenant service tier before selecting targets.",
+            "Project TTV priority from the value-model rails, open milestones, onboarding activation gaps, overdue plans, health, and ARR tier.",
             "Infer the primary outcome from existing success-plan objectives, internal handoff notes, and purchased capabilities.",
             "Choose first value from the earliest purchased capability that can produce observable customer behavior.",
-            "Build milestones in CSM order: internal handoff, kickoff, provisioning, first value, executive checkpoint.",
+            "Build milestones in CSM order and bind each milestone to a measurable rail target.",
             "Attach source IDs to every milestone and keep customer-facing language behind ActionGate.",
         ),
         input_evidence=input_evidence,
@@ -911,9 +1081,11 @@ def _success_plan_methodology(
         validation_checks=validation_checks,
         customer_fit_summary=(
             f"The plan is tailored to {account.name} by anchoring first value on "
-            f"{first_capability}, outcome on {outcome}, and owners on verified stakeholder evidence."
+            f"{first_capability}, outcome on {outcome}, owners on verified stakeholder evidence, "
+            "and measurable targets on the account's resolved value-model thresholds."
         ),
         open_questions=open_questions,
+        value_model_alignment=value_alignment,
     )
 
 
@@ -952,10 +1124,11 @@ def _success_plan_validation_checks(
     milestones: tuple[OnboardingMilestone, ...],
     stakeholder_rows: tuple[StakeholderVerification, ...],
     entitlements: tuple[Entitlement, ...],
-    usage_signals: tuple,
-    customer_comms: tuple,
-    call_or_meeting_comms: tuple,
+    usage_signals: tuple[UsageSignal, ...],
+    customer_comms: tuple[CommunicationSignal, ...],
+    call_or_meeting_comms: tuple[CommunicationSignal, ...],
     calendar_attendance: tuple[CalendarAttendance, ...],
+    value_alignment: SuccessPlanValueModelAlignment | None,
 ) -> tuple[SuccessPlanValidationCheck, ...]:
     customer_context_ids = tuple(
         [signal.signal_id for signal in (*customer_comms, *call_or_meeting_comms)]
@@ -971,6 +1144,26 @@ def _success_plan_validation_checks(
     )
     milestone_ids = tuple(source for milestone in milestones for source in milestone.source_ids)
     entitlement_ids = tuple(f"{item.account_id}:{item.capability}" for item in entitlements)
+    value_rail_ids = tuple(
+        source
+        for rail in value_alignment.rails
+        for source in rail.evidence_source_ids
+    ) if value_alignment is not None else ()
+    measured_milestone_ids = tuple(
+        source
+        for milestone in milestones
+        if milestone.measurement is not None
+        for source in milestone.measurement.evidence_source_ids
+    )
+    expected_rails = {
+        "activation",
+        "seat_penetration",
+        "feature_depth",
+        "outcome_realization",
+        "ttv_priority",
+        "relationship_coverage",
+    }
+    actual_rails = {rail.rail for rail in value_alignment.rails} if value_alignment is not None else set()
     return (
         SuccessPlanValidationCheck(
             "closed_won_source_confirmed",
@@ -1014,7 +1207,313 @@ def _success_plan_validation_checks(
             milestone_ids,
             "Every success-plan milestone must carry source IDs.",
         ),
+        SuccessPlanValidationCheck(
+            "value_model_available",
+            value_alignment is not None,
+            value_rail_ids,
+            "Success plan must be built from the deterministic customer value model.",
+        ),
+        SuccessPlanValidationCheck(
+            "resolved_thresholds_applied",
+            value_alignment is not None
+            and bool(value_alignment.config_version)
+            and bool(value_alignment.rule_name)
+            and bool(value_alignment.thresholds),
+            value_rail_ids,
+            "Lifecycle-aware threshold config version and rule name must be recorded.",
+        ),
+        SuccessPlanValidationCheck(
+            "ttv_projection_calculated",
+            value_alignment is not None and value_alignment.ttv_priority_score >= 0,
+            tuple(
+                factor_source
+                for factor in (value_alignment.ttv_factors if value_alignment is not None else ())
+                for factor_source in factor.evidence_source_ids
+            ),
+            "TTV priority must be projected from value-model and onboarding evidence.",
+        ),
+        SuccessPlanValidationCheck(
+            "milestones_map_to_value_model_rails",
+            value_alignment is not None
+            and expected_rails <= actual_rails
+            and all(milestone.measurement is not None for milestone in milestones),
+            measured_milestone_ids,
+            "Every milestone must carry a measurable rail target from the value-model alignment.",
+        ),
     )
+
+
+def _success_plan_value_model_alignment(
+    *,
+    as_of: str,
+    account: CRMAccount,
+    opportunity: CRMOpportunity,
+    company: CSCompany | None,
+    health: HealthScore | None,
+    adoption: AdoptionSummary | None,
+    entitlements: tuple[Entitlement, ...],
+    usage_signals: tuple[UsageSignal, ...],
+    success_plans: tuple[SuccessPlan, ...],
+    ttv_milestones: tuple[TimeToValueMilestone, ...],
+    stakeholders: tuple[StakeholderRelationship, ...],
+    customer_comms: tuple[CommunicationSignal, ...],
+    call_or_meeting_comms: tuple[CommunicationSignal, ...],
+    onboarding_projects: tuple[OnboardingProject, ...],
+    onboarding_phases: tuple[OnboardingPhase, ...],
+    onboarding_tasks: tuple[OnboardingTask, ...],
+) -> SuccessPlanValueModelAlignment | None:
+    if company is None or health is None or adoption is None:
+        return None
+
+    cfg = load_value_model_config()
+    model = build_customer_value_model(
+        account=account,
+        company=company,
+        health=health,
+        adoption=adoption,
+        entitlements=entitlements,
+        usage_signals=usage_signals,
+        success_plans=success_plans,
+        opportunities=(opportunity,),
+        onboarding_milestones=ttv_milestones,
+        stakeholders=stakeholders,
+        communication_signals=(*customer_comms, *call_or_meeting_comms),
+        as_of=as_of,
+        config=cfg,
+    )
+    open_milestone_gaps = tuple(
+        milestone
+        for milestone in ttv_milestones
+        if milestone.achieved_at is None and iso_date(milestone.expected_by) <= iso_date(as_of)
+    )
+    overdue_success_plans = tuple(
+        plan
+        for plan in success_plans
+        if plan.status not in {"realized", "achieved", "complete"}
+        and iso_date(plan.target_date) <= iso_date(as_of)
+    )
+    activation_gap_ids = onboarding_activation_gap_ids(
+        projects=onboarding_projects,
+        phases=onboarding_phases,
+        tasks=onboarding_tasks,
+        as_of=as_of,
+        covered_milestone_names=frozenset(milestone.milestone for milestone in open_milestone_gaps),
+    )
+    onboarding_evidence_ids = frozenset(
+        [phase.phase_id for phase in onboarding_phases]
+        + [task.task_id for task in onboarding_tasks]
+    )
+    projected = project_ttv_lens(
+        model,
+        company=company,
+        health=health,
+        open_milestone_gaps=open_milestone_gaps,
+        overdue_success_plans=overdue_success_plans,
+        as_of=as_of,
+        onboarding_evidence_ids=onboarding_evidence_ids,
+        onboarding_activation_gap_ids=activation_gap_ids,
+    )
+    tier = resolve_tenant_tier(account_attributes(account, company), cfg).tier
+    thresholds = asdict(model.resolved_thresholds.thresholds)
+    rails = _success_plan_value_rails(
+        model=model,
+        projected=projected,
+        adoption=adoption,
+        entitlements=entitlements,
+        stakeholders=stakeholders,
+        activation_gap_ids=activation_gap_ids,
+    )
+    return SuccessPlanValueModelAlignment(
+        account_id=account.account_id,
+        lifecycle_stage=model.lifecycle_stage,
+        service_tier=tier,
+        config_version=model.resolved_thresholds.config_version,
+        rule_name=model.resolved_thresholds.rule_name,
+        thresholds=thresholds,
+        rails=rails,
+        ttv_priority_score=projected.score,
+        ttv_factors=tuple(_factor_snapshot(factor) for factor in projected.factors),
+        plan_target_formula=(
+            "Use resolved lifecycle thresholds, not a global account score.",
+            "Set activation target from adoption_floor and seat_penetration_floor.",
+            "Set feature-depth target from entitled capabilities minus underused capabilities.",
+            "Set outcome target from stated objectives and realized-state evidence.",
+            "Escalate TTV work until projected priority factors have owners or fall to zero.",
+        ),
+    )
+
+
+def _success_plan_value_rails(
+    *,
+    model: CustomerValueModel,
+    projected: ProjectedPriority,
+    adoption: AdoptionSummary,
+    entitlements: tuple[Entitlement, ...],
+    stakeholders: tuple[StakeholderRelationship, ...],
+    activation_gap_ids: tuple[str, ...],
+) -> tuple[SuccessPlanValueRail, ...]:
+    thresholds = model.resolved_thresholds.thresholds
+    depth_current = _feature_depth_ratio(model)
+    relationship_current = float(len({
+        item.relationship_type
+        for item in stakeholders
+        if item.relationship_type in {"champion", "technical_lead", "executive_sponsor", "admin"}
+    }))
+    relationship_target = float(thresholds.min_threaded_persons + 1)
+    activation_factors = _factors_by_name(
+        (*model.usage.factors, *model.divergences),
+        {"health_usage_divergence"},
+    )
+    return (
+        SuccessPlanValueRail(
+            rail="activation",
+            state="known",
+            current_value=adoption.adoption_rate,
+            target_value=thresholds.adoption_floor,
+            threshold_name="adoption_floor",
+            threshold_value=thresholds.adoption_floor,
+            factors=tuple(_factor_snapshot(factor) for factor in activation_factors),
+            evidence_source_ids=_non_empty_sources((
+                _source_id("cs_platform", adoption.account_id, "adoption_rate", adoption.measured_at),
+            )),
+            interpretation="Are users activating at the lifecycle-aware adoption floor for this account?",
+        ),
+        SuccessPlanValueRail(
+            rail="seat_penetration",
+            state=model.penetration.state,
+            current_value=model.penetration.seat_penetration,
+            target_value=thresholds.seat_penetration_floor,
+            threshold_name="seat_penetration_floor",
+            threshold_value=thresholds.seat_penetration_floor,
+            factors=tuple(_factor_snapshot(factor) for factor in model.penetration.factors),
+            evidence_source_ids=_rail_evidence_ids(
+                model.penetration.factors,
+                fallback=(_source_id("cs_platform", adoption.account_id, "active_users", adoption.measured_at),),
+            ),
+            interpretation="Are active users keeping pace with the seat entitlement?",
+        ),
+        SuccessPlanValueRail(
+            rail="feature_depth",
+            state="known" if entitlements else "unknown",
+            current_value=depth_current,
+            target_value=thresholds.depth_floor,
+            threshold_name="depth_floor",
+            threshold_value=thresholds.depth_floor,
+            factors=tuple(_factor_snapshot(factor) for factor in model.feature_depth.factors),
+            evidence_source_ids=_rail_evidence_ids(
+                model.feature_depth.factors,
+                fallback=tuple(f"{item.account_id}:{item.capability}" for item in entitlements),
+            ),
+            interpretation="Are the purchased capabilities being used broadly enough for first value?",
+        ),
+        SuccessPlanValueRail(
+            rail="outcome_realization",
+            state=model.outcome.realized_state,
+            current_value=1.0 if model.outcome.realized_state == "known" else 0.0,
+            target_value=1.0,
+            threshold_name="outcome_realized",
+            threshold_value=1.0,
+            factors=tuple(_factor_snapshot(factor) for factor in model.outcome.factors),
+            evidence_source_ids=_rail_evidence_ids(model.outcome.factors),
+            interpretation="Has a stated customer outcome been realized with source-backed evidence?",
+        ),
+        SuccessPlanValueRail(
+            rail="ttv_priority",
+            state="known",
+            current_value=float(projected.score),
+            target_value=0.0,
+            threshold_name="unresolved_priority_score",
+            threshold_value=0,
+            factors=tuple(_factor_snapshot(factor) for factor in projected.factors),
+            evidence_source_ids=_rail_evidence_ids(
+                projected.factors,
+                fallback=activation_gap_ids,
+            ),
+            interpretation="How much unresolved onboarding and value risk remains after lifecycle weighting?",
+        ),
+        SuccessPlanValueRail(
+            rail="relationship_coverage",
+            state="known" if stakeholders else "unknown",
+            current_value=relationship_current,
+            target_value=relationship_target,
+            threshold_name="min_threaded_persons_plus_one",
+            threshold_value=thresholds.min_threaded_persons + 1,
+            factors=tuple(
+                _factor_snapshot(factor)
+                for factor in _factors_by_name(model.divergences, {"single_threaded_risk", "new_stakeholder_unengaged"})
+            ),
+            evidence_source_ids=tuple(item.contact_id for item in stakeholders),
+            interpretation="Does the launch have enough verified relationship coverage for enterprise governance?",
+        ),
+    )
+
+
+def _measurement_for_rail(
+    alignment: SuccessPlanValueModelAlignment | None,
+    rail_name: str,
+    metric_name: str,
+) -> MilestoneMeasurement | None:
+    if alignment is None:
+        return None
+    rail = next((item for item in alignment.rails if item.rail == rail_name), None)
+    if rail is None:
+        return None
+    return MilestoneMeasurement(
+        metric_name=metric_name,
+        current_value=rail.current_value,
+        target_value=rail.target_value,
+        threshold_name=rail.threshold_name,
+        threshold_value=rail.threshold_value,
+        evidence_source_ids=rail.evidence_source_ids,
+        rail=rail.rail,
+    )
+
+
+def _feature_depth_ratio(model: CustomerValueModel) -> float | None:
+    entitled = model.feature_depth.entitled_capabilities
+    if not entitled:
+        return None
+    used_count = len(entitled) - len(model.feature_depth.underused_capabilities)
+    return used_count / len(entitled)
+
+
+def _factors_by_name(
+    factors: tuple[ValueFactor, ...],
+    names: set[str],
+) -> tuple[ValueFactor, ...]:
+    return tuple(factor for factor in factors if factor.name in names)
+
+
+def _factor_snapshot(factor: ValueFactor) -> SuccessPlanValueFactor:
+    return SuccessPlanValueFactor(
+        name=factor.name,
+        value=factor.value,
+        contribution=factor.contribution,
+        threshold_name=factor.threshold_name,
+        threshold_value=factor.threshold_value,
+        evidence_source_ids=tuple(_evidence_ref_id(ref) for ref in factor.evidence),
+    )
+
+
+def _rail_evidence_ids(
+    factors: tuple[ValueFactor, ...],
+    *,
+    fallback: tuple[str, ...] = (),
+) -> tuple[str, ...]:
+    ids = tuple(
+        _evidence_ref_id(ref)
+        for factor in factors
+        for ref in factor.evidence
+    )
+    return _non_empty_sources(ids or fallback)
+
+
+def _evidence_ref_id(ref: EvidenceRef) -> str:
+    return _source_id(ref.source, ref.source_id, ref.field, ref.observed_at)
+
+
+def _source_id(source: str, source_id: str, field: str, observed_at: str) -> str:
+    return f"{source}:{source_id}:{field}:{observed_at}"
 
 
 def _success_plan_open_questions(
@@ -1355,6 +1854,25 @@ def _onboarding_evidence(data_plane: CustomerDataPlane, account_id: str) -> tupl
         for task in data_plane.onboarding.list_tasks(project.project_id)
     )
     return projects, phases, tasks
+
+
+def _ttv_milestones(data_plane: CustomerDataPlane, account_id: str) -> tuple[TimeToValueMilestone, ...]:
+    telemetry_milestones = tuple(data_plane.telemetry.list_ttv_milestones(account_id))
+    onboarding_milestones: tuple[TimeToValueMilestone, ...] = ()
+    if data_plane.onboarding is not None:
+        try:
+            onboarding_milestones = tuple(data_plane.onboarding.derive_ttv_milestones(account_id))
+        except Exception:
+            onboarding_milestones = ()
+    seen: set[tuple[str, str, str]] = set()
+    merged: list[TimeToValueMilestone] = []
+    for milestone in (*telemetry_milestones, *onboarding_milestones):
+        key = (milestone.account_id, milestone.milestone, milestone.expected_by)
+        if key in seen:
+            continue
+        seen.add(key)
+        merged.append(milestone)
+    return tuple(merged)
 
 
 def _comms_evidence(data_plane: CustomerDataPlane, account_id: str) -> tuple[tuple, tuple, tuple]:
