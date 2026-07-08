@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import {
+  AdoptionRegressionPacket,
   api,
   CentralizeTelemetryResponse,
   CSMWorkPacket,
@@ -195,6 +196,8 @@ export function QueueDetail({
     useState<EnterpriseOnboardingPacket | null>(null);
   const [selfServeActivationPacket, setSelfServeActivationPacket] =
     useState<SelfServeActivationPacket | null>(null);
+  const [adoptionRegressionPacket, setAdoptionRegressionPacket] =
+    useState<AdoptionRegressionPacket | null>(null);
   const [openDrawer, setOpenDrawer] = useState<string | null>(null);
   const [openFactor, setOpenFactor] = useState<number | null>(null);
 
@@ -203,6 +206,7 @@ export function QueueDetail({
     setCentralizeTelemetry(null);
     setEnterpriseOnboardingPacket(null);
     setSelfServeActivationPacket(null);
+    setAdoptionRegressionPacket(null);
     if (!item?.account_id) return;
     api
       .accountBrief(item.account_id, day)
@@ -220,6 +224,10 @@ export function QueueDetail({
       .selfServeActivationPackets(item.account_id)
       .then((r) => setSelfServeActivationPacket(r.packets[0] ?? null))
       .catch(() => setSelfServeActivationPacket(null));
+    api
+      .adoptionRegressionPackets(item.account_id)
+      .then((r) => setAdoptionRegressionPacket(r.packets[0] ?? null))
+      .catch(() => setAdoptionRegressionPacket(null));
   }, [item?.account_id, day]);
 
   if (!item || item.account_id === null) {
@@ -238,6 +246,7 @@ export function QueueDetail({
       <PacketActionBrief packet={packet} />
       <EnterpriseOnboardingPanel packet={enterpriseOnboardingPacket} />
       <SelfServeActivationPanel packet={selfServeActivationPacket} />
+      <AdoptionRegressionPanel packet={adoptionRegressionPacket} />
       <PacketTrace packet={packet} />
 
       <div className="sec">
@@ -699,6 +708,114 @@ function SelfServeActivationPanel({
             {String(action.action_type ?? "internal_review").replace(/_/g, " ")}
             {currentMilestone ? ` · ${String(currentMilestone.label ?? "")}` : ""}
           </em>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function AdoptionRegressionPanel({
+  packet,
+}: {
+  packet: AdoptionRegressionPacket | null;
+}) {
+  if (!packet) return null;
+
+  const payload = asRecord(packet.packet);
+  const coverage = asRecord(payload.coverage);
+  const interpretation = asRecord(payload.interpretation);
+  const action = asRecord(payload.recommended_action);
+  const valueContext = asRecord(payload.value_context);
+  const context = asRecord(payload.contributing_context);
+  const comparisons = asArray(payload.metric_comparisons).map(asRecord);
+  const primary = comparisons[0] ?? {};
+  const missingSources = asArray(coverage.missing_required_sources)
+    .map((value) => String(value))
+    .filter(Boolean);
+  const blockers = [
+    ...asArray(coverage.customer_output_blockers),
+    ...asArray(action.suppression_reasons),
+  ].map((value) => String(value)).filter(Boolean);
+  const proposals = asArray(payload.proposals).map(asRecord);
+  const receipts = asArray(payload.source_receipts);
+  const packetStatus = String(payload.status ?? packet.status);
+  const isReady = packetStatus === "ready";
+  const dropRatio = asNumber(primary.drop_ratio);
+
+  return (
+    <div className={`sec launch-packet regression-packet ${isReady ? "ready" : "blocked"}`}>
+      <div className="sec-h">
+        <span className="t">Adoption regression review</span>
+        <span className="prov">
+          <span className={isReady ? "chip-det launch-ok" : "chip-det launch-stop"}>
+            {packetStatus.replace(/_/g, " ")}
+          </span>
+        </span>
+      </div>
+      <div className="launch-head">
+        <div>
+          <div className="launch-title">
+            {String(interpretation.selected_hypothesis ?? "Usage shift under review").replace(/_/g, " ")}
+          </div>
+          <div className="launch-meta">
+            {String(primary.metric_name ?? packet.metric_name).replace(/_/g, " ")} · {receipts.length} receipts · {proposals.length} gated proposal{proposals.length === 1 ? "" : "s"}
+          </div>
+        </div>
+        <div className="launch-score">
+          <span className="num">{dropRatio === null ? "—" : `${Math.round(dropRatio * 100)}%`}</span>
+          <em>usage drop</em>
+        </div>
+      </div>
+
+      <div className="launch-grid">
+        <LaunchMetric label="Severity" value={String(interpretation.severity ?? primary.severity ?? "unknown").replace(/_/g, " ")} />
+        <LaunchMetric label="Confidence" value={numberOrDash(interpretation.confidence)} />
+        <LaunchMetric label="Lifecycle" value={String(valueContext.lifecycle_stage ?? "unknown").replace(/_/g, " ")} />
+        <LaunchMetric label="Support" value={String(context.support_pressure ?? "unknown").replace(/_/g, " ")} />
+      </div>
+
+      {(missingSources.length > 0 || blockers.length > 0) && (
+        <div className="launch-alert">
+          {missingSources.map((source) => (
+            <span key={`missing-${source}`}>missing: {source.replace(/_/g, " ")}</span>
+          ))}
+          {blockers.slice(0, 4).map((blocker) => (
+            <span key={`blocker-${blocker}`}>blocked: {blocker.replace(/_/g, " ")}</span>
+          ))}
+        </div>
+      )}
+
+      {comparisons.length > 0 && (
+        <div className="launch-list">
+          <div className="packet-kicker">Window comparisons</div>
+          {comparisons.slice(0, 3).map((comparison) => (
+            <div className="launch-row" key={String(comparison.metric_name)}>
+              <span>{String(comparison.metric_name ?? "metric").replace(/_/g, " ")}</span>
+              <em>
+                {numberOrDash(comparison.baseline_value)} baseline · {numberOrDash(comparison.current_value)} current · {String(comparison.severity ?? "none")}
+              </em>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div className="launch-list">
+        <div className="packet-kicker">Value context</div>
+        <div className="launch-row">
+          <span>
+            {numberOrDash(valueContext.active_users)}/{numberOrDash(valueContext.licensed_users)} users active
+          </span>
+          <em>
+            {String(valueContext.service_tier ?? "unknown").replace(/_/g, " ")} · priority {numberOrDash(valueContext.priority_score)}
+          </em>
+        </div>
+      </div>
+
+      <div className="launch-list">
+        <div className="packet-kicker">Recommended action</div>
+        <div className="launch-row">
+          <span>{String(action.label ?? "Review adoption shift")}</span>
+          <em>{String(action.trigger ?? action.action_type ?? "internal_review").replace(/_/g, " ")}</em>
         </div>
       </div>
     </div>

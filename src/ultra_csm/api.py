@@ -48,6 +48,15 @@ from ultra_csm.data_plane.google_calendar_live import (
     GoogleCalendarReadError,
     LiveGoogleCalendarEventsProvider,
 )
+from ultra_csm.adoption_regression import (
+    ProductUsageRegressionEvent,
+    run_account_adoption_regression,
+)
+from ultra_csm.adoption_regression_store import (
+    get_adoption_regression_packet,
+    list_adoption_regression_packets,
+    upsert_adoption_regression_packet,
+)
 from ultra_csm.enterprise_onboarding import (
     GoogleCalendarEventsProvider,
     SalesforceClosedWonEvent,
@@ -435,6 +444,48 @@ class SelfServeActivationPacketSchema(BaseModel):
 class SelfServeActivationPacketListResponse(BaseModel):
     tenant_id: str
     packets: list[SelfServeActivationPacketSchema]
+
+
+class AdoptionRegressionTriggerRequest(BaseModel):
+    account_id: str
+    metric_name: str
+    baseline_start: str
+    baseline_end: str
+    current_start: str
+    current_end: str
+    observed_at: str | None = None
+    tenant_id: str | None = None
+    source: str = "product_usage_monitor"
+
+
+class AdoptionRegressionLaunchResponse(BaseModel):
+    tenant_id: str
+    status: str
+    packet_id: str
+    account_id: str
+    metric_name: str
+    generated_at: str
+    missing_required_sources: list[str]
+    proposal_ids: list[str]
+    packet: dict[str, Any]
+    auth: str | None = None
+    data_plane_mode: str = "fixture"
+    data_plane_sources: dict[str, str] = Field(default_factory=dict)
+
+
+class AdoptionRegressionPacketSchema(BaseModel):
+    packet_id: str
+    account_id: str
+    metric_name: str
+    status: str
+    packet: dict[str, Any]
+    created_at: str
+    updated_at: str
+
+
+class AdoptionRegressionPacketListResponse(BaseModel):
+    tenant_id: str
+    packets: list[AdoptionRegressionPacketSchema]
 
 
 class DigestAccountSchema(BaseModel):
@@ -1204,6 +1255,18 @@ def _stored_self_serve_packet_schema(stored) -> SelfServeActivationPacketSchema:
     )
 
 
+def _stored_adoption_regression_packet_schema(stored) -> AdoptionRegressionPacketSchema:
+    return AdoptionRegressionPacketSchema(
+        packet_id=stored.packet_id,
+        account_id=stored.account_id,
+        metric_name=stored.metric_name,
+        status=stored.status,
+        packet=stored.payload,
+        created_at=stored.created_at.isoformat() if stored.created_at else "",
+        updated_at=stored.updated_at.isoformat() if stored.updated_at else "",
+    )
+
+
 def _record_enterprise_onboarding_audit_events(
     *,
     packet: dict[str, Any],
@@ -1349,6 +1412,85 @@ def _record_self_serve_activation_audit_events(
                 "first_value_reached": value_path.get("first_value_reached"),
                 "current_milestone_id": value_path.get("current_milestone_id"),
                 "selection_evidence_ids": value_path.get("selection_evidence_ids"),
+            },
+            now=_CLOCK,
+        )
+
+
+def _record_adoption_regression_audit_events(
+    *,
+    packet: dict[str, Any],
+    actor_id: str,
+) -> None:
+    assert _conn is not None
+    packet_id = str(packet.get("packet_id") or "")
+    account_id = str(packet.get("account_id") or "")
+    comparisons = (
+        packet.get("metric_comparisons")
+        if isinstance(packet.get("metric_comparisons"), list)
+        else []
+    )
+    primary = comparisons[0] if comparisons and isinstance(comparisons[0], dict) else {}
+    interpretation = (
+        packet.get("interpretation")
+        if isinstance(packet.get("interpretation"), dict)
+        else {}
+    )
+    proposals = packet.get("proposals") if isinstance(packet.get("proposals"), list) else []
+    metric_name = str(primary.get("metric_name") or "")
+
+    record_audit_event(
+        _conn,
+        tenant_id=_TENANT_ID,
+        actor_id=actor_id,
+        event_type="adoption_regression.trigger",
+        account_ref=account_id or None,
+        source_ref=f"adoption_regression.trigger:{account_id}:{metric_name}",
+        detail=f"Adoption regression trigger received for {metric_name or 'unknown metric'}",
+        payload={
+            "packet_id": packet_id,
+            "account_id": account_id,
+            "metric_name": metric_name,
+        },
+        now=_CLOCK,
+    )
+    record_audit_event(
+        _conn,
+        tenant_id=_TENANT_ID,
+        actor_id=actor_id,
+        event_type="adoption_regression.packet",
+        account_ref=account_id or None,
+        source_ref=f"adoption_regression.packet:{packet_id}",
+        detail=f"Adoption regression packet {packet.get('status')} with {len(proposals)} proposal(s)",
+        payload={
+            "packet_id": packet_id,
+            "status": packet.get("status"),
+            "proposal_ids": [
+                item.get("proposal_id") for item in proposals if isinstance(item, dict)
+            ],
+            "missing_required_sources": (
+                packet.get("coverage", {}).get("missing_required_sources", [])
+                if isinstance(packet.get("coverage"), dict)
+                else []
+            ),
+        },
+        now=_CLOCK,
+    )
+    if interpretation:
+        record_audit_event(
+            _conn,
+            tenant_id=_TENANT_ID,
+            actor_id=actor_id,
+            event_type="adoption_regression.interpretation",
+            account_ref=account_id or None,
+            source_ref=f"adoption_regression.interpretation:{packet_id}",
+            detail=f"Selected interpretation {interpretation.get('selected_hypothesis')}",
+            payload={
+                "packet_id": packet_id,
+                "selected_hypothesis": interpretation.get("selected_hypothesis"),
+                "confidence": interpretation.get("confidence"),
+                "severity": interpretation.get("severity"),
+                "alternatives": interpretation.get("alternatives"),
             },
             now=_CLOCK,
         )
@@ -2381,8 +2523,134 @@ async def get_self_serve_activation_packet_endpoint(packet_id: str):
         raise HTTPException(
             status_code=404,
             detail={"error": "Self-serve activation packet not found", "code": "PACKET_NOT_FOUND"},
-        )
+    )
     return _stored_self_serve_packet_schema(packet)
+
+
+@app.post(
+    "/integrations/product/adoption-regression",
+    response_model=AdoptionRegressionLaunchResponse,
+)
+async def adoption_regression_trigger(
+    body: AdoptionRegressionTriggerRequest,
+    request: Request,
+):
+    """Handle an account-level product usage regression trigger.
+
+    The event supplies the observed metric and comparison windows. The workflow
+    re-reads the connected account data plane, compares current usage to the
+    baseline, interprets the shift through value-model rails and account context,
+    and only proposes customer outreach when the result is source-backed and
+    ActionGate-governed.
+    """
+
+    assert _data_plane is not None
+    auth_principal = _require_write_auth(request)
+    observed_at = body.observed_at or datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
+    event = ProductUsageRegressionEvent(
+        tenant_id=body.tenant_id or _TENANT_ID,
+        account_id=body.account_id,
+        metric_name=body.metric_name,
+        baseline_start=body.baseline_start,
+        baseline_end=body.baseline_end,
+        current_start=body.current_start,
+        current_end=body.current_end,
+        observed_at=observed_at,
+        source=body.source,
+    )
+    packet = run_account_adoption_regression(
+        data_plane=_data_plane,
+        gate=_gate(),
+        event=event,
+        as_of=observed_at[:10],
+    )
+    packet_dict = packet.to_dict()
+    assert _conn is not None
+    stored = upsert_adoption_regression_packet(
+        _conn,
+        tenant_id=_TENANT_ID,
+        actor_id=auth_principal.principal_id,
+        packet=packet,
+        payload=packet_dict,
+        now=_CLOCK,
+    )
+    _record_adoption_regression_audit_events(
+        packet=packet_dict,
+        actor_id=auth_principal.principal_id,
+    )
+    log.info(
+        "Adoption regression trigger handled",
+        extra={
+            "account_id": packet.account_id,
+            "metric_name": body.metric_name,
+            "status": packet.status,
+            "proposal_count": len(packet.proposals),
+            "auth": auth_principal.auth,
+            "data_plane_mode": _data_plane_assembly.mode if _data_plane_assembly else "uninitialized",
+        },
+    )
+    return AdoptionRegressionLaunchResponse(
+        tenant_id=packet.tenant_id,
+        status=packet.status,
+        packet_id=stored.packet_id,
+        account_id=packet.account_id,
+        metric_name=stored.metric_name,
+        generated_at=packet.generated_at,
+        missing_required_sources=list(packet.coverage.missing_required_sources),
+        proposal_ids=[proposal.proposal_id for proposal in packet.proposals],
+        packet=packet_dict,
+        auth=auth_principal.auth,
+        data_plane_mode=_data_plane_assembly.mode if _data_plane_assembly else "uninitialized",
+        data_plane_sources=_data_plane_assembly.source_status if _data_plane_assembly else {},
+    )
+
+
+@app.get(
+    "/adoption-regression/packets",
+    response_model=AdoptionRegressionPacketListResponse,
+)
+async def list_adoption_regression_packet_endpoint(
+    account_id: str | None = None,
+    metric_name: str | None = None,
+    limit: int = Query(25, ge=1, le=100),
+):
+    """List persisted adoption regression packets."""
+    assert _conn is not None
+    packets = list_adoption_regression_packets(
+        _conn,
+        tenant_id=_TENANT_ID,
+        actor_id=_orch_principal or _SEED_AGENT,
+        account_id=account_id,
+        metric_name=metric_name,
+        limit=limit,
+        now=_CLOCK,
+    )
+    return AdoptionRegressionPacketListResponse(
+        tenant_id=_TENANT_ID,
+        packets=[_stored_adoption_regression_packet_schema(packet) for packet in packets],
+    )
+
+
+@app.get(
+    "/adoption-regression/packets/{packet_id}",
+    response_model=AdoptionRegressionPacketSchema,
+)
+async def get_adoption_regression_packet_endpoint(packet_id: str):
+    """Fetch one persisted adoption regression packet."""
+    assert _conn is not None
+    packet = get_adoption_regression_packet(
+        _conn,
+        tenant_id=_TENANT_ID,
+        actor_id=_orch_principal or _SEED_AGENT,
+        packet_id=packet_id,
+        now=_CLOCK,
+    )
+    if packet is None:
+        raise HTTPException(
+            status_code=404,
+            detail={"error": "Adoption regression packet not found", "code": "PACKET_NOT_FOUND"},
+        )
+    return _stored_adoption_regression_packet_schema(packet)
 
 
 @app.get("/proposals", response_model=ProposalListResponse)
@@ -2448,6 +2716,9 @@ _LEDGER_HUMAN = {
     "self_serve_activation.trigger": "Self-serve signup",
     "self_serve_activation.packet": "Activation packet",
     "self_serve_activation.value_path": "Value path",
+    "adoption_regression.trigger": "Usage regression",
+    "adoption_regression.packet": "Regression packet",
+    "adoption_regression.interpretation": "Regression interpretation",
 }
 
 

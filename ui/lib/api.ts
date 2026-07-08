@@ -400,6 +400,21 @@ export interface SelfServeActivationPacketListResponse {
   packets: SelfServeActivationPacket[];
 }
 
+export interface AdoptionRegressionPacket {
+  packet_id: string;
+  account_id: string;
+  metric_name: string;
+  status: string;
+  packet: Record<string, unknown>;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AdoptionRegressionPacketListResponse {
+  tenant_id: string;
+  packets: AdoptionRegressionPacket[];
+}
+
 // Reconciliation agent (Harvest 31/32, report 52/53): reported-vs-
 // experienced reconciliation for one account. EvidenceRefRow mirrors
 // EvidenceRef (contracts.py) -- source/source_id/field/observed_at.
@@ -532,6 +547,19 @@ export const api = {
   selfServeActivationPacket: (packetId: string) =>
     request<SelfServeActivationPacket>(
       `/self-serve/activation/packets/${encodeURIComponent(packetId)}`
+    ),
+  adoptionRegressionPackets: (accountId?: string, metricName?: string) => {
+    const params = new URLSearchParams();
+    if (accountId) params.set("account_id", accountId);
+    if (metricName) params.set("metric_name", metricName);
+    const query = params.toString();
+    return request<AdoptionRegressionPacketListResponse>(
+      `/adoption-regression/packets${query ? `?${query}` : ""}`
+    );
+  },
+  adoptionRegressionPacket: (packetId: string) =>
+    request<AdoptionRegressionPacket>(
+      `/adoption-regression/packets/${encodeURIComponent(packetId)}`
     ),
   pendingSlackMappings: () =>
     request<PendingMappingsResponse>("/comms/pending-mappings/slack"),

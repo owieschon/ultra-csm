@@ -28,6 +28,9 @@ EXPECTED_LEDGER_EVENTS = (
     "self_serve_activation.trigger",
     "self_serve_activation.packet",
     "self_serve_activation.value_path",
+    "adoption_regression.trigger",
+    "adoption_regression.packet",
+    "adoption_regression.interpretation",
 )
 
 

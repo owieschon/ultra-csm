@@ -284,7 +284,71 @@ SELF_SERVE_SIGNUP_ACTIVATION = WorkflowDefinition(
 )
 
 
+ACCOUNT_ADOPTION_REGRESSION = WorkflowDefinition(
+    workflow_id="account_adoption_regression",
+    config_version="account-adoption-regression-config-v1",
+    audience="enterprise",
+    trigger=WorkflowTriggerContract(
+        source="product",
+        event_name="usage_regression_detected",
+        required_fields=(
+            "account_id",
+            "metric_name",
+            "baseline_start",
+            "baseline_end",
+            "current_start",
+            "current_end",
+            "observed_at",
+        ),
+        idempotency_fields=("account_id", "metric_name", "current_end", "observed_at"),
+    ),
+    evidence_requirements=(
+        WorkflowEvidenceRequirement("account_identity", "required", "Resolve the account before diagnosing regression.", True),
+        WorkflowEvidenceRequirement("product_telemetry", "required", "Regression diagnosis requires observed product usage.", True),
+        WorkflowEvidenceRequirement("baseline_usage_window", "required", "Current state must be compared to a prior baseline.", True),
+        WorkflowEvidenceRequirement("current_usage_window", "required", "Regression must be observed in the current window.", True),
+        WorkflowEvidenceRequirement("entitlement", "required", "Usage depth must be judged against purchased/available scope.", True),
+        WorkflowEvidenceRequirement("adoption_summary", "required", "Seat and asset penetration calibrate severity.", True),
+        WorkflowEvidenceRequirement("value_model_alignment", "required", "Severity and action must use lifecycle-aware thresholds.", True),
+        WorkflowEvidenceRequirement("support_pressure", "optional", "Open cases can explain whether regression is friction-driven."),
+        WorkflowEvidenceRequirement("relationship_context", "optional", "Contact and stakeholder depth affect recommended motion."),
+        WorkflowEvidenceRequirement("customer_email_or_call", "optional", "Customer language and intent improve outreach safety."),
+        WorkflowEvidenceRequirement("success_plan", "optional", "Outcome commitments explain whether regression threatens value."),
+        WorkflowEvidenceRequirement("onboarding_or_delivery", "conditional", "Delivery evidence matters for onboarding/adopting accounts."),
+    ),
+    value_contract=(
+        "Compare current product behavior to a prior baseline, then interpret the "
+        "shift through entitlement, adoption, support, relationship, lifecycle, "
+        "and value-model thresholds before recommending a governed CSM motion."
+    ),
+    action_contracts=(
+        WorkflowActionContract("draft_regression_review_outreach", "source_backed_regression_with_safe_contact", True, ("missing_product_telemetry", "missing_baseline_window", "missing_current_window", "no_consented_contact", "low_confidence_or_ambiguous_cause"), "draft_customer_outreach"),
+        WorkflowActionContract("recommend_internal_review", "regression_detected_but_customer_output_unsafe", False, (), "recommend_next_best_action"),
+        WorkflowActionContract("suppress_regression_motion", "telemetry_or_identity_insufficient", False, (), "recommend_next_best_action"),
+    ),
+    validation_gates=(
+        WorkflowValidationGate("account_identity_exact", True, "Regression packet must map to exactly one account."),
+        WorkflowValidationGate("baseline_and_current_windows_present", True, "Regression cannot be inferred from a single point."),
+        WorkflowValidationGate("regression_magnitude_measured", True, "Severity must include numeric baseline/current comparison."),
+        WorkflowValidationGate("value_model_alignment_present", True, "Severity must be lifecycle-aware."),
+        WorkflowValidationGate("alternatives_preserved", False, "Seasonality/noise/rollout pause alternatives should remain visible."),
+    ),
+    audit_events=(
+        "adoption_regression.trigger",
+        "adoption_regression.packet",
+        "adoption_regression.interpretation",
+    ),
+    ui=WorkflowUIMetadata(
+        panel_title="Adoption regression review",
+        primary_metric="regression_severity",
+        secondary_metric="selected_interpretation",
+        renderer="adoption_regression_review",
+    ),
+)
+
+
 WORKFLOW_REGISTRY = WorkflowRegistry((
     ENTERPRISE_CLOSED_WON_ONBOARDING,
     SELF_SERVE_SIGNUP_ACTIVATION,
+    ACCOUNT_ADOPTION_REGRESSION,
 ))
