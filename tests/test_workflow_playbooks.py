@@ -4,6 +4,7 @@ from fastapi.testclient import TestClient
 
 from ultra_csm import api
 from ultra_csm.workflow_playbooks import (
+    ACCOUNT_ADOPTION_REGRESSION,
     ENTERPRISE_CLOSED_WON_ONBOARDING,
     SELF_SERVE_SIGNUP_ACTIVATION,
     WORKFLOW_REGISTRY,
@@ -12,15 +13,18 @@ from ultra_csm.workflow_playbooks import (
 )
 
 
-def test_workflow_registry_exposes_1a_and_1b_contracts():
+def test_workflow_registry_exposes_reusable_workflow_contracts():
     workflows = {definition.workflow_id: definition for definition in WORKFLOW_REGISTRY.list()}
 
     assert workflows["enterprise_closed_won_onboarding"] is ENTERPRISE_CLOSED_WON_ONBOARDING
     assert workflows["self_serve_signup_activation"] is SELF_SERVE_SIGNUP_ACTIVATION
+    assert workflows["account_adoption_regression"] is ACCOUNT_ADOPTION_REGRESSION
     assert ENTERPRISE_CLOSED_WON_ONBOARDING.config_version == "enterprise-success-plan-config-v2"
     assert SELF_SERVE_SIGNUP_ACTIVATION.config_version == "self-serve-value-path-config-v2"
+    assert ACCOUNT_ADOPTION_REGRESSION.config_version == "account-adoption-regression-config-v1"
     assert ENTERPRISE_CLOSED_WON_ONBOARDING.trigger.source == "salesforce"
     assert SELF_SERVE_SIGNUP_ACTIVATION.trigger.source == "product"
+    assert ACCOUNT_ADOPTION_REGRESSION.trigger.event_name == "usage_regression_detected"
 
 
 def test_workflow_definitions_declare_sources_actions_gates_audit_and_ui():
@@ -78,6 +82,7 @@ def test_workflow_playbooks_endpoint_exposes_registry():
     body = resp.json()
     assert "enterprise_closed_won_onboarding" in body["workflows"]
     assert "self_serve_signup_activation" in body["workflows"]
+    assert "account_adoption_regression" in body["workflows"]
     assert (
         body["workflows"]["self_serve_signup_activation"]["value_contract"]
         .startswith("Select and preserve ranked value-path hypotheses")

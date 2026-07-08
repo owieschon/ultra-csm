@@ -190,6 +190,17 @@ def test_queue_detail_surfaces_self_serve_activation_packet():
     assert "/self-serve/activation/packets" in api_source
 
 
+def test_queue_detail_surfaces_adoption_regression_packet():
+    source = (Path(__file__).resolve().parents[1] / "ui" / "components" / "QueueDetail.tsx").read_text()
+    api_source = (Path(__file__).resolve().parents[1] / "ui" / "lib" / "api.ts").read_text()
+    assert "adoptionRegressionPackets" in source
+    assert "Adoption regression review" in source
+    assert "Window comparisons" in source
+    assert "selected_hypothesis" in source
+    assert "value_context" in source
+    assert "/adoption-regression/packets" in api_source
+
+
 def test_ui_api_can_read_workflow_playbook_registry():
     api_source = (Path(__file__).resolve().parents[1] / "ui" / "lib" / "api.ts").read_text()
     assert "workflowPlaybooks" in api_source
