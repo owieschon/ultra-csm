@@ -331,6 +331,207 @@
       "scenario_id": "self_serve_no_consent_suppresses_customer_output",
       "tenant_id": "ultra-demo",
       "workflow_id": "self_serve_signup_activation"
+    },
+    {
+      "account_slug": "self-serve-ambiguous-domain",
+      "baseline_day": null,
+      "current_day": 0,
+      "field_failures": [],
+      "metric_name": "daily_active_assets",
+      "notes": "Domain-only resolution with two tenant candidates must fail closed instead of picking an account.",
+      "observed": {
+        "current_milestone": "signup",
+        "customer_language_present": false,
+        "customer_output_blockers": [
+          "resolved_organization",
+          "product_telemetry",
+          "contact_record",
+          "organization_identity_not_exactly_one",
+          "product_telemetry_required_for_activation_judgment",
+          "contact_record_missing",
+          "no_consented_contact_for_customer_outreach"
+        ],
+        "drop_ratio": null,
+        "first_value_definition": "The user reaches first value when they complete setup and produce one saved or reusable insight.",
+        "first_value_reached": false,
+        "identity_reason": "salesforce_contact_domain_ambiguous",
+        "identity_state": "ambiguous",
+        "missing_required_sources": [
+          "resolved_organization",
+          "product_telemetry",
+          "contact_record"
+        ],
+        "packet_id": "self-serve-activation:workspace-self-serve-ambiguous-domain:20260708120000",
+        "personal_email_domain": false,
+        "recommended_action": "internal_only_packet",
+        "selected_hypothesis": null,
+        "severity": null,
+        "status": "needs_data",
+        "suppression_reasons": [
+          "resolved_organization",
+          "product_telemetry",
+          "contact_record",
+          "organization_identity_not_exactly_one",
+          "product_telemetry_required_for_activation_judgment",
+          "contact_record_missing",
+          "no_consented_contact_for_customer_outreach"
+        ],
+        "trigger": "strong_signal_but_unsafe_customer_action",
+        "value_path": "solo_evaluator"
+      },
+      "passed": true,
+      "quality_failures": [],
+      "scenario_id": "self_serve_ambiguous_domain_fails_closed",
+      "tenant_id": "ultra-demo",
+      "workflow_id": "self_serve_signup_activation"
+    },
+    {
+      "account_slug": "self-serve-missing-contact",
+      "baseline_day": null,
+      "current_day": 0,
+      "field_failures": [],
+      "metric_name": "daily_active_assets",
+      "notes": "Exact account identity is insufficient for customer output when the contact record is absent.",
+      "observed": {
+        "current_milestone": "habit",
+        "customer_language_present": false,
+        "customer_output_blockers": [
+          "contact_record",
+          "contact_record_missing",
+          "no_consented_contact_for_customer_outreach"
+        ],
+        "drop_ratio": null,
+        "first_value_definition": "The user reaches first value when they complete setup and produce one saved or reusable insight.",
+        "first_value_reached": true,
+        "identity_reason": "trigger_account_id",
+        "identity_state": "exactly_one",
+        "missing_required_sources": [
+          "contact_record"
+        ],
+        "packet_id": "self-serve-activation:workspace-self-serve-missing-contact:20260708120000",
+        "personal_email_domain": false,
+        "recommended_action": "internal_only_packet",
+        "selected_hypothesis": null,
+        "severity": null,
+        "status": "internal_only",
+        "suppression_reasons": [
+          "contact_record",
+          "contact_record_missing",
+          "no_consented_contact_for_customer_outreach"
+        ],
+        "trigger": "strong_signal_but_unsafe_customer_action",
+        "value_path": "solo_evaluator"
+      },
+      "passed": true,
+      "quality_failures": [],
+      "scenario_id": "self_serve_missing_contact_record_suppresses_customer_output",
+      "tenant_id": "ultra-demo",
+      "workflow_id": "self_serve_signup_activation"
+    },
+    {
+      "account_slug": "self-serve-enterprise-plan",
+      "baseline_day": null,
+      "current_day": 0,
+      "field_failures": [],
+      "metric_name": "daily_active_assets",
+      "notes": "An enterprise-plan event entering the self-serve workflow must not create self-serve customer motion.",
+      "observed": {
+        "current_milestone": "habit",
+        "customer_language_present": false,
+        "customer_output_blockers": [],
+        "drop_ratio": null,
+        "first_value_definition": "The user reaches first value when they complete setup and produce one saved or reusable insight.",
+        "first_value_reached": true,
+        "identity_reason": "salesforce_contact_email_match",
+        "identity_state": "exactly_one",
+        "missing_required_sources": [],
+        "packet_id": "self-serve-activation:workspace-self-serve-enterprise-plan:20260708120000",
+        "personal_email_domain": false,
+        "recommended_action": "internal_only_packet",
+        "selected_hypothesis": null,
+        "severity": null,
+        "status": "internal_only",
+        "suppression_reasons": [
+          "self_serve_workflow_received_enterprise_plan"
+        ],
+        "trigger": "strong_signal_but_unsafe_customer_action",
+        "value_path": "solo_evaluator"
+      },
+      "passed": true,
+      "quality_failures": [],
+      "scenario_id": "self_serve_enterprise_plan_leakage_suppresses_1b_motion",
+      "tenant_id": "ultra-demo",
+      "workflow_id": "self_serve_signup_activation"
+    },
+    {
+      "account_slug": "self-serve-recent-nudge",
+      "baseline_day": null,
+      "current_day": 0,
+      "field_failures": [],
+      "metric_name": "daily_active_assets",
+      "notes": "A recent activation nudge blocks duplicate customer-facing outreach.",
+      "observed": {
+        "current_milestone": "first_value",
+        "customer_language_present": false,
+        "customer_output_blockers": [],
+        "drop_ratio": null,
+        "first_value_definition": "The user reaches first value when they complete setup and produce one saved or reusable insight.",
+        "first_value_reached": false,
+        "identity_reason": "salesforce_contact_email_match",
+        "identity_state": "exactly_one",
+        "missing_required_sources": [],
+        "packet_id": "self-serve-activation:workspace-self-serve-recent-nudge:20260708120000",
+        "personal_email_domain": false,
+        "recommended_action": "internal_only_packet",
+        "selected_hypothesis": null,
+        "severity": null,
+        "status": "internal_only",
+        "suppression_reasons": [
+          "recent_activation_nudge_already_sent"
+        ],
+        "trigger": "strong_signal_but_unsafe_customer_action",
+        "value_path": "solo_evaluator"
+      },
+      "passed": true,
+      "quality_failures": [],
+      "scenario_id": "self_serve_recent_nudge_suppresses_duplicate_outreach",
+      "tenant_id": "ultra-demo",
+      "workflow_id": "self_serve_signup_activation"
+    },
+    {
+      "account_slug": "self-serve-crm-champion",
+      "baseline_day": null,
+      "current_day": 0,
+      "field_failures": [],
+      "metric_name": "daily_active_assets",
+      "notes": "Even when CRM interest finds a champion, customer-facing action stays sales-assisted and internal.",
+      "observed": {
+        "current_milestone": "next_step",
+        "customer_language_present": false,
+        "customer_output_blockers": [],
+        "drop_ratio": null,
+        "first_value_definition": "The user reaches first value when they clarify the enterprise CRM path or invite a stakeholder who can sponsor it.",
+        "first_value_reached": true,
+        "identity_reason": "salesforce_contact_email_match",
+        "identity_state": "exactly_one",
+        "missing_required_sources": [],
+        "packet_id": "self-serve-activation:workspace-self-serve-crm-champion:20260708120000",
+        "personal_email_domain": false,
+        "recommended_action": "internal_only_packet",
+        "selected_hypothesis": null,
+        "severity": null,
+        "status": "internal_only",
+        "suppression_reasons": [
+          "customer_outreach_requires_sales_assisted_review"
+        ],
+        "trigger": "strong_signal_but_unsafe_customer_action",
+        "value_path": "crm_enterprise_curious"
+      },
+      "passed": true,
+      "quality_failures": [],
+      "scenario_id": "self_serve_crm_interest_with_champion_still_internal",
+      "tenant_id": "ultra-demo",
+      "workflow_id": "self_serve_signup_activation"
     }
   ],
   "claim_boundary": {
@@ -353,7 +554,7 @@
   "hard_ok": true,
   "measurement_scope": "Runs real workflow code against deterministic fleetops synthetic universe snapshots and deterministic workflow-specific self-serve fixtures, then scores workflow packets with behavioral quality criteria and scenario-specific field assertions. No live connectors, LLM calls, or customer writes.",
   "score": {
-    "passed": 9,
-    "total": 9
+    "passed": 14,
+    "total": 14
   }
 }

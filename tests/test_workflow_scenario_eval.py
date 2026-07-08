@@ -90,6 +90,11 @@ def test_self_serve_activation_scenarios_pass_against_workflow_fixture_conventio
         "self_serve_personal_email_suppresses_org_outreach",
         "self_serve_missing_telemetry_blocks_activation_judgment",
         "self_serve_no_consent_suppresses_customer_output",
+        "self_serve_ambiguous_domain_fails_closed",
+        "self_serve_missing_contact_record_suppresses_customer_output",
+        "self_serve_enterprise_plan_leakage_suppresses_1b_motion",
+        "self_serve_recent_nudge_suppresses_duplicate_outreach",
+        "self_serve_crm_interest_with_champion_still_internal",
     }
 
 
@@ -171,5 +176,88 @@ def test_self_serve_missing_telemetry_fails_closed_before_activation_judgment():
     assert "product_telemetry" in result.packet["coverage"]["missing_required_sources"]
     assert "product_telemetry_required_for_activation_judgment" in (
         result.packet["coverage"]["customer_output_blockers"]
+    )
+    assert result.packet["customer_language"] is None
+
+
+def test_self_serve_ambiguous_domain_resolution_fails_closed():
+    scenario = next(
+        item for item in synthetic_self_serve_activation_scenarios()
+        if item.scenario_id == "self_serve_ambiguous_domain_fails_closed"
+    )
+
+    result = run_synthetic_workflow_scenario(scenario)
+
+    assert result.passed is True
+    assert result.packet["status"] == "needs_data"
+    assert result.packet["identity_resolution"]["state"] == "ambiguous"
+    assert result.packet["identity_resolution"]["reason"] == "salesforce_contact_domain_ambiguous"
+    assert "organization_identity_not_exactly_one" in (
+        result.packet["coverage"]["customer_output_blockers"]
+    )
+    assert result.packet["customer_language"] is None
+
+
+def test_self_serve_missing_contact_record_blocks_customer_output_even_with_exact_account():
+    scenario = next(
+        item for item in synthetic_self_serve_activation_scenarios()
+        if item.scenario_id == "self_serve_missing_contact_record_suppresses_customer_output"
+    )
+
+    result = run_synthetic_workflow_scenario(scenario)
+
+    assert result.passed is True
+    assert result.packet["status"] == "internal_only"
+    assert result.packet["identity_resolution"]["state"] == "exactly_one"
+    assert "contact_record_missing" in result.packet["coverage"]["customer_output_blockers"]
+    assert "no_consented_contact_for_customer_outreach" in (
+        result.packet["coverage"]["customer_output_blockers"]
+    )
+    assert result.packet["customer_language"] is None
+
+
+def test_self_serve_enterprise_plan_and_recent_nudge_suppress_1b_customer_motion():
+    scenarios = {
+        item.scenario_id: item
+        for item in synthetic_self_serve_activation_scenarios()
+    }
+
+    enterprise = run_synthetic_workflow_scenario(
+        scenarios["self_serve_enterprise_plan_leakage_suppresses_1b_motion"]
+    )
+    recent = run_synthetic_workflow_scenario(
+        scenarios["self_serve_recent_nudge_suppresses_duplicate_outreach"]
+    )
+
+    assert enterprise.passed is True
+    assert enterprise.packet["status"] == "internal_only"
+    assert "self_serve_workflow_received_enterprise_plan" in (
+        enterprise.packet["recommended_action"]["suppression_reasons"]
+    )
+    assert enterprise.packet["customer_language"] is None
+
+    assert recent.passed is True
+    assert recent.packet["status"] == "internal_only"
+    assert "recent_activation_nudge_already_sent" in (
+        recent.packet["recommended_action"]["suppression_reasons"]
+    )
+    assert recent.packet["customer_language"] is None
+
+
+def test_self_serve_crm_champion_signal_remains_sales_assisted_internal_motion():
+    scenario = next(
+        item for item in synthetic_self_serve_activation_scenarios()
+        if item.scenario_id == "self_serve_crm_interest_with_champion_still_internal"
+    )
+
+    result = run_synthetic_workflow_scenario(scenario)
+
+    assert result.passed is True
+    assert result.packet["status"] == "internal_only"
+    assert result.packet["value_path"]["path_id"] == "crm_enterprise_curious"
+    assert result.packet["value_path"]["first_value_reached"] is True
+    assert result.packet["recommended_action"]["action_type"] == "internal_only_packet"
+    assert "customer_outreach_requires_sales_assisted_review" in (
+        result.packet["recommended_action"]["suppression_reasons"]
     )
     assert result.packet["customer_language"] is None
