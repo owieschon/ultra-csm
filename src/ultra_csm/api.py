@@ -424,7 +424,17 @@ class SelfServeActivationLaunchResponse(BaseModel):
     signup_email: str
     generated_at: str
     missing_required_sources: list[str]
+    customer_output_blockers: list[str]
+    suppression_reasons: list[str]
     proposal_ids: list[str]
+    value_path: str | None = None
+    current_milestone_id: str | None = None
+    first_value_reached: bool
+    recommended_action_type: str
+    action_trigger: str
+    identity_state: str
+    customer_language_present: bool
+    source_receipt_count: int
     packet: dict[str, Any]
     auth: str | None = None
     data_plane_mode: str = "fixture"
@@ -437,6 +447,16 @@ class SelfServeActivationPacketSchema(BaseModel):
     workspace_id: str
     signup_email: str
     status: str
+    customer_output_blockers: list[str]
+    suppression_reasons: list[str]
+    value_path: str | None = None
+    current_milestone_id: str | None = None
+    first_value_reached: bool
+    recommended_action_type: str
+    action_trigger: str
+    identity_state: str
+    customer_language_present: bool
+    source_receipt_count: int
     packet: dict[str, Any]
     created_at: str
     updated_at: str
@@ -1249,16 +1269,54 @@ def _stored_enterprise_packet_schema(stored) -> EnterpriseOnboardingPacketSchema
 
 
 def _stored_self_serve_packet_schema(stored) -> SelfServeActivationPacketSchema:
+    summary = _self_serve_activation_summary(stored.payload)
     return SelfServeActivationPacketSchema(
         packet_id=stored.packet_id,
         account_id=stored.account_id,
         workspace_id=stored.workspace_id,
         signup_email=stored.signup_email,
         status=stored.status,
+        **summary,
         packet=stored.payload,
         created_at=stored.created_at.isoformat() if stored.created_at else "",
         updated_at=stored.updated_at.isoformat() if stored.updated_at else "",
     )
+
+
+def _self_serve_activation_summary(packet: dict[str, Any]) -> dict[str, Any]:
+    coverage = packet.get("coverage") if isinstance(packet.get("coverage"), dict) else {}
+    path = packet.get("value_path") if isinstance(packet.get("value_path"), dict) else {}
+    action = packet.get("recommended_action") if isinstance(packet.get("recommended_action"), dict) else {}
+    identity = (
+        packet.get("identity_resolution")
+        if isinstance(packet.get("identity_resolution"), dict)
+        else {}
+    )
+    receipts = packet.get("source_receipts") if isinstance(packet.get("source_receipts"), list) else []
+    return {
+        "customer_output_blockers": _string_list(coverage.get("customer_output_blockers")),
+        "suppression_reasons": _string_list(action.get("suppression_reasons")),
+        "value_path": _optional_string(path.get("path_id")),
+        "current_milestone_id": _optional_string(path.get("current_milestone_id")),
+        "first_value_reached": path.get("first_value_reached") is True,
+        "recommended_action_type": str(action.get("action_type") or "unknown"),
+        "action_trigger": str(action.get("trigger") or "unknown"),
+        "identity_state": str(identity.get("state") or "unknown"),
+        "customer_language_present": bool(packet.get("customer_language")),
+        "source_receipt_count": len(receipts),
+    }
+
+
+def _optional_string(value: Any) -> str | None:
+    return str(value) if value is not None else None
+
+
+def _string_list(value: Any) -> list[str]:
+    if isinstance(value, list):
+        return [str(item) for item in value]
+    if isinstance(value, tuple):
+        return [str(item) for item in value]
+    return []
 
 
 def _stored_adoption_regression_packet_schema(stored) -> AdoptionRegressionPacketSchema:
@@ -2457,6 +2515,7 @@ async def self_serve_signup_activation_trigger(
         packet=packet_dict,
         actor_id=auth_principal.principal_id,
     )
+    summary = _self_serve_activation_summary(packet_dict)
     log.info(
         "Self-serve signup activation trigger handled",
         extra={
@@ -2477,6 +2536,7 @@ async def self_serve_signup_activation_trigger(
         signup_email=packet.signup_email,
         generated_at=packet.generated_at,
         missing_required_sources=list(packet.coverage.missing_required_sources),
+        **summary,
         proposal_ids=[proposal.proposal_id for proposal in packet.proposals],
         packet=packet_dict,
         auth=auth_principal.auth,

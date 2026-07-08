@@ -625,6 +625,13 @@ function SelfServeActivationPanel({
   const packetStatus = String(payload.status ?? packet.status);
   const isReady = packetStatus === "ready";
   const firstValue = path.first_value_reached === true;
+  const customerLanguage = typeof payload.customer_language === "string" && payload.customer_language.trim()
+    ? payload.customer_language
+    : null;
+  const customerOutputPresent = packet.customer_language_present || customerLanguage !== null;
+  const customerOutputReason = customerOutputPresent
+    ? "customer-safe draft available"
+    : blockers[0]?.replace(/_/g, " ") ?? "no customer-safe output";
   const currentMilestone = milestones.find((milestone) =>
     ["current", "stale"].includes(String(milestone.status))
   );
@@ -709,7 +716,34 @@ function SelfServeActivationPanel({
             {currentMilestone ? ` · ${String(currentMilestone.label ?? "")}` : ""}
           </em>
         </div>
+        <div className="launch-row">
+          <span>{customerOutputPresent ? "Customer output ready" : "Customer output suppressed"}</span>
+          <em>{customerOutputReason}</em>
+        </div>
       </div>
+
+      {receipts.length > 0 && (
+        <div className="launch-list">
+          <div className="packet-kicker">Source receipts</div>
+          {receipts.slice(0, 4).map((receipt, index) => {
+            const sourceType = String(asRecord(receipt).source_type ?? "source");
+            const field = String(asRecord(receipt).field ?? "record");
+            const sourceId = String(asRecord(receipt).source_id ?? "").slice(0, 12);
+            return (
+              <div className="launch-row" key={`${sourceType}-${sourceId}-${index}`}>
+                <span>{sourceType.replace(/_/g, " ")}</span>
+                <em>{field.replace(/_/g, " ")} · {sourceId}</em>
+              </div>
+            );
+          })}
+          {receipts.length > 4 && (
+            <div className="launch-row">
+              <span>{receipts.length - 4} more receipts</span>
+              <em>{packet.source_receipt_count} total</em>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

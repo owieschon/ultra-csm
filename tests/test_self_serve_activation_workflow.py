@@ -351,6 +351,167 @@ def test_self_serve_signup_endpoint_runs_against_served_data_plane_and_persists(
     } <= ledger_events
 
 
+def test_self_serve_signup_endpoint_preserves_ambiguous_domain_needs_data(monkeypatch):
+    def served_self_serve_plane(**_kwargs):
+        return DataPlaneAssembly(
+            data_plane=_self_serve_data_plane(
+                account_id=det_id("account", "ambiguous-domain-primary"),
+                account_name="Ambiguous Domain Primary",
+                signup_email="new@shared-domain.example",
+                contact_email="admin@shared-domain.example",
+                include_ambiguous_domain_account=True,
+                usage_metrics=("workspace_created", "profile_completed"),
+            ),
+            mode="live",
+            source_status={"salesforce": "live", "product_telemetry": "live"},
+            health_source="fixture_cs_platform",
+        )
+
+    monkeypatch.setenv("ULTRA_CSM_API_TOKENS", "lane-a-token:Lane A Manager")
+    monkeypatch.delenv("ULTRA_CSM_DEMO_NOAUTH", raising=False)
+    monkeypatch.setattr(api, "build_served_data_plane", served_self_serve_plane)
+
+    with TestClient(api.app) as client:
+        resp = client.post(
+            "/integrations/self-serve/signup",
+            headers={"Authorization": "Bearer lane-a-token"},
+            json={
+                "workspace_id": "workspace-ambiguous-domain",
+                "signup_email": "new@shared-domain.example",
+                "observed_at": "2026-07-08T12:00:00Z",
+                "tenant_id": DEFAULT_TENANT,
+            },
+        )
+        assert resp.status_code == 200
+        body = resp.json()
+        list_resp = client.get("/self-serve/activation/packets?workspace_id=workspace-ambiguous-domain")
+
+    assert body["status"] == "needs_data"
+    assert body["identity_state"] == "ambiguous"
+    assert body["recommended_action_type"] == "internal_only_packet"
+    assert body["customer_language_present"] is False
+    assert "organization_identity_not_exactly_one" in body["customer_output_blockers"]
+    assert "product_telemetry" in body["missing_required_sources"]
+
+    stored = list_resp.json()["packets"][0]
+    assert stored["packet_id"] == body["packet_id"]
+    assert stored["status"] == "needs_data"
+    assert stored["identity_state"] == "ambiguous"
+    assert "organization_identity_not_exactly_one" in stored["customer_output_blockers"]
+
+
+def test_self_serve_signup_endpoint_suppresses_enterprise_plan_leakage(monkeypatch):
+    def served_self_serve_plane(**_kwargs):
+        return DataPlaneAssembly(
+            data_plane=_self_serve_data_plane(
+                usage_metrics=("workspace_created", "profile_completed", "first_search_run")
+            ),
+            mode="live",
+            source_status={"salesforce": "live", "product_telemetry": "live"},
+            health_source="fixture_cs_platform",
+        )
+
+    monkeypatch.setenv("ULTRA_CSM_API_TOKENS", "lane-a-token:Lane A Manager")
+    monkeypatch.delenv("ULTRA_CSM_DEMO_NOAUTH", raising=False)
+    monkeypatch.setattr(api, "build_served_data_plane", served_self_serve_plane)
+
+    with TestClient(api.app) as client:
+        resp = client.post(
+            "/integrations/self-serve/signup",
+            headers={"Authorization": "Bearer lane-a-token"},
+            json={
+                "workspace_id": WORKSPACE_ID,
+                "signup_email": "operator@selfserve.example",
+                "observed_at": "2026-07-08T12:00:00Z",
+                "plan": "enterprise",
+            },
+        )
+
+    assert resp.status_code == 200
+    body = resp.json()
+    assert body["status"] == "internal_only"
+    assert body["first_value_reached"] is True
+    assert body["recommended_action_type"] == "internal_only_packet"
+    assert "self_serve_workflow_received_enterprise_plan" in body["suppression_reasons"]
+    assert body["customer_language_present"] is False
+
+
+def test_self_serve_signup_endpoint_suppresses_recent_duplicate_nudge(monkeypatch):
+    def served_self_serve_plane(**_kwargs):
+        return DataPlaneAssembly(
+            data_plane=_self_serve_data_plane(
+                usage_metrics=("workspace_created", "profile_completed", "activation_nudge_sent")
+            ),
+            mode="live",
+            source_status={"salesforce": "live", "product_telemetry": "live"},
+            health_source="fixture_cs_platform",
+        )
+
+    monkeypatch.setenv("ULTRA_CSM_API_TOKENS", "lane-a-token:Lane A Manager")
+    monkeypatch.delenv("ULTRA_CSM_DEMO_NOAUTH", raising=False)
+    monkeypatch.setattr(api, "build_served_data_plane", served_self_serve_plane)
+
+    with TestClient(api.app) as client:
+        resp = client.post(
+            "/integrations/self-serve/signup",
+            headers={"Authorization": "Bearer lane-a-token"},
+            json={
+                "workspace_id": WORKSPACE_ID,
+                "signup_email": "operator@selfserve.example",
+                "observed_at": "2026-07-08T12:00:00Z",
+            },
+        )
+
+    assert resp.status_code == 200
+    body = resp.json()
+    assert body["status"] == "internal_only"
+    assert body["first_value_reached"] is False
+    assert body["recommended_action_type"] == "internal_only_packet"
+    assert "recent_activation_nudge_already_sent" in body["suppression_reasons"]
+    assert body["customer_language_present"] is False
+
+
+def test_self_serve_signup_endpoint_keeps_crm_champion_sales_assisted_internal(monkeypatch):
+    def served_self_serve_plane(**_kwargs):
+        return DataPlaneAssembly(
+            data_plane=_self_serve_data_plane(
+                usage_metrics=(
+                    "workspace_created",
+                    "crm_integration_viewed",
+                    "crm_connect_clicked",
+                    "champion_invited",
+                )
+            ),
+            mode="live",
+            source_status={"salesforce": "live", "product_telemetry": "live"},
+            health_source="fixture_cs_platform",
+        )
+
+    monkeypatch.setenv("ULTRA_CSM_API_TOKENS", "lane-a-token:Lane A Manager")
+    monkeypatch.delenv("ULTRA_CSM_DEMO_NOAUTH", raising=False)
+    monkeypatch.setattr(api, "build_served_data_plane", served_self_serve_plane)
+
+    with TestClient(api.app) as client:
+        resp = client.post(
+            "/integrations/self-serve/signup",
+            headers={"Authorization": "Bearer lane-a-token"},
+            json={
+                "workspace_id": WORKSPACE_ID,
+                "signup_email": "operator@selfserve.example",
+                "observed_at": "2026-07-08T12:00:00Z",
+            },
+        )
+
+    assert resp.status_code == 200
+    body = resp.json()
+    assert body["status"] == "internal_only"
+    assert body["value_path"] == "crm_enterprise_curious"
+    assert body["first_value_reached"] is True
+    assert body["recommended_action_type"] == "internal_only_packet"
+    assert "customer_outreach_requires_sales_assisted_review" in body["suppression_reasons"]
+    assert body["customer_language_present"] is False
+
+
 def _signup_event(
     *,
     workspace_id: str = WORKSPACE_ID,
@@ -371,9 +532,15 @@ def _self_serve_data_plane(
     account_id: str = ACCOUNT_ID,
     account_name: str = "Self Serve Team Co",
     signup_email: str = "operator@selfserve.example",
+    contact_email: str | None = None,
+    include_contact: bool = True,
+    consent_to_contact: bool = True,
+    include_ambiguous_domain_account: bool = False,
     usage_metrics: tuple[str, ...],
 ) -> CustomerDataPlane:
     contact_id = det_id("contact", account_id, "signup")
+    contact_email = contact_email or signup_email
+    ambiguous_account_id = det_id("account", account_id, "ambiguous-domain")
     usage_signals = tuple(
         UsageSignal(
             signal_id=det_id("signal", account_id, metric, "2026-07-08"),
@@ -388,6 +555,38 @@ def _self_serve_data_plane(
         )
         for metric in usage_metrics
     )
+    contacts = (
+        CRMContact(
+            contact_id=contact_id,
+            account_id=account_id,
+            email=contact_email,
+            name="Self Serve Operator",
+            role="operator",
+            title="Operations",
+            consent_to_contact=consent_to_contact,
+            org_level=4,
+        ),
+    ) if include_contact else ()
+    ambiguous_accounts = (
+        CRMAccount(
+            account_id=ambiguous_account_id,
+            name=f"{account_name} Decoy",
+            owner_id="scaled-csm",
+            industry="software",
+        ),
+    ) if include_ambiguous_domain_account else ()
+    ambiguous_contacts = (
+        CRMContact(
+            contact_id=det_id("contact", ambiguous_account_id, "signup"),
+            account_id=ambiguous_account_id,
+            email=f"other@{contact_email.split('@', 1)[1]}",
+            name="Ambiguous Domain Operator",
+            role="operator",
+            title="Operations",
+            consent_to_contact=True,
+            org_level=4,
+        ),
+    ) if include_ambiguous_domain_account and "@" in contact_email else ()
     data = FixtureCustomerData(
         accounts=(
             CRMAccount(
@@ -396,6 +595,7 @@ def _self_serve_data_plane(
                 owner_id="scaled-csm",
                 industry="software",
             ),
+            *ambiguous_accounts,
         ),
         companies=(
             CSCompany(
@@ -411,18 +611,7 @@ def _self_serve_data_plane(
                 current_score=55.0,
             ),
         ),
-        contacts=(
-            CRMContact(
-                contact_id=contact_id,
-                account_id=account_id,
-                email=signup_email,
-                name="Self Serve Operator",
-                role="operator",
-                title="Operations",
-                consent_to_contact=True,
-                org_level=4,
-            ),
-        ),
+        contacts=(*contacts, *ambiguous_contacts),
         cases=(),
         opportunities=(),
         health_scores=(
@@ -453,7 +642,12 @@ def _self_serve_data_plane(
         ),
         usage_signals=usage_signals,
         milestones=(),
-        tenant_accounts={DEFAULT_TENANT: (account_id,)},
+        tenant_accounts={
+            DEFAULT_TENANT: (
+                account_id,
+                *((ambiguous_account_id,) if include_ambiguous_domain_account else ()),
+            )
+        },
     )
     return CustomerDataPlane(
         crm=FixtureCRMDataConnector(tenant=DEFAULT_TENANT, data=data),
