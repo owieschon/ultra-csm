@@ -37,6 +37,7 @@ SourceAuthority = Literal[
     "inferred",
 ]
 AccountDomainResolutionState = Literal["exactly_one", "ambiguous", "none"]
+IntegrationStatus = Literal["configured", "observed", "missing", "unknown"]
 
 _PERSONAL_EMAIL_DOMAINS = frozenset({
     "aol.com",
@@ -52,6 +53,20 @@ _PERSONAL_EMAIL_DOMAINS = frozenset({
     "protonmail.com",
     "yahoo.com",
 })
+
+_CALL_INTEGRATION_OPTIONS = (
+    "gong",
+    "salesloft",
+    "clari_copilot",
+    "avoma",
+    "chorus",
+    "fathom",
+    "granola",
+    "attention",
+    "fireflies",
+    "grain",
+)
+_SEQUENCE_INTEGRATION_OPTIONS = ("outreach", "gong_engage")
 
 
 @dataclass(frozen=True)
@@ -145,6 +160,26 @@ class OnboardingMilestone:
 
 
 @dataclass(frozen=True)
+class CustomerIntegrationFootprint:
+    family: Literal[
+        "mp",
+        "chrome_extension",
+        "crm",
+        "messaging",
+        "email",
+        "calendar",
+        "calls",
+        "sequences",
+    ]
+    label: str
+    status: IntegrationStatus
+    provider: str | None
+    provider_options: tuple[str, ...]
+    evidence_source_ids: tuple[str, ...]
+    note: str
+
+
+@dataclass(frozen=True)
 class LaunchProposalRef:
     proposal_id: str
     action_type: str
@@ -164,6 +199,7 @@ class EnterpriseOnboardingLaunchPacket:
     coverage: SourceCoverage
     customer_safe_baseline: tuple[str, ...]
     internal_context: tuple[str, ...]
+    customer_integrations: tuple[CustomerIntegrationFootprint, ...]
     stakeholder_verification: tuple[StakeholderVerification, ...]
     success_plan_v0: tuple[OnboardingMilestone, ...]
     risks: tuple[str, ...]
@@ -271,6 +307,15 @@ def run_enterprise_closed_won_onboarding(
         usage_signals=usage_signals,
         health=health,
     )
+    customer_integrations = _customer_integrations(
+        opportunity=opportunity,
+        entitlements=entitlements,
+        usage_signals=usage_signals,
+        customer_comms=customer_comms,
+        call_or_meeting_comms=call_or_meeting_comms,
+        calendar_attendance=calendar_attendance,
+        internal_notes=internal_notes,
+    )
     ready = not coverage.missing_required_sources
     success_plan = _success_plan_v0(
         as_of=as_of,
@@ -326,6 +371,7 @@ def run_enterprise_closed_won_onboarding(
         coverage=coverage,
         customer_safe_baseline=customer_baseline,
         internal_context=internal_context,
+        customer_integrations=customer_integrations,
         stakeholder_verification=stakeholder_rows,
         success_plan_v0=success_plan,
         risks=risks,
@@ -677,6 +723,105 @@ def _success_plan_v0(
     )
 
 
+def _customer_integrations(
+    *,
+    opportunity: CRMOpportunity,
+    entitlements: tuple[Entitlement, ...],
+    usage_signals: tuple,
+    customer_comms: tuple,
+    call_or_meeting_comms: tuple,
+    calendar_attendance: tuple[CalendarAttendance, ...],
+    internal_notes: tuple,
+) -> tuple[CustomerIntegrationFootprint, ...]:
+    capability_tokens = _tokens(
+        *(entitlement.capability for entitlement in entitlements),
+        *(getattr(signal, "metric_name", "") for signal in usage_signals),
+    )
+    internal_tokens = _tokens(*(getattr(note, "source", "") for note in internal_notes))
+    call_signals = tuple(signal for signal in call_or_meeting_comms if getattr(signal, "channel", None) == "call")
+    meeting_signals = tuple(signal for signal in call_or_meeting_comms if getattr(signal, "channel", None) == "meeting")
+
+    return (
+        CustomerIntegrationFootprint(
+            family="mp",
+            label="MP",
+            status="configured" if _contains_any(capability_tokens, ("mp", "meeting_prep")) else "unknown",
+            provider="centralize_mp" if _contains_any(capability_tokens, ("mp", "meeting_prep")) else None,
+            provider_options=("centralize_mp",),
+            evidence_source_ids=_matching_entitlement_ids(entitlements, ("mp", "meeting_prep")),
+            note="Meeting-prep/MP connection should be verified before kickoff.",
+        ),
+        CustomerIntegrationFootprint(
+            family="chrome_extension",
+            label="Chrome extension",
+            status="configured" if _contains_any(capability_tokens, ("chrome", "extension")) else "unknown",
+            provider="centralize_chrome_extension" if _contains_any(capability_tokens, ("chrome", "extension")) else None,
+            provider_options=("centralize_chrome_extension",),
+            evidence_source_ids=_matching_entitlement_ids(entitlements, ("chrome", "extension")),
+            note="Confirm whether the browser extension is installed for admins or sellers.",
+        ),
+        CustomerIntegrationFootprint(
+            family="crm",
+            label="CRM",
+            status="configured",
+            provider="salesforce",
+            provider_options=("salesforce",),
+            evidence_source_ids=(opportunity.opportunity_id,),
+            note="Salesforce account/opportunity context is the commercial source of truth.",
+        ),
+        CustomerIntegrationFootprint(
+            family="messaging",
+            label="Messaging",
+            status="observed" if _contains_any(internal_tokens, ("slack",)) else "unknown",
+            provider="slack" if _contains_any(internal_tokens, ("slack",)) else None,
+            provider_options=("slack",),
+            evidence_source_ids=tuple(note.note_id for note in internal_notes if "slack" in getattr(note, "source", "").lower()),
+            note="Verify whether customer or internal Slack context should be synced.",
+        ),
+        CustomerIntegrationFootprint(
+            family="email",
+            label="Email",
+            status="observed" if customer_comms else "unknown",
+            provider=None,
+            provider_options=("gmail", "outlook"),
+            evidence_source_ids=tuple(signal.signal_id for signal in customer_comms),
+            note="Provider must be confirmed as Gmail or Outlook before relying on email sync.",
+        ),
+        CustomerIntegrationFootprint(
+            family="calendar",
+            label="Calendar",
+            status="observed" if calendar_attendance or meeting_signals else "unknown",
+            provider="google_calendar" if calendar_attendance else None,
+            provider_options=("google_calendar", "outlook_calendar"),
+            evidence_source_ids=tuple(
+                dict.fromkeys(
+                    [attendance.event_id for attendance in calendar_attendance]
+                    + [signal.signal_id for signal in meeting_signals]
+                )
+            ),
+            note="Calendar attendee evidence can verify stakeholders and account-domain identity.",
+        ),
+        CustomerIntegrationFootprint(
+            family="calls",
+            label="Calls",
+            status="observed" if call_signals else "unknown",
+            provider=None,
+            provider_options=_CALL_INTEGRATION_OPTIONS,
+            evidence_source_ids=tuple(signal.signal_id for signal in call_signals),
+            note="Confirm the connected call source: Gong, Salesloft, Clari Copilot, Avoma, Chorus, Fathom, Granola, Attention, Fireflies, or Grain.",
+        ),
+        CustomerIntegrationFootprint(
+            family="sequences",
+            label="Sequences",
+            status="unknown",
+            provider=None,
+            provider_options=_SEQUENCE_INTEGRATION_OPTIONS,
+            evidence_source_ids=(),
+            note="Confirm whether Outreach or Gong Engage sequence activity should be included in the handoff.",
+        ),
+    )
+
+
 def _customer_safe_baseline(
     *,
     account: CRMAccount,
@@ -863,6 +1008,7 @@ def _ignored_packet(
         coverage=SourceCoverage((), (), (), (reason,)),
         customer_safe_baseline=(),
         internal_context=(reason,),
+        customer_integrations=(),
         stakeholder_verification=(),
         success_plan_v0=(),
         risks=(reason,),
@@ -1022,6 +1168,30 @@ def _calendar_attendee_emails(events: dict[str, Any]) -> tuple[str, ...]:
             if email and "@" in email:
                 emails.append(email)
     return tuple(sorted(set(emails)))
+
+
+def _tokens(*values: str) -> tuple[str, ...]:
+    tokens: list[str] = []
+    for value in values:
+        normalized = value.strip().lower().replace("-", "_").replace(" ", "_")
+        if normalized:
+            tokens.append(normalized)
+    return tuple(tokens)
+
+
+def _contains_any(tokens: tuple[str, ...], needles: tuple[str, ...]) -> bool:
+    return any(needle in token for token in tokens for needle in needles)
+
+
+def _matching_entitlement_ids(
+    entitlements: tuple[Entitlement, ...],
+    needles: tuple[str, ...],
+) -> tuple[str, ...]:
+    return tuple(
+        f"{entitlement.account_id}:{entitlement.capability}"
+        for entitlement in entitlements
+        if _contains_any(_tokens(entitlement.capability), needles)
+    )
 
 
 def _email_domain(email: str) -> str | None:

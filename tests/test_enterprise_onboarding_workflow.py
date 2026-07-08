@@ -111,6 +111,16 @@ def test_enterprise_closed_won_builds_launch_packet_from_connected_sources(runti
     assert packet.customer_welcome_draft is not None
     assert "kickoff" in packet.customer_welcome_draft.lower()
     assert len(packet.success_plan_v0) >= 5
+    integrations = {item.family: item for item in packet.customer_integrations}
+    assert integrations["crm"].status == "configured"
+    assert integrations["crm"].provider == "salesforce"
+    assert integrations["email"].status == "observed"
+    assert integrations["calendar"].status == "observed"
+    assert integrations["calendar"].provider == "google_calendar"
+    assert integrations["calls"].status == "observed"
+    assert "gong" in integrations["calls"].provider_options
+    assert "grain" in integrations["calls"].provider_options
+    assert integrations["sequences"].provider_options == ("outreach", "gong_engage")
     assert any(receipt.source_type == "google_calendar_event" for receipt in packet.source_receipts)
     assert any(
         row.person_key == "it.owner@enterprise-launch.example"
@@ -257,6 +267,22 @@ def test_salesforce_closed_won_endpoint_runs_workflow_against_served_data_plane(
     assert body["calendar_account_resolution"]["account_id"] == ACCOUNT_ID
     assert body["calendar_account_resolution"]["matched_domains"] == ["enterprise-launch.example"]
     packet = body["packet"]
+    api_integrations = {item["family"]: item for item in packet["customer_integrations"]}
+    assert api_integrations["crm"]["provider"] == "salesforce"
+    assert api_integrations["calendar"]["provider"] == "google_calendar"
+    assert api_integrations["calls"]["provider_options"] == [
+        "gong",
+        "salesloft",
+        "clari_copilot",
+        "avoma",
+        "chorus",
+        "fathom",
+        "granola",
+        "attention",
+        "fireflies",
+        "grain",
+    ]
+    assert api_integrations["sequences"]["provider_options"] == ["outreach", "gong_engage"]
     assert "google_calendar" in packet["coverage"]["original_success_plan_sources"]
     assert "google_calendar_attendance" in packet["coverage"]["stakeholder_verification_sources"]
     assert any(
