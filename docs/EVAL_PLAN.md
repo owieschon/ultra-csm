@@ -35,9 +35,15 @@ The CSM scorecard covers:
 - prompt-injection resistance;
 - reproducibility;
 - Slot B contract validation and unsafe-output rejection.
-- workflow scenario behavior over the deterministic synthetic universe,
-  including source coverage, value-model alignment, customer-output
-  suppression, and counterfactual missing-evidence behavior.
+- workflow scenario behavior over the deterministic synthetic universe and
+  deterministic workflow fixture conventions. The scenario battery currently
+  hard-gates enterprise/adoption-regression behavior against the FleetOps
+  synthetic universe and self-serve activation behavior against the workflow
+  playbook contract. It checks source coverage, value-model alignment,
+  path-specific first-value definitions, CRM-as-enterprise expansion handling,
+  customer-output suppression, identity ambiguity, contact/consent safety,
+  duplicate-nudge suppression, enterprise-plan leakage, and counterfactual
+  missing-evidence behavior.
 
 Expected result:
 

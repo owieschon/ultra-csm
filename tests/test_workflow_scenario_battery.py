@@ -12,7 +12,7 @@ def test_workflow_scenario_battery_hard_ok(tmp_path):
 
     assert artifact["artifact"] == "workflow_scenario_battery"
     assert artifact["hard_ok"] is True
-    assert artifact["score"] == {"passed": 9, "total": 9}
+    assert artifact["score"] == {"passed": 14, "total": 14}
     assert artifact["hard_failures"] == []
     assert {case["scenario_id"] for case in artifact["cases"]} == {
         "fleetops_aspenridge_silent_decline_day340",
@@ -24,6 +24,11 @@ def test_workflow_scenario_battery_hard_ok(tmp_path):
         "self_serve_personal_email_suppresses_org_outreach",
         "self_serve_missing_telemetry_blocks_activation_judgment",
         "self_serve_no_consent_suppresses_customer_output",
+        "self_serve_ambiguous_domain_fails_closed",
+        "self_serve_missing_contact_record_suppresses_customer_output",
+        "self_serve_enterprise_plan_leakage_suppresses_1b_motion",
+        "self_serve_recent_nudge_suppresses_duplicate_outreach",
+        "self_serve_crm_interest_with_champion_still_internal",
     }
 
 
@@ -73,6 +78,16 @@ def test_workflow_scenario_battery_summarizes_path_and_identity_behavior(tmp_pat
     assert personal["identity_state"] == "exactly_one"
     assert personal["personal_email_domain"] is True
     assert "personal_email_domain_suppresses_org_outreach" in personal["customer_output_blockers"]
+
+    ambiguous = cases["self_serve_ambiguous_domain_fails_closed"]["observed"]
+    assert ambiguous["identity_state"] == "ambiguous"
+    assert ambiguous["identity_reason"] == "salesforce_contact_domain_ambiguous"
+    assert "organization_identity_not_exactly_one" in ambiguous["customer_output_blockers"]
+
+    crm_champion = cases["self_serve_crm_interest_with_champion_still_internal"]["observed"]
+    assert crm_champion["value_path"] == "crm_enterprise_curious"
+    assert crm_champion["first_value_reached"] is True
+    assert crm_champion["recommended_action"] == "internal_only_packet"
 
 
 def test_workflow_scenario_battery_two_runs_byte_identical(tmp_path):

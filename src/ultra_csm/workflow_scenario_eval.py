@@ -79,10 +79,13 @@ class SyntheticWorkflowScenario:
     include_current_usage: bool = True
     workspace_id: str | None = None
     signup_email: str | None = None
+    contact_email: str | None = None
+    event_plan: str = "self_serve"
     usage_metrics: tuple[str, ...] = ()
     consent_to_contact: bool = True
     include_contact: bool = True
     trigger_account_id: bool = False
+    include_ambiguous_domain_account: bool = False
     field_expectations: tuple[WorkflowFieldExpectation, ...] = ()
     notes: str = ""
 
@@ -505,6 +508,147 @@ def synthetic_self_serve_activation_scenarios() -> tuple[SyntheticWorkflowScenar
             ),
             notes="Contact exists but no consent, so customer-facing output remains suppressed.",
         ),
+        SyntheticWorkflowScenario(
+            scenario_id="self_serve_ambiguous_domain_fails_closed",
+            workflow_id="self_serve_signup_activation",
+            tenant_id=DEFAULT_TENANT,
+            account_slug="self-serve-ambiguous-domain",
+            current_day=0,
+            signup_email="new@shared-domain.example",
+            contact_email="admin@shared-domain.example",
+            include_ambiguous_domain_account=True,
+            usage_metrics=("workspace_created", "profile_completed"),
+            expectation=WorkflowQualityExpectation(
+                scenario_id="self_serve_ambiguous_domain_fails_closed",
+                workflow_id="self_serve_signup_activation",
+                expected_statuses=("needs_data",),
+                required_reviewed_sources=("product_signup",),
+                required_action_types=("internal_only_packet",),
+                required_decision_kinds=("self_serve_value_path",),
+                required_domain_paths=("identity_resolution.state", "coverage.customer_output_blockers"),
+                required_alternatives=(),
+                expect_customer_output=False,
+            ),
+            field_expectations=(
+                WorkflowFieldExpectation("identity_resolution.state", "equals", "ambiguous"),
+                WorkflowFieldExpectation("identity_resolution.reason", "equals", "salesforce_contact_domain_ambiguous"),
+                WorkflowFieldExpectation("coverage.customer_output_blockers", "contains", "organization_identity_not_exactly_one"),
+                WorkflowFieldExpectation("customer_language", "equals", None),
+            ),
+            notes="Domain-only resolution with two tenant candidates must fail closed instead of picking an account.",
+        ),
+        SyntheticWorkflowScenario(
+            scenario_id="self_serve_missing_contact_record_suppresses_customer_output",
+            workflow_id="self_serve_signup_activation",
+            tenant_id=DEFAULT_TENANT,
+            account_slug="self-serve-missing-contact",
+            current_day=0,
+            signup_email="operator@selfserve.example",
+            trigger_account_id=True,
+            include_contact=False,
+            usage_metrics=("workspace_created", "profile_completed", "first_search_run"),
+            expectation=WorkflowQualityExpectation(
+                scenario_id="self_serve_missing_contact_record_suppresses_customer_output",
+                workflow_id="self_serve_signup_activation",
+                expected_statuses=("internal_only",),
+                required_reviewed_sources=("resolved_organization", "product_telemetry"),
+                required_action_types=("internal_only_packet",),
+                required_decision_kinds=("self_serve_value_path",),
+                required_domain_paths=("coverage.customer_output_blockers", "recommended_action.suppression_reasons"),
+                required_alternatives=(),
+                expect_customer_output=False,
+            ),
+            field_expectations=(
+                WorkflowFieldExpectation("coverage.customer_output_blockers", "contains", "contact_record_missing"),
+                WorkflowFieldExpectation("coverage.customer_output_blockers", "contains", "no_consented_contact_for_customer_outreach"),
+                WorkflowFieldExpectation("customer_language", "equals", None),
+            ),
+            notes="Exact account identity is insufficient for customer output when the contact record is absent.",
+        ),
+        SyntheticWorkflowScenario(
+            scenario_id="self_serve_enterprise_plan_leakage_suppresses_1b_motion",
+            workflow_id="self_serve_signup_activation",
+            tenant_id=DEFAULT_TENANT,
+            account_slug="self-serve-enterprise-plan",
+            current_day=0,
+            signup_email="operator@selfserve.example",
+            event_plan="enterprise",
+            usage_metrics=("workspace_created", "profile_completed", "first_search_run"),
+            expectation=WorkflowQualityExpectation(
+                scenario_id="self_serve_enterprise_plan_leakage_suppresses_1b_motion",
+                workflow_id="self_serve_signup_activation",
+                expected_statuses=("internal_only",),
+                required_reviewed_sources=("resolved_organization", "product_telemetry", "contact_record"),
+                required_action_types=("internal_only_packet",),
+                required_decision_kinds=("self_serve_value_path",),
+                required_domain_paths=("recommended_action.suppression_reasons",),
+                required_alternatives=(),
+                expect_customer_output=False,
+            ),
+            field_expectations=(
+                WorkflowFieldExpectation("value_path.first_value_reached", "equals", True),
+                WorkflowFieldExpectation("recommended_action.suppression_reasons", "contains", "self_serve_workflow_received_enterprise_plan"),
+                WorkflowFieldExpectation("customer_language", "equals", None),
+            ),
+            notes="An enterprise-plan event entering the self-serve workflow must not create self-serve customer motion.",
+        ),
+        SyntheticWorkflowScenario(
+            scenario_id="self_serve_recent_nudge_suppresses_duplicate_outreach",
+            workflow_id="self_serve_signup_activation",
+            tenant_id=DEFAULT_TENANT,
+            account_slug="self-serve-recent-nudge",
+            current_day=0,
+            signup_email="operator@selfserve.example",
+            usage_metrics=("workspace_created", "profile_completed", "activation_nudge_sent"),
+            expectation=WorkflowQualityExpectation(
+                scenario_id="self_serve_recent_nudge_suppresses_duplicate_outreach",
+                workflow_id="self_serve_signup_activation",
+                expected_statuses=("internal_only",),
+                required_reviewed_sources=("resolved_organization", "product_telemetry", "contact_record"),
+                required_action_types=("internal_only_packet",),
+                required_decision_kinds=("self_serve_value_path",),
+                required_domain_paths=("recommended_action.suppression_reasons",),
+                required_alternatives=(),
+                expect_customer_output=False,
+            ),
+            field_expectations=(
+                WorkflowFieldExpectation("value_path.first_value_reached", "equals", False),
+                WorkflowFieldExpectation("recommended_action.suppression_reasons", "contains", "recent_activation_nudge_already_sent"),
+                WorkflowFieldExpectation("customer_language", "equals", None),
+            ),
+            notes="A recent activation nudge blocks duplicate customer-facing outreach.",
+        ),
+        SyntheticWorkflowScenario(
+            scenario_id="self_serve_crm_interest_with_champion_still_internal",
+            workflow_id="self_serve_signup_activation",
+            tenant_id=DEFAULT_TENANT,
+            account_slug="self-serve-crm-champion",
+            current_day=0,
+            signup_email="operator@selfserve.example",
+            usage_metrics=("workspace_created", "crm_integration_viewed", "crm_connect_clicked", "champion_invited"),
+            expectation=WorkflowQualityExpectation(
+                scenario_id="self_serve_crm_interest_with_champion_still_internal",
+                workflow_id="self_serve_signup_activation",
+                expected_statuses=("internal_only",),
+                required_reviewed_sources=("resolved_organization", "product_telemetry", "contact_record"),
+                required_action_types=("internal_only_packet",),
+                required_decision_kinds=("self_serve_value_path",),
+                required_domain_paths=(
+                    "value_path.enterprise_interest_signals",
+                    "value_path.first_value_reached",
+                    "recommended_action.suppression_reasons",
+                ),
+                required_alternatives=(),
+                expect_customer_output=False,
+            ),
+            field_expectations=(
+                WorkflowFieldExpectation("value_path.path_id", "equals", "crm_enterprise_curious"),
+                WorkflowFieldExpectation("value_path.first_value_reached", "equals", True),
+                WorkflowFieldExpectation("recommended_action.suppression_reasons", "contains", "customer_outreach_requires_sales_assisted_review"),
+                WorkflowFieldExpectation("customer_language", "equals", None),
+            ),
+            notes="Even when CRM interest finds a champion, customer-facing action stays sales-assisted and internal.",
+        ),
     )
 
 
@@ -628,14 +772,16 @@ def _self_serve_signup_event(scenario: SyntheticWorkflowScenario) -> SelfServeSi
         signup_email=email,
         observed_at="2026-07-08T12:00:00Z",
         account_id=account_id if scenario.trigger_account_id else None,
-        plan="self_serve",
+        plan=scenario.event_plan,
     )
 
 
 def _self_serve_data_plane(scenario: SyntheticWorkflowScenario) -> CustomerDataPlane:
     account_id = account_id_for(scenario.account_slug)
     email = _self_serve_signup_email(scenario)
+    contact_email = scenario.contact_email or email
     account_name = _self_serve_account_name(scenario)
+    ambiguous_account_id = det_id("workflow-scenario-ambiguous-account", scenario.account_slug)
     measured_at = "2026-07-08T12:00:00Z"
     usage_signals = tuple(
         UsageSignal(
@@ -653,9 +799,9 @@ def _self_serve_data_plane(scenario: SyntheticWorkflowScenario) -> CustomerDataP
     )
     contacts = (
         CRMContact(
-            contact_id=det_id("workflow-scenario-self-serve-contact", account_id, email),
+            contact_id=det_id("workflow-scenario-self-serve-contact", account_id, contact_email),
             account_id=account_id,
-            email=email,
+            email=contact_email,
             name="Self Serve Operator",
             role="operator",
             title="Operations Manager",
@@ -663,6 +809,26 @@ def _self_serve_data_plane(scenario: SyntheticWorkflowScenario) -> CustomerDataP
             org_level=4,
         ),
     ) if scenario.include_contact else ()
+    ambiguous_accounts = (
+        CRMAccount(
+            account_id=ambiguous_account_id,
+            name=f"{account_name} Decoy",
+            owner_id="scaled-csm-002",
+            industry="self_serve",
+        ),
+    ) if scenario.include_ambiguous_domain_account else ()
+    ambiguous_contacts = (
+        CRMContact(
+            contact_id=det_id("workflow-scenario-self-serve-contact", ambiguous_account_id, contact_email),
+            account_id=ambiguous_account_id,
+            email=f"other@{contact_email.split('@', 1)[1]}",
+            name="Ambiguous Domain Operator",
+            role="operator",
+            title="Operations Manager",
+            consent_to_contact=True,
+            org_level=4,
+        ),
+    ) if scenario.include_ambiguous_domain_account and "@" in contact_email else ()
     data = FixtureCustomerData(
         accounts=(
             CRMAccount(
@@ -671,6 +837,7 @@ def _self_serve_data_plane(scenario: SyntheticWorkflowScenario) -> CustomerDataP
                 owner_id="scaled-csm-001",
                 industry="self_serve",
             ),
+            *ambiguous_accounts,
         ),
         companies=(
             CSCompany(
@@ -686,7 +853,7 @@ def _self_serve_data_plane(scenario: SyntheticWorkflowScenario) -> CustomerDataP
                 current_score=68.0,
             ),
         ),
-        contacts=contacts,
+        contacts=(*contacts, *ambiguous_contacts),
         cases=(),
         opportunities=(),
         health_scores=(
@@ -730,7 +897,12 @@ def _self_serve_data_plane(scenario: SyntheticWorkflowScenario) -> CustomerDataP
         ),
         usage_signals=usage_signals,
         milestones=(),
-        tenant_accounts={scenario.tenant_id: (account_id,)},
+        tenant_accounts={
+            scenario.tenant_id: (
+                account_id,
+                *((ambiguous_account_id,) if scenario.include_ambiguous_domain_account else ()),
+            )
+        },
     )
     return CustomerDataPlane(
         crm=FixtureCRMDataConnector(tenant=scenario.tenant_id, data=data),
