@@ -834,6 +834,16 @@ def _recommended_action(
 ) -> AdoptionRegressionRecommendedAction:
     source_ids = interpretation.source_ids
     suppression: list[str] = []
+    if interpretation.severity == "none" and not coverage.customer_output_blockers:
+        return AdoptionRegressionRecommendedAction(
+            action_type="suppress_regression_motion",
+            trigger="no_regression_observed",
+            label=f"No adoption regression motion for {account.name}",
+            customer_safe_message=None,
+            source_ids=source_ids,
+            suppressed=True,
+            suppression_reasons=("no_regression_observed",),
+        )
     if coverage.customer_output_blockers:
         suppression.extend(coverage.customer_output_blockers)
     if interpretation.confidence < 0.65:
@@ -891,10 +901,10 @@ def _packet_status(
         return "needs_data"
     if coverage.missing_required_sources:
         return "needs_data"
-    if action.suppressed:
-        return "internal_only"
     if interpretation.severity == "none":
         return "ignored"
+    if action.suppressed:
+        return "internal_only"
     return "ready"
 
 
