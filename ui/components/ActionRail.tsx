@@ -39,7 +39,12 @@ export const ActionRail = forwardRef<
 
   const proposalId = item?.proposal?.proposal_id ?? null;
   const status = item?.proposal?.status ?? null;
-  const canAct = proposalId != null && status === "pending";
+  const packetCtas = item?.work_packet?.allowed_ctas ?? [];
+  const gateApprovalCta = packetCtas.find((cta) => cta.cta_id === "request_gate_approval");
+  const canAct =
+    proposalId != null &&
+    status === "pending" &&
+    (gateApprovalCta ? gateApprovalCta.enabled : true);
   const canEdit = canAct && item?.proposal?.action_type === "draft_customer_outreach";
 
   useEffect(() => {
@@ -123,6 +128,18 @@ export const ActionRail = forwardRef<
         )}
       </div>
       <div className="actions">
+        {packetCtas.length > 0 && (
+          <div className="cta-stack">
+            {packetCtas.map((cta) => (
+              <div className={`cta-row${cta.enabled ? " on" : ""}`} key={cta.cta_id}>
+                <span>{cta.label}</span>
+                <span className="cta-state">
+                  {cta.enabled ? "enabled" : "blocked"}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
         <button
           className="btn approve"
           disabled={readOnly || !canAct || busy}
