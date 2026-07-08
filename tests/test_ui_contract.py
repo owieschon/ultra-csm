@@ -205,3 +205,20 @@ def test_ui_api_can_read_workflow_playbook_registry():
     api_source = (Path(__file__).resolve().parents[1] / "ui" / "lib" / "api.ts").read_text()
     assert "workflowPlaybooks" in api_source
     assert "/workflow-playbooks" in api_source
+
+
+def test_ui_surfaces_workflow_authoring_readiness():
+    repo = Path(__file__).resolve().parents[1]
+    topbar = (repo / "ui" / "components" / "TopBar.tsx").read_text()
+    api_source = (repo / "ui" / "lib" / "api.ts").read_text()
+    page = (repo / "ui" / "app" / "workflows" / "page.tsx").read_text()
+    css = (repo / "ui" / "app" / "globals.css").read_text()
+    fixture = (repo / "ui" / "public" / "demo-api" / "workflow-authoring-readiness.json").read_text()
+
+    assert 'href="/workflows"' in topbar
+    assert "workflowAuthoringReadiness" in api_source
+    assert "/workflow-authoring/readiness" in api_source
+    assert "Readiness console" in page
+    assert "declared_test_obligations" in page
+    assert "readiness-grid" in css
+    assert "account_adoption_regression" in fixture

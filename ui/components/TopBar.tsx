@@ -86,6 +86,9 @@ export function TopBar({
       <Link className="navlink" href="/comms-review">
         Comms
       </Link>
+      <Link className="navlink" href="/workflows">
+        Workflows
+      </Link>
 
       <div className="search" onClick={onOpenPalette} style={{ cursor: "pointer" }}>
         <span className="ph">Search accounts…</span>
