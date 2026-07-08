@@ -168,3 +168,11 @@ def test_action_rail_uses_backend_ctas():
     assert "allowed_ctas" in source
     assert "ctas.map" in source
     assert "Approve &amp; send" not in source
+
+
+def test_queue_detail_surfaces_enterprise_onboarding_packet():
+    source = (Path(__file__).resolve().parents[1] / "ui" / "components" / "QueueDetail.tsx").read_text()
+    assert "enterpriseOnboardingPackets" in source
+    assert "Enterprise launch packet" in source
+    assert "value_model_alignment" in source
+    assert "Measured milestones" in source

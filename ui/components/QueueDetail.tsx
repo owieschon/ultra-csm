@@ -1,7 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { api, CentralizeTelemetryResponse, CSMWorkPacket, WorkItem } from "@/lib/api";
+import {
+  api,
+  CentralizeTelemetryResponse,
+  CSMWorkPacket,
+  EnterpriseOnboardingPacket,
+  WorkItem,
+} from "@/lib/api";
 import { label, MOTION_LABELS, TRIGGER_LABELS } from "@/lib/labels";
 import { ReconciliationSection } from "./ReconciliationSection";
 
@@ -184,12 +190,15 @@ export function QueueDetail({
 }) {
   const [brief, setBrief] = useState<Brief | null>(null);
   const [centralizeTelemetry, setCentralizeTelemetry] = useState<CentralizeTelemetryResponse | null>(null);
+  const [enterpriseOnboardingPacket, setEnterpriseOnboardingPacket] =
+    useState<EnterpriseOnboardingPacket | null>(null);
   const [openDrawer, setOpenDrawer] = useState<string | null>(null);
   const [openFactor, setOpenFactor] = useState<number | null>(null);
 
   useEffect(() => {
     setBrief(null);
     setCentralizeTelemetry(null);
+    setEnterpriseOnboardingPacket(null);
     if (!item?.account_id) return;
     api
       .accountBrief(item.account_id, day)
@@ -199,6 +208,10 @@ export function QueueDetail({
       .accountCentralizeTelemetry(item.account_id, day)
       .then(setCentralizeTelemetry)
       .catch(() => setCentralizeTelemetry(null));
+    api
+      .enterpriseOnboardingPackets(item.account_id)
+      .then((r) => setEnterpriseOnboardingPacket(r.packets[0] ?? null))
+      .catch(() => setEnterpriseOnboardingPacket(null));
   }, [item?.account_id, day]);
 
   if (!item || item.account_id === null) {
@@ -215,6 +228,7 @@ export function QueueDetail({
     <div className="detail-scroll">
       <PacketIdentity packet={packet} lifecycle={(brief?.lifecycle_stage as string | undefined) ?? null} />
       <PacketActionBrief packet={packet} />
+      <EnterpriseOnboardingPanel packet={enterpriseOnboardingPacket} />
       <PacketTrace packet={packet} />
 
       <div className="sec">
@@ -457,6 +471,172 @@ function BriefCell({
       {meta && <em>{meta}</em>}
     </div>
   );
+}
+
+function EnterpriseOnboardingPanel({
+  packet,
+}: {
+  packet: EnterpriseOnboardingPacket | null;
+}) {
+  if (!packet) return null;
+
+  const payload = asRecord(packet.packet);
+  const coverage = asRecord(payload.coverage);
+  const methodology = asRecord(payload.success_plan_methodology);
+  const alignment = asRecord(methodology.value_model_alignment);
+  const rails = asArray(alignment.rails).map(asRecord);
+  const milestones = asArray(payload.success_plan_v0).map(asRecord);
+  const integrations = asArray(payload.customer_integrations).map(asRecord);
+  const checks = asArray(methodology.validation_checks).map(asRecord);
+  const failedChecks = checks.filter((check) => check.passed === false);
+  const missingSources = asArray(coverage.missing_required_sources)
+    .map((value) => String(value))
+    .filter(Boolean);
+  const proposals = asArray(payload.proposals).map(asRecord);
+  const receipts = asArray(payload.source_receipts);
+  const packetStatus = String(payload.status ?? packet.status);
+  const isReady = packetStatus === "ready";
+
+  return (
+    <div className={`sec launch-packet ${isReady ? "ready" : "blocked"}`}>
+      <div className="sec-h">
+        <span className="t">Enterprise launch packet</span>
+        <span className="prov">
+          <span className={isReady ? "chip-det launch-ok" : "chip-det launch-stop"}>
+            {packetStatus.replace(/_/g, " ")}
+          </span>
+        </span>
+      </div>
+      <div className="launch-head">
+        <div>
+          <div className="launch-title">{String(payload.recommended_next_action ?? "Review launch packet")}</div>
+          <div className="launch-meta">
+            opportunity {packet.opportunity_id.slice(0, 8)} · {receipts.length} receipts · {proposals.length} gated proposal{proposals.length === 1 ? "" : "s"}
+          </div>
+        </div>
+        <div className="launch-score">
+          <span className="num">{numberOrDash(alignment.ttv_priority_score)}</span>
+          <em>TTV priority</em>
+        </div>
+      </div>
+
+      <div className="launch-grid">
+        <LaunchMetric label="Lifecycle" value={String(alignment.lifecycle_stage ?? "unknown")} />
+        <LaunchMetric label="Service tier" value={String(alignment.service_tier ?? "unknown").replace(/_/g, " ")} />
+        <LaunchMetric label="Threshold rule" value={String(alignment.rule_name ?? "unresolved")} />
+        <LaunchMetric label="Config" value={String(alignment.config_version ?? "unresolved")} />
+      </div>
+
+      {(missingSources.length > 0 || failedChecks.length > 0) && (
+        <div className="launch-alert">
+          {missingSources.map((source) => (
+            <span key={`missing-${source}`}>missing: {source.replace(/_/g, " ")}</span>
+          ))}
+          {failedChecks.map((check) => (
+            <span key={`failed-${String(check.check_name)}`}>
+              failed: {String(check.check_name).replace(/_/g, " ")}
+            </span>
+          ))}
+        </div>
+      )}
+
+      {rails.length > 0 && (
+        <div className="launch-rails">
+          {rails.map((rail) => (
+            <LaunchRail key={String(rail.rail)} rail={rail} />
+          ))}
+        </div>
+      )}
+
+      {milestones.length > 0 && (
+        <div className="launch-list">
+          <div className="packet-kicker">Measured milestones</div>
+          {milestones.slice(0, 5).map((milestone) => {
+            const measurement = asRecord(milestone.measurement);
+            return (
+              <div className="launch-row" key={String(milestone.milestone)}>
+                <span>{String(milestone.milestone ?? "Milestone")}</span>
+                <em>
+                  {String(measurement.rail ?? "unmeasured").replace(/_/g, " ")} · target {numberOrDash(measurement.target_value)}
+                </em>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {integrations.length > 0 && (
+        <div className="launch-integrations">
+          {integrations.map((integration) => (
+            <span
+              key={String(integration.family)}
+              className={`launch-integration ${String(integration.status ?? "unknown")}`}
+              title={String(integration.note ?? "")}
+            >
+              {String(integration.label ?? integration.family)} · {String(integration.status ?? "unknown")}
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function LaunchMetric({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="launch-metric">
+      <span>{label}</span>
+      <strong>{value}</strong>
+    </div>
+  );
+}
+
+function LaunchRail({ rail }: { rail: Record<string, unknown> }) {
+  const current = asNumber(rail.current_value);
+  const target = asNumber(rail.target_value);
+  const progress =
+    current === null || target === null || target === 0
+      ? null
+      : rail.rail === "ttv_priority"
+        ? Math.max(0, Math.min(100, 100 - (current / Math.max(target + current, 1)) * 100))
+        : Math.max(0, Math.min(100, (current / target) * 100));
+  const factors = asArray(rail.factors);
+  return (
+    <div className="launch-rail">
+      <div className="launch-rail-top">
+        <span>{String(rail.rail ?? "rail").replace(/_/g, " ")}</span>
+        <em>{String(rail.state ?? "unknown")}</em>
+      </div>
+      <div className="launch-bar" title={String(rail.interpretation ?? "")}>
+        <span style={{ width: `${progress ?? 0}%` }} />
+      </div>
+      <div className="launch-rail-meta">
+        <span>{numberOrDash(current)} now</span>
+        <span>{numberOrDash(target)} target</span>
+        <span>{factors.length} factor{factors.length === 1 ? "" : "s"}</span>
+      </div>
+    </div>
+  );
+}
+
+function asRecord(value: unknown): Record<string, unknown> {
+  return value && typeof value === "object" && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : {};
+}
+
+function asArray(value: unknown): unknown[] {
+  return Array.isArray(value) ? value : [];
+}
+
+function asNumber(value: unknown): number | null {
+  return typeof value === "number" && Number.isFinite(value) ? value : null;
+}
+
+function numberOrDash(value: unknown): string {
+  const n = asNumber(value);
+  if (n === null) return "—";
+  return Number.isInteger(n) ? String(n) : n.toFixed(2);
 }
 
 function PacketTrace({ packet }: { packet: CSMWorkPacket }) {
