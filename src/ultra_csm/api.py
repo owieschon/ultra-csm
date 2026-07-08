@@ -79,6 +79,16 @@ from ultra_csm.api_metrics import APIMetrics, SweepTiming
 from ultra_csm.cohort_packets import build_cohort_rollup_packets
 from ultra_csm.cost_tracker import CostBudget, CostTracker
 from ultra_csm.proposal_revise import ReviseServiceError, apply_bounded_revise
+from ultra_csm.self_serve_activation import (
+    SelfServeSignupEvent,
+    run_self_serve_signup_activation,
+)
+from ultra_csm.self_serve_activation_store import (
+    get_self_serve_activation_packet,
+    list_self_serve_activation_packets,
+    upsert_self_serve_activation_packet,
+)
+from ultra_csm.workflow_playbooks import WORKFLOW_REGISTRY
 from ultra_csm._api_helpers import (
     AccountDataError,
     AccountNotFoundError,
@@ -373,6 +383,41 @@ class TrajectoryResponse(BaseModel):
     trend_velocity: float
     consecutive_band: str | None = None
     consecutive_count: int = 0
+
+
+class SelfServeSignupRequest(BaseModel):
+    workspace_id: str
+    signup_email: str
+    observed_at: str
+    tenant_id: str = DEFAULT_TENANT
+    account_id: str | None = None
+    plan: str | None = None
+
+
+class SelfServeActivationResponse(BaseModel):
+    packet_id: str
+    status: str
+    account_id: str
+    identity_state: str
+    value_path: str
+    first_value_reached: bool
+    recommended_action_type: str
+    customer_language_present: bool
+    missing_required_sources: list[str]
+    customer_output_blockers: list[str]
+    suppression_reasons: list[str]
+    proposal_ids: list[str]
+    data_plane_mode: str
+    packet: dict[str, Any]
+    auth: str | None = None
+
+
+class SelfServeActivationPacketListResponse(BaseModel):
+    packets: list[dict[str, Any]]
+
+
+class WorkflowPlaybookResponse(BaseModel):
+    workflows: dict[str, dict[str, Any]]
 
 
 # ---------------------------------------------------------------------------
@@ -1018,6 +1063,98 @@ def _record_sweep_audit_events(
                 },
                 now=_CLOCK,
             )
+
+
+def _self_serve_activation_summary(packet: dict[str, Any]) -> dict[str, Any]:
+    value_path = packet.get("value_path") if isinstance(packet.get("value_path"), dict) else {}
+    action = packet.get("recommended_action") if isinstance(packet.get("recommended_action"), dict) else {}
+    coverage = packet.get("coverage") if isinstance(packet.get("coverage"), dict) else {}
+    identity = packet.get("identity_resolution") if isinstance(packet.get("identity_resolution"), dict) else {}
+    proposals = packet.get("proposals") if isinstance(packet.get("proposals"), list) else []
+    return {
+        "packet_id": str(packet.get("packet_id") or ""),
+        "status": str(packet.get("status") or ""),
+        "account_id": str(packet.get("account_id") or ""),
+        "identity_state": str(identity.get("state") or ""),
+        "value_path": str(value_path.get("path_id") or ""),
+        "first_value_reached": bool(value_path.get("first_value_reached")),
+        "recommended_action_type": str(action.get("action_type") or ""),
+        "customer_language_present": bool(packet.get("customer_language")),
+        "missing_required_sources": list(coverage.get("missing_required_sources") or ()),
+        "customer_output_blockers": list(coverage.get("customer_output_blockers") or ()),
+        "suppression_reasons": list(action.get("suppression_reasons") or ()),
+        "proposal_ids": [
+            str(proposal.get("proposal_id"))
+            for proposal in proposals
+            if isinstance(proposal, dict) and proposal.get("proposal_id")
+        ],
+    }
+
+
+def _record_self_serve_activation_audit_events(
+    *,
+    packet: dict[str, Any],
+    actor_id: str,
+) -> None:
+    assert _conn is not None
+    packet_id = str(packet.get("packet_id") or "")
+    workspace_id = str(packet.get("workspace_id") or "")
+    value_path = packet.get("value_path") if isinstance(packet.get("value_path"), dict) else {}
+    summary = _self_serve_activation_summary(packet)
+    proposal_id = summary["proposal_ids"][0] if summary["proposal_ids"] else None
+    record_audit_event(
+        _conn,
+        tenant_id=_TENANT_ID,
+        actor_id=actor_id,
+        event_type="self_serve_activation.trigger",
+        account_ref=summary["account_id"] or None,
+        source_ref=f"self_serve_activation.trigger:{workspace_id}:{packet.get('signup_email')}",
+        detail=f"Self-serve signup trigger received for {workspace_id}",
+        payload={
+            "workspace_id": workspace_id,
+            "signup_email": packet.get("signup_email"),
+            "identity_state": summary["identity_state"],
+        },
+        now=_CLOCK,
+    )
+    record_audit_event(
+        _conn,
+        tenant_id=_TENANT_ID,
+        actor_id=actor_id,
+        event_type="self_serve_activation.packet",
+        proposal_id=proposal_id,
+        account_ref=summary["account_id"] or None,
+        source_ref=f"self_serve_activation.packet:{packet_id}",
+        detail=f"Activation packet is {summary['status']}",
+        payload=summary,
+        now=_CLOCK,
+    )
+    record_audit_event(
+        _conn,
+        tenant_id=_TENANT_ID,
+        actor_id=actor_id,
+        event_type="self_serve_activation.value_path",
+        proposal_id=proposal_id,
+        account_ref=summary["account_id"] or None,
+        source_ref=f"self_serve_activation.value_path:{packet_id}",
+        detail=(
+            f"Value path {summary['value_path']} first_value="
+            f"{summary['first_value_reached']}"
+        ),
+        payload={
+            "path_id": summary["value_path"],
+            "first_value_definition": value_path.get("first_value_definition"),
+            "first_value_milestone_id": value_path.get("first_value_milestone_id"),
+            "current_milestone_id": value_path.get("current_milestone_id"),
+            "completed_milestone_ids": value_path.get("completed_milestone_ids") or [],
+            "secondary_hypotheses": [
+                item.get("path_id")
+                for item in value_path.get("secondary_hypotheses") or []
+                if isinstance(item, dict)
+            ],
+        },
+        now=_CLOCK,
+    )
 
 
 def _as_mapping(value: Any) -> dict[str, Any] | None:
@@ -1769,10 +1906,132 @@ _LEDGER_HUMAN = {
     "value_model": "Value model",
     "slot_b.draft": "Drafted",
     "judge.score": "Judged",
+    "self_serve_activation.trigger": "Self-serve signup",
+    "self_serve_activation.packet": "Activation packet",
+    "self_serve_activation.value_path": "Value path",
     "gmail.commit": "Gmail committed",
     "reobserve.queue": "Re-observe queued",
     "reobserve.result": "Re-observed",
 }
+
+
+@app.post("/integrations/self-serve/signup", response_model=SelfServeActivationResponse)
+async def self_serve_signup_webhook(
+    request: Request,
+    body: SelfServeSignupRequest,
+):
+    """Run workflow 1b from a product self-serve signup trigger.
+
+    The route uses the served data-plane assembly, existing ActionGate, generic
+    workflow packet storage, and append-only audit ledger. It does not judge
+    first value until the selected value path's configured first-value
+    milestone is explicit and evaluated.
+    """
+    assert _conn is not None
+    auth_principal = _require_write_auth(request)
+    assembly = build_served_data_plane(
+        conn=_conn,
+        comms_tenant_id=_TENANT_ID,
+        tenant_id=body.tenant_id,
+        as_of=body.observed_at[:10],
+    )
+    gate = ActionGate(
+        _conn,
+        tenant_id=_TENANT_ID,
+        actor_principal_id=auth_principal.principal_id,
+        verdict_source=FixtureVerdictSource(),
+        now=_CLOCK,
+    )
+    packet = run_self_serve_signup_activation(
+        data_plane=assembly.data_plane,
+        gate=gate,
+        event=SelfServeSignupEvent(
+            tenant_id=body.tenant_id,
+            workspace_id=body.workspace_id,
+            signup_email=body.signup_email,
+            observed_at=body.observed_at,
+            account_id=body.account_id,
+            plan=body.plan,
+        ),
+        as_of=body.observed_at[:10],
+    )
+    packet_dict = packet.to_dict()
+    upsert_self_serve_activation_packet(
+        _conn,
+        tenant_id=_TENANT_ID,
+        actor_id=auth_principal.principal_id,
+        packet=packet,
+        payload=packet_dict,
+        now=_CLOCK,
+    )
+    _record_self_serve_activation_audit_events(
+        packet=packet_dict,
+        actor_id=auth_principal.principal_id,
+    )
+    return SelfServeActivationResponse(
+        **_self_serve_activation_summary(packet_dict),
+        data_plane_mode=assembly.mode,
+        packet=packet_dict,
+        auth=auth_principal.auth,
+    )
+
+
+@app.get(
+    "/self-serve/activation/packets",
+    response_model=SelfServeActivationPacketListResponse,
+)
+async def list_self_serve_activation_packet_endpoint(
+    account_id: str | None = None,
+    workspace_id: str | None = None,
+    limit: int = Query(25, ge=1, le=100),
+):
+    assert _conn is not None
+    packets = list_self_serve_activation_packets(
+        _conn,
+        tenant_id=_TENANT_ID,
+        actor_id=_orch_principal or _SEED_AGENT,
+        account_id=account_id,
+        workspace_id=workspace_id,
+        limit=limit,
+        now=_CLOCK,
+    )
+    return SelfServeActivationPacketListResponse(
+        packets=[
+            {
+                **_self_serve_activation_summary(packet.payload),
+                "workspace_id": packet.workspace_id,
+                "signup_email": packet.signup_email,
+                "created_at": packet.created_at.isoformat() if packet.created_at else "",
+                "updated_at": packet.updated_at.isoformat() if packet.updated_at else "",
+            }
+            for packet in packets
+        ],
+    )
+
+
+@app.get("/self-serve/activation/packets/{packet_id}")
+async def get_self_serve_activation_packet_endpoint(packet_id: str):
+    assert _conn is not None
+    packet = get_self_serve_activation_packet(
+        _conn,
+        tenant_id=_TENANT_ID,
+        actor_id=_orch_principal or _SEED_AGENT,
+        packet_id=packet_id,
+        now=_CLOCK,
+    )
+    if packet is None:
+        raise HTTPException(status_code=404, detail={"error": "packet not found"})
+    return {
+        **_self_serve_activation_summary(packet.payload),
+        "workspace_id": packet.workspace_id,
+        "signup_email": packet.signup_email,
+        "packet": packet.payload,
+    }
+
+
+@app.get("/workflow-playbooks", response_model=WorkflowPlaybookResponse)
+async def get_workflow_playbooks():
+    return WorkflowPlaybookResponse(workflows=WORKFLOW_REGISTRY.to_dict())
 
 
 @app.get("/ledger", response_model=LedgerResponse)
