@@ -1,5 +1,6 @@
 {
   "account_count": 181,
+  "centralize_demo_dashboard": true,
   "centralize_telemetry_account_count": 181,
   "day": 140,
   "exported_account_detail_count": 11,

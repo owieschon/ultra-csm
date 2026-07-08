@@ -43,12 +43,14 @@ def main() -> int:
         health = _get(client, "/health")
         accounts = _get(client, f"/accounts?day={DAY}")
         sweep = _post(client, f"/sweep?day={DAY}")
+        centralize_demo = _get(client, f"/centralize/demo-dashboard?day={DAY}")
         proposals = _get(client, "/proposals")
         ledger = _get(client, "/ledger?limit=50")
 
         _write("health.json", health)
         _write(f"accounts-day-{DAY}.json", accounts)
         _write(f"sweep-day-{DAY}.json", sweep)
+        _write(f"centralize-demo-dashboard-day-{DAY}.json", centralize_demo)
         _write("proposals.json", proposals)
         _write("ledger.json", ledger)
         _write("comms-slack.json", {"pending": [], "auth": "hosted-readonly"})
@@ -90,6 +92,7 @@ def main() -> int:
                 "account_count": accounts["account_count"],
                 "work_item_count": len(sweep["work_items"]),
                 "proposal_count": len(proposals["proposals"]),
+                "centralize_demo_dashboard": True,
                 "exported_account_detail_count": len(account_ids),
                 "centralize_telemetry_account_count": len(all_account_ids),
                 "write_routes_exported": False,

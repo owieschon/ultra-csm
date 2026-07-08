@@ -205,6 +205,28 @@ def test_queue_detail_surfaces_adoption_regression_packet():
     assert "/adoption-regression/packets" in api_source
 
 
+def test_centralize_demo_dashboard_is_first_class_view():
+    page_source = (Path(__file__).resolve().parents[1] / "ui" / "app" / "page.tsx").read_text()
+    topbar_source = (Path(__file__).resolve().parents[1] / "ui" / "components" / "TopBar.tsx").read_text()
+    demo_source = (
+        Path(__file__).resolve().parents[1]
+        / "ui"
+        / "components"
+        / "CentralizeDemoDashboard.tsx"
+    ).read_text()
+    api_source = (Path(__file__).resolve().parents[1] / "ui" / "lib" / "api.ts").read_text()
+
+    assert 'useState<"demo" | "book" | "queue">("demo")' in page_source
+    assert "CentralizeDemoDashboard" in page_source
+    assert "Demo" in topbar_source
+    assert ("Cen" + "tralize simulated product data") in demo_source
+    assert "Agent-heavy CSM moments" in demo_source
+    assert "Feature metrics" in demo_source
+    assert "Source receipts" in demo_source
+    assert "centralizeDemoDashboard" in api_source
+    assert "/centralize/demo-dashboard" in api_source
+
+
 def test_ui_api_can_read_workflow_playbook_registry():
     api_source = (Path(__file__).resolve().parents[1] / "ui" / "lib" / "api.ts").read_text()
     assert "workflowPlaybooks" in api_source

@@ -25,6 +25,7 @@ def test_hosted_demo_exports_no_write_routes():
     api_source = (ROOT / "ui" / "lib" / "api.ts").read_text(encoding="utf-8")
 
     assert manifest["mode"] == "hosted-readonly"
+    assert manifest["centralize_demo_dashboard"] is True
     assert manifest["write_routes_exported"] is False
     assert "The hosted demo is read-only." in api_source
     assert 'method !== "GET" && rawPath !== "/sweep"' in api_source
@@ -37,6 +38,7 @@ def test_hosted_demo_has_core_fixtures():
         "health.json",
         "accounts-day-140.json",
         "sweep-day-140.json",
+        "centralize-demo-dashboard-day-140.json",
         "proposals.json",
         "ledger.json",
         "comms-slack.json",

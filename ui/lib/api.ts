@@ -47,6 +47,7 @@ function demoPath(path: string): string {
   if (rawPath === "/health") return "health.json";
   if (rawPath === "/accounts") return `accounts-day-${day}.json`;
   if (rawPath === "/sweep") return `sweep-day-${day}.json`;
+  if (rawPath === "/centralize/demo-dashboard") return `centralize-demo-dashboard-day-${day}.json`;
   if (rawPath === "/proposals") return "proposals.json";
   if (rawPath === "/ledger") return "ledger.json";
   if (rawPath === "/workflow-authoring/readiness") return "workflow-authoring-readiness.json";
@@ -500,6 +501,42 @@ export interface CentralizeTelemetryResponse {
   derived_usage_signals: Record<string, unknown>[];
 }
 
+export interface CentralizeDemoMoment {
+  moment_id: string;
+  title: string;
+  account_id: string;
+  simulated_customer: string;
+  story_day: number;
+  workflow: string;
+  status: string;
+  product_surface: string;
+  trigger: string;
+  agent_heavy_lift: string[];
+  csm_takeaway: string;
+  suggested_next_step: string;
+  value_path: string;
+  feature_metrics: Record<string, unknown>[];
+  source_receipts: Record<string, unknown>[];
+  manual_work_replaced: string;
+}
+
+export interface CentralizeDemoDashboardResponse {
+  artifact: string;
+  day: number;
+  claim_boundary: Record<string, unknown>;
+  summary: {
+    title: string;
+    job: string;
+    moment_count: number;
+    ready_count: number;
+    internal_only_count: number;
+    needs_judgment_count: number;
+    integrations: string[];
+    source_systems: string[];
+  };
+  moments: CentralizeDemoMoment[];
+}
+
 export interface HealthResponse {
   status: string;
   db_connected: boolean;
@@ -523,6 +560,10 @@ export const api = {
   accountCentralizeTelemetry: (accountId: string, day?: number) =>
     request<CentralizeTelemetryResponse>(
       `/accounts/${accountId}/centralize-telemetry${day != null ? `?day=${day}` : ""}`
+    ),
+  centralizeDemoDashboard: (day?: number) =>
+    request<CentralizeDemoDashboardResponse>(
+      `/centralize/demo-dashboard${day != null ? `?day=${day}` : ""}`
     ),
   accountTrajectory: (accountId: string, window = 30) =>
     request<Record<string, unknown>>(

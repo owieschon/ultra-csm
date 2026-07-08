@@ -1,0 +1,537 @@
+{
+  "artifact": "centralize_agent_demo_dashboard",
+  "claim_boundary": {
+    "customer_writes": false,
+    "live_credentials": false,
+    "live_customer_data": false,
+    "simulated_centralize_product_data": true
+  },
+  "day": 140,
+  "moments": [
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "agent_heavy_lift": [
+        "Assembles success plan assumptions from CRM, meetings, calls, email, calendar, and product context.",
+        "Converts integration scope and stakeholder coverage into launch milestones.",
+        "Prepares governed next actions instead of sending customer copy directly."
+      ],
+      "csm_takeaway": "The CSM starts from an evidence-backed launch packet, not a blank handoff doc.",
+      "feature_metrics": [
+        {
+          "metric_name": "centralize_account_views",
+          "observed_at": "2026-12-08T14:00:00Z",
+          "source_ref": "centralize_posthog:derived_fixture",
+          "unit": "events",
+          "value": 1.0
+        },
+        {
+          "metric_name": "centralize_action_completions",
+          "observed_at": "2026-12-08T14:00:00Z",
+          "source_ref": "centralize_posthog:derived_fixture",
+          "unit": "events",
+          "value": 1.0
+        },
+        {
+          "metric_name": "centralize_integration_sync_failures",
+          "observed_at": "2026-12-08T14:00:00Z",
+          "source_ref": "centralize_posthog:derived_fixture",
+          "unit": "events",
+          "value": 0.0
+        },
+        {
+          "metric_name": "centralize_relationship_events",
+          "observed_at": "2026-12-08T14:00:00Z",
+          "source_ref": "centralize_posthog:derived_fixture",
+          "unit": "events",
+          "value": 2.0
+        },
+        {
+          "metric_name": "posthog_autocapture_events",
+          "observed_at": "2026-12-08T14:00:00Z",
+          "source_ref": "centralize_posthog:derived_fixture",
+          "unit": "events",
+          "value": 8.0
+        },
+        {
+          "metric_name": "posthog_frontend_exceptions",
+          "observed_at": "2026-12-08T14:00:00Z",
+          "source_ref": "centralize_posthog:derived_fixture",
+          "unit": "events",
+          "value": 0.0
+        },
+        {
+          "metric_name": "posthog_session_recordings",
+          "observed_at": "2026-12-08T14:00:00Z",
+          "source_ref": "centralize_posthog:derived_fixture",
+          "unit": "events",
+          "value": 8.0
+        }
+      ],
+      "manual_work_replaced": "45-60 minutes of handoff reading and plan drafting",
+      "moment_id": "closed_won_handoff",
+      "product_surface": "Account workspace, relationship map, action planner",
+      "simulated_customer": "Enterprise rollout workspace",
+      "source_receipts": [
+        {
+          "feature": "account_workspace",
+          "field": "account_viewed",
+          "observed_at": "2026-12-08T00:00:00Z",
+          "source_id": "7cb848e6-7c24-5f03-b574-7df0f326ce77",
+          "source_type": "centralize_app"
+        },
+        {
+          "feature": "relationship_map",
+          "field": "relationship_map_updated",
+          "observed_at": "2026-12-08T01:00:00Z",
+          "source_id": "c5f0f0f3-77b3-52cb-84c8-ec7a2967d777",
+          "source_type": "centralize_app"
+        },
+        {
+          "feature": "opportunities",
+          "field": "opportunity_viewed",
+          "observed_at": "2026-12-08T02:00:00Z",
+          "source_id": "ccec2c86-438f-58d0-ac69-2c285d3bc5e2",
+          "source_type": "centralize_app"
+        },
+        {
+          "feature": "recommended_actions",
+          "field": "recommended_action_completed",
+          "observed_at": "2026-12-08T03:00:00Z",
+          "source_id": "5832ba9f-a936-55d6-b0ba-da7d6fea366d",
+          "source_type": "centralize_app"
+        },
+        {
+          "feature": "session_exhaust",
+          "field": "$pageview",
+          "has_exception": false,
+          "observed_at": "2026-12-08T00:00:00Z",
+          "source_id": "594100cc-5479-55eb-88ec-8ab30373b09e",
+          "source_type": "posthog"
+        },
+        {
+          "feature": "session_exhaust",
+          "field": "$autocapture",
+          "has_exception": false,
+          "observed_at": "2026-12-08T01:00:00Z",
+          "source_id": "201beb4a-650c-5dd8-8590-601eb4c6de7e",
+          "source_type": "posthog"
+        },
+        {
+          "feature": "session_exhaust",
+          "field": "centralize.relationship_map_updated",
+          "has_exception": false,
+          "observed_at": "2026-12-08T02:00:00Z",
+          "source_id": "6c28c5a8-ed4c-5fd1-9985-9ec82ff3569b",
+          "source_type": "posthog"
+        }
+      ],
+      "status": "ready",
+      "story_day": 170,
+      "suggested_next_step": "Review the generated success plan and confirm stakeholder ownership.",
+      "title": "Closed-won handoff becomes a launch plan",
+      "trigger": "Salesforce opportunity marked Closed Won",
+      "value_path": "Enterprise onboarding to first measurable account plan",
+      "workflow": "1a enterprise success plan"
+    },
+    {
+      "account_id": "91330ede-650a-5015-856d-c685a83807b4",
+      "agent_heavy_lift": [
+        "Classifies CRM interest as enterprise buying intent, not a self-serve support nudge.",
+        "Checks contact safety and source coverage before customer-facing motion.",
+        "Routes the packet to internal sales-assisted review with receipts."
+      ],
+      "csm_takeaway": "The signal is useful, but the safe action is internal champion-building.",
+      "feature_metrics": [
+        {
+          "metric_name": "centralize_account_views",
+          "observed_at": "2026-10-19T14:00:00Z",
+          "source_ref": "centralize_posthog:derived_fixture",
+          "unit": "events",
+          "value": 1.0
+        },
+        {
+          "metric_name": "centralize_action_completions",
+          "observed_at": "2026-10-19T14:00:00Z",
+          "source_ref": "centralize_posthog:derived_fixture",
+          "unit": "events",
+          "value": 0.0
+        },
+        {
+          "metric_name": "centralize_integration_sync_failures",
+          "observed_at": "2026-10-19T14:00:00Z",
+          "source_ref": "centralize_posthog:derived_fixture",
+          "unit": "events",
+          "value": 0.0
+        },
+        {
+          "metric_name": "centralize_relationship_events",
+          "observed_at": "2026-10-19T14:00:00Z",
+          "source_ref": "centralize_posthog:derived_fixture",
+          "unit": "events",
+          "value": 2.0
+        },
+        {
+          "metric_name": "posthog_autocapture_events",
+          "observed_at": "2026-10-19T14:00:00Z",
+          "source_ref": "centralize_posthog:derived_fixture",
+          "unit": "events",
+          "value": 6.0
+        },
+        {
+          "metric_name": "posthog_frontend_exceptions",
+          "observed_at": "2026-10-19T14:00:00Z",
+          "source_ref": "centralize_posthog:derived_fixture",
+          "unit": "events",
+          "value": 0.0
+        },
+        {
+          "metric_name": "posthog_session_recordings",
+          "observed_at": "2026-10-19T14:00:00Z",
+          "source_ref": "centralize_posthog:derived_fixture",
+          "unit": "events",
+          "value": 5.0
+        }
+      ],
+      "manual_work_replaced": "20-30 minutes of event triage and routing judgment",
+      "moment_id": "self_serve_crm_interest",
+      "product_surface": "Integration catalog, CRM boundary, relationship map",
+      "simulated_customer": "Self-serve team workspace",
+      "source_receipts": [
+        {
+          "feature": "account_workspace",
+          "field": "account_viewed",
+          "observed_at": "2026-10-19T00:00:00Z",
+          "source_id": "02edae54-e153-5be2-9faf-a4f2912c601c",
+          "source_type": "centralize_app"
+        },
+        {
+          "feature": "relationship_map",
+          "field": "relationship_map_viewed",
+          "observed_at": "2026-10-19T01:00:00Z",
+          "source_id": "409f15c6-9466-5bc3-8d03-d3518d500443",
+          "source_type": "centralize_app"
+        },
+        {
+          "feature": "contacts",
+          "field": "contact_profile_opened",
+          "observed_at": "2026-10-19T02:00:00Z",
+          "source_id": "ea5d8c17-3f87-5ae9-8162-dff5880ce4f3",
+          "source_type": "centralize_app"
+        },
+        {
+          "feature": "relationship_map",
+          "field": "contact_added_to_map",
+          "observed_at": "2026-10-19T03:00:00Z",
+          "source_id": "75b439d8-beb1-5e9f-9f52-01be5544d710",
+          "source_type": "centralize_app"
+        },
+        {
+          "feature": "session_exhaust",
+          "field": "$pageview",
+          "has_exception": false,
+          "observed_at": "2026-10-19T00:00:00Z",
+          "source_id": "0460f5b7-1783-5eec-af3b-5e37ebd5e278",
+          "source_type": "posthog"
+        },
+        {
+          "feature": "session_exhaust",
+          "field": "$autocapture",
+          "has_exception": false,
+          "observed_at": "2026-10-19T01:00:00Z",
+          "source_id": "192d07d6-4f37-5399-8765-825f57980252",
+          "source_type": "posthog"
+        },
+        {
+          "feature": "session_exhaust",
+          "field": "$autocapture",
+          "has_exception": false,
+          "observed_at": "2026-10-19T02:00:00Z",
+          "source_id": "0364631a-81f1-54f3-b097-7e79b3de0974",
+          "source_type": "posthog"
+        }
+      ],
+      "status": "internal_only",
+      "story_day": 120,
+      "suggested_next_step": "Ask sales-assisted CSM to inspect workspace fit and stakeholder path.",
+      "title": "Self-serve CRM interest becomes expansion signal",
+      "trigger": "User views Salesforce connection and hits enterprise-only boundary",
+      "value_path": "CRM-enterprise curious evaluator",
+      "workflow": "1b self-serve activation"
+    },
+    {
+      "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
+      "agent_heavy_lift": [
+        "Separates setup friction from lack of user motivation.",
+        "Pulls app events, PostHog exhaust, and derived usage rollups into one packet.",
+        "Points the CSM at the blocker and the evidence trail."
+      ],
+      "csm_takeaway": "The CSM should not send a generic adoption email; the problem is technical friction.",
+      "feature_metrics": [
+        {
+          "metric_name": "centralize_account_views",
+          "observed_at": "2026-08-10T14:00:00Z",
+          "source_ref": "centralize_posthog:derived_fixture",
+          "unit": "events",
+          "value": 1.0
+        },
+        {
+          "metric_name": "centralize_action_completions",
+          "observed_at": "2026-08-10T14:00:00Z",
+          "source_ref": "centralize_posthog:derived_fixture",
+          "unit": "events",
+          "value": 0.0
+        },
+        {
+          "metric_name": "centralize_integration_sync_failures",
+          "observed_at": "2026-08-10T14:00:00Z",
+          "source_ref": "centralize_posthog:derived_fixture",
+          "unit": "events",
+          "value": 1.0
+        },
+        {
+          "metric_name": "centralize_relationship_events",
+          "observed_at": "2026-08-10T14:00:00Z",
+          "source_ref": "centralize_posthog:derived_fixture",
+          "unit": "events",
+          "value": 0.0
+        },
+        {
+          "metric_name": "posthog_autocapture_events",
+          "observed_at": "2026-08-10T14:00:00Z",
+          "source_ref": "centralize_posthog:derived_fixture",
+          "unit": "events",
+          "value": 7.0
+        },
+        {
+          "metric_name": "posthog_frontend_exceptions",
+          "observed_at": "2026-08-10T14:00:00Z",
+          "source_ref": "centralize_posthog:derived_fixture",
+          "unit": "events",
+          "value": 1.0
+        },
+        {
+          "metric_name": "posthog_session_recordings",
+          "observed_at": "2026-08-10T14:00:00Z",
+          "source_ref": "centralize_posthog:derived_fixture",
+          "unit": "events",
+          "value": 7.0
+        }
+      ],
+      "manual_work_replaced": "30-45 minutes of telemetry and support reconstruction",
+      "moment_id": "integration_stall",
+      "product_surface": "Integration status, session replay, support trail",
+      "simulated_customer": "Implementation workspace",
+      "source_receipts": [
+        {
+          "feature": "account_workspace",
+          "field": "account_viewed",
+          "observed_at": "2026-08-10T00:00:00Z",
+          "source_id": "cd94d637-f416-5a22-b004-34fe835baffa",
+          "source_type": "centralize_app"
+        },
+        {
+          "feature": "integration_status",
+          "field": "integration_sync_reviewed",
+          "observed_at": "2026-08-10T01:00:00Z",
+          "source_id": "b29c249d-5fe2-5db7-9e43-d876bfadce44",
+          "source_type": "centralize_app"
+        },
+        {
+          "feature": "account_plan",
+          "field": "account_plan_updated",
+          "observed_at": "2026-08-10T02:00:00Z",
+          "source_id": "1e0ff0f0-2767-5e60-b9d3-14df8ed435f7",
+          "source_type": "centralize_app"
+        },
+        {
+          "feature": "support_context",
+          "field": "support_case_linked",
+          "observed_at": "2026-08-10T03:00:00Z",
+          "source_id": "397219cc-d176-5eaf-8c3b-046c58c5cc70",
+          "source_type": "centralize_app"
+        },
+        {
+          "feature": "session_exhaust",
+          "field": "$pageview",
+          "has_exception": false,
+          "observed_at": "2026-08-10T00:00:00Z",
+          "source_id": "1593e66e-1d0b-58fa-8abd-d290b2ab6b68",
+          "source_type": "posthog"
+        },
+        {
+          "feature": "session_exhaust",
+          "field": "$autocapture",
+          "has_exception": false,
+          "observed_at": "2026-08-10T01:00:00Z",
+          "source_id": "04c46f8c-9b9d-51fe-a4c5-82505153b5cc",
+          "source_type": "posthog"
+        },
+        {
+          "feature": "session_exhaust",
+          "field": "$exception",
+          "has_exception": true,
+          "observed_at": "2026-08-10T01:00:00Z",
+          "source_id": "065f7b29-e841-5768-978b-d7f835053735",
+          "source_type": "posthog"
+        }
+      ],
+      "status": "needs_judgment",
+      "story_day": 50,
+      "suggested_next_step": "Coordinate integration unblock before asking for broader activation.",
+      "title": "Integration stall is separated from adoption failure",
+      "trigger": "Sync failures and exception-heavy sessions cluster before activation",
+      "value_path": "Connector setup before team activation",
+      "workflow": "blocked value path recovery"
+    },
+    {
+      "account_id": "15eb8dd9-b1bc-5093-a208-49526f8d5650",
+      "agent_heavy_lift": [
+        "Compares baseline and current usage windows rather than counting isolated events.",
+        "Preserves uncertainty and keeps weak-cause customer motion suppressed.",
+        "Shows the CSM where the trend changed and which receipts support it."
+      ],
+      "csm_takeaway": "The account is worth inspecting even though no customer complained.",
+      "feature_metrics": [
+        {
+          "metric_name": "centralize_account_views",
+          "observed_at": "2027-05-27T14:00:00Z",
+          "source_ref": "centralize_posthog:derived_fixture",
+          "unit": "events",
+          "value": 1.0
+        },
+        {
+          "metric_name": "centralize_action_completions",
+          "observed_at": "2027-05-27T14:00:00Z",
+          "source_ref": "centralize_posthog:derived_fixture",
+          "unit": "events",
+          "value": 0.0
+        },
+        {
+          "metric_name": "centralize_integration_sync_failures",
+          "observed_at": "2027-05-27T14:00:00Z",
+          "source_ref": "centralize_posthog:derived_fixture",
+          "unit": "events",
+          "value": 0.0
+        },
+        {
+          "metric_name": "centralize_relationship_events",
+          "observed_at": "2027-05-27T14:00:00Z",
+          "source_ref": "centralize_posthog:derived_fixture",
+          "unit": "events",
+          "value": 0.0
+        },
+        {
+          "metric_name": "posthog_autocapture_events",
+          "observed_at": "2027-05-27T14:00:00Z",
+          "source_ref": "centralize_posthog:derived_fixture",
+          "unit": "events",
+          "value": 3.0
+        },
+        {
+          "metric_name": "posthog_frontend_exceptions",
+          "observed_at": "2027-05-27T14:00:00Z",
+          "source_ref": "centralize_posthog:derived_fixture",
+          "unit": "events",
+          "value": 0.0
+        },
+        {
+          "metric_name": "posthog_session_recordings",
+          "observed_at": "2027-05-27T14:00:00Z",
+          "source_ref": "centralize_posthog:derived_fixture",
+          "unit": "events",
+          "value": 2.0
+        }
+      ],
+      "manual_work_replaced": "25-40 minutes of manual trend comparison",
+      "moment_id": "silent_decline",
+      "product_surface": "Account plan, recommendations, product usage trend",
+      "simulated_customer": "Mature account workspace",
+      "source_receipts": [
+        {
+          "feature": "account_workspace",
+          "field": "account_viewed",
+          "observed_at": "2027-05-27T00:00:00Z",
+          "source_id": "106c3171-2d4b-5789-a6b5-5fda96fcbcf5",
+          "source_type": "centralize_app"
+        },
+        {
+          "feature": "usage_reporting",
+          "field": "usage_report_viewed",
+          "observed_at": "2027-05-27T01:00:00Z",
+          "source_id": "f799ac68-bd08-501b-bcc1-34c0cbc05309",
+          "source_type": "centralize_app"
+        },
+        {
+          "feature": "accounts",
+          "field": "saved_view_opened",
+          "observed_at": "2027-05-27T02:00:00Z",
+          "source_id": "e5f4a519-2aca-59d8-86ca-1570bcc3048f",
+          "source_type": "centralize_app"
+        },
+        {
+          "feature": "accounts",
+          "field": "saved_view_opened",
+          "observed_at": "2027-05-27T04:00:00Z",
+          "source_id": "63770265-fa3c-5f80-b53f-5c97badec5c6",
+          "source_type": "centralize_app"
+        },
+        {
+          "feature": "session_exhaust",
+          "field": "$pageview",
+          "has_exception": false,
+          "observed_at": "2027-05-27T00:00:00Z",
+          "source_id": "342b91f8-833e-5f30-8e02-942b07433685",
+          "source_type": "posthog"
+        },
+        {
+          "feature": "session_exhaust",
+          "field": "$autocapture",
+          "has_exception": false,
+          "observed_at": "2027-05-27T01:00:00Z",
+          "source_id": "9392a28d-8132-5cea-b33c-4819f15ef003",
+          "source_type": "posthog"
+        },
+        {
+          "feature": "session_exhaust",
+          "field": "$autocapture",
+          "has_exception": false,
+          "observed_at": "2027-05-27T02:00:00Z",
+          "source_id": "39dd8c21-ab91-54b4-8aba-0ab2253de8fb",
+          "source_type": "posthog"
+        }
+      ],
+      "status": "internal_only",
+      "story_day": 340,
+      "suggested_next_step": "Review product-depth trend and decide whether to open an internal review.",
+      "title": "Silent decline appears without an explicit alert",
+      "trigger": "Usage and activity decay while comms remain calm",
+      "value_path": "Ongoing value realization",
+      "workflow": "adoption regression review"
+    }
+  ],
+  "summary": {
+    "integrations": [
+      "MCP",
+      "Chrome extension",
+      "Salesforce CRM",
+      "Slack messaging",
+      "Gmail / Outlook email",
+      "Google / Outlook calendar",
+      "Gong / Salesloft / Clari Copilot / Avoma / Chorus / Fathom / Granola / Attention / Fireflies / Grain calls",
+      "Outreach / Gong Engage sequences"
+    ],
+    "internal_only_count": 2,
+    "job": "Show agents doing the heavy CSM work over simulated Centralize product data.",
+    "moment_count": 4,
+    "needs_judgment_count": 1,
+    "ready_count": 1,
+    "source_systems": [
+      "Centralize app events",
+      "PostHog-shaped telemetry",
+      "derived usage rollups",
+      "workflow packets",
+      "ActionGate governance"
+    ],
+    "title": "Centralize agent workbench demo"
+  }
+}

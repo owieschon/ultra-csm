@@ -275,6 +275,14 @@ class CentralizeTelemetryResponse(BaseModel):
     derived_usage_signals: list[dict[str, Any]]
 
 
+class CentralizeDemoDashboardResponse(BaseModel):
+    artifact: str
+    day: int
+    claim_boundary: dict[str, Any]
+    summary: dict[str, Any]
+    moments: list[dict[str, Any]]
+
+
 class DerivedHealthResponse(BaseModel):
     account_id: str
     score: float | None
@@ -1985,6 +1993,22 @@ async def get_account_centralize_telemetry(
         app_events=[_telemetry_row(event) for event in bundle.app_events],
         posthog_events=[_telemetry_row(event) for event in bundle.posthog_events],
         derived_usage_signals=[asdict(signal) for signal in bundle.usage_signals],
+    )
+
+
+@app.get(
+    "/centralize/demo-dashboard",
+    response_model=CentralizeDemoDashboardResponse,
+)
+async def get_centralize_demo_dashboard(
+    day: int = Query(140, ge=0, le=365),
+):
+    """Curated simulated product demo for the CSM workbench."""
+
+    from ultra_csm.centralize_demo_dashboard import build_centralize_demo_dashboard
+
+    return CentralizeDemoDashboardResponse(
+        **build_centralize_demo_dashboard(day=day),
     )
 
 

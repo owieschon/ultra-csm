@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toggleTheme as toggleThemeUtil } from "@/lib/theme";
 
-type View = "book" | "queue";
+type View = "demo" | "book" | "queue";
 
 export function TopBar({
   view,
@@ -60,7 +60,7 @@ export function TopBar({
         </svg>
         <b>ultra·csm</b>
         <span className="envchip">
-          <b>fleetops</b>
+          <b>centralize</b>
           <span className="num" style={{ color: "var(--fg-2)" }}>
             {accountCount != null ? `${accountCount} accounts` : "…"}
           </span>
@@ -69,6 +69,12 @@ export function TopBar({
       </div>
 
       <div className="seg" role="tablist">
+        <button
+          className={view === "demo" ? "on" : ""}
+          onClick={() => onViewChange("demo")}
+        >
+          Demo
+        </button>
         <button
           className={view === "book" ? "on" : ""}
           onClick={() => onViewChange("book")}
