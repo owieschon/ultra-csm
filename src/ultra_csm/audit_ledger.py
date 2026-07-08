@@ -22,6 +22,9 @@ EXPECTED_LEDGER_EVENTS = (
     "judge.score",
     "gmail.commit",
     "reobserve.queue",
+    "enterprise_onboarding.trigger",
+    "enterprise_onboarding.packet",
+    "enterprise_onboarding.success_plan",
 )
 
 
