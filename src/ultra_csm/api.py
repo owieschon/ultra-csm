@@ -44,6 +44,11 @@ from ultra_csm.data_plane import (
     DEFAULT_TENANT,
 )
 from ultra_csm.data_plane.live_facade import DataPlaneAssembly, build_served_data_plane
+from ultra_csm.enterprise_onboarding import (
+    GoogleCalendarEventsProvider,
+    SalesforceClosedWonEvent,
+    run_enterprise_closed_won_onboarding,
+)
 from ultra_csm.governance import (
     ActionGate,
     ActionProposal,
@@ -330,6 +335,29 @@ class IngestCommsResponse(BaseModel):
     auth: str | None = None
 
 
+class SalesforceClosedWonTriggerRequest(BaseModel):
+    opportunity_id: str
+    account_id: str
+    stage_name: str
+    observed_at: str | None = None
+    tenant_id: str | None = None
+    google_calendar_events: dict[str, Any] | None = None
+
+
+class EnterpriseOnboardingLaunchResponse(BaseModel):
+    tenant_id: str
+    status: str
+    account_id: str
+    opportunity_id: str
+    generated_at: str
+    missing_required_sources: list[str]
+    proposal_ids: list[str]
+    packet: dict[str, Any]
+    auth: str | None = None
+    data_plane_mode: str = "fixture"
+    data_plane_sources: dict[str, str] = Field(default_factory=dict)
+
+
 class DigestAccountSchema(BaseModel):
     account_id: str
     account_name: str
@@ -605,6 +633,20 @@ def _require_account(account_id: str, dp: CustomerDataPlane | None = None):
                     "account_id": account_id},
         )
     return account
+
+
+class _RequestCalendarProvider(GoogleCalendarEventsProvider):
+    def __init__(self, events: dict[str, Any] | None) -> None:
+        self._events = events or {"items": []}
+
+    def list_events(
+        self,
+        account_id: str,
+        *,
+        opportunity_id: str | None = None,
+        until: str | None = None,
+    ) -> dict:
+        return self._events
 
 
 def _telemetry_row(event: Any) -> dict[str, Any]:
@@ -1764,6 +1806,66 @@ async def trigger_sweep(
         actor_id=auth_principal.principal_id,
     )
     return response
+
+
+@app.post(
+    "/integrations/salesforce/opportunity-closed-won",
+    response_model=EnterpriseOnboardingLaunchResponse,
+)
+async def salesforce_closed_won_onboarding_trigger(
+    body: SalesforceClosedWonTriggerRequest,
+    request: Request,
+):
+    """Handle a Salesforce Opportunity Closed Won event for enterprise onboarding.
+
+    The payload is only the trigger. The workflow re-reads the account and
+    opportunity from the currently served data plane before producing any
+    customer-facing draft or ActionGate proposal.
+    """
+
+    assert _data_plane is not None
+    auth_principal = _require_write_auth(request)
+    observed_at = body.observed_at or datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
+    event = SalesforceClosedWonEvent(
+        tenant_id=body.tenant_id or _TENANT_ID,
+        opportunity_id=body.opportunity_id,
+        account_id=body.account_id,
+        stage_name=body.stage_name,
+        observed_at=observed_at,
+    )
+
+    packet = run_enterprise_closed_won_onboarding(
+        data_plane=_data_plane,
+        gate=_gate(),
+        event=event,
+        as_of=observed_at[:10],
+        calendar_provider=_RequestCalendarProvider(body.google_calendar_events),
+    )
+    packet_dict = packet.to_dict()
+    log.info(
+        "Salesforce closed-won onboarding trigger handled",
+        extra={
+            "account_id": packet.account_id,
+            "opportunity_id": packet.opportunity_id,
+            "status": packet.status,
+            "proposal_count": len(packet.proposals),
+            "auth": auth_principal.auth,
+            "data_plane_mode": _data_plane_assembly.mode if _data_plane_assembly else "uninitialized",
+        },
+    )
+    return EnterpriseOnboardingLaunchResponse(
+        tenant_id=packet.tenant_id,
+        status=packet.status,
+        account_id=packet.account_id,
+        opportunity_id=packet.opportunity_id,
+        generated_at=packet.generated_at,
+        missing_required_sources=list(packet.coverage.missing_required_sources),
+        proposal_ids=[proposal.proposal_id for proposal in packet.proposals],
+        packet=packet_dict,
+        auth=auth_principal.auth,
+        data_plane_mode=_data_plane_assembly.mode if _data_plane_assembly else "uninitialized",
+        data_plane_sources=_data_plane_assembly.source_status if _data_plane_assembly else {},
+    )
 
 
 @app.get("/proposals", response_model=ProposalListResponse)
