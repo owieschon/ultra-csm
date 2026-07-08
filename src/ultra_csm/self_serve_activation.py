@@ -19,12 +19,17 @@ from ultra_csm.data_plane.contracts import (
     UsageSignal,
 )
 from ultra_csm.governance import ActionGate, ActionProposal, proposal_fields_for
+from ultra_csm.workflow_playbooks import (
+    SELF_SERVE_SIGNUP_ACTIVATION,
+    evaluate_source_coverage,
+    workflow_packet_metadata,
+)
 
 
 PacketStatus = Literal["ready", "needs_data", "internal_only", "ignored"]
 MilestoneStatus = Literal["completed", "current", "blocked", "stale", "not_started"]
 CompletionOperator = Literal["any", "all"]
-VALUE_PATH_CONFIG_VERSION = "self-serve-value-path-config-v2"
+VALUE_PATH_CONFIG_VERSION = SELF_SERVE_SIGNUP_ACTIVATION.config_version
 
 PERSONAL_EMAIL_DOMAINS = {
     "aol.com",
@@ -199,6 +204,8 @@ class SelfServeProposalRef:
 
 @dataclass(frozen=True)
 class SelfServeActivationPacket:
+    workflow_id: str
+    workflow_config_version: str
     packet_id: str
     tenant_id: str
     status: PacketStatus
@@ -220,6 +227,9 @@ class SelfServeActivationPacket:
     def to_dict(self) -> dict[str, Any]:
         return {
             "packet_id": self.packet_id,
+            "workflow": workflow_packet_metadata(SELF_SERVE_SIGNUP_ACTIVATION),
+            "workflow_id": self.workflow_id,
+            "workflow_config_version": self.workflow_config_version,
             "tenant_id": self.tenant_id,
             "status": self.status,
             "account_id": self.account_id,
@@ -315,6 +325,8 @@ def run_self_serve_signup_activation(
         f"{_compact_timestamp(event.observed_at)}"
     )
     return SelfServeActivationPacket(
+        workflow_id=SELF_SERVE_SIGNUP_ACTIVATION.workflow_id,
+        workflow_config_version=SELF_SERVE_SIGNUP_ACTIVATION.config_version,
         packet_id=packet_id,
         tenant_id=event.tenant_id,
         status=status,
@@ -589,25 +601,36 @@ def _coverage(
     counts: dict[str, int] = {}
     for receipt in receipts:
         counts[receipt.source_type] = counts.get(receipt.source_type, 0) + 1
+    reviewed = tuple(sorted(counts))
+    normalized_source_list = list(reviewed)
+    if identity.state == "exactly_one":
+        normalized_source_list.append("resolved_organization")
+    if evidence.contacts:
+        normalized_source_list.append("contact_record")
+    normalized_reviewed = tuple(dict.fromkeys(normalized_source_list))
+    shared = evaluate_source_coverage(
+        SELF_SERVE_SIGNUP_ACTIVATION,
+        reviewed_sources=normalized_reviewed,
+    )
     missing: list[str] = []
     blockers: list[str] = []
+    missing.extend(shared.missing_required_sources)
+    blockers.extend(shared.customer_output_blockers)
     if identity.state != "exactly_one":
-        missing.append("resolved_organization")
         blockers.append("organization_identity_not_exactly_one")
     if not evidence.usage_signals:
-        missing.append("product_telemetry")
         blockers.append("product_telemetry_required_for_activation_judgment")
     if not evidence.contacts:
-        missing.append("contact_record")
+        blockers.append("contact_record_missing")
     consent_contact = _preferred_contact(evidence.contacts)
     if consent_contact is None:
         blockers.append("no_consented_contact_for_customer_outreach")
     if identity.personal_email_domain:
         blockers.append("personal_email_domain_suppresses_org_outreach")
     return SelfServeCoverage(
-        reviewed_sources=tuple(sorted(counts)),
-        missing_required_sources=tuple(missing),
-        customer_output_blockers=tuple(blockers),
+        reviewed_sources=reviewed,
+        missing_required_sources=tuple(dict.fromkeys(missing)),
+        customer_output_blockers=tuple(dict.fromkeys(blockers)),
         source_counts=counts,
     )
 

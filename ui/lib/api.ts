@@ -364,6 +364,11 @@ export interface LedgerResponse {
   ledger_gap: string[];
 }
 
+export interface WorkflowPlaybookResponse {
+  tenant_id: string;
+  workflows: Record<string, unknown>;
+}
+
 export interface EnterpriseOnboardingPacket {
   packet_id: string;
   account_id: string;
@@ -501,6 +506,7 @@ export const api = {
       }),
     }),
   ledger: (limit = 50) => request<LedgerResponse>(`/ledger?limit=${limit}`),
+  workflowPlaybooks: () => request<WorkflowPlaybookResponse>("/workflow-playbooks"),
   enterpriseOnboardingPackets: (accountId?: string, opportunityId?: string) => {
     const params = new URLSearchParams();
     if (accountId) params.set("account_id", accountId);

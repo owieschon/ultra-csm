@@ -188,3 +188,9 @@ def test_queue_detail_surfaces_self_serve_activation_packet():
     assert "config_version" in source
     assert "activation-milestones" in source
     assert "/self-serve/activation/packets" in api_source
+
+
+def test_ui_api_can_read_workflow_playbook_registry():
+    api_source = (Path(__file__).resolve().parents[1] / "ui" / "lib" / "api.ts").read_text()
+    assert "workflowPlaybooks" in api_source
+    assert "/workflow-playbooks" in api_source

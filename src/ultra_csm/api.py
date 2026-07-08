@@ -121,6 +121,7 @@ from ultra_csm._api_helpers import (
     sync_demo_accounts_to_postgres,
 )
 from ultra_csm import reconciliation_agent
+from ultra_csm.workflow_playbooks import WORKFLOW_REGISTRY
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -467,6 +468,11 @@ class LedgerResponse(BaseModel):
     tenant_id: str
     events: list[LedgerEventSchema]
     ledger_gap: list[str]
+
+
+class WorkflowPlaybookResponse(BaseModel):
+    tenant_id: str
+    workflows: dict[str, Any]
 
 
 class DelegationResponse(BaseModel):
@@ -2443,6 +2449,15 @@ _LEDGER_HUMAN = {
     "self_serve_activation.packet": "Activation packet",
     "self_serve_activation.value_path": "Value path",
 }
+
+
+@app.get("/workflow-playbooks", response_model=WorkflowPlaybookResponse)
+async def get_workflow_playbooks():
+    """Return the registered workflow/playbook contracts."""
+    return WorkflowPlaybookResponse(
+        tenant_id=_TENANT_ID,
+        workflows=WORKFLOW_REGISTRY.to_dict(),
+    )
 
 
 @app.get("/ledger", response_model=LedgerResponse)

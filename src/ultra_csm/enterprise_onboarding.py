@@ -45,10 +45,15 @@ from ultra_csm.value_model import (
     project_ttv_lens,
     resolve_tenant_tier,
 )
+from ultra_csm.workflow_playbooks import (
+    ENTERPRISE_CLOSED_WON_ONBOARDING,
+    evaluate_source_coverage,
+    workflow_packet_metadata,
+)
 
 
 ENTERPRISE_AMOUNT_CENTS = 10_000_000
-ENTERPRISE_SUCCESS_PLAN_CONFIG_VERSION = "enterprise-success-plan-config-v2"
+ENTERPRISE_SUCCESS_PLAN_CONFIG_VERSION = ENTERPRISE_CLOSED_WON_ONBOARDING.config_version
 
 LaunchStatus = Literal["ready", "needs_data", "ignored"]
 SourceAuthority = Literal[
@@ -310,6 +315,8 @@ class LaunchProposalRef:
 
 @dataclass(frozen=True)
 class EnterpriseOnboardingLaunchPacket:
+    workflow_id: str
+    workflow_config_version: str
     packet_id: str
     tenant_id: str
     status: LaunchStatus
@@ -333,7 +340,9 @@ class EnterpriseOnboardingLaunchPacket:
     proposals: tuple[LaunchProposalRef, ...]
 
     def to_dict(self) -> dict[str, Any]:
-        return asdict(self)
+        payload = asdict(self)
+        payload["workflow"] = workflow_packet_metadata(ENTERPRISE_CLOSED_WON_ONBOARDING)
+        return payload
 
 
 def run_enterprise_closed_won_onboarding(
@@ -504,6 +513,8 @@ def run_enterprise_closed_won_onboarding(
     ) if ready else ()
 
     return EnterpriseOnboardingLaunchPacket(
+        workflow_id=ENTERPRISE_CLOSED_WON_ONBOARDING.workflow_id,
+        workflow_config_version=ENTERPRISE_CLOSED_WON_ONBOARDING.config_version,
         packet_id=f"enterprise-onboarding:{opportunity.opportunity_id}:{as_of}",
         tenant_id=event.tenant_id,
         status="ready" if ready else "needs_data",
@@ -2018,6 +2029,8 @@ def _ignored_packet(
         customer_safe=False,
     )
     return EnterpriseOnboardingLaunchPacket(
+        workflow_id=ENTERPRISE_CLOSED_WON_ONBOARDING.workflow_id,
+        workflow_config_version=ENTERPRISE_CLOSED_WON_ONBOARDING.config_version,
         packet_id=f"enterprise-onboarding:{event.opportunity_id}:{as_of}",
         tenant_id=event.tenant_id,
         status="ignored",

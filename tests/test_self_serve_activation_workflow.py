@@ -60,6 +60,9 @@ def test_self_serve_signup_selects_team_value_path_and_gates_customer_outreach(r
         runtime_conn.rollback()
 
     assert packet.status == "ready"
+    assert packet.workflow_id == "self_serve_signup_activation"
+    assert packet.workflow_config_version == "self-serve-value-path-config-v2"
+    assert packet.to_dict()["workflow"]["ui"]["renderer"] == "self_serve_value_path"
     assert packet.identity_resolution.state == "exactly_one"
     assert packet.value_path.path_id == "team_workspace_creator"
     assert packet.value_path.config_version == "self-serve-value-path-config-v2"
