@@ -121,13 +121,54 @@ def test_enterprise_closed_won_builds_launch_packet_from_connected_sources(runti
         "sales_and_customer_context",
         "stakeholder_map",
         "current_state",
+        "value_model_thresholds",
+    }
+    alignment = method.value_model_alignment
+    assert alignment is not None
+    assert alignment.account_id == ACCOUNT_ID
+    assert alignment.lifecycle_stage == "onboarding"
+    assert alignment.service_tier == "high_touch"
+    assert alignment.config_version == "value-model-config-v1"
+    assert alignment.rule_name == "high_arr_review_default"
+    assert alignment.thresholds["seat_penetration_floor"] == 0.55
+    rails = {rail.rail: rail for rail in alignment.rails}
+    assert {
+        "activation",
+        "seat_penetration",
+        "feature_depth",
+        "outcome_realization",
+        "ttv_priority",
+        "relationship_coverage",
+    } <= set(rails)
+    assert rails["seat_penetration"].current_value == 0.0
+    assert rails["seat_penetration"].target_value == 0.55
+    assert rails["feature_depth"].current_value == 0.5
+    assert rails["feature_depth"].target_value == 0.7
+    assert rails["ttv_priority"].current_value == alignment.ttv_priority_score
+    assert alignment.ttv_priority_score > 0
+    assert {factor.name for factor in alignment.ttv_factors} >= {
+        "arr_tier",
+        "low_seat_penetration",
+        "feature_depth_gap",
     }
     assert all(check.passed for check in method.validation_checks)
+    assert {check.check_name for check in method.validation_checks} >= {
+        "value_model_available",
+        "resolved_thresholds_applied",
+        "ttv_projection_calculated",
+        "milestones_map_to_value_model_rails",
+    }
     assert any(
         check.check_name == "milestones_have_evidence"
         and OPPORTUNITY_ID in check.evidence_source_ids
         for check in method.validation_checks
     )
+    assert all(milestone.measurement is not None for milestone in packet.success_plan_v0)
+    first_value = next(item for item in packet.success_plan_v0 if item.milestone == "First value event achieved")
+    assert first_value.measurement is not None
+    assert first_value.measurement.rail == "feature_depth"
+    assert first_value.measurement.current_value == 0.5
+    assert first_value.measurement.target_value == 0.7
     assert any(
         "observable relationship maps workflow" in item.acceptance_criteria
         for item in packet.success_plan_v0
@@ -322,6 +363,12 @@ def test_salesforce_closed_won_endpoint_runs_workflow_against_served_data_plane(
     )
     assert packet["success_plan_methodology"]["method_version"] == "enterprise_closed_won_success_plan_v1"
     assert all(check["passed"] for check in packet["success_plan_methodology"]["validation_checks"])
+    api_alignment = packet["success_plan_methodology"]["value_model_alignment"]
+    assert api_alignment["rule_name"] == "high_arr_review_default"
+    assert api_alignment["service_tier"] == "high_touch"
+    assert api_alignment["ttv_priority_score"] > 0
+    assert packet["success_plan_v0"][3]["measurement"]["rail"] == "feature_depth"
+    assert packet["success_plan_v0"][3]["measurement"]["target_value"] == 0.7
 
     assert stored_resp.status_code == 200
     stored = stored_resp.json()
