@@ -160,6 +160,43 @@ class OnboardingMilestone:
 
 
 @dataclass(frozen=True)
+class SuccessPlanInputEvidence:
+    input_name: str
+    source_ids: tuple[str, ...]
+    customer_safe: bool
+    summary: str
+
+
+@dataclass(frozen=True)
+class SuccessPlanOutcomeHypothesis:
+    outcome: str
+    confidence: float
+    evidence_source_ids: tuple[str, ...]
+    unresolved_questions: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class SuccessPlanValidationCheck:
+    check_name: str
+    passed: bool
+    evidence_source_ids: tuple[str, ...]
+    detail: str
+
+
+@dataclass(frozen=True)
+class SuccessPlanMethodology:
+    method_version: str
+    lifecycle_stage: str
+    construction_steps: tuple[str, ...]
+    input_evidence: tuple[SuccessPlanInputEvidence, ...]
+    outcome_hypotheses: tuple[SuccessPlanOutcomeHypothesis, ...]
+    milestone_rationale: tuple[str, ...]
+    validation_checks: tuple[SuccessPlanValidationCheck, ...]
+    customer_fit_summary: str
+    open_questions: tuple[str, ...]
+
+
+@dataclass(frozen=True)
 class CustomerIntegrationFootprint:
     family: Literal[
         "mcp",
@@ -201,6 +238,7 @@ class EnterpriseOnboardingLaunchPacket:
     internal_context: tuple[str, ...]
     customer_integrations: tuple[CustomerIntegrationFootprint, ...]
     stakeholder_verification: tuple[StakeholderVerification, ...]
+    success_plan_methodology: SuccessPlanMethodology | None
     success_plan_v0: tuple[OnboardingMilestone, ...]
     risks: tuple[str, ...]
     recommended_next_action: str
@@ -317,15 +355,22 @@ def run_enterprise_closed_won_onboarding(
         internal_notes=internal_notes,
     )
     ready = not coverage.missing_required_sources
-    success_plan = _success_plan_v0(
+    success_plan, success_plan_methodology = _build_success_plan(
         as_of=as_of,
         account=account,
         opportunity=opportunity,
         contacts=contacts,
+        stakeholder_rows=stakeholder_rows,
         entitlements=entitlements,
+        usage_signals=usage_signals,
+        customer_comms=customer_comms,
+        call_or_meeting_comms=call_or_meeting_comms,
+        calendar_attendance=calendar_attendance,
+        internal_notes=internal_notes,
         onboarding_projects=onboarding_projects,
+        onboarding_tasks=onboarding_tasks,
         success_plans=success_plans,
-    ) if ready else ()
+    ) if ready else ((), None)
     customer_baseline = _customer_safe_baseline(
         account=account,
         opportunity=opportunity,
@@ -373,6 +418,7 @@ def run_enterprise_closed_won_onboarding(
         internal_context=internal_context,
         customer_integrations=customer_integrations,
         stakeholder_verification=stakeholder_rows,
+        success_plan_methodology=success_plan_methodology,
         success_plan_v0=success_plan,
         risks=risks,
         recommended_next_action=(
@@ -670,57 +716,330 @@ def _stakeholder_verification(
     return tuple(rows)
 
 
-def _success_plan_v0(
+def _build_success_plan(
     *,
     as_of: str,
     account: CRMAccount,
     opportunity: CRMOpportunity,
     contacts: tuple[CRMContact, ...],
+    stakeholder_rows: tuple[StakeholderVerification, ...],
     entitlements: tuple[Entitlement, ...],
+    usage_signals: tuple,
+    customer_comms: tuple,
+    call_or_meeting_comms: tuple,
+    calendar_attendance: tuple[CalendarAttendance, ...],
+    internal_notes: tuple,
     onboarding_projects: tuple,
+    onboarding_tasks: tuple,
     success_plans: tuple,
-) -> tuple[OnboardingMilestone, ...]:
+) -> tuple[tuple[OnboardingMilestone, ...], SuccessPlanMethodology]:
     owner = _owner_name(contacts) or account.owner_id
     source_ids = (opportunity.opportunity_id, *(f"{e.account_id}:{e.capability}" for e in entitlements[:3]))
     kickoff_date = as_of
     first_capability = entitlements[0].capability.replace("_", " ") if entitlements else "purchased workflow"
-    return (
+    outcome = _primary_success_outcome(
+        entitlements=entitlements,
+        success_plans=success_plans,
+        internal_notes=internal_notes,
+    )
+    first_value_criteria = _first_value_acceptance_criteria(first_capability, outcome)
+    milestones = (
         OnboardingMilestone(
             "Internal AE-to-CS handoff complete",
             account.owner_id,
             kickoff_date,
-            "CSM can name customer goal, first-value definition, stakeholders, and implementation dependencies.",
-            (opportunity.opportunity_id,),
+            (
+                "CSM can name customer goal, first-value definition, stakeholder map, "
+                "purchased scope, integration footprint, and implementation dependencies."
+            ),
+            _non_empty_sources((opportunity.opportunity_id, *(note.note_id for note in internal_notes))),
         ),
         OnboardingMilestone(
             "Customer kickoff scheduled",
             owner,
             kickoff_date,
             "Kickoff invite includes verified champion, admin or technical owner, and executive sponsor if known.",
-            source_ids,
+            _non_empty_sources(source_ids + tuple(row.person_key for row in stakeholder_rows if row.appearances)),
         ),
         OnboardingMilestone(
             "Entitlements and workspace provisioned",
             account.owner_id,
             opportunity.close_date,
             "Purchased package is enabled and admin can access the workspace.",
-            source_ids,
+            _non_empty_sources(source_ids + tuple(signal.signal_id for signal in usage_signals[:3])),
         ),
         OnboardingMilestone(
             "First value event achieved",
             owner,
             opportunity.close_date,
-            f"Customer completes first {first_capability} workflow tied to the closed-won use case.",
-            source_ids,
+            first_value_criteria,
+            _non_empty_sources(source_ids + tuple(plan.plan_id for plan in success_plans[:2])),
         ),
         OnboardingMilestone(
             "Executive checkpoint completed",
             account.owner_id,
             opportunity.close_date,
-            "CSM confirms value progress, blockers, and next adoption motion with sponsor or buyer.",
-            (opportunity.opportunity_id,),
+            f"CSM confirms progress toward {outcome}, blockers, and next adoption motion with sponsor or buyer.",
+            _non_empty_sources((
+                opportunity.opportunity_id,
+                *(row.person_key for row in stakeholder_rows if row.relationship_role == "executive_sponsor"),
+            )),
         ),
     )
+    methodology = _success_plan_methodology(
+        account=account,
+        opportunity=opportunity,
+        lifecycle_stage="enterprise_closed_won_onboarding",
+        first_capability=first_capability,
+        outcome=outcome,
+        milestones=milestones,
+        contacts=contacts,
+        stakeholder_rows=stakeholder_rows,
+        entitlements=entitlements,
+        usage_signals=usage_signals,
+        customer_comms=customer_comms,
+        call_or_meeting_comms=call_or_meeting_comms,
+        calendar_attendance=calendar_attendance,
+        internal_notes=internal_notes,
+        onboarding_projects=onboarding_projects,
+        onboarding_tasks=onboarding_tasks,
+        success_plans=success_plans,
+    )
+    return milestones, methodology
+
+
+def _success_plan_methodology(
+    *,
+    account: CRMAccount,
+    opportunity: CRMOpportunity,
+    lifecycle_stage: str,
+    first_capability: str,
+    outcome: str,
+    milestones: tuple[OnboardingMilestone, ...],
+    contacts: tuple[CRMContact, ...],
+    stakeholder_rows: tuple[StakeholderVerification, ...],
+    entitlements: tuple[Entitlement, ...],
+    usage_signals: tuple,
+    customer_comms: tuple,
+    call_or_meeting_comms: tuple,
+    calendar_attendance: tuple[CalendarAttendance, ...],
+    internal_notes: tuple,
+    onboarding_projects: tuple,
+    onboarding_tasks: tuple,
+    success_plans: tuple,
+) -> SuccessPlanMethodology:
+    input_evidence = (
+        SuccessPlanInputEvidence(
+            "commercial_trigger",
+            (opportunity.opportunity_id,),
+            False,
+            f"Closed-won Salesforce opportunity for {account.name}.",
+        ),
+        SuccessPlanInputEvidence(
+            "purchased_scope",
+            tuple(f"{item.account_id}:{item.capability}" for item in entitlements),
+            True,
+            "Entitlements define the purchased capabilities the plan may activate.",
+        ),
+        SuccessPlanInputEvidence(
+            "sales_and_customer_context",
+            tuple(
+                [signal.signal_id for signal in (*customer_comms, *call_or_meeting_comms)]
+                + [attendance.event_id for attendance in calendar_attendance]
+                + [note.note_id for note in internal_notes]
+            ),
+            False,
+            "Customer emails, calls, calendar attendance, and internal notes shape outcome and kickoff context.",
+        ),
+        SuccessPlanInputEvidence(
+            "stakeholder_map",
+            tuple(row.person_key for row in stakeholder_rows),
+            False,
+            "Salesforce contacts plus observed communication/calendar participants identify owners and gaps.",
+        ),
+        SuccessPlanInputEvidence(
+            "current_state",
+            tuple([signal.signal_id for signal in usage_signals] + [task.task_id for task in onboarding_tasks]),
+            False,
+            "Usage/provisioning and onboarding tasks show what has already started.",
+        ),
+    )
+    validation_checks = _success_plan_validation_checks(
+        opportunity=opportunity,
+        milestones=milestones,
+        stakeholder_rows=stakeholder_rows,
+        entitlements=entitlements,
+        usage_signals=usage_signals,
+        customer_comms=customer_comms,
+        call_or_meeting_comms=call_or_meeting_comms,
+        calendar_attendance=calendar_attendance,
+    )
+    open_questions = _success_plan_open_questions(
+        stakeholder_rows=stakeholder_rows,
+        usage_signals=usage_signals,
+        onboarding_projects=onboarding_projects,
+        entitlements=entitlements,
+    )
+    return SuccessPlanMethodology(
+        method_version="enterprise_closed_won_success_plan_v1",
+        lifecycle_stage=lifecycle_stage,
+        construction_steps=(
+            "Confirm the opportunity is Closed Won and enterprise-sized from Salesforce.",
+            "Resolve customer organization identity and verify stakeholders from CRM, email/call, and Calendar evidence.",
+            "Use entitlements as the hard boundary for promised activation scope.",
+            "Infer the primary outcome from existing success-plan objectives, internal handoff notes, and purchased capabilities.",
+            "Choose first value from the earliest purchased capability that can produce observable customer behavior.",
+            "Build milestones in CSM order: internal handoff, kickoff, provisioning, first value, executive checkpoint.",
+            "Attach source IDs to every milestone and keep customer-facing language behind ActionGate.",
+        ),
+        input_evidence=input_evidence,
+        outcome_hypotheses=(
+            SuccessPlanOutcomeHypothesis(
+                outcome=outcome,
+                confidence=0.84 if success_plans and (customer_comms or call_or_meeting_comms or calendar_attendance) else 0.68,
+                evidence_source_ids=tuple(
+                    [plan.plan_id for plan in success_plans]
+                    + [f"{item.account_id}:{item.capability}" for item in entitlements[:3]]
+                    + [note.note_id for note in internal_notes[:2]]
+                ),
+                unresolved_questions=open_questions,
+            ),
+        ),
+        milestone_rationale=tuple(
+            f"{item.milestone}: {item.acceptance_criteria}" for item in milestones
+        ),
+        validation_checks=validation_checks,
+        customer_fit_summary=(
+            f"The plan is tailored to {account.name} by anchoring first value on "
+            f"{first_capability}, outcome on {outcome}, and owners on verified stakeholder evidence."
+        ),
+        open_questions=open_questions,
+    )
+
+
+def _primary_success_outcome(
+    *,
+    entitlements: tuple[Entitlement, ...],
+    success_plans: tuple,
+    internal_notes: tuple,
+) -> str:
+    if success_plans:
+        objectives = tuple(
+            objective.replace("_", " ")
+            for plan in success_plans
+            for objective in getattr(plan, "objectives", ())
+        )
+        if objectives:
+            return objectives[0]
+    note_text = " ".join(getattr(note, "content", "") for note in internal_notes).lower()
+    if "first value" in note_text:
+        return "achieve first measurable value from the purchased workflow"
+    if entitlements:
+        return f"activate {entitlements[0].capability.replace('_', ' ')} for the launch team"
+    return "confirm the customer success outcome during kickoff"
+
+
+def _first_value_acceptance_criteria(first_capability: str, outcome: str) -> str:
+    return (
+        f"Customer completes one observable {first_capability} workflow tied to "
+        f"{outcome}, with owner, date, and evidence captured before executive checkpoint."
+    )
+
+
+def _success_plan_validation_checks(
+    *,
+    opportunity: CRMOpportunity,
+    milestones: tuple[OnboardingMilestone, ...],
+    stakeholder_rows: tuple[StakeholderVerification, ...],
+    entitlements: tuple[Entitlement, ...],
+    usage_signals: tuple,
+    customer_comms: tuple,
+    call_or_meeting_comms: tuple,
+    calendar_attendance: tuple[CalendarAttendance, ...],
+) -> tuple[SuccessPlanValidationCheck, ...]:
+    customer_context_ids = tuple(
+        [signal.signal_id for signal in (*customer_comms, *call_or_meeting_comms)]
+        + [attendance.event_id for attendance in calendar_attendance]
+    )
+    technical = tuple(
+        row.person_key for row in stakeholder_rows
+        if row.crm_role == "technical_lead" or row.relationship_role == "technical_lead"
+    )
+    sponsor = tuple(
+        row.person_key for row in stakeholder_rows
+        if row.relationship_role == "executive_sponsor" or row.crm_role == "executive_sponsor"
+    )
+    milestone_ids = tuple(source for milestone in milestones for source in milestone.source_ids)
+    entitlement_ids = tuple(f"{item.account_id}:{item.capability}" for item in entitlements)
+    return (
+        SuccessPlanValidationCheck(
+            "closed_won_source_confirmed",
+            _normalize_stage(opportunity.stage_name) == "closed won",
+            (opportunity.opportunity_id,),
+            "Opportunity stage must be read from Salesforce and be Closed Won.",
+        ),
+        SuccessPlanValidationCheck(
+            "purchased_scope_present",
+            bool(entitlements),
+            entitlement_ids,
+            "At least one entitlement or order-line capability must bound the plan.",
+        ),
+        SuccessPlanValidationCheck(
+            "customer_context_present",
+            bool(customer_context_ids),
+            customer_context_ids,
+            "Customer-facing email, call, meeting, or calendar evidence must support the handoff.",
+        ),
+        SuccessPlanValidationCheck(
+            "technical_owner_identified",
+            bool(technical),
+            technical,
+            "A technical/admin owner should be declared or observed before kickoff.",
+        ),
+        SuccessPlanValidationCheck(
+            "executive_sponsor_identified",
+            bool(sponsor),
+            sponsor,
+            "Executive sponsor or buyer coverage should be present for enterprise launch.",
+        ),
+        SuccessPlanValidationCheck(
+            "current_state_observed",
+            bool(usage_signals),
+            tuple(signal.signal_id for signal in usage_signals),
+            "Provisioning or product state should be observed before customer-facing plan language.",
+        ),
+        SuccessPlanValidationCheck(
+            "milestones_have_evidence",
+            all(milestone.source_ids for milestone in milestones),
+            milestone_ids,
+            "Every success-plan milestone must carry source IDs.",
+        ),
+    )
+
+
+def _success_plan_open_questions(
+    *,
+    stakeholder_rows: tuple[StakeholderVerification, ...],
+    usage_signals: tuple,
+    onboarding_projects: tuple,
+    entitlements: tuple[Entitlement, ...],
+) -> tuple[str, ...]:
+    questions: list[str] = []
+    if not any(row.relationship_role == "executive_sponsor" or row.crm_role == "executive_sponsor" for row in stakeholder_rows):
+        questions.append("Who is the executive sponsor or buyer accountable for value?")
+    if not any(row.relationship_role == "technical_lead" or row.crm_role == "technical_lead" for row in stakeholder_rows):
+        questions.append("Who owns admin setup, data access, and technical dependencies?")
+    if not usage_signals:
+        questions.append("Has the workspace or tenant been provisioned yet?")
+    if not onboarding_projects:
+        questions.append("Has an implementation/onboarding project been created?")
+    if not entitlements:
+        questions.append("Which purchased capabilities and quantities are in scope?")
+    return tuple(questions)
+
+
+def _non_empty_sources(values: tuple[str, ...]) -> tuple[str, ...]:
+    return tuple(item for item in dict.fromkeys(values) if item)
 
 
 def _customer_integrations(
@@ -1010,6 +1329,7 @@ def _ignored_packet(
         internal_context=(reason,),
         customer_integrations=(),
         stakeholder_verification=(),
+        success_plan_methodology=None,
         success_plan_v0=(),
         risks=(reason,),
         recommended_next_action="No enterprise onboarding workflow was launched.",

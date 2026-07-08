@@ -111,6 +111,27 @@ def test_enterprise_closed_won_builds_launch_packet_from_connected_sources(runti
     assert packet.customer_welcome_draft is not None
     assert "kickoff" in packet.customer_welcome_draft.lower()
     assert len(packet.success_plan_v0) >= 5
+    assert packet.success_plan_methodology is not None
+    method = packet.success_plan_methodology
+    assert method.method_version == "enterprise_closed_won_success_plan_v1"
+    assert "relationship maps" in method.customer_fit_summary
+    assert {item.input_name for item in method.input_evidence} >= {
+        "commercial_trigger",
+        "purchased_scope",
+        "sales_and_customer_context",
+        "stakeholder_map",
+        "current_state",
+    }
+    assert all(check.passed for check in method.validation_checks)
+    assert any(
+        check.check_name == "milestones_have_evidence"
+        and OPPORTUNITY_ID in check.evidence_source_ids
+        for check in method.validation_checks
+    )
+    assert any(
+        "observable relationship maps workflow" in item.acceptance_criteria
+        for item in packet.success_plan_v0
+    )
     integrations = {item.family: item for item in packet.customer_integrations}
     assert "mcp" in integrations
     assert "mp" not in integrations
@@ -168,6 +189,7 @@ def test_enterprise_closed_won_stops_before_customer_output_when_context_missing
     assert "customer_facing_email_call_or_calendar_context" in packet.coverage.missing_required_sources
     assert "product_tenant_or_provisioning_state" in packet.coverage.missing_required_sources
     assert packet.customer_welcome_draft is None
+    assert packet.success_plan_methodology is None
     assert packet.proposals == ()
     assert packet.recommended_next_action == (
         "Complete missing onboarding evidence before customer-facing activity."
@@ -258,10 +280,15 @@ def test_salesforce_closed_won_endpoint_runs_workflow_against_served_data_plane(
                 "google_calendar_events": _calendar_events(),
             },
         )
+        assert resp.status_code == 200
+        body = resp.json()
+        packet_id = body["packet_id"]
+        stored_resp = client.get(f"/enterprise-onboarding/packets/{packet_id}")
+        list_resp = client.get(f"/enterprise-onboarding/packets?account_id={ACCOUNT_ID}")
+        ledger_resp = client.get("/ledger?limit=50")
 
-    assert resp.status_code == 200
-    body = resp.json()
     assert body["status"] == "ready"
+    assert packet_id.startswith("enterprise-onboarding:")
     assert body["account_id"] == ACCOUNT_ID
     assert body["data_plane_mode"] == "live"
     assert body["missing_required_sources"] == []
@@ -293,6 +320,26 @@ def test_salesforce_closed_won_endpoint_runs_workflow_against_served_data_plane(
         and row["verification_state"] == "observed_missing_from_crm"
         for row in packet["stakeholder_verification"]
     )
+    assert packet["success_plan_methodology"]["method_version"] == "enterprise_closed_won_success_plan_v1"
+    assert all(check["passed"] for check in packet["success_plan_methodology"]["validation_checks"])
+
+    assert stored_resp.status_code == 200
+    stored = stored_resp.json()
+    assert stored["packet_id"] == packet_id
+    assert stored["packet"]["calendar_account_resolution"]["account_id"] == ACCOUNT_ID
+    assert stored["packet"]["success_plan_methodology"]["customer_fit_summary"]
+
+    assert list_resp.status_code == 200
+    listed = list_resp.json()["packets"]
+    assert any(item["packet_id"] == packet_id for item in listed)
+
+    assert ledger_resp.status_code == 200
+    ledger_events = {item["event"] for item in ledger_resp.json()["events"]}
+    assert {
+        "enterprise_onboarding.trigger",
+        "enterprise_onboarding.packet",
+        "enterprise_onboarding.success_plan",
+    } <= ledger_events
 
 
 def _closed_won_event() -> SalesforceClosedWonEvent:

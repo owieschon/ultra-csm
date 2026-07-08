@@ -44,11 +44,20 @@ from ultra_csm.data_plane import (
     DEFAULT_TENANT,
 )
 from ultra_csm.data_plane.live_facade import DataPlaneAssembly, build_served_data_plane
+from ultra_csm.data_plane.google_calendar_live import (
+    GoogleCalendarReadError,
+    LiveGoogleCalendarEventsProvider,
+)
 from ultra_csm.enterprise_onboarding import (
     GoogleCalendarEventsProvider,
     SalesforceClosedWonEvent,
     resolve_account_by_calendar_attendee_domain,
     run_enterprise_closed_won_onboarding,
+)
+from ultra_csm.enterprise_onboarding_store import (
+    get_enterprise_onboarding_packet,
+    list_enterprise_onboarding_packets,
+    upsert_enterprise_onboarding_packet,
 )
 from ultra_csm.governance import (
     ActionGate,
@@ -348,6 +357,7 @@ class SalesforceClosedWonTriggerRequest(BaseModel):
 class EnterpriseOnboardingLaunchResponse(BaseModel):
     tenant_id: str
     status: str
+    packet_id: str
     account_id: str
     opportunity_id: str
     generated_at: str
@@ -358,6 +368,21 @@ class EnterpriseOnboardingLaunchResponse(BaseModel):
     auth: str | None = None
     data_plane_mode: str = "fixture"
     data_plane_sources: dict[str, str] = Field(default_factory=dict)
+
+
+class EnterpriseOnboardingPacketSchema(BaseModel):
+    packet_id: str
+    account_id: str
+    opportunity_id: str
+    status: str
+    packet: dict[str, Any]
+    created_at: str
+    updated_at: str
+
+
+class EnterpriseOnboardingPacketListResponse(BaseModel):
+    tenant_id: str
+    packets: list[EnterpriseOnboardingPacketSchema]
 
 
 class DigestAccountSchema(BaseModel):
@@ -649,6 +674,20 @@ class _RequestCalendarProvider(GoogleCalendarEventsProvider):
         until: str | None = None,
     ) -> dict:
         return self._events
+
+
+def _calendar_provider_for_trigger(
+    *,
+    account_id: str,
+    request_events: dict[str, Any] | None,
+) -> GoogleCalendarEventsProvider | None:
+    if request_events is not None:
+        return _RequestCalendarProvider(request_events)
+    assert _data_plane is not None
+    return LiveGoogleCalendarEventsProvider.from_env_for_account(
+        crm=_data_plane.crm,
+        account_id=account_id,
+    )
 
 
 def _telemetry_row(event: Any) -> dict[str, Any]:
@@ -1074,6 +1113,97 @@ def _record_sweep_audit_events(
                 },
                 now=_CLOCK,
             )
+
+
+def _stored_enterprise_packet_schema(stored) -> EnterpriseOnboardingPacketSchema:
+    return EnterpriseOnboardingPacketSchema(
+        packet_id=stored.packet_id,
+        account_id=stored.account_id,
+        opportunity_id=stored.opportunity_id,
+        status=stored.status,
+        packet=stored.payload,
+        created_at=stored.created_at.isoformat() if stored.created_at else "",
+        updated_at=stored.updated_at.isoformat() if stored.updated_at else "",
+    )
+
+
+def _record_enterprise_onboarding_audit_events(
+    *,
+    packet: dict[str, Any],
+    actor_id: str,
+    calendar_resolution: dict[str, Any],
+) -> None:
+    assert _conn is not None
+    packet_id = str(packet.get("packet_id") or "")
+    account_id = str(packet.get("account_id") or "")
+    opportunity_id = str(packet.get("opportunity_id") or "")
+    proposals = packet.get("proposals") if isinstance(packet.get("proposals"), list) else []
+    methodology = (
+        packet.get("success_plan_methodology")
+        if isinstance(packet.get("success_plan_methodology"), dict)
+        else {}
+    )
+    validation_checks = (
+        methodology.get("validation_checks")
+        if isinstance(methodology.get("validation_checks"), list)
+        else []
+    )
+
+    record_audit_event(
+        _conn,
+        tenant_id=_TENANT_ID,
+        actor_id=actor_id,
+        event_type="enterprise_onboarding.trigger",
+        account_ref=account_id or None,
+        source_ref=f"enterprise_onboarding.trigger:{opportunity_id}",
+        detail=f"Closed Won onboarding trigger resolved {account_id or 'no account'}",
+        payload={
+            "packet_id": packet_id,
+            "opportunity_id": opportunity_id,
+            "calendar_account_resolution": calendar_resolution,
+        },
+        now=_CLOCK,
+    )
+    record_audit_event(
+        _conn,
+        tenant_id=_TENANT_ID,
+        actor_id=actor_id,
+        event_type="enterprise_onboarding.packet",
+        account_ref=account_id or None,
+        source_ref=f"enterprise_onboarding.packet:{packet_id}",
+        detail=f"Enterprise onboarding packet {packet.get('status')} with {len(proposals)} proposal(s)",
+        payload={
+            "packet_id": packet_id,
+            "opportunity_id": opportunity_id,
+            "status": packet.get("status"),
+            "proposal_ids": [
+                item.get("proposal_id") for item in proposals if isinstance(item, dict)
+            ],
+            "missing_required_sources": (
+                packet.get("coverage", {}).get("missing_required_sources", [])
+                if isinstance(packet.get("coverage"), dict)
+                else []
+            ),
+        },
+        now=_CLOCK,
+    )
+    if methodology:
+        record_audit_event(
+            _conn,
+            tenant_id=_TENANT_ID,
+            actor_id=actor_id,
+            event_type="enterprise_onboarding.success_plan",
+            account_ref=account_id or None,
+            source_ref=f"enterprise_onboarding.success_plan:{packet_id}",
+            detail=f"Success plan built using {methodology.get('method_version')}",
+            payload={
+                "packet_id": packet_id,
+                "method_version": methodology.get("method_version"),
+                "customer_fit_summary": methodology.get("customer_fit_summary"),
+                "validation_checks": validation_checks,
+            },
+            now=_CLOCK,
+        )
 
 
 def _as_mapping(value: Any) -> dict[str, Any] | None:
@@ -1814,6 +1944,10 @@ async def trigger_sweep(
     "/integrations/salesforce/opportunity-closed-won",
     response_model=EnterpriseOnboardingLaunchResponse,
 )
+@app.post(
+    "/integrations/salesforce/platform-events/opportunity-closed-won",
+    response_model=EnterpriseOnboardingLaunchResponse,
+)
 async def salesforce_closed_won_onboarding_trigger(
     body: SalesforceClosedWonTriggerRequest,
     request: Request,
@@ -1865,15 +1999,40 @@ async def salesforce_closed_won_onboarding_trigger(
         stage_name=body.stage_name,
         observed_at=observed_at,
     )
-
-    packet = run_enterprise_closed_won_onboarding(
-        data_plane=_data_plane,
-        gate=_gate(),
-        event=event,
-        as_of=observed_at[:10],
-        calendar_provider=_RequestCalendarProvider(body.google_calendar_events),
+    calendar_provider = _calendar_provider_for_trigger(
+        account_id=account_id,
+        request_events=body.google_calendar_events,
     )
+
+    try:
+        packet = run_enterprise_closed_won_onboarding(
+            data_plane=_data_plane,
+            gate=_gate(),
+            event=event,
+            as_of=observed_at[:10],
+            calendar_provider=calendar_provider,
+        )
+    except GoogleCalendarReadError as exc:
+        raise HTTPException(
+            status_code=502,
+            detail={"error": str(exc), "code": "GOOGLE_CALENDAR_READ_FAILED"},
+        ) from exc
     packet_dict = packet.to_dict()
+    packet_dict["calendar_account_resolution"] = calendar_resolution.to_dict()
+    assert _conn is not None
+    stored = upsert_enterprise_onboarding_packet(
+        _conn,
+        tenant_id=_TENANT_ID,
+        actor_id=auth_principal.principal_id,
+        packet=packet,
+        payload=packet_dict,
+        now=_CLOCK,
+    )
+    _record_enterprise_onboarding_audit_events(
+        packet=packet_dict,
+        actor_id=auth_principal.principal_id,
+        calendar_resolution=calendar_resolution.to_dict(),
+    )
     log.info(
         "Salesforce closed-won onboarding trigger handled",
         extra={
@@ -1888,6 +2047,7 @@ async def salesforce_closed_won_onboarding_trigger(
     return EnterpriseOnboardingLaunchResponse(
         tenant_id=packet.tenant_id,
         status=packet.status,
+        packet_id=stored.packet_id,
         account_id=packet.account_id,
         opportunity_id=packet.opportunity_id,
         generated_at=packet.generated_at,
@@ -1899,6 +2059,54 @@ async def salesforce_closed_won_onboarding_trigger(
         data_plane_mode=_data_plane_assembly.mode if _data_plane_assembly else "uninitialized",
         data_plane_sources=_data_plane_assembly.source_status if _data_plane_assembly else {},
     )
+
+
+@app.get(
+    "/enterprise-onboarding/packets",
+    response_model=EnterpriseOnboardingPacketListResponse,
+)
+async def list_enterprise_onboarding_packet_endpoint(
+    account_id: str | None = None,
+    opportunity_id: str | None = None,
+    limit: int = Query(25, ge=1, le=100),
+):
+    """List persisted enterprise onboarding handoff/launch packets."""
+    assert _conn is not None
+    packets = list_enterprise_onboarding_packets(
+        _conn,
+        tenant_id=_TENANT_ID,
+        actor_id=_orch_principal or _SEED_AGENT,
+        account_id=account_id,
+        opportunity_id=opportunity_id,
+        limit=limit,
+        now=_CLOCK,
+    )
+    return EnterpriseOnboardingPacketListResponse(
+        tenant_id=_TENANT_ID,
+        packets=[_stored_enterprise_packet_schema(packet) for packet in packets],
+    )
+
+
+@app.get(
+    "/enterprise-onboarding/packets/{packet_id}",
+    response_model=EnterpriseOnboardingPacketSchema,
+)
+async def get_enterprise_onboarding_packet_endpoint(packet_id: str):
+    """Fetch one persisted enterprise onboarding handoff/launch packet."""
+    assert _conn is not None
+    packet = get_enterprise_onboarding_packet(
+        _conn,
+        tenant_id=_TENANT_ID,
+        actor_id=_orch_principal or _SEED_AGENT,
+        packet_id=packet_id,
+        now=_CLOCK,
+    )
+    if packet is None:
+        raise HTTPException(
+            status_code=404,
+            detail={"error": "Enterprise onboarding packet not found", "code": "PACKET_NOT_FOUND"},
+        )
+    return _stored_enterprise_packet_schema(packet)
 
 
 @app.get("/proposals", response_model=ProposalListResponse)
@@ -1958,6 +2166,9 @@ _LEDGER_HUMAN = {
     "gmail.commit": "Gmail committed",
     "reobserve.queue": "Re-observe queued",
     "reobserve.result": "Re-observed",
+    "enterprise_onboarding.trigger": "Closed Won trigger",
+    "enterprise_onboarding.packet": "Onboarding packet",
+    "enterprise_onboarding.success_plan": "Success plan",
 }
 
 

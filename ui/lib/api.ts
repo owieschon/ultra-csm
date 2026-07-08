@@ -364,6 +364,21 @@ export interface LedgerResponse {
   ledger_gap: string[];
 }
 
+export interface EnterpriseOnboardingPacket {
+  packet_id: string;
+  account_id: string;
+  opportunity_id: string;
+  status: string;
+  packet: Record<string, unknown>;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface EnterpriseOnboardingPacketListResponse {
+  tenant_id: string;
+  packets: EnterpriseOnboardingPacket[];
+}
+
 // Reconciliation agent (Harvest 31/32, report 52/53): reported-vs-
 // experienced reconciliation for one account. EvidenceRefRow mirrors
 // EvidenceRef (contracts.py) -- source/source_id/field/observed_at.
@@ -470,6 +485,19 @@ export const api = {
       }),
     }),
   ledger: (limit = 50) => request<LedgerResponse>(`/ledger?limit=${limit}`),
+  enterpriseOnboardingPackets: (accountId?: string, opportunityId?: string) => {
+    const params = new URLSearchParams();
+    if (accountId) params.set("account_id", accountId);
+    if (opportunityId) params.set("opportunity_id", opportunityId);
+    const query = params.toString();
+    return request<EnterpriseOnboardingPacketListResponse>(
+      `/enterprise-onboarding/packets${query ? `?${query}` : ""}`
+    );
+  },
+  enterpriseOnboardingPacket: (packetId: string) =>
+    request<EnterpriseOnboardingPacket>(
+      `/enterprise-onboarding/packets/${encodeURIComponent(packetId)}`
+    ),
   pendingSlackMappings: () =>
     request<PendingMappingsResponse>("/comms/pending-mappings/slack"),
   pendingNotionMappings: () =>
