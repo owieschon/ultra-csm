@@ -45,6 +45,7 @@ def test_current_workflow_registry_passes_authoring_readiness():
             "suppression_or_missing_data_path",
             "execution_envelope_invariants",
             "action_gate_path",
+            "behavioral_quality_eval",
             "api_trigger_persistence_ledger",
             "ui_projection_contract",
         } <= set(workflow.declared_test_obligations)
