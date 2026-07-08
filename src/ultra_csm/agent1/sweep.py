@@ -66,6 +66,7 @@ from ultra_csm.value_model import (
     project_ttv_lens,
     resolve_tenant_tier,
 )
+from ultra_csm.work_packets import CSMWorkPacket, PacketInputs, build_work_packet
 
 if TYPE_CHECKING:
     from ultra_csm.cost_tracker import CostBudget, CostTracker
@@ -135,6 +136,9 @@ class CSMWorkItem:
     # MP-B internal bridge: additive deterministic routing to the internal
     # specialist pair. This does not alter disposition or customer action.
     internal_bridge_decision: InternalBridgeDecision | None = None
+    # MP-D2 packet contract: deterministic read-side envelope over the
+    # existing sweep, Slot B, internal bridge, value-model, and gate outputs.
+    work_packet: CSMWorkPacket | None = None
 
 
 @dataclass
@@ -246,6 +250,8 @@ def run_time_to_value_sweep(
                     candidates=key,
                     contacts=contacts,
                     as_of=as_of,
+                    accounts_scanned=len(swept_accounts),
+                    accounts_in_book=len(accounts),
                 ))
                 emitted_escalations.add(key)
             continue
@@ -303,6 +309,8 @@ def run_time_to_value_sweep(
             playbooks=playbooks,
             value_model_config=value_model_config,
             case_note_classifier=classifier,
+            accounts_scanned=len(swept_accounts),
+            accounts_in_book=len(accounts),
         )
         if built is not None:
             if budget_exceeded:
@@ -912,6 +920,29 @@ def collapse_cohorts(
     cohort_items: list[CSMWorkItem] = []
     for cohort in cohort_actions:
         cohort_account_ids.update(cohort["account_ids"])
+        reason = (
+            f"Cohort collapse: {cohort['trigger_factor']} affects "
+            f"{len(cohort['account_ids'])} {cohort['tier']} accounts via play "
+            f"{cohort['play_id']!r} -- one cohort_action covers all, not "
+            f"{len(cohort['account_ids'])} individual motions."
+        )
+        work_packet = build_work_packet(PacketInputs(
+            tenant_id=tenant_id,
+            account=None,
+            as_of=as_of,
+            account_resolution="ambiguous",
+            candidate_account_ids=tuple(cohort["account_ids"]),
+            disposition="propose_customer_action",
+            recommended_action="cohort_action",
+            motion="cohort_action",
+            reason=reason,
+            priority_score=None,
+            priority_factors=(),
+            evidence=(),
+            customer_contact_allowed=False,
+            accounts_scanned=len(sweep.swept_accounts),
+            accounts_in_book=len(accounts),
+        ))
         cohort_items.append(CSMWorkItem(
             tenant_id=tenant_id,
             account_resolution="ambiguous",
@@ -919,18 +950,14 @@ def collapse_cohorts(
             candidate_account_ids=tuple(cohort["account_ids"]),
             disposition="propose_customer_action",
             recommended_action="cohort_action",
-            reason=(
-                f"Cohort collapse: {cohort['trigger_factor']} affects "
-                f"{len(cohort['account_ids'])} {cohort['tier']} accounts via play "
-                f"{cohort['play_id']!r} -- one cohort_action covers all, not "
-                f"{len(cohort['account_ids'])} individual motions."
-            ),
+            reason=reason,
             priority=None,
             evidence=(),
             customer_contact_allowed=False,
             proposal=None,
             swept_at=as_of,
             motion="cohort_action",
+            work_packet=work_packet,
         ))
 
     kept_items = tuple(item for item in sweep.work_items if item.account_id not in cohort_account_ids)
@@ -955,6 +982,8 @@ def _work_item_for_account(
     playbooks: PlaybookSet | None = None,
     value_model_config: ValueModelConfig | None = None,
     case_note_classifier: CaseNoteClassifier | None = None,
+    accounts_scanned: int = 0,
+    accounts_in_book: int = 0,
 ) -> CSMWorkItem | None:
     value_start = time.perf_counter()
     inputs = _slot_b_inputs_for_account(
@@ -1105,6 +1134,33 @@ def _work_item_for_account(
             timing.governance_ms += (time.perf_counter() - governance_start) * 1000.0
         proposal_ref = _proposal_ref(proposal, action=action, principal_id=sweep_principal_id)
 
+    work_packet = build_work_packet(PacketInputs(
+        tenant_id=tenant_id,
+        account=account,
+        as_of=as_of,
+        account_resolution="exactly_one",
+        candidate_account_ids=(),
+        disposition=disposition,
+        recommended_action=action,
+        motion=motion,
+        reason=slot_b.reason,
+        priority_score=inputs.priority.score,
+        priority_factors=inputs.priority.factors,
+        evidence=inputs.evidence,
+        contacts=contacts,
+        selected_contact=contact if not customer_action_blocked else None,
+        recipient_resolution=recipient_resolution,
+        customer_contact_allowed=customer_contact_allowed and not customer_action_blocked,
+        proposal_id=proposal_ref.proposal_id if proposal_ref else None,
+        proposal_status=proposal_ref.status if proposal_ref else None,
+        draft_body=slot_b.customer_draft,
+        draft_mode=draft_mode,
+        internal_bridge_decision=internal_bridge_decision,
+        content_route_title=content_route_match.title if content_route_match else None,
+        accounts_scanned=accounts_scanned,
+        accounts_in_book=accounts_in_book,
+    ))
+
     return CSMWorkItem(
         tenant_id=tenant_id,
         account_resolution="exactly_one",
@@ -1126,6 +1182,7 @@ def _work_item_for_account(
         recipient_role=recipient_role,
         slot_a_classifications=inputs.slot_a_classifications,
         internal_bridge_decision=internal_bridge_decision,
+        work_packet=work_packet,
     )
 
 
@@ -1248,11 +1305,31 @@ def _escalation_item(
     candidates: tuple[str, ...],
     contacts: tuple[CRMContact, ...],
     as_of: str,
+    accounts_scanned: int = 0,
+    accounts_in_book: int = 0,
 ) -> CSMWorkItem:
     evidence = tuple(
         EvidenceRef("crm", contact.contact_id, "email", as_of)
         for contact in contacts
     )
+    work_packet = build_work_packet(PacketInputs(
+        tenant_id=tenant_id,
+        account=None,
+        as_of=as_of,
+        account_resolution="ambiguous",
+        candidate_account_ids=candidates,
+        disposition="escalate",
+        recommended_action=None,
+        motion=None,
+        reason="Ambiguous contact identity; no account was auto-selected.",
+        priority_score=None,
+        priority_factors=(),
+        evidence=evidence,
+        contacts=contacts,
+        customer_contact_allowed=False,
+        accounts_scanned=accounts_scanned,
+        accounts_in_book=accounts_in_book,
+    ))
     return CSMWorkItem(
         tenant_id=tenant_id,
         account_resolution="ambiguous",
@@ -1267,6 +1344,7 @@ def _escalation_item(
         proposal=None,
         swept_at=as_of,
         customer_draft=None,
+        work_packet=work_packet,
     )
 
 

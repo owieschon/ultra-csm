@@ -85,6 +85,18 @@ class TestSweepMotionLive:
             assert isinstance(item["candidate_account_ids"], list)
             assert len(item["candidate_account_ids"]) >= 1
 
+    def test_sweep_work_items_carry_work_packet(self, client: TestClient):
+        resp = client.post("/sweep", headers=AUTH_HEADERS)
+        assert resp.status_code == 200
+        work_items = resp.json()["work_items"]
+        assert work_items
+        packet = work_items[0].get("work_packet")
+        assert packet is not None
+        assert packet["packet_version"] == "csm-work-packet-v1"
+        assert packet["allowed_ctas"]
+        assert packet["governance_boundary"]["source_organ"] == "governance.csm_actions"
+        assert packet["diagnostic_hypothesis"]["label"] == "unverified_hypothesis"
+
 
 class TestLedgerEndpoint:
     """New GET /ledger — the audit-tail read Book/Queue's rail renders."""
