@@ -66,7 +66,8 @@ def test_claude_code_transport_builds_expected_command_and_parses_usage():
     assert response.output_tokens == 33
     assert "\"customer_draft\":\"Hi\"" in response.text
     cmd = calls[0]["cmd"]
-    assert cmd[:6] == ["claude", "--bare", "--print", "--output-format", "json", "--permission-mode"]
+    assert cmd[:6] == ["claude", "--safe-mode", "--print", "--output-format", "json", "--permission-mode"]
+    assert "--bare" not in cmd  # forces ANTHROPIC_API_KEY-only auth; breaks subscription transport
     assert "--system-prompt" in cmd
     assert "BYTE IDENTICAL SYSTEM" in cmd
     assert cmd[-1] == '{"request":"payload"}'
