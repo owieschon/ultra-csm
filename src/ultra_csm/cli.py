@@ -18,6 +18,15 @@ from ultra_csm.data_plane.source_mapping import (
     load_source_map_proposal,
 )
 from ultra_csm.data_plane.synthetic_book import build_synthetic_book, synthetic_book_summary
+from ultra_csm.world import (
+    WorldConfig,
+    build_baseline_report,
+    build_context_graph,
+    build_oracle_report,
+    generate_world,
+    run_knowability_audit,
+    write_world_artifacts,
+)
 
 if TYPE_CHECKING:
     from ultra_csm.data_plane.data_simulator import SimulatedDataBundle
@@ -163,6 +172,46 @@ def _demo_book(args: argparse.Namespace) -> int:
     else:
         print(synthetic_book_summary(data))
     return 0
+
+
+def _world(args: argparse.Namespace) -> int:
+    world = generate_world(WorldConfig(seed=args.seed, scale=args.scale))
+    graph = build_context_graph(world)
+    oracle = build_oracle_report(world, graph)
+    audit = run_knowability_audit(
+        world,
+        graph,
+        repo_root=Path(__file__).resolve().parents[2],
+    )
+    baselines = build_baseline_report(world, graph)
+    output_dir = write_world_artifacts(world, root=Path(args.output_root))
+
+    payload = {
+        "seed": args.seed,
+        "scale": args.scale,
+        "output_dir": str(output_dir),
+        "counts": {
+            "accounts": len(world.data.accounts),
+            "latent_truth": len(world.latent_truth),
+            "surface_decisions": len(world.surface_decisions),
+        },
+        "graph": graph.section_counts(),
+        "oracle": oracle,
+        "knowability_audit": audit,
+        "baselines": {
+            "no_spine_ablation": baselines["no_spine_ablation"],
+            "power_sizing": baselines["power_sizing"],
+        },
+    }
+    if args.json:
+        print(json.dumps(payload, indent=2, sort_keys=True))
+    else:
+        print(f"world seed={args.seed} scale={args.scale}")
+        print(f"artifact: {output_dir / 'world.json'}")
+        print(f"accounts: {payload['counts']['accounts']}")
+        print(f"graph sections: {payload['graph']}")
+        print(f"knowability hard_ok: {audit['hard_ok']}")
+    return 0 if audit["hard_ok"] else 1
 
 
 def _score_book(
@@ -990,6 +1039,13 @@ def build_parser() -> argparse.ArgumentParser:
     demo_book = sub.add_parser("demo-book", help="Print synthetic book of business summary")
     demo_book.add_argument("--json", action="store_true")
     demo_book.set_defaults(func=_demo_book)
+
+    world = sub.add_parser("world", help="Build the deterministic living-world artifact")
+    world.add_argument("--seed", type=int, default=7)
+    world.add_argument("--scale", type=int, default=60)
+    world.add_argument("--output-root", default="build/world")
+    world.add_argument("--json", action="store_true")
+    world.set_defaults(func=_world)
 
     demo_sweep = sub.add_parser("demo-sweep", help="Score book of business at a given simulation day")
     demo_sweep.add_argument("--day", type=int, default=0, help="Simulation day offset (default 0)")

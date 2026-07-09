@@ -18,6 +18,7 @@ from typing import TYPE_CHECKING, Protocol
 
 from ultra_csm._util import evidence_ids
 from ultra_csm.knowledge import is_safe_customer_ask
+from ultra_csm.llm_transport import configured_transport_name, resolve_message_transport
 from ultra_csm.observability import Meter, NoOpMeter, NoOpTracer, Tracer
 
 if TYPE_CHECKING:
@@ -243,17 +244,18 @@ class AnthropicReasonDraftWriter:
         self,
         client=None,
         *,
+        transport=None,
         model_id: str | None = None,
         prompt_text: str | None = None,
         tracer: Tracer | None = None,
         meter: Meter | None = None,
         cost_tracker: "CostTracker | None" = None,
     ) -> None:
-        if client is None:  # pragma: no cover - live lane
-            from anthropic import Anthropic
-
-            client = Anthropic(timeout=LIVE_TIMEOUT_S, max_retries=LIVE_MAX_RETRIES)
-        self._client = client
+        self._transport = transport or resolve_message_transport(
+            client=client,
+            timeout_s=LIVE_TIMEOUT_S,
+            max_retries=LIVE_MAX_RETRIES,
+        )
         self.model_id = model_id or LIVE_SLOT_B_MODEL_ID
         self._prompt_text = prompt_text
         self._tracer: Tracer = tracer or NoOpTracer()
@@ -294,15 +296,15 @@ class AnthropicReasonDraftWriter:
         ) as span:
             should_time = self._meter.enabled or self._cost_tracker is not None
             start = time.perf_counter() if should_time else 0.0
-            msg = self._client.messages.create(
-                model=self.model_id,
+            response = self._transport.complete(
+                model_id=self.model_id,
                 max_tokens=700,
-                system=prompt,
-                messages=[{"role": "user", "content": json.dumps(payload, sort_keys=True)}],
+                system_prompt=prompt,
+                user_text=json.dumps(payload, sort_keys=True),
             )
-            usage = getattr(msg, "usage", None)
-            in_tok = getattr(usage, "input_tokens", None)
-            out_tok = getattr(usage, "output_tokens", None)
+            span.set_attribute("transport", response.transport)
+            in_tok = response.input_tokens
+            out_tok = response.output_tokens
             if in_tok is not None:
                 span.set_attribute("usage.input_tokens", in_tok)
             if out_tok is not None:
@@ -325,6 +327,7 @@ class AnthropicReasonDraftWriter:
             if self._cost_tracker is not None and in_tok is not None:
                 self._cost_tracker.record(
                     model_id=self.model_id,
+                    transport=response.transport,
                     input_tokens=in_tok,
                     output_tokens=out_tok or 0,
                     latency_ms=latency_ms,
@@ -332,7 +335,7 @@ class AnthropicReasonDraftWriter:
                 )
 
         output = _parse_live_output(
-            _text_from_message(msg),
+            response.text,
             model_id=self.model_id,
             prompt_version=self.prompt_version,
         )
@@ -390,6 +393,7 @@ def prompt_metadata() -> dict[str, str]:
         "prompt_path": _display_prompt_path(),
         "fixture_model_id": FIXTURE_SLOT_B_MODEL_ID,
         "live_model_id": LIVE_SLOT_B_MODEL_ID,
+        "configured_transport": configured_transport_name(),
     }
 
 

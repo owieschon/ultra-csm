@@ -1,0 +1,174 @@
+{
+  "artifact": "living_world_scoreboard",
+  "baselines": {
+    "artifact": "living_world_baselines",
+    "n_accounts": 60,
+    "no_spine_ablation": {
+      "accuracy_delta": 0.0,
+      "full_spine_accuracy": 0.5667,
+      "no_spine_accuracy": 0.5667
+    },
+    "pass_k_handoff": {
+      "built_not_executed": true,
+      "reason": "Pass^k is metered and operator-owned by hard rule.",
+      "recommended_command": "ULTRA_CSM_LLM_TRANSPORT=claude_code python -m eval.world_scoreboard --seed 7 --scale 60 --pass-k 8 --model claude-sonnet-5"
+    },
+    "policies": {
+      "adoption_only": {
+        "accuracy": 0.5667,
+        "false_negative_rate": 1.0,
+        "fn": 1,
+        "fp": 25,
+        "precision": 0.0,
+        "recall": 0.0,
+        "tn": 34,
+        "tp": 0
+      },
+      "always_surface": {
+        "accuracy": 0.0167,
+        "false_negative_rate": 0.0,
+        "fn": 0,
+        "fp": 59,
+        "precision": 0.0167,
+        "recall": 1.0,
+        "tn": 0,
+        "tp": 1
+      },
+      "health_only": {
+        "accuracy": 0.8833,
+        "false_negative_rate": 1.0,
+        "fn": 1,
+        "fp": 6,
+        "precision": 0.0,
+        "recall": 0.0,
+        "tn": 53,
+        "tp": 0
+      },
+      "never_surface": {
+        "accuracy": 0.9833,
+        "false_negative_rate": 1.0,
+        "fn": 1,
+        "fp": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "tn": 59,
+        "tp": 0
+      },
+      "no_spine_ablation": {
+        "accuracy": 0.5667,
+        "false_negative_rate": 1.0,
+        "fn": 1,
+        "fp": 25,
+        "precision": 0.0,
+        "recall": 0.0,
+        "tn": 34,
+        "tp": 0
+      },
+      "spine_policy": {
+        "accuracy": 0.5667,
+        "false_negative_rate": 1.0,
+        "fn": 1,
+        "fp": 25,
+        "precision": 0.0,
+        "recall": 0.0,
+        "tn": 34,
+        "tp": 0
+      }
+    },
+    "power_sizing": {
+      "current_sample_n": 60,
+      "method": "existing_mdd_helpers_from_eval.drift_power_csm",
+      "minimum_detectable_drop_at_current_n": 0.221,
+      "required_n_per_arm": {
+        "drop_10pp": 306,
+        "drop_20pp": 74,
+        "drop_30pp": 31
+      }
+    },
+    "schema_version": 1
+  },
+  "knowability_audit": {
+    "artifact": "knowability_audit",
+    "graph_consultation_integrity": true,
+    "hard_failures": [],
+    "hard_ok": true,
+    "planted_violation": false,
+    "schema_version": 1,
+    "structural_agent_blindness": true
+  },
+  "oracle": {
+    "abstention_rate": 0.0167,
+    "artifact": "living_world_oracles",
+    "causal_path_recovery_rate": 0.05,
+    "false_negative_accounts": [
+      "c529251c-78a6-5710-88ad-a89710d02bee"
+    ],
+    "false_negative_rate_vs_latent_truth": 1.0,
+    "graph_sections": {
+      "bitemporal_spine": 240,
+      "closed_loop_hooks": 60,
+      "conflict_nodes": 6,
+      "decision_nodes": 60,
+      "identity_resolution": 92,
+      "supersedence": 0
+    },
+    "n_accounts": 60,
+    "n_doomed": 1,
+    "schema_version": 1
+  },
+  "rows": [
+    {
+      "evidence": "docs/OPERATOR_RUNBOOK.md#r0-transport-adapter",
+      "status": "built",
+      "summary": "Transport adapter routes live calls through Anthropic API or Claude Code with token telemetry.",
+      "wave": "W0"
+    },
+    {
+      "evidence": "accounts=60 latent=60",
+      "status": "built",
+      "summary": "Deterministic seeded living world with anchors, corruption processes, and latent/surface split.",
+      "wave": "W1"
+    },
+    {
+      "evidence": {
+        "bitemporal_spine": 240,
+        "closed_loop_hooks": 60,
+        "conflict_nodes": 6,
+        "decision_nodes": 60,
+        "identity_resolution": 92,
+        "supersedence": 0
+      },
+      "status": "built",
+      "summary": "Context graph ships exactly the six required sections and no staged stubs.",
+      "wave": "W2"
+    },
+    {
+      "evidence": {
+        "false_negative_rate": 1.0,
+        "hard_ok": true
+      },
+      "status": "built",
+      "summary": "Oracle metrics and knowability audit are live; planted-violation mode is available for proof.",
+      "wave": "W3"
+    },
+    {
+      "evidence": {
+        "command": "ULTRA_CSM_LLM_TRANSPORT=claude_code python -m eval.world_scoreboard --seed 7 --scale 60 --pass-k 8 --model claude-sonnet-5",
+        "model": "claude-sonnet-5",
+        "pass_k": 8
+      },
+      "status": "built_handoff",
+      "summary": "Deterministic degenerate baselines run locally; pass^k is documented but not executed.",
+      "wave": "W4"
+    },
+    {
+      "evidence": "docs/WORLD.md docs/EVAL_STANDARD.md",
+      "status": "built",
+      "summary": "Scoreboard artifact and docs map the build against the stated frontier standard and remaining gaps.",
+      "wave": "W5"
+    }
+  ],
+  "scale": 60,
+  "schema_version": 1,
+  "seed": 7
+}
