@@ -24,8 +24,8 @@ from ultra_csm.agent1.slot_b import (
     JUDGE_MODEL_ID,
     LIVE_MAX_RETRIES,
     LIVE_TIMEOUT_S,
-    _text_from_message,
 )
+from ultra_csm.llm_transport import resolve_message_transport
 
 RECONCILIATION_JUDGE_PROMPT_VERSION = "reconciliation-judge-v1"
 EXPLANATION_DIMENSIONS = ("explanation_grounding", "explanation_specificity")
@@ -102,12 +102,12 @@ def passes(scores: dict[str, int]) -> bool:
 class AnthropicReconciliationJudge:
     """Live judge. Not constructed by the offline battery."""
 
-    def __init__(self, client=None, *, model_id: str | None = None) -> None:
-        if client is None:  # pragma: no cover - live lane
-            from anthropic import Anthropic
-
-            client = Anthropic(timeout=LIVE_TIMEOUT_S, max_retries=LIVE_MAX_RETRIES)
-        self._client = client
+    def __init__(self, client=None, *, transport=None, model_id: str | None = None) -> None:
+        self._transport = transport or resolve_message_transport(
+            client=client,
+            timeout_s=LIVE_TIMEOUT_S,
+            max_retries=LIVE_MAX_RETRIES,
+        )
         self.model_id = model_id or JUDGE_MODEL_ID
 
     def score(
@@ -119,10 +119,10 @@ class AnthropicReconciliationJudge:
         candidates: list[dict],
     ) -> tuple[dict[str, int], list[dict[str, int]]]:
         payload = _user_payload(deterministic_signals, raw_evidence, explanation, candidates)
-        msg = self._client.messages.create(
-            model=self.model_id,
+        response = self._transport.complete(
+            model_id=self.model_id,
             max_tokens=500,
-            system=_SYSTEM,
-            messages=[{"role": "user", "content": payload}],
+            system_prompt=_SYSTEM,
+            user_text=payload,
         )
-        return _parse_scores(_text_from_message(msg), candidate_count=len(candidates))
+        return _parse_scores(response.text, candidate_count=len(candidates))
