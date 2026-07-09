@@ -588,6 +588,7 @@ def _slot_b_inputs_for_account(
         trajectory_factor=trajectory.factor,
         onboarding_evidence_ids=frozenset(onboarding_ids),
         onboarding_activation_gap_ids=activation_gap_ids,
+        slot_a_classifications=slot_a_classifications,
     )
     if priority.score <= 0:
         return None
@@ -1417,6 +1418,7 @@ def _priority(
     trajectory_factor: PriorityFactor | None = None,
     onboarding_evidence_ids: frozenset[str] = frozenset(),
     onboarding_activation_gap_ids: tuple[str, ...] = (),
+    slot_a_classifications: tuple[CaseNoteClassificationOutput, ...] = (),
 ) -> Priority:
     projected = project_ttv_lens(
         model,
@@ -1434,9 +1436,52 @@ def _priority(
     )
     if trajectory_factor is not None and trajectory_factor.contribution != 0:
         factors = (*factors, trajectory_factor)
+    slot_a_factor = _slot_a_case_blocker_factor(
+        model,
+        slot_a_classifications=slot_a_classifications,
+        as_of=as_of,
+    )
+    if slot_a_factor is not None:
+        factors = (*factors, slot_a_factor)
     return Priority(
         score=sum(factor.contribution for factor in factors),
         factors=factors,
+    )
+
+
+def _slot_a_case_blocker_factor(
+    model: CustomerValueModel,
+    *,
+    slot_a_classifications: tuple[CaseNoteClassificationOutput, ...],
+    as_of: str,
+) -> PriorityFactor | None:
+    blockers = tuple(
+        item for item in slot_a_classifications
+        if item.classification == "blocker"
+    )
+    if not blockers:
+        return None
+
+    resolved = model.resolved_thresholds
+    points = resolved.thresholds.slot_a_case_blocker_points
+    evidence = tuple(
+        EvidenceRef(
+            "crm",
+            item.cited_case_id or item.case_id,
+            "slot_a_case_blocker",
+            as_of,
+        )
+        for item in blockers
+    )
+    return PriorityFactor(
+        name="slot_a_case_blocker",
+        value=float(len(blockers)),
+        contribution=len(blockers) * points,
+        evidence=evidence,
+        config_version=resolved.config_version,
+        rule_name=resolved.rule_name,
+        threshold_name="slot_a_case_blocker_points",
+        threshold_value=points,
     )
 
 
