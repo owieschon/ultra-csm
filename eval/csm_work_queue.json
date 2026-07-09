@@ -244,9 +244,26 @@
             "threshold_name": "depth_floor",
             "threshold_value": 0.7,
             "value": 0.0
+          },
+          {
+            "config_version": "value-model-config-v1",
+            "contribution": 10,
+            "evidence": [
+              {
+                "field": "slot_a_case_blocker",
+                "observed_at": "2026-06-27",
+                "source": "crm",
+                "source_id": "4ddf4d0e-2600-56f7-9edc-a5a0071d8186"
+              }
+            ],
+            "name": "slot_a_case_blocker",
+            "rule_name": "high_arr_review_default",
+            "threshold_name": "slot_a_case_blocker_points",
+            "threshold_value": 10,
+            "value": 1.0
           }
         ],
-        "score": 162
+        "score": 172
       },
       "proposal": {
         "action_type": "draft_customer_outreach",
@@ -255,7 +272,7 @@
         "proposal_id": "runtime-generated:a317f5e7-575e-5879-8256-9082e40ef19f:draft_customer_outreach",
         "status": "pending"
       },
-      "reason": "Acme Logistics has deterministic Time-to-Value score 162 from milestones_overdue=50, days_overdue=30, success_plan_overdue=20; draft customer outreach. Evidence [evidence:6dcc1c92-e0fd-5d6f-808f-d2e747f04415], [evidence:d2212e35-9ab1-52ff-af61-7ed49fe36086], [evidence:e8171967-d726-5c85-814a-73aaa19dc2cf].",
+      "reason": "Acme Logistics has deterministic Time-to-Value score 172 from milestones_overdue=50, days_overdue=30, success_plan_overdue=20; draft customer outreach. Evidence [evidence:6dcc1c92-e0fd-5d6f-808f-d2e747f04415], [evidence:d2212e35-9ab1-52ff-af61-7ed49fe36086], [evidence:e8171967-d726-5c85-814a-73aaa19dc2cf].",
       "recipient_name": "Jordan Lee",
       "recipient_resolution": "first_consenting_fallback",
       "recipient_role": "operations",
