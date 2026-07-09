@@ -136,9 +136,13 @@ class ClaudeCodeMessagesTransport:
         user_text: str,
         max_tokens: int,
     ) -> TransportResponse:
+        # --safe-mode, not --bare: both isolate CLAUDE.md/hooks/plugins from the
+        # prompt, but --bare forces ANTHROPIC_API_KEY-only auth (never reads
+        # OAuth/keychain), which defeats this transport's entire purpose of
+        # running on the caller's subscription instead of the metered API.
         cmd = [
             "claude",
-            "--bare",
+            "--safe-mode",
             "--print",
             "--output-format",
             "json",
