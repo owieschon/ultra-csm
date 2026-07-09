@@ -195,6 +195,7 @@ genuinely introduces its own new ambiguity.
 | 2026-07-05 | Report 21 (operating cadence) | 7 | 0 | 0 | auto-merge armed (#34) |
 | 2026-07-05 | Report 22 (Act3 curation) | 6 | 0 | 1 (hygiene-flagged terms in report, fixed) | auto-merge armed (#35) |
 | 2026-07-05 | Report 26 (Act 2 Gmail writeback) | — | 1 (self-approval denied by classifier; agent concurred — gate held from inside) | 0 | BLOCKED pending owner submit_verdict; committer+tests merged-ready |
+| 2026-07-08 | MP-F1 living world builder | 6 | 0 | 0 | local build; operator-only metered lanes documented in `docs/OPERATOR_RUNBOOK.md` |
 
 Last retro: 2026-07-05 (mini-retro of report 23 during Waves C/D/E
 roadmap emission).
