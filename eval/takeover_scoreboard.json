@@ -1,0 +1,503 @@
+{
+  "claim_boundary": {
+    "human_minutes_per_verdict_modeled": 2.5,
+    "mutates_gate": false,
+    "mutates_ledger": false,
+    "read_only": true
+  },
+  "measurement_scope": "Read-only ledger analytics over observed gate verdicts, audit signals, and RejectionLedger records. Missing sources render as not_instrumented, never as zero.",
+  "metric_status_values": [
+    "measured",
+    "modeled",
+    "not_instrumented"
+  ],
+  "name": "takeover_scoreboard",
+  "rollup": {
+    "category_count": 9,
+    "headline": "Current baseline measures policy release conditions and any present RejectionLedger taxonomy; packet coverage, sampled miss rate, abstention drift, and broad outcome reconciliation remain explicitly not_instrumented until their sources land.",
+    "metric_status_counts": {
+      "measured": 18,
+      "not_instrumented": 54
+    }
+  },
+  "rows": [
+    {
+      "category": "campaign_enroll",
+      "metrics": {
+        "abstention_rate": {
+          "dependency": "Workflow-envelope abstain outputs are not wired into this ledger.",
+          "status": "not_instrumented",
+          "value": null
+        },
+        "coverage": {
+          "dependency": "Packet count and accounts-in-scope are not committed on this baseline.",
+          "status": "not_instrumented",
+          "value": null
+        },
+        "denial_taxonomy": {
+          "source": "eval/week1_rejections_*.json",
+          "status": "measured",
+          "value": {
+            "reasons": {},
+            "total": 0
+          }
+        },
+        "human_minutes_per_account_week": {
+          "dependency": "No gate verdict source was supplied.",
+          "status": "not_instrumented",
+          "value": null
+        },
+        "outcome_reconciliation_coverage": {
+          "dependency": "No audit event source was supplied.",
+          "status": "not_instrumented",
+          "value": null
+        },
+        "release_mix": {
+          "source": "src/ultra_csm/governance/csm_actions.py",
+          "status": "measured",
+          "value": {
+            "observed_verdict_release_conditions": null,
+            "policy_autonomy_tier": 2,
+            "policy_release_condition": "human_approve"
+          }
+        },
+        "sampled_miss_rate": {
+          "dependency": "Graduated-action sampled audits are not committed on this baseline.",
+          "status": "not_instrumented",
+          "value": null
+        },
+        "verdict_mix": {
+          "dependency": "No gate verdict source was supplied.",
+          "status": "not_instrumented",
+          "value": null
+        }
+      }
+    },
+    {
+      "category": "cohort_action",
+      "metrics": {
+        "abstention_rate": {
+          "dependency": "Workflow-envelope abstain outputs are not wired into this ledger.",
+          "status": "not_instrumented",
+          "value": null
+        },
+        "coverage": {
+          "dependency": "Packet count and accounts-in-scope are not committed on this baseline.",
+          "status": "not_instrumented",
+          "value": null
+        },
+        "denial_taxonomy": {
+          "source": "eval/week1_rejections_*.json",
+          "status": "measured",
+          "value": {
+            "reasons": {},
+            "total": 0
+          }
+        },
+        "human_minutes_per_account_week": {
+          "dependency": "No gate verdict source was supplied.",
+          "status": "not_instrumented",
+          "value": null
+        },
+        "outcome_reconciliation_coverage": {
+          "dependency": "No audit event source was supplied.",
+          "status": "not_instrumented",
+          "value": null
+        },
+        "release_mix": {
+          "source": "src/ultra_csm/governance/csm_actions.py",
+          "status": "measured",
+          "value": {
+            "observed_verdict_release_conditions": null,
+            "policy_autonomy_tier": 3,
+            "policy_release_condition": "human_approve_with_dual_control"
+          }
+        },
+        "sampled_miss_rate": {
+          "dependency": "Graduated-action sampled audits are not committed on this baseline.",
+          "status": "not_instrumented",
+          "value": null
+        },
+        "verdict_mix": {
+          "dependency": "No gate verdict source was supplied.",
+          "status": "not_instrumented",
+          "value": null
+        }
+      }
+    },
+    {
+      "category": "content_route",
+      "metrics": {
+        "abstention_rate": {
+          "dependency": "Workflow-envelope abstain outputs are not wired into this ledger.",
+          "status": "not_instrumented",
+          "value": null
+        },
+        "coverage": {
+          "dependency": "Packet count and accounts-in-scope are not committed on this baseline.",
+          "status": "not_instrumented",
+          "value": null
+        },
+        "denial_taxonomy": {
+          "source": "eval/week1_rejections_*.json",
+          "status": "measured",
+          "value": {
+            "reasons": {},
+            "total": 0
+          }
+        },
+        "human_minutes_per_account_week": {
+          "dependency": "No gate verdict source was supplied.",
+          "status": "not_instrumented",
+          "value": null
+        },
+        "outcome_reconciliation_coverage": {
+          "dependency": "No audit event source was supplied.",
+          "status": "not_instrumented",
+          "value": null
+        },
+        "release_mix": {
+          "source": "src/ultra_csm/governance/csm_actions.py",
+          "status": "measured",
+          "value": {
+            "observed_verdict_release_conditions": null,
+            "policy_autonomy_tier": 2,
+            "policy_release_condition": "human_approve"
+          }
+        },
+        "sampled_miss_rate": {
+          "dependency": "Graduated-action sampled audits are not committed on this baseline.",
+          "status": "not_instrumented",
+          "value": null
+        },
+        "verdict_mix": {
+          "dependency": "No gate verdict source was supplied.",
+          "status": "not_instrumented",
+          "value": null
+        }
+      }
+    },
+    {
+      "category": "draft_customer_outreach",
+      "metrics": {
+        "abstention_rate": {
+          "dependency": "Workflow-envelope abstain outputs are not wired into this ledger.",
+          "status": "not_instrumented",
+          "value": null
+        },
+        "coverage": {
+          "dependency": "Packet count and accounts-in-scope are not committed on this baseline.",
+          "status": "not_instrumented",
+          "value": null
+        },
+        "denial_taxonomy": {
+          "source": "eval/week1_rejections_*.json",
+          "status": "measured",
+          "value": {
+            "reasons": {
+              "week1-protocol: rejecting to test recurring-eligible suppression": 3
+            },
+            "total": 3
+          }
+        },
+        "human_minutes_per_account_week": {
+          "dependency": "No gate verdict source was supplied.",
+          "status": "not_instrumented",
+          "value": null
+        },
+        "outcome_reconciliation_coverage": {
+          "dependency": "No audit event source was supplied.",
+          "status": "not_instrumented",
+          "value": null
+        },
+        "release_mix": {
+          "source": "src/ultra_csm/governance/csm_actions.py",
+          "status": "measured",
+          "value": {
+            "observed_verdict_release_conditions": null,
+            "policy_autonomy_tier": 2,
+            "policy_release_condition": "human_approve_with_consent"
+          }
+        },
+        "sampled_miss_rate": {
+          "dependency": "Graduated-action sampled audits are not committed on this baseline.",
+          "status": "not_instrumented",
+          "value": null
+        },
+        "verdict_mix": {
+          "dependency": "No gate verdict source was supplied.",
+          "status": "not_instrumented",
+          "value": null
+        }
+      }
+    },
+    {
+      "category": "edit_success_plan",
+      "metrics": {
+        "abstention_rate": {
+          "dependency": "Workflow-envelope abstain outputs are not wired into this ledger.",
+          "status": "not_instrumented",
+          "value": null
+        },
+        "coverage": {
+          "dependency": "Packet count and accounts-in-scope are not committed on this baseline.",
+          "status": "not_instrumented",
+          "value": null
+        },
+        "denial_taxonomy": {
+          "source": "eval/week1_rejections_*.json",
+          "status": "measured",
+          "value": {
+            "reasons": {},
+            "total": 0
+          }
+        },
+        "human_minutes_per_account_week": {
+          "dependency": "No gate verdict source was supplied.",
+          "status": "not_instrumented",
+          "value": null
+        },
+        "outcome_reconciliation_coverage": {
+          "dependency": "No audit event source was supplied.",
+          "status": "not_instrumented",
+          "value": null
+        },
+        "release_mix": {
+          "source": "src/ultra_csm/governance/csm_actions.py",
+          "status": "measured",
+          "value": {
+            "observed_verdict_release_conditions": null,
+            "policy_autonomy_tier": 2,
+            "policy_release_condition": "human_approve"
+          }
+        },
+        "sampled_miss_rate": {
+          "dependency": "Graduated-action sampled audits are not committed on this baseline.",
+          "status": "not_instrumented",
+          "value": null
+        },
+        "verdict_mix": {
+          "dependency": "No gate verdict source was supplied.",
+          "status": "not_instrumented",
+          "value": null
+        }
+      }
+    },
+    {
+      "category": "initiate_customer_call",
+      "metrics": {
+        "abstention_rate": {
+          "dependency": "Workflow-envelope abstain outputs are not wired into this ledger.",
+          "status": "not_instrumented",
+          "value": null
+        },
+        "coverage": {
+          "dependency": "Packet count and accounts-in-scope are not committed on this baseline.",
+          "status": "not_instrumented",
+          "value": null
+        },
+        "denial_taxonomy": {
+          "source": "eval/week1_rejections_*.json",
+          "status": "measured",
+          "value": {
+            "reasons": {},
+            "total": 0
+          }
+        },
+        "human_minutes_per_account_week": {
+          "dependency": "No gate verdict source was supplied.",
+          "status": "not_instrumented",
+          "value": null
+        },
+        "outcome_reconciliation_coverage": {
+          "dependency": "No audit event source was supplied.",
+          "status": "not_instrumented",
+          "value": null
+        },
+        "release_mix": {
+          "source": "src/ultra_csm/governance/csm_actions.py",
+          "status": "measured",
+          "value": {
+            "observed_verdict_release_conditions": null,
+            "policy_autonomy_tier": 3,
+            "policy_release_condition": "human_approve_with_dual_control"
+          }
+        },
+        "sampled_miss_rate": {
+          "dependency": "Graduated-action sampled audits are not committed on this baseline.",
+          "status": "not_instrumented",
+          "value": null
+        },
+        "verdict_mix": {
+          "dependency": "No gate verdict source was supplied.",
+          "status": "not_instrumented",
+          "value": null
+        }
+      }
+    },
+    {
+      "category": "log_crm_activity",
+      "metrics": {
+        "abstention_rate": {
+          "dependency": "Workflow-envelope abstain outputs are not wired into this ledger.",
+          "status": "not_instrumented",
+          "value": null
+        },
+        "coverage": {
+          "dependency": "Packet count and accounts-in-scope are not committed on this baseline.",
+          "status": "not_instrumented",
+          "value": null
+        },
+        "denial_taxonomy": {
+          "source": "eval/week1_rejections_*.json",
+          "status": "measured",
+          "value": {
+            "reasons": {},
+            "total": 0
+          }
+        },
+        "human_minutes_per_account_week": {
+          "dependency": "No gate verdict source was supplied.",
+          "status": "not_instrumented",
+          "value": null
+        },
+        "outcome_reconciliation_coverage": {
+          "dependency": "No audit event source was supplied.",
+          "status": "not_instrumented",
+          "value": null
+        },
+        "release_mix": {
+          "source": "src/ultra_csm/governance/csm_actions.py",
+          "status": "measured",
+          "value": {
+            "observed_verdict_release_conditions": null,
+            "policy_autonomy_tier": 2,
+            "policy_release_condition": "human_approve"
+          }
+        },
+        "sampled_miss_rate": {
+          "dependency": "Graduated-action sampled audits are not committed on this baseline.",
+          "status": "not_instrumented",
+          "value": null
+        },
+        "verdict_mix": {
+          "dependency": "No gate verdict source was supplied.",
+          "status": "not_instrumented",
+          "value": null
+        }
+      }
+    },
+    {
+      "category": "recommend_next_best_action",
+      "metrics": {
+        "abstention_rate": {
+          "dependency": "Workflow-envelope abstain outputs are not wired into this ledger.",
+          "status": "not_instrumented",
+          "value": null
+        },
+        "coverage": {
+          "dependency": "Packet count and accounts-in-scope are not committed on this baseline.",
+          "status": "not_instrumented",
+          "value": null
+        },
+        "denial_taxonomy": {
+          "source": "eval/week1_rejections_*.json",
+          "status": "measured",
+          "value": {
+            "reasons": {},
+            "total": 0
+          }
+        },
+        "human_minutes_per_account_week": {
+          "dependency": "No gate verdict source was supplied.",
+          "status": "not_instrumented",
+          "value": null
+        },
+        "outcome_reconciliation_coverage": {
+          "dependency": "No audit event source was supplied.",
+          "status": "not_instrumented",
+          "value": null
+        },
+        "release_mix": {
+          "source": "src/ultra_csm/governance/csm_actions.py",
+          "status": "measured",
+          "value": {
+            "observed_verdict_release_conditions": null,
+            "policy_autonomy_tier": 1,
+            "policy_release_condition": "auto_internal_only"
+          }
+        },
+        "sampled_miss_rate": {
+          "dependency": "Graduated-action sampled audits are not committed on this baseline.",
+          "status": "not_instrumented",
+          "value": null
+        },
+        "verdict_mix": {
+          "dependency": "No gate verdict source was supplied.",
+          "status": "not_instrumented",
+          "value": null
+        }
+      }
+    },
+    {
+      "category": "update_cs_platform_record",
+      "metrics": {
+        "abstention_rate": {
+          "dependency": "Workflow-envelope abstain outputs are not wired into this ledger.",
+          "status": "not_instrumented",
+          "value": null
+        },
+        "coverage": {
+          "dependency": "Packet count and accounts-in-scope are not committed on this baseline.",
+          "status": "not_instrumented",
+          "value": null
+        },
+        "denial_taxonomy": {
+          "source": "eval/week1_rejections_*.json",
+          "status": "measured",
+          "value": {
+            "reasons": {},
+            "total": 0
+          }
+        },
+        "human_minutes_per_account_week": {
+          "dependency": "No gate verdict source was supplied.",
+          "status": "not_instrumented",
+          "value": null
+        },
+        "outcome_reconciliation_coverage": {
+          "dependency": "No audit event source was supplied.",
+          "status": "not_instrumented",
+          "value": null
+        },
+        "release_mix": {
+          "source": "src/ultra_csm/governance/csm_actions.py",
+          "status": "measured",
+          "value": {
+            "observed_verdict_release_conditions": null,
+            "policy_autonomy_tier": 2,
+            "policy_release_condition": "human_approve"
+          }
+        },
+        "sampled_miss_rate": {
+          "dependency": "Graduated-action sampled audits are not committed on this baseline.",
+          "status": "not_instrumented",
+          "value": null
+        },
+        "verdict_mix": {
+          "dependency": "No gate verdict source was supplied.",
+          "status": "not_instrumented",
+          "value": null
+        }
+      }
+    }
+  ],
+  "source_summary": {
+    "audit_signal_count": 0,
+    "audit_source_available": false,
+    "rejection_count": 3,
+    "rejection_source_available": true,
+    "verdict_count": 0,
+    "verdict_source_available": false
+  }
+}
