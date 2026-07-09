@@ -15,9 +15,10 @@ from eval.deterministic_quality import DETERMINISTIC_DIMENSIONS, apply_determini
 from eval.judge_csm import (
     PASSING_SCORE,
     QUALITY_DIMENSIONS,
-    QualityLabels,
+    QualityScoreResult,
     SlotBQualityCandidate,
     labels_from_scores,
+    quality_out_of_validated_domain,
 )
 from eval.label_gold import ANCHORS
 from ultra_csm.agent1.slot_b import (
@@ -152,7 +153,9 @@ class AnthropicQualityJudge:
         apply_deterministic(request, output, scores, reasons)
         return _ordered_scores(scores), _ordered_reasons(reasons)
 
-    def score(self, candidate: SlotBQualityCandidate) -> QualityLabels:
+    def score(self, candidate: SlotBQualityCandidate) -> QualityScoreResult:
+        if out_of_domain := quality_out_of_validated_domain(candidate):
+            return out_of_domain
         scores = self.score_output(candidate.request, candidate.output)
         return labels_from_scores(candidate.candidate_id, scores, labeler=f"anthropic-judge:{self.model_id}")
 

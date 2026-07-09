@@ -63,6 +63,7 @@ from ultra_csm.value_model import (
 from ultra_csm.agent1 import collapse_cohorts, run_time_to_value_sweep
 from ultra_csm.audit_ledger import (
     EXPECTED_LEDGER_EVENTS,
+    audit_event_type_gap,
     audit_event_storage_ready,
     list_audit_events,
     record_audit_event,
@@ -1838,7 +1839,16 @@ async def get_ledger(limit: int = Query(50, ge=1, le=500)):
         key=lambda event: event.ts,
         reverse=True,
     )[:limit]
-    ledger_gap = [] if audit_storage_ready else list(EXPECTED_LEDGER_EVENTS)
+    ledger_gap = (
+        list(audit_event_type_gap(
+            _conn,
+            tenant_id=_TENANT_ID,
+            actor_id=_orch_principal or _SEED_AGENT,
+            now=_CLOCK,
+        ))
+        if audit_storage_ready
+        else list(EXPECTED_LEDGER_EVENTS)
+    )
     return LedgerResponse(
         tenant_id=_TENANT_ID,
         events=events,
