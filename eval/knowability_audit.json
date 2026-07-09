@@ -1,0 +1,11 @@
+{
+  "artifact": "knowability_audit",
+  "graph_consultation_integrity": true,
+  "hard_failures": [],
+  "hard_ok": true,
+  "planted_violation": false,
+  "scale": 60,
+  "schema_version": 1,
+  "seed": 7,
+  "structural_agent_blindness": true
+}
