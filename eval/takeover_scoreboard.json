@@ -1,0 +1,645 @@
+{
+  "artifact": "takeover_scoreboard",
+  "book_rollup": {
+    "account_count": 9,
+    "category": "book",
+    "metrics": [
+      {
+        "dependency": "MP-D2 packet/workflow packet events",
+        "name": "coverage",
+        "notes": "Packet or account-scope rows are not available for this category.",
+        "source": "audit_ledger",
+        "status": "not_instrumented",
+        "value": null
+      },
+      {
+        "dependency": "MP-E graduation state for auto-vs-batch split",
+        "name": "release_mix",
+        "notes": "Tier-derived release posture is measured; graduation split is not yet instrumented.",
+        "source": "action_proposal.autonomy_tier",
+        "status": "measured",
+        "value": {
+          "auto_internal": {
+            "count": 6,
+            "share": 0.1765
+          },
+          "escalation_review": {
+            "count": 4,
+            "share": 0.1176
+          },
+          "per_action_review": {
+            "count": 24,
+            "share": 0.7059
+          }
+        }
+      },
+      {
+        "dependency": null,
+        "name": "verdict_mix",
+        "notes": null,
+        "source": "action_verdict.verdict",
+        "status": "measured",
+        "value": {
+          "approve": {
+            "count": 24,
+            "share": 0.7059
+          },
+          "deny": {
+            "count": 6,
+            "share": 0.1765
+          },
+          "revise": {
+            "count": 4,
+            "share": 0.1176
+          }
+        }
+      },
+      {
+        "dependency": "review dwell-time instrumentation",
+        "name": "human_minutes_per_account_week",
+        "notes": "Modeled with 2.5 minutes per verdict until real review dwell time is instrumented.",
+        "source": "action_verdict count * configured review_minutes_per_verdict",
+        "status": "modeled",
+        "value": 9.44
+      },
+      {
+        "dependency": "MP-E graduation sampling audit records",
+        "name": "sampled_miss_rate",
+        "notes": null,
+        "source": "MP-E sampling audit",
+        "status": "not_instrumented",
+        "value": null
+      },
+      {
+        "dependency": null,
+        "name": "denial_taxonomy",
+        "notes": null,
+        "source": "RejectionLedger.reason/action_verdict.rationale",
+        "status": "measured",
+        "value": {
+          "consent_missing": 1,
+          "exec_sponsor_required": 1,
+          "missing_evidence": 2,
+          "policy_boundary": 1,
+          "premature_customer_touch": 1
+        }
+      },
+      {
+        "dependency": "VM-8-full outcome observation",
+        "name": "outcome_reconciliation_coverage",
+        "notes": null,
+        "source": "VM-8 outcome states",
+        "status": "not_instrumented",
+        "value": null
+      },
+      {
+        "dependency": "workflow envelope suppressed/abstained outputs",
+        "name": "abstention_rate",
+        "notes": null,
+        "source": "workflow envelope outputs",
+        "status": "not_instrumented",
+        "value": null
+      }
+    ]
+  },
+  "generated_by": "eval.takeover_scoreboard",
+  "instrumentation_gaps": [
+    "MP-D2 packet/workflow packet events",
+    "MP-E graduation sampling audit records",
+    "VM-8-full outcome observation",
+    "workflow envelope suppressed/abstained outputs",
+    "RejectionLedger.reason/action_verdict.rationale"
+  ],
+  "metric_status_values": [
+    "measured",
+    "modeled",
+    "not_instrumented"
+  ],
+  "review_minutes_per_verdict": 2.5,
+  "rows": [
+    {
+      "account_count": 9,
+      "category": "crm_logging",
+      "metrics": [
+        {
+          "dependency": "MP-D2 packet/workflow packet events",
+          "name": "coverage",
+          "notes": "Packet or account-scope rows are not available for this category.",
+          "source": "audit_ledger",
+          "status": "not_instrumented",
+          "value": null
+        },
+        {
+          "dependency": "MP-E graduation state for auto-vs-batch split",
+          "name": "release_mix",
+          "notes": "Tier-derived release posture is measured; graduation split is not yet instrumented.",
+          "source": "action_proposal.autonomy_tier",
+          "status": "measured",
+          "value": {
+            "per_action_review": {
+              "count": 6,
+              "share": 1.0
+            }
+          }
+        },
+        {
+          "dependency": null,
+          "name": "verdict_mix",
+          "notes": null,
+          "source": "action_verdict.verdict",
+          "status": "measured",
+          "value": {
+            "approve": {
+              "count": 6,
+              "share": 1.0
+            }
+          }
+        },
+        {
+          "dependency": "review dwell-time instrumentation",
+          "name": "human_minutes_per_account_week",
+          "notes": "Modeled with 2.5 minutes per verdict until real review dwell time is instrumented.",
+          "source": "action_verdict count * configured review_minutes_per_verdict",
+          "status": "modeled",
+          "value": 1.67
+        },
+        {
+          "dependency": "MP-E graduation sampling audit records",
+          "name": "sampled_miss_rate",
+          "notes": null,
+          "source": "MP-E sampling audit",
+          "status": "not_instrumented",
+          "value": null
+        },
+        {
+          "dependency": "RejectionLedger.reason/action_verdict.rationale",
+          "name": "denial_taxonomy",
+          "notes": null,
+          "source": "RejectionLedger.reason/action_verdict.rationale",
+          "status": "not_instrumented",
+          "value": null
+        },
+        {
+          "dependency": "VM-8-full outcome observation",
+          "name": "outcome_reconciliation_coverage",
+          "notes": null,
+          "source": "VM-8 outcome states",
+          "status": "not_instrumented",
+          "value": null
+        },
+        {
+          "dependency": "workflow envelope suppressed/abstained outputs",
+          "name": "abstention_rate",
+          "notes": null,
+          "source": "workflow envelope outputs",
+          "status": "not_instrumented",
+          "value": null
+        }
+      ]
+    },
+    {
+      "account_count": 9,
+      "category": "cs_record_update",
+      "metrics": [
+        {
+          "dependency": "MP-D2 packet/workflow packet events",
+          "name": "coverage",
+          "notes": "Packet or account-scope rows are not available for this category.",
+          "source": "audit_ledger",
+          "status": "not_instrumented",
+          "value": null
+        },
+        {
+          "dependency": "MP-E graduation state for auto-vs-batch split",
+          "name": "release_mix",
+          "notes": "Tier-derived release posture is measured; graduation split is not yet instrumented.",
+          "source": "action_proposal.autonomy_tier",
+          "status": "measured",
+          "value": {
+            "per_action_review": {
+              "count": 5,
+              "share": 1.0
+            }
+          }
+        },
+        {
+          "dependency": null,
+          "name": "verdict_mix",
+          "notes": null,
+          "source": "action_verdict.verdict",
+          "status": "measured",
+          "value": {
+            "approve": {
+              "count": 3,
+              "share": 0.6
+            },
+            "deny": {
+              "count": 1,
+              "share": 0.2
+            },
+            "revise": {
+              "count": 1,
+              "share": 0.2
+            }
+          }
+        },
+        {
+          "dependency": "review dwell-time instrumentation",
+          "name": "human_minutes_per_account_week",
+          "notes": "Modeled with 2.5 minutes per verdict until real review dwell time is instrumented.",
+          "source": "action_verdict count * configured review_minutes_per_verdict",
+          "status": "modeled",
+          "value": 1.39
+        },
+        {
+          "dependency": "MP-E graduation sampling audit records",
+          "name": "sampled_miss_rate",
+          "notes": null,
+          "source": "MP-E sampling audit",
+          "status": "not_instrumented",
+          "value": null
+        },
+        {
+          "dependency": null,
+          "name": "denial_taxonomy",
+          "notes": null,
+          "source": "RejectionLedger.reason/action_verdict.rationale",
+          "status": "measured",
+          "value": {
+            "missing_evidence": 1
+          }
+        },
+        {
+          "dependency": "VM-8-full outcome observation",
+          "name": "outcome_reconciliation_coverage",
+          "notes": null,
+          "source": "VM-8 outcome states",
+          "status": "not_instrumented",
+          "value": null
+        },
+        {
+          "dependency": "workflow envelope suppressed/abstained outputs",
+          "name": "abstention_rate",
+          "notes": null,
+          "source": "workflow envelope outputs",
+          "status": "not_instrumented",
+          "value": null
+        }
+      ]
+    },
+    {
+      "account_count": 9,
+      "category": "customer_outreach",
+      "metrics": [
+        {
+          "dependency": "MP-D2 packet/workflow packet events",
+          "name": "coverage",
+          "notes": "Packet or account-scope rows are not available for this category.",
+          "source": "audit_ledger",
+          "status": "not_instrumented",
+          "value": null
+        },
+        {
+          "dependency": "MP-E graduation state for auto-vs-batch split",
+          "name": "release_mix",
+          "notes": "Tier-derived release posture is measured; graduation split is not yet instrumented.",
+          "source": "action_proposal.autonomy_tier",
+          "status": "measured",
+          "value": {
+            "per_action_review": {
+              "count": 8,
+              "share": 1.0
+            }
+          }
+        },
+        {
+          "dependency": null,
+          "name": "verdict_mix",
+          "notes": null,
+          "source": "action_verdict.verdict",
+          "status": "measured",
+          "value": {
+            "approve": {
+              "count": 6,
+              "share": 0.75
+            },
+            "deny": {
+              "count": 1,
+              "share": 0.125
+            },
+            "revise": {
+              "count": 1,
+              "share": 0.125
+            }
+          }
+        },
+        {
+          "dependency": "review dwell-time instrumentation",
+          "name": "human_minutes_per_account_week",
+          "notes": "Modeled with 2.5 minutes per verdict until real review dwell time is instrumented.",
+          "source": "action_verdict count * configured review_minutes_per_verdict",
+          "status": "modeled",
+          "value": 2.22
+        },
+        {
+          "dependency": "MP-E graduation sampling audit records",
+          "name": "sampled_miss_rate",
+          "notes": null,
+          "source": "MP-E sampling audit",
+          "status": "not_instrumented",
+          "value": null
+        },
+        {
+          "dependency": null,
+          "name": "denial_taxonomy",
+          "notes": null,
+          "source": "RejectionLedger.reason/action_verdict.rationale",
+          "status": "measured",
+          "value": {
+            "consent_missing": 1
+          }
+        },
+        {
+          "dependency": "VM-8-full outcome observation",
+          "name": "outcome_reconciliation_coverage",
+          "notes": null,
+          "source": "VM-8 outcome states",
+          "status": "not_instrumented",
+          "value": null
+        },
+        {
+          "dependency": "workflow envelope suppressed/abstained outputs",
+          "name": "abstention_rate",
+          "notes": null,
+          "source": "workflow envelope outputs",
+          "status": "not_instrumented",
+          "value": null
+        }
+      ]
+    },
+    {
+      "account_count": 9,
+      "category": "escalation_call",
+      "metrics": [
+        {
+          "dependency": "MP-D2 packet/workflow packet events",
+          "name": "coverage",
+          "notes": "Packet or account-scope rows are not available for this category.",
+          "source": "audit_ledger",
+          "status": "not_instrumented",
+          "value": null
+        },
+        {
+          "dependency": "MP-E graduation state for auto-vs-batch split",
+          "name": "release_mix",
+          "notes": "Tier-derived release posture is measured; graduation split is not yet instrumented.",
+          "source": "action_proposal.autonomy_tier",
+          "status": "measured",
+          "value": {
+            "escalation_review": {
+              "count": 4,
+              "share": 1.0
+            }
+          }
+        },
+        {
+          "dependency": null,
+          "name": "verdict_mix",
+          "notes": null,
+          "source": "action_verdict.verdict",
+          "status": "measured",
+          "value": {
+            "approve": {
+              "count": 1,
+              "share": 0.25
+            },
+            "deny": {
+              "count": 3,
+              "share": 0.75
+            }
+          }
+        },
+        {
+          "dependency": "review dwell-time instrumentation",
+          "name": "human_minutes_per_account_week",
+          "notes": "Modeled with 2.5 minutes per verdict until real review dwell time is instrumented.",
+          "source": "action_verdict count * configured review_minutes_per_verdict",
+          "status": "modeled",
+          "value": 1.11
+        },
+        {
+          "dependency": "MP-E graduation sampling audit records",
+          "name": "sampled_miss_rate",
+          "notes": null,
+          "source": "MP-E sampling audit",
+          "status": "not_instrumented",
+          "value": null
+        },
+        {
+          "dependency": null,
+          "name": "denial_taxonomy",
+          "notes": null,
+          "source": "RejectionLedger.reason/action_verdict.rationale",
+          "status": "measured",
+          "value": {
+            "exec_sponsor_required": 1,
+            "policy_boundary": 1,
+            "premature_customer_touch": 1
+          }
+        },
+        {
+          "dependency": "VM-8-full outcome observation",
+          "name": "outcome_reconciliation_coverage",
+          "notes": null,
+          "source": "VM-8 outcome states",
+          "status": "not_instrumented",
+          "value": null
+        },
+        {
+          "dependency": "workflow envelope suppressed/abstained outputs",
+          "name": "abstention_rate",
+          "notes": null,
+          "source": "workflow envelope outputs",
+          "status": "not_instrumented",
+          "value": null
+        }
+      ]
+    },
+    {
+      "account_count": 9,
+      "category": "internal_review",
+      "metrics": [
+        {
+          "dependency": "MP-D2 packet/workflow packet events",
+          "name": "coverage",
+          "notes": "Packet or account-scope rows are not available for this category.",
+          "source": "audit_ledger",
+          "status": "not_instrumented",
+          "value": null
+        },
+        {
+          "dependency": "MP-E graduation state for auto-vs-batch split",
+          "name": "release_mix",
+          "notes": "Tier-derived release posture is measured; graduation split is not yet instrumented.",
+          "source": "action_proposal.autonomy_tier",
+          "status": "measured",
+          "value": {
+            "auto_internal": {
+              "count": 6,
+              "share": 1.0
+            }
+          }
+        },
+        {
+          "dependency": null,
+          "name": "verdict_mix",
+          "notes": null,
+          "source": "action_verdict.verdict",
+          "status": "measured",
+          "value": {
+            "approve": {
+              "count": 6,
+              "share": 1.0
+            }
+          }
+        },
+        {
+          "dependency": "review dwell-time instrumentation",
+          "name": "human_minutes_per_account_week",
+          "notes": "Modeled with 2.5 minutes per verdict until real review dwell time is instrumented.",
+          "source": "action_verdict count * configured review_minutes_per_verdict",
+          "status": "modeled",
+          "value": 1.67
+        },
+        {
+          "dependency": "MP-E graduation sampling audit records",
+          "name": "sampled_miss_rate",
+          "notes": null,
+          "source": "MP-E sampling audit",
+          "status": "not_instrumented",
+          "value": null
+        },
+        {
+          "dependency": "RejectionLedger.reason/action_verdict.rationale",
+          "name": "denial_taxonomy",
+          "notes": null,
+          "source": "RejectionLedger.reason/action_verdict.rationale",
+          "status": "not_instrumented",
+          "value": null
+        },
+        {
+          "dependency": "VM-8-full outcome observation",
+          "name": "outcome_reconciliation_coverage",
+          "notes": null,
+          "source": "VM-8 outcome states",
+          "status": "not_instrumented",
+          "value": null
+        },
+        {
+          "dependency": "workflow envelope suppressed/abstained outputs",
+          "name": "abstention_rate",
+          "notes": null,
+          "source": "workflow envelope outputs",
+          "status": "not_instrumented",
+          "value": null
+        }
+      ]
+    },
+    {
+      "account_count": 9,
+      "category": "success_plan",
+      "metrics": [
+        {
+          "dependency": "MP-D2 packet/workflow packet events",
+          "name": "coverage",
+          "notes": "Packet or account-scope rows are not available for this category.",
+          "source": "audit_ledger",
+          "status": "not_instrumented",
+          "value": null
+        },
+        {
+          "dependency": "MP-E graduation state for auto-vs-batch split",
+          "name": "release_mix",
+          "notes": "Tier-derived release posture is measured; graduation split is not yet instrumented.",
+          "source": "action_proposal.autonomy_tier",
+          "status": "measured",
+          "value": {
+            "per_action_review": {
+              "count": 5,
+              "share": 1.0
+            }
+          }
+        },
+        {
+          "dependency": null,
+          "name": "verdict_mix",
+          "notes": null,
+          "source": "action_verdict.verdict",
+          "status": "measured",
+          "value": {
+            "approve": {
+              "count": 2,
+              "share": 0.4
+            },
+            "deny": {
+              "count": 1,
+              "share": 0.2
+            },
+            "revise": {
+              "count": 2,
+              "share": 0.4
+            }
+          }
+        },
+        {
+          "dependency": "review dwell-time instrumentation",
+          "name": "human_minutes_per_account_week",
+          "notes": "Modeled with 2.5 minutes per verdict until real review dwell time is instrumented.",
+          "source": "action_verdict count * configured review_minutes_per_verdict",
+          "status": "modeled",
+          "value": 1.39
+        },
+        {
+          "dependency": "MP-E graduation sampling audit records",
+          "name": "sampled_miss_rate",
+          "notes": null,
+          "source": "MP-E sampling audit",
+          "status": "not_instrumented",
+          "value": null
+        },
+        {
+          "dependency": null,
+          "name": "denial_taxonomy",
+          "notes": null,
+          "source": "RejectionLedger.reason/action_verdict.rationale",
+          "status": "measured",
+          "value": {
+            "missing_evidence": 1
+          }
+        },
+        {
+          "dependency": "VM-8-full outcome observation",
+          "name": "outcome_reconciliation_coverage",
+          "notes": null,
+          "source": "VM-8 outcome states",
+          "status": "not_instrumented",
+          "value": null
+        },
+        {
+          "dependency": "workflow envelope suppressed/abstained outputs",
+          "name": "abstention_rate",
+          "notes": null,
+          "source": "workflow envelope outputs",
+          "status": "not_instrumented",
+          "value": null
+        }
+      ]
+    }
+  ],
+  "source_summary": {
+    "accounts_in_scope": 9,
+    "audit_events": 0,
+    "rejection_records": 0,
+    "verdict_records": 34
+  }
+}
