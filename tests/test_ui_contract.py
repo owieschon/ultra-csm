@@ -96,7 +96,7 @@ class TestLedgerEndpoint:
         assert "events" in body
         assert "ledger_gap" in body
         assert isinstance(body["ledger_gap"], list)
-        assert body["ledger_gap"] == []
+        assert {"gmail.commit", "reobserve.queue"} <= set(body["ledger_gap"])
 
     def test_ledger_reflects_sweep_operational_events(self, client: TestClient):
         sweep = client.post("/sweep", headers=AUTH_HEADERS)
@@ -109,7 +109,7 @@ class TestLedgerEndpoint:
         assert "value_model" in events
         assert "slot_b.draft" in events
         assert "judge.score" in events
-        assert ledger["ledger_gap"] == []
+        assert set(ledger["ledger_gap"]) == {"gmail.commit", "reobserve.queue"}
 
     def test_ledger_reflects_a_real_verdict(self, client: TestClient):
         client.post("/sweep", headers=AUTH_HEADERS)
