@@ -56,6 +56,7 @@ class CallRecord:
     """Record of a single Slot B call."""
 
     model_id: str
+    transport: str
     input_tokens: int
     output_tokens: int
     total_tokens: int
@@ -93,6 +94,7 @@ class CostTracker:
         self,
         *,
         model_id: str,
+        transport: str = "anthropic_api",
         input_tokens: int,
         output_tokens: int,
         latency_ms: float,
@@ -103,6 +105,7 @@ class CostTracker:
         cost_usd = compute_cost(model_id, input_tokens, output_tokens)
         rec = CallRecord(
             model_id=model_id,
+            transport=transport,
             input_tokens=input_tokens,
             output_tokens=output_tokens,
             total_tokens=total_tokens,
@@ -127,6 +130,7 @@ class CostTracker:
             "slot_b_call",
             extra={
                 "model_id": model_id,
+                "transport": transport,
                 "input_tokens": input_tokens,
                 "output_tokens": output_tokens,
                 "total_tokens": total_tokens,
@@ -170,6 +174,10 @@ class CostTracker:
                 "avg_latency_ms": (
                     round(self._total_latency_ms / n, 2) if n > 0 else 0.0
                 ),
+                "calls_by_transport": {
+                    name: sum(1 for call in self._calls if call.transport == name)
+                    for name in sorted({call.transport for call in self._calls})
+                },
             }
 
     def cost_per_account(self) -> dict[str, float]:
