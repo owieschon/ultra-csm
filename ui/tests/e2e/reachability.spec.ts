@@ -108,7 +108,7 @@ test("proposal draft and governance controls are reachable without document over
     name: "Decision controls and receipt",
   });
   await expect(releasePanel).toBeVisible();
-  await expect(releasePanel.getByRole("button", { name: /Approve & send/ })).toBeVisible();
+  await expect(releasePanel.getByRole("button", { name: /Approve exact draft/ })).toBeVisible();
   await expect(releasePanel.getByText("Decision receipt", { exact: true })).toBeVisible();
 
   const documentOverflows = await page.evaluate(

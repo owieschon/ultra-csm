@@ -366,7 +366,7 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "fd193cd7-b742-4767-9d88-a48bc706db77",
+        "proposal_id": "e5f45cd5-0685-5f3d-a96a-fa67dd4d6085",
         "status": "pending"
       },
       "reason": "Ironhorse Freight Co has deterministic Time-to-Value score 143 from milestones_overdue=50, days_overdue=40, success_plan_overdue=20; draft customer outreach. Evidence [evidence:4635cdb7-5bb5-5c43-acc1-5dc989d4d583], [evidence:afbc6091-985b-50e5-8522-e1a916af56c9], [evidence:7d61c11f-73d4-52f6-a738-33ab96634a61].",
@@ -387,7 +387,221 @@
         }
       ],
       "swept_at": "2026-11-08",
-      "tenant_id": "ultra-demo"
+      "tenant_id": "ultra-demo",
+      "work_packet": {
+        "account_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+        "account_name": "Ironhorse Freight Co",
+        "allowed_ctas": [
+          {
+            "cta_id": "inspect_sources",
+            "enabled": true,
+            "governance_requirement": null,
+            "label": "Inspect sources",
+            "reason": "Source inspection is read-only.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "preview_artifact",
+            "enabled": true,
+            "governance_requirement": "human_approve_with_consent",
+            "label": "Preview artifact",
+            "reason": "Prepared artifact is available.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "request_gate_approval",
+            "enabled": true,
+            "governance_requirement": "human_approve_with_consent",
+            "label": "Request approval",
+            "reason": "Proposal is pending and requires human_approve_with_consent.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "mark_internal_reviewed",
+            "enabled": false,
+            "governance_requirement": "human_approve_with_consent",
+            "label": "Mark reviewed",
+            "reason": "Only internal-only recommendations can be marked reviewed.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "record_feedback",
+            "enabled": true,
+            "governance_requirement": null,
+            "label": "Record feedback",
+            "reason": "Operator feedback is ledgered for model/process review.",
+            "source_organ": "governance.csm_actions"
+          }
+        ],
+        "as_of": "2026-11-08",
+        "bucket_trace": [
+          {
+            "bucket": "identity",
+            "evidence_ids": [
+              "3610a030-a5cd-55db-80b7-7b89d66203a4",
+              "c1c67c21-2110-5d2a-a805-2c495b9bb031",
+              "bb0a068d-0c27-55fe-86ed-27bd5939777c"
+            ],
+            "state": "covered"
+          },
+          {
+            "bucket": "priority",
+            "evidence_ids": [
+              "4635cdb7-5bb5-5c43-acc1-5dc989d4d583",
+              "afbc6091-985b-50e5-8522-e1a916af56c9",
+              "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43"
+            ],
+            "state": "covered"
+          },
+          {
+            "bucket": "source_evidence",
+            "evidence_ids": [
+              "4635cdb7-5bb5-5c43-acc1-5dc989d4d583",
+              "afbc6091-985b-50e5-8522-e1a916af56c9",
+              "7d61c11f-73d4-52f6-a738-33ab96634a61",
+              "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43"
+            ],
+            "state": "covered"
+          },
+          {
+            "bucket": "internal_bridge",
+            "evidence_ids": [],
+            "state": "not_applicable"
+          }
+        ],
+        "cadence": "same_day",
+        "coverage_trace": {
+          "account_resolution": "exactly_one",
+          "accounts_in_book": 181,
+          "accounts_scanned": 181,
+          "coverage_label": "sweep_item"
+        },
+        "diagnostic_hypothesis": {
+          "basis": [
+            "evidence:telemetry:4635cdb7-5bb5-5c43-acc1-5dc989d4d583:daily_active_assets",
+            "evidence:cs_platform:afbc6091-985b-50e5-8522-e1a916af56c9:target_date",
+            "evidence:crm:7d61c11f-73d4-52f6-a738-33ab96634a61:status",
+            "evidence:cs_platform:f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43:health_score"
+          ],
+          "confidence": 0.72,
+          "confidence_label": "medium",
+          "label": "unverified_hypothesis",
+          "summary": "Ironhorse Freight Co: Ironhorse Freight Co has deterministic Time-to-Value score 143 from milestones_overdue=50, days_overdue=40, success_plan_overdue=20; draft customer outreach. Evidence [evidence:4635cdb7-5bb5-5c43-acc1-5dc989d4d583], [evidence:afbc6091-985b-50e5-8522-e1a916af56c9], [evidence:7d61c11f-73d4-52f6-a738-33ab96634a61].",
+          "unknowns": [
+            "best_customer_recipient"
+          ],
+          "validation_status": "out_of_validated_domain"
+        },
+        "evidence_chain": [
+          {
+            "claim": "telemetry.daily_active_assets observed for 4635cdb7-5bb5-5c43-acc1-5dc989d4d583",
+            "field": "daily_active_assets",
+            "observed_at": "2026-11-08T00:00:00Z",
+            "provenance_tier": "raw_fact",
+            "source": "telemetry",
+            "source_id": "4635cdb7-5bb5-5c43-acc1-5dc989d4d583",
+            "step_id": "evidence:telemetry:4635cdb7-5bb5-5c43-acc1-5dc989d4d583:daily_active_assets",
+            "validation_status": "oracle_graded"
+          },
+          {
+            "claim": "cs_platform.target_date observed for afbc6091-985b-50e5-8522-e1a916af56c9",
+            "field": "target_date",
+            "observed_at": "2026-07-15",
+            "provenance_tier": "raw_fact",
+            "source": "cs_platform",
+            "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9",
+            "step_id": "evidence:cs_platform:afbc6091-985b-50e5-8522-e1a916af56c9:target_date",
+            "validation_status": "oracle_graded"
+          },
+          {
+            "claim": "crm.status observed for 7d61c11f-73d4-52f6-a738-33ab96634a61",
+            "field": "status",
+            "observed_at": "2026-06-15T10:00:00Z",
+            "provenance_tier": "raw_fact",
+            "source": "crm",
+            "source_id": "7d61c11f-73d4-52f6-a738-33ab96634a61",
+            "step_id": "evidence:crm:7d61c11f-73d4-52f6-a738-33ab96634a61:status",
+            "validation_status": "oracle_graded"
+          },
+          {
+            "claim": "cs_platform.health_score observed for f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+            "field": "health_score",
+            "observed_at": "2026-07-26T00:00:00Z",
+            "provenance_tier": "raw_fact",
+            "source": "cs_platform",
+            "source_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+            "step_id": "evidence:cs_platform:f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43:health_score",
+            "validation_status": "oracle_graded"
+          }
+        ],
+        "feedback_hooks": [
+          {
+            "enabled": true,
+            "hook_id": "verdict_reason",
+            "label": "Capture approval or rejection reason",
+            "target": "rejection_ledger"
+          },
+          {
+            "enabled": true,
+            "hook_id": "missing_factor",
+            "label": "Flag missing success factor",
+            "target": "rejection_ledger"
+          }
+        ],
+        "field_validation": {
+          "account_id": "deterministic_oracle",
+          "account_name": "deterministic_oracle",
+          "allowed_ctas": "deterministic_oracle",
+          "as_of": "deterministic_oracle",
+          "bucket_trace": "deterministic_oracle",
+          "cadence": "deterministic_oracle",
+          "coverage_trace": "deterministic_oracle",
+          "diagnostic_hypothesis": "out_of_validated_domain",
+          "evidence_chain": "deterministic_oracle",
+          "feedback_hooks": "deterministic_oracle",
+          "field_validation": "deterministic_oracle",
+          "governance_boundary": "deterministic_oracle",
+          "job_type": "deterministic_oracle",
+          "lane": "deterministic_oracle",
+          "packet_version": "deterministic_oracle",
+          "prepared_artifact": "judge_graded_in_domain_or_out_of_validated_domain",
+          "primary_next_step": "deterministic_oracle",
+          "recommended_action": "deterministic_oracle",
+          "tenant_id": "deterministic_oracle"
+        },
+        "governance_boundary": {
+          "action_type": "draft_customer_outreach",
+          "autonomy_tier": 2,
+          "can_execute_from_ui": false,
+          "customer_affecting": true,
+          "proposal_status": "pending",
+          "release_condition": "human_approve_with_consent",
+          "required_permission": "customer.outreach.draft",
+          "requires_action_gate": true,
+          "source_organ": "governance.csm_actions"
+        },
+        "job_type": "customer_outreach",
+        "lane": "needs_judgment",
+        "packet_version": "csm-work-packet-v1",
+        "prepared_artifact": {
+          "artifact_type": "customer_draft",
+          "body": "Hi Marcus Webb, Ironhorse Freight Co is showing an onboarding risk tied to overdue onboarding milestones, overdue activation steps. Can we review the overdue activation steps and agree on owners?",
+          "requires_approval": true,
+          "source_organ": "agent1.slot_b",
+          "title": "Customer outreach draft",
+          "validation_status": "judge_graded_in_domain"
+        },
+        "primary_next_step": "Review the pending draft_customer_outreach proposal in ActionGate.",
+        "recommended_action": {
+          "action_type": "draft_customer_outreach",
+          "motion": "working_session",
+          "rationale": "Customer-facing email/text draft; never sent without approval.",
+          "source_organ": "motion/playbook + governance.csm_actions",
+          "target_actor": "customer_success_manager",
+          "validation_status": "oracle_graded"
+        },
+        "tenant_id": "ultra-demo"
+      }
     },
     {
       "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
@@ -540,7 +754,7 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "391ad4e7-d684-4588-bfaa-2724f56ef9a5",
+        "proposal_id": "38b91188-6380-5d50-8296-d8e98986299c",
         "status": "pending"
       },
       "reason": "Pinehill Transport has deterministic Time-to-Value score 82 from success_plan_overdue=20, health_yellow=15, low_seat_penetration=12; draft customer outreach. Evidence [evidence:df3f3e70-7ed8-5d10-9b05-395fd3d1a0f1], [evidence:4e2db753-f222-5f7b-8356-0a2f59fae1e3], [evidence:ae0a5970-d69b-5c18-ad60-8015524e565c].",
@@ -561,7 +775,209 @@
         }
       ],
       "swept_at": "2026-11-08",
-      "tenant_id": "ultra-demo"
+      "tenant_id": "ultra-demo",
+      "work_packet": {
+        "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
+        "account_name": "Pinehill Transport",
+        "allowed_ctas": [
+          {
+            "cta_id": "inspect_sources",
+            "enabled": true,
+            "governance_requirement": null,
+            "label": "Inspect sources",
+            "reason": "Source inspection is read-only.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "preview_artifact",
+            "enabled": true,
+            "governance_requirement": "human_approve_with_consent",
+            "label": "Preview artifact",
+            "reason": "Prepared artifact is available.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "request_gate_approval",
+            "enabled": true,
+            "governance_requirement": "human_approve_with_consent",
+            "label": "Request approval",
+            "reason": "Proposal is pending and requires human_approve_with_consent.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "mark_internal_reviewed",
+            "enabled": false,
+            "governance_requirement": "human_approve_with_consent",
+            "label": "Mark reviewed",
+            "reason": "Only internal-only recommendations can be marked reviewed.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "record_feedback",
+            "enabled": true,
+            "governance_requirement": null,
+            "label": "Record feedback",
+            "reason": "Operator feedback is ledgered for model/process review.",
+            "source_organ": "governance.csm_actions"
+          }
+        ],
+        "as_of": "2026-11-08",
+        "bucket_trace": [
+          {
+            "bucket": "identity",
+            "evidence_ids": [
+              "fdd4645a-e0b6-53d8-ba03-249f260574d8",
+              "e1b69640-d833-57b8-81b1-1fa53298aa60"
+            ],
+            "state": "covered"
+          },
+          {
+            "bucket": "priority",
+            "evidence_ids": [
+              "df3f3e70-7ed8-5d10-9b05-395fd3d1a0f1",
+              "ae0a5970-d69b-5c18-ad60-8015524e565c"
+            ],
+            "state": "covered"
+          },
+          {
+            "bucket": "source_evidence",
+            "evidence_ids": [
+              "df3f3e70-7ed8-5d10-9b05-395fd3d1a0f1",
+              "4e2db753-f222-5f7b-8356-0a2f59fae1e3",
+              "ae0a5970-d69b-5c18-ad60-8015524e565c"
+            ],
+            "state": "covered"
+          },
+          {
+            "bucket": "internal_bridge",
+            "evidence_ids": [
+              "4e2db753-f222-5f7b-8356-0a2f59fae1e3"
+            ],
+            "state": "covered"
+          }
+        ],
+        "cadence": "next_business_day",
+        "coverage_trace": {
+          "account_resolution": "exactly_one",
+          "accounts_in_book": 181,
+          "accounts_scanned": 181,
+          "coverage_label": "sweep_item"
+        },
+        "diagnostic_hypothesis": {
+          "basis": [
+            "evidence:cs_platform:df3f3e70-7ed8-5d10-9b05-395fd3d1a0f1:target_date",
+            "evidence:crm:4e2db753-f222-5f7b-8356-0a2f59fae1e3:status",
+            "evidence:cs_platform:ae0a5970-d69b-5c18-ad60-8015524e565c:health_score"
+          ],
+          "confidence": 0.72,
+          "confidence_label": "medium",
+          "label": "unverified_hypothesis",
+          "summary": "Pinehill Transport: Pinehill Transport has deterministic Time-to-Value score 82 from success_plan_overdue=20, health_yellow=15, low_seat_penetration=12; draft customer outreach. Evidence [evidence:df3f3e70-7ed8-5d10-9b05-395fd3d1a0f1], [evidence:4e2db753-f222-5f7b-8356-0a2f59fae1e3], [evidence:ae0a5970-d69b-5c18-ad60-8015524e565c].",
+          "unknowns": [
+            "best_customer_recipient"
+          ],
+          "validation_status": "out_of_validated_domain"
+        },
+        "evidence_chain": [
+          {
+            "claim": "cs_platform.target_date observed for df3f3e70-7ed8-5d10-9b05-395fd3d1a0f1",
+            "field": "target_date",
+            "observed_at": "2026-06-21",
+            "provenance_tier": "raw_fact",
+            "source": "cs_platform",
+            "source_id": "df3f3e70-7ed8-5d10-9b05-395fd3d1a0f1",
+            "step_id": "evidence:cs_platform:df3f3e70-7ed8-5d10-9b05-395fd3d1a0f1:target_date",
+            "validation_status": "oracle_graded"
+          },
+          {
+            "claim": "crm.status observed for 4e2db753-f222-5f7b-8356-0a2f59fae1e3",
+            "field": "status",
+            "observed_at": "2026-06-10T09:00:00Z",
+            "provenance_tier": "raw_fact",
+            "source": "crm",
+            "source_id": "4e2db753-f222-5f7b-8356-0a2f59fae1e3",
+            "step_id": "evidence:crm:4e2db753-f222-5f7b-8356-0a2f59fae1e3:status",
+            "validation_status": "oracle_graded"
+          },
+          {
+            "claim": "cs_platform.health_score observed for ae0a5970-d69b-5c18-ad60-8015524e565c",
+            "field": "health_score",
+            "observed_at": "2026-11-08T00:00:00Z",
+            "provenance_tier": "raw_fact",
+            "source": "cs_platform",
+            "source_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
+            "step_id": "evidence:cs_platform:ae0a5970-d69b-5c18-ad60-8015524e565c:health_score",
+            "validation_status": "oracle_graded"
+          }
+        ],
+        "feedback_hooks": [
+          {
+            "enabled": true,
+            "hook_id": "verdict_reason",
+            "label": "Capture approval or rejection reason",
+            "target": "rejection_ledger"
+          },
+          {
+            "enabled": true,
+            "hook_id": "missing_factor",
+            "label": "Flag missing success factor",
+            "target": "rejection_ledger"
+          }
+        ],
+        "field_validation": {
+          "account_id": "deterministic_oracle",
+          "account_name": "deterministic_oracle",
+          "allowed_ctas": "deterministic_oracle",
+          "as_of": "deterministic_oracle",
+          "bucket_trace": "deterministic_oracle",
+          "cadence": "deterministic_oracle",
+          "coverage_trace": "deterministic_oracle",
+          "diagnostic_hypothesis": "out_of_validated_domain",
+          "evidence_chain": "deterministic_oracle",
+          "feedback_hooks": "deterministic_oracle",
+          "field_validation": "deterministic_oracle",
+          "governance_boundary": "deterministic_oracle",
+          "job_type": "deterministic_oracle",
+          "lane": "deterministic_oracle",
+          "packet_version": "deterministic_oracle",
+          "prepared_artifact": "judge_graded_in_domain_or_out_of_validated_domain",
+          "primary_next_step": "deterministic_oracle",
+          "recommended_action": "deterministic_oracle",
+          "tenant_id": "deterministic_oracle"
+        },
+        "governance_boundary": {
+          "action_type": "draft_customer_outreach",
+          "autonomy_tier": 2,
+          "can_execute_from_ui": false,
+          "customer_affecting": true,
+          "proposal_status": "pending",
+          "release_condition": "human_approve_with_consent",
+          "required_permission": "customer.outreach.draft",
+          "requires_action_gate": true,
+          "source_organ": "governance.csm_actions"
+        },
+        "job_type": "internal_escalation",
+        "lane": "needs_judgment",
+        "packet_version": "csm-work-packet-v1",
+        "prepared_artifact": {
+          "artifact_type": "customer_draft",
+          "body": "Hi Dennis Gruber, Pinehill Transport is showing an onboarding risk tied to an overdue success plan, a declining health signal. Can we map the missing users needed for a complete rollout?",
+          "requires_approval": true,
+          "source_organ": "agent1.slot_b",
+          "title": "Customer outreach draft",
+          "validation_status": "judge_graded_in_domain"
+        },
+        "primary_next_step": "Review the pending draft_customer_outreach proposal in ActionGate.",
+        "recommended_action": {
+          "action_type": "draft_customer_outreach",
+          "motion": "content_route",
+          "rationale": "Customer-facing email/text draft; never sent without approval.",
+          "source_organ": "motion/playbook + governance.csm_actions",
+          "target_actor": "engineering",
+          "validation_status": "oracle_graded"
+        },
+        "tenant_id": "ultra-demo"
+      }
     },
     {
       "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
@@ -685,7 +1101,7 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "8588dcbc-fd45-414b-a558-f51b7c7fe001",
+        "proposal_id": "3e58d143-cae9-5982-a43e-d0a5893708ef",
         "status": "pending"
       },
       "reason": "Trailhead Logistics has deterministic Time-to-Value score 63 from success_plan_overdue=20, arr_tier=5, single_threaded_risk=20; draft customer outreach. Evidence [evidence:20527c0a-8156-5119-934a-4017e19fc39d], [evidence:21830db9-7182-5d97-b22e-d57c4e28f696].",
@@ -706,7 +1122,199 @@
         }
       ],
       "swept_at": "2026-11-08",
-      "tenant_id": "ultra-demo"
+      "tenant_id": "ultra-demo",
+      "work_packet": {
+        "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+        "account_name": "Trailhead Logistics",
+        "allowed_ctas": [
+          {
+            "cta_id": "inspect_sources",
+            "enabled": true,
+            "governance_requirement": null,
+            "label": "Inspect sources",
+            "reason": "Source inspection is read-only.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "preview_artifact",
+            "enabled": true,
+            "governance_requirement": "human_approve_with_consent",
+            "label": "Preview artifact",
+            "reason": "Prepared artifact is available.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "request_gate_approval",
+            "enabled": true,
+            "governance_requirement": "human_approve_with_consent",
+            "label": "Request approval",
+            "reason": "Proposal is pending and requires human_approve_with_consent.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "mark_internal_reviewed",
+            "enabled": false,
+            "governance_requirement": "human_approve_with_consent",
+            "label": "Mark reviewed",
+            "reason": "Only internal-only recommendations can be marked reviewed.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "record_feedback",
+            "enabled": true,
+            "governance_requirement": null,
+            "label": "Record feedback",
+            "reason": "Operator feedback is ledgered for model/process review.",
+            "source_organ": "governance.csm_actions"
+          }
+        ],
+        "as_of": "2026-11-08",
+        "bucket_trace": [
+          {
+            "bucket": "identity",
+            "evidence_ids": [
+              "5ba7aa51-a5eb-5220-9d3b-71bbe67377a1",
+              "9af87b79-92f5-505f-8eba-74e91ed81d4c",
+              "c8836191-bc7e-54ac-ac00-d010e2adb93b",
+              "ae90c013-a562-56d0-8347-bd614a50f6e1"
+            ],
+            "state": "covered"
+          },
+          {
+            "bucket": "priority",
+            "evidence_ids": [
+              "20527c0a-8156-5119-934a-4017e19fc39d",
+              "21830db9-7182-5d97-b22e-d57c4e28f696"
+            ],
+            "state": "covered"
+          },
+          {
+            "bucket": "source_evidence",
+            "evidence_ids": [
+              "20527c0a-8156-5119-934a-4017e19fc39d",
+              "21830db9-7182-5d97-b22e-d57c4e28f696"
+            ],
+            "state": "covered"
+          },
+          {
+            "bucket": "internal_bridge",
+            "evidence_ids": [
+              "12b20f2f-8a7f-50a7-9f8f-85222f7a853a"
+            ],
+            "state": "covered"
+          }
+        ],
+        "cadence": "next_sweep",
+        "coverage_trace": {
+          "account_resolution": "exactly_one",
+          "accounts_in_book": 181,
+          "accounts_scanned": 181,
+          "coverage_label": "sweep_item"
+        },
+        "diagnostic_hypothesis": {
+          "basis": [
+            "evidence:cs_platform:20527c0a-8156-5119-934a-4017e19fc39d:target_date",
+            "evidence:cs_platform:21830db9-7182-5d97-b22e-d57c4e28f696:health_score"
+          ],
+          "confidence": 0.6500000000000001,
+          "confidence_label": "medium",
+          "label": "unverified_hypothesis",
+          "summary": "Trailhead Logistics: Trailhead Logistics has deterministic Time-to-Value score 63 from success_plan_overdue=20, arr_tier=5, single_threaded_risk=20; draft customer outreach. Evidence [evidence:20527c0a-8156-5119-934a-4017e19fc39d], [evidence:21830db9-7182-5d97-b22e-d57c4e28f696].",
+          "unknowns": [
+            "best_customer_recipient"
+          ],
+          "validation_status": "out_of_validated_domain"
+        },
+        "evidence_chain": [
+          {
+            "claim": "cs_platform.target_date observed for 20527c0a-8156-5119-934a-4017e19fc39d",
+            "field": "target_date",
+            "observed_at": "2026-09-01",
+            "provenance_tier": "raw_fact",
+            "source": "cs_platform",
+            "source_id": "20527c0a-8156-5119-934a-4017e19fc39d",
+            "step_id": "evidence:cs_platform:20527c0a-8156-5119-934a-4017e19fc39d:target_date",
+            "validation_status": "oracle_graded"
+          },
+          {
+            "claim": "cs_platform.health_score observed for 21830db9-7182-5d97-b22e-d57c4e28f696",
+            "field": "health_score",
+            "observed_at": "2026-09-09T00:00:00Z",
+            "provenance_tier": "raw_fact",
+            "source": "cs_platform",
+            "source_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+            "step_id": "evidence:cs_platform:21830db9-7182-5d97-b22e-d57c4e28f696:health_score",
+            "validation_status": "oracle_graded"
+          }
+        ],
+        "feedback_hooks": [
+          {
+            "enabled": true,
+            "hook_id": "verdict_reason",
+            "label": "Capture approval or rejection reason",
+            "target": "rejection_ledger"
+          },
+          {
+            "enabled": true,
+            "hook_id": "missing_factor",
+            "label": "Flag missing success factor",
+            "target": "rejection_ledger"
+          }
+        ],
+        "field_validation": {
+          "account_id": "deterministic_oracle",
+          "account_name": "deterministic_oracle",
+          "allowed_ctas": "deterministic_oracle",
+          "as_of": "deterministic_oracle",
+          "bucket_trace": "deterministic_oracle",
+          "cadence": "deterministic_oracle",
+          "coverage_trace": "deterministic_oracle",
+          "diagnostic_hypothesis": "out_of_validated_domain",
+          "evidence_chain": "deterministic_oracle",
+          "feedback_hooks": "deterministic_oracle",
+          "field_validation": "deterministic_oracle",
+          "governance_boundary": "deterministic_oracle",
+          "job_type": "deterministic_oracle",
+          "lane": "deterministic_oracle",
+          "packet_version": "deterministic_oracle",
+          "prepared_artifact": "judge_graded_in_domain_or_out_of_validated_domain",
+          "primary_next_step": "deterministic_oracle",
+          "recommended_action": "deterministic_oracle",
+          "tenant_id": "deterministic_oracle"
+        },
+        "governance_boundary": {
+          "action_type": "draft_customer_outreach",
+          "autonomy_tier": 2,
+          "can_execute_from_ui": false,
+          "customer_affecting": true,
+          "proposal_status": "pending",
+          "release_condition": "human_approve_with_consent",
+          "required_permission": "customer.outreach.draft",
+          "requires_action_gate": true,
+          "source_organ": "governance.csm_actions"
+        },
+        "job_type": "product_feedback_synthesis",
+        "lane": "needs_judgment",
+        "packet_version": "csm-work-packet-v1",
+        "prepared_artifact": {
+          "artifact_type": "customer_draft",
+          "body": "Hi Vanessa Torres, Trailhead Logistics is showing an onboarding risk tied to an overdue success plan, the current account review. Can we review the activation blockers and next steps?",
+          "requires_approval": true,
+          "source_organ": "agent1.slot_b",
+          "title": "Customer outreach draft",
+          "validation_status": "judge_graded_in_domain"
+        },
+        "primary_next_step": "Review the pending draft_customer_outreach proposal in ActionGate.",
+        "recommended_action": {
+          "action_type": "draft_customer_outreach",
+          "motion": "personal_email",
+          "rationale": "Customer-facing email/text draft; never sent without approval.",
+          "source_organ": "motion/playbook + governance.csm_actions",
+          "target_actor": "product",
+          "validation_status": "oracle_graded"
+        },
+        "tenant_id": "ultra-demo"
+      }
     },
     {
       "account_id": "c79ad97e-e2ad-5b6a-beeb-800e4755adca",
@@ -821,7 +1429,205 @@
         }
       ],
       "swept_at": "2026-11-08",
-      "tenant_id": "ultra-demo"
+      "tenant_id": "ultra-demo",
+      "work_packet": {
+        "account_id": "c79ad97e-e2ad-5b6a-beeb-800e4755adca",
+        "account_name": "Quarry Stone Logistics",
+        "allowed_ctas": [
+          {
+            "cta_id": "inspect_sources",
+            "enabled": true,
+            "governance_requirement": null,
+            "label": "Inspect sources",
+            "reason": "Source inspection is read-only.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "preview_artifact",
+            "enabled": false,
+            "governance_requirement": "auto_internal_only",
+            "label": "Preview artifact",
+            "reason": "No prepared artifact was produced.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "request_gate_approval",
+            "enabled": false,
+            "governance_requirement": "auto_internal_only",
+            "label": "Request approval",
+            "reason": "No pending customer-affecting proposal requires approval.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "mark_internal_reviewed",
+            "enabled": true,
+            "governance_requirement": "auto_internal_only",
+            "label": "Mark reviewed",
+            "reason": "Internal-only recommendation may be marked reviewed.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "record_feedback",
+            "enabled": true,
+            "governance_requirement": null,
+            "label": "Record feedback",
+            "reason": "Operator feedback is ledgered for model/process review.",
+            "source_organ": "governance.csm_actions"
+          }
+        ],
+        "as_of": "2026-11-08",
+        "bucket_trace": [
+          {
+            "bucket": "identity",
+            "evidence_ids": [
+              "0cde8be1-1ecf-5092-96ec-411f8f8a40c9"
+            ],
+            "state": "covered"
+          },
+          {
+            "bucket": "priority",
+            "evidence_ids": [
+              "c79ad97e-e2ad-5b6a-beeb-800e4755adca"
+            ],
+            "state": "covered"
+          },
+          {
+            "bucket": "source_evidence",
+            "evidence_ids": [
+              "10b4aa63-02cd-5459-99cc-f154a26bc5e3",
+              "633f9a3f-071c-56ef-86af-992135bd92ab",
+              "c79ad97e-e2ad-5b6a-beeb-800e4755adca"
+            ],
+            "state": "covered"
+          },
+          {
+            "bucket": "internal_bridge",
+            "evidence_ids": [],
+            "state": "not_applicable"
+          }
+        ],
+        "cadence": "next_sweep",
+        "coverage_trace": {
+          "account_resolution": "exactly_one",
+          "accounts_in_book": 181,
+          "accounts_scanned": 181,
+          "coverage_label": "sweep_item"
+        },
+        "diagnostic_hypothesis": {
+          "basis": [
+            "evidence:cs_platform:10b4aa63-02cd-5459-99cc-f154a26bc5e3:due_date",
+            "evidence:crm:633f9a3f-071c-56ef-86af-992135bd92ab:status",
+            "evidence:cs_platform:c79ad97e-e2ad-5b6a-beeb-800e4755adca:health_score"
+          ],
+          "confidence": 0.63,
+          "confidence_label": "medium",
+          "label": "unverified_hypothesis",
+          "summary": "Quarry Stone Logistics: Quarry Stone Logistics has deterministic Time-to-Value score 62 from health_red=30, low_seat_penetration=12, single_threaded_risk=20; route for internal review. Evidence [evidence:10b4aa63-02cd-5459-99cc-f154a26bc5e3], [evidence:633f9a3f-071c-56ef-86af-992135bd92ab], [evidence:c79ad97e-e2ad-5b6a-beeb-800e4755adca].",
+          "unknowns": [
+            "best_customer_recipient"
+          ],
+          "validation_status": "out_of_validated_domain"
+        },
+        "evidence_chain": [
+          {
+            "claim": "cs_platform.due_date observed for 10b4aa63-02cd-5459-99cc-f154a26bc5e3",
+            "field": "due_date",
+            "observed_at": "2026-07-01",
+            "provenance_tier": "raw_fact",
+            "source": "cs_platform",
+            "source_id": "10b4aa63-02cd-5459-99cc-f154a26bc5e3",
+            "step_id": "evidence:cs_platform:10b4aa63-02cd-5459-99cc-f154a26bc5e3:due_date",
+            "validation_status": "oracle_graded"
+          },
+          {
+            "claim": "crm.status observed for 633f9a3f-071c-56ef-86af-992135bd92ab",
+            "field": "status",
+            "observed_at": "2026-06-10T10:00:00Z",
+            "provenance_tier": "raw_fact",
+            "source": "crm",
+            "source_id": "633f9a3f-071c-56ef-86af-992135bd92ab",
+            "step_id": "evidence:crm:633f9a3f-071c-56ef-86af-992135bd92ab:status",
+            "validation_status": "oracle_graded"
+          },
+          {
+            "claim": "cs_platform.health_score observed for c79ad97e-e2ad-5b6a-beeb-800e4755adca",
+            "field": "health_score",
+            "observed_at": "2026-06-21T00:00:00Z",
+            "provenance_tier": "raw_fact",
+            "source": "cs_platform",
+            "source_id": "c79ad97e-e2ad-5b6a-beeb-800e4755adca",
+            "step_id": "evidence:cs_platform:c79ad97e-e2ad-5b6a-beeb-800e4755adca:health_score",
+            "validation_status": "oracle_graded"
+          }
+        ],
+        "feedback_hooks": [
+          {
+            "enabled": true,
+            "hook_id": "verdict_reason",
+            "label": "Capture approval or rejection reason",
+            "target": "rejection_ledger"
+          },
+          {
+            "enabled": true,
+            "hook_id": "missing_factor",
+            "label": "Flag missing success factor",
+            "target": "rejection_ledger"
+          }
+        ],
+        "field_validation": {
+          "account_id": "deterministic_oracle",
+          "account_name": "deterministic_oracle",
+          "allowed_ctas": "deterministic_oracle",
+          "as_of": "deterministic_oracle",
+          "bucket_trace": "deterministic_oracle",
+          "cadence": "deterministic_oracle",
+          "coverage_trace": "deterministic_oracle",
+          "diagnostic_hypothesis": "out_of_validated_domain",
+          "evidence_chain": "deterministic_oracle",
+          "feedback_hooks": "deterministic_oracle",
+          "field_validation": "deterministic_oracle",
+          "governance_boundary": "deterministic_oracle",
+          "job_type": "deterministic_oracle",
+          "lane": "deterministic_oracle",
+          "packet_version": "deterministic_oracle",
+          "prepared_artifact": "judge_graded_in_domain_or_out_of_validated_domain",
+          "primary_next_step": "deterministic_oracle",
+          "recommended_action": "deterministic_oracle",
+          "tenant_id": "deterministic_oracle"
+        },
+        "governance_boundary": {
+          "action_type": "recommend_next_best_action",
+          "autonomy_tier": 1,
+          "can_execute_from_ui": false,
+          "customer_affecting": false,
+          "proposal_status": null,
+          "release_condition": "auto_internal_only",
+          "required_permission": "csm.recommend",
+          "requires_action_gate": false,
+          "source_organ": "governance.csm_actions"
+        },
+        "job_type": "internal_escalation",
+        "lane": "prepared",
+        "packet_version": "csm-work-packet-v1",
+        "prepared_artifact": {
+          "artifact_type": "internal_note",
+          "body": "Quarry Stone Logistics has deterministic Time-to-Value score 62 from health_red=30, low_seat_penetration=12, single_threaded_risk=20; route for internal review. Evidence [evidence:10b4aa63-02cd-5459-99cc-f154a26bc5e3], [evidence:633f9a3f-071c-56ef-86af-992135bd92ab], [evidence:c79ad97e-e2ad-5b6a-beeb-800e4755adca].",
+          "requires_approval": false,
+          "source_organ": "agent1.sweep",
+          "title": "Internal CSM recommendation grounded in data-plane evidence.",
+          "validation_status": "out_of_validated_domain"
+        },
+        "primary_next_step": "Review the internal recommendation and record operator feedback.",
+        "recommended_action": {
+          "action_type": "recommend_next_best_action",
+          "motion": "campaign_enroll",
+          "rationale": "Internal CSM recommendation grounded in data-plane evidence.",
+          "source_organ": "motion/playbook + governance.csm_actions",
+          "target_actor": "operator",
+          "validation_status": "oracle_graded"
+        },
+        "tenant_id": "ultra-demo"
+      }
     },
     {
       "account_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32",
@@ -949,7 +1755,7 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "1f03ed4e-e75c-464c-9b42-fb317189a90c",
+        "proposal_id": "97c91237-2ad5-539d-8c79-937e84041e16",
         "status": "pending"
       },
       "reason": "Clearwater Field Ops has deterministic Time-to-Value score 62 from success_plan_overdue=20, health_yellow=15, low_seat_penetration=12; draft customer outreach. Evidence [evidence:3ea4da77-9a46-57ce-aa0a-36440aed7192], [evidence:33509b75-de98-51fa-90a0-c68c90fe9324], [evidence:865e1e03-cb2f-524d-b572-1eeabebb8d32].",
@@ -970,7 +1776,206 @@
         }
       ],
       "swept_at": "2026-11-08",
-      "tenant_id": "ultra-demo"
+      "tenant_id": "ultra-demo",
+      "work_packet": {
+        "account_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32",
+        "account_name": "Clearwater Field Ops",
+        "allowed_ctas": [
+          {
+            "cta_id": "inspect_sources",
+            "enabled": true,
+            "governance_requirement": null,
+            "label": "Inspect sources",
+            "reason": "Source inspection is read-only.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "preview_artifact",
+            "enabled": true,
+            "governance_requirement": "human_approve_with_consent",
+            "label": "Preview artifact",
+            "reason": "Prepared artifact is available.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "request_gate_approval",
+            "enabled": true,
+            "governance_requirement": "human_approve_with_consent",
+            "label": "Request approval",
+            "reason": "Proposal is pending and requires human_approve_with_consent.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "mark_internal_reviewed",
+            "enabled": false,
+            "governance_requirement": "human_approve_with_consent",
+            "label": "Mark reviewed",
+            "reason": "Only internal-only recommendations can be marked reviewed.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "record_feedback",
+            "enabled": true,
+            "governance_requirement": null,
+            "label": "Record feedback",
+            "reason": "Operator feedback is ledgered for model/process review.",
+            "source_organ": "governance.csm_actions"
+          }
+        ],
+        "as_of": "2026-11-08",
+        "bucket_trace": [
+          {
+            "bucket": "identity",
+            "evidence_ids": [
+              "4294e961-ee2d-536b-9a91-136ef3e39fbd"
+            ],
+            "state": "covered"
+          },
+          {
+            "bucket": "priority",
+            "evidence_ids": [
+              "3ea4da77-9a46-57ce-aa0a-36440aed7192",
+              "865e1e03-cb2f-524d-b572-1eeabebb8d32"
+            ],
+            "state": "covered"
+          },
+          {
+            "bucket": "source_evidence",
+            "evidence_ids": [
+              "3ea4da77-9a46-57ce-aa0a-36440aed7192",
+              "33509b75-de98-51fa-90a0-c68c90fe9324",
+              "865e1e03-cb2f-524d-b572-1eeabebb8d32"
+            ],
+            "state": "covered"
+          },
+          {
+            "bucket": "internal_bridge",
+            "evidence_ids": [],
+            "state": "not_applicable"
+          }
+        ],
+        "cadence": "next_sweep",
+        "coverage_trace": {
+          "account_resolution": "exactly_one",
+          "accounts_in_book": 181,
+          "accounts_scanned": 181,
+          "coverage_label": "sweep_item"
+        },
+        "diagnostic_hypothesis": {
+          "basis": [
+            "evidence:cs_platform:3ea4da77-9a46-57ce-aa0a-36440aed7192:target_date",
+            "evidence:crm:33509b75-de98-51fa-90a0-c68c90fe9324:status",
+            "evidence:cs_platform:865e1e03-cb2f-524d-b572-1eeabebb8d32:health_score"
+          ],
+          "confidence": 0.69,
+          "confidence_label": "medium",
+          "label": "unverified_hypothesis",
+          "summary": "Clearwater Field Ops: Clearwater Field Ops has deterministic Time-to-Value score 62 from success_plan_overdue=20, health_yellow=15, low_seat_penetration=12; draft customer outreach. Evidence [evidence:3ea4da77-9a46-57ce-aa0a-36440aed7192], [evidence:33509b75-de98-51fa-90a0-c68c90fe9324], [evidence:865e1e03-cb2f-524d-b572-1eeabebb8d32].",
+          "unknowns": [
+            "best_customer_recipient"
+          ],
+          "validation_status": "out_of_validated_domain"
+        },
+        "evidence_chain": [
+          {
+            "claim": "cs_platform.target_date observed for 3ea4da77-9a46-57ce-aa0a-36440aed7192",
+            "field": "target_date",
+            "observed_at": "2026-07-15",
+            "provenance_tier": "raw_fact",
+            "source": "cs_platform",
+            "source_id": "3ea4da77-9a46-57ce-aa0a-36440aed7192",
+            "step_id": "evidence:cs_platform:3ea4da77-9a46-57ce-aa0a-36440aed7192:target_date",
+            "validation_status": "oracle_graded"
+          },
+          {
+            "claim": "crm.status observed for 33509b75-de98-51fa-90a0-c68c90fe9324",
+            "field": "status",
+            "observed_at": "2026-06-12T14:00:00Z",
+            "provenance_tier": "raw_fact",
+            "source": "crm",
+            "source_id": "33509b75-de98-51fa-90a0-c68c90fe9324",
+            "step_id": "evidence:crm:33509b75-de98-51fa-90a0-c68c90fe9324:status",
+            "validation_status": "oracle_graded"
+          },
+          {
+            "claim": "cs_platform.health_score observed for 865e1e03-cb2f-524d-b572-1eeabebb8d32",
+            "field": "health_score",
+            "observed_at": "2026-06-21T00:00:00Z",
+            "provenance_tier": "raw_fact",
+            "source": "cs_platform",
+            "source_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32",
+            "step_id": "evidence:cs_platform:865e1e03-cb2f-524d-b572-1eeabebb8d32:health_score",
+            "validation_status": "oracle_graded"
+          }
+        ],
+        "feedback_hooks": [
+          {
+            "enabled": true,
+            "hook_id": "verdict_reason",
+            "label": "Capture approval or rejection reason",
+            "target": "rejection_ledger"
+          },
+          {
+            "enabled": true,
+            "hook_id": "missing_factor",
+            "label": "Flag missing success factor",
+            "target": "rejection_ledger"
+          }
+        ],
+        "field_validation": {
+          "account_id": "deterministic_oracle",
+          "account_name": "deterministic_oracle",
+          "allowed_ctas": "deterministic_oracle",
+          "as_of": "deterministic_oracle",
+          "bucket_trace": "deterministic_oracle",
+          "cadence": "deterministic_oracle",
+          "coverage_trace": "deterministic_oracle",
+          "diagnostic_hypothesis": "out_of_validated_domain",
+          "evidence_chain": "deterministic_oracle",
+          "feedback_hooks": "deterministic_oracle",
+          "field_validation": "deterministic_oracle",
+          "governance_boundary": "deterministic_oracle",
+          "job_type": "deterministic_oracle",
+          "lane": "deterministic_oracle",
+          "packet_version": "deterministic_oracle",
+          "prepared_artifact": "judge_graded_in_domain_or_out_of_validated_domain",
+          "primary_next_step": "deterministic_oracle",
+          "recommended_action": "deterministic_oracle",
+          "tenant_id": "deterministic_oracle"
+        },
+        "governance_boundary": {
+          "action_type": "draft_customer_outreach",
+          "autonomy_tier": 2,
+          "can_execute_from_ui": false,
+          "customer_affecting": true,
+          "proposal_status": "pending",
+          "release_condition": "human_approve_with_consent",
+          "required_permission": "customer.outreach.draft",
+          "requires_action_gate": true,
+          "source_organ": "governance.csm_actions"
+        },
+        "job_type": "customer_outreach",
+        "lane": "needs_judgment",
+        "packet_version": "csm-work-packet-v1",
+        "prepared_artifact": {
+          "artifact_type": "customer_draft",
+          "body": "Hi Kelly Vance, Clearwater Field Ops is showing an onboarding risk tied to an overdue success plan, a declining health signal. Can we map the missing users needed for a complete rollout?",
+          "requires_approval": true,
+          "source_organ": "agent1.slot_b",
+          "title": "Customer outreach draft",
+          "validation_status": "judge_graded_in_domain"
+        },
+        "primary_next_step": "Review the pending draft_customer_outreach proposal in ActionGate.",
+        "recommended_action": {
+          "action_type": "draft_customer_outreach",
+          "motion": "content_route",
+          "rationale": "Customer-facing email/text draft; never sent without approval.",
+          "source_organ": "motion/playbook + governance.csm_actions",
+          "target_actor": "customer_success_manager",
+          "validation_status": "oracle_graded"
+        },
+        "tenant_id": "ultra-demo"
+      }
     },
     {
       "account_id": "081b380c-99e7-5073-992a-9e0d8b27d8c0",
@@ -1063,7 +2068,7 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "ec9adab5-1ef5-4cf1-a505-0561306fbf31",
+        "proposal_id": "82c4a56c-f298-5b2b-8f4c-722bb672b00a",
         "status": "pending"
       },
       "reason": "Ridgeline Warehousing has deterministic Time-to-Value score 47 from success_plan_overdue=20, health_yellow=15, low_seat_penetration=12; draft customer outreach. Evidence [evidence:eb6f3bbc-1ea8-5b0c-b6d5-ad15afda0e34], [evidence:081b380c-99e7-5073-992a-9e0d8b27d8c0].",
@@ -1073,7 +2078,194 @@
       "recommended_action": "draft_customer_outreach",
       "slot_a_classifications": [],
       "swept_at": "2026-11-08",
-      "tenant_id": "ultra-demo"
+      "tenant_id": "ultra-demo",
+      "work_packet": {
+        "account_id": "081b380c-99e7-5073-992a-9e0d8b27d8c0",
+        "account_name": "Ridgeline Warehousing",
+        "allowed_ctas": [
+          {
+            "cta_id": "inspect_sources",
+            "enabled": true,
+            "governance_requirement": null,
+            "label": "Inspect sources",
+            "reason": "Source inspection is read-only.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "preview_artifact",
+            "enabled": true,
+            "governance_requirement": "human_approve_with_consent",
+            "label": "Preview artifact",
+            "reason": "Prepared artifact is available.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "request_gate_approval",
+            "enabled": true,
+            "governance_requirement": "human_approve_with_consent",
+            "label": "Request approval",
+            "reason": "Proposal is pending and requires human_approve_with_consent.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "mark_internal_reviewed",
+            "enabled": false,
+            "governance_requirement": "human_approve_with_consent",
+            "label": "Mark reviewed",
+            "reason": "Only internal-only recommendations can be marked reviewed.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "record_feedback",
+            "enabled": true,
+            "governance_requirement": null,
+            "label": "Record feedback",
+            "reason": "Operator feedback is ledgered for model/process review.",
+            "source_organ": "governance.csm_actions"
+          }
+        ],
+        "as_of": "2026-11-08",
+        "bucket_trace": [
+          {
+            "bucket": "identity",
+            "evidence_ids": [
+              "3e482549-264d-5a2d-b368-ca08b272ac98"
+            ],
+            "state": "covered"
+          },
+          {
+            "bucket": "priority",
+            "evidence_ids": [
+              "eb6f3bbc-1ea8-5b0c-b6d5-ad15afda0e34",
+              "081b380c-99e7-5073-992a-9e0d8b27d8c0"
+            ],
+            "state": "covered"
+          },
+          {
+            "bucket": "source_evidence",
+            "evidence_ids": [
+              "eb6f3bbc-1ea8-5b0c-b6d5-ad15afda0e34",
+              "081b380c-99e7-5073-992a-9e0d8b27d8c0"
+            ],
+            "state": "covered"
+          },
+          {
+            "bucket": "internal_bridge",
+            "evidence_ids": [],
+            "state": "not_applicable"
+          }
+        ],
+        "cadence": "next_sweep",
+        "coverage_trace": {
+          "account_resolution": "exactly_one",
+          "accounts_in_book": 181,
+          "accounts_scanned": 181,
+          "coverage_label": "sweep_item"
+        },
+        "diagnostic_hypothesis": {
+          "basis": [
+            "evidence:cs_platform:eb6f3bbc-1ea8-5b0c-b6d5-ad15afda0e34:target_date",
+            "evidence:cs_platform:081b380c-99e7-5073-992a-9e0d8b27d8c0:health_score"
+          ],
+          "confidence": 0.5900000000000001,
+          "confidence_label": "medium",
+          "label": "unverified_hypothesis",
+          "summary": "Ridgeline Warehousing: Ridgeline Warehousing has deterministic Time-to-Value score 47 from success_plan_overdue=20, health_yellow=15, low_seat_penetration=12; draft customer outreach. Evidence [evidence:eb6f3bbc-1ea8-5b0c-b6d5-ad15afda0e34], [evidence:081b380c-99e7-5073-992a-9e0d8b27d8c0].",
+          "unknowns": [
+            "best_customer_recipient"
+          ],
+          "validation_status": "out_of_validated_domain"
+        },
+        "evidence_chain": [
+          {
+            "claim": "cs_platform.target_date observed for eb6f3bbc-1ea8-5b0c-b6d5-ad15afda0e34",
+            "field": "target_date",
+            "observed_at": "2026-07-14",
+            "provenance_tier": "raw_fact",
+            "source": "cs_platform",
+            "source_id": "eb6f3bbc-1ea8-5b0c-b6d5-ad15afda0e34",
+            "step_id": "evidence:cs_platform:eb6f3bbc-1ea8-5b0c-b6d5-ad15afda0e34:target_date",
+            "validation_status": "oracle_graded"
+          },
+          {
+            "claim": "cs_platform.health_score observed for 081b380c-99e7-5073-992a-9e0d8b27d8c0",
+            "field": "health_score",
+            "observed_at": "2026-06-21T00:00:00Z",
+            "provenance_tier": "raw_fact",
+            "source": "cs_platform",
+            "source_id": "081b380c-99e7-5073-992a-9e0d8b27d8c0",
+            "step_id": "evidence:cs_platform:081b380c-99e7-5073-992a-9e0d8b27d8c0:health_score",
+            "validation_status": "oracle_graded"
+          }
+        ],
+        "feedback_hooks": [
+          {
+            "enabled": true,
+            "hook_id": "verdict_reason",
+            "label": "Capture approval or rejection reason",
+            "target": "rejection_ledger"
+          },
+          {
+            "enabled": true,
+            "hook_id": "missing_factor",
+            "label": "Flag missing success factor",
+            "target": "rejection_ledger"
+          }
+        ],
+        "field_validation": {
+          "account_id": "deterministic_oracle",
+          "account_name": "deterministic_oracle",
+          "allowed_ctas": "deterministic_oracle",
+          "as_of": "deterministic_oracle",
+          "bucket_trace": "deterministic_oracle",
+          "cadence": "deterministic_oracle",
+          "coverage_trace": "deterministic_oracle",
+          "diagnostic_hypothesis": "out_of_validated_domain",
+          "evidence_chain": "deterministic_oracle",
+          "feedback_hooks": "deterministic_oracle",
+          "field_validation": "deterministic_oracle",
+          "governance_boundary": "deterministic_oracle",
+          "job_type": "deterministic_oracle",
+          "lane": "deterministic_oracle",
+          "packet_version": "deterministic_oracle",
+          "prepared_artifact": "judge_graded_in_domain_or_out_of_validated_domain",
+          "primary_next_step": "deterministic_oracle",
+          "recommended_action": "deterministic_oracle",
+          "tenant_id": "deterministic_oracle"
+        },
+        "governance_boundary": {
+          "action_type": "draft_customer_outreach",
+          "autonomy_tier": 2,
+          "can_execute_from_ui": false,
+          "customer_affecting": true,
+          "proposal_status": "pending",
+          "release_condition": "human_approve_with_consent",
+          "required_permission": "customer.outreach.draft",
+          "requires_action_gate": true,
+          "source_organ": "governance.csm_actions"
+        },
+        "job_type": "customer_outreach",
+        "lane": "needs_judgment",
+        "packet_version": "csm-work-packet-v1",
+        "prepared_artifact": {
+          "artifact_type": "customer_draft",
+          "body": "Hi Jared Nolan, Ridgeline Warehousing is showing an onboarding risk tied to an overdue success plan, a declining health signal. Can we map the missing users needed for a complete rollout?",
+          "requires_approval": true,
+          "source_organ": "agent1.slot_b",
+          "title": "Customer outreach draft",
+          "validation_status": "judge_graded_in_domain"
+        },
+        "primary_next_step": "Review the pending draft_customer_outreach proposal in ActionGate.",
+        "recommended_action": {
+          "action_type": "draft_customer_outreach",
+          "motion": "campaign_enroll",
+          "rationale": "Customer-facing email/text draft; never sent without approval.",
+          "source_organ": "motion/playbook + governance.csm_actions",
+          "target_actor": "customer_success_manager",
+          "validation_status": "oracle_graded"
+        },
+        "tenant_id": "ultra-demo"
+      }
     },
     {
       "account_id": "162a9085-8e63-53f0-bb1b-b48426911d34",
@@ -1149,7 +2341,7 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "25023aeb-5c30-43e1-b03e-c4699474d1bf",
+        "proposal_id": "2826abf5-a069-5012-9827-727296656366",
         "status": "pending"
       },
       "reason": "Northstar Couriers has deterministic Time-to-Value score 35 from success_plan_overdue=20, health_yellow=15; draft customer outreach. Evidence [evidence:023f694d-e8cb-593b-8053-b69e06c2f22d], [evidence:162a9085-8e63-53f0-bb1b-b48426911d34].",
@@ -1159,7 +2351,195 @@
       "recommended_action": "draft_customer_outreach",
       "slot_a_classifications": [],
       "swept_at": "2026-11-08",
-      "tenant_id": "ultra-demo"
+      "tenant_id": "ultra-demo",
+      "work_packet": {
+        "account_id": "162a9085-8e63-53f0-bb1b-b48426911d34",
+        "account_name": "Northstar Couriers",
+        "allowed_ctas": [
+          {
+            "cta_id": "inspect_sources",
+            "enabled": true,
+            "governance_requirement": null,
+            "label": "Inspect sources",
+            "reason": "Source inspection is read-only.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "preview_artifact",
+            "enabled": true,
+            "governance_requirement": "human_approve_with_consent",
+            "label": "Preview artifact",
+            "reason": "Prepared artifact is available.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "request_gate_approval",
+            "enabled": true,
+            "governance_requirement": "human_approve_with_consent",
+            "label": "Request approval",
+            "reason": "Proposal is pending and requires human_approve_with_consent.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "mark_internal_reviewed",
+            "enabled": false,
+            "governance_requirement": "human_approve_with_consent",
+            "label": "Mark reviewed",
+            "reason": "Only internal-only recommendations can be marked reviewed.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "record_feedback",
+            "enabled": true,
+            "governance_requirement": null,
+            "label": "Record feedback",
+            "reason": "Operator feedback is ledgered for model/process review.",
+            "source_organ": "governance.csm_actions"
+          }
+        ],
+        "as_of": "2026-11-08",
+        "bucket_trace": [
+          {
+            "bucket": "identity",
+            "evidence_ids": [
+              "9d346d73-1e66-5964-8f42-066caec9010a",
+              "b68cd59e-faaf-5cd4-bccd-6c37d75f1c9b"
+            ],
+            "state": "covered"
+          },
+          {
+            "bucket": "priority",
+            "evidence_ids": [
+              "023f694d-e8cb-593b-8053-b69e06c2f22d",
+              "162a9085-8e63-53f0-bb1b-b48426911d34"
+            ],
+            "state": "covered"
+          },
+          {
+            "bucket": "source_evidence",
+            "evidence_ids": [
+              "023f694d-e8cb-593b-8053-b69e06c2f22d",
+              "162a9085-8e63-53f0-bb1b-b48426911d34"
+            ],
+            "state": "covered"
+          },
+          {
+            "bucket": "internal_bridge",
+            "evidence_ids": [],
+            "state": "not_applicable"
+          }
+        ],
+        "cadence": "next_sweep",
+        "coverage_trace": {
+          "account_resolution": "exactly_one",
+          "accounts_in_book": 181,
+          "accounts_scanned": 181,
+          "coverage_label": "sweep_item"
+        },
+        "diagnostic_hypothesis": {
+          "basis": [
+            "evidence:cs_platform:023f694d-e8cb-593b-8053-b69e06c2f22d:target_date",
+            "evidence:cs_platform:162a9085-8e63-53f0-bb1b-b48426911d34:health_score"
+          ],
+          "confidence": 0.5900000000000001,
+          "confidence_label": "medium",
+          "label": "unverified_hypothesis",
+          "summary": "Northstar Couriers: Northstar Couriers has deterministic Time-to-Value score 35 from success_plan_overdue=20, health_yellow=15; draft customer outreach. Evidence [evidence:023f694d-e8cb-593b-8053-b69e06c2f22d], [evidence:162a9085-8e63-53f0-bb1b-b48426911d34].",
+          "unknowns": [
+            "best_customer_recipient"
+          ],
+          "validation_status": "out_of_validated_domain"
+        },
+        "evidence_chain": [
+          {
+            "claim": "cs_platform.target_date observed for 023f694d-e8cb-593b-8053-b69e06c2f22d",
+            "field": "target_date",
+            "observed_at": "2026-07-05",
+            "provenance_tier": "raw_fact",
+            "source": "cs_platform",
+            "source_id": "023f694d-e8cb-593b-8053-b69e06c2f22d",
+            "step_id": "evidence:cs_platform:023f694d-e8cb-593b-8053-b69e06c2f22d:target_date",
+            "validation_status": "oracle_graded"
+          },
+          {
+            "claim": "cs_platform.health_score observed for 162a9085-8e63-53f0-bb1b-b48426911d34",
+            "field": "health_score",
+            "observed_at": "2026-06-21T00:00:00Z",
+            "provenance_tier": "raw_fact",
+            "source": "cs_platform",
+            "source_id": "162a9085-8e63-53f0-bb1b-b48426911d34",
+            "step_id": "evidence:cs_platform:162a9085-8e63-53f0-bb1b-b48426911d34:health_score",
+            "validation_status": "oracle_graded"
+          }
+        ],
+        "feedback_hooks": [
+          {
+            "enabled": true,
+            "hook_id": "verdict_reason",
+            "label": "Capture approval or rejection reason",
+            "target": "rejection_ledger"
+          },
+          {
+            "enabled": true,
+            "hook_id": "missing_factor",
+            "label": "Flag missing success factor",
+            "target": "rejection_ledger"
+          }
+        ],
+        "field_validation": {
+          "account_id": "deterministic_oracle",
+          "account_name": "deterministic_oracle",
+          "allowed_ctas": "deterministic_oracle",
+          "as_of": "deterministic_oracle",
+          "bucket_trace": "deterministic_oracle",
+          "cadence": "deterministic_oracle",
+          "coverage_trace": "deterministic_oracle",
+          "diagnostic_hypothesis": "out_of_validated_domain",
+          "evidence_chain": "deterministic_oracle",
+          "feedback_hooks": "deterministic_oracle",
+          "field_validation": "deterministic_oracle",
+          "governance_boundary": "deterministic_oracle",
+          "job_type": "deterministic_oracle",
+          "lane": "deterministic_oracle",
+          "packet_version": "deterministic_oracle",
+          "prepared_artifact": "judge_graded_in_domain_or_out_of_validated_domain",
+          "primary_next_step": "deterministic_oracle",
+          "recommended_action": "deterministic_oracle",
+          "tenant_id": "deterministic_oracle"
+        },
+        "governance_boundary": {
+          "action_type": "draft_customer_outreach",
+          "autonomy_tier": 2,
+          "can_execute_from_ui": false,
+          "customer_affecting": true,
+          "proposal_status": "pending",
+          "release_condition": "human_approve_with_consent",
+          "required_permission": "customer.outreach.draft",
+          "requires_action_gate": true,
+          "source_organ": "governance.csm_actions"
+        },
+        "job_type": "customer_outreach",
+        "lane": "needs_judgment",
+        "packet_version": "csm-work-packet-v1",
+        "prepared_artifact": {
+          "artifact_type": "customer_draft",
+          "body": "Hi Sandra Faulkner, Northstar Couriers is showing an onboarding risk tied to an overdue success plan, a declining health signal. Can we check whether the current adoption gap is putting launch timing at risk?",
+          "requires_approval": true,
+          "source_organ": "agent1.slot_b",
+          "title": "Customer outreach draft",
+          "validation_status": "judge_graded_in_domain"
+        },
+        "primary_next_step": "Review the pending draft_customer_outreach proposal in ActionGate.",
+        "recommended_action": {
+          "action_type": "draft_customer_outreach",
+          "motion": "personal_email",
+          "rationale": "Customer-facing email/text draft; never sent without approval.",
+          "source_organ": "motion/playbook + governance.csm_actions",
+          "target_actor": "customer_success_manager",
+          "validation_status": "oracle_graded"
+        },
+        "tenant_id": "ultra-demo"
+      }
     },
     {
       "account_id": "f8504037-dc1a-50e4-bdd9-7900b1379444",
@@ -1231,7 +2611,7 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "8b6171a4-a486-4bcb-924a-3ae2b4fa0918",
+        "proposal_id": "cd3ef5f9-a421-577c-b5c1-27d4890f4c1b",
         "status": "pending"
       },
       "reason": "Sagebrush Transport has deterministic Time-to-Value score 30 from health_red=30; draft customer outreach. Evidence [evidence:751d5071-7c34-5cd1-bca9-178d0f38ad1d], [evidence:3acf0291-5b0b-55b9-8653-d042239fcc17], [evidence:f8504037-dc1a-50e4-bdd9-7900b1379444].",
@@ -1252,7 +2632,208 @@
         }
       ],
       "swept_at": "2026-11-08",
-      "tenant_id": "ultra-demo"
+      "tenant_id": "ultra-demo",
+      "work_packet": {
+        "account_id": "f8504037-dc1a-50e4-bdd9-7900b1379444",
+        "account_name": "Sagebrush Transport",
+        "allowed_ctas": [
+          {
+            "cta_id": "inspect_sources",
+            "enabled": true,
+            "governance_requirement": null,
+            "label": "Inspect sources",
+            "reason": "Source inspection is read-only.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "preview_artifact",
+            "enabled": true,
+            "governance_requirement": "human_approve_with_consent",
+            "label": "Preview artifact",
+            "reason": "Prepared artifact is available.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "request_gate_approval",
+            "enabled": true,
+            "governance_requirement": "human_approve_with_consent",
+            "label": "Request approval",
+            "reason": "Proposal is pending and requires human_approve_with_consent.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "mark_internal_reviewed",
+            "enabled": false,
+            "governance_requirement": "human_approve_with_consent",
+            "label": "Mark reviewed",
+            "reason": "Only internal-only recommendations can be marked reviewed.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "record_feedback",
+            "enabled": true,
+            "governance_requirement": null,
+            "label": "Record feedback",
+            "reason": "Operator feedback is ledgered for model/process review.",
+            "source_organ": "governance.csm_actions"
+          }
+        ],
+        "as_of": "2026-11-08",
+        "bucket_trace": [
+          {
+            "bucket": "identity",
+            "evidence_ids": [
+              "66c4d941-3342-5f92-8ea5-4c8c6764ef1e",
+              "ae28c39a-6031-5b27-8e0f-70a27906fa31"
+            ],
+            "state": "covered"
+          },
+          {
+            "bucket": "priority",
+            "evidence_ids": [
+              "f8504037-dc1a-50e4-bdd9-7900b1379444"
+            ],
+            "state": "covered"
+          },
+          {
+            "bucket": "source_evidence",
+            "evidence_ids": [
+              "751d5071-7c34-5cd1-bca9-178d0f38ad1d",
+              "3acf0291-5b0b-55b9-8653-d042239fcc17",
+              "f8504037-dc1a-50e4-bdd9-7900b1379444"
+            ],
+            "state": "covered"
+          },
+          {
+            "bucket": "internal_bridge",
+            "evidence_ids": [
+              "3acf0291-5b0b-55b9-8653-d042239fcc17"
+            ],
+            "state": "covered"
+          }
+        ],
+        "cadence": "next_sweep",
+        "coverage_trace": {
+          "account_resolution": "exactly_one",
+          "accounts_in_book": 181,
+          "accounts_scanned": 181,
+          "coverage_label": "sweep_item"
+        },
+        "diagnostic_hypothesis": {
+          "basis": [
+            "evidence:cs_platform:751d5071-7c34-5cd1-bca9-178d0f38ad1d:due_date",
+            "evidence:crm:3acf0291-5b0b-55b9-8653-d042239fcc17:status",
+            "evidence:cs_platform:f8504037-dc1a-50e4-bdd9-7900b1379444:health_score"
+          ],
+          "confidence": 0.72,
+          "confidence_label": "medium",
+          "label": "unverified_hypothesis",
+          "summary": "Sagebrush Transport: Sagebrush Transport has deterministic Time-to-Value score 30 from health_red=30; draft customer outreach. Evidence [evidence:751d5071-7c34-5cd1-bca9-178d0f38ad1d], [evidence:3acf0291-5b0b-55b9-8653-d042239fcc17], [evidence:f8504037-dc1a-50e4-bdd9-7900b1379444].",
+          "unknowns": [
+            "best_customer_recipient"
+          ],
+          "validation_status": "out_of_validated_domain"
+        },
+        "evidence_chain": [
+          {
+            "claim": "cs_platform.due_date observed for 751d5071-7c34-5cd1-bca9-178d0f38ad1d",
+            "field": "due_date",
+            "observed_at": "2026-07-01",
+            "provenance_tier": "raw_fact",
+            "source": "cs_platform",
+            "source_id": "751d5071-7c34-5cd1-bca9-178d0f38ad1d",
+            "step_id": "evidence:cs_platform:751d5071-7c34-5cd1-bca9-178d0f38ad1d:due_date",
+            "validation_status": "oracle_graded"
+          },
+          {
+            "claim": "crm.status observed for 3acf0291-5b0b-55b9-8653-d042239fcc17",
+            "field": "status",
+            "observed_at": "2026-06-15T08:30:00Z",
+            "provenance_tier": "raw_fact",
+            "source": "crm",
+            "source_id": "3acf0291-5b0b-55b9-8653-d042239fcc17",
+            "step_id": "evidence:crm:3acf0291-5b0b-55b9-8653-d042239fcc17:status",
+            "validation_status": "oracle_graded"
+          },
+          {
+            "claim": "cs_platform.health_score observed for f8504037-dc1a-50e4-bdd9-7900b1379444",
+            "field": "health_score",
+            "observed_at": "2026-08-30T00:00:00Z",
+            "provenance_tier": "raw_fact",
+            "source": "cs_platform",
+            "source_id": "f8504037-dc1a-50e4-bdd9-7900b1379444",
+            "step_id": "evidence:cs_platform:f8504037-dc1a-50e4-bdd9-7900b1379444:health_score",
+            "validation_status": "oracle_graded"
+          }
+        ],
+        "feedback_hooks": [
+          {
+            "enabled": true,
+            "hook_id": "verdict_reason",
+            "label": "Capture approval or rejection reason",
+            "target": "rejection_ledger"
+          },
+          {
+            "enabled": true,
+            "hook_id": "missing_factor",
+            "label": "Flag missing success factor",
+            "target": "rejection_ledger"
+          }
+        ],
+        "field_validation": {
+          "account_id": "deterministic_oracle",
+          "account_name": "deterministic_oracle",
+          "allowed_ctas": "deterministic_oracle",
+          "as_of": "deterministic_oracle",
+          "bucket_trace": "deterministic_oracle",
+          "cadence": "deterministic_oracle",
+          "coverage_trace": "deterministic_oracle",
+          "diagnostic_hypothesis": "out_of_validated_domain",
+          "evidence_chain": "deterministic_oracle",
+          "feedback_hooks": "deterministic_oracle",
+          "field_validation": "deterministic_oracle",
+          "governance_boundary": "deterministic_oracle",
+          "job_type": "deterministic_oracle",
+          "lane": "deterministic_oracle",
+          "packet_version": "deterministic_oracle",
+          "prepared_artifact": "judge_graded_in_domain_or_out_of_validated_domain",
+          "primary_next_step": "deterministic_oracle",
+          "recommended_action": "deterministic_oracle",
+          "tenant_id": "deterministic_oracle"
+        },
+        "governance_boundary": {
+          "action_type": "draft_customer_outreach",
+          "autonomy_tier": 2,
+          "can_execute_from_ui": false,
+          "customer_affecting": true,
+          "proposal_status": "pending",
+          "release_condition": "human_approve_with_consent",
+          "required_permission": "customer.outreach.draft",
+          "requires_action_gate": true,
+          "source_organ": "governance.csm_actions"
+        },
+        "job_type": "internal_escalation",
+        "lane": "needs_judgment",
+        "packet_version": "csm-work-packet-v1",
+        "prepared_artifact": {
+          "artifact_type": "customer_draft",
+          "body": "Hi Brett Sawyer, Sagebrush Transport is showing an onboarding risk tied to a critical health signal. Can we review the blocker behind the red health signal?",
+          "requires_approval": true,
+          "source_organ": "agent1.slot_b",
+          "title": "Customer outreach draft",
+          "validation_status": "judge_graded_in_domain"
+        },
+        "primary_next_step": "Review the pending draft_customer_outreach proposal in ActionGate.",
+        "recommended_action": {
+          "action_type": "draft_customer_outreach",
+          "motion": "personal_email",
+          "rationale": "Customer-facing email/text draft; never sent without approval.",
+          "source_organ": "motion/playbook + governance.csm_actions",
+          "target_actor": "engineering",
+          "validation_status": "oracle_graded"
+        },
+        "tenant_id": "ultra-demo"
+      }
     },
     {
       "account_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18",
@@ -1377,7 +2958,7 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "8bd78c29-8379-4145-8426-789c96477625",
+        "proposal_id": "4ce7dd4a-171b-52e5-8431-a25557b26aee",
         "status": "pending"
       },
       "reason": "Harborview Fleet has deterministic Time-to-Value score 30 from health_yellow=15, feature_depth_gap=15; draft customer outreach. Evidence [evidence:4af5a5c0-f51a-5a83-9217-141f4333c6db], [evidence:625c9e2b-353d-5bc9-b866-91b2c536d104], [evidence:2f75e535-4d63-5289-8084-aa72fcf3b39a].",
@@ -1418,7 +2999,222 @@
         }
       ],
       "swept_at": "2026-11-08",
-      "tenant_id": "ultra-demo"
+      "tenant_id": "ultra-demo",
+      "work_packet": {
+        "account_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18",
+        "account_name": "Harborview Fleet",
+        "allowed_ctas": [
+          {
+            "cta_id": "inspect_sources",
+            "enabled": true,
+            "governance_requirement": null,
+            "label": "Inspect sources",
+            "reason": "Source inspection is read-only.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "preview_artifact",
+            "enabled": true,
+            "governance_requirement": "human_approve_with_consent",
+            "label": "Preview artifact",
+            "reason": "Prepared artifact is available.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "request_gate_approval",
+            "enabled": true,
+            "governance_requirement": "human_approve_with_consent",
+            "label": "Request approval",
+            "reason": "Proposal is pending and requires human_approve_with_consent.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "mark_internal_reviewed",
+            "enabled": false,
+            "governance_requirement": "human_approve_with_consent",
+            "label": "Mark reviewed",
+            "reason": "Only internal-only recommendations can be marked reviewed.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "record_feedback",
+            "enabled": true,
+            "governance_requirement": null,
+            "label": "Record feedback",
+            "reason": "Operator feedback is ledgered for model/process review.",
+            "source_organ": "governance.csm_actions"
+          }
+        ],
+        "as_of": "2026-11-08",
+        "bucket_trace": [
+          {
+            "bucket": "identity",
+            "evidence_ids": [
+              "5d346e9f-08bb-5736-9b51-e3be8b8c9cad",
+              "34b84b01-44b8-5797-854e-c3c5e50f432a",
+              "329c0c82-3c48-5ce2-991c-69b0fb39b9f4"
+            ],
+            "state": "covered"
+          },
+          {
+            "bucket": "priority",
+            "evidence_ids": [
+              "b8275b07-a825-5c1b-86d3-5b8063dcaf18"
+            ],
+            "state": "covered"
+          },
+          {
+            "bucket": "source_evidence",
+            "evidence_ids": [
+              "4af5a5c0-f51a-5a83-9217-141f4333c6db",
+              "625c9e2b-353d-5bc9-b866-91b2c536d104",
+              "2f75e535-4d63-5289-8084-aa72fcf3b39a",
+              "b8275b07-a825-5c1b-86d3-5b8063dcaf18"
+            ],
+            "state": "covered"
+          },
+          {
+            "bucket": "internal_bridge",
+            "evidence_ids": [
+              "625c9e2b-353d-5bc9-b866-91b2c536d104",
+              "77c0ecda-2bae-5cec-b591-12257b829556"
+            ],
+            "state": "covered"
+          }
+        ],
+        "cadence": "next_sweep",
+        "coverage_trace": {
+          "account_resolution": "exactly_one",
+          "accounts_in_book": 181,
+          "accounts_scanned": 181,
+          "coverage_label": "sweep_item"
+        },
+        "diagnostic_hypothesis": {
+          "basis": [
+            "evidence:cs_platform:4af5a5c0-f51a-5a83-9217-141f4333c6db:due_date",
+            "evidence:crm:625c9e2b-353d-5bc9-b866-91b2c536d104:status",
+            "evidence:crm:2f75e535-4d63-5289-8084-aa72fcf3b39a:status",
+            "evidence:cs_platform:b8275b07-a825-5c1b-86d3-5b8063dcaf18:health_score"
+          ],
+          "confidence": 0.72,
+          "confidence_label": "medium",
+          "label": "unverified_hypothesis",
+          "summary": "Harborview Fleet: Harborview Fleet has deterministic Time-to-Value score 30 from health_yellow=15, feature_depth_gap=15; draft customer outreach. Evidence [evidence:4af5a5c0-f51a-5a83-9217-141f4333c6db], [evidence:625c9e2b-353d-5bc9-b866-91b2c536d104], [evidence:2f75e535-4d63-5289-8084-aa72fcf3b39a].",
+          "unknowns": [
+            "best_customer_recipient"
+          ],
+          "validation_status": "out_of_validated_domain"
+        },
+        "evidence_chain": [
+          {
+            "claim": "cs_platform.due_date observed for 4af5a5c0-f51a-5a83-9217-141f4333c6db",
+            "field": "due_date",
+            "observed_at": "2026-07-15",
+            "provenance_tier": "raw_fact",
+            "source": "cs_platform",
+            "source_id": "4af5a5c0-f51a-5a83-9217-141f4333c6db",
+            "step_id": "evidence:cs_platform:4af5a5c0-f51a-5a83-9217-141f4333c6db:due_date",
+            "validation_status": "oracle_graded"
+          },
+          {
+            "claim": "crm.status observed for 625c9e2b-353d-5bc9-b866-91b2c536d104",
+            "field": "status",
+            "observed_at": "2026-06-08T14:00:00Z",
+            "provenance_tier": "raw_fact",
+            "source": "crm",
+            "source_id": "625c9e2b-353d-5bc9-b866-91b2c536d104",
+            "step_id": "evidence:crm:625c9e2b-353d-5bc9-b866-91b2c536d104:status",
+            "validation_status": "oracle_graded"
+          },
+          {
+            "claim": "crm.status observed for 2f75e535-4d63-5289-8084-aa72fcf3b39a",
+            "field": "status",
+            "observed_at": "2026-07-01T00:00:00Z",
+            "provenance_tier": "raw_fact",
+            "source": "crm",
+            "source_id": "2f75e535-4d63-5289-8084-aa72fcf3b39a",
+            "step_id": "evidence:crm:2f75e535-4d63-5289-8084-aa72fcf3b39a:status",
+            "validation_status": "oracle_graded"
+          },
+          {
+            "claim": "cs_platform.health_score observed for b8275b07-a825-5c1b-86d3-5b8063dcaf18",
+            "field": "health_score",
+            "observed_at": "2026-08-05T00:00:00Z",
+            "provenance_tier": "raw_fact",
+            "source": "cs_platform",
+            "source_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18",
+            "step_id": "evidence:cs_platform:b8275b07-a825-5c1b-86d3-5b8063dcaf18:health_score",
+            "validation_status": "oracle_graded"
+          }
+        ],
+        "feedback_hooks": [
+          {
+            "enabled": true,
+            "hook_id": "verdict_reason",
+            "label": "Capture approval or rejection reason",
+            "target": "rejection_ledger"
+          },
+          {
+            "enabled": true,
+            "hook_id": "missing_factor",
+            "label": "Flag missing success factor",
+            "target": "rejection_ledger"
+          }
+        ],
+        "field_validation": {
+          "account_id": "deterministic_oracle",
+          "account_name": "deterministic_oracle",
+          "allowed_ctas": "deterministic_oracle",
+          "as_of": "deterministic_oracle",
+          "bucket_trace": "deterministic_oracle",
+          "cadence": "deterministic_oracle",
+          "coverage_trace": "deterministic_oracle",
+          "diagnostic_hypothesis": "out_of_validated_domain",
+          "evidence_chain": "deterministic_oracle",
+          "feedback_hooks": "deterministic_oracle",
+          "field_validation": "deterministic_oracle",
+          "governance_boundary": "deterministic_oracle",
+          "job_type": "deterministic_oracle",
+          "lane": "deterministic_oracle",
+          "packet_version": "deterministic_oracle",
+          "prepared_artifact": "judge_graded_in_domain_or_out_of_validated_domain",
+          "primary_next_step": "deterministic_oracle",
+          "recommended_action": "deterministic_oracle",
+          "tenant_id": "deterministic_oracle"
+        },
+        "governance_boundary": {
+          "action_type": "draft_customer_outreach",
+          "autonomy_tier": 2,
+          "can_execute_from_ui": false,
+          "customer_affecting": true,
+          "proposal_status": "pending",
+          "release_condition": "human_approve_with_consent",
+          "required_permission": "customer.outreach.draft",
+          "requires_action_gate": true,
+          "source_organ": "governance.csm_actions"
+        },
+        "job_type": "internal_escalation",
+        "lane": "needs_judgment",
+        "packet_version": "csm-work-packet-v1",
+        "prepared_artifact": {
+          "artifact_type": "customer_draft",
+          "body": "Hi Gregory Foster, Harborview Fleet is showing an onboarding risk tied to a declining health signal, unused paid capabilities. Can we check whether the current adoption gap is putting launch timing at risk?",
+          "requires_approval": true,
+          "source_organ": "agent1.slot_b",
+          "title": "Customer outreach draft",
+          "validation_status": "judge_graded_in_domain"
+        },
+        "primary_next_step": "Review the pending draft_customer_outreach proposal in ActionGate.",
+        "recommended_action": {
+          "action_type": "draft_customer_outreach",
+          "motion": "working_session",
+          "rationale": "Customer-facing email/text draft; never sent without approval.",
+          "source_organ": "motion/playbook + governance.csm_actions",
+          "target_actor": "engineering",
+          "validation_status": "oracle_graded"
+        },
+        "tenant_id": "ultra-demo"
+      }
     },
     {
       "account_id": "390eef5a-4d06-59ae-93cb-2c0a012e7ef8",
@@ -1477,7 +3273,7 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "3ecd2db1-fce5-4c7d-a9f8-1d4bf4734ee9",
+        "proposal_id": "0eae39ef-2fa8-5302-82e5-c4aa14c9f9ac",
         "status": "pending"
       },
       "reason": "Summit Industrial Supply has deterministic Time-to-Value score 20 from success_plan_overdue=20; draft customer outreach. Evidence [evidence:2b9e4aff-7f3e-5fd8-af1d-482d72f79fdc], [evidence:390eef5a-4d06-59ae-93cb-2c0a012e7ef8].",
@@ -1487,7 +3283,194 @@
       "recommended_action": "draft_customer_outreach",
       "slot_a_classifications": [],
       "swept_at": "2026-11-08",
-      "tenant_id": "ultra-demo"
+      "tenant_id": "ultra-demo",
+      "work_packet": {
+        "account_id": "390eef5a-4d06-59ae-93cb-2c0a012e7ef8",
+        "account_name": "Summit Industrial Supply",
+        "allowed_ctas": [
+          {
+            "cta_id": "inspect_sources",
+            "enabled": true,
+            "governance_requirement": null,
+            "label": "Inspect sources",
+            "reason": "Source inspection is read-only.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "preview_artifact",
+            "enabled": true,
+            "governance_requirement": "human_approve_with_consent",
+            "label": "Preview artifact",
+            "reason": "Prepared artifact is available.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "request_gate_approval",
+            "enabled": true,
+            "governance_requirement": "human_approve_with_consent",
+            "label": "Request approval",
+            "reason": "Proposal is pending and requires human_approve_with_consent.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "mark_internal_reviewed",
+            "enabled": false,
+            "governance_requirement": "human_approve_with_consent",
+            "label": "Mark reviewed",
+            "reason": "Only internal-only recommendations can be marked reviewed.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "record_feedback",
+            "enabled": true,
+            "governance_requirement": null,
+            "label": "Record feedback",
+            "reason": "Operator feedback is ledgered for model/process review.",
+            "source_organ": "governance.csm_actions"
+          }
+        ],
+        "as_of": "2026-11-08",
+        "bucket_trace": [
+          {
+            "bucket": "identity",
+            "evidence_ids": [
+              "e3d2b93a-4221-5c8e-8f95-1f00cc780df1",
+              "53f0eec5-81f3-52dd-b10d-7898a4c6583f"
+            ],
+            "state": "covered"
+          },
+          {
+            "bucket": "priority",
+            "evidence_ids": [
+              "2b9e4aff-7f3e-5fd8-af1d-482d72f79fdc"
+            ],
+            "state": "covered"
+          },
+          {
+            "bucket": "source_evidence",
+            "evidence_ids": [
+              "2b9e4aff-7f3e-5fd8-af1d-482d72f79fdc",
+              "390eef5a-4d06-59ae-93cb-2c0a012e7ef8"
+            ],
+            "state": "covered"
+          },
+          {
+            "bucket": "internal_bridge",
+            "evidence_ids": [],
+            "state": "not_applicable"
+          }
+        ],
+        "cadence": "next_sweep",
+        "coverage_trace": {
+          "account_resolution": "exactly_one",
+          "accounts_in_book": 181,
+          "accounts_scanned": 181,
+          "coverage_label": "sweep_item"
+        },
+        "diagnostic_hypothesis": {
+          "basis": [
+            "evidence:cs_platform:2b9e4aff-7f3e-5fd8-af1d-482d72f79fdc:target_date",
+            "evidence:cs_platform:390eef5a-4d06-59ae-93cb-2c0a012e7ef8:health_score"
+          ],
+          "confidence": 0.5900000000000001,
+          "confidence_label": "medium",
+          "label": "unverified_hypothesis",
+          "summary": "Summit Industrial Supply: Summit Industrial Supply has deterministic Time-to-Value score 20 from success_plan_overdue=20; draft customer outreach. Evidence [evidence:2b9e4aff-7f3e-5fd8-af1d-482d72f79fdc], [evidence:390eef5a-4d06-59ae-93cb-2c0a012e7ef8].",
+          "unknowns": [
+            "best_customer_recipient"
+          ],
+          "validation_status": "out_of_validated_domain"
+        },
+        "evidence_chain": [
+          {
+            "claim": "cs_platform.target_date observed for 2b9e4aff-7f3e-5fd8-af1d-482d72f79fdc",
+            "field": "target_date",
+            "observed_at": "2026-07-20",
+            "provenance_tier": "raw_fact",
+            "source": "cs_platform",
+            "source_id": "2b9e4aff-7f3e-5fd8-af1d-482d72f79fdc",
+            "step_id": "evidence:cs_platform:2b9e4aff-7f3e-5fd8-af1d-482d72f79fdc:target_date",
+            "validation_status": "oracle_graded"
+          },
+          {
+            "claim": "cs_platform.health_score observed for 390eef5a-4d06-59ae-93cb-2c0a012e7ef8",
+            "field": "health_score",
+            "observed_at": "2026-06-21T00:00:00Z",
+            "provenance_tier": "raw_fact",
+            "source": "cs_platform",
+            "source_id": "390eef5a-4d06-59ae-93cb-2c0a012e7ef8",
+            "step_id": "evidence:cs_platform:390eef5a-4d06-59ae-93cb-2c0a012e7ef8:health_score",
+            "validation_status": "oracle_graded"
+          }
+        ],
+        "feedback_hooks": [
+          {
+            "enabled": true,
+            "hook_id": "verdict_reason",
+            "label": "Capture approval or rejection reason",
+            "target": "rejection_ledger"
+          },
+          {
+            "enabled": true,
+            "hook_id": "missing_factor",
+            "label": "Flag missing success factor",
+            "target": "rejection_ledger"
+          }
+        ],
+        "field_validation": {
+          "account_id": "deterministic_oracle",
+          "account_name": "deterministic_oracle",
+          "allowed_ctas": "deterministic_oracle",
+          "as_of": "deterministic_oracle",
+          "bucket_trace": "deterministic_oracle",
+          "cadence": "deterministic_oracle",
+          "coverage_trace": "deterministic_oracle",
+          "diagnostic_hypothesis": "out_of_validated_domain",
+          "evidence_chain": "deterministic_oracle",
+          "feedback_hooks": "deterministic_oracle",
+          "field_validation": "deterministic_oracle",
+          "governance_boundary": "deterministic_oracle",
+          "job_type": "deterministic_oracle",
+          "lane": "deterministic_oracle",
+          "packet_version": "deterministic_oracle",
+          "prepared_artifact": "judge_graded_in_domain_or_out_of_validated_domain",
+          "primary_next_step": "deterministic_oracle",
+          "recommended_action": "deterministic_oracle",
+          "tenant_id": "deterministic_oracle"
+        },
+        "governance_boundary": {
+          "action_type": "draft_customer_outreach",
+          "autonomy_tier": 2,
+          "can_execute_from_ui": false,
+          "customer_affecting": true,
+          "proposal_status": "pending",
+          "release_condition": "human_approve_with_consent",
+          "required_permission": "customer.outreach.draft",
+          "requires_action_gate": true,
+          "source_organ": "governance.csm_actions"
+        },
+        "job_type": "customer_outreach",
+        "lane": "needs_judgment",
+        "packet_version": "csm-work-packet-v1",
+        "prepared_artifact": {
+          "artifact_type": "customer_draft",
+          "body": "Hi Diana Kowalski, Summit Industrial Supply is showing an onboarding risk tied to an overdue success plan. Can we review the activation blockers and next steps?",
+          "requires_approval": true,
+          "source_organ": "agent1.slot_b",
+          "title": "Customer outreach draft",
+          "validation_status": "judge_graded_in_domain"
+        },
+        "primary_next_step": "Review the pending draft_customer_outreach proposal in ActionGate.",
+        "recommended_action": {
+          "action_type": "draft_customer_outreach",
+          "motion": "personal_email",
+          "rationale": "Customer-facing email/text draft; never sent without approval.",
+          "source_organ": "motion/playbook + governance.csm_actions",
+          "target_actor": "customer_success_manager",
+          "validation_status": "oracle_graded"
+        },
+        "tenant_id": "ultra-demo"
+      }
     },
     {
       "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
@@ -1546,7 +3529,7 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "2b21cd1e-6d43-4f7e-9042-e9de1cdd3435",
+        "proposal_id": "c353f17a-6b64-5e35-a3c0-fcf79f3af68f",
         "status": "pending"
       },
       "reason": "Meridian Fleet Group has deterministic Time-to-Value score 5 from arr_tier=5; draft customer outreach. Evidence [evidence:30f4240b-e6c6-5bd2-b7b4-42a9b8d68cc1], [evidence:47f78943-7a8a-5bf1-9eeb-df74372085c7].",
@@ -1556,7 +3539,197 @@
       "recommended_action": "draft_customer_outreach",
       "slot_a_classifications": [],
       "swept_at": "2026-11-08",
-      "tenant_id": "ultra-demo"
+      "tenant_id": "ultra-demo",
+      "work_packet": {
+        "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+        "account_name": "Meridian Fleet Group",
+        "allowed_ctas": [
+          {
+            "cta_id": "inspect_sources",
+            "enabled": true,
+            "governance_requirement": null,
+            "label": "Inspect sources",
+            "reason": "Source inspection is read-only.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "preview_artifact",
+            "enabled": true,
+            "governance_requirement": "human_approve_with_consent",
+            "label": "Preview artifact",
+            "reason": "Prepared artifact is available.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "request_gate_approval",
+            "enabled": true,
+            "governance_requirement": "human_approve_with_consent",
+            "label": "Request approval",
+            "reason": "Proposal is pending and requires human_approve_with_consent.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "mark_internal_reviewed",
+            "enabled": false,
+            "governance_requirement": "human_approve_with_consent",
+            "label": "Mark reviewed",
+            "reason": "Only internal-only recommendations can be marked reviewed.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "record_feedback",
+            "enabled": true,
+            "governance_requirement": null,
+            "label": "Record feedback",
+            "reason": "Operator feedback is ledgered for model/process review.",
+            "source_organ": "governance.csm_actions"
+          }
+        ],
+        "as_of": "2026-11-08",
+        "bucket_trace": [
+          {
+            "bucket": "identity",
+            "evidence_ids": [
+              "b2d52039-fa63-5981-8b9b-e08ee50e8a14",
+              "eda83e0a-a86f-5963-a978-063cf7e08b72",
+              "5201f1e5-9be6-5a77-9020-bde365511aba",
+              "7a381458-06fa-59ab-a6f8-93b9137b06bd",
+              "34212b95-2e23-590a-b94f-2775cdb9d58e"
+            ],
+            "state": "covered"
+          },
+          {
+            "bucket": "priority",
+            "evidence_ids": [
+              "47f78943-7a8a-5bf1-9eeb-df74372085c7"
+            ],
+            "state": "covered"
+          },
+          {
+            "bucket": "source_evidence",
+            "evidence_ids": [
+              "30f4240b-e6c6-5bd2-b7b4-42a9b8d68cc1",
+              "47f78943-7a8a-5bf1-9eeb-df74372085c7"
+            ],
+            "state": "covered"
+          },
+          {
+            "bucket": "internal_bridge",
+            "evidence_ids": [],
+            "state": "not_applicable"
+          }
+        ],
+        "cadence": "next_sweep",
+        "coverage_trace": {
+          "account_resolution": "exactly_one",
+          "accounts_in_book": 181,
+          "accounts_scanned": 181,
+          "coverage_label": "sweep_item"
+        },
+        "diagnostic_hypothesis": {
+          "basis": [
+            "evidence:cs_platform:30f4240b-e6c6-5bd2-b7b4-42a9b8d68cc1:due_date",
+            "evidence:cs_platform:47f78943-7a8a-5bf1-9eeb-df74372085c7:health_score"
+          ],
+          "confidence": 0.5900000000000001,
+          "confidence_label": "medium",
+          "label": "unverified_hypothesis",
+          "summary": "Meridian Fleet Group: Meridian Fleet Group has deterministic Time-to-Value score 5 from arr_tier=5; draft customer outreach. Evidence [evidence:30f4240b-e6c6-5bd2-b7b4-42a9b8d68cc1], [evidence:47f78943-7a8a-5bf1-9eeb-df74372085c7].",
+          "unknowns": [
+            "best_customer_recipient"
+          ],
+          "validation_status": "out_of_validated_domain"
+        },
+        "evidence_chain": [
+          {
+            "claim": "cs_platform.due_date observed for 30f4240b-e6c6-5bd2-b7b4-42a9b8d68cc1",
+            "field": "due_date",
+            "observed_at": "2026-07-15",
+            "provenance_tier": "raw_fact",
+            "source": "cs_platform",
+            "source_id": "30f4240b-e6c6-5bd2-b7b4-42a9b8d68cc1",
+            "step_id": "evidence:cs_platform:30f4240b-e6c6-5bd2-b7b4-42a9b8d68cc1:due_date",
+            "validation_status": "oracle_graded"
+          },
+          {
+            "claim": "cs_platform.health_score observed for 47f78943-7a8a-5bf1-9eeb-df74372085c7",
+            "field": "health_score",
+            "observed_at": "2026-11-08T00:00:00Z",
+            "provenance_tier": "raw_fact",
+            "source": "cs_platform",
+            "source_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+            "step_id": "evidence:cs_platform:47f78943-7a8a-5bf1-9eeb-df74372085c7:health_score",
+            "validation_status": "oracle_graded"
+          }
+        ],
+        "feedback_hooks": [
+          {
+            "enabled": true,
+            "hook_id": "verdict_reason",
+            "label": "Capture approval or rejection reason",
+            "target": "rejection_ledger"
+          },
+          {
+            "enabled": true,
+            "hook_id": "missing_factor",
+            "label": "Flag missing success factor",
+            "target": "rejection_ledger"
+          }
+        ],
+        "field_validation": {
+          "account_id": "deterministic_oracle",
+          "account_name": "deterministic_oracle",
+          "allowed_ctas": "deterministic_oracle",
+          "as_of": "deterministic_oracle",
+          "bucket_trace": "deterministic_oracle",
+          "cadence": "deterministic_oracle",
+          "coverage_trace": "deterministic_oracle",
+          "diagnostic_hypothesis": "out_of_validated_domain",
+          "evidence_chain": "deterministic_oracle",
+          "feedback_hooks": "deterministic_oracle",
+          "field_validation": "deterministic_oracle",
+          "governance_boundary": "deterministic_oracle",
+          "job_type": "deterministic_oracle",
+          "lane": "deterministic_oracle",
+          "packet_version": "deterministic_oracle",
+          "prepared_artifact": "judge_graded_in_domain_or_out_of_validated_domain",
+          "primary_next_step": "deterministic_oracle",
+          "recommended_action": "deterministic_oracle",
+          "tenant_id": "deterministic_oracle"
+        },
+        "governance_boundary": {
+          "action_type": "draft_customer_outreach",
+          "autonomy_tier": 2,
+          "can_execute_from_ui": false,
+          "customer_affecting": true,
+          "proposal_status": "pending",
+          "release_condition": "human_approve_with_consent",
+          "required_permission": "customer.outreach.draft",
+          "requires_action_gate": true,
+          "source_organ": "governance.csm_actions"
+        },
+        "job_type": "customer_outreach",
+        "lane": "needs_judgment",
+        "packet_version": "csm-work-packet-v1",
+        "prepared_artifact": {
+          "artifact_type": "customer_draft",
+          "body": "Hi Alicia Fernandez, Meridian Fleet Group is showing an onboarding risk tied to the current account review. Can we review the activation blockers and next steps?",
+          "requires_approval": true,
+          "source_organ": "agent1.slot_b",
+          "title": "Customer outreach draft",
+          "validation_status": "judge_graded_in_domain"
+        },
+        "primary_next_step": "Review the pending draft_customer_outreach proposal in ActionGate.",
+        "recommended_action": {
+          "action_type": "draft_customer_outreach",
+          "motion": "personal_email",
+          "rationale": "Customer-facing email/text draft; never sent without approval.",
+          "source_organ": "motion/playbook + governance.csm_actions",
+          "target_actor": "customer_success_manager",
+          "validation_status": "oracle_graded"
+        },
+        "tenant_id": "ultra-demo"
+      }
     },
     {
       "account_id": null,
@@ -1605,7 +3778,163 @@
       "recommended_action": "cohort_action",
       "slot_a_classifications": [],
       "swept_at": "2026-11-08",
-      "tenant_id": "ultra-demo"
+      "tenant_id": "ultra-demo",
+      "work_packet": {
+        "account_id": null,
+        "account_name": null,
+        "allowed_ctas": [
+          {
+            "cta_id": "inspect_sources",
+            "enabled": true,
+            "governance_requirement": null,
+            "label": "Inspect sources",
+            "reason": "Source inspection is read-only.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "preview_artifact",
+            "enabled": false,
+            "governance_requirement": "human_approve_with_dual_control",
+            "label": "Preview artifact",
+            "reason": "No prepared artifact was produced.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "request_gate_approval",
+            "enabled": false,
+            "governance_requirement": "human_approve_with_dual_control",
+            "label": "Request approval",
+            "reason": "No pending customer-affecting proposal requires approval.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "mark_internal_reviewed",
+            "enabled": false,
+            "governance_requirement": "human_approve_with_dual_control",
+            "label": "Mark reviewed",
+            "reason": "Only internal-only recommendations can be marked reviewed.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "record_feedback",
+            "enabled": true,
+            "governance_requirement": null,
+            "label": "Record feedback",
+            "reason": "Operator feedback is ledgered for model/process review.",
+            "source_organ": "governance.csm_actions"
+          }
+        ],
+        "as_of": "2026-11-08",
+        "bucket_trace": [
+          {
+            "bucket": "identity",
+            "evidence_ids": [],
+            "state": "missing"
+          },
+          {
+            "bucket": "priority",
+            "evidence_ids": [],
+            "state": "missing"
+          },
+          {
+            "bucket": "source_evidence",
+            "evidence_ids": [],
+            "state": "missing"
+          },
+          {
+            "bucket": "internal_bridge",
+            "evidence_ids": [],
+            "state": "not_applicable"
+          }
+        ],
+        "cadence": "next_sweep",
+        "coverage_trace": {
+          "account_resolution": "ambiguous",
+          "accounts_in_book": 181,
+          "accounts_scanned": 181,
+          "coverage_label": "cohort_item"
+        },
+        "diagnostic_hypothesis": {
+          "basis": [],
+          "confidence": 0.25,
+          "confidence_label": "low",
+          "label": "unverified_hypothesis",
+          "summary": "This item: Cohort collapse: feature_shallow_depth affects 26 tech_touch accounts via play 'reactivate-stalled-module-cohort' -- one cohort_action covers all, not 26 individual motions.",
+          "unknowns": [
+            "resolved_account_identity",
+            "source_evidence"
+          ],
+          "validation_status": "out_of_validated_domain"
+        },
+        "evidence_chain": [],
+        "feedback_hooks": [
+          {
+            "enabled": true,
+            "hook_id": "verdict_reason",
+            "label": "Capture approval or rejection reason",
+            "target": "rejection_ledger"
+          },
+          {
+            "enabled": true,
+            "hook_id": "missing_factor",
+            "label": "Flag missing success factor",
+            "target": "rejection_ledger"
+          }
+        ],
+        "field_validation": {
+          "account_id": "deterministic_oracle",
+          "account_name": "deterministic_oracle",
+          "allowed_ctas": "deterministic_oracle",
+          "as_of": "deterministic_oracle",
+          "bucket_trace": "deterministic_oracle",
+          "cadence": "deterministic_oracle",
+          "coverage_trace": "deterministic_oracle",
+          "diagnostic_hypothesis": "out_of_validated_domain",
+          "evidence_chain": "deterministic_oracle",
+          "feedback_hooks": "deterministic_oracle",
+          "field_validation": "deterministic_oracle",
+          "governance_boundary": "deterministic_oracle",
+          "job_type": "deterministic_oracle",
+          "lane": "deterministic_oracle",
+          "packet_version": "deterministic_oracle",
+          "prepared_artifact": "judge_graded_in_domain_or_out_of_validated_domain",
+          "primary_next_step": "deterministic_oracle",
+          "recommended_action": "deterministic_oracle",
+          "tenant_id": "deterministic_oracle"
+        },
+        "governance_boundary": {
+          "action_type": "cohort_action",
+          "autonomy_tier": 3,
+          "can_execute_from_ui": false,
+          "customer_affecting": true,
+          "proposal_status": null,
+          "release_condition": "human_approve_with_dual_control",
+          "required_permission": "cohort.action.initiate",
+          "requires_action_gate": true,
+          "source_organ": "governance.csm_actions"
+        },
+        "job_type": "customer_outreach",
+        "lane": "needs_judgment",
+        "packet_version": "csm-work-packet-v1",
+        "prepared_artifact": {
+          "artifact_type": "internal_note",
+          "body": "Cohort collapse: feature_shallow_depth affects 26 tech_touch accounts via play 'reactivate-stalled-module-cohort' -- one cohort_action covers all, not 26 individual motions.",
+          "requires_approval": false,
+          "source_organ": "agent1.sweep",
+          "title": "Apply one motion across a defined account cohort/segment at scale; highest blast radius of any CSM action, strictest release tier.",
+          "validation_status": "out_of_validated_domain"
+        },
+        "primary_next_step": "Resolve account identity before any customer action.",
+        "recommended_action": {
+          "action_type": "cohort_action",
+          "motion": "cohort_action",
+          "rationale": "Apply one motion across a defined account cohort/segment at scale; highest blast radius of any CSM action, strictest release tier.",
+          "source_organ": "motion/playbook + governance.csm_actions",
+          "target_actor": "customer_success_manager",
+          "validation_status": "oracle_graded"
+        },
+        "tenant_id": "ultra-demo"
+      }
     }
   ]
 }

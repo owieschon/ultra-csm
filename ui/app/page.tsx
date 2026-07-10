@@ -83,6 +83,13 @@ export default function Home() {
         return;
       }
       if (paletteOpen) return; // CommandPalette's own input owns Escape/arrows/Enter
+      const target = e.target;
+      if (
+        target instanceof HTMLElement &&
+        (target.matches("input, textarea, select") || target.isContentEditable)
+      ) {
+        return;
+      }
       if (e.key === "v") {
         setView((v) => (v === "book" ? "queue" : "book"));
       } else if (e.key === "?") {

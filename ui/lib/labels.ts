@@ -57,7 +57,7 @@ export const DISPOSITION_LABELS: Record<string, string> = {
 
 export const PROPOSAL_STATUS_LABELS: Record<string, string> = {
   pending: "needs your approval",
-  approved: "approved · sent",
+  approved: "approved · awaiting commit",
   denied: "denied · won't recur",
 };
 

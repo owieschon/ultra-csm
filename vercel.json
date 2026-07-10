@@ -14,6 +14,14 @@
       "destination": "/comms-review/index.html"
     },
     {
+      "source": "/ui/action-control",
+      "destination": "/action-control/index.html"
+    },
+    {
+      "source": "/ui/action-control/",
+      "destination": "/action-control/index.html"
+    },
+    {
       "source": "/ui/",
       "destination": "/index.html"
     },
