@@ -85,6 +85,18 @@ class TestSweepMotionLive:
             assert isinstance(item["candidate_account_ids"], list)
             assert len(item["candidate_account_ids"]) >= 1
 
+    def test_sweep_work_items_carry_work_packet(self, client: TestClient):
+        resp = client.post("/sweep", headers=AUTH_HEADERS)
+        assert resp.status_code == 200
+        work_items = resp.json()["work_items"]
+        assert work_items
+        packet = work_items[0].get("work_packet")
+        assert packet is not None
+        assert packet["packet_version"] == "csm-work-packet-v1"
+        assert packet["allowed_ctas"]
+        assert packet["governance_boundary"]["source_organ"] == "governance.csm_actions"
+        assert packet["diagnostic_hypothesis"]["label"] == "unverified_hypothesis"
+
 
 class TestLedgerEndpoint:
     """New GET /ledger — the audit-tail read Book/Queue's rail renders."""
@@ -109,7 +121,16 @@ class TestLedgerEndpoint:
         assert "value_model" in events
         assert "slot_b.draft" in events
         assert "judge.score" in events
-        assert set(ledger["ledger_gap"]) == {"gmail.commit", "reobserve.queue"}
+        # Handoff-lane and self-serve events are registered but do not fire in a
+        # default fixture sweep; the self-serve trio fires in its own workflow
+        # context (tests/test_self_serve_*), so listing it here is truthful.
+        assert set(ledger["ledger_gap"]) == {
+            "gmail.commit",
+            "reobserve.queue",
+            "self_serve_activation.trigger",
+            "self_serve_activation.packet",
+            "self_serve_activation.value_path",
+        }
 
     def test_ledger_reflects_a_real_verdict(self, client: TestClient):
         client.post("/sweep", headers=AUTH_HEADERS)

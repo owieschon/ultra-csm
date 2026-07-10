@@ -26,7 +26,7 @@ from ultra_csm.agent1.slot_b import (
     LIVE_MAX_RETRIES,
     LIVE_TIMEOUT_S,
 )
-from ultra_csm.llm_transport import resolve_message_transport
+from ultra_csm.llm_transport import resolve_message_transport, resolve_timeout_s
 
 JUDGE_PROMPT_VERSION = "quality-judge-v9"
 LLM_JUDGE_DIMENSIONS = tuple(
@@ -116,7 +116,7 @@ class AnthropicQualityJudge:
     ) -> None:
         self._transport = transport or resolve_message_transport(
             client=client,
-            timeout_s=LIVE_TIMEOUT_S,
+            timeout_s=resolve_timeout_s(LIVE_TIMEOUT_S),
             max_retries=LIVE_MAX_RETRIES,
         )
         self.model_id = model_id or JUDGE_MODEL_ID
