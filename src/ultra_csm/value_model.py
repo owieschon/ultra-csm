@@ -95,6 +95,7 @@ class Thresholds:
     new_stakeholder_window_days: int
     new_stakeholder_points: int
     usage_concentration_points: int
+    slot_a_case_blocker_points: int = 10
 
 
 @dataclass(frozen=True)

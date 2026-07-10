@@ -155,6 +155,7 @@
     "total": 24
   },
   "slot_b": {
+    "configured_transport": "anthropic_api",
     "fixture_model_id": "fixture-agent1-slot-b-v1",
     "live_model_id": "claude-opus-4-8",
     "prompt_path": "docs/prompts/agent1_slot_b_reason_draft_v4.md",

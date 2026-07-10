@@ -390,6 +390,7 @@ def test_anthropic_slot_b_records_cost_without_meter():
     assert stats["total_calls"] == 1
     assert stats["total_tokens"] == 125
     assert stats["total_cost_usd"] > 0
+    assert stats["calls_by_transport"] == {"anthropic_api": 1}
     assert tracker.cost_per_account()["acct-1"] > 0
 
     assert client.messages.last_kwargs is not None

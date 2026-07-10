@@ -15,17 +15,18 @@ from eval.deterministic_quality import DETERMINISTIC_DIMENSIONS, apply_determini
 from eval.judge_csm import (
     PASSING_SCORE,
     QUALITY_DIMENSIONS,
-    QualityLabels,
+    QualityScoreResult,
     SlotBQualityCandidate,
     labels_from_scores,
+    quality_out_of_validated_domain,
 )
 from eval.label_gold import ANCHORS
 from ultra_csm.agent1.slot_b import (
     JUDGE_MODEL_ID,
     LIVE_MAX_RETRIES,
     LIVE_TIMEOUT_S,
-    _text_from_message,
 )
+from ultra_csm.llm_transport import resolve_message_transport
 
 JUDGE_PROMPT_VERSION = "quality-judge-v9"
 LLM_JUDGE_DIMENSIONS = tuple(
@@ -105,12 +106,19 @@ def _parse_scores(text: str) -> dict[str, int]:
 
 
 class AnthropicQualityJudge:
-    def __init__(self, client=None, *, model_id: str | None = None, reasoning: bool = False) -> None:
-        if client is None:  # pragma: no cover - live lane
-            from anthropic import Anthropic
-
-            client = Anthropic(timeout=LIVE_TIMEOUT_S, max_retries=LIVE_MAX_RETRIES)
-        self._client = client
+    def __init__(
+        self,
+        client=None,
+        *,
+        transport=None,
+        model_id: str | None = None,
+        reasoning: bool = False,
+    ) -> None:
+        self._transport = transport or resolve_message_transport(
+            client=client,
+            timeout_s=LIVE_TIMEOUT_S,
+            max_retries=LIVE_MAX_RETRIES,
+        )
         self.model_id = model_id or JUDGE_MODEL_ID
         self.reasoning = reasoning
         self._system = _system_prompt(reasoning=reasoning)
@@ -122,30 +130,32 @@ class AnthropicQualityJudge:
         # caller (agent1/slot_b.py). Omitting it does NOT make the model deterministic
         # — it is still run-to-run variable, which is exactly why judge_nrun and
         # determinism_probe exist.
-        msg = self._client.messages.create(
-            model=self.model_id,
+        response = self._transport.complete(
+            model_id=self.model_id,
             max_tokens=self._max_tokens,
-            system=self._system,
-            messages=[{"role": "user", "content": _user_payload(request, output)}],
+            system_prompt=self._system,
+            user_text=_user_payload(request, output),
         )
-        scores = _parse_scores(_text_from_message(msg))
+        scores = _parse_scores(response.text)
         # Code decisions override the judge: full-override dims (priority), structural
         # assignments (internal_review on_task), then down-only floors (register, deferral).
         apply_deterministic(request, output, scores)
         return _ordered_scores(scores)
 
     def score_output_with_reasons(self, request: dict, output: dict) -> tuple[dict[str, int], dict[str, str]]:
-        msg = self._client.messages.create(
-            model=self.model_id,
+        response = self._transport.complete(
+            model_id=self.model_id,
             max_tokens=max(self._max_tokens, 700),
-            system=self._system,
-            messages=[{"role": "user", "content": _user_payload(request, output)}],
+            system_prompt=self._system,
+            user_text=_user_payload(request, output),
         )
-        scores, reasons = _parse_score_details(_text_from_message(msg))
+        scores, reasons = _parse_score_details(response.text)
         apply_deterministic(request, output, scores, reasons)
         return _ordered_scores(scores), _ordered_reasons(reasons)
 
-    def score(self, candidate: SlotBQualityCandidate) -> QualityLabels:
+    def score(self, candidate: SlotBQualityCandidate) -> QualityScoreResult:
+        if out_of_domain := quality_out_of_validated_domain(candidate):
+            return out_of_domain
         scores = self.score_output(candidate.request, candidate.output)
         return labels_from_scores(candidate.candidate_id, scores, labeler=f"anthropic-judge:{self.model_id}")
 

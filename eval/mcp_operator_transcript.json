@@ -1,7 +1,7 @@
 {
   "access_mode": "demo_operator",
   "artifact": "mcp_operator_transcript",
-  "artifact_sha256": "e4129f09aa946cc5d0cd37cf54065a1b3104341e6c2b2ec8d144e7156d2730af",
+  "artifact_sha256": "398502226025456fd124c526379364a268e25ab06bf10d49d31e75301d120477",
   "beats": [
     "briefing",
     "queue",
@@ -381,9 +381,26 @@
                   "threshold_name": "depth_floor",
                   "threshold_value": 0.7,
                   "value": 0.0
+                },
+                {
+                  "config_version": "value-model-config-v1",
+                  "contribution": 10,
+                  "evidence": [
+                    {
+                      "field": "slot_a_case_blocker",
+                      "observed_at": "2026-06-27",
+                      "source": "crm",
+                      "source_id": "4ddf4d0e-2600-56f7-9edc-a5a0071d8186"
+                    }
+                  ],
+                  "name": "slot_a_case_blocker",
+                  "rule_name": "high_arr_review_default",
+                  "threshold_name": "slot_a_case_blocker_points",
+                  "threshold_value": 10,
+                  "value": 1.0
                 }
               ],
-              "score": 162
+              "score": 172
             },
             "proposal": {
               "action_type": "draft_customer_outreach",
@@ -392,7 +409,7 @@
               "proposal_id": "<proposal:verdict:unknown>",
               "status": "pending"
             },
-            "reason": "Acme Logistics has deterministic Time-to-Value score 162 from milestones_overdue=50, days_overdue=30, success_plan_overdue=20; draft customer outreach. Evidence [evidence:<uuid:62178814388a>], [evidence:<uuid:ae159c35aabe>], [evidence:<uuid:0089d3c5a0bd>].",
+            "reason": "Acme Logistics has deterministic Time-to-Value score 172 from milestones_overdue=50, days_overdue=30, success_plan_overdue=20; draft customer outreach. Evidence [evidence:<uuid:62178814388a>], [evidence:<uuid:ae159c35aabe>], [evidence:<uuid:0089d3c5a0bd>].",
             "recipient_name": "Jordan Lee",
             "recipient_resolution": "first_consenting_fallback",
             "recipient_role": "operations",
@@ -1012,7 +1029,7 @@
           }
         ]
       },
-      "output_sha256": "90c83d127305e914184456ba170414ae2d9c0fe432ccf4f92b3c7af6baa7363a",
+      "output_sha256": "cc9f1dbc60b772754b3842478dfea802dd0397cfaf94c6811c0b3571cdd6340b",
       "tool": "get_morning_briefing"
     },
     {
@@ -1180,9 +1197,26 @@
                     "threshold_name": "depth_floor",
                     "threshold_value": 0.7,
                     "value": 0.0
+                  },
+                  {
+                    "config_version": "value-model-config-v1",
+                    "contribution": 10,
+                    "evidence": [
+                      {
+                        "field": "slot_a_case_blocker",
+                        "observed_at": "2026-06-27",
+                        "source": "crm",
+                        "source_id": "<uuid:af8d5c08212b>"
+                      }
+                    ],
+                    "name": "slot_a_case_blocker",
+                    "rule_name": "high_arr_review_default",
+                    "threshold_name": "slot_a_case_blocker_points",
+                    "threshold_value": 10,
+                    "value": 1.0
                   }
                 ],
-                "score": 162
+                "score": 172
               },
               "subject": "Time-to-Value follow-up for Acme Logistics"
             },
@@ -1592,7 +1626,7 @@
         ],
         "tenant_id": "<uuid:151b277a52bd>"
       },
-      "output_sha256": "710b0f66f96aa6292059d551c1ee1dc0e56c35356739334dc7703836e613fe02",
+      "output_sha256": "1ff68bdbf439700f3764c85ba295a18f9ea057ab50d5a132b3463d8bd61fad9e",
       "tool": "list_proposals"
     },
     {

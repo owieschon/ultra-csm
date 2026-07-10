@@ -33,10 +33,10 @@ from ultra_csm.agent1.slot_b import (
     LIVE_SLOT_B_MODEL_ID,
     LIVE_TIMEOUT_S,
     _extract_json_object,
-    _text_from_message,
 )
 from ultra_csm.agent1.sweep import _person_layer_inputs, _trajectory_decline_evaluation
 from ultra_csm.data_plane import CustomerDataPlane, EvidenceRef
+from ultra_csm.llm_transport import resolve_message_transport
 from ultra_csm.snapshot_store import SnapshotStore
 from ultra_csm.value_model import ValueFactor, build_customer_value_model
 
@@ -344,15 +344,16 @@ class AnthropicReconciliationWriter:
         self,
         client=None,
         *,
+        transport=None,
         model_id: str | None = None,
         prompt_text: str | None = None,
         cost_tracker: "CostTracker | None" = None,
     ) -> None:
-        if client is None:  # pragma: no cover - live lane
-            from anthropic import Anthropic
-
-            client = Anthropic(timeout=LIVE_TIMEOUT_S, max_retries=LIVE_MAX_RETRIES)
-        self._client = client
+        self._transport = transport or resolve_message_transport(
+            client=client,
+            timeout_s=LIVE_TIMEOUT_S,
+            max_retries=LIVE_MAX_RETRIES,
+        )
         self.model_id = model_id or LIVE_RECONCILIATION_MODEL_ID
         self._prompt_text = prompt_text
         self._cost_tracker = cost_tracker
@@ -386,8 +387,8 @@ class AnthropicReconciliationWriter:
             ],
         }
         start = time.perf_counter()
-        msg = self._client.messages.create(
-            model=self.model_id,
+        response = self._transport.complete(
+            model_id=self.model_id,
             # 1500, not slot_b.py's 700: this response can include up to
             # MAX_CANDIDATE_DIVERGENCES candidates, each with its own
             # evidence list -- more structured output than Slot B's
@@ -396,23 +397,23 @@ class AnthropicReconciliationWriter:
             # accepted -- retry at the call site, don't just raise the cap
             # further without bound.
             max_tokens=1500,
-            system=prompt,
-            messages=[{"role": "user", "content": json.dumps(payload, sort_keys=True)}],
+            system_prompt=prompt,
+            user_text=json.dumps(payload, sort_keys=True),
         )
         latency_ms = (time.perf_counter() - start) * 1000.0
-        usage = getattr(msg, "usage", None)
-        in_tok = getattr(usage, "input_tokens", None)
-        out_tok = getattr(usage, "output_tokens", None)
+        in_tok = response.input_tokens
+        out_tok = response.output_tokens
         if self._cost_tracker is not None and in_tok is not None:
             self._cost_tracker.record(
                 model_id=self.model_id,
+                transport=response.transport,
                 input_tokens=in_tok,
                 output_tokens=out_tok or 0,
                 latency_ms=latency_ms,
                 account_id=account_id,
             )
         explanation_text, candidates = _parse_and_validate(
-            _text_from_message(msg), raw_evidence=raw_evidence,
+            response.text, raw_evidence=raw_evidence,
         )
         return explanation_text, candidates
 

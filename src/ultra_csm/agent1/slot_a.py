@@ -13,6 +13,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Literal, Protocol
 
+from ultra_csm.llm_transport import resolve_message_transport
+
 SlotAClassification = Literal["blocker", "noise", "unknown"]
 ValidationMode = Literal["raise", "unknown"]
 
@@ -195,16 +197,22 @@ class AnthropicCaseNoteClassifier:
         self,
         client=None,
         *,
+        transport=None,
         model_id: str | None = None,
         prompt_text: str | None = None,
     ) -> None:
-        if client is None:
-            if not os.environ.get("ANTHROPIC_API_KEY"):
-                raise SlotAContractError("live Slot A requires ANTHROPIC_API_KEY")
-            from anthropic import Anthropic  # pragma: no cover - live lane
+        if client is None and transport is None and not os.environ.get("ANTHROPIC_API_KEY"):
+            # The direct API path is still the default; the CLI transport is selected
+            # structurally via ULTRA_CSM_LLM_TRANSPORT and needs no key check here.
+            from ultra_csm.llm_transport import configured_transport_name
 
-            client = Anthropic(timeout=LIVE_TIMEOUT_S, max_retries=LIVE_MAX_RETRIES)
-        self._client = client
+            if configured_transport_name() == "anthropic_api":
+                raise SlotAContractError("live Slot A requires ANTHROPIC_API_KEY")
+        self._transport = transport or resolve_message_transport(
+            client=client,
+            timeout_s=LIVE_TIMEOUT_S,
+            max_retries=LIVE_MAX_RETRIES,
+        )
         self.model_id = model_id or LIVE_SLOT_A_MODEL_ID
         self._prompt_text = prompt_text
 
@@ -226,14 +234,14 @@ class AnthropicCaseNoteClassifier:
                 "reason": "string",
             },
         }
-        msg = self._client.messages.create(
-            model=self.model_id,
+        response = self._transport.complete(
+            model_id=self.model_id,
             max_tokens=300,
-            system=prompt,
-            messages=[{"role": "user", "content": json.dumps(payload, sort_keys=True)}],
+            system_prompt=prompt,
+            user_text=json.dumps(payload, sort_keys=True),
         )
         output = _parse_live_output(
-            _text_from_message(msg),
+            response.text,
             model_id=self.model_id,
             prompt_version=self.prompt_version,
         )
