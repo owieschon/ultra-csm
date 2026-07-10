@@ -36,9 +36,9 @@ Tripwires (K12): one flagged — final diff budget (including this report file i
 ## Owner Asks
 
 1. **Run `/scrub` for a full identity/AI-residue pass.** This dispatch's machine-path scrub was intentionally narrow (the two named globs: `docs/PROGRAM_REPORT_*.md`, `eval/gold/*.json`), per Decisions. It found 3 additional files with the identical `$HOME` residue pattern, outside its owned scope:
-   - `docs/PROGRAM_REPORT.md:4` — `` Worktree: `$HOME/dev/ultra-csm-mega` ``
-   - `docs/EXECUTOR_HANDOFF_LANE_I.md:33` — `` `$HOME/ultra-csm-corpus-a-PRIVATE.md` (outside the repo); committed ``
-   - `docs/LIVE_INTEGRATION_FINDINGS.md:129` — `` `$HOME/ultra-csm-corpus-a-PRIVATE.md` for org identity, never ``
+   - `docs/PROGRAM_REPORT.md:4` — a machine-specific worktree path
+   - `docs/EXECUTOR_HANDOFF_LANE_I.md:33` — an external private-corpus path
+   - `docs/LIVE_INTEGRATION_FINDINGS.md:129` — an external private-corpus path
 
    A full `/scrub` pass would also catch any residue pattern beyond the literal `/Users/` string (other identity/company tells) that this dispatch never searched for.
 

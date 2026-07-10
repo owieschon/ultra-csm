@@ -16,9 +16,9 @@ the real proposal-to-commit path.
 
 ![Customer Action Control Plane: evidence becomes a proposed customer action, but only a human can release the payload bound to the approval receipt](docs/customer-action-control-plane.svg)
 
-## See it in 90 seconds
+## Run the read-only demo in 90 seconds
 
-The hosted build is a no-login, read-only operations workspace backed by synthetic data.
+The local static build is a no-login, read-only operations workspace backed by synthetic data.
 Open the queue, select **Trailhead Logistics**, and follow four stages shown in the UI:
 
 1. evidence assembled from tenant-scoped source records;
@@ -26,7 +26,7 @@ Open the queue, select **Trailhead Logistics**, and follow four stages shown in 
 3. an AI-written draft proposed with cited evidence;
 4. a human decision required before release.
 
-The hosted version deliberately disables decisions and sends. The same UI against the
+The read-only build deliberately disables decisions and sends. The same UI against the
 local governed API supports approve, deny, and revise; the committer performs the
 payload-hash and idempotency checks before a simulated write.
 
@@ -85,7 +85,7 @@ and model lanes are intentionally separate from offline verification.
 
 ## Claim boundary
 
-- The public demo is synthetic and read-only. It proves the operations surface and the
+- The reviewer demo is synthetic and read-only. It proves the operations surface and the
   decision boundary, not production customer outcomes.
 - Salesforce, Rocketlane, and Gmail paths were exercised only against dev, trial, or
   burner scopes. This is not a production deployment claim.

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from dataclasses import replace
 
 import psycopg
 import pytest
@@ -63,7 +64,7 @@ def test_gate_approve_authorizes(gov_conn):
     assert out.status == "approved"
     assert out.verdict == "approve"
     # The committer's bind check passes for the authorized payload.
-    gate.assert_payload_bound(out, prop.payload)
+    gate.assert_payload_bound(prop, out, prop.payload)
 
 
 def test_gate_deny_blocks(gov_conn):
@@ -79,7 +80,7 @@ def test_gate_deny_blocks(gov_conn):
     assert out.status == "denied"
     # The committer refuses to execute a denied action.
     with pytest.raises(GateError):
-        gate.assert_payload_bound(out, prop.payload)
+        gate.assert_payload_bound(prop, out, prop.payload)
 
 
 def test_gate_revise_applies_revised_payload(gov_conn):
@@ -103,9 +104,9 @@ def test_gate_revise_applies_revised_payload(gov_conn):
     assert out.payload_sha256 == canonical_payload_sha256(revised)
     assert out.payload_sha256 != original_sha
     # Bound to the revised payload; the ORIGINAL payload now fails the bind check.
-    gate.assert_payload_bound(out, revised)
+    gate.assert_payload_bound(prop, out, revised)
     with pytest.raises(GateError):
-        gate.assert_payload_bound(out, prop.payload)
+        gate.assert_payload_bound(prop, out, prop.payload)
 
     # The proposal row itself was atomically updated to the revised payload+hash.
     from ultra_csm.platform.db import session
@@ -134,7 +135,39 @@ def test_gate_tampered_payload_refused(gov_conn):
     # Someone tampers the action body after approval — the bind check fail-closes.
     tampered = {"to": "buyer", "amount_cents": 999999}
     with pytest.raises(GateError):
-        gate.assert_payload_bound(out, tampered)
+        gate.assert_payload_bound(prop, out, tampered)
+
+
+def test_gate_ignores_forged_caller_snapshot_and_binds_stored_payload(gov_conn):
+    """A caller cannot substitute payload, hash, tier, or action authority by
+    constructing an ActionProposal with a real proposal id."""
+    orch, _authority = setup_roster(gov_conn)
+    human = make_human_principal(gov_conn)
+    src = FixtureVerdictSource(default=Verdict("approve", human_principal_id=human))
+    gate = _gate(gov_conn, actor=orch, source=src)
+    prop = gate.propose(
+        intent="send_email",
+        action="email.send",
+        payload={"to": "buyer", "amount_cents": 100},
+        autonomy_tier=2,
+        required_permission="email.send",
+    )
+    forged_payload = {"to": "attacker", "amount_cents": 999999}
+    forged = replace(
+        prop,
+        action="log_crm_activity",
+        payload=forged_payload,
+        payload_sha256=canonical_payload_sha256(forged_payload),
+        autonomy_tier=1,
+    )
+
+    out = gate.record_verdict(forged)
+
+    assert out.payload == prop.payload
+    assert out.payload_sha256 == prop.payload_sha256
+    gate.assert_payload_bound(prop, out, prop.payload)
+    with pytest.raises(GateError):
+        gate.assert_payload_bound(forged, out, forged_payload)
 
 
 def test_db_rejects_action_proposal_payload_hash_mismatch(gov_conn):
@@ -158,6 +191,33 @@ def test_db_rejects_action_proposal_payload_hash_mismatch(gov_conn):
                     2,
                     "email.send",
                 ),
+            )
+
+
+def test_db_rejects_verdict_hash_that_does_not_match_current_proposal(gov_conn):
+    """The database independently binds an authorizing verdict to the current
+    authoritative proposal hash."""
+    orch, _authority = setup_roster(gov_conn)
+    human = make_human_principal(gov_conn)
+    gate = _gate(gov_conn, actor=orch, source=FixtureVerdictSource())
+    prop = gate.propose(
+        intent="send_email",
+        action="email.send",
+        payload={"to": "buyer", "body": "approved body"},
+        autonomy_tier=2,
+        required_permission="email.send",
+    )
+    with pytest.raises(psycopg.errors.CheckViolation, match="verdict hash"):
+        with session(gov_conn, tenant_id=T1, actor_id=orch, now=CLOCK) as cur:
+            cur.execute(
+                "UPDATE action_proposal SET status = 'approved' WHERE proposal_id = %s",
+                (prop.proposal_id,),
+            )
+            cur.execute(
+                "INSERT INTO action_verdict "
+                "(tenant_id, proposal_id, verdict, approved_payload_sha256, "
+                "human_principal_id) VALUES (%s, %s, 'approve', %s, %s)",
+                (T1, prop.proposal_id, "forged-hash", human),
             )
 
 
@@ -201,9 +261,9 @@ def test_db_allows_approved_outreach_with_contact_consent(gov_conn):
     assert out.authorized is True
 
 
-def test_verdict_unique_per_proposal(gov_conn):
-    """UNIQUE(proposal_id): a second verdict on the same proposal is rejected by
-    the DB — the gate is idempotent under retry / double-post."""
+def test_stale_snapshot_cannot_record_second_verdict(gov_conn):
+    """A second decision made from the same pending snapshot loses the
+    compare-and-set and fails before a second verdict can be inserted."""
     orch, _authority = setup_roster(gov_conn)
     human = make_human_principal(gov_conn)
     src = FixtureVerdictSource(default=Verdict("approve", human_principal_id=human))
@@ -212,7 +272,7 @@ def test_verdict_unique_per_proposal(gov_conn):
                         payload={"to": "x"}, autonomy_tier=2,
                         required_permission="email.send")
     gate.record_verdict(prop)
-    with pytest.raises(psycopg.errors.UniqueViolation):
+    with pytest.raises(GateError, match="not pending"):
         gate.record_verdict(prop)
 
 

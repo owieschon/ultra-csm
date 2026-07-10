@@ -1,6 +1,6 @@
 # Customer Action Control Plane demo
 
-Status: current reviewer walkthrough for the hosted read-only operations surface.
+Status: current reviewer walkthrough for the local read-only operations surface.
 
 This is not a dashboard. Demo it as a customer action control plane: the system reads
 account evidence, decides what needs attention, drafts the next CSM action, routes
@@ -51,18 +51,18 @@ Fresh C3 verification:
    Engineering without changing the customer-facing approval path.
 
 5. Point at `Decision`.
-   The approval rail says the hosted demo has approvals and sends disabled. In the
+   The approval rail says the read-only demo has approvals and sends disabled. In the
    live governed path, customer-facing work follows proposal -> human verdict ->
    committer. The agent does not approve its own send.
 
 6. Point at the audit ledger.
-   The ledger shows proposal, judge, draft, and value-model events. The hosted
+   The ledger shows proposal, judge, draft, and value-model events. The read-only
    fixture reports `ledger_gap=[]`, so the visible demo is not hiding missing event
    classes behind a clean screen.
 
 ## Outcome Boundary
 
-Do not claim the hosted UI demonstrates realized customer outcomes. The outcome
+Do not claim the read-only UI demonstrates realized customer outcomes. The outcome
 integrity proof is in code and docs, not this click path:
 
 - `tests/test_value_model.py::test_green_high_usage_account_that_later_churns_does_not_backfill_known_outcome`
@@ -74,12 +74,12 @@ integrity proof is in code and docs, not this click path:
 
 The honest claim: before terminal renewal evidence exists, the value model stays
 `not_instrumented` / unverified; after terminal renewal evidence exists, it records
-won/lost direction with cited opportunity evidence. The hosted UI walkthrough does
+won/lost direction with cited opportunity evidence. The read-only UI walkthrough does
 not expose that state directly.
 
 ## Demo Boundaries
 
-- Hosted mode is static and read-only. It serves committed JSON fixtures from
+- Reviewer mode is static and read-only. It serves committed JSON fixtures from
   `ui/public/demo-api/` and exports no write routes.
 - The data is synthetic and internally consistent, not production customer proof.
 - Salesforce, Rocketlane, Gmail, and persistent-ledger receipts exist in program

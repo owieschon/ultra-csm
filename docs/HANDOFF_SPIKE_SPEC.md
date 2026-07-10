@@ -48,7 +48,7 @@
 
 ## Part B: Proposed Oracle Rows
 
-Owner blind labels were received in `$HOME/.codex/attachments/08763bba-6157-44ea-9608-aee2c80ad13c/pasted-text.txt`.
+Owner blind labels were received through an external review attachment that is not part of this repository.
 
 | Review id | Account | Day | Mode | Required signal | Motion in | Target in | Evidence must include | Forbidden motions | Abstain correct |
 | --- | --- | ---: | --- | --- | --- | --- | --- | --- | --- |

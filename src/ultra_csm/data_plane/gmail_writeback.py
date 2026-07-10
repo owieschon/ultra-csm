@@ -157,7 +157,9 @@ class LiveGmailOutboundCommitter:
         # Approved-state + anti-TOCTOU check: reads gate state, never trusted
         # from a queue file. Raises GateError if not authorized or if the
         # payload was mutated after approval.
-        self._gate.assert_payload_bound(outcome, proposal.payload)
+        self._gate.assert_payload_bound(
+            proposal, outcome, proposal.payload, require_durable=not dry_run,
+        )
 
         subject_raw = str(proposal.payload.get("subject") or "")
         body_raw = str(proposal.payload.get("body") or "")

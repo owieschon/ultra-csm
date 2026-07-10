@@ -2,12 +2,15 @@
 
 from __future__ import annotations
 
+from dataclasses import replace
+
 import pytest
 
 from ultra_csm.agent1 import run_time_to_value_sweep
 from ultra_csm.committers import (
     SimCrmActivityCommitter,
     SimOutboundCommitter,
+    _idempotency_key,
     auto_approve_internal,
     load_action_proposal,
 )
@@ -16,6 +19,7 @@ from ultra_csm.governance import (
     ActionGate,
     FixtureVerdictSource,
     GateError,
+    GateOutcome,
     Verdict,
     proposal_fields_for,
 )
@@ -131,6 +135,151 @@ def test_sim_committer_requires_approved_bound_payload(runtime_conn, tmp_path):
                     "payload_sha256": proposal.payload_sha256,
                 })(),
             )
+
+        forged = GateOutcome(
+            proposal_id=proposal.proposal_id,
+            status="approved",
+            authorized=True,
+            payload=proposal.payload,
+            payload_sha256=proposal.payload_sha256,
+            verdict="approve",
+        )
+        with pytest.raises(GateError, match="durable verdict"):
+            SimOutboundCommitter(gate, state_dir=tmp_path).commit(proposal, forged)
+
+        internal = gate.propose(
+            intent="internal_recommendation",
+            payload={"account_id": ACME_LOGISTICS, "body": "Internal only"},
+            **proposal_fields_for("recommend_next_best_action"),
+        )
+        internal_outcome = auto_approve_internal(
+            gate, internal, system_principal_id=orch,
+        )
+        forged_outbound = replace(
+            internal,
+            action="draft_customer_outreach",
+            required_permission="customer.outreach.draft",
+        )
+        with pytest.raises(GateError, match="stored proposal"):
+            SimOutboundCommitter(gate, state_dir=tmp_path).commit(
+                forged_outbound, internal_outcome,
+            )
+    finally:
+        runtime_conn.rollback()
+
+
+def test_sim_committers_recover_pending_crash_reservations(
+    runtime_conn, tmp_path, monkeypatch,
+):
+    """A reservation left pending by a dead process must not poison either
+    simulated target. Each target reconciles/replays by the stable key, then
+    marks the reservation completed."""
+    runtime_conn.execute("BEGIN")
+    try:
+        import ultra_csm.committers as committers_module
+
+        orch, _authority = setup_roster(runtime_conn)
+        human = make_human_principal(runtime_conn)
+        gate = ActionGate(
+            runtime_conn,
+            tenant_id=T1,
+            actor_principal_id=orch,
+            verdict_source=FixtureVerdictSource(),
+            now=CLOCK,
+        )
+        store = SimTenantStore.seed(tmp_path, tenant_id=DEFAULT_TENANT, reset=True)
+        sweep = run_time_to_value_sweep(
+            store.data_plane(), DEFAULT_TENANT, gate,
+            sweep_principal_id=orch, as_of=AS_OF,
+        )
+        item = next(item for item in sweep.work_items if item.account_id == ACME_LOGISTICS)
+        proposal = load_action_proposal(
+            runtime_conn,
+            tenant_id=T1,
+            actor_principal_id=orch,
+            proposal_id=item.proposal.proposal_id,
+            now=CLOCK,
+        )
+        outcome = gate.record_verdict(
+            proposal,
+            Verdict("approve", human_principal_id=human, rationale="test approval"),
+        )
+
+        # A fresh lease has one owner. A concurrent contender cannot execute.
+        lease_key = "sim-lease-contention"
+        lease_token = gate.acquire_sim_idempotency_attempt(lease_key)
+        assert lease_token is not None
+        assert gate.acquire_sim_idempotency_attempt(lease_key) is None
+        gate.mark_idempotency_failed(
+            lease_key, result_ref="test", attempt_token=lease_token,
+        )
+
+        # Interleaving: owner A has appended the canonical target row but has
+        # not yet written audit/completed its active lease. Caller B must not
+        # steal that lease merely because it can see the target row.
+        active_dir = tmp_path / "active-owner"
+        active_outbox = active_dir / "outbox.jsonl"
+        active_key = _idempotency_key(proposal, outcome, target=str(active_outbox))
+        active_token = gate.acquire_sim_idempotency_attempt(active_key)
+        assert active_token is not None
+        committers_module._append_jsonl(
+            active_outbox, {"receipt": {"idempotency_key": active_key}},
+        )
+        observer = SimOutboundCommitter(gate, state_dir=active_dir).commit(
+            proposal, outcome,
+        )
+        assert observer.committed is False
+        assert gate.idempotency_state(active_key) == "pending"
+        assert not (active_dir / "commit_audit.jsonl").exists()
+        gate.mark_idempotency_result(
+            active_key, result_ref=str(active_outbox), attempt_token=active_token,
+        )
+
+        outbox = tmp_path / "outbox.jsonl"
+        outbound_key = _idempotency_key(proposal, outcome, target=str(outbox))
+        assert gate.claim_idempotency_key(outbound_key, request_id=proposal.proposal_id)
+        assert gate.idempotency_state(outbound_key) == "pending"
+        original_append = committers_module._append_jsonl
+        append_count = 0
+
+        def fail_between_outbox_and_audit(path, payload):
+            nonlocal append_count
+            append_count += 1
+            if append_count == 2:
+                raise OSError("planted audit append failure")
+            original_append(path, payload)
+
+        monkeypatch.setattr(committers_module, "_append_jsonl", fail_between_outbox_and_audit)
+        with pytest.raises(OSError, match="planted"):
+            SimOutboundCommitter(gate, state_dir=tmp_path).commit(proposal, outcome)
+        assert gate.idempotency_state(outbound_key) == "failed"
+
+        # The retry sees the canonical outbox row, repairs the missing audit,
+        # and completes without appending a second customer action.
+        monkeypatch.setattr(committers_module, "_append_jsonl", original_append)
+        outbound_receipt = SimOutboundCommitter(gate, state_dir=tmp_path).commit(
+            proposal, outcome,
+        )
+        assert outbound_receipt.committed is False
+        assert gate.idempotency_state(outbound_key) == "completed"
+        assert committers_module._jsonl_contains_idempotency_key(
+            tmp_path / "commit_audit.jsonl", outbound_key,
+        )
+
+        crm_key = _idempotency_key(proposal, outcome, target=str(store.path))
+        assert gate.claim_idempotency_key(crm_key, request_id=proposal.proposal_id)
+        assert gate.idempotency_state(crm_key) == "pending"
+        crm_receipt = SimCrmActivityCommitter(gate, store).commit(proposal, outcome)
+        assert crm_receipt.committed is True
+        assert gate.idempotency_state(crm_key) == "completed"
+
+        # Normal retries now observe completion and do not create duplicates.
+        assert SimOutboundCommitter(gate, state_dir=tmp_path).commit(
+            proposal, outcome,
+        ).committed is False
+        assert SimCrmActivityCommitter(gate, store).commit(
+            proposal, outcome,
+        ).committed is False
     finally:
         runtime_conn.rollback()
 

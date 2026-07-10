@@ -30,7 +30,7 @@ conventions this repo has never seen.
    locations, row ids, connection URLs, or API keys. Committed artifacts may contain
    only aggregates (counts, percentages, coverage ratios) and failure-mode
    descriptions. Connection details live ONLY in
-   `$HOME/ultra-csm-corpus-a-PRIVATE.md` (outside the repo); committed
+   a private source corpus outside the repo; committed
    code reads them from environment variables with NO defaults. Before every
    commit: run `make hygiene` AND the sentinel grep listed in the private file.
 2. **READ-ONLY.** GET/SELECT against Corpus A only. No mutation of any kind, ever.

@@ -260,17 +260,15 @@ name a shared `as_of` convention explicitly rather than inherit this one.
 - `27ed6ec` — `docs(content-roadmap): record final make eval / merge-policy verification`
 - (this commit) — `fix(content-roadmap): resolve the live Notion push end-to-end` (post-Owner-Ask fixes: IF/THEN #12-15)
 
-**Registry claim**: `~/ultra-csm-dispatches/harvest/00_HARVEST_PLAN.md`'s FILE +
+**Registry claim**: the private dispatch registry's FILE +
 REPORT-SLOT REGISTRY updated at emission time — originally drafted as file 19/report 36
 (the profile's stale cached "next unassigned"), corrected to file 29/report 46 against
 the authoritative registry table before any code was written, per the profile's own
 documented collision-avoidance quirk.
 
-**Credential check performed** (existence-only, no value read/printed):
-`grep -q '^ULTRA_CSM_NOTION_TOKEN=' ~/ultra-csm-live-creds.env` → present. The token's own
-identity was confirmed via `GET /v1/users/me` (safe — reveals only the integration's bot
-name/workspace, never the secret): `"name": "ultra-csm-authoring-reader"`, workspace
-"Owie Schon's Space" — matching the integration the owner reported connecting.
+**Credential check performed** (existence-only, no value read/printed): the expected token
+key was present in an external credential store. The integration identity was confirmed via
+`GET /v1/users/me`; its private bot and workspace identifiers are intentionally omitted.
 
 **Merge policy check (K11):** `gh api repos/owieschon/ultra-csm --jq .allow_auto_merge`
 → `true`; `gh api repos/owieschon/ultra-csm/branches/main/protection` → 200, required
