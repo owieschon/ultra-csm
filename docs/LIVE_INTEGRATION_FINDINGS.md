@@ -126,7 +126,7 @@ surface, both handled without touching `src/`:
 Battery matrix for the live Rocketlane onboarding path
 (`derive_ttv_milestones` over `parse_phase`/`parse_task`) against corpus C
 (the Rocketlane trial org; see
-`/Users/owieschon/ultra-csm-corpus-a-PRIVATE.md` for org identity, never
+a private source corpus outside the repo for organization identity, never
 committed here). All records were seeded by
 this program via the `mcp__rocketlane__*` MCP lane (2026-07-03, tagged
 `UCSM-P4C`, create-only). Assertions are exact numbers against

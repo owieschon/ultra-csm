@@ -94,8 +94,6 @@ export function ReconciliationSection({
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
-    setData(null);
-    setFailed(false);
     api
       .accountReconciliation(accountId, day)
       .then(setData)

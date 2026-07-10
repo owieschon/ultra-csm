@@ -119,18 +119,37 @@ class SimOutboundCommitter:
     ) -> CommitReceipt:
         if proposal.action != "draft_customer_outreach":
             raise CommitError(f"SimOutboundCommitter cannot commit {proposal.action}")
-        self._gate.assert_payload_bound(outcome, proposal.payload)
+        self._gate.assert_payload_bound(
+            proposal, outcome, proposal.payload, require_durable=not dry_run,
+        )
         account_id = _required_str(proposal.payload, "account_id")
         key = _idempotency_key(proposal, outcome, target=str(self._outbox))
-        already = (
-            self._gate.idempotency_key_exists(key)
-            if dry_run
-            else not self._gate.claim_idempotency_key(
+        state = self._gate.idempotency_state(key)
+        target_has_result = _jsonl_contains_idempotency_key(self._outbox, key)
+        attempt_token = None
+        if not dry_run and state != "completed":
+            attempt_token = self._gate.acquire_sim_idempotency_attempt(
                 key,
                 request_id=proposal.proposal_id,
                 result_ref=str(self._outbox),
                 cause_ref=f"commit:{proposal.proposal_id}",
             )
+        if target_has_result and not dry_run and attempt_token is not None:
+            # Only the owner of a newly acquired failed/expired lease may
+            # reconcile. A caller observing an active lease returns in-progress
+            # and cannot steal completion from the writer.
+            _ensure_outbound_audit(
+                self._state_dir / "commit_audit.jsonl", self._outbox, key,
+            )
+            self._gate.mark_idempotency_result(
+                key, result_ref=str(self._outbox), attempt_token=attempt_token,
+            )
+            state = "completed"
+            attempt_token = None
+        already = (
+            state is not None or target_has_result
+            if dry_run
+            else target_has_result or attempt_token is None
         )
         receipt = _receipt(
             proposal,
@@ -143,23 +162,33 @@ class SimOutboundCommitter:
         )
         if dry_run or not receipt.committed:
             return receipt
-        self._state_dir.mkdir(parents=True, exist_ok=True)
-        _append_jsonl(self._outbox, {
-            "receipt": asdict(receipt),
-            "account_id": account_id,
-            "contact_id": proposal.payload.get("contact_id"),
-            "contact_email": proposal.payload.get("contact_email"),
-            "subject": proposal.payload.get("subject"),
-            "body": proposal.payload.get("body"),
-            "evidence_ids": proposal.payload.get("evidence_ids", ()),
-            "source": "sim",
-        })
-        _append_jsonl(self._state_dir / "commit_audit.jsonl", {
-            "event_type": "outbound_committed",
-            "receipt": asdict(receipt),
-            "source": "sim",
-        })
-        self._gate.mark_idempotency_result(key, result_ref=str(self._outbox))
+        if attempt_token is None:  # defensive narrowing; committed implies lease ownership
+            raise CommitError(f"missing idempotency lease for {key}")
+        try:
+            self._state_dir.mkdir(parents=True, exist_ok=True)
+            _append_jsonl(self._outbox, {
+                "receipt": asdict(receipt),
+                "account_id": account_id,
+                "contact_id": proposal.payload.get("contact_id"),
+                "contact_email": proposal.payload.get("contact_email"),
+                "subject": proposal.payload.get("subject"),
+                "body": proposal.payload.get("body"),
+                "evidence_ids": proposal.payload.get("evidence_ids", ()),
+                "source": "sim",
+            })
+            _append_jsonl(self._state_dir / "commit_audit.jsonl", {
+                "event_type": "outbound_committed",
+                "receipt": asdict(receipt),
+                "source": "sim",
+            })
+        except Exception:
+            self._gate.mark_idempotency_failed(
+                key, result_ref=str(self._outbox), attempt_token=attempt_token,
+            )
+            raise
+        self._gate.mark_idempotency_result(
+            key, result_ref=str(self._outbox), attempt_token=attempt_token,
+        )
         return receipt
 
 
@@ -183,19 +212,21 @@ class SimCrmActivityCommitter:
             "recommend_next_best_action",
         }:
             raise CommitError(f"SimCrmActivityCommitter cannot commit {proposal.action}")
-        self._gate.assert_payload_bound(outcome, proposal.payload)
+        self._gate.assert_payload_bound(
+            proposal, outcome, proposal.payload, require_durable=not dry_run,
+        )
         account_id = _required_str(proposal.payload, "account_id")
         key = _idempotency_key(proposal, outcome, target=str(self._store.path))
-        already = (
-            self._gate.idempotency_key_exists(key)
-            if dry_run
-            else not self._gate.claim_idempotency_key(
+        state = self._gate.idempotency_state(key)
+        attempt_token = None
+        if not dry_run and state != "completed":
+            attempt_token = self._gate.acquire_sim_idempotency_attempt(
                 key,
                 request_id=proposal.proposal_id,
                 result_ref=str(self._store.path),
                 cause_ref=f"commit:{proposal.proposal_id}",
             )
-        )
+        already = state is not None if dry_run else attempt_token is None
         receipt = _receipt(
             proposal,
             outcome,
@@ -207,15 +238,27 @@ class SimCrmActivityCommitter:
         )
         if dry_run or already:
             return receipt
-        self._store.record_activity(
-            account_id,
-            channel=str(proposal.payload.get("draft_channel") or proposal.payload.get("channel") or "email"),
-            direction=_activity_direction(proposal.action),
-            summary=str(proposal.payload.get("subject") or proposal.payload.get("body") or proposal.intent),
-            idempotency_key=key,
-            occurred_at=str(proposal.payload.get("as_of") or "2026-06-28") + "T12:00:00Z",
+        if attempt_token is None:  # defensive narrowing; committed implies lease ownership
+            raise CommitError(f"missing idempotency lease for {key}")
+        try:
+            # SimTenantStore.record_activity is itself idempotent by key, so a
+            # pending/failed reservation can safely replay after a crash.
+            self._store.record_activity(
+                account_id,
+                channel=str(proposal.payload.get("draft_channel") or proposal.payload.get("channel") or "email"),
+                direction=_activity_direction(proposal.action),
+                summary=str(proposal.payload.get("subject") or proposal.payload.get("body") or proposal.intent),
+                idempotency_key=key,
+                occurred_at=str(proposal.payload.get("as_of") or "2026-06-28") + "T12:00:00Z",
+            )
+        except Exception:
+            self._gate.mark_idempotency_failed(
+                key, result_ref=str(self._store.path), attempt_token=attempt_token,
+            )
+            raise
+        self._gate.mark_idempotency_result(
+            key, result_ref=str(self._store.path), attempt_token=attempt_token,
         )
-        self._gate.mark_idempotency_result(key, result_ref=str(self._store.path))
         return receipt
 
 
@@ -269,3 +312,47 @@ def _append_jsonl(path: Path, payload: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("a", encoding="utf-8") as handle:
         handle.write(json.dumps(payload, sort_keys=True) + "\n")
+
+
+def _jsonl_contains_idempotency_key(path: Path, key: str) -> bool:
+    """Return whether a completed simulated target row already carries ``key``.
+
+    Malformed/truncated rows are ignored: they are not proof of a completed
+    mutation and a later append remains distinguishable by the stable key.
+    """
+    if not path.exists():
+        return False
+    with path.open("r", encoding="utf-8") as handle:
+        for line in handle:
+            try:
+                payload = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            receipt = payload.get("receipt") if isinstance(payload, dict) else None
+            if isinstance(receipt, dict) and receipt.get("idempotency_key") == key:
+                return True
+    return False
+
+
+def _ensure_outbound_audit(audit_path: Path, outbox_path: Path, key: str) -> None:
+    """Repair the audit half of an outbox write before marking it complete."""
+    if _jsonl_contains_idempotency_key(audit_path, key):
+        return
+    receipt = None
+    with outbox_path.open("r", encoding="utf-8") as handle:
+        for line in handle:
+            try:
+                payload = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            candidate = payload.get("receipt") if isinstance(payload, dict) else None
+            if isinstance(candidate, dict) and candidate.get("idempotency_key") == key:
+                receipt = candidate
+                break
+    if receipt is None:
+        raise CommitError(f"outbox result missing while reconciling key {key}")
+    _append_jsonl(audit_path, {
+        "event_type": "outbound_reconciled",
+        "receipt": receipt,
+        "source": "sim",
+    })

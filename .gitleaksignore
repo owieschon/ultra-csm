@@ -1,0 +1,3 @@
+# False positive: a 12-character prose token in a historical planning document.
+# Fingerprint-scoped so no other value, path, commit, rule, or line is suppressed.
+343dd9b3b73b9ff12226d87fc110644f5ffdec9d:docs/PHASE_2_3_PLAN.md:generic-api-key:109

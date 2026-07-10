@@ -31,15 +31,15 @@ export function TopBar({
   onOpenPalette: () => void;
   onOpenHelp: () => void;
 }) {
-  const [theme, setTheme] = useState<"dark" | "light">("dark");
+  const [theme, setTheme] = useState<"dark" | "light">(() => {
+    if (typeof window === "undefined") return "dark";
+    const stored = window.localStorage.getItem("ucsm-theme");
+    return stored === "light" ? "light" : "dark";
+  });
 
   useEffect(() => {
-    const stored = window.localStorage.getItem("ucsm-theme");
-    if (stored === "dark" || stored === "light") {
-      setTheme(stored);
-      document.documentElement.setAttribute("data-theme", stored);
-    }
-  }, []);
+    document.documentElement.setAttribute("data-theme", theme);
+  }, [theme]);
 
   function handleToggleTheme() {
     setTheme(toggleThemeUtil());
@@ -58,7 +58,7 @@ export function TopBar({
             strokeLinecap="round"
           />
         </svg>
-        <b>ultra·csm</b>
+        <b title="Customer Action Control Plane">action·control</b>
         <span className="envchip">
           <b>fleetops</b>
           <span className="num" style={{ color: "var(--fg-2)" }}>

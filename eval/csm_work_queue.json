@@ -55,7 +55,7 @@
       "account_resolution": "exactly_one",
       "candidate_account_ids": [],
       "customer_contact_allowed": true,
-      "customer_draft": "Hi Jordan Lee, Acme Logistics is showing an onboarding risk tied to milestones_overdue, days_overdue. Can we review the overdue activation steps and agree on owners?",
+      "customer_draft": "Hi Jordan Lee, Acme Logistics is showing an onboarding risk tied to overdue onboarding milestones, overdue activation steps. Can we review the overdue activation steps and agree on owners?",
       "disposition": "propose_customer_action",
       "draft_mode": "fixture",
       "evidence": [
@@ -463,7 +463,7 @@
       "account_resolution": "exactly_one",
       "candidate_account_ids": [],
       "customer_contact_allowed": true,
-      "customer_draft": "Hi Avery Kim, Soylent Distribution is showing an onboarding risk tied to milestones_overdue, days_overdue. Can we review the overdue activation steps and agree on owners?",
+      "customer_draft": "Hi Avery Kim, Soylent Distribution is showing an onboarding risk tied to overdue onboarding milestones, overdue activation steps. Can we review the overdue activation steps and agree on owners?",
       "disposition": "propose_customer_action",
       "draft_mode": "fixture",
       "evidence": [
@@ -652,7 +652,7 @@
       "account_resolution": "exactly_one",
       "candidate_account_ids": [],
       "customer_contact_allowed": true,
-      "customer_draft": "Hi Alex Rivers, Globex Fleet is showing an onboarding risk tied to milestones_overdue, days_overdue. Can we review the overdue activation steps and agree on owners?",
+      "customer_draft": "Hi Alex Rivers, Globex Fleet is showing an onboarding risk tied to overdue onboarding milestones, overdue activation steps. Can we review the overdue activation steps and agree on owners?",
       "disposition": "propose_customer_action",
       "draft_mode": "fixture",
       "evidence": [
@@ -801,7 +801,7 @@
       "account_resolution": "exactly_one",
       "candidate_account_ids": [],
       "customer_contact_allowed": true,
-      "customer_draft": "Hi Samir Rao, Initech Services is showing an onboarding risk tied to success_plan_overdue, health_yellow. Can we map the missing users needed for a complete rollout?",
+      "customer_draft": "Hi Samir Rao, Initech Services is showing an onboarding risk tied to an overdue success plan, a declining health signal. Can we map the missing users needed for a complete rollout?",
       "disposition": "propose_customer_action",
       "draft_mode": "fixture",
       "evidence": [
