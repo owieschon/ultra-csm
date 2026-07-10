@@ -4,9 +4,11 @@ import json
 
 from ultra_csm.llm_transport import (
     CLAUDE_CODE_TRANSPORT,
+    TIMEOUT_ENV_VAR,
     AnthropicMessagesTransport,
     ClaudeCodeMessagesTransport,
     resolve_message_transport,
+    resolve_timeout_s,
 )
 
 
@@ -97,3 +99,17 @@ def test_claude_code_transport_extracts_text_from_message_shape():
     assert response.text == "{\"answer\":1}"
     assert response.input_tokens == 9
     assert response.output_tokens == 4
+
+
+def test_resolve_timeout_s_uses_higher_default_for_claude_code(monkeypatch):
+    monkeypatch.delenv(TIMEOUT_ENV_VAR, raising=False)
+
+    assert resolve_timeout_s(30.0, transport_name=CLAUDE_CODE_TRANSPORT) == 120.0
+    assert resolve_timeout_s(30.0, transport_name="anthropic_api") == 30.0
+
+
+def test_resolve_timeout_s_env_override_wins_over_transport_default(monkeypatch):
+    monkeypatch.setenv(TIMEOUT_ENV_VAR, "45")
+
+    assert resolve_timeout_s(30.0, transport_name=CLAUDE_CODE_TRANSPORT) == 45.0
+    assert resolve_timeout_s(30.0, transport_name="anthropic_api") == 45.0
