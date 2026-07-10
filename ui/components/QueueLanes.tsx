@@ -93,13 +93,16 @@ function Row({
   if (!proposalId) return null;
   const trigger = item.priority?.factors?.[0]?.name ?? null;
   const status = item.proposal?.status;
+  const packet = item.work_packet ?? null;
   return (
     <button
       className={`row${selected ? " sel" : ""}${resolved ? " resolved" : ""}`}
       onClick={() => onSelect(proposalId)}
     >
       <div className="l1">
-        <span className="acct">{item.account_id?.slice(0, 8) ?? "cohort"}</span>
+        <span className="acct">
+          {packet?.account_name ?? item.account_id?.slice(0, 8) ?? "cohort"}
+        </span>
         {tier && (
           <span className="tier" title={tier}>
             {label(TIER_LABELS, tier)}
@@ -116,6 +119,11 @@ function Row({
         {item.motion && (
           <span className="motion" title={item.motion}>
             {label(MOTION_LABELS, item.motion)}
+          </span>
+        )}
+        {packet && (
+          <span className="motion" title={`${packet.job_type} · ${packet.lane}`}>
+            {packet.lane}
           </span>
         )}
         {resolved && status && (
