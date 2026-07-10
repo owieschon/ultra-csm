@@ -4,7 +4,8 @@
 
 | Job | Lane | What it does | Secrets |
 | --- | --- | --- | --- |
-| `eval` | offline proof | installs Ultra CSM, then runs `make eval`, `make hygiene`, `make scorecard-csm`, and `make regression-csm` | none |
+| `eval` | offline proof | installs Ultra CSM, verifies the Action Control contract, then runs eval, hygiene, scorecard, and regression gates | none |
+| `ui-check` | reviewer journey | lints and builds the static UI, then exercises the Evidence route and decision-control reachability at desktop and mobile viewports | none |
 | `endor` | optional security | runs the Endor security lane when configured | `ENDOR_TOKEN` |
 
 The offline proof is intentionally conservative: no cloud services, no customer

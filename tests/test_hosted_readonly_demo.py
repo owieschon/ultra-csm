@@ -15,6 +15,14 @@ def test_vercel_demo_is_static_readonly():
     assert "functions" not in config
     assert "crons" not in config
 
+    rewrites = {
+        (entry["source"], entry["destination"])
+        for entry in config["rewrites"]
+    }
+    assert ("/ui/", "/index.html") in rewrites
+    assert ("/ui/comms-review", "/comms-review/index.html") in rewrites
+    assert ("/ui/comms-review/", "/comms-review/index.html") in rewrites
+
 
 def test_hosted_demo_exports_no_write_routes():
     manifest = json.loads(
@@ -29,6 +37,10 @@ def test_hosted_demo_exports_no_write_routes():
     assert "The hosted demo is read-only." in api_source
     assert 'method !== "GET" && rawPath !== "/sweep"' in api_source
     assert 'const [rawPath] = path.split("?")' in api_source
+    assert 'rawPath === "/demo/action-control/vertical-slice"' in api_source
+    assert manifest["action_control_contract_version"] == (
+        "action-control.vertical-slice.v1"
+    )
 
 
 def test_hosted_demo_has_core_fixtures():
@@ -39,6 +51,7 @@ def test_hosted_demo_has_core_fixtures():
         "sweep-day-140.json",
         "proposals.json",
         "ledger.json",
+        "action-control-vertical-slice-v1.json",
         "comms-slack.json",
         "comms-notion.json",
     }

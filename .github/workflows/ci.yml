@@ -6,8 +6,8 @@
 #   * scorecard-csm - Agent 1 CSM-native deterministic scorecard, no secrets.
 #   * regression-csm - exact spine + seeded distributional regression, no secrets.
 #   * endor         - optional security lane, separate from offline eval.
-#   * ui-check      - ui/ lint + build gate, separate job so a UI failure
-#                     doesn't block the Python gate from reporting.
+#   * ui-check      - ui/ lint, build, route, and responsive reachability gate;
+#                     separate so a UI failure does not hide Python results.
 
 name: ci
 
@@ -62,6 +62,9 @@ jobs:
       - name: Posture suite
         run: make eval
 
+      - name: Action Control contract drift gate
+        run: make action-control-contract-check
+
       - name: Hygiene scan
         run: make hygiene
 
@@ -86,7 +89,7 @@ jobs:
           if-no-files-found: warn
 
   ui-check:
-    name: ui lint + build
+    name: ui lint + build + reachability
     runs-on: ubuntu-24.04
     steps:
       - name: Check out Ultra CSM
@@ -99,6 +102,12 @@ jobs:
 
       - name: ui-check
         run: make ui-check
+
+      - name: Install Playwright Chromium
+        run: cd ui && npx playwright install --with-deps chromium
+
+      - name: Desktop and mobile reachability
+        run: cd ui && npm run test:e2e
 
   endor:
     name: endor security scan

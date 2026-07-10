@@ -104,7 +104,7 @@ export const ActionRail = forwardRef<
   return (
     <>
       <div className="rail-top">
-        <div className="t">Decision</div>
+        <h2 className="t">Decision</h2>
         <div className="gate">
           {item ? (
             proposalId ? (
@@ -120,17 +120,17 @@ export const ActionRail = forwardRef<
           )}
         </div>
         {error && (
-          <div className="gate" style={{ color: "var(--danger)" }}>
+          <div className="gate" role="alert" style={{ color: "var(--danger)" }}>
             {error}
           </div>
         )}
         {readOnly && (
-          <div className="gate">
+          <div className="gate" role="note">
             hosted read-only demo — approvals and sends disabled
           </div>
         )}
       </div>
-      <div className="actions">
+      <div className="actions" aria-label="Proposal actions">
         {packetCtas.length > 0 && (
           <div className="cta-stack">
             {packetCtas.map((cta) => (
@@ -144,21 +144,27 @@ export const ActionRail = forwardRef<
           </div>
         )}
         <button
+          type="button"
           className="btn approve"
+          aria-keyshortcuts="A"
           disabled={readOnly || !canAct || busy}
           onClick={() => act("approve")}
         >
           Approve &amp; send<span className="k">A</span>
         </button>
         <button
+          type="button"
           className="btn edit"
+          aria-keyshortcuts="E"
           disabled={readOnly || !canEdit || busy}
           onClick={() => setEditOpen((open) => !open)}
         >
           Edit draft<span className="k">E</span>
         </button>
         <button
+          type="button"
           className="btn deny"
+          aria-keyshortcuts="D"
           disabled={readOnly || !canAct || busy}
           onClick={() => act("deny")}
         >
@@ -182,6 +188,7 @@ export const ActionRail = forwardRef<
           <div className="edit-actions">
             <span className="edit-count num">{editInstruction.length}/280</span>
             <button
+              type="button"
               className="btn"
               disabled={busy}
               onClick={() => {
@@ -192,6 +199,7 @@ export const ActionRail = forwardRef<
               Cancel
             </button>
             <button
+              type="button"
               className="btn approve"
               disabled={!canEdit || busy || !editInstruction.trim()}
               onClick={() => act("revise")}
@@ -208,7 +216,7 @@ export const ActionRail = forwardRef<
             {receiptEvents.length} events · {ledgerGap.length} source gaps
           </span>
         </div>
-        <div className="ledger">
+        <div className="ledger" role="log" aria-live="polite" aria-label="Selected proposal receipt events">
           {proposalId && receiptEvents.length === 0 && (
             <div className="lg">
               <span className="rest" style={{ color: "var(--fg-2)" }}>

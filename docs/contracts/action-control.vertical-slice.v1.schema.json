@@ -1,0 +1,276 @@
+{
+  "$defs": {
+    "ActionControlApprovalView": {
+      "additionalProperties": false,
+      "properties": {
+        "approved_payload_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Approved Payload Sha256",
+          "type": "string"
+        },
+        "human_principal_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+          "title": "Human Principal Id",
+          "type": "string"
+        },
+        "state": {
+          "const": "approved_payload_bound",
+          "title": "State",
+          "type": "string"
+        },
+        "verdict": {
+          "const": "approve",
+          "title": "Verdict",
+          "type": "string"
+        }
+      },
+      "required": [
+        "verdict",
+        "state",
+        "human_principal_id",
+        "approved_payload_sha256"
+      ],
+      "title": "ActionControlApprovalView",
+      "type": "object"
+    },
+    "ActionControlProposalView": {
+      "additionalProperties": false,
+      "properties": {
+        "account_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+          "title": "Account Id",
+          "type": "string"
+        },
+        "account_name": {
+          "minLength": 1,
+          "title": "Account Name",
+          "type": "string"
+        },
+        "action": {
+          "const": "draft_customer_outreach",
+          "title": "Action",
+          "type": "string"
+        },
+        "draft": {
+          "minLength": 1,
+          "title": "Draft",
+          "type": "string"
+        },
+        "payload_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Payload Sha256",
+          "type": "string"
+        },
+        "proposal_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+          "title": "Proposal Id",
+          "type": "string"
+        },
+        "recipient": {
+          "minLength": 1,
+          "title": "Recipient",
+          "type": "string"
+        },
+        "state": {
+          "const": "pending_human_decision",
+          "title": "State",
+          "type": "string"
+        }
+      },
+      "required": [
+        "proposal_id",
+        "account_id",
+        "account_name",
+        "action",
+        "state",
+        "recipient",
+        "draft",
+        "payload_sha256"
+      ],
+      "title": "ActionControlProposalView",
+      "type": "object"
+    },
+    "ActionControlSimulatedReceiptView": {
+      "additionalProperties": false,
+      "properties": {
+        "committed": {
+          "const": true,
+          "title": "Committed",
+          "type": "boolean"
+        },
+        "dry_run": {
+          "const": false,
+          "title": "Dry Run",
+          "type": "boolean"
+        },
+        "external_effect": {
+          "const": false,
+          "title": "External Effect",
+          "type": "boolean"
+        },
+        "idempotency_key": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Idempotency Key",
+          "type": "string"
+        },
+        "payload_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Payload Sha256",
+          "type": "string"
+        },
+        "proposal_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+          "title": "Proposal Id",
+          "type": "string"
+        },
+        "receipt_id": {
+          "pattern": "^[0-9a-f]{24}$",
+          "title": "Receipt Id",
+          "type": "string"
+        },
+        "state": {
+          "const": "simulated_committed",
+          "title": "State",
+          "type": "string"
+        },
+        "target": {
+          "const": "simulated_outbox",
+          "title": "Target",
+          "type": "string"
+        }
+      },
+      "required": [
+        "state",
+        "receipt_id",
+        "proposal_id",
+        "idempotency_key",
+        "target",
+        "committed",
+        "dry_run",
+        "external_effect",
+        "payload_sha256"
+      ],
+      "title": "ActionControlSimulatedReceiptView",
+      "type": "object"
+    },
+    "ActionControlTamperRefusalView": {
+      "additionalProperties": false,
+      "properties": {
+        "approved_payload_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Approved Payload Sha256",
+          "type": "string"
+        },
+        "attempted_payload_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Attempted Payload Sha256",
+          "type": "string"
+        },
+        "code": {
+          "const": "PAYLOAD_HASH_MISMATCH",
+          "title": "Code",
+          "type": "string"
+        },
+        "committed": {
+          "const": false,
+          "title": "Committed",
+          "type": "boolean"
+        },
+        "reason": {
+          "const": "payload hash does not match the authorized verdict",
+          "title": "Reason",
+          "type": "string"
+        },
+        "state": {
+          "const": "refused_payload_mismatch",
+          "title": "State",
+          "type": "string"
+        }
+      },
+      "required": [
+        "state",
+        "code",
+        "reason",
+        "committed",
+        "approved_payload_sha256",
+        "attempted_payload_sha256"
+      ],
+      "title": "ActionControlTamperRefusalView",
+      "type": "object"
+    }
+  },
+  "$id": "https://ultra-csm.example/contracts/action-control.vertical-slice.v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "approval": {
+      "$ref": "#/$defs/ActionControlApprovalView"
+    },
+    "mode": {
+      "const": "synthetic_sandbox",
+      "title": "Mode",
+      "type": "string"
+    },
+    "outbound_effects_enabled": {
+      "const": false,
+      "title": "Outbound Effects Enabled",
+      "type": "boolean"
+    },
+    "proposal": {
+      "$ref": "#/$defs/ActionControlProposalView"
+    },
+    "scenario_id": {
+      "const": "trailhead-logistics.payload-binding",
+      "title": "Scenario Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "action-control.vertical-slice.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "simulated_receipt": {
+      "$ref": "#/$defs/ActionControlSimulatedReceiptView"
+    },
+    "state_sequence": {
+      "maxItems": 4,
+      "minItems": 4,
+      "prefixItems": [
+        {
+          "const": "pending_human_decision",
+          "type": "string"
+        },
+        {
+          "const": "approved_payload_bound",
+          "type": "string"
+        },
+        {
+          "const": "simulated_committed",
+          "type": "string"
+        },
+        {
+          "const": "refused_payload_mismatch",
+          "type": "string"
+        }
+      ],
+      "title": "State Sequence",
+      "type": "array"
+    },
+    "tamper_refusal": {
+      "$ref": "#/$defs/ActionControlTamperRefusalView"
+    }
+  },
+  "required": [
+    "schema_version",
+    "scenario_id",
+    "mode",
+    "outbound_effects_enabled",
+    "state_sequence",
+    "proposal",
+    "approval",
+    "simulated_receipt",
+    "tamper_refusal"
+  ],
+  "title": "ActionControlVerticalSlice",
+  "type": "object"
+}
