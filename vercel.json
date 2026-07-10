@@ -6,6 +6,14 @@
   "trailingSlash": true,
   "rewrites": [
     {
+      "source": "/ui/comms-review",
+      "destination": "/comms-review/index.html"
+    },
+    {
+      "source": "/ui/comms-review/",
+      "destination": "/comms-review/index.html"
+    },
+    {
       "source": "/ui/",
       "destination": "/index.html"
     },

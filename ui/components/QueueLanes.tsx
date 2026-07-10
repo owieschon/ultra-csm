@@ -25,7 +25,7 @@ export function QueueLanes({
   onSelect: (proposalId: string) => void;
 }) {
   return (
-    <aside className="lanes">
+    <aside className="lanes" aria-label="Decision queue">
       <div className="lane-h">
         <span className="t">Needs your decision</span>
         <span className="c num">{needsDecision.length}</span>
@@ -101,7 +101,9 @@ function Row({
   const packet = item.work_packet ?? null;
   return (
     <button
+      type="button"
       className={`row${selected ? " sel" : ""}${resolved ? " resolved" : ""}`}
+      aria-pressed={selected}
       onClick={() => onSelect(proposalId)}
     >
       <div className="l1">

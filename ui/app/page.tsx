@@ -127,31 +127,45 @@ export default function Home() {
         onOpenPalette={() => setPaletteOpen(true)}
         onOpenHelp={() => setHelpOpen(true)}
       />
-      <div className="main">
+      <div className={`main main-${view}`}>
         <div className="stage">
           {error && <div className="placeholder-view">Error: {error}</div>}
           {view === "book" && (
-            <BookView
-              accounts={accounts}
-              sweep={sweep}
-              day={servedDay}
-              onWorkQueue={() => setView("queue")}
-              onSelectAccount={jumpToAccount}
-            />
+            <section
+              id="book-panel"
+              className="view-panel"
+              role="tabpanel"
+              aria-labelledby="book-tab"
+            >
+              <BookView
+                accounts={accounts}
+                sweep={sweep}
+                day={servedDay}
+                onWorkQueue={() => setView("queue")}
+                onSelectAccount={jumpToAccount}
+              />
+            </section>
           )}
           {view === "queue" && (
-            <QueueView
-              day={servedDay}
-              accounts={accounts}
-              sweep={sweep}
-              sweepError={sweepError}
-              selectedProposalId={selectedProposalId}
-              onSelect={setSelectedProposalId}
-              onSelectedItemChange={setSelectedItem}
-            />
+            <section
+              id="queue-panel"
+              className="view-panel"
+              role="tabpanel"
+              aria-labelledby="queue-tab"
+            >
+              <QueueView
+                day={servedDay}
+                accounts={accounts}
+                sweep={sweep}
+                sweepError={sweepError}
+                selectedProposalId={selectedProposalId}
+                onSelect={setSelectedProposalId}
+                onSelectedItemChange={setSelectedItem}
+              />
+            </section>
           )}
         </div>
-        <aside className="rail">
+        <aside className="rail" aria-label="Decision controls and receipt">
           {view === "queue" && (
             <ActionRail
               ref={railRef}

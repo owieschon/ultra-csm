@@ -45,12 +45,14 @@ def main() -> int:
         sweep = _post(client, f"/sweep?day={DAY}")
         proposals = _get(client, "/proposals")
         ledger = _get(client, "/ledger?limit=50")
+        action_control = _get(client, "/demo/action-control/vertical-slice")
 
         _write("health.json", health)
         _write(f"accounts-day-{DAY}.json", accounts)
         _write(f"sweep-day-{DAY}.json", sweep)
         _write("proposals.json", proposals)
         _write("ledger.json", ledger)
+        _write("action-control-vertical-slice-v1.json", action_control)
         _write("comms-slack.json", {"pending": [], "auth": "hosted-readonly"})
         _write("comms-notion.json", {"pending": [], "auth": "hosted-readonly"})
 
@@ -83,6 +85,7 @@ def main() -> int:
                 "account_count": accounts["account_count"],
                 "work_item_count": len(sweep["work_items"]),
                 "proposal_count": len(proposals["proposals"]),
+                "action_control_contract_version": action_control["schema_version"],
                 "exported_account_detail_count": len(account_ids),
                 "write_routes_exported": False,
             },

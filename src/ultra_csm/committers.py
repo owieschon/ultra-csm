@@ -105,10 +105,12 @@ class SimOutboundCommitter:
         gate: ActionGate,
         *,
         state_dir: Path | str = DEFAULT_DEMO_STATE_DIR,
+        target_ref: str | None = None,
     ) -> None:
         self._gate = gate
         self._state_dir = Path(state_dir)
         self._outbox = self._state_dir / "outbox.jsonl"
+        self._target_ref = target_ref or str(self._outbox)
 
     def commit(
         self,
@@ -123,7 +125,7 @@ class SimOutboundCommitter:
             proposal, outcome, proposal.payload, require_durable=not dry_run,
         )
         account_id = _required_str(proposal.payload, "account_id")
-        key = _idempotency_key(proposal, outcome, target=str(self._outbox))
+        key = _idempotency_key(proposal, outcome, target=self._target_ref)
         state = self._gate.idempotency_state(key)
         target_has_result = _jsonl_contains_idempotency_key(self._outbox, key)
         attempt_token = None
@@ -131,7 +133,7 @@ class SimOutboundCommitter:
             attempt_token = self._gate.acquire_sim_idempotency_attempt(
                 key,
                 request_id=proposal.proposal_id,
-                result_ref=str(self._outbox),
+                result_ref=self._target_ref,
                 cause_ref=f"commit:{proposal.proposal_id}",
             )
         if target_has_result and not dry_run and attempt_token is not None:
@@ -142,7 +144,7 @@ class SimOutboundCommitter:
                 self._state_dir / "commit_audit.jsonl", self._outbox, key,
             )
             self._gate.mark_idempotency_result(
-                key, result_ref=str(self._outbox), attempt_token=attempt_token,
+                key, result_ref=self._target_ref, attempt_token=attempt_token,
             )
             state = "completed"
             attempt_token = None
@@ -156,7 +158,7 @@ class SimOutboundCommitter:
             outcome,
             account_id=account_id,
             idempotency_key=key,
-            target=str(self._outbox),
+            target=self._target_ref,
             dry_run=dry_run,
             committed=not already,
         )
@@ -183,13 +185,50 @@ class SimOutboundCommitter:
             })
         except Exception:
             self._gate.mark_idempotency_failed(
-                key, result_ref=str(self._outbox), attempt_token=attempt_token,
+                key, result_ref=self._target_ref, attempt_token=attempt_token,
             )
             raise
         self._gate.mark_idempotency_result(
-            key, result_ref=str(self._outbox), attempt_token=attempt_token,
+            key, result_ref=self._target_ref, attempt_token=attempt_token,
         )
         return receipt
+
+    def assert_committed_receipt(
+        self,
+        proposal: ActionProposal,
+        outcome: GateOutcome,
+        receipt: CommitReceipt,
+    ) -> None:
+        """Require a receipt produced by this bound simulated outbox.
+
+        A receipt-shaped object is not evidence. This check recomputes every
+        deterministic receipt field, requires the idempotency record to be
+        complete, and finds the exact receipt in the physical outbox before a
+        reporting layer may present it as a completed simulated action.
+        """
+
+        self._gate.assert_payload_bound(proposal, outcome, proposal.payload)
+        if not receipt.receipt_id or not receipt.idempotency_key:
+            raise CommitError("simulated receipt identifiers must be non-empty")
+        if not receipt.committed or receipt.dry_run:
+            raise CommitError("simulated receipt must represent a committed attempt")
+        account_id = _required_str(proposal.payload, "account_id")
+        key = _idempotency_key(proposal, outcome, target=self._target_ref)
+        expected = _receipt(
+            proposal,
+            outcome,
+            account_id=account_id,
+            idempotency_key=key,
+            target=self._target_ref,
+            dry_run=False,
+            committed=True,
+        )
+        if receipt != expected:
+            raise CommitError("simulated receipt does not match the bound commit")
+        if self._gate.idempotency_state(key) != "completed":
+            raise CommitError("simulated receipt idempotency record is not complete")
+        if not _jsonl_contains_receipt(self._outbox, receipt):
+            raise CommitError("simulated receipt is absent from the outbox")
 
 
 class SimCrmActivityCommitter:
@@ -330,6 +369,23 @@ def _jsonl_contains_idempotency_key(path: Path, key: str) -> bool:
                 continue
             receipt = payload.get("receipt") if isinstance(payload, dict) else None
             if isinstance(receipt, dict) and receipt.get("idempotency_key") == key:
+                return True
+    return False
+
+
+def _jsonl_contains_receipt(path: Path, receipt: CommitReceipt) -> bool:
+    """Return whether the outbox contains this exact receipt payload."""
+
+    if not path.exists():
+        return False
+    expected = asdict(receipt)
+    with path.open("r", encoding="utf-8") as handle:
+        for line in handle:
+            try:
+                payload = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if payload.get("receipt") == expected:
                 return True
     return False
 

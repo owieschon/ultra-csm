@@ -121,23 +121,47 @@ class ActionGate:
                 autonomy_tier: int, required_permission: str,
                 grounding_ref: str | None = None, case_id: str | None = None,
                 request_id: str | None = None, turn_id: str | None = None,
-                cause_ref: str | None = None) -> ActionProposal:
+                cause_ref: str | None = None,
+                proposal_id: str | None = None) -> ActionProposal:
         """Emit an action_proposal (status='pending'). payload_sha256 is computed
-        at emit and binds the action body until a verdict authorizes it."""
+        at emit and binds the action body until a verdict authorizes it.
+
+        ``proposal_id`` is an explicit determinism seam for isolated synthetic
+        scenarios. Runtime callers omit it and retain the database-generated
+        UUID. Supplying it does not confer authority: the same durable verdict,
+        payload binding, human-ness, and committer checks still apply.
+        """
         sha = canonical_payload_sha256(payload)
         with session(self._conn, tenant_id=self._tenant_id, actor_id=self._actor,
                      cause_ref=cause_ref, request_id=request_id, turn_id=turn_id,
                      now=self._now) as cur:
-            cur.execute(
-                "INSERT INTO action_proposal (tenant_id, actor_principal_id, "
-                "case_id, intent, action, payload, payload_sha256, grounding_ref, "
-                "autonomy_tier, required_permission, request_id, turn_id) "
-                "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) "
-                "RETURNING proposal_id",
-                (self._tenant_id, self._actor, case_id, intent, action,
-                 json.dumps(payload), sha, grounding_ref, autonomy_tier,
-                 required_permission, request_id, turn_id),
-            )
+            if proposal_id is None:
+                cur.execute(
+                    "INSERT INTO action_proposal (tenant_id, actor_principal_id, "
+                    "case_id, intent, action, payload, payload_sha256, grounding_ref, "
+                    "autonomy_tier, required_permission, request_id, turn_id) "
+                    "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) "
+                    "RETURNING proposal_id",
+                    (self._tenant_id, self._actor, case_id, intent, action,
+                     json.dumps(payload), sha, grounding_ref, autonomy_tier,
+                     required_permission, request_id, turn_id),
+                )
+            else:
+                try:
+                    proposal_id = str(uuid.UUID(proposal_id))
+                except (AttributeError, TypeError, ValueError) as exc:
+                    raise GateError("proposal_id must be a UUID") from exc
+                cur.execute(
+                    "INSERT INTO action_proposal (proposal_id, tenant_id, "
+                    "actor_principal_id, case_id, intent, action, payload, "
+                    "payload_sha256, grounding_ref, autonomy_tier, "
+                    "required_permission, request_id, turn_id) "
+                    "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) "
+                    "RETURNING proposal_id",
+                    (proposal_id, self._tenant_id, self._actor, case_id, intent,
+                     action, json.dumps(payload), sha, grounding_ref,
+                     autonomy_tier, required_permission, request_id, turn_id),
+                )
             proposal_id = str(cur.fetchone()[0])
         return ActionProposal(
             proposal_id=proposal_id, intent=intent, action=action,
@@ -357,6 +381,45 @@ class ActionGate:
             or str(row[7]) != actual_sha
         ):
             raise GateError("durable verdict does not authorize the current payload")
+
+    def approval_principal_id(
+        self,
+        proposal: ActionProposal,
+        outcome: GateOutcome,
+    ) -> str:
+        """Return the human principal from the durable, payload-bound verdict.
+
+        This is intentionally a read from authority-bearing rows, not a caller
+        supplied label. It first reruns the full durable binding check and then
+        requires the stored verdict to match the outcome and point at a human
+        principal before exposing the identifier to receipt/reporting layers.
+        """
+
+        self.assert_payload_bound(proposal, outcome, proposal.payload)
+        with session(
+            self._conn,
+            tenant_id=self._tenant_id,
+            actor_id=self._actor,
+            now=self._now,
+        ) as cur:
+            cur.execute(
+                "SELECT v.human_principal_id, v.verdict, "
+                "v.approved_payload_sha256, principal.kind "
+                "FROM action_verdict v "
+                "JOIN principal ON principal.principal_id = v.human_principal_id "
+                "AND principal.tenant_id = v.tenant_id "
+                "WHERE v.tenant_id = %s AND v.proposal_id = %s",
+                (self._tenant_id, proposal.proposal_id),
+            )
+            row = cur.fetchone()
+        if (
+            row is None
+            or str(row[1]) != outcome.verdict
+            or str(row[2]) != outcome.payload_sha256
+            or str(row[3]) != "human"
+        ):
+            raise GateError("durable verdict does not identify the bound human approver")
+        return str(row[0])
 
     def idempotency_key_exists(self, idem_key: str) -> bool:
         """Return True if a committer already reserved this mutation key."""

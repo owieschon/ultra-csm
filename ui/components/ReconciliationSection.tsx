@@ -23,7 +23,12 @@ function DeterministicSignalRowView({ signal }: { signal: DeterministicSignalRow
   const [open, setOpen] = useState(false);
   return (
     <div>
-      <div className="factor" onClick={() => setOpen(!open)}>
+      <button
+        type="button"
+        className="factor"
+        aria-expanded={open}
+        onClick={() => setOpen(!open)}
+      >
         <span className="fname">{label(TRIGGER_LABELS, signal.name)}</span>
         <span className="contrib" title={`adds ${signal.contribution} points`}>
           +{signal.contribution}
@@ -34,7 +39,7 @@ function DeterministicSignalRowView({ signal }: { signal: DeterministicSignalRow
           </span>
           <span>{signal.surfaced_by_lenses.join(", ")}</span>
         </span>
-      </div>
+      </button>
       {open && (
         <div className="evid-in">
           {signal.evidence.map((ref, i) => (
@@ -58,11 +63,16 @@ function CandidateDivergenceRowView({ candidate }: { candidate: CandidateDiverge
   const [open, setOpen] = useState(false);
   return (
     <div>
-      <div className="hyp-row" onClick={() => setOpen(!open)}>
+      <button
+        type="button"
+        className="hyp-row"
+        aria-expanded={open}
+        onClick={() => setOpen(!open)}
+      >
         <span className="hyp-badge">Hypothesis — not verified</span>
         <span className="hyp-claim">{candidate.claim}</span>
         <span className="hyp-conf">{candidate.confidence} confidence</span>
-      </div>
+      </button>
       <div className="hyp-disclaimer">{candidate.disclaimer}</div>
       {open && (
         <div className="evid-in">

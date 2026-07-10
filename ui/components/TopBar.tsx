@@ -48,7 +48,7 @@ export function TopBar({
   return (
     <header className="topbar">
       <div className="brand">
-        <svg className="mark" viewBox="0 0 24 24" fill="none">
+        <svg className="mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.6" />
           <circle cx="12" cy="12" r="3.4" fill="currentColor" />
           <path
@@ -68,14 +68,37 @@ export function TopBar({
         </span>
       </div>
 
-      <div className="seg" role="tablist">
+      <div
+        className="seg"
+        role="tablist"
+        aria-label="Workspace view"
+        onKeyDown={(event) => {
+          if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+          event.preventDefault();
+          const nextView = view === "book" ? "queue" : "book";
+          onViewChange(nextView);
+          window.requestAnimationFrame(() => {
+            document.getElementById(`${nextView}-tab`)?.focus();
+          });
+        }}
+      >
         <button
+          type="button"
+          role="tab"
+          id="book-tab"
+          aria-selected={view === "book"}
+          aria-controls="book-panel"
           className={view === "book" ? "on" : ""}
           onClick={() => onViewChange("book")}
         >
           Book
         </button>
         <button
+          type="button"
+          role="tab"
+          id="queue-tab"
+          aria-selected={view === "queue"}
+          aria-controls="queue-panel"
           className={view === "queue" ? "on" : ""}
           onClick={() => onViewChange("queue")}
         >
@@ -83,17 +106,22 @@ export function TopBar({
         </button>
       </div>
 
-      <Link className="navlink" href="/comms-review">
-        Comms
+      <Link className="navlink" href="/comms-review" aria-label="Review evidence mappings">
+        Evidence
       </Link>
 
-      <div className="search" onClick={onOpenPalette} style={{ cursor: "pointer" }}>
+      <button
+        type="button"
+        className="search"
+        onClick={onOpenPalette}
+        aria-label="Search accounts and commands"
+      >
         <span className="ph">Search accounts…</span>
         <span className="k">⌘K</span>
-      </div>
+      </button>
 
       <div className="scrub">
-        <span className="lbl">
+        <label className="lbl" htmlFor="scenario-day">
           {liveMode ? (
             <b>live</b>
           ) : (
@@ -101,8 +129,9 @@ export function TopBar({
               day <b className="num">{day}</b>
             </>
           )}
-        </span>
+        </label>
         <input
+          id="scenario-day"
           type="range"
           min={1}
           max={365}
@@ -113,13 +142,25 @@ export function TopBar({
       </div>
 
       <div className="topright">
-        <button className="iconbtn" onClick={onOpenHelp} title="Shortcuts (?)">
+        <button
+          type="button"
+          className="iconbtn"
+          onClick={onOpenHelp}
+          title="Shortcuts (?)"
+          aria-label="Show keyboard shortcuts"
+        >
           ?
         </button>
-        <button className="iconbtn" onClick={handleToggleTheme} title="Theme (t)">
+        <button
+          type="button"
+          className="iconbtn"
+          onClick={handleToggleTheme}
+          title="Theme (t)"
+          aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}
+        >
           {theme === "dark" ? "☾" : "☀"}
         </button>
-        <div className="live">
+        <div className="live" role="status" aria-live="polite">
           <span
             className="d"
             style={{
