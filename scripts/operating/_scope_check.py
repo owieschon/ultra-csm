@@ -8,8 +8,9 @@ credential values, only booleans/lengths/scope strings/HTTP status.
 import json
 import subprocess
 import sys
+from pathlib import Path
 
-CREDS_PATH = "/Users/owieschon/ultra-csm-live-creds.env"
+CREDS_PATH = Path.home() / "ultra-csm-live-creds.env"
 
 
 def _read_env():

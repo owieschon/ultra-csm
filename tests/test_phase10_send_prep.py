@@ -33,7 +33,7 @@ def _env() -> dict[str, str]:
         "ULTRA_CSM_GMAIL_OAUTH_CLIENT_ID": "client",
         "ULTRA_CSM_GMAIL_OAUTH_CLIENT_SECRET": "secret",
         "ULTRA_CSM_GMAIL_OAUTH_REFRESH_TOKEN": "refresh",
-        "ULTRA_CSM_GMAIL_SENDER": "agenticardvarkpug@gmail.com",
+        "ULTRA_CSM_GMAIL_SENDER": "fixture-burner@example.test",
     }
 
 
@@ -46,7 +46,7 @@ def test_phase10_manifest_prepares_unique_pending_burner_candidate_without_send(
         phase10_conn,
         actor_id=actor_id,
         data_plane=data_plane,
-        recipient="agenticardvarkpug@gmail.com",
+        recipient="fixture-burner@example.test",
         create=True,
     )
 
@@ -85,7 +85,7 @@ def test_phase10_manifest_fails_closed_without_gmail_env_names(phase10_conn, tmp
         phase10_conn,
         actor_id=actor_id,
         data_plane=data_plane,
-        recipient="agenticardvarkpug@gmail.com",
+        recipient="fixture-burner@example.test",
         create=True,
     )
 

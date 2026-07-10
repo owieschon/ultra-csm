@@ -9,10 +9,9 @@ instead of creating a Salesforce Task. Scope is deliberately narrow and
 carries two guards Salesforce write-back does not need, because email adds
 a recipient dimension:
 
-* Recipient allowlist is a HARD-CODED constant, checked fail-closed at send
-  time regardless of what the gate approved. A recipient outside it is
-  refused with a ledger line -- never sent. The gate approving a proposal
-  does not widen the transport's authority (defense in depth).
+* Recipient allowlist is a checked, fail-closed constant. The public tree uses
+  a non-routable ``example.test`` address, so a public checkout cannot send
+  to a real person. A recipient outside it is refused with a ledger line.
 * Byte-equal body check: the subject/body actually sent must hash-identical
   match the approved proposal payload's subject/body -- never regenerated,
   never re-templated at send time.
@@ -37,10 +36,9 @@ from ultra_csm.committers import CommitError, CommitReceipt
 from ultra_csm.data_plane.live_smoke import HttpClient, HttpRequest, UrllibHttpClient
 from ultra_csm.governance import ActionGate, ActionProposal, GateOutcome, canonical_payload_sha256
 
-# Hard-coded allowlist: the ONLY legal recipients for a live send from this
-# committer. Burner-to-burner only. A recipient outside this set is refused
-# even if the gate approved it -- checked at send time, every time.
-RECIPIENT_ALLOWLIST = frozenset({"agenticardvarkpug@gmail.com"})
+# Public fail-closed allowlist. ``example.test`` cannot receive mail; replacing
+# it for a credentialed private deployment is an explicit operator action.
+RECIPIENT_ALLOWLIST = frozenset({"fixture-burner@example.test"})
 
 UCSM_SUBJECT_TAG = "UCSM-NARR2"
 

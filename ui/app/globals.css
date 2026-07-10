@@ -135,6 +135,23 @@ svg { display: block; }
 .res-chip.dn { color: var(--danger); border: 1px solid var(--hair); }
 
 .detail-scroll { overflow-y: auto; flex: 1; padding: 22px 28px 48px; }
+.control-path {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-bottom: 20px; border: 1px solid var(--hair); border-radius: 10px;
+  overflow: hidden; background: var(--chrome);
+}
+.control-step {
+  min-width: 0; display: flex; align-items: center; gap: 9px;
+  padding: 10px 11px; border-right: 1px solid var(--hair); color: var(--fg-2);
+}
+.control-step:last-child { border-right: 0; }
+.control-step.complete .control-index { color: var(--ok); }
+.control-step.current { background: var(--accent-dim); color: var(--fg); }
+.control-step.current .control-index { color: var(--accent); }
+.control-index { font-size: 10px; font-weight: 700; }
+.control-step span:last-child { min-width: 0; display: flex; flex-direction: column; }
+.control-step b { font-size: 11px; font-weight: 650; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.control-step small { font-size: 9.5px; color: var(--fg-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .identity { display: flex; gap: 14px; align-items: flex-start; padding-bottom: 18px; border-bottom: 1px solid var(--hair); }
 .mono-avatar { width: 46px; height: 46px; border-radius: 10px; background: var(--card-2); border: 1px solid var(--hair); color: var(--fg-2); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; flex: 0 0 auto; }
 .id-name { font-size: 22px; font-weight: 650; letter-spacing: -.025em; line-height: 1.15; }
@@ -230,6 +247,12 @@ svg { display: block; }
 .lg .ts { color: var(--fg-2); flex: 0 0 auto; }
 .lg .ev { color: var(--fg); flex: 0 0 106px; font-weight: 600; font-family: -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif; }
 .lg .rest { color: var(--fg-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+@media (max-width: 980px) {
+  .control-path { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .control-step:nth-child(2) { border-right: 0; }
+  .control-step:nth-child(-n+2) { border-bottom: 1px solid var(--hair); }
+}
 
 /* ===== PALETTE + SHORTCUTS (ported as-is per Decisions) ===== */
 .scrim { position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 100; display: none; align-items: flex-start; justify-content: center; padding-top: 14vh; }

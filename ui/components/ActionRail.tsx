@@ -41,6 +41,9 @@ export const ActionRail = forwardRef<
   const status = item?.proposal?.status ?? null;
   const canAct = proposalId != null && status === "pending";
   const canEdit = canAct && item?.proposal?.action_type === "draft_customer_outreach";
+  const receiptEvents = proposalId
+    ? ledger.filter((event) => event.proposal_id === proposalId).slice(-12)
+    : [];
 
   useEffect(() => {
     if (!canEdit) {
@@ -183,20 +186,27 @@ export const ActionRail = forwardRef<
       )}
       <div className="audit">
         <div className="audit-h">
-          <span className="t">Audit ledger</span>
+          <span className="t">Decision receipt</span>
           <span className="gap" title={ledgerGap.join(", ")}>
-            {ledgerGap.length} event types have no live source yet
+            {receiptEvents.length} events · {ledgerGap.length} source gaps
           </span>
         </div>
         <div className="ledger">
-          {ledger.length === 0 && (
+          {proposalId && receiptEvents.length === 0 && (
             <div className="lg">
               <span className="rest" style={{ color: "var(--fg-2)" }}>
-                no proposal/verdict events yet this run
+                no receipt events recorded for this proposal
               </span>
             </div>
           )}
-          {ledger.map((e, i) => (
+          {!proposalId && (
+            <div className="lg">
+              <span className="rest" style={{ color: "var(--fg-2)" }}>
+                select a proposal to inspect its receipt
+              </span>
+            </div>
+          )}
+          {receiptEvents.map((e, i) => (
             <div className="lg" key={i}>
               <span className="ts mono">{e.ts.slice(11, 19)}</span>
               <span className="ev" title={e.event}>

@@ -77,6 +77,26 @@ def _extract_dangerous_uri_schemes(text: str) -> set[str]:
 # change, just a deterministic instruction for the fixture path below.
 _MEETING_SHAPED_ACTION = "initiate_customer_call"
 
+# Customer-facing fixture copy must not leak internal feature names. The raw
+# names remain in the deterministic reason and evidence receipt; only the draft
+# uses plain language a customer can understand.
+_CUSTOMER_FACTOR_LABELS = {
+    "milestones_overdue": "overdue onboarding milestones",
+    "days_overdue": "overdue activation steps",
+    "success_plan_overdue": "an overdue success plan",
+    "health_yellow": "a declining health signal",
+    "health_red": "a critical health signal",
+    "low_seat_penetration": "an adoption gap",
+    "feature_depth_gap": "unused paid capabilities",
+    "arr_tier": "the current account review",
+    "single_threaded_risk": "usage concentrated with one person",
+    "usage_outcome_unverified": "usage without a verified outcome",
+}
+
+
+def _customer_factor_label(name: str) -> str:
+    return _CUSTOMER_FACTOR_LABELS.get(name, name.replace("_", " "))
+
 
 def _booking_link_line(request: "ReasonDraftRequest") -> str | None:
     """The single sentence offering the configured booking link, or None if
@@ -194,7 +214,8 @@ class FixtureReasonDraftWriter:
             contact = request.contact_name or "there"
             ask = _play_ask(request) or "review the activation blockers and next steps"
             factor_names = ", ".join(
-                factor.name for factor in request.priority.factors[:2]
+                _customer_factor_label(factor.name)
+                for factor in request.priority.factors[:2]
             )
             draft = (
                 f"Hi {contact}, {request.account_name} is showing an onboarding "

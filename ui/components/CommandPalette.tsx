@@ -26,11 +26,13 @@ export function CommandPalette({
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (open) {
+    if (!open) return;
+    const timer = window.setTimeout(() => {
       setQuery("");
       setActive(0);
-      setTimeout(() => inputRef.current?.focus(), 0);
-    }
+      inputRef.current?.focus();
+    }, 0);
+    return () => window.clearTimeout(timer);
   }, [open]);
 
   if (!open) return null;

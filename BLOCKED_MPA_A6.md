@@ -1,7 +1,7 @@
 # MP-A Phase A6 OA-A2 Outcome
 
-Dispatch: `/Users/owieschon/ultra-csm-dispatches/MP_A_INTEGRITY_CLOSURE.md`
-Worktree: `/Users/owieschon/dev/ultra-csm-mpa-a6`
+Dispatch: `$HOME/ultra-csm-dispatches/MP_A_INTEGRITY_CLOSURE.md`
+Worktree: `$HOME/dev/ultra-csm-mpa-a6`
 Branch: `codex/mpa-a6`
 
 ## Outcome

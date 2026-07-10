@@ -1,8 +1,8 @@
-# Ultra CSM Demo Runbook
+# Customer Action Control Plane demo
 
 Status: current reviewer walkthrough for the hosted read-only operations surface.
 
-Ultra CSM is not a dashboard. Demo it as an agentic CSM workspace: the system reads
+This is not a dashboard. Demo it as a customer action control plane: the system reads
 account evidence, decides what needs attention, drafts the next CSM action, routes
 internal Product/Engineering handoffs when the evidence supports one, and keeps
 customer-facing work behind a human approval gate.
@@ -39,7 +39,7 @@ Fresh C3 verification:
    no escalations this sweep, and the audit ledger. This is the CSM worklist the
    agents produced from CRM, CS-platform, telemetry, and comms-shaped evidence.
 
-3. Select `21830db9` / Trailhead Logistics.
+3. Select `Trailhead Logistics`.
    Show the account brief: lifecycle stage, account sources, priority score, cited
    deterministic factors, reconciliation signals, chosen action, and proposed
    customer draft. The draft is evidence-backed, but it is still only a proposal.

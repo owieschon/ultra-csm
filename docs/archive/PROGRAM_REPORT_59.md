@@ -11,7 +11,7 @@ boundary.
 | Area | Change |
 | --- | --- |
 | LaunchAgent | Added `scripts/operating/install_launch_agent.py` to regenerate `com.ultracsm.operating-daily.plist` for the current worktree instead of the old operating-cadence path |
-| Persistent DB | Added `scripts/operating/ensure_local_persistent_db.py` to provision a local persistent Postgres runtime and write `/Users/owieschon/ultra-csm-operating.env` with local socket DSNs |
+| Persistent DB | Added `scripts/operating/ensure_local_persistent_db.py` to provision a local persistent Postgres runtime and write `$HOME/ultra-csm-operating.env` with local socket DSNs |
 | Daily run | Updated `scripts/operating/daily_run.sh` to resolve its repo root from its own path, dotenv-load allowlisted env vars, wrap the run in Sentry check-ins, and write monitor alarm output |
 | Monitoring | Added `ultra_csm.operating_monitor` for Sentry envelope events/check-ins, missed-run alarms, and daily cost-budget alarms |
 | API errors | Unhandled API exceptions now call the same monitor seam before returning the existing 500 response |
@@ -22,7 +22,7 @@ boundary.
 | Gate | Receipt |
 | --- | --- |
 | LaunchAgent loaded | `launchctl list | grep com.ultracsm.operating-daily` -> `- 0 com.ultracsm.operating-daily` |
-| Plist valid | `plutil -lint /Users/owieschon/Library/LaunchAgents/com.ultracsm.operating-daily.plist` -> `OK` |
+| Plist valid | `plutil -lint $HOME/Library/LaunchAgents/com.ultracsm.operating-daily.plist` -> `OK` |
 | Scheduled path run | `launchctl kickstart gui/$(id -u)/com.ultracsm.operating-daily` completed; latest launchd status `0` |
 | Durable DB ledger | After the run, persistent `audit.event_log` contains `sweep.fired` with `source_ref=tick:2026-08-12:sweep.fired` and detail `Tick fired 3 trigger runs and created 206 proposals` |
 | Restart durability | `pg_ctl ... restart` completed, then the same `audit.event_log` source ref was still present |
@@ -60,8 +60,8 @@ All checks passed!
 Launchd:
 
 ```text
-plutil -lint /Users/owieschon/Library/LaunchAgents/com.ultracsm.operating-daily.plist
-/Users/owieschon/Library/LaunchAgents/com.ultracsm.operating-daily.plist: OK
+plutil -lint $HOME/Library/LaunchAgents/com.ultracsm.operating-daily.plist
+$HOME/Library/LaunchAgents/com.ultracsm.operating-daily.plist: OK
 
 launchctl list | grep ultracsm
 - 0 com.ultracsm.operating-daily
@@ -74,8 +74,8 @@ Scheduled-path run:
 Ultra-CSM daily operating run: 2026-07-06
 story_day=52 fixture_as_of=2026-08-12
 Run complete: 2026-07-06 (story day 52)
-Artifacts: /Users/owieschon/ultra-csm-operating-runs/2026-07-06
-Ledger: /Users/owieschon/ultra-csm-operating-runs/operating_log.jsonl
+Artifacts: $HOME/ultra-csm-operating-runs/2026-07-06
+Ledger: $HOME/ultra-csm-operating-runs/operating_log.jsonl
 ```
 
 Persistent DB source ref:
@@ -96,16 +96,16 @@ value_model|207
 ## Owner Ask
 
 OA-4 remains open: the name-only search found no `SENTRY_DSN` or
-`SENTRY_AUTH_TOKEN` in `/Users/owieschon/ultra-csm-live-creds.env` or
-`/Users/owieschon/dev/*/.env`. Add `SENTRY_DSN` to
-`/Users/owieschon/ultra-csm-live-creds.env`, then rerun the induced-error
+`SENTRY_AUTH_TOKEN` in `$HOME/ultra-csm-live-creds.env` or
+`$HOME/dev/*/.env`. Add `SENTRY_DSN` to
+`$HOME/ultra-csm-live-creds.env`, then rerun the induced-error
 receipt to prove delivery in the real Sentry project.
 
 ## IF/THEN Branches
 
 1. IF the LaunchAgent plist already exists, THEN Phase 9 regenerates it for the
    current worktree before loading it.
-2. IF `/Users/owieschon/ultra-csm-live-creds.env` is not shell-sourceable, THEN
+2. IF `$HOME/ultra-csm-live-creds.env` is not shell-sourceable, THEN
    `daily_run.sh` uses a dotenv parser and exports only allowlisted names.
 3. IF no Sentry DSN is configured, THEN monitoring calls no-op with
    `sentry_configured=false` and the daily job continues.

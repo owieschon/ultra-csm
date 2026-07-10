@@ -1,6 +1,6 @@
 # BLOCKED — Harvest 8: Act 2 — Gmail write-back (Wave D)
 
-Dispatch: `/Users/owieschon/ultra-csm-dispatches/harvest/08_ACT2_GMAIL_WRITEBACK.md`
+Dispatch: `$HOME/ultra-csm-dispatches/harvest/08_ACT2_GMAIL_WRITEBACK.md`
 Worktree: `~/dev/ultra-csm-act2-gmail-writeback`, branch `codex/act2-gmail-writeback`
 Blocked at: Phase 2 (Manifest, then the sends), after Phase 0 (scope
 precondition) and Phase 1 (committer + guards) both completed and are
