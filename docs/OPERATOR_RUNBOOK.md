@@ -24,9 +24,19 @@ Expected receipt:
 - Token telemetry is present from the transport layer; any dollar field remains
   an estimate or zero-cost local receipt, not a billing claim.
 
+Timeout and retries: the `claude_code` transport shells out to the `claude`
+CLI, which has real process startup and auth/session overhead on top of model
+latency, so it defaults to a 120s per-call timeout (vs. 30s for the direct
+API). Override either transport's timeout with `ULTRA_CSM_LLM_TIMEOUT_S=<seconds>`.
+`subprocess.TimeoutExpired` and `subprocess.CalledProcessError` from the
+`claude_code` transport are retried like the direct API's connection/timeout
+errors, up to the same `MAX_RETRIES`.
+
 Status:
 
 - Added by builder during MP-F1 Wave 0.
+- Timeout/retry coverage for the `claude_code` transport landed via finding #2
+  (`docs/R0_RETRY_COVERAGE_FINDING.md`).
 - Later R2/R3/R4 entries land here when their harnesses exist.
 
 ## R1 — Deterministic World Build Receipt

@@ -18,6 +18,13 @@ TRANSPORT_ENV_VAR = "ULTRA_CSM_LLM_TRANSPORT"
 DEFAULT_LLM_TRANSPORT = "anthropic_api"
 CLAUDE_CODE_TRANSPORT = "claude_code"
 
+# The claude_code transport shells out to the `claude` CLI as a subprocess --
+# real process startup plus auth/session overhead on top of model latency,
+# spikier than the direct API's HTTP call -- so it gets a higher default
+# timeout. ULTRA_CSM_LLM_TIMEOUT_S overrides either transport's default.
+TIMEOUT_ENV_VAR = "ULTRA_CSM_LLM_TIMEOUT_S"
+CLAUDE_CODE_DEFAULT_TIMEOUT_S = 120.0
+
 
 @dataclass(frozen=True)
 class TransportResponse:
@@ -43,6 +50,17 @@ class MessageTransport(Protocol):
 
 def configured_transport_name() -> str:
     return os.environ.get(TRANSPORT_ENV_VAR, DEFAULT_LLM_TRANSPORT).strip() or DEFAULT_LLM_TRANSPORT
+
+
+def resolve_timeout_s(default_timeout_s: float, *, transport_name: str | None = None) -> float:
+    """Resolve the live-call timeout, honoring ULTRA_CSM_LLM_TIMEOUT_S if set."""
+    override = os.environ.get(TIMEOUT_ENV_VAR)
+    if override:
+        return float(override)
+    name = transport_name or configured_transport_name()
+    if name == CLAUDE_CODE_TRANSPORT:
+        return CLAUDE_CODE_DEFAULT_TIMEOUT_S
+    return default_timeout_s
 
 
 def resolve_message_transport(

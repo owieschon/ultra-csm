@@ -13,6 +13,7 @@ import argparse
 import hashlib
 import json
 import random
+import subprocess
 import time
 from pathlib import Path
 
@@ -21,6 +22,7 @@ from eval.judge_csm import ORDINAL_SCORES, QUALITY_DIMENSIONS, weighted_cohen_ka
 from eval.judge_anthropic import AnthropicQualityJudge, JUDGE_PROMPT_VERSION, overall_pass
 from eval.gold_slot_b_quality import GOLD_PATH, read_gold_label_candidates, read_gold_label_key
 from eval.gold_slot_b_hard import HARD_PATH, HARD_KEY_PATH
+from ultra_csm.llm_transport import CLAUDE_CODE_TRANSPORT, configured_transport_name
 
 REPORT_PATH = Path(__file__).resolve().parent / "gold" / "judge_agreement.json"
 KAPPA_CI_SAMPLES = 1000
@@ -192,13 +194,22 @@ def _retryable(exc: Exception) -> bool:
     status_code = getattr(exc, "status_code", None)
     if status_code in RETRYABLE_STATUS_CODES:
         return True
-    return exc.__class__.__name__ in {
+    if exc.__class__.__name__ in {
         "APIConnectionError",
         "APITimeoutError",
         "InternalServerError",
         "OverloadedError",
         "RateLimitError",
-    }
+    }:
+        return True
+    # The claude_code transport shells out to the `claude` CLI; a slow or
+    # crashed subprocess call is the transport-level equivalent of the SDK's
+    # connection/timeout errors above, not a reason to abort the whole run.
+    if configured_transport_name() == CLAUDE_CODE_TRANSPORT and isinstance(
+        exc, (subprocess.TimeoutExpired, subprocess.CalledProcessError)
+    ):
+        return True
+    return False
 
 
 def build_report(judge) -> dict:
