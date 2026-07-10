@@ -32,7 +32,7 @@ commands from the repository root, because that root is the static UI project.
 Pin the CLI and link only from the generated bundle:
 
 ```bash
-export VERCEL_CLI_VERSION=48.1.8
+export VERCEL_CLI_VERSION=55.0.0
 export VERCEL_SCOPE='<team-or-user-scope>'
 export SANDBOX_PROJECT='<separate-sandbox-project-name>'
 cd build/hosted-action-control
