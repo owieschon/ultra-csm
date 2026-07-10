@@ -45,7 +45,7 @@ export function QueueLanes({
       <div className="lane-h">
         <span className="t">Resolved this session</span>
         <span className="c num">{resolved.length}</span>
-        <span className="badge">approved/denied · logged</span>
+        <span className="badge">verdict recorded · logged</span>
       </div>
       {resolved.map(({ item, tier, accountName }) => (
         <Row
@@ -138,7 +138,7 @@ function Row({
         )}
         {resolved && status && (
           <span className={`res-chip ${status === "denied" ? "dn" : "ap"}`}>
-            {status === "denied" ? "denied" : "sent"}
+            {status === "denied" ? "denied" : "approved"}
           </span>
         )}
       </div>

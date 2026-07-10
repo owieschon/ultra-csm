@@ -6,7 +6,7 @@ const ROWS: [string, string[]][] = [
   ["Book ⇄ Queue", ["v"]],
   ["Command palette", ["⌘", "K"]],
   ["Move through queue", ["j", "k"]],
-  ["Approve & send", ["a"]],
+  ["Approve exact draft", ["a"]],
   ["Edit draft", ["e"]],
   ["Deny", ["d"]],
   ["Toggle theme", ["t"]],
