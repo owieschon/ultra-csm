@@ -6,8 +6,10 @@
   "scripts": {
     "dev": "NEXT_PUBLIC_API_BASE=http://localhost:8000 next dev",
     "build": "next build",
+    "build:e2e": "NEXT_PUBLIC_UCSM_READONLY_DEMO=1 next build",
     "lint": "eslint .",
-    "start": "next start"
+    "start": "next start",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "next": "^16.2.10",
@@ -15,6 +17,7 @@
     "react-dom": "^19.2.7"
   },
   "devDependencies": {
+    "@playwright/test": "1.61.1",
     "@types/node": "^26.1.0",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",

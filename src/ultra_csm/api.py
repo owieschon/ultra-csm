@@ -107,6 +107,10 @@ from ultra_csm._api_helpers import (
     sync_demo_accounts_to_postgres,
 )
 from ultra_csm import reconciliation_agent
+from ultra_csm.action_control_contract import (
+    ActionControlVerticalSlice,
+)
+from ultra_csm.action_control_demo import run_action_control_synthetic_scenario
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -1299,6 +1303,23 @@ async def health_check():
         data_plane_sources=_data_plane_assembly.source_status if _data_plane_assembly else {},
         health_source=_data_plane_assembly.health_source if _data_plane_assembly else "uninitialized",
     )
+
+
+@app.get(
+    "/demo/action-control/vertical-slice",
+    response_model=ActionControlVerticalSlice,
+)
+async def action_control_vertical_slice():
+    """Run the isolated synthetic approve/receipt/tamper-refusal scenario."""
+
+    if _cluster is not None:
+        connection = psycopg.connect(**_cluster.dsn(user="app_runtime"))
+    elif persistent_database_configured():
+        connection = connect_persistent_runtime_database()
+    else:  # Lifespan has not initialized a database.
+        raise HTTPException(status_code=503, detail="Action Control demo unavailable")
+    with connection as scenario_conn:
+        return run_action_control_synthetic_scenario(scenario_conn)
 
 
 @app.get("/accounts", response_model=AccountListResponse)

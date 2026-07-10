@@ -24,15 +24,21 @@ export function CommandPalette({
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     if (!open) return;
+    previousFocusRef.current = document.activeElement as HTMLElement | null;
     const timer = window.setTimeout(() => {
       setQuery("");
       setActive(0);
       inputRef.current?.focus();
     }, 0);
-    return () => window.clearTimeout(timer);
+    return () => {
+      window.clearTimeout(timer);
+      previousFocusRef.current?.focus();
+    };
   }, [open]);
 
   if (!open) return null;
@@ -69,12 +75,48 @@ export function CommandPalette({
     }
   }
 
+  function handleDialogKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
+    if (e.key === "Escape") {
+      e.preventDefault();
+      onClose();
+      return;
+    }
+    if (e.key !== "Tab") return;
+    const focusable = dialogRef.current?.querySelectorAll<HTMLElement>(
+      'button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    );
+    if (!focusable?.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  }
+
   return (
     <div className="scrim open" onClick={(e) => e.target === e.currentTarget && onClose()}>
-      <div className="palette">
+      <div
+        ref={dialogRef}
+        className="palette"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="command-palette-title"
+        onKeyDown={handleDialogKeyDown}
+      >
+        <h2 id="command-palette-title" className="sr-only">Search accounts and commands</h2>
         <div className="pal-in">
           <input
             ref={inputRef}
+            role="combobox"
+            aria-label="Search accounts and commands"
+            aria-expanded="true"
+            aria-autocomplete="list"
+            aria-controls="command-palette-results"
+            aria-activedescendant={items[active] ? `command-palette-option-${active}` : undefined}
             placeholder="Jump to an account, or run a command…"
             value={query}
             onChange={(e) => {
@@ -93,11 +135,18 @@ export function CommandPalette({
             }}
           />
           <span className="esc">esc</span>
+          <button type="button" className="palette-close" onClick={onClose} aria-label="Close command palette">
+            ×
+          </button>
         </div>
-        <div className="pal-list">
+        <div className="pal-list" id="command-palette-results" role="listbox">
           {matchedAccounts.length > 0 && <div className="pal-grp">Accounts</div>}
           {matchedAccounts.map((a, i) => (
-            <div
+            <button
+              type="button"
+              role="option"
+              aria-selected={active === i}
+              id={`command-palette-option-${i}`}
               key={a.account_id}
               className={`pal-item${active === i ? " active" : ""}`}
               onClick={() => {
@@ -107,11 +156,15 @@ export function CommandPalette({
             >
               <b>{a.account_name}</b>
               <span className="meta">{a.tier ?? "—"}</span>
-            </div>
+            </button>
           ))}
           {matchedCommands.length > 0 && <div className="pal-grp">Commands</div>}
           {matchedCommands.map((c, i) => (
-            <div
+            <button
+              type="button"
+              role="option"
+              aria-selected={active === matchedAccounts.length + i}
+              id={`command-palette-option-${matchedAccounts.length + i}`}
               key={c.label}
               className={`pal-item${active === matchedAccounts.length + i ? " active" : ""}`}
               onClick={() => {
@@ -120,7 +173,7 @@ export function CommandPalette({
               }}
             >
               <b>{c.label}</b>
-            </div>
+            </button>
           ))}
           {items.length === 0 && <div className="pal-empty">No matches</div>}
         </div>

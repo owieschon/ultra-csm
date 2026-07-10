@@ -15,6 +15,7 @@ fastapi_mod = pytest.importorskip("fastapi")
 from fastapi.testclient import TestClient  # noqa: E402
 
 from ultra_csm.api import app  # noqa: E402
+from ultra_csm.action_control_contract import ActionControlVerticalSlice  # noqa: E402
 
 AUTH_HEADERS = {"Authorization": "Bearer lane-a-token"}
 
@@ -180,3 +181,22 @@ class TestCorsConfigured:
         )
         assert resp.status_code in (200, 204)
         assert resp.headers.get("access-control-allow-origin") == "http://localhost:3000"
+
+
+class TestActionControlVerticalSlice:
+    def test_contract_endpoint_exposes_approved_receipt_and_tamper_refusal(
+        self, client: TestClient
+    ):
+        response = client.get("/demo/action-control/vertical-slice")
+
+        assert response.status_code == 200
+        contract = ActionControlVerticalSlice.model_validate(response.json())
+        assert contract.schema_version == "action-control.vertical-slice.v1"
+        assert contract.state_sequence == (
+            "pending_human_decision",
+            "approved_payload_bound",
+            "simulated_committed",
+            "refused_payload_mismatch",
+        )
+        assert contract.simulated_receipt.external_effect is False
+        assert contract.tamper_refusal.code == "PAYLOAD_HASH_MISMATCH"

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { api, isReadOnlyDemo, PendingMapping } from "@/lib/api";
 
 // Minimal pending-mappings review surface (Owen's own scoping: no fancy
@@ -52,12 +53,12 @@ export default function CommsReviewPage() {
     error: string | null
   ) {
     return (
-      <div className="sec">
+      <section className="sec" aria-labelledby={`${sourceType}-heading`}>
         <div className="sec-h">
-          <span className="t">{title}</span>
+          <h2 className="t" id={`${sourceType}-heading`}>{title}</h2>
         </div>
         {error && (
-          <div className="evid-row">
+          <div className="evid-row" role="alert">
             <span className="eval" style={{ color: "var(--danger)" }}>
               {error}
             </span>
@@ -101,6 +102,7 @@ export default function CommsReviewPage() {
                       {c.reason} (confidence {c.confidence.toFixed(2)})
                     </span>
                     <button
+                      type="button"
                       className="btn approve"
                       style={{ padding: "4px 10px", fontSize: 12 }}
                       disabled={isReadOnlyDemo || isConfirmed || confirming === key}
@@ -114,17 +116,25 @@ export default function CommsReviewPage() {
             </div>
           </div>
         ))}
-      </div>
+      </section>
     );
   }
 
   return (
-    <div className="detail-scroll" style={{ padding: "22px 28px 48px", maxWidth: 900 }}>
-      <div className="identity" style={{ borderBottom: "none" }}>
-        <div className="id-name">Comms mapping review</div>
-      </div>
+    <main className="detail-scroll evidence-review">
+      <Link className="navlink evidence-back" href="/">
+        ← Action Control
+      </Link>
+      <header className="identity evidence-heading">
+        <div>
+          <h1 className="id-name">Evidence mapping</h1>
+          <p className="evidence-intro">
+            Resolve ambiguous communication sources before they can influence an account decision.
+          </p>
+        </div>
+      </header>
       {renderSection("Slack channels", "slack_channel", slack, slackError)}
       {renderSection("Notion call transcripts", "notion_meeting", notion, notionError)}
-    </div>
+    </main>
   );
 }
