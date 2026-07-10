@@ -164,6 +164,108 @@ export interface InternalBridgeDecision {
   reason: string;
 }
 
+export interface WorkPacketHypothesis {
+  label: string;
+  summary: string;
+  confidence: number;
+  confidence_label: string;
+  basis: string[];
+  unknowns: string[];
+  validation_status: string;
+}
+
+export interface WorkPacketRecommendedAction {
+  action_type: string | null;
+  motion: string | null;
+  target_actor: string;
+  rationale: string;
+  source_organ: string;
+  validation_status: string;
+}
+
+export interface WorkPacketGovernance {
+  source_organ: string;
+  action_type: string | null;
+  proposal_status: string | null;
+  release_condition: string | null;
+  required_permission: string | null;
+  autonomy_tier: number | null;
+  customer_affecting: boolean;
+  requires_action_gate: boolean;
+  can_execute_from_ui: boolean;
+}
+
+export interface WorkPacketArtifact {
+  artifact_type: string;
+  title: string;
+  body: string | null;
+  source_organ: string;
+  requires_approval: boolean;
+  validation_status: string;
+}
+
+export interface WorkPacketEvidenceStep {
+  step_id: string;
+  provenance_tier: "raw_fact" | "interpreted_signal" | "hypothesis";
+  source: string;
+  source_id: string;
+  field: string;
+  observed_at: string;
+  claim: string;
+  validation_status: string;
+}
+
+export interface WorkPacketBucketTrace {
+  bucket: string;
+  state: "covered" | "missing" | "not_applicable";
+  evidence_ids: string[];
+}
+
+export interface WorkPacketCoverageTrace {
+  accounts_scanned: number;
+  accounts_in_book: number;
+  account_resolution: string;
+  coverage_label: string;
+}
+
+export interface WorkPacketCTA {
+  cta_id: string;
+  label: string;
+  enabled: boolean;
+  reason: string;
+  governance_requirement: string | null;
+  source_organ: string;
+}
+
+export interface WorkPacketFeedbackHook {
+  hook_id: string;
+  label: string;
+  target: string;
+  enabled: boolean;
+}
+
+export interface CSMWorkPacket {
+  packet_version: string;
+  tenant_id: string;
+  account_id: string | null;
+  account_name: string | null;
+  as_of: string;
+  job_type: string;
+  lane: string;
+  cadence: string;
+  diagnostic_hypothesis: WorkPacketHypothesis;
+  recommended_action: WorkPacketRecommendedAction;
+  primary_next_step: string;
+  governance_boundary: WorkPacketGovernance;
+  prepared_artifact: WorkPacketArtifact;
+  evidence_chain: WorkPacketEvidenceStep[];
+  bucket_trace: WorkPacketBucketTrace[];
+  coverage_trace: WorkPacketCoverageTrace;
+  allowed_ctas: WorkPacketCTA[];
+  feedback_hooks: WorkPacketFeedbackHook[];
+  field_validation: Record<string, string>;
+}
+
 export interface WorkItem {
   tenant_id: string;
   account_resolution: string;
@@ -181,6 +283,7 @@ export interface WorkItem {
   customer_draft: string | null;
   motion: string | null;
   internal_bridge_decision?: InternalBridgeDecision | null;
+  work_packet?: CSMWorkPacket | null;
   recipient_resolution: string | null;
   recipient_name: string | null;
   recipient_role: string | null;
