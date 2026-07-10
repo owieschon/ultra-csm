@@ -31,8 +31,15 @@ Open the queue, select **Trailhead Logistics**, and follow four stages shown in 
 4. a human decision required before release.
 
 The read-only build deliberately disables decisions and sends. The same UI against the
-local governed API supports approve, deny, and revise; the committer performs the
-payload-hash and idempotency checks before a simulated write.
+local governed API records approve, deny, and revise verdicts; an approved verdict is
+not labeled as sent or committed without a separate committer receipt.
+
+The dedicated `/ui/action-control/` route makes that boundary inspectable. In a local
+build it can approve an exact synthetic payload, commit it to a temporary outbox, prove
+an idempotent retry, and demonstrate tamper refusal. The hosted static build does **not**
+fabricate those interactions: until a separate sandbox-only API is deployed, it shows
+the frozen executable proof and names the backend as unavailable. See
+[`docs/ACTION_CONTROL_SANDBOX.md`](docs/ACTION_CONTROL_SANDBOX.md).
 
 ```bash
 make setup
@@ -43,6 +50,10 @@ ULTRA_CSM_DEMO_NOAUTH=1 ULTRA_CSM_BIND_HOST=127.0.0.1 PYTHONPATH=src:. \
 
 Open `http://127.0.0.1:8000/ui/`. See [the walkthrough](docs/DEMO.md) for the
 reviewer script and exact boundaries.
+
+`make hosted-readonly-demo` verifies the committed fixtures and static build without
+rewriting source files. Maintainers can intentionally refresh fixtures with
+`make hosted-readonly-demo-generate`.
 
 ## The control path
 
@@ -81,7 +92,7 @@ make scorecard-csm-check   # 24/24 deterministic hard gates
 make eval                  # offline suite + gold/knowability checks
 make lint hygiene
 make security-scan         # full public history, narrow fixture allowlist
-make hosted-readonly-demo # fixture export, UI lint, static build
+make hosted-readonly-demo # fixture drift check, UI lint, static build
 ```
 
 No cloud credentials or customer data are needed for these gates. Credentialed connector

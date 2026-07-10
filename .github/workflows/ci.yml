@@ -63,15 +63,15 @@ jobs:
         run: make eval
 
       - name: Action Control contract drift gate
-        run: make action-control-contract-check
+        run: make action-control-contract-check action-control-sandbox-check
+
+      - name: Hosted read-only fixture drift gate
+        run: make hosted-readonly-demo-check
 
       - name: Hygiene scan
         run: make hygiene
 
-      - name: Agent 1 CSM scorecard
-        run: make scorecard-csm
-
-      - name: Scorecard/work-queue drift gate
+      - name: Agent 1 scorecard + work-queue drift gate
         run: make scorecard-csm-check
 
       - name: Agent 1 CSM regression
@@ -90,6 +90,7 @@ jobs:
 
   ui-check:
     name: ui lint + build + reachability
+    needs: eval
     runs-on: ubuntu-24.04
     steps:
       - name: Check out Ultra CSM
@@ -106,7 +107,7 @@ jobs:
       - name: Install Playwright Chromium
         run: cd ui && npx playwright install --with-deps chromium
 
-      - name: Desktop and mobile reachability
+      - name: Desktop, mobile, and WCAG A/AA journey
         run: cd ui && npm run test:e2e
 
   endor:

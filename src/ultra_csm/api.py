@@ -17,6 +17,7 @@ from typing import Any, Literal
 
 import psycopg
 from fastapi import FastAPI, HTTPException, Query, Request, Response
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -111,6 +112,16 @@ from ultra_csm.action_control_contract import (
     ActionControlVerticalSlice,
 )
 from ultra_csm.action_control_demo import run_action_control_synthetic_scenario
+from ultra_csm.action_control_sandbox import evaluate_action_control_sandbox
+from ultra_csm.action_control_sandbox_contract import (
+    ActionControlSandboxRequest,
+    ActionControlSandboxSession,
+    SandboxError,
+)
+from ultra_csm.action_control_sandbox_http import (
+    internal_error_response,
+    validation_error_response,
+)
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -1320,6 +1331,38 @@ async def action_control_vertical_slice():
         raise HTTPException(status_code=503, detail="Action Control demo unavailable")
     with connection as scenario_conn:
         return run_action_control_synthetic_scenario(scenario_conn)
+
+
+@app.post(
+    "/demo/action-control/sandbox/evaluate",
+    response_model=ActionControlSandboxSession,
+)
+async def action_control_sandbox_evaluate(
+    body: ActionControlSandboxRequest,
+    response: Response,
+):
+    """Replay a bounded synthetic command log with no durable or external effect."""
+
+    if _cluster is not None:
+        connection = psycopg.connect(**_cluster.dsn(user="app_runtime"))
+    elif persistent_database_configured():
+        connection = connect_persistent_runtime_database()
+    else:
+        raise HTTPException(
+            status_code=503,
+            detail={"code": "SANDBOX_UNAVAILABLE", "error": "Action Control sandbox unavailable"},
+            headers={"Cache-Control": "no-store"},
+        )
+    response.headers["Cache-Control"] = "no-store"
+    try:
+        with connection as scenario_conn:
+            return evaluate_action_control_sandbox(scenario_conn, body)
+    except SandboxError as exc:
+        raise HTTPException(
+            status_code=409,
+            detail={"code": exc.code, "error": str(exc), "run_id": body.run_id},
+            headers={"Cache-Control": "no-store"},
+        ) from exc
 
 
 @app.get("/accounts", response_model=AccountListResponse)
@@ -2578,19 +2621,44 @@ async def get_metrics():
 # ---------------------------------------------------------------------------
 
 
+@app.exception_handler(RequestValidationError)
+async def request_validation_error_handler(
+    request: Request,
+    exc: RequestValidationError,
+):
+    code = (
+        "INVALID_SANDBOX_REQUEST"
+        if request.url.path == "/demo/action-control/sandbox/evaluate"
+        else "INVALID_REQUEST"
+    )
+    return validation_error_response(exc, code=code)
+
+
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request: Request, exc: HTTPException):
+    headers = {**(exc.headers or {}), "Cache-Control": "no-store"}
     detail = exc.detail
     if isinstance(detail, dict):
-        return JSONResponse(status_code=exc.status_code, content=detail)
+        return JSONResponse(
+            status_code=exc.status_code,
+            content=detail,
+            headers=headers,
+        )
     return JSONResponse(
         status_code=exc.status_code,
         content={"error": str(detail), "code": "HTTP_ERROR"},
+        headers=headers,
     )
 
 
 @app.exception_handler(Exception)
 async def unhandled_exception_handler(request: Request, exc: Exception):
+    if request.url.path == "/demo/action-control/sandbox/evaluate":
+        log.error(
+            "Action Control sandbox request failed safely",
+            extra={"path": request.url.path, "exception_type": type(exc).__name__},
+        )
+        return internal_error_response()
     log.exception("Unhandled exception", extra={"path": request.url.path})
     try:
         monitor_from_env().capture_event(
@@ -2603,4 +2671,5 @@ async def unhandled_exception_handler(request: Request, exc: Exception):
     return JSONResponse(
         status_code=500,
         content={"error": "Internal server error", "code": "INTERNAL_ERROR"},
+        headers={"Cache-Control": "no-store"},
     )

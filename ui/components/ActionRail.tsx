@@ -126,7 +126,7 @@ export const ActionRail = forwardRef<
         )}
         {readOnly && (
           <div className="gate" role="note">
-            hosted read-only demo — approvals and sends disabled
+            hosted read-only demo — decisions and commits disabled
           </div>
         )}
       </div>
@@ -150,7 +150,7 @@ export const ActionRail = forwardRef<
           disabled={readOnly || !canAct || busy}
           onClick={() => act("approve")}
         >
-          Approve &amp; send<span className="k">A</span>
+          Approve exact draft<span className="k">A</span>
         </button>
         <button
           type="button"

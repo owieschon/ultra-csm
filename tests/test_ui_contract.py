@@ -7,6 +7,8 @@ test_api.py's TestClient/fixture conventions exactly (no second pattern).
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
 
 httpx = pytest.importorskip("httpx")
@@ -200,3 +202,72 @@ class TestActionControlVerticalSlice:
         )
         assert contract.simulated_receipt.external_effect is False
         assert contract.tamper_refusal.code == "PAYLOAD_HASH_MISMATCH"
+
+
+class TestActionControlSandbox:
+    def test_sandbox_starts_without_login_and_never_enables_outbound_effects(
+        self, client: TestClient
+    ):
+        response = client.post(
+            "/demo/action-control/sandbox/evaluate",
+            json={
+                "schema_version": "action-control.sandbox-command-log.v1",
+                "run_id": "6492863b-0e9b-4a63-bb53-ee54c86bc29c",
+                "expected_state_sha256": None,
+                "commands": [],
+            },
+        )
+
+        assert response.status_code == 200
+        assert response.headers["cache-control"] == "no-store"
+        payload = response.json()
+        assert payload["state"] == "pending_human_decision"
+        assert payload["outbound_effects_enabled"] is False
+        assert payload["isolation"]["database_transaction"] == "rolled_back"
+
+    def test_sandbox_validation_is_non_reflective_on_the_main_api(
+        self, client: TestClient
+    ):
+        private_draft = "PRIVATE-MAIN-API-DRAFT-SENTINEL-" + "x" * 800
+        response = client.post(
+            "/demo/action-control/sandbox/evaluate",
+            json={
+                "schema_version": "action-control.sandbox-command-log.v1",
+                "run_id": "92c43d9a-92ec-4b9f-a022-ad66f0334a48",
+                "expected_state_sha256": "0" * 64,
+                "commands": [
+                    {
+                        "command_id": "ad5329f6-2b36-4ab4-9a33-e93d2df8e616",
+                        "type": "revise_and_approve",
+                        "draft": private_draft,
+                    }
+                ],
+            },
+        )
+
+        assert response.status_code == 422
+        assert response.headers["cache-control"] == "no-store"
+        assert response.json() == {
+            "detail": {
+                "code": "INVALID_SANDBOX_REQUEST",
+                "fields": ["commands.0.draft"],
+            }
+        }
+        assert "PRIVATE-MAIN-API-DRAFT-SENTINEL" not in response.text
+
+    def test_ui_never_calls_approved_work_sent_and_typing_disables_shortcuts(self):
+        root = Path(__file__).resolve().parents[1]
+        action_rail = (root / "ui" / "components" / "ActionRail.tsx").read_text()
+        queue_lanes = (root / "ui" / "components" / "QueueLanes.tsx").read_text()
+        book_view = (root / "ui" / "components" / "BookView.tsx").read_text()
+        shortcuts = (root / "ui" / "components" / "ShortcutsOverlay.tsx").read_text()
+        labels = (root / "ui" / "lib" / "labels.ts").read_text()
+        page = (root / "ui" / "app" / "page.tsx").read_text()
+
+        assert "Approve &amp; send" not in action_rail
+        assert "Approve & send" not in shortcuts
+        assert '? "sent"' not in queue_lanes
+        assert ': "sent"' not in book_view
+        assert 'approved: "approved · sent"' not in labels
+        assert 'target.matches("input, textarea, select")' in page
+        assert "target.isContentEditable" in page
