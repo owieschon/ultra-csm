@@ -20,6 +20,9 @@ EXPECTED_LEDGER_EVENTS = (
     "value_model",
     "slot_b.draft",
     "judge.score",
+    "self_serve_activation.trigger",
+    "self_serve_activation.packet",
+    "self_serve_activation.value_path",
     "gmail.commit",
     "reobserve.queue",
 )

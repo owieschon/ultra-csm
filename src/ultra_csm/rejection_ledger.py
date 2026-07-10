@@ -134,3 +134,33 @@ def top_factor_name(factors: tuple[Any, ...]) -> str | None:
     best_contribution = max(f.contribution for f in factors)
     tied = sorted(f.name for f in factors if f.contribution == best_contribution)
     return tied[0]
+
+
+def recurring_rejection_reasons(
+    records: tuple[RejectionRecord, ...] | list[RejectionRecord],
+    *,
+    min_count: int = 2,
+) -> tuple[tuple[str, int], ...]:
+    """Return repeated rejection reasons for factor-discovery review.
+
+    This is deliberately descriptive, not autonomous behavior: recurring
+    reasons are candidates for later archetype/factor work, not proof that the
+    product should change or that a recommendation was wrong.
+    """
+
+    counts: dict[str, int] = {}
+    for record in records:
+        reason = record.reason.strip()
+        if not reason:
+            continue
+        counts[reason] = counts.get(reason, 0) + 1
+    return tuple(
+        sorted(
+            (
+                (reason, count)
+                for reason, count in counts.items()
+                if count >= min_count
+            ),
+            key=lambda item: (-item[1], item[0]),
+        )
+    )
