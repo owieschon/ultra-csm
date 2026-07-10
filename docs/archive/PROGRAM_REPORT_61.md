@@ -59,7 +59,7 @@ Adversarial-surfaces battery:
 ```text
 make adversarial-surfaces-battery-csm
 {
-  "artifact": "/Users/owieschon/dev/ultra-csm-master-live-phase11/eval/adversarial_surfaces_battery.json",
+  "artifact": "$HOME/dev/ultra-csm-master-live-phase11/eval/adversarial_surfaces_battery.json",
   "cases": 4,
   "failed_cases": [],
   "hard_ok": true
@@ -80,7 +80,7 @@ Deterministic hostile drill:
 ```text
 PYTHONPATH=src:. .venv/bin/python scripts/operating/live_adversarial_drill.py
 {
-  "artifact": "/Users/owieschon/ultra-csm-operating-runs/phase11/live_adversarial_drill.json",
+  "artifact": "$HOME/ultra-csm-operating-runs/phase11/live_adversarial_drill.json",
   "contract_validator_passed": true,
   "draft_ignored_injection": true,
   "gmail_messages": 0,
@@ -94,7 +94,7 @@ Read-only burner inbox check:
 ```text
 PYTHONPATH=src:. .venv/bin/python scripts/operating/live_adversarial_drill.py --read-burner-inbox
 {
-  "artifact": "/Users/owieschon/ultra-csm-operating-runs/phase11/live_adversarial_drill.json",
+  "artifact": "$HOME/ultra-csm-operating-runs/phase11/live_adversarial_drill.json",
   "contract_validator_passed": true,
   "draft_ignored_injection": true,
   "gmail_messages": 0,
@@ -108,7 +108,7 @@ Live burner inbox seed:
 ```text
 PYTHONPATH=src:. .venv/bin/python scripts/operating/live_adversarial_drill.py --append-to-burner-inbox --read-burner-inbox
 {
-  "artifact": "/Users/owieschon/ultra-csm-operating-runs/phase11/live_adversarial_drill.json",
+  "artifact": "$HOME/ultra-csm-operating-runs/phase11/live_adversarial_drill.json",
   "contract_validator_passed": true,
   "draft_ignored_injection": true,
   "gmail_messages": 1,

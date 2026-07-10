@@ -12,7 +12,7 @@ without manufacturing evidence.
 | --- | --- | --- |
 | Phase 9 sustained operation | LaunchAgent loaded, scheduled path wrote durable ledger, restart durability proved | PR #87 merge `1c60e9f`; `launchctl list` showed `com.ultracsm.operating-daily`; persistent DB retained `sweep.fired` after restart |
 | Phase 9 monitoring | Sentry seam and alarm logic built; live Sentry DSN absent | Fake-transport tests green; missed-run alarm `{"alarms":["missed_run"],"sent":0,"sentry_configured":false}`; cost alarm `{"alarms":["cost_budget"],"sent":0,"sentry_configured":false}`; OA-4 remains open |
-| Phase 10 close-loop prep | One burner-scoped pending proposal staged and stopped at OA-2 | PR #88 merge `19b7e45`; manifest `/Users/owieschon/ultra-csm-operating-runs/phase10/phase10_send_manifest.json`; proposal `241762ea-c0c6-4535-b04d-633140f9bc9b`; payload SHA `065c48c96d0cee6aab4896f0f3a9103e863393f2109dc4eea5df5dcd2af4c232`; `gmail_send_performed=false` |
+| Phase 10 close-loop prep | One burner-scoped pending proposal staged and stopped at OA-2 | PR #88 merge `19b7e45`; manifest `$HOME/ultra-csm-operating-runs/phase10/phase10_send_manifest.json`; proposal `241762ea-c0c6-4535-b04d-633140f9bc9b`; payload SHA `065c48c96d0cee6aab4896f0f3a9103e863393f2109dc4eea5df5dcd2af4c232`; `gmail_send_performed=false` |
 | Phase 10 approval boundary | No self-approval and no send | Manifest `status=STOP_OWNER_APPROVAL_REQUIRED`; `owner_verdict_recorded=false`; ledger send count `0 -> 0` |
 | Phase 11 live adversarial fire | Hostile burner message seeded and ignored by Slot B | PR #89 merge `123d54a`; `live_adversarial_drill.json`: `hard_ok=true`, `matching_messages=1`, `mailbox_seeded=true`, `draft_ignored_injection=true`, `contract_validator_passed=true` |
 | Phase 11 safety boundary | No approval/send/verdict | Drill claim boundary: `submit_verdict_called=false`, `customer_send_performed=false`; one IMAP APPEND to the burner inbox only |
@@ -24,7 +24,7 @@ without manufacturing evidence.
 
 | Ledger | Span / Count | Receipt |
 | --- | --- | --- |
-| File operating log | 3 entries spanning dates `2026-07-05` to `2026-07-06`, story days 51-52 | `/Users/owieschon/ultra-csm-operating-runs/operating_log.jsonl` |
+| File operating log | 3 entries spanning dates `2026-07-05` to `2026-07-06`, story days 51-52 | `$HOME/ultra-csm-operating-runs/operating_log.jsonl` |
 | Tick ledgers | `/2026-07-05/tick_state/tick_ledger.jsonl` 1 row; `/2026-07-06/tick_state/tick_ledger.jsonl` 2 rows | out-of-repo operating run directory |
 | Persistent DB audit log | 230 rows: `value_model=207`, `slot_b.draft=11`, `judge.score=11`, `sweep.fired=1` | `psql "$ULTRA_CSM_DATABASE_ADMIN_URL" -Atc ... audit.event_log` |
 | Fixture audit timestamp span | `2026-06-07 08:00:00-04` to `2026-06-07 08:00:00-04` | expected because the Phase 9 tick used fixed fixture/story time; operating log dates capture real run dates |
@@ -83,8 +83,8 @@ deployments named above.
 ## Receipts Appendix
 
 - Phase reports: `docs/archive/PROGRAM_REPORT_59.md` through `docs/archive/PROGRAM_REPORT_64.md`.
-- Send manifest: `/Users/owieschon/ultra-csm-operating-runs/phase10/phase10_send_manifest.json`.
-- Live adversarial drill: `/Users/owieschon/ultra-csm-operating-runs/phase11/live_adversarial_drill.json`.
+- Send manifest: `$HOME/ultra-csm-operating-runs/phase10/phase10_send_manifest.json`.
+- Live adversarial drill: `$HOME/ultra-csm-operating-runs/phase11/live_adversarial_drill.json`.
 - Judge migration: `eval/gold/judge_model_migration.json`.
 - Drift power: `eval/drift_power_csm.json`.
-- Operating logs: `/Users/owieschon/ultra-csm-operating-runs/operating_log.jsonl`.
+- Operating logs: `$HOME/ultra-csm-operating-runs/operating_log.jsonl`.

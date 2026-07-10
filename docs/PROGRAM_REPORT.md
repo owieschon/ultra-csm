@@ -1,7 +1,7 @@
 # Mega Relay Program Report
 
 Branch: `codex/mega-relay-program`  
-Worktree: `/Users/owieschon/dev/ultra-csm-mega`  
+Worktree: private execution worktree (not part of the reviewer artifact)
 Claim boundary: sanitized program report; no private corpus values, field keys, URLs, or credentials.
 
 ## Commits

@@ -27,6 +27,10 @@ export const TRIGGER_LABELS: Record<string, string> = {
   usage_outcome_unverified: "Usage without a proven outcome",
   overdue_success_plan: "Success plan overdue",
   open_expansion_opportunity: "Open expansion opportunity",
+  success_plan_overdue: "Success plan overdue",
+  arr_tier: "Contract value requires review",
+  days_overdue: "Days overdue",
+  feature_depth_gap: "Paid capabilities unused",
 };
 
 export const MOTION_LABELS: Record<string, string> = {

@@ -11,7 +11,7 @@ approval.
 | Area | Change |
 | --- | --- |
 | Phase 10 prep | Added `scripts/operating/prepare_phase10_send.py` to create/reuse exactly one Phase 10 burner-eligible pending proposal through `ActionGate` |
-| Manifest | Writes sanitized out-of-repo manifest to `/Users/owieschon/ultra-csm-operating-runs/phase10/phase10_send_manifest.json` |
+| Manifest | Writes sanitized out-of-repo manifest to `$HOME/ultra-csm-operating-runs/phase10/phase10_send_manifest.json` |
 | Guard checks | Verifies recipient allowlist, consent in the served data plane, payload SHA binding, Gmail env-name readiness, sender allowlist, and idempotent dry-run behavior |
 | Owner stop | Manifest records `STOP_OWNER_APPROVAL_REQUIRED` and an owner-only CLI approval template; no approval or send occurred |
 | Tests | Added focused coverage for the manifest happy path and missing-Gmail-env fail-closed path |
@@ -65,7 +65,7 @@ PYTHONPATH=src:. .venv/bin/python scripts/operating/prepare_phase10_send.py
 {
   "gmail_send_performed": false,
   "guards_passed": true,
-  "manifest": "/Users/owieschon/ultra-csm-operating-runs/phase10/phase10_send_manifest.json",
+  "manifest": "$HOME/ultra-csm-operating-runs/phase10/phase10_send_manifest.json",
   "owner_action": "OA-2",
   "payload_sha256": "065c48c96d0cee6aab4896f0f3a9103e863393f2109dc4eea5df5dcd2af4c232",
   "proposal_id": "241762ea-c0c6-4535-b04d-633140f9bc9b",

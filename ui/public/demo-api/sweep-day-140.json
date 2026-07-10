@@ -192,7 +192,7 @@
       "account_resolution": "exactly_one",
       "candidate_account_ids": [],
       "customer_contact_allowed": true,
-      "customer_draft": "Hi Marcus Webb, Ironhorse Freight Co is showing an onboarding risk tied to milestones_overdue, days_overdue. Can we review the overdue activation steps and agree on owners?",
+      "customer_draft": "Hi Marcus Webb, Ironhorse Freight Co is showing an onboarding risk tied to overdue onboarding milestones, overdue activation steps. Can we review the overdue activation steps and agree on owners?",
       "disposition": "propose_customer_action",
       "draft_mode": "fixture",
       "evidence": [
@@ -366,7 +366,7 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "4b1ef23b-970b-4c1a-8356-955cec5c0532",
+        "proposal_id": "fd193cd7-b742-4767-9d88-a48bc706db77",
         "status": "pending"
       },
       "reason": "Ironhorse Freight Co has deterministic Time-to-Value score 143 from milestones_overdue=50, days_overdue=40, success_plan_overdue=20; draft customer outreach. Evidence [evidence:4635cdb7-5bb5-5c43-acc1-5dc989d4d583], [evidence:afbc6091-985b-50e5-8522-e1a916af56c9], [evidence:7d61c11f-73d4-52f6-a738-33ab96634a61].",
@@ -394,7 +394,7 @@
       "account_resolution": "exactly_one",
       "candidate_account_ids": [],
       "customer_contact_allowed": true,
-      "customer_draft": "Hi Dennis Gruber, Pinehill Transport is showing an onboarding risk tied to success_plan_overdue, health_yellow. Can we map the missing users needed for a complete rollout?",
+      "customer_draft": "Hi Dennis Gruber, Pinehill Transport is showing an onboarding risk tied to an overdue success plan, a declining health signal. Can we map the missing users needed for a complete rollout?",
       "disposition": "propose_customer_action",
       "draft_mode": "fixture",
       "evidence": [
@@ -540,7 +540,7 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "01d4ede0-0ee8-4d63-bd0e-9da7e62d6fe0",
+        "proposal_id": "391ad4e7-d684-4588-bfaa-2724f56ef9a5",
         "status": "pending"
       },
       "reason": "Pinehill Transport has deterministic Time-to-Value score 82 from success_plan_overdue=20, health_yellow=15, low_seat_penetration=12; draft customer outreach. Evidence [evidence:df3f3e70-7ed8-5d10-9b05-395fd3d1a0f1], [evidence:4e2db753-f222-5f7b-8356-0a2f59fae1e3], [evidence:ae0a5970-d69b-5c18-ad60-8015524e565c].",
@@ -568,7 +568,7 @@
       "account_resolution": "exactly_one",
       "candidate_account_ids": [],
       "customer_contact_allowed": true,
-      "customer_draft": "Hi Vanessa Torres, Trailhead Logistics is showing an onboarding risk tied to success_plan_overdue, arr_tier. Can we review the activation blockers and next steps?",
+      "customer_draft": "Hi Vanessa Torres, Trailhead Logistics is showing an onboarding risk tied to an overdue success plan, the current account review. Can we review the activation blockers and next steps?",
       "disposition": "propose_customer_action",
       "draft_mode": "fixture",
       "evidence": [
@@ -685,7 +685,7 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "8ed38d74-c973-4cdf-bced-fce54c6b2ad0",
+        "proposal_id": "8588dcbc-fd45-414b-a558-f51b7c7fe001",
         "status": "pending"
       },
       "reason": "Trailhead Logistics has deterministic Time-to-Value score 63 from success_plan_overdue=20, arr_tier=5, single_threaded_risk=20; draft customer outreach. Evidence [evidence:20527c0a-8156-5119-934a-4017e19fc39d], [evidence:21830db9-7182-5d97-b22e-d57c4e28f696].",
@@ -828,7 +828,7 @@
       "account_resolution": "exactly_one",
       "candidate_account_ids": [],
       "customer_contact_allowed": true,
-      "customer_draft": "Hi Kelly Vance, Clearwater Field Ops is showing an onboarding risk tied to success_plan_overdue, health_yellow. Can we map the missing users needed for a complete rollout?",
+      "customer_draft": "Hi Kelly Vance, Clearwater Field Ops is showing an onboarding risk tied to an overdue success plan, a declining health signal. Can we map the missing users needed for a complete rollout?",
       "disposition": "propose_customer_action",
       "draft_mode": "fixture",
       "evidence": [
@@ -949,7 +949,7 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "ee3d9831-2268-4c35-8591-bbd9fd35e37b",
+        "proposal_id": "1f03ed4e-e75c-464c-9b42-fb317189a90c",
         "status": "pending"
       },
       "reason": "Clearwater Field Ops has deterministic Time-to-Value score 62 from success_plan_overdue=20, health_yellow=15, low_seat_penetration=12; draft customer outreach. Evidence [evidence:3ea4da77-9a46-57ce-aa0a-36440aed7192], [evidence:33509b75-de98-51fa-90a0-c68c90fe9324], [evidence:865e1e03-cb2f-524d-b572-1eeabebb8d32].",
@@ -977,7 +977,7 @@
       "account_resolution": "exactly_one",
       "candidate_account_ids": [],
       "customer_contact_allowed": true,
-      "customer_draft": "Hi Jared Nolan, Ridgeline Warehousing is showing an onboarding risk tied to success_plan_overdue, health_yellow. Can we map the missing users needed for a complete rollout?",
+      "customer_draft": "Hi Jared Nolan, Ridgeline Warehousing is showing an onboarding risk tied to an overdue success plan, a declining health signal. Can we map the missing users needed for a complete rollout?",
       "disposition": "propose_customer_action",
       "draft_mode": "fixture",
       "evidence": [
@@ -1063,7 +1063,7 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "e84c3a38-81c5-47db-8ed7-bf3ac74d71be",
+        "proposal_id": "ec9adab5-1ef5-4cf1-a505-0561306fbf31",
         "status": "pending"
       },
       "reason": "Ridgeline Warehousing has deterministic Time-to-Value score 47 from success_plan_overdue=20, health_yellow=15, low_seat_penetration=12; draft customer outreach. Evidence [evidence:eb6f3bbc-1ea8-5b0c-b6d5-ad15afda0e34], [evidence:081b380c-99e7-5073-992a-9e0d8b27d8c0].",
@@ -1080,7 +1080,7 @@
       "account_resolution": "exactly_one",
       "candidate_account_ids": [],
       "customer_contact_allowed": true,
-      "customer_draft": "Hi Sandra Faulkner, Northstar Couriers is showing an onboarding risk tied to success_plan_overdue, health_yellow. Can we check whether the current adoption gap is putting launch timing at risk?",
+      "customer_draft": "Hi Sandra Faulkner, Northstar Couriers is showing an onboarding risk tied to an overdue success plan, a declining health signal. Can we check whether the current adoption gap is putting launch timing at risk?",
       "disposition": "propose_customer_action",
       "draft_mode": "fixture",
       "evidence": [
@@ -1149,7 +1149,7 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "9565e8a7-4905-458b-abd1-f28ef3adc8eb",
+        "proposal_id": "25023aeb-5c30-43e1-b03e-c4699474d1bf",
         "status": "pending"
       },
       "reason": "Northstar Couriers has deterministic Time-to-Value score 35 from success_plan_overdue=20, health_yellow=15; draft customer outreach. Evidence [evidence:023f694d-e8cb-593b-8053-b69e06c2f22d], [evidence:162a9085-8e63-53f0-bb1b-b48426911d34].",
@@ -1166,7 +1166,7 @@
       "account_resolution": "exactly_one",
       "candidate_account_ids": [],
       "customer_contact_allowed": true,
-      "customer_draft": "Hi Brett Sawyer, Sagebrush Transport is showing an onboarding risk tied to health_red. Can we review the blocker behind the red health signal?",
+      "customer_draft": "Hi Brett Sawyer, Sagebrush Transport is showing an onboarding risk tied to a critical health signal. Can we review the blocker behind the red health signal?",
       "disposition": "propose_customer_action",
       "draft_mode": "fixture",
       "evidence": [
@@ -1231,7 +1231,7 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "b0272f32-48b6-40db-8d53-ef17eff90b75",
+        "proposal_id": "8b6171a4-a486-4bcb-924a-3ae2b4fa0918",
         "status": "pending"
       },
       "reason": "Sagebrush Transport has deterministic Time-to-Value score 30 from health_red=30; draft customer outreach. Evidence [evidence:751d5071-7c34-5cd1-bca9-178d0f38ad1d], [evidence:3acf0291-5b0b-55b9-8653-d042239fcc17], [evidence:f8504037-dc1a-50e4-bdd9-7900b1379444].",
@@ -1259,7 +1259,7 @@
       "account_resolution": "exactly_one",
       "candidate_account_ids": [],
       "customer_contact_allowed": true,
-      "customer_draft": "Hi Gregory Foster, Harborview Fleet is showing an onboarding risk tied to health_yellow, feature_depth_gap. Can we check whether the current adoption gap is putting launch timing at risk?",
+      "customer_draft": "Hi Gregory Foster, Harborview Fleet is showing an onboarding risk tied to a declining health signal, unused paid capabilities. Can we check whether the current adoption gap is putting launch timing at risk?",
       "disposition": "propose_customer_action",
       "draft_mode": "fixture",
       "evidence": [
@@ -1377,7 +1377,7 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "f00fdfd2-54a2-428c-bbd9-22d7aa20cfe0",
+        "proposal_id": "8bd78c29-8379-4145-8426-789c96477625",
         "status": "pending"
       },
       "reason": "Harborview Fleet has deterministic Time-to-Value score 30 from health_yellow=15, feature_depth_gap=15; draft customer outreach. Evidence [evidence:4af5a5c0-f51a-5a83-9217-141f4333c6db], [evidence:625c9e2b-353d-5bc9-b866-91b2c536d104], [evidence:2f75e535-4d63-5289-8084-aa72fcf3b39a].",
@@ -1425,7 +1425,7 @@
       "account_resolution": "exactly_one",
       "candidate_account_ids": [],
       "customer_contact_allowed": true,
-      "customer_draft": "Hi Diana Kowalski, Summit Industrial Supply is showing an onboarding risk tied to success_plan_overdue. Can we review the activation blockers and next steps?",
+      "customer_draft": "Hi Diana Kowalski, Summit Industrial Supply is showing an onboarding risk tied to an overdue success plan. Can we review the activation blockers and next steps?",
       "disposition": "propose_customer_action",
       "draft_mode": "fixture",
       "evidence": [
@@ -1477,7 +1477,7 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "645daaae-05bb-4820-a781-51a549ca0faf",
+        "proposal_id": "3ecd2db1-fce5-4c7d-a9f8-1d4bf4734ee9",
         "status": "pending"
       },
       "reason": "Summit Industrial Supply has deterministic Time-to-Value score 20 from success_plan_overdue=20; draft customer outreach. Evidence [evidence:2b9e4aff-7f3e-5fd8-af1d-482d72f79fdc], [evidence:390eef5a-4d06-59ae-93cb-2c0a012e7ef8].",
@@ -1494,7 +1494,7 @@
       "account_resolution": "exactly_one",
       "candidate_account_ids": [],
       "customer_contact_allowed": true,
-      "customer_draft": "Hi Alicia Fernandez, Meridian Fleet Group is showing an onboarding risk tied to arr_tier. Can we review the activation blockers and next steps?",
+      "customer_draft": "Hi Alicia Fernandez, Meridian Fleet Group is showing an onboarding risk tied to the current account review. Can we review the activation blockers and next steps?",
       "disposition": "propose_customer_action",
       "draft_mode": "fixture",
       "evidence": [
@@ -1546,7 +1546,7 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "ac774127-5450-4615-a361-8a7f9610f9f3",
+        "proposal_id": "2b21cd1e-6d43-4f7e-9042-e9de1cdd3435",
         "status": "pending"
       },
       "reason": "Meridian Fleet Group has deterministic Time-to-Value score 5 from arr_tier=5; draft customer outreach. Evidence [evidence:30f4240b-e6c6-5bd2-b7b4-42a9b8d68cc1], [evidence:47f78943-7a8a-5bf1-9eeb-df74372085c7].",

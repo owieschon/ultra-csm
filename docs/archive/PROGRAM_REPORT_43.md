@@ -47,7 +47,7 @@ auto-merge regardless.
 1. **Lockfile mechanism: pip constraints file, not `uv lock`.** Decisions
    says use `uv lock` "if `uv` is available and this repo's tooling already
    assumes it." Observed: `uv` IS present on this machine
-   (`/Users/owieschon/.local/bin/uv`), but `grep -rE '\buv\b'`
+   (`$HOME/.local/bin/uv`), but `grep -rE '\buv\b'`
    across `Makefile`, `.github/workflows/*.yml`, and `docs/` returns **zero**
    hits — this repo's own `setup:` target uses plain `python3 -m venv` +
    `pip`, with no existing reference to `uv` anywhere. Per the STOP
@@ -207,7 +207,7 @@ holds for all future environments, only this one, observed, today.
 ## Receipts appendix
 
 **Files created/modified** (all paths under
-`/Users/owieschon/dev/ultra-csm-ci-tests-supply-chain/`):
+`$HOME/dev/ultra-csm-ci-tests-supply-chain/`):
 - `.github/workflows/ci.yml` (modified — 4 action identities/7 references
   SHA-pinned with version-date comments; new `ui-check` job; new
   `Scorecard/work-queue drift gate` step)

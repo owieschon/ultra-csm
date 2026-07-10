@@ -1198,7 +1198,7 @@
     "rows": "oracle target cell"
   },
   "generated_by": "eval.internal_bridge_validation",
-  "gold_path": "/Users/owieschon/dev/ultra-csm-mpb-b3/eval/gold/fleetops_handoff_expected_actions.json",
+  "gold_path": "$HOME/dev/ultra-csm-mpb-b3/eval/gold/fleetops_handoff_expected_actions.json",
   "inter_rater": {
     "reason": "No independent second human labeler was supplied. The same-model ambiguity probe is disclosed as correlated and is not inter-rater reliability.",
     "single_oracle": true,

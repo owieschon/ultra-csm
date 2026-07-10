@@ -178,7 +178,6 @@ export function QueueDetail({ item, day }: { item: WorkItem; day: number | undef
   const [openFactor, setOpenFactor] = useState<number | null>(null);
 
   useEffect(() => {
-    setBrief(null);
     if (!item.account_id) return;
     api
       .accountBrief(item.account_id, day)
@@ -192,6 +191,24 @@ export function QueueDetail({ item, day }: { item: WorkItem; day: number | undef
 
   return (
     <div className="detail-scroll">
+      <div className="control-path" aria-label="Customer action control path">
+        <div className="control-step complete">
+          <span className="control-index mono">01</span>
+          <span><b>Evidence assembled</b><small>tenant-scoped sources</small></span>
+        </div>
+        <div className="control-step complete">
+          <span className="control-index mono">02</span>
+          <span><b>Priority computed</b><small>deterministic rules</small></span>
+        </div>
+        <div className="control-step complete">
+          <span className="control-index mono">03</span>
+          <span><b>Draft proposed</b><small>AI has no authority</small></span>
+        </div>
+        <div className="control-step current">
+          <span className="control-index mono">04</span>
+          <span><b>Human decision</b><small>payload-bound release</small></span>
+        </div>
+      </div>
       <div className="identity">
         <div className="mono-avatar">
           {(brief?.account_name as string | undefined)?.slice(0, 2).toUpperCase() ?? "··"}
@@ -202,7 +219,7 @@ export function QueueDetail({ item, day }: { item: WorkItem; day: number | undef
           </div>
           <div className="id-meta">
             <span className="tierpill">
-              {(brief?.lifecycle_stage as string) ?? "—"}
+              {humanizeCode((brief?.lifecycle_stage as string) ?? "—")}
             </span>
           </div>
         </div>
@@ -310,7 +327,11 @@ export function QueueDetail({ item, day }: { item: WorkItem; day: number | undef
         ))}
       </div>
 
-      <ReconciliationSection accountId={item.account_id} day={day} />
+      <ReconciliationSection
+        key={`${item.account_id}:${day ?? "live"}`}
+        accountId={item.account_id}
+        day={day}
+      />
 
       <InternalHandoff decision={item.internal_bridge_decision ?? null} />
 

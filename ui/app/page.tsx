@@ -49,11 +49,12 @@ export default function Home() {
 
   useEffect(() => {
     if (!healthKnown) return;
-    setError(null);
-    setAccounts(null);
     api
       .accounts(servedDay)
-      .then((r) => setAccounts(r.accounts))
+      .then((r) => {
+        setAccounts(r.accounts);
+        setError(null);
+      })
       .catch((e) => setError(String(e)));
   }, [servedDay, healthKnown]);
 

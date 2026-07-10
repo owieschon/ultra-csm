@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="560" viewBox="0 0 1280 560" role="img" aria-labelledby="title desc">
+  <title id="title">Customer Action Control Plane</title>
+  <desc id="desc">Tenant-scoped evidence becomes deterministic priority and an AI draft. A human verdict authorizes one payload hash before a simulated commit creates an audit receipt.</desc>
+  <rect width="1280" height="560" rx="22" fill="#222321"/>
+  <text x="56" y="62" fill="#F1F0EC" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="25" font-weight="700">CUSTOMER ACTION / CONTROL RECEIPT</text>
+  <text x="56" y="94" fill="#858379" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="15">synthetic account · customer-facing action · authority stays human</text>
+
+  <line x1="56" y1="128" x2="1224" y2="128" stroke="rgba(255,255,255,.12)"/>
+
+  <text x="56" y="170" fill="#858379" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13">01 / EVIDENCE</text>
+  <text x="56" y="203" fill="#F1F0EC" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="20" font-weight="650">Onboarding stalled</text>
+  <text x="56" y="232" fill="#B7B5AC" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="15">3 overdue milestones · usage below activation floor</text>
+  <rect x="56" y="254" width="210" height="30" rx="5" fill="#33342F" stroke="rgba(255,255,255,.09)"/>
+  <text x="70" y="274" fill="#B7B5AC" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12">tenant / trailhead</text>
+
+  <path d="M292 222 H354" stroke="#858379" stroke-width="2"/>
+  <path d="M346 214 L358 222 L346 230" fill="none" stroke="#858379" stroke-width="2"/>
+
+  <text x="382" y="170" fill="#858379" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13">02 / DECISION</text>
+  <text x="382" y="203" fill="#F1F0EC" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="20" font-weight="650">Priority 82</text>
+  <text x="382" y="232" fill="#B7B5AC" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="15">deterministic factors · no model authority</text>
+  <rect x="382" y="254" width="210" height="30" rx="5" fill="#33342F" stroke="rgba(255,255,255,.09)"/>
+  <text x="396" y="274" fill="#5DBE93" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12">evidence complete</text>
+
+  <path d="M618 222 H680" stroke="#858379" stroke-width="2"/>
+  <path d="M672 214 L684 222 L672 230" fill="none" stroke="#858379" stroke-width="2"/>
+
+  <text x="708" y="170" fill="#858379" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13">03 / PROPOSAL</text>
+  <text x="708" y="203" fill="#F1F0EC" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="20" font-weight="650">Draft follow-up</text>
+  <text x="708" y="232" fill="#B7B5AC" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="15">AI-written from cited records · still pending</text>
+  <rect x="708" y="254" width="210" height="30" rx="5" fill="#33342F" stroke="#D9A452"/>
+  <text x="722" y="274" fill="#D9A452" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12">no authority</text>
+
+  <path d="M944 222 H1006" stroke="#8189E6" stroke-width="3"/>
+  <path d="M998 214 L1010 222 L998 230" fill="none" stroke="#8189E6" stroke-width="3"/>
+
+  <rect x="1034" y="150" width="190" height="154" rx="10" fill="#2A2B28" stroke="#8189E6" stroke-width="2"/>
+  <text x="1054" y="178" fill="#8189E6" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12">04 / HUMAN VERDICT</text>
+  <text x="1054" y="211" fill="#F1F0EC" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="18" font-weight="650">Revise &amp; approve</text>
+  <text x="1054" y="242" fill="#B7B5AC" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12">payload sha256</text>
+  <text x="1054" y="265" fill="#F1F0EC" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12">065c48c9…f4c232</text>
+  <text x="1054" y="287" fill="#5DBE93" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12">AUTHORIZED</text>
+
+  <line x1="56" y1="344" x2="1224" y2="344" stroke="rgba(255,255,255,.12)"/>
+  <text x="56" y="388" fill="#858379" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13">COMMIT CHECK</text>
+  <text x="56" y="424" fill="#F1F0EC" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="20" font-weight="650">Recompute hash → reserve idempotency key → simulate send</text>
+  <text x="56" y="456" fill="#B7B5AC" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="15">A different payload, missing consent, non-human approver, or replayed mutation fails closed.</text>
+
+  <rect x="56" y="488" width="1168" height="38" rx="6" fill="#1B1C1A" stroke="rgba(255,255,255,.09)"/>
+  <text x="74" y="513" fill="#5DBE93" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13">24 / 24 HARD GATES</text>
+  <text x="263" y="513" fill="#858379" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13">evidence · consent · tenant · human identity · payload binding · receipt</text>
+</svg>

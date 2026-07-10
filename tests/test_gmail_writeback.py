@@ -33,8 +33,8 @@ _ENV = {
     "ULTRA_CSM_GMAIL_OAUTH_CLIENT_SECRET": "fake-client-secret",
     "ULTRA_CSM_GMAIL_OAUTH_REFRESH_TOKEN": "fake-refresh-token",
 }
-_SENDER = "test-recipient@example.com"
-_ALLOWED_RECIPIENT = "test-recipient@example.com"
+_SENDER = "fixture-burner@example.test"
+_ALLOWED_RECIPIENT = "fixture-burner@example.test"
 _DISALLOWED_RECIPIENT = "someone-else@example.com"
 
 

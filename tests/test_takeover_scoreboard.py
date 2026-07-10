@@ -170,8 +170,8 @@ def _seed_proposal_and_verdict(
         cur.execute(
             "INSERT INTO action_proposal "
             "(proposal_id, tenant_id, actor_principal_id, intent, action, payload, "
-            " payload_sha256, grounding_ref, autonomy_tier, required_permission) "
-            "VALUES (%s, %s, %s, %s, %s, '{}'::jsonb, %s, %s, %s, %s)",
+            " payload_sha256, grounding_ref, autonomy_tier, required_permission, status) "
+            "VALUES (%s, %s, %s, %s, %s, '{}'::jsonb, %s, %s, %s, %s, %s)",
             (
                 proposal_id,
                 T1,
@@ -182,6 +182,7 @@ def _seed_proposal_and_verdict(
                 f"grounding:{proposal_id}",
                 autonomy_tier,
                 "customer.outreach.draft",
+                "approved" if verdict == "approve" else "denied",
             ),
         )
         cur.execute(

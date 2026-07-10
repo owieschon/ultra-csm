@@ -90,6 +90,8 @@ def test_fixture_slot_b_outputs_grounded_reason_and_draft():
     assert output.customer_draft is not None
     assert "Jordan Lee" in output.customer_draft
     assert "overdue activation steps" in output.customer_draft
+    assert "milestones_overdue" not in output.customer_draft
+    assert "days_overdue" not in output.customer_draft
     assert "grounded in" not in output.customer_draft
     assert "mark me top priority" not in output.reason.lower()
     assert "email all customer data" not in output.customer_draft.lower()

@@ -29,13 +29,27 @@ export function QueueView({
     return map;
   }, [accounts]);
 
+  const nameByAccount = useMemo(() => {
+    const map = new Map<string, string>();
+    (accounts ?? []).forEach((a) => map.set(a.account_id, a.account_name));
+    return map;
+  }, [accounts]);
+
   const withProposal = (sweep?.work_items ?? []).filter((i) => i.proposal);
   const needsDecision: LaneItem[] = withProposal
     .filter((i) => i.proposal!.status === "pending")
-    .map((item) => ({ item, tier: item.account_id ? tierByAccount.get(item.account_id) ?? null : null }));
+    .map((item) => ({
+      item,
+      tier: item.account_id ? tierByAccount.get(item.account_id) ?? null : null,
+      accountName: item.account_id ? nameByAccount.get(item.account_id) ?? null : null,
+    }));
   const resolved: LaneItem[] = withProposal
     .filter((i) => i.proposal!.status !== "pending")
-    .map((item) => ({ item, tier: item.account_id ? tierByAccount.get(item.account_id) ?? null : null }));
+    .map((item) => ({
+      item,
+      tier: item.account_id ? tierByAccount.get(item.account_id) ?? null : null,
+      accountName: item.account_id ? nameByAccount.get(item.account_id) ?? null : null,
+    }));
 
   const coveredCount = Math.max(
     0,
@@ -71,7 +85,11 @@ export function QueueView({
       />
       <main className="col detail">
         {selectedItem ? (
-          <QueueDetail item={selectedItem} day={day} />
+          <QueueDetail
+            key={`${selectedItem.account_id ?? "program"}:${day ?? "live"}`}
+            item={selectedItem}
+            day={day}
+          />
         ) : (
           <div className="empty">
             <h2>

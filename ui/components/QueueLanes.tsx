@@ -6,6 +6,7 @@ import { label, MOTION_LABELS, TIER_LABELS, TRIGGER_LABELS } from "@/lib/labels"
 export interface LaneItem {
   item: WorkItem;
   tier: string | null;
+  accountName: string | null;
 }
 
 export function QueueLanes({
@@ -30,11 +31,12 @@ export function QueueLanes({
         <span className="c num">{needsDecision.length}</span>
         <span className="badge">needs your approval</span>
       </div>
-      {needsDecision.map(({ item, tier }) => (
+      {needsDecision.map(({ item, tier, accountName }) => (
         <Row
           key={item.proposal!.proposal_id as unknown as string}
           item={item}
           tier={tier}
+          accountName={accountName}
           selected={selectedId === item.proposal!.proposal_id}
           onSelect={onSelect}
         />
@@ -45,11 +47,12 @@ export function QueueLanes({
         <span className="c num">{resolved.length}</span>
         <span className="badge">approved/denied · logged</span>
       </div>
-      {resolved.map(({ item, tier }) => (
+      {resolved.map(({ item, tier, accountName }) => (
         <Row
           key={item.proposal!.proposal_id as unknown as string}
           item={item}
           tier={tier}
+          accountName={accountName}
           selected={selectedId === item.proposal!.proposal_id}
           onSelect={onSelect}
           resolved
@@ -79,12 +82,14 @@ export function QueueLanes({
 function Row({
   item,
   tier,
+  accountName,
   selected,
   onSelect,
   resolved,
 }: {
   item: WorkItem;
   tier: string | null;
+  accountName: string | null;
   selected: boolean;
   onSelect: (proposalId: string) => void;
   resolved?: boolean;
@@ -100,8 +105,11 @@ function Row({
       onClick={() => onSelect(proposalId)}
     >
       <div className="l1">
-        <span className="acct">
-          {packet?.account_name ?? item.account_id?.slice(0, 8) ?? "cohort"}
+        <span className="acct" title={item.account_id ?? undefined}>
+          {packet?.account_name ??
+            accountName ??
+            item.account_id?.slice(0, 8) ??
+            "Portfolio-wide action"}
         </span>
         {tier && (
           <span className="tier" title={tier}>

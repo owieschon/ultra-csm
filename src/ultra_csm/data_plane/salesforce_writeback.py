@@ -64,7 +64,9 @@ class LiveSalesforceActivityCommitter:
     ) -> CommitReceipt:
         if proposal.action not in _WRITEBACK_ACTIONS:
             raise CommitError(f"LiveSalesforceActivityCommitter cannot commit {proposal.action}")
-        self._gate.assert_payload_bound(outcome, proposal.payload)
+        self._gate.assert_payload_bound(
+            proposal, outcome, proposal.payload, require_durable=not dry_run,
+        )
         account_id = _required_str(proposal.payload, "account_id")
         key = _idempotency_key(proposal, outcome, target="salesforce:Task")
         already = (

@@ -23,16 +23,16 @@ export function useSweep(
 
   useEffect(() => {
     if (!enabled) return;
-    setError(null);
     api
       .sweep(day)
-      .then((r) =>
+      .then((r) => {
         setSweep({
           work_items: r.work_items,
           escalations: r.escalations,
           swept_accounts: r.swept_accounts,
-        })
-      )
+        });
+        setError(null);
+      })
       .catch((e) => setError(String(e)));
   }, [day, refreshToken, enabled]);
 

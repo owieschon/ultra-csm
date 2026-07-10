@@ -44,6 +44,9 @@ eval:
 lint:
 	$(PYTHON) -m ruff check src eval tests scripts
 
+security-scan:
+	gitleaks detect --source . --config .gitleaks.toml --no-banner --redact
+
 work-packet-eval:
 	PYTHONPATH=src:. $(PYTHON) -m eval.work_packet_eval
 

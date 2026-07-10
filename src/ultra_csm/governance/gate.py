@@ -22,6 +22,7 @@ effects can run. The LLM-driven proposal never mints authority itself.
 from __future__ import annotations
 
 import json
+import uuid
 from dataclasses import dataclass
 
 from ultra_csm.governance.authorizer import canonical_payload_sha256
@@ -161,23 +162,52 @@ class ActionGate:
         `_ensure_human_principal`, backstopped by the 0005 DB trigger. Tier-1
         auto_internal_only verdicts (committers.py::auto_approve_internal) are
         exempt by design."""
-        v = verdict or self._source.verdict_for(proposal)
-        if v.verdict not in ("approve", "deny", "revise"):
-            raise GateError(f"unknown verdict {v.verdict!r}")
-
-        eff_payload = proposal.payload
-        eff_sha = proposal.payload_sha256
-        if v.verdict == "revise":
-            if v.revised_payload is None:
-                raise GateError("revise verdict requires a revised_payload")
-            eff_payload = v.revised_payload
-            eff_sha = canonical_payload_sha256(eff_payload)
-
-        new_status = "denied" if v.verdict == "deny" else "approved"
-        approved_sha = None if v.verdict == "deny" else eff_sha
-
         with session(self._conn, tenant_id=self._tenant_id, actor_id=self._actor,
                      cause_ref=cause_ref, now=self._now) as cur:
+            # The database row is the authority. Callers may hold a stale or
+            # forged ActionProposal snapshot, so lock and reconstruct the
+            # proposal before selecting a verdict or deriving an authorized
+            # payload. The pending check is the compare-and-set boundary for
+            # concurrent/double decisions.
+            cur.execute(
+                "SELECT intent, action, payload, payload_sha256, autonomy_tier, "
+                "required_permission, status FROM action_proposal "
+                "WHERE proposal_id = %s FOR UPDATE",
+                (proposal.proposal_id,),
+            )
+            row = cur.fetchone()
+            if row is None:
+                raise GateError(f"proposal not found: {proposal.proposal_id}")
+            (stored_intent, stored_action, stored_payload, stored_sha,
+             stored_tier, stored_permission, stored_status) = row
+            authoritative = ActionProposal(
+                proposal_id=proposal.proposal_id,
+                intent=str(stored_intent),
+                action=str(stored_action),
+                payload=dict(stored_payload),
+                payload_sha256=str(stored_sha),
+                autonomy_tier=int(stored_tier),
+                required_permission=str(stored_permission),
+                status=str(stored_status),
+            )
+            if authoritative.status != "pending":
+                raise GateError(f"proposal is not pending: {proposal.proposal_id}")
+
+            v = verdict or self._source.verdict_for(authoritative)
+            if v.verdict not in ("approve", "deny", "revise"):
+                raise GateError(f"unknown verdict {v.verdict!r}")
+
+            eff_payload = authoritative.payload
+            eff_sha = authoritative.payload_sha256
+            if v.verdict == "revise":
+                if v.revised_payload is None:
+                    raise GateError("revise verdict requires a revised_payload")
+                eff_payload = v.revised_payload
+                eff_sha = canonical_payload_sha256(eff_payload)
+
+            new_status = "denied" if v.verdict == "deny" else "approved"
+            approved_sha = None if v.verdict == "deny" else eff_sha
+
             # Gate/DB human-ness check (defense-in-depth; the DB trigger in
             # 0005_gate_human_ness.sql is the hard backstop -- this is the
             # clean application-level error before that raw exception would
@@ -186,7 +216,7 @@ class ActionGate:
             # for tier>=2 intents only -- tier-1 auto_internal_only legitimately
             # auto-approves via a non-human system_principal_id
             # (committers.py::auto_approve_internal) and must stay untouched.
-            if approved_sha is not None and proposal.autonomy_tier >= 2:
+            if approved_sha is not None and authoritative.autonomy_tier >= 2:
                 cur.execute(
                     "SELECT kind FROM principal WHERE principal_id = %s",
                     (v.human_principal_id,),
@@ -197,28 +227,31 @@ class ActionGate:
                     raise GateError(
                         f"gate human-ness: approving principal "
                         f"{v.human_principal_id!r} is not kind='human' "
-                        f"(tier {proposal.autonomy_tier})")
+                        f"(tier {authoritative.autonomy_tier})")
                 if v.human_principal_id == self._actor:
                     raise GateError(
                         f"gate human-ness: approving principal "
                         f"{v.human_principal_id!r} cannot be the proposal's "
-                        f"own actor (tier {proposal.autonomy_tier})")
+                        f"own actor (tier {authoritative.autonomy_tier})")
 
             # revise edits the proposal payload + hash atomically with the verdict.
             if v.verdict == "revise":
                 cur.execute(
                     "UPDATE action_proposal SET payload = %s, payload_sha256 = %s, "
                     "status = %s, row_version = row_version + 1 "
-                    "WHERE proposal_id = %s",
+                    "WHERE proposal_id = %s AND status = 'pending'",
                     (json.dumps(eff_payload), eff_sha, new_status,
                      proposal.proposal_id),
                 )
             else:
                 cur.execute(
                     "UPDATE action_proposal SET status = %s, "
-                    "row_version = row_version + 1 WHERE proposal_id = %s",
+                    "row_version = row_version + 1 "
+                    "WHERE proposal_id = %s AND status = 'pending'",
                     (new_status, proposal.proposal_id),
                 )
+            if cur.rowcount != 1:
+                raise GateError(f"proposal is not pending: {proposal.proposal_id}")
             cur.execute(
                 "INSERT INTO action_verdict (tenant_id, proposal_id, verdict, "
                 "revised_payload, approved_payload_sha256, rationale, "
@@ -274,15 +307,56 @@ class ActionGate:
             )
 
     # -- the committer's anti-TOCTOU check ----------------------------------
-    def assert_payload_bound(self, outcome: GateOutcome, payload: dict) -> None:
+    def assert_payload_bound(
+        self,
+        proposal: ActionProposal,
+        outcome: GateOutcome,
+        payload: dict,
+        *,
+        require_durable: bool = True,
+    ) -> None:
         """Fail-closed before executing: the action the committer is about to run
         must hash-match exactly what the verdict authorized. A payload tampered
         after approval (or a re-used denied/stale outcome) is refused."""
         if not outcome.authorized:
             raise GateError(
                 f"action not authorized (status={outcome.status})")
+        if proposal.proposal_id != outcome.proposal_id:
+            raise GateError("proposal id does not match the authorized outcome")
         if canonical_payload_sha256(payload) != outcome.payload_sha256:
             raise GateError("payload hash does not match the authorized verdict")
+        # The in-memory outcome is only a convenience; it is constructible by
+        # callers and therefore cannot be authority. Re-read the durable gate
+        # state and require an authorizing verdict bound to the same current
+        # proposal hash before any committer may execute.
+        with session(self._conn, tenant_id=self._tenant_id, actor_id=self._actor,
+                     now=self._now) as cur:
+            cur.execute(
+                "SELECT p.intent, p.action, p.autonomy_tier, p.required_permission, "
+                "p.status, p.payload_sha256, v.verdict, v.approved_payload_sha256 "
+                "FROM action_proposal p LEFT JOIN action_verdict v "
+                "ON v.proposal_id = p.proposal_id AND v.tenant_id = p.tenant_id "
+                "WHERE p.proposal_id = %s",
+                (outcome.proposal_id,),
+            )
+            row = cur.fetchone()
+        actual_sha = canonical_payload_sha256(payload)
+        if (
+            row is None
+            or str(row[0]) != proposal.intent
+            or str(row[1]) != proposal.action
+            or int(row[2]) != proposal.autonomy_tier
+            or str(row[3]) != proposal.required_permission
+            or str(row[5]) != actual_sha
+        ):
+            raise GateError("stored proposal does not match the requested operation")
+        if require_durable and (
+            str(row[4]) != "approved"
+            or str(row[6]) not in ("approve", "revise")
+            or row[7] is None
+            or str(row[7]) != actual_sha
+        ):
+            raise GateError("durable verdict does not authorize the current payload")
 
     def idempotency_key_exists(self, idem_key: str) -> bool:
         """Return True if a committer already reserved this mutation key."""
@@ -293,6 +367,18 @@ class ActionGate:
                 (self._tenant_id, idem_key),
             )
             return cur.fetchone() is not None
+
+    def idempotency_state(self, idem_key: str) -> str | None:
+        """Return ``pending``, ``completed``, or ``failed`` for a mutation key."""
+        with session(self._conn, tenant_id=self._tenant_id, actor_id=self._actor,
+                     now=self._now) as cur:
+            cur.execute(
+                "SELECT state FROM idempotency_keys "
+                "WHERE tenant_id = %s AND idem_key = %s",
+                (self._tenant_id, idem_key),
+            )
+            row = cur.fetchone()
+            return str(row[0]) if row else None
 
     def claim_idempotency_key(
         self,
@@ -315,6 +401,50 @@ class ActionGate:
                 (self._tenant_id, idem_key, request_id, result_ref),
             )
             return cur.fetchone() is not None
+
+    def acquire_sim_idempotency_attempt(
+        self,
+        idem_key: str,
+        *,
+        request_id: str | None = None,
+        result_ref: str | None = None,
+        cause_ref: str | None = None,
+    ) -> str | None:
+        """Atomically lease a retryable simulated mutation attempt.
+
+        One caller owns a fresh five-minute lease. Failed attempts and expired
+        leases can be reclaimed; completed or actively leased rows cannot.
+        The returned opaque token must accompany completion/failure updates.
+        """
+        token = str(uuid.uuid4())
+        with session(self._conn, tenant_id=self._tenant_id, actor_id=self._actor,
+                     cause_ref=cause_ref, now=self._now) as cur:
+            cur.execute(
+                "INSERT INTO idempotency_keys "
+                "(tenant_id, idem_key, request_id, result_ref, state, attempt_token, "
+                "lease_expires_at, updated_at) "
+                "VALUES (%s, %s, %s, %s, 'pending', %s, "
+                "app.clock() + interval '5 minutes', app.clock()) "
+                "ON CONFLICT DO NOTHING RETURNING attempt_token",
+                (self._tenant_id, idem_key, request_id, result_ref, token),
+            )
+            row = cur.fetchone()
+            if row is not None:
+                return str(row[0])
+            cur.execute(
+                "UPDATE idempotency_keys SET state = 'pending', request_id = %s, "
+                "result_ref = %s, attempt_token = %s, "
+                "lease_expires_at = app.clock() + interval '5 minutes', "
+                "updated_at = app.clock() "
+                "WHERE tenant_id = %s AND idem_key = %s "
+                "AND (state = 'failed' OR "
+                "(state = 'pending' AND "
+                "(lease_expires_at IS NULL OR lease_expires_at <= app.clock()))) "
+                "RETURNING attempt_token",
+                (request_id, result_ref, token, self._tenant_id, idem_key),
+            )
+            row = cur.fetchone()
+            return str(row[0]) if row is not None else None
 
     def record_outreach_contact_ref(
         self,
@@ -341,15 +471,54 @@ class ActionGate:
                 (self._tenant_id, account_ref, contact_ref, email, name, consent),
             )
 
-    def mark_idempotency_result(self, idem_key: str, *, result_ref: str) -> None:
-        """Attach the external result reference to an already-reserved key."""
+    def mark_idempotency_result(
+        self,
+        idem_key: str,
+        *,
+        result_ref: str,
+        attempt_token: str | None = None,
+    ) -> None:
+        """Mark a reservation completed and attach its external result reference."""
+        with session(self._conn, tenant_id=self._tenant_id, actor_id=self._actor,
+                     now=self._now) as cur:
+            token_clause = " AND attempt_token = %s" if attempt_token is not None else ""
+            params = (
+                (result_ref, self._tenant_id, idem_key, attempt_token)
+                if attempt_token is not None
+                else (result_ref, self._tenant_id, idem_key)
+            )
+            cur.execute(
+                "UPDATE idempotency_keys SET result_ref = %s, state = 'completed', "
+                "attempt_token = NULL, lease_expires_at = NULL, updated_at = app.clock() "
+                "WHERE tenant_id = %s AND idem_key = %s" + token_clause,
+                params,
+            )
+            if attempt_token is not None and cur.rowcount != 1:
+                raise GateError(f"idempotency attempt no longer owns lease: {idem_key}")
+
+    def mark_idempotency_failed(
+        self,
+        idem_key: str,
+        *,
+        result_ref: str,
+        attempt_token: str,
+    ) -> None:
+        """Mark a recoverable simulated mutation attempt failed.
+
+        Sim committers reconcile the target by idempotency key on retry before
+        attempting the write again. Live committers retain their stricter
+        ambiguous-outcome behavior and do not use this method.
+        """
         with session(self._conn, tenant_id=self._tenant_id, actor_id=self._actor,
                      now=self._now) as cur:
             cur.execute(
-                "UPDATE idempotency_keys SET result_ref = %s "
-                "WHERE tenant_id = %s AND idem_key = %s",
-                (result_ref, self._tenant_id, idem_key),
+                "UPDATE idempotency_keys SET result_ref = %s, state = 'failed', "
+                "attempt_token = NULL, lease_expires_at = NULL, updated_at = app.clock() "
+                "WHERE tenant_id = %s AND idem_key = %s AND attempt_token = %s",
+                (result_ref, self._tenant_id, idem_key, attempt_token),
             )
+            if cur.rowcount != 1:
+                raise GateError(f"idempotency attempt no longer owns lease: {idem_key}")
 
     def release_idempotency_key(self, idem_key: str) -> None:
         """Release a reservation when the external system explicitly refused it.

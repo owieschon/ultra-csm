@@ -230,7 +230,7 @@ evidence for the others, but it is not a proof of each.
 
 ## Receipts Appendix
 
-- Worktree: `/Users/owieschon/dev/ultra-csm-gate-governance-hardening`,
+- Worktree: `$HOME/dev/ultra-csm-gate-governance-hardening`,
   branch `codex/gate-governance-hardening`, created via `git worktree add -b
   codex/gate-governance-hardening ~/dev/ultra-csm-gate-governance-hardening
   origin/main` — verified `git merge-base HEAD origin/main` ==
@@ -241,7 +241,7 @@ evidence for the others, but it is not a proof of each.
   trustworthy baseline: the system Python's editable `ultra_csm` install
   pointed at `~/dev/ultra-csm` (the shared, dirty, diverged main checkout),
   not this worktree — verified via `python3 -m pip show -f ultra-csm`
-  (`Editable project location: /Users/owieschon/dev/ultra-csm`) and
+  (`Editable project location: $HOME/dev/ultra-csm`) and
   `importlib.util.find_spec('ultra_csm')`. Created an isolated `.venv`
   inside this worktree (`python3 -m venv .venv && pip install -e
   ".[dev,api,mcp]"`), re-confirmed `find_spec` resolved to THIS worktree

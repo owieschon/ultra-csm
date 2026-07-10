@@ -1,7 +1,7 @@
 {
   "access_mode": "demo_operator",
   "artifact": "mcp_operator_transcript",
-  "artifact_sha256": "398502226025456fd124c526379364a268e25ab06bf10d49d31e75301d120477",
+  "artifact_sha256": "b2cfc9e56a573bb0df3d7feaf7aac6e1db392de5b72aa0747e0ff96fc859989b",
   "beats": [
     "briefing",
     "queue",
@@ -207,7 +207,7 @@
             "account_resolution": "exactly_one",
             "candidate_account_ids": [],
             "customer_contact_allowed": true,
-            "customer_draft": "Hi Jordan Lee, Acme Logistics is showing an onboarding risk tied to milestones_overdue, days_overdue. Can we review the overdue activation steps and agree on owners?",
+            "customer_draft": "Hi Jordan Lee, Acme Logistics is showing an onboarding risk tied to overdue onboarding milestones, overdue activation steps. Can we review the overdue activation steps and agree on owners?",
             "disposition": "propose_customer_action",
             "draft_mode": "fixture",
             "evidence": [
@@ -242,6 +242,21 @@
                 "source_id": "a317f5e7-575e-5879-8256-9082e40ef19f"
               }
             ],
+            "internal_bridge_decision": {
+              "abstained": false,
+              "evidence": [
+                {
+                  "field": "subject",
+                  "observed_at": "2026-06-27",
+                  "source": "crm",
+                  "source_id": "4ddf4d0e-2600-56f7-9edc-a5a0071d8186"
+                }
+              ],
+              "motion": "escalation",
+              "reason": "Active or recurring technical failure requires engineering handoff.",
+              "signal": "active_technical_failure",
+              "target": "engineering"
+            },
             "motion": null,
             "priority": {
               "factors": [
@@ -463,6 +478,14 @@
                 "source_id": "9bbdd7b2-55b0-5257-acf8-808ad224e276"
               }
             ],
+            "internal_bridge_decision": {
+              "abstained": true,
+              "evidence": [],
+              "motion": null,
+              "reason": "No live engineering defect or product-feedback capability gap found.",
+              "signal": null,
+              "target": null
+            },
             "motion": null,
             "priority": {
               "factors": [
@@ -592,7 +615,7 @@
             "account_resolution": "exactly_one",
             "candidate_account_ids": [],
             "customer_contact_allowed": true,
-            "customer_draft": "Hi Avery Kim, Soylent Distribution is showing an onboarding risk tied to milestones_overdue, days_overdue. Can we review the overdue activation steps and agree on owners?",
+            "customer_draft": "Hi Avery Kim, Soylent Distribution is showing an onboarding risk tied to overdue onboarding milestones, overdue activation steps. Can we review the overdue activation steps and agree on owners?",
             "disposition": "propose_customer_action",
             "draft_mode": "fixture",
             "evidence": [
@@ -627,6 +650,14 @@
                 "source_id": "ac5ddaea-764f-57ef-866d-593d57a20a00"
               }
             ],
+            "internal_bridge_decision": {
+              "abstained": true,
+              "evidence": [],
+              "motion": null,
+              "reason": "No live engineering defect or product-feedback capability gap found.",
+              "signal": null,
+              "target": null
+            },
             "motion": null,
             "priority": {
               "factors": [
@@ -773,7 +804,7 @@
             "account_resolution": "exactly_one",
             "candidate_account_ids": [],
             "customer_contact_allowed": true,
-            "customer_draft": "Hi Alex Rivers, Globex Fleet is showing an onboarding risk tied to milestones_overdue, days_overdue. Can we review the overdue activation steps and agree on owners?",
+            "customer_draft": "Hi Alex Rivers, Globex Fleet is showing an onboarding risk tied to overdue onboarding milestones, overdue activation steps. Can we review the overdue activation steps and agree on owners?",
             "disposition": "propose_customer_action",
             "draft_mode": "fixture",
             "evidence": [
@@ -796,6 +827,14 @@
                 "source_id": "b2178254-7d72-55e3-84af-27846a0cb7d5"
               }
             ],
+            "internal_bridge_decision": {
+              "abstained": true,
+              "evidence": [],
+              "motion": null,
+              "reason": "No live engineering defect or product-feedback capability gap found.",
+              "signal": null,
+              "target": null
+            },
             "motion": null,
             "priority": {
               "factors": [
@@ -914,7 +953,7 @@
             "account_resolution": "exactly_one",
             "candidate_account_ids": [],
             "customer_contact_allowed": true,
-            "customer_draft": "Hi Samir Rao, Initech Services is showing an onboarding risk tied to success_plan_overdue, health_yellow. Can we map the missing users needed for a complete rollout?",
+            "customer_draft": "Hi Samir Rao, Initech Services is showing an onboarding risk tied to an overdue success plan, a declining health signal. Can we map the missing users needed for a complete rollout?",
             "disposition": "propose_customer_action",
             "draft_mode": "fixture",
             "evidence": [
@@ -931,6 +970,14 @@
                 "source_id": "efe1d86f-af21-5ca6-8719-3ba8b4429292"
               }
             ],
+            "internal_bridge_decision": {
+              "abstained": true,
+              "evidence": [],
+              "motion": null,
+              "reason": "No live engineering defect or product-feedback capability gap found.",
+              "signal": null,
+              "target": null
+            },
             "motion": null,
             "priority": {
               "factors": [
@@ -1029,7 +1076,7 @@
           }
         ]
       },
-      "output_sha256": "cc9f1dbc60b772754b3842478dfea802dd0397cfaf94c6811c0b3571cdd6340b",
+      "output_sha256": "4aeceb0dad71162a96d073255a72fed31e196487a6eab04a64f210d2ccbc4b71",
       "tool": "get_morning_briefing"
     },
     {
@@ -1048,7 +1095,7 @@
               "account_id": "<uuid:f924336b2db5>",
               "account_name": "Acme Logistics",
               "as_of": "2026-06-27",
-              "body": "Hi Jordan Lee, Acme Logistics is showing an onboarding risk tied to milestones_overdue, days_overdue. Can we review the overdue activation steps and agree on owners?",
+              "body": "Hi Jordan Lee, Acme Logistics is showing an onboarding risk tied to overdue onboarding milestones, overdue activation steps. Can we review the overdue activation steps and agree on owners?",
               "contact_email": "ops@acme-logistics.example",
               "contact_id": "<uuid:933db59555d8>",
               "draft_channel": "email",
@@ -1232,7 +1279,7 @@
               "account_id": "<uuid:a6f8626603b0>",
               "account_name": "Globex Fleet",
               "as_of": "2026-06-27",
-              "body": "Hi Alex Rivers, Globex Fleet is showing an onboarding risk tied to milestones_overdue, days_overdue. Can we review the overdue activation steps and agree on owners?",
+              "body": "Hi Alex Rivers, Globex Fleet is showing an onboarding risk tied to overdue onboarding milestones, overdue activation steps. Can we review the overdue activation steps and agree on owners?",
               "contact_email": "ops@globex.example",
               "contact_id": "<uuid:a8e03f7a46e5>",
               "draft_channel": "email",
@@ -1351,7 +1398,7 @@
               "account_id": "<uuid:0a23d4ee0b68>",
               "account_name": "Initech Services",
               "as_of": "2026-06-27",
-              "body": "Hi Samir Rao, Initech Services is showing an onboarding risk tied to success_plan_overdue, health_yellow. Can we map the missing users needed for a complete rollout?",
+              "body": "Hi Samir Rao, Initech Services is showing an onboarding risk tied to an overdue success plan, a declining health signal. Can we map the missing users needed for a complete rollout?",
               "contact_email": "ops@initech.example",
               "contact_id": "<uuid:9bb43be2f45e>",
               "draft_channel": "email",
@@ -1452,7 +1499,7 @@
               "account_id": "<uuid:c0a0446a9311>",
               "account_name": "Soylent Distribution",
               "as_of": "2026-06-27",
-              "body": "Hi Avery Kim, Soylent Distribution is showing an onboarding risk tied to milestones_overdue, days_overdue. Can we review the overdue activation steps and agree on owners?",
+              "body": "Hi Avery Kim, Soylent Distribution is showing an onboarding risk tied to overdue onboarding milestones, overdue activation steps. Can we review the overdue activation steps and agree on owners?",
               "contact_email": "ops@soylent.example",
               "contact_id": "<uuid:831870098d72>",
               "draft_channel": "email",
@@ -1626,7 +1673,7 @@
         ],
         "tenant_id": "<uuid:151b277a52bd>"
       },
-      "output_sha256": "1ff68bdbf439700f3764c85ba295a18f9ea057ab50d5a132b3463d8bd61fad9e",
+      "output_sha256": "9b667db77bafa6696eb943429fcad0e135885b669661d6fefebdae315f8642d2",
       "tool": "list_proposals"
     },
     {
@@ -2009,7 +2056,7 @@
     },
     {
       "output": {
-        "body": "Hi Jordan Lee, Acme Logistics has onboarding risk from milestones_overdue, days_overdue. Can we review the overdue activation steps and agree on owners?",
+        "body": "Hi Jordan Lee, Acme Logistics has onboarding risk from overdue onboarding milestones, overdue activation steps. Can we review the overdue activation steps and agree on owners?",
         "claim_boundary": {
           "approved_proposal_required": true,
           "draft_never_send": true,
@@ -2033,7 +2080,7 @@
         "to": "ops@acme-logistics.example",
         "tool": "render_email_draft"
       },
-      "output_sha256": "40d0b07ad0458ca3aef92af8510c64ece1d2ccba36b036c926ffbbbbc10e5509",
+      "output_sha256": "99c72a458e7d414888859198714e4527c0e1b6b2ed8c7f77e4b828902c128701",
       "tool": "render_email_draft"
     },
     {
@@ -2052,7 +2099,7 @@
               "account_id": "<uuid:a6f8626603b0>",
               "account_name": "Globex Fleet",
               "as_of": "2026-06-27",
-              "body": "Hi Alex Rivers, Globex Fleet is showing an onboarding risk tied to milestones_overdue, days_overdue. Can we review the overdue activation steps and agree on owners?",
+              "body": "Hi Alex Rivers, Globex Fleet is showing an onboarding risk tied to overdue onboarding milestones, overdue activation steps. Can we review the overdue activation steps and agree on owners?",
               "contact_email": "ops@globex.example",
               "contact_id": "<uuid:a8e03f7a46e5>",
               "draft_channel": "email",
@@ -2171,7 +2218,7 @@
               "account_id": "<uuid:0a23d4ee0b68>",
               "account_name": "Initech Services",
               "as_of": "2026-06-27",
-              "body": "Hi Samir Rao, Initech Services is showing an onboarding risk tied to success_plan_overdue, health_yellow. Can we map the missing users needed for a complete rollout?",
+              "body": "Hi Samir Rao, Initech Services is showing an onboarding risk tied to an overdue success plan, a declining health signal. Can we map the missing users needed for a complete rollout?",
               "contact_email": "ops@initech.example",
               "contact_id": "<uuid:9bb43be2f45e>",
               "draft_channel": "email",
@@ -2272,7 +2319,7 @@
               "account_id": "<uuid:c0a0446a9311>",
               "account_name": "Soylent Distribution",
               "as_of": "2026-06-27",
-              "body": "Hi Avery Kim, Soylent Distribution is showing an onboarding risk tied to milestones_overdue, days_overdue. Can we review the overdue activation steps and agree on owners?",
+              "body": "Hi Avery Kim, Soylent Distribution is showing an onboarding risk tied to overdue onboarding milestones, overdue activation steps. Can we review the overdue activation steps and agree on owners?",
               "contact_email": "ops@soylent.example",
               "contact_id": "<uuid:831870098d72>",
               "draft_channel": "email",
@@ -2446,7 +2493,7 @@
         ],
         "tenant_id": "<uuid:151b277a52bd>"
       },
-      "output_sha256": "4e4920d5a6a4935089f56f8a13ca86f0485c98688b0508195f549715f39af671",
+      "output_sha256": "df975041ffe9651e30df8ea48969726e64c4e0a1b7437e65b799ce7e0201befd",
       "tool": "list_proposals(after_revision)"
     },
     {
