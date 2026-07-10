@@ -14,11 +14,15 @@ or mint permission through model text.
 evidence, consent, tenant isolation, human identity, payload binding, unsafe drafts, and
 the real proposal-to-commit path.
 
+**[Open the live read-only demo](https://ultra-csm.vercel.app/)** — synthetic data,
+no login, and customer sends disabled.
+
 ![Customer Action Control Plane: evidence becomes a proposed customer action, but only a human can release the payload bound to the approval receipt](docs/customer-action-control-plane.svg)
 
 ## Run the read-only demo in 90 seconds
 
-The local static build is a no-login, read-only operations workspace backed by synthetic data.
+The [hosted demo](https://ultra-csm.vercel.app/) is a no-login, read-only operations
+workspace backed by synthetic data. You can also run the same build locally.
 Open the queue, select **Trailhead Logistics**, and follow four stages shown in the UI:
 
 1. evidence assembled from tenant-scoped source records;
