@@ -228,6 +228,26 @@ def test_queue_cli_reads_delegation_view(monkeypatch, capsys):
     assert "prop-4" in captured.out
 
 
+def test_world_cli_json_path_reports_hard_ok(capsys, tmp_path):
+    code = main([
+        "world",
+        "--seed",
+        "17",
+        "--scale",
+        "10",
+        "--output-root",
+        str(tmp_path),
+        "--json",
+    ])
+
+    captured = capsys.readouterr()
+    payload = json.loads(captured.out)
+
+    assert code == 0
+    assert payload["counts"]["accounts"] == 10
+    assert payload["knowability_audit"]["hard_ok"] is True
+
+
 class _Response:
     def __init__(self, payload):
         self._payload = payload

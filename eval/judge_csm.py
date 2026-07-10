@@ -36,6 +36,9 @@ QUALITY_DIMENSIONS = (
 ORDINAL_SCORES = (1, 2, 3)
 PASSING_SCORE = 2
 KAPPA_GATE = 0.6
+OUTREACH_DRAFT_ARTIFACT_TYPE = "draft_customer_outreach"
+VALIDATED_ARTIFACT_TYPES = frozenset({OUTREACH_DRAFT_ARTIFACT_TYPE})
+OUT_OF_VALIDATED_DOMAIN = "out_of_validated_domain"
 
 
 @dataclass(frozen=True)
@@ -65,12 +68,23 @@ class QualityLabels:
 
 
 @dataclass(frozen=True)
+class OutOfDomainQualityResult:
+    candidate_id: str
+    artifact_type: str
+    quality: str = OUT_OF_VALIDATED_DOMAIN
+
+
+QualityScoreResult = QualityLabels | OutOfDomainQualityResult
+
+
+@dataclass(frozen=True)
 class SlotBQualityCandidate:
     candidate_id: str
     fixture_mode: bool
     request: dict
     output: dict
     human_labels: QualityLabels | None = None
+    artifact_type: str = OUTREACH_DRAFT_ARTIFACT_TYPE
 
     def with_human_labels(self, labels: QualityLabels) -> "SlotBQualityCandidate":
         if labels.candidate_id != self.candidate_id:
@@ -81,6 +95,7 @@ class SlotBQualityCandidate:
             request=self.request,
             output=self.output,
             human_labels=labels,
+            artifact_type=self.artifact_type,
         )
 
 
@@ -116,7 +131,16 @@ class QualityValidationReport:
 
 
 class QualityJudge(Protocol):
-    def score(self, candidate: SlotBQualityCandidate) -> QualityLabels: ...
+    def score(self, candidate: SlotBQualityCandidate) -> QualityScoreResult: ...
+
+
+def quality_out_of_validated_domain(candidate: SlotBQualityCandidate) -> OutOfDomainQualityResult | None:
+    if candidate.artifact_type in VALIDATED_ARTIFACT_TYPES:
+        return None
+    return OutOfDomainQualityResult(
+        candidate_id=candidate.candidate_id,
+        artifact_type=candidate.artifact_type,
+    )
 
 
 def default_rubric() -> QualityRubric:
@@ -295,6 +319,7 @@ def read_slot_b_quality_candidates(path: Path) -> tuple[SlotBQualityCandidate, .
                         if labels is not None
                         else None
                     ),
+                    artifact_type=raw.get("artifact_type", OUTREACH_DRAFT_ARTIFACT_TYPE),
                 )
             )
     return tuple(records)
@@ -311,10 +336,15 @@ def validate_judge_agreement(
     if not labeled:
         raise ValueError("at least one human-labeled candidate is required")
 
-    judged = {
-        candidate.candidate_id: judge.score(candidate)
-        for candidate in labeled
-    }
+    judged = {}
+    for candidate in labeled:
+        result = judge.score(candidate)
+        if isinstance(result, OutOfDomainQualityResult):
+            raise ValueError(
+                f"{candidate.candidate_id}: artifact_type {candidate.artifact_type!r} "
+                "is outside the quality judge's validated domain"
+            )
+        judged[candidate.candidate_id] = result
     agreements = {}
     for dimension in rubric.dimension_names():
         human_scores = [
@@ -441,7 +471,9 @@ class LabelReplayJudge:
     def __init__(self, labels_by_candidate: Mapping[str, QualityLabels]) -> None:
         self._labels_by_candidate = labels_by_candidate
 
-    def score(self, candidate: SlotBQualityCandidate) -> QualityLabels:
+    def score(self, candidate: SlotBQualityCandidate) -> QualityScoreResult:
+        if out_of_domain := quality_out_of_validated_domain(candidate):
+            return out_of_domain
         return self._labels_by_candidate[candidate.candidate_id]
 
 
@@ -509,6 +541,7 @@ def _output_dict(output: ReasonDraftOutput) -> dict:
 def _candidate_dict(candidate: SlotBQualityCandidate) -> dict:
     return {
         "candidate_id": candidate.candidate_id,
+        "artifact_type": candidate.artifact_type,
         "fixture_mode": candidate.fixture_mode,
         "request": candidate.request,
         "output": candidate.output,

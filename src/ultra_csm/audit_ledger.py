@@ -129,6 +129,27 @@ def list_audit_events(
     )
 
 
+def audit_event_type_gap(
+    conn: psycopg.Connection,
+    *,
+    tenant_id: str,
+    actor_id: str,
+    expected_events: tuple[str, ...] = EXPECTED_LEDGER_EVENTS,
+    now: Any = None,
+) -> tuple[str, ...]:
+    """Return expected operational event types absent from the visible ledger."""
+
+    with session(conn, tenant_id=tenant_id, actor_id=actor_id, now=now) as cur:
+        cur.execute(
+            "SELECT DISTINCT event_type "
+            "FROM audit.event_log "
+            "WHERE event_type = ANY(%s)",
+            (list(expected_events),),
+        )
+        observed = {row[0] for row in cur.fetchall()}
+    return tuple(event for event in expected_events if event not in observed)
+
+
 def audit_event_storage_ready(
     conn: psycopg.Connection,
     *,
