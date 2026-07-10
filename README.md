@@ -93,6 +93,7 @@ make eval                  # offline suite + gold/knowability checks
 make lint hygiene
 make security-scan         # full public history, narrow fixture allowlist
 make hosted-readonly-demo # fixture drift check, UI lint, static build
+make hosted-action-control-deploy-check # isolated backend bundle + sandbox contracts
 ```
 
 No cloud credentials or customer data are needed for these gates. Credentialed connector

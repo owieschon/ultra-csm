@@ -8,8 +8,8 @@ tenant, account, recipient, permission, action type, or outbound target.
 
 `POST /demo/action-control/sandbox/evaluate` accepts at most four commands. The
 server opens a fresh database connection, starts a transaction, replays the
-entire command log through the production `ActionGate` and
-`SimOutboundCommitter`, verifies the temporary JSONL outbox, constructs the
+entire command log through the production `ActionGate` and the sandbox-only
+`RollbackSandboxCommitter`, verifies the temporary JSONL outbox, constructs the
 response, rolls back, removes the temporary directory, and only then returns.
 
 The permitted graph is:
@@ -77,6 +77,11 @@ Real hosted interactivity requires deploying
 exact `ULTRA_CSM_SANDBOX_ALLOWED_ORIGINS` allowlist. That minimal app exposes
 only health, OpenAPI metadata, and the sandbox evaluator; it does not expose
 the production proposal, connector, or mapping routes.
+
+The reproducible separate-project bundle and operator procedure are documented
+in [`HOSTED_ACTION_CONTROL_RUNBOOK.md`](HOSTED_ACTION_CONTROL_RUNBOOK.md). The
+repository does not provision or claim a live sandbox until those external
+steps and post-deploy checks have receipts.
 
 The public ingress should additionally enforce request-rate and concurrency
 limits. The application bounds each JSON body to 16 KiB, each draft to 800

@@ -1,0 +1,10 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "app.py": {
+      "maxDuration": 30,
+      "includeFiles": "migrations/**",
+      "excludeFiles": "{.bundle-manifest.json,.env.example}"
+    }
+  }
+}
