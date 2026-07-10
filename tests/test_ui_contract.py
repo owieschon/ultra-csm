@@ -121,7 +121,16 @@ class TestLedgerEndpoint:
         assert "value_model" in events
         assert "slot_b.draft" in events
         assert "judge.score" in events
-        assert set(ledger["ledger_gap"]) == {"gmail.commit", "reobserve.queue"}
+        # Handoff-lane and self-serve events are registered but do not fire in a
+        # default fixture sweep; the self-serve trio fires in its own workflow
+        # context (tests/test_self_serve_*), so listing it here is truthful.
+        assert set(ledger["ledger_gap"]) == {
+            "gmail.commit",
+            "reobserve.queue",
+            "self_serve_activation.trigger",
+            "self_serve_activation.packet",
+            "self_serve_activation.value_path",
+        }
 
     def test_ledger_reflects_a_real_verdict(self, client: TestClient):
         client.post("/sweep", headers=AUTH_HEADERS)
