@@ -214,9 +214,9 @@ export function QueueDetail({ item, day }: { item: WorkItem; day: number | undef
           {(brief?.account_name as string | undefined)?.slice(0, 2).toUpperCase() ?? "··"}
         </div>
         <div>
-          <div className="id-name">
+          <h1 className="id-name">
             {(brief?.account_name as string) ?? item.account_id}
-          </div>
+          </h1>
           <div className="id-meta">
             <span className="tierpill">
               {humanizeCode((brief?.lifecycle_stage as string) ?? "—")}
@@ -267,8 +267,10 @@ export function QueueDetail({ item, day }: { item: WorkItem; day: number | undef
         </div>
         {(item.priority?.factors ?? []).map((factor, fi) => (
           <div key={factor.name}>
-            <div
+            <button
+              type="button"
               className="factor"
+              aria-expanded={openFactor === fi}
               onClick={() => setOpenFactor(openFactor === fi ? null : fi)}
             >
               <span className="fname">{label(TRIGGER_LABELS, factor.name)}</span>
@@ -281,7 +283,7 @@ export function QueueDetail({ item, day }: { item: WorkItem; day: number | undef
                 </span>
                 <span>{factor.evidence?.length ?? 0} records</span>
               </span>
-            </div>
+            </button>
             {openFactor === fi && (
               <div className="evid-in">
                 {(factor.evidence ?? []).map((ev, ei) => {
@@ -549,10 +551,16 @@ function Drawer({
       : "…";
   return (
     <div className="drawer">
-      <div className={`drawer-h${dormant ? " dormant" : ""}`} onClick={onToggle}>
+      <button
+        type="button"
+        className={`drawer-h${dormant ? " dormant" : ""}`}
+        aria-expanded={!dormant && open}
+        disabled={dormant}
+        onClick={onToggle}
+      >
         <span className="dn">{name}</span>
         <span className="ds">{summary}</span>
-      </div>
+      </button>
       {open && !dormant && (
         <div className="drawer-b">
           {(rows ?? []).map((row, i) =>
@@ -615,10 +623,16 @@ function StakeholderDrawer({
 
   return (
     <div className="drawer">
-      <div className={`drawer-h${rows !== null && rows.length === 0 ? " dormant" : ""}`} onClick={onToggle}>
+      <button
+        type="button"
+        className={`drawer-h${rows !== null && rows.length === 0 ? " dormant" : ""}`}
+        aria-expanded={Boolean(rows?.length) && open}
+        disabled={rows !== null && rows.length === 0}
+        onClick={onToggle}
+      >
         <span className="dn">Stakeholders</span>
         <span className="ds">{summary}</span>
-      </div>
+      </button>
       {open && rows !== null && (
         <div className="drawer-b">
           {rows.length === 0 && (
@@ -723,25 +737,30 @@ function CommsDrawer({
 
   return (
     <div className="drawer">
-      <div className="drawer-h" onClick={onToggle}>
+      <button
+        type="button"
+        className="drawer-h"
+        aria-expanded={open}
+        onClick={onToggle}
+      >
         <span className="dn">Comms</span>
         <span className="ds">{total} record{total === 1 ? "" : "s"} across 3 sources</span>
-      </div>
+      </button>
       {open && (
         <div className="drawer-b">
-          <div className="sec-h" style={{ marginBottom: 4 }}>
+          <div className="sec-h" role="tablist" aria-label="Communication sources" style={{ marginBottom: 4 }}>
             {rowsByTab.map((t) => (
-              <span
+              <button
+                type="button"
+                role="tab"
+                aria-selected={t.key === activeTab}
                 key={t.key}
                 className="tierpill"
                 style={{ cursor: "pointer", marginRight: 6, opacity: t.key === activeTab ? 1 : 0.55 }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setActiveTab(t.key);
-                }}
+                onClick={() => setActiveTab(t.key)}
               >
                 {t.label} ({t.rows.length})
-              </span>
+              </button>
             ))}
           </div>
           {active.rows.map((row, i) => {

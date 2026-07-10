@@ -1,5 +1,6 @@
 {
   "account_count": 181,
+  "action_control_contract_version": "action-control.vertical-slice.v1",
   "day": 140,
   "exported_account_detail_count": 11,
   "mode": "hosted-readonly",

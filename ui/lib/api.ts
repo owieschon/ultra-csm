@@ -49,6 +49,9 @@ function demoPath(path: string): string {
   if (rawPath === "/sweep") return `sweep-day-${day}.json`;
   if (rawPath === "/proposals") return "proposals.json";
   if (rawPath === "/ledger") return "ledger.json";
+  if (rawPath === "/demo/action-control/vertical-slice") {
+    return "action-control-vertical-slice-v1.json";
+  }
   if (rawPath === "/comms/pending-mappings/slack") return "comms-slack.json";
   if (rawPath === "/comms/pending-mappings/notion") return "comms-notion.json";
   if (accountMatch) {
@@ -388,8 +391,58 @@ export interface HealthResponse {
   health_source: string;
 }
 
+export interface ActionControlVerticalSlice {
+  schema_version: "action-control.vertical-slice.v1";
+  scenario_id: "trailhead-logistics.payload-binding";
+  mode: "synthetic_sandbox";
+  outbound_effects_enabled: false;
+  state_sequence: [
+    "pending_human_decision",
+    "approved_payload_bound",
+    "simulated_committed",
+    "refused_payload_mismatch",
+  ];
+  proposal: {
+    proposal_id: string;
+    account_id: string;
+    account_name: string;
+    action: "draft_customer_outreach";
+    state: "pending_human_decision";
+    recipient: string;
+    draft: string;
+    payload_sha256: string;
+  };
+  approval: {
+    verdict: "approve";
+    state: "approved_payload_bound";
+    human_principal_id: string;
+    approved_payload_sha256: string;
+  };
+  simulated_receipt: {
+    state: "simulated_committed";
+    receipt_id: string;
+    proposal_id: string;
+    idempotency_key: string;
+    target: "simulated_outbox";
+    committed: true;
+    dry_run: false;
+    external_effect: false;
+    payload_sha256: string;
+  };
+  tamper_refusal: {
+    state: "refused_payload_mismatch";
+    code: "PAYLOAD_HASH_MISMATCH";
+    reason: "payload hash does not match the authorized verdict";
+    committed: false;
+    approved_payload_sha256: string;
+    attempted_payload_sha256: string;
+  };
+}
+
 export const api = {
   health: () => request<HealthResponse>("/health"),
+  actionControlVerticalSlice: () =>
+    request<ActionControlVerticalSlice>("/demo/action-control/vertical-slice"),
   accounts: (day?: number) =>
     request<AccountListResponse>(`/accounts${day != null ? `?day=${day}` : ""}`),
   accountBrief: (accountId: string, day?: number) =>

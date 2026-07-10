@@ -1,0 +1,47 @@
+{
+  "approval": {
+    "approved_payload_sha256": "3fc6c8f5f7d0cba8e66f5ef523a4e4161fa4843a2c3fd54976f1e6df16d5bd18",
+    "human_principal_id": "7e145321-fa3f-5e98-b154-4a3b573991e1",
+    "state": "approved_payload_bound",
+    "verdict": "approve"
+  },
+  "mode": "synthetic_sandbox",
+  "outbound_effects_enabled": false,
+  "proposal": {
+    "account_id": "cb8e9dbb-4cd5-5da8-ba17-9192db5c7553",
+    "account_name": "Trailhead Logistics",
+    "action": "draft_customer_outreach",
+    "draft": "Hi Vanessa, Trailhead Logistics is showing an onboarding risk tied to an overdue success plan. Can we review the activation blockers?",
+    "payload_sha256": "3fc6c8f5f7d0cba8e66f5ef523a4e4161fa4843a2c3fd54976f1e6df16d5bd18",
+    "proposal_id": "8aa94cae-a7c3-57be-8ca0-d2467c98f9d1",
+    "recipient": "vanessa.torres@trailhead-logistics.example",
+    "state": "pending_human_decision"
+  },
+  "scenario_id": "trailhead-logistics.payload-binding",
+  "schema_version": "action-control.vertical-slice.v1",
+  "simulated_receipt": {
+    "committed": true,
+    "dry_run": false,
+    "external_effect": false,
+    "idempotency_key": "a3513a9898e0e8c9ca3bda6079ab45d030b29db64ef5d87a223a605027468781",
+    "payload_sha256": "3fc6c8f5f7d0cba8e66f5ef523a4e4161fa4843a2c3fd54976f1e6df16d5bd18",
+    "proposal_id": "8aa94cae-a7c3-57be-8ca0-d2467c98f9d1",
+    "receipt_id": "2ee4bf40b1e7ad77b780ea54",
+    "state": "simulated_committed",
+    "target": "simulated_outbox"
+  },
+  "state_sequence": [
+    "pending_human_decision",
+    "approved_payload_bound",
+    "simulated_committed",
+    "refused_payload_mismatch"
+  ],
+  "tamper_refusal": {
+    "approved_payload_sha256": "3fc6c8f5f7d0cba8e66f5ef523a4e4161fa4843a2c3fd54976f1e6df16d5bd18",
+    "attempted_payload_sha256": "c690e0881b649cffd7ba2c2ef1926bb2bfd56bec4127e84669dfce5a98c139d0",
+    "code": "PAYLOAD_HASH_MISMATCH",
+    "committed": false,
+    "reason": "payload hash does not match the authorized verdict",
+    "state": "refused_payload_mismatch"
+  }
+}
