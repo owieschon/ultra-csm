@@ -98,11 +98,23 @@ def test_two_independent_hosted_exports_have_identical_hashes(tmp_path):
     assert _fixture_hashes(first) == _fixture_hashes(second)
 
 
-def _run_export(output_dir: Path) -> None:
+def test_hosted_export_is_independent_of_caller_timezone(tmp_path):
+    new_york = tmp_path / "new-york"
+    utc = tmp_path / "utc"
+
+    _run_export(new_york, timezone="America/New_York")
+    _run_export(utc, timezone="UTC")
+
+    assert _fixture_hashes(new_york) == _fixture_hashes(utc)
+
+
+def _run_export(output_dir: Path, *, timezone: str | None = None) -> None:
     env = dict(os.environ)
     env["PYTHONPATH"] = "src:."
     env["ULTRA_CSM_BIND_HOST"] = "127.0.0.1"
     env["ULTRA_CSM_DEMO_NOAUTH"] = "1"
+    if timezone is not None:
+        env["TZ"] = timezone
     subprocess.run(
         [
             sys.executable,

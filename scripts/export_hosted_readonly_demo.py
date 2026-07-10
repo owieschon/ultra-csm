@@ -5,12 +5,20 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import time
 import uuid
 from pathlib import Path
 from typing import Any
 
 from fastapi.testclient import TestClient
 
+# The seeded database serializes timezone-aware ledger timestamps.  Pin the
+# exporter itself to UTC before importing the application so committed fixture
+# bytes do not depend on the host running the export (for example, a developer
+# laptop in America/New_York versus GitHub's UTC Linux runner).
+os.environ["TZ"] = "UTC"
+if hasattr(time, "tzset"):
+    time.tzset()
 os.environ.setdefault("ULTRA_CSM_DEMO_NOAUTH", "1")
 
 from ultra_csm.api import app
