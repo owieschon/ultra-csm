@@ -1,0 +1,548 @@
+{
+  "$defs": {
+    "SandboxDecisionView": {
+      "additionalProperties": false,
+      "properties": {
+        "approved_payload_sha256": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Approved Payload Sha256"
+        },
+        "human_principal_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+          "title": "Human Principal Id",
+          "type": "string"
+        },
+        "verdict": {
+          "enum": [
+            "approve",
+            "revise",
+            "deny"
+          ],
+          "title": "Verdict",
+          "type": "string"
+        }
+      },
+      "required": [
+        "verdict",
+        "human_principal_id"
+      ],
+      "title": "SandboxDecisionView",
+      "type": "object"
+    },
+    "SandboxEventView": {
+      "additionalProperties": false,
+      "properties": {
+        "detail": {
+          "minLength": 1,
+          "title": "Detail",
+          "type": "string"
+        },
+        "label": {
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        },
+        "payload_sha256": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Payload Sha256"
+        },
+        "sequence": {
+          "minimum": 0,
+          "title": "Sequence",
+          "type": "integer"
+        },
+        "state": {
+          "enum": [
+            "pending_human_decision",
+            "approved_payload_bound",
+            "denied_terminal",
+            "simulated_committed",
+            "refused_payload_mismatch"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "technical_event": {
+          "minLength": 1,
+          "title": "Technical Event",
+          "type": "string"
+        }
+      },
+      "required": [
+        "sequence",
+        "state",
+        "label",
+        "technical_event",
+        "detail"
+      ],
+      "title": "SandboxEventView",
+      "type": "object"
+    },
+    "SandboxEvidenceView": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+          "title": "Evidence Id",
+          "type": "string"
+        },
+        "label": {
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        },
+        "provenance": {
+          "const": "synthetic_fixture",
+          "title": "Provenance",
+          "type": "string"
+        }
+      },
+      "required": [
+        "evidence_id",
+        "label",
+        "provenance"
+      ],
+      "title": "SandboxEvidenceView",
+      "type": "object"
+    },
+    "SandboxIdempotencyProbeView": {
+      "additionalProperties": false,
+      "properties": {
+        "committed": {
+          "const": false,
+          "title": "Committed",
+          "type": "boolean"
+        },
+        "idempotency_key": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Idempotency Key",
+          "type": "string"
+        },
+        "outbox_rows": {
+          "const": 1,
+          "title": "Outbox Rows",
+          "type": "integer"
+        },
+        "receipt_id": {
+          "pattern": "^[0-9a-f]{24}$",
+          "title": "Receipt Id",
+          "type": "string"
+        },
+        "state": {
+          "const": "duplicate_suppressed",
+          "title": "State",
+          "type": "string"
+        }
+      },
+      "required": [
+        "state",
+        "receipt_id",
+        "idempotency_key",
+        "committed",
+        "outbox_rows"
+      ],
+      "title": "SandboxIdempotencyProbeView",
+      "type": "object"
+    },
+    "SandboxIsolationView": {
+      "additionalProperties": false,
+      "properties": {
+        "database_transaction": {
+          "const": "rolled_back",
+          "title": "Database Transaction",
+          "type": "string"
+        },
+        "external_effect": {
+          "const": false,
+          "title": "External Effect",
+          "type": "boolean"
+        },
+        "filesystem": {
+          "const": "temporary_directory_removed",
+          "title": "Filesystem",
+          "type": "string"
+        }
+      },
+      "required": [
+        "database_transaction",
+        "filesystem",
+        "external_effect"
+      ],
+      "title": "SandboxIsolationView",
+      "type": "object"
+    },
+    "SandboxProposalView": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "const": "draft_customer_outreach",
+          "title": "Action",
+          "type": "string"
+        },
+        "draft": {
+          "minLength": 1,
+          "title": "Draft",
+          "type": "string"
+        },
+        "payload_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Payload Sha256",
+          "type": "string"
+        },
+        "proposal_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+          "title": "Proposal Id",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "pending",
+            "approved",
+            "denied"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "proposal_id",
+        "action",
+        "status",
+        "draft",
+        "payload_sha256"
+      ],
+      "title": "SandboxProposalView",
+      "type": "object"
+    },
+    "SandboxReceiptView": {
+      "additionalProperties": false,
+      "properties": {
+        "committed": {
+          "const": true,
+          "title": "Committed",
+          "type": "boolean"
+        },
+        "dry_run": {
+          "const": false,
+          "title": "Dry Run",
+          "type": "boolean"
+        },
+        "external_effect": {
+          "const": false,
+          "title": "External Effect",
+          "type": "boolean"
+        },
+        "idempotency_key": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Idempotency Key",
+          "type": "string"
+        },
+        "payload_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Payload Sha256",
+          "type": "string"
+        },
+        "proposal_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+          "title": "Proposal Id",
+          "type": "string"
+        },
+        "receipt_id": {
+          "pattern": "^[0-9a-f]{24}$",
+          "title": "Receipt Id",
+          "type": "string"
+        },
+        "state": {
+          "const": "simulated_committed",
+          "title": "State",
+          "type": "string"
+        },
+        "target": {
+          "const": "simulated_outbox",
+          "title": "Target",
+          "type": "string"
+        }
+      },
+      "required": [
+        "state",
+        "receipt_id",
+        "proposal_id",
+        "idempotency_key",
+        "target",
+        "committed",
+        "dry_run",
+        "external_effect",
+        "payload_sha256"
+      ],
+      "title": "SandboxReceiptView",
+      "type": "object"
+    },
+    "SandboxScenarioView": {
+      "additionalProperties": false,
+      "properties": {
+        "account_id": {
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+          "title": "Account Id",
+          "type": "string"
+        },
+        "account_name": {
+          "const": "Trailhead Logistics",
+          "title": "Account Name",
+          "type": "string"
+        },
+        "contact_name": {
+          "const": "Vanessa Torres",
+          "title": "Contact Name",
+          "type": "string"
+        },
+        "evidence": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "$ref": "#/$defs/SandboxEvidenceView"
+            },
+            {
+              "$ref": "#/$defs/SandboxEvidenceView"
+            }
+          ],
+          "title": "Evidence",
+          "type": "array"
+        },
+        "original_draft": {
+          "minLength": 1,
+          "title": "Original Draft",
+          "type": "string"
+        },
+        "recipient": {
+          "minLength": 1,
+          "title": "Recipient",
+          "type": "string"
+        },
+        "scenario_id": {
+          "const": "trailhead-logistics.payload-binding",
+          "title": "Scenario Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "scenario_id",
+        "account_id",
+        "account_name",
+        "contact_name",
+        "recipient",
+        "original_draft",
+        "evidence"
+      ],
+      "title": "SandboxScenarioView",
+      "type": "object"
+    },
+    "SandboxTamperRefusalView": {
+      "additionalProperties": false,
+      "properties": {
+        "approved_payload_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Approved Payload Sha256",
+          "type": "string"
+        },
+        "attempted_payload_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Attempted Payload Sha256",
+          "type": "string"
+        },
+        "code": {
+          "const": "PAYLOAD_HASH_MISMATCH",
+          "title": "Code",
+          "type": "string"
+        },
+        "committed": {
+          "const": false,
+          "title": "Committed",
+          "type": "boolean"
+        },
+        "outbox_rows": {
+          "const": 1,
+          "title": "Outbox Rows",
+          "type": "integer"
+        },
+        "reason": {
+          "const": "payload hash does not match the authorized verdict",
+          "title": "Reason",
+          "type": "string"
+        },
+        "state": {
+          "const": "refused_payload_mismatch",
+          "title": "State",
+          "type": "string"
+        }
+      },
+      "required": [
+        "state",
+        "code",
+        "reason",
+        "committed",
+        "approved_payload_sha256",
+        "attempted_payload_sha256",
+        "outbox_rows"
+      ],
+      "title": "SandboxTamperRefusalView",
+      "type": "object"
+    }
+  },
+  "$id": "https://ultra-csm.example/contracts/action-control.sandbox-session.v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "allowed_commands": {
+      "items": {
+        "enum": [
+          "approve_exact",
+          "revise_and_approve",
+          "deny",
+          "commit_simulated",
+          "retry_same_commit",
+          "probe_tamper"
+        ],
+        "type": "string"
+      },
+      "title": "Allowed Commands",
+      "type": "array"
+    },
+    "committed_receipt": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/SandboxReceiptView"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "decision": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/SandboxDecisionView"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "events": {
+      "items": {
+        "$ref": "#/$defs/SandboxEventView"
+      },
+      "title": "Events",
+      "type": "array"
+    },
+    "idempotency_probe": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/SandboxIdempotencyProbeView"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "isolation": {
+      "$ref": "#/$defs/SandboxIsolationView"
+    },
+    "mode": {
+      "const": "rollback_isolated_synthetic",
+      "title": "Mode",
+      "type": "string"
+    },
+    "outbound_effects_enabled": {
+      "const": false,
+      "title": "Outbound Effects Enabled",
+      "type": "boolean"
+    },
+    "proposal": {
+      "$ref": "#/$defs/SandboxProposalView"
+    },
+    "revision": {
+      "maximum": 4,
+      "minimum": 0,
+      "title": "Revision",
+      "type": "integer"
+    },
+    "run_id": {
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+      "title": "Run Id",
+      "type": "string"
+    },
+    "scenario": {
+      "$ref": "#/$defs/SandboxScenarioView"
+    },
+    "schema_version": {
+      "const": "action-control.sandbox-session.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "state": {
+      "enum": [
+        "pending_human_decision",
+        "approved_payload_bound",
+        "denied_terminal",
+        "simulated_committed",
+        "refused_payload_mismatch"
+      ],
+      "title": "State",
+      "type": "string"
+    },
+    "state_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "State Sha256",
+      "type": "string"
+    },
+    "tamper_refusal": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/SandboxTamperRefusalView"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "schema_version",
+    "run_id",
+    "revision",
+    "state",
+    "state_sha256",
+    "allowed_commands",
+    "mode",
+    "outbound_effects_enabled",
+    "scenario",
+    "proposal",
+    "decision",
+    "committed_receipt",
+    "idempotency_probe",
+    "tamper_refusal",
+    "events",
+    "isolation"
+  ],
+  "title": "ActionControlSandboxSession",
+  "type": "object"
+}

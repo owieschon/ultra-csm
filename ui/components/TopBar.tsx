@@ -110,6 +110,10 @@ export function TopBar({
         Evidence
       </Link>
 
+      <Link className="navlink" href="/action-control" aria-label="Open Action Control sandbox">
+        Sandbox
+      </Link>
+
       <button
         type="button"
         className="search"

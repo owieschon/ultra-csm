@@ -195,7 +195,7 @@ function BandView({
             <span className="tdone">
               {workItemByAccount.get(a.account_id)?.proposal?.status === "denied"
                 ? "denied"
-                : "sent"}
+                : "approved"}
             </span>
           </div>
         ))}
