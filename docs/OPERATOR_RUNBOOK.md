@@ -37,7 +37,43 @@ Status:
 - Added by builder during MP-F1 Wave 0.
 - Timeout/retry coverage for the `claude_code` transport landed via finding #2
   (`docs/R0_RETRY_COVERAGE_FINDING.md`).
-- Later R2/R3/R4 entries land here when their harnesses exist.
+- Third run completed all 127/127 items with zero crashes but landed outside
+  the committed kappa/false-open bar; see `docs/R0_KAPPA_BAND_FINDING.md`
+  (owner reviewed and authorized proceeding).
+
+## R2 — Writer Bake-off: Haiku 4.5 vs Sonnet 5 (`eval.writer_bakeoff`)
+
+Purpose: validate the cheap drafting model the program will use for Slot B,
+before adopting it. Both candidates draft the same MDD-power-sized, stratified
+scenario set; drafts are scored by the Sonnet-5 judge on the five currently-
+validated gating dimensions (`eval.judge_validation`'s scope guard) plus Slot
+B's own deterministic contract checks; `on_task_relevance` is scored and
+reported, never gated. Adoption is an absolute bar per arm, not head-to-head —
+see the module docstring in `eval/writer_bakeoff.py` for the exact bar and the
+self-preference disclosure (the judge is Sonnet 5, and one candidate arm is
+Sonnet 5 too).
+
+Command:
+
+```bash
+ULTRA_CSM_LLM_TRANSPORT=claude_code \
+python -m eval.writer_bakeoff --drop-pp 0.20 --pass-k 3 \
+  --checkpoint-dir .writer_bakeoff_checkpoints
+```
+
+Expected receipt:
+
+- `eval/gold/writer_bakeoff_report.json` records both arms' `gated_pass_rate`,
+  `pass_k_rate`, `contract_violation_rate`, per-dimension pass rates, and
+  token telemetry, plus the `adopt_eligible` verdict per arm.
+- Checkpointed per model under `--checkpoint-dir`; safe to stop and resume —
+  each draw's checkpoint entry is keyed by `(scenario_id, draw_index)`.
+- STOP → OA-Q1/OA-R2: the owner picks the adopted writer from the table; the
+  gates decide eligibility, not this recommendation.
+
+Status:
+
+- Harness built by builder (no prior R2 harness existed); not yet operated.
 
 ## R1 — Deterministic World Build Receipt
 
