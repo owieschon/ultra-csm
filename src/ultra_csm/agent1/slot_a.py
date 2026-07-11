@@ -13,7 +13,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Literal, Protocol
 
-from ultra_csm.llm_transport import resolve_message_transport
+from ultra_csm.llm_transport import resolve_message_transport, resolve_timeout_s
 
 SlotAClassification = Literal["blocker", "noise", "unknown"]
 ValidationMode = Literal["raise", "unknown"]
@@ -210,7 +210,7 @@ class AnthropicCaseNoteClassifier:
                 raise SlotAContractError("live Slot A requires ANTHROPIC_API_KEY")
         self._transport = transport or resolve_message_transport(
             client=client,
-            timeout_s=LIVE_TIMEOUT_S,
+            timeout_s=resolve_timeout_s(LIVE_TIMEOUT_S),
             max_retries=LIVE_MAX_RETRIES,
         )
         self.model_id = model_id or LIVE_SLOT_A_MODEL_ID
