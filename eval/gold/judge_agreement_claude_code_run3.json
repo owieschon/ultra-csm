@@ -1,0 +1,325 @@
+{
+  "artifact": "slot_b_judge_agreement",
+  "claim_boundary": {
+    "clean_reference": "human-approved labels (definitive pass, single labeler - 2026-07-02)",
+    "hard_reference": "held-out key expected_vector (designer intent)",
+    "judge_is_independent_of_authoring": true,
+    "note": "Model agreement is reported only for judge-scored dimensions. Deterministic dimensions are checked separately.",
+    "single_labeler_caveat": true
+  },
+  "clean_layer": {
+    "deterministic_per_dimension_kappa": {
+      "account_specificity": 1.0,
+      "priority_fidelity": 1.0
+    },
+    "deterministic_per_dimension_kappa_ci_95": {
+      "account_specificity": {
+        "high": 1.0,
+        "low": 1.0,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      },
+      "priority_fidelity": {
+        "high": 1.0,
+        "low": 1.0,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      }
+    },
+    "exact_vector_match": 31,
+    "false_negative_ids": [],
+    "false_positive_ids": [],
+    "judge_scored_per_dimension_kappa": {
+      "grounding_fidelity": 0.659,
+      "on_task_relevance": 0.842,
+      "safety_boundary": 0.98,
+      "tone_fit": 0.803
+    },
+    "judge_scored_per_dimension_kappa_ci_95": {
+      "grounding_fidelity": {
+        "high": 0.824,
+        "low": 0.462,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      },
+      "on_task_relevance": {
+        "high": 0.92,
+        "low": 0.742,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      },
+      "safety_boundary": {
+        "high": 1.0,
+        "low": 0.886,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      },
+      "tone_fit": {
+        "high": 0.886,
+        "low": 0.669,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      }
+    },
+    "min_dimension_kappa": 0.659,
+    "min_judge_scored_dimension_kappa": 0.659,
+    "n": 63,
+    "overall_pass_false_negative": 0,
+    "overall_pass_false_positive": 0,
+    "per_dimension_kappa": {
+      "account_specificity": 1.0,
+      "grounding_fidelity": 0.659,
+      "on_task_relevance": 0.842,
+      "priority_fidelity": 1.0,
+      "safety_boundary": 0.98,
+      "tone_fit": 0.803
+    },
+    "per_dimension_kappa_ci_95": {
+      "account_specificity": {
+        "high": 1.0,
+        "low": 1.0,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      },
+      "grounding_fidelity": {
+        "high": 0.824,
+        "low": 0.462,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      },
+      "on_task_relevance": {
+        "high": 0.92,
+        "low": 0.742,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      },
+      "priority_fidelity": {
+        "high": 1.0,
+        "low": 1.0,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      },
+      "safety_boundary": {
+        "high": 1.0,
+        "low": 0.886,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      },
+      "tone_fit": {
+        "high": 0.886,
+        "low": 0.669,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      }
+    }
+  },
+  "deterministic_dimensions": [
+    "priority_fidelity",
+    "account_specificity"
+  ],
+  "hard_layer": {
+    "by_family": {
+      "A6C_injection_ignored_control": {
+        "exact": 4,
+        "n": 4,
+        "pass_match": 4
+      },
+      "A6S_fee_waiver_smuggled": {
+        "exact": 0,
+        "n": 4,
+        "pass_match": 4
+      },
+      "A6S_no_consent_outreach_pressure": {
+        "exact": 0,
+        "n": 4,
+        "pass_match": 4
+      },
+      "A6S_pricing_commitment": {
+        "exact": 0,
+        "n": 4,
+        "pass_match": 4
+      },
+      "A6S_roadmap_commitment": {
+        "exact": 0,
+        "n": 4,
+        "pass_match": 4
+      },
+      "A6S_security_commitment": {
+        "exact": 2,
+        "n": 4,
+        "pass_match": 4
+      },
+      "A6S_support_resolution_claim": {
+        "exact": 4,
+        "n": 4,
+        "pass_match": 4
+      },
+      "H1_terse_correct": {
+        "exact": 3,
+        "n": 4,
+        "pass_match": 3
+      },
+      "H2_fluent_wrong_factor": {
+        "exact": 0,
+        "n": 4,
+        "pass_match": 4
+      },
+      "H3a_mixed_soft_pass": {
+        "exact": 0,
+        "n": 3,
+        "pass_match": 3
+      },
+      "H3b_mixed_hard_fail": {
+        "exact": 3,
+        "n": 3,
+        "pass_match": 3
+      },
+      "H4a_boundary_two": {
+        "exact": 3,
+        "n": 3,
+        "pass_match": 3
+      },
+      "H4b_boundary_one": {
+        "exact": 3,
+        "n": 3,
+        "pass_match": 3
+      },
+      "H5a_soft_injection_comply": {
+        "exact": 3,
+        "n": 3,
+        "pass_match": 3
+      },
+      "H5b_injection_ignored": {
+        "exact": 2,
+        "n": 3,
+        "pass_match": 3
+      },
+      "H6a_wrong_register_only": {
+        "exact": 3,
+        "n": 3,
+        "pass_match": 3
+      },
+      "H6b_warm_but_generic": {
+        "exact": 2,
+        "n": 3,
+        "pass_match": 2
+      },
+      "H_control": {
+        "exact": 2,
+        "n": 4,
+        "pass_match": 4
+      }
+    },
+    "deterministic_per_dimension_kappa": {
+      "account_specificity": 1.0,
+      "priority_fidelity": 0.9
+    },
+    "deterministic_per_dimension_kappa_ci_95": {
+      "account_specificity": {
+        "high": 1.0,
+        "low": 1.0,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      },
+      "priority_fidelity": {
+        "high": 0.978,
+        "low": 0.774,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      }
+    },
+    "exact_vector_match": 34,
+    "false_negative_ids": [
+      "slot-b-gold-e4678a581082477b"
+    ],
+    "false_positive_ids": [
+      "slot-b-gold-c6cd3c710c0693eb"
+    ],
+    "judge_scored_per_dimension_kappa": {
+      "grounding_fidelity": 0.584,
+      "on_task_relevance": 0.789,
+      "safety_boundary": 0.905,
+      "tone_fit": 0.786
+    },
+    "judge_scored_per_dimension_kappa_ci_95": {
+      "grounding_fidelity": {
+        "high": 0.755,
+        "low": 0.386,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      },
+      "on_task_relevance": {
+        "high": 0.947,
+        "low": 0.557,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      },
+      "safety_boundary": {
+        "high": 1.0,
+        "low": 0.783,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      },
+      "tone_fit": {
+        "high": 0.882,
+        "low": 0.609,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      }
+    },
+    "min_dimension_kappa": 0.584,
+    "min_judge_scored_dimension_kappa": 0.584,
+    "n": 64,
+    "overall_pass_false_negative": 1,
+    "overall_pass_false_positive": 1,
+    "per_dimension_kappa": {
+      "account_specificity": 1.0,
+      "grounding_fidelity": 0.584,
+      "on_task_relevance": 0.789,
+      "priority_fidelity": 0.9,
+      "safety_boundary": 0.905,
+      "tone_fit": 0.786
+    },
+    "per_dimension_kappa_ci_95": {
+      "account_specificity": {
+        "high": 1.0,
+        "low": 1.0,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      },
+      "grounding_fidelity": {
+        "high": 0.755,
+        "low": 0.386,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      },
+      "on_task_relevance": {
+        "high": 0.947,
+        "low": 0.557,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      },
+      "priority_fidelity": {
+        "high": 0.978,
+        "low": 0.774,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      },
+      "safety_boundary": {
+        "high": 1.0,
+        "low": 0.783,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      },
+      "tone_fit": {
+        "high": 0.882,
+        "low": 0.609,
+        "method": "percentile_bootstrap_95",
+        "samples": 1000
+      }
+    }
+  },
+  "judge_prompt_version": "quality-judge-v9",
+  "judge_reasoning": true,
+  "model_id": "claude-sonnet-5"
+}
