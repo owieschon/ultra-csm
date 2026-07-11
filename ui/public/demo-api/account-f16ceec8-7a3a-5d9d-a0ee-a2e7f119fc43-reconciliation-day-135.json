@@ -1,0 +1,190 @@
+{
+  "account_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+  "candidate_divergences": [],
+  "deterministic_signals": [
+    {
+      "contribution": 18,
+      "evidence": [
+        {
+          "field": "active_users",
+          "observed_at": "2026-11-03T00:00:00Z",
+          "source": "cs_platform",
+          "source_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43"
+        },
+        {
+          "field": "objectives",
+          "observed_at": "2026-07-15",
+          "source": "cs_platform",
+          "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
+        }
+      ],
+      "name": "usage_outcome_unverified",
+      "origin": "deterministic",
+      "surfaced_by_lenses": [
+        "value_model",
+        "risk_lens",
+        "expansion_lens"
+      ],
+      "value": 1.0
+    },
+    {
+      "contribution": 18,
+      "evidence": [
+        {
+          "field": "status",
+          "observed_at": "2026-06-15T10:00:00Z",
+          "source": "crm",
+          "source_id": "7d61c11f-73d4-52f6-a738-33ab96634a61"
+        }
+      ],
+      "name": "open_support_pressure",
+      "origin": "deterministic",
+      "surfaced_by_lenses": [
+        "risk_lens"
+      ],
+      "value": 1.0
+    },
+    {
+      "contribution": 20,
+      "evidence": [
+        {
+          "field": "target_date",
+          "observed_at": "2026-07-15",
+          "source": "cs_platform",
+          "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
+        }
+      ],
+      "name": "overdue_success_plan",
+      "origin": "deterministic",
+      "surfaced_by_lenses": [
+        "risk_lens"
+      ],
+      "value": 1.0
+    },
+    {
+      "contribution": 15,
+      "evidence": [
+        {
+          "field": "underused_capabilities",
+          "observed_at": "2026-11-03T00:00:00Z",
+          "source": "cs_platform",
+          "source_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43"
+        },
+        {
+          "field": "capability",
+          "observed_at": "2026-06-01",
+          "source": "telemetry",
+          "source_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43:core_telematics"
+        },
+        {
+          "field": "capability",
+          "observed_at": "2026-06-01",
+          "source": "telemetry",
+          "source_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43:route_optimization"
+        },
+        {
+          "field": "capability",
+          "observed_at": "2026-06-01",
+          "source": "telemetry",
+          "source_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43:driver_coaching"
+        },
+        {
+          "field": "capability",
+          "observed_at": "2026-06-01",
+          "source": "telemetry",
+          "source_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43:maintenance_alerts"
+        }
+      ],
+      "name": "feature_depth_gap",
+      "origin": "deterministic",
+      "surfaced_by_lenses": [
+        "risk_lens",
+        "expansion_lens"
+      ],
+      "value": 0.5
+    },
+    {
+      "contribution": 10,
+      "evidence": [
+        {
+          "field": "adoption_rate",
+          "observed_at": "2026-11-03T00:00:00Z",
+          "source": "cs_platform",
+          "source_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43"
+        }
+      ],
+      "name": "expansion_readiness_high_adoption",
+      "origin": "deterministic",
+      "surfaced_by_lenses": [
+        "expansion_lens"
+      ],
+      "value": 0.87
+    }
+  ],
+  "explanation": {
+    "disclaimer": "Model-generated explanation -- may be incomplete or mischaracterize the underlying evidence. Verify against the cited sources before acting.",
+    "evidence": [
+      {
+        "field": "active_users",
+        "observed_at": "2026-11-03T00:00:00Z",
+        "source": "cs_platform",
+        "source_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43"
+      },
+      {
+        "field": "objectives",
+        "observed_at": "2026-07-15",
+        "source": "cs_platform",
+        "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
+      },
+      {
+        "field": "status",
+        "observed_at": "2026-06-15T10:00:00Z",
+        "source": "crm",
+        "source_id": "7d61c11f-73d4-52f6-a738-33ab96634a61"
+      },
+      {
+        "field": "target_date",
+        "observed_at": "2026-07-15",
+        "source": "cs_platform",
+        "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
+      },
+      {
+        "field": "underused_capabilities",
+        "observed_at": "2026-11-03T00:00:00Z",
+        "source": "cs_platform",
+        "source_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43"
+      },
+      {
+        "field": "capability",
+        "observed_at": "2026-06-01",
+        "source": "telemetry",
+        "source_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43:core_telematics"
+      },
+      {
+        "field": "capability",
+        "observed_at": "2026-06-01",
+        "source": "telemetry",
+        "source_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43:route_optimization"
+      },
+      {
+        "field": "capability",
+        "observed_at": "2026-06-01",
+        "source": "telemetry",
+        "source_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43:driver_coaching"
+      },
+      {
+        "field": "capability",
+        "observed_at": "2026-06-01",
+        "source": "telemetry",
+        "source_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43:maintenance_alerts"
+      },
+      {
+        "field": "adoption_rate",
+        "observed_at": "2026-11-03T00:00:00Z",
+        "source": "cs_platform",
+        "source_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43"
+      }
+    ],
+    "text": "Fixture explanation: no live model configured."
+  }
+}

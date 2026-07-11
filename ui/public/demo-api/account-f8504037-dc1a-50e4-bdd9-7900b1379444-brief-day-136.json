@@ -1,0 +1,241 @@
+{
+  "account_id": "f8504037-dc1a-50e4-bdd9-7900b1379444",
+  "account_name": "Sagebrush Transport",
+  "adoption": {
+    "account_id": "f8504037-dc1a-50e4-bdd9-7900b1379444",
+    "active_assets": 0,
+    "active_users": 0,
+    "adoption_rate": 0.0,
+    "entitled_assets": 0,
+    "licensed_users": 0,
+    "measured_at": "2026-11-04T00:00:00Z",
+    "underused_capabilities": []
+  },
+  "comms_call_transcripts": [
+    {
+      "account_id": "f8504037-dc1a-50e4-bdd9-7900b1379444",
+      "attendees": [
+        "66c4d941-3342-5f92-8ea5-4c8c6764ef1e",
+        "csm-103"
+      ],
+      "channel": "call",
+      "contact_id": "66c4d941-3342-5f92-8ea5-4c8c6764ef1e",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "74a55588-8484-566e-b678-d0047c682ec7",
+      "timestamp": "2026-11-03T02:00:00Z"
+    }
+  ],
+  "comms_gmail": [
+    {
+      "account_id": "f8504037-dc1a-50e4-bdd9-7900b1379444",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "66c4d941-3342-5f92-8ea5-4c8c6764ef1e",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "85006c56-6abc-5659-8916-01cc1917e967",
+      "timestamp": "2026-11-01T00:00:00Z"
+    },
+    {
+      "account_id": "f8504037-dc1a-50e4-bdd9-7900b1379444",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "66c4d941-3342-5f92-8ea5-4c8c6764ef1e",
+      "direction": "inbound",
+      "response_time_hours": 7.0,
+      "signal_id": "84e0b200-e579-592a-a1d1-5fdb0f2b9757",
+      "timestamp": "2026-11-01T07:00:00Z"
+    }
+  ],
+  "comms_internal": [],
+  "company": {
+    "arr_cents": 7500000,
+    "csm_owner_id": "csm-103",
+    "lifecycle_stage": "at_risk",
+    "renewal_date": "2026-08-01",
+    "status": "Churned"
+  },
+  "contacts": [
+    {
+      "consent_to_contact": true,
+      "email": "brett.sawyer@sagebrush-transport.example",
+      "name": "Brett Sawyer",
+      "role": "fleet_operations",
+      "title": "Fleet Manager"
+    },
+    {
+      "consent_to_contact": true,
+      "email": "janet.lowe@sagebrush-transport.example",
+      "name": "Janet Lowe",
+      "role": "administration",
+      "title": "Admin"
+    }
+  ],
+  "divergences": [],
+  "entitlements": [
+    {
+      "account_id": "f8504037-dc1a-50e4-bdd9-7900b1379444",
+      "capability": "core_telematics",
+      "ends_at": null,
+      "entitled_quantity": 35,
+      "starts_at": "2025-08-01",
+      "unit": "assets"
+    },
+    {
+      "account_id": "f8504037-dc1a-50e4-bdd9-7900b1379444",
+      "capability": "route_optimization",
+      "ends_at": null,
+      "entitled_quantity": 35,
+      "starts_at": "2025-08-01",
+      "unit": "assets"
+    },
+    {
+      "account_id": "f8504037-dc1a-50e4-bdd9-7900b1379444",
+      "capability": "driver_coaching",
+      "ends_at": null,
+      "entitled_quantity": 22,
+      "starts_at": "2025-08-01",
+      "unit": "assets"
+    }
+  ],
+  "health_snapshot": {
+    "band": "red",
+    "drivers": [
+      "churned",
+      "usage_zero",
+      "no_response"
+    ],
+    "measured_at": "2026-08-30T00:00:00Z",
+    "score": 39.0
+  },
+  "industry": "transportation",
+  "lifecycle_stage": "at_risk",
+  "milestones": [],
+  "open_cases": [
+    {
+      "account_id": "f8504037-dc1a-50e4-bdd9-7900b1379444",
+      "case_id": "3acf0291-5b0b-55b9-8653-d042239fcc17",
+      "closed_at": null,
+      "created_at": "2026-06-15T08:30:00Z",
+      "origin": "Email",
+      "priority": "High",
+      "status": "Open",
+      "subject": "Frustrated with slow reporting performance"
+    }
+  ],
+  "open_ctas": [
+    {
+      "account_id": "f8504037-dc1a-50e4-bdd9-7900b1379444",
+      "cta_id": "751d5071-7c34-5cd1-bca9-178d0f38ad1d",
+      "due_date": "2026-07-01",
+      "owner_id": "csm-103",
+      "priority": "High",
+      "reason": "Usage decline - engagement intervention needed",
+      "status": "open"
+    }
+  ],
+  "opportunities": [],
+  "priority": {
+    "factors": [
+      {
+        "config_version": "value-model-config-v1",
+        "contribution": 30,
+        "evidence": [
+          {
+            "field": "health_score",
+            "observed_at": "2026-08-30T00:00:00Z",
+            "source": "cs_platform",
+            "source_id": "f8504037-dc1a-50e4-bdd9-7900b1379444"
+          }
+        ],
+        "name": "health_red",
+        "rule_name": "base_default",
+        "threshold_name": "health_red_points",
+        "threshold_value": 30,
+        "value": 1.0
+      }
+    ],
+    "score": 30
+  },
+  "recent_usage_signals": [
+    {
+      "account_id": "f8504037-dc1a-50e4-bdd9-7900b1379444",
+      "grain": "company",
+      "metric_name": "daily_active_assets",
+      "observed_at": "2026-11-04T00:00:00Z",
+      "signal_id": "07758059-0351-51ef-b74a-82278690bd0e",
+      "source_ref": "product-telemetry:daily_active_assets",
+      "subject_id": null,
+      "unit": "assets",
+      "value": 0.0
+    }
+  ],
+  "stakeholders": [
+    {
+      "champion": false,
+      "consent_to_contact": true,
+      "contact_id": "66c4d941-3342-5f92-8ea5-4c8c6764ef1e",
+      "days_since_interaction": null,
+      "departed": false,
+      "name": "Brett Sawyer",
+      "new_unengaged": false,
+      "relationship_type": null,
+      "title": "Fleet Manager"
+    },
+    {
+      "champion": false,
+      "consent_to_contact": true,
+      "contact_id": "ae28c39a-6031-5b27-8e0f-70a27906fa31",
+      "days_since_interaction": null,
+      "departed": false,
+      "name": "Janet Lowe",
+      "new_unengaged": false,
+      "relationship_type": null,
+      "title": "Admin"
+    }
+  ],
+  "success_plans": [],
+  "suggested_talking_points": [
+    "health_red: value=1.00, contribution=+30 (rule: base_default)",
+    "Health is red (score 39.0) -- drivers: churned, usage_zero, no_response"
+  ],
+  "trajectory": {
+    "consecutive_band": "red",
+    "consecutive_count": 5,
+    "points": [
+      {
+        "day": 0,
+        "health_band": "red",
+        "health_score": 45.0,
+        "priority_score": 57
+      },
+      {
+        "day": 30,
+        "health_band": "red",
+        "health_score": 15.0,
+        "priority_score": 57
+      },
+      {
+        "day": 60,
+        "health_band": "red",
+        "health_score": 15.0,
+        "priority_score": 57
+      },
+      {
+        "day": 90,
+        "health_band": "red",
+        "health_score": 39.0,
+        "priority_score": 30
+      },
+      {
+        "day": 120,
+        "health_band": "red",
+        "health_score": 39.0,
+        "priority_score": 30
+      }
+    ],
+    "trend": "declining",
+    "trend_velocity": -0.05
+  }
+}

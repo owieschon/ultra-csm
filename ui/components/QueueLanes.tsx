@@ -1,7 +1,13 @@
 "use client";
 
 import { WorkItem } from "@/lib/api";
-import { label, MOTION_LABELS, TIER_LABELS, TRIGGER_LABELS } from "@/lib/labels";
+import {
+  label,
+  LANE_LABELS,
+  MOTION_LABELS,
+  TIER_LABELS,
+  TRIGGER_LABELS,
+} from "@/lib/labels";
 
 export interface LaneItem {
   item: WorkItem;
@@ -62,11 +68,12 @@ export function QueueLanes({
       <div className="lane-h">
         <span className="t">Escalations</span>
         <span className="c num">{escalations.length}</span>
-        <span className="badge">need judgment</span>
+        <span className="badge">held for judgment</span>
       </div>
       {escalations.length === 0 && (
-        <div className="row" style={{ color: "var(--fg-2)", fontSize: 12 }}>
-          none this sweep
+        <div className="lane-note">
+          An escalation stays lit until a human resolves it by judgment —
+          none fired in this window.
         </div>
       )}
 
@@ -74,6 +81,10 @@ export function QueueLanes({
         <span className="t">Covered — no action</span>
         <span className="c num">{coveredCount}</span>
         <span className="badge">receipts</span>
+      </div>
+      <div className="lane-note">
+        {coveredCount} accounts swept, quiet — nothing needed a human. Every
+        sweep is logged with receipts.
       </div>
     </aside>
   );
@@ -104,6 +115,11 @@ function Row({
       type="button"
       className={`row${selected ? " sel" : ""}${resolved ? " resolved" : ""}`}
       aria-pressed={selected}
+      aria-label={`${
+        packet?.account_name ?? accountName ?? "Portfolio-wide action"
+      } — ${label(MOTION_LABELS, item.motion)}, priority ${
+        item.priority?.score ?? "unscored"
+      }`}
       onClick={() => onSelect(proposalId)}
     >
       <div className="l1">
@@ -133,7 +149,7 @@ function Row({
         )}
         {packet && (
           <span className="motion" title={`${packet.job_type} · ${packet.lane}`}>
-            {packet.lane}
+            {label(LANE_LABELS, packet.lane)}
           </span>
         )}
         {resolved && status && (

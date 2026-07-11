@@ -1,0 +1,248 @@
+{
+  "account_id": "c76ffbde-05d3-5fc0-aab3-17c085cbcbbf",
+  "account_name": "Cypress Field Ops",
+  "adoption": {
+    "account_id": "c76ffbde-05d3-5fc0-aab3-17c085cbcbbf",
+    "active_assets": 20,
+    "active_users": 15,
+    "adoption_rate": 0.5,
+    "entitled_assets": 40,
+    "licensed_users": 28,
+    "measured_at": "2026-06-21T00:00:00Z",
+    "underused_capabilities": [
+      "maintenance_alerts"
+    ]
+  },
+  "comms_call_transcripts": [],
+  "comms_gmail": [],
+  "comms_internal": [],
+  "company": {
+    "arr_cents": 8800000,
+    "csm_owner_id": "csm-103",
+    "lifecycle_stage": "at_risk",
+    "renewal_date": "2026-06-01",
+    "status": "Active"
+  },
+  "contacts": [
+    {
+      "consent_to_contact": true,
+      "email": "irene.chu@cypress-field.example",
+      "name": "Irene Chu",
+      "role": "field_services",
+      "title": "Field Services Director"
+    },
+    {
+      "consent_to_contact": true,
+      "email": "ben.talbot@cypress-field.example",
+      "name": "Ben Talbot",
+      "role": "operations",
+      "title": "Service Dispatch Lead"
+    }
+  ],
+  "divergences": [],
+  "entitlements": [
+    {
+      "account_id": "c76ffbde-05d3-5fc0-aab3-17c085cbcbbf",
+      "capability": "core_telematics",
+      "ends_at": null,
+      "entitled_quantity": 40,
+      "starts_at": "2025-06-01",
+      "unit": "assets"
+    },
+    {
+      "account_id": "c76ffbde-05d3-5fc0-aab3-17c085cbcbbf",
+      "capability": "maintenance_alerts",
+      "ends_at": null,
+      "entitled_quantity": 40,
+      "starts_at": "2025-06-01",
+      "unit": "assets"
+    },
+    {
+      "account_id": "c76ffbde-05d3-5fc0-aab3-17c085cbcbbf",
+      "capability": "compliance_dashboard",
+      "ends_at": null,
+      "entitled_quantity": 28,
+      "starts_at": "2025-06-01",
+      "unit": "users"
+    }
+  ],
+  "health_snapshot": {
+    "band": "yellow",
+    "drivers": [
+      "support_issues_resolving",
+      "engagement_improving"
+    ],
+    "measured_at": "2026-09-04T00:00:00Z",
+    "score": 52.0
+  },
+  "industry": "field_services",
+  "lifecycle_stage": "at_risk",
+  "milestones": [],
+  "open_cases": [
+    {
+      "account_id": "c76ffbde-05d3-5fc0-aab3-17c085cbcbbf",
+      "case_id": "2f58ad23-3753-57e4-9c32-e947ae5be24b",
+      "closed_at": null,
+      "created_at": "2026-06-05T09:00:00Z",
+      "origin": "Email",
+      "priority": "High",
+      "status": "Open",
+      "subject": "Repeated GPS accuracy issues in rural areas"
+    },
+    {
+      "account_id": "c76ffbde-05d3-5fc0-aab3-17c085cbcbbf",
+      "case_id": "dfbdc5b7-dfb2-5d0e-9375-49abb0b75aaa",
+      "closed_at": null,
+      "created_at": "2026-06-18T11:00:00Z",
+      "origin": "Portal",
+      "priority": "Medium",
+      "status": "Open",
+      "subject": "API timeouts affecting dispatch workflow"
+    },
+    {
+      "account_id": "c76ffbde-05d3-5fc0-aab3-17c085cbcbbf",
+      "case_id": "9ad8a964-f5aa-5ec1-b3ae-8994f083e55f",
+      "closed_at": null,
+      "created_at": "2026-06-28T00:00:00Z",
+      "origin": "Email",
+      "priority": "High",
+      "status": "Open",
+      "subject": "Simulated escalation (day 7, #1)"
+    },
+    {
+      "account_id": "c76ffbde-05d3-5fc0-aab3-17c085cbcbbf",
+      "case_id": "5efcf78d-534e-5eff-a61d-36270c35d39f",
+      "closed_at": null,
+      "created_at": "2026-06-28T00:00:00Z",
+      "origin": "Email",
+      "priority": "High",
+      "status": "Open",
+      "subject": "Simulated escalation (day 7, #2)"
+    },
+    {
+      "account_id": "c76ffbde-05d3-5fc0-aab3-17c085cbcbbf",
+      "case_id": "98b520af-4356-5f83-b71a-f1280318f4c8",
+      "closed_at": null,
+      "created_at": "2026-06-28T00:00:00Z",
+      "origin": "Email",
+      "priority": "High",
+      "status": "Open",
+      "subject": "Simulated escalation (day 7, #3)"
+    }
+  ],
+  "open_ctas": [
+    {
+      "account_id": "c76ffbde-05d3-5fc0-aab3-17c085cbcbbf",
+      "cta_id": "322f80c8-d65c-5d07-b4f4-b3e934b5aa54",
+      "due_date": "2026-06-28",
+      "owner_id": "csm-103",
+      "priority": "High",
+      "reason": "Multiple support escalations - review account health",
+      "status": "open"
+    }
+  ],
+  "opportunities": [],
+  "priority": {
+    "factors": [
+      {
+        "config_version": "value-model-config-v1",
+        "contribution": 15,
+        "evidence": [
+          {
+            "field": "health_score",
+            "observed_at": "2026-09-04T00:00:00Z",
+            "source": "cs_platform",
+            "source_id": "c76ffbde-05d3-5fc0-aab3-17c085cbcbbf"
+          }
+        ],
+        "name": "health_yellow",
+        "rule_name": "base_default",
+        "threshold_name": "health_yellow_points",
+        "threshold_value": 15,
+        "value": 1.0
+      }
+    ],
+    "score": 15
+  },
+  "recent_usage_signals": [
+    {
+      "account_id": "c76ffbde-05d3-5fc0-aab3-17c085cbcbbf",
+      "grain": "company",
+      "metric_name": "daily_active_assets",
+      "observed_at": "2026-06-21T00:00:00Z",
+      "signal_id": "1331c6eb-be6a-5428-83a1-df049ec9ca9f",
+      "source_ref": "product-telemetry:daily_active_assets",
+      "subject_id": null,
+      "unit": "assets",
+      "value": 20.0
+    }
+  ],
+  "stakeholders": [
+    {
+      "champion": false,
+      "consent_to_contact": true,
+      "contact_id": "5f7c712d-d097-55c3-a922-e229002c1abc",
+      "days_since_interaction": null,
+      "departed": false,
+      "name": "Irene Chu",
+      "new_unengaged": false,
+      "relationship_type": null,
+      "title": "Field Services Director"
+    },
+    {
+      "champion": false,
+      "consent_to_contact": true,
+      "contact_id": "c6477b12-3e43-51cf-adc4-9e83374bcadb",
+      "days_since_interaction": null,
+      "departed": false,
+      "name": "Ben Talbot",
+      "new_unengaged": false,
+      "relationship_type": null,
+      "title": "Service Dispatch Lead"
+    }
+  ],
+  "success_plans": [],
+  "suggested_talking_points": [
+    "health_yellow: value=1.00, contribution=+15 (rule: base_default)",
+    "Health is yellow (score 52.0) -- drivers: support_issues_resolving, engagement_improving",
+    "Underused capabilities: maintenance_alerts"
+  ],
+  "trajectory": {
+    "consecutive_band": "yellow",
+    "consecutive_count": 5,
+    "points": [
+      {
+        "day": 0,
+        "health_band": "yellow",
+        "health_score": 52.0,
+        "priority_score": 15
+      },
+      {
+        "day": 30,
+        "health_band": "yellow",
+        "health_score": 52.0,
+        "priority_score": 15
+      },
+      {
+        "day": 60,
+        "health_band": "yellow",
+        "health_score": 52.0,
+        "priority_score": 15
+      },
+      {
+        "day": 90,
+        "health_band": "yellow",
+        "health_score": 52.0,
+        "priority_score": 15
+      },
+      {
+        "day": 120,
+        "health_band": "yellow",
+        "health_score": 52.0,
+        "priority_score": 15
+      }
+    ],
+    "trend": "stable",
+    "trend_velocity": 0.0
+  }
+}

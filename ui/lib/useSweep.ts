@@ -19,7 +19,7 @@ export function useSweep(
   enabled = true
 ) {
   const [sweep, setSweep] = useState<SweepData | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<unknown>(null);
 
   useEffect(() => {
     if (!enabled) return;
@@ -33,7 +33,7 @@ export function useSweep(
         });
         setError(null);
       })
-      .catch((e) => setError(String(e)));
+      .catch((e) => setError(e));
   }, [day, refreshToken, enabled]);
 
   return { sweep, error };

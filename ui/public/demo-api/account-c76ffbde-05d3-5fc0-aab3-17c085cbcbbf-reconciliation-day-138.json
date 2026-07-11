@@ -1,0 +1,129 @@
+{
+  "account_id": "c76ffbde-05d3-5fc0-aab3-17c085cbcbbf",
+  "candidate_divergences": [],
+  "deterministic_signals": [
+    {
+      "contribution": 15,
+      "evidence": [
+        {
+          "field": "health_score",
+          "observed_at": "2026-09-04T00:00:00Z",
+          "source": "cs_platform",
+          "source_id": "c76ffbde-05d3-5fc0-aab3-17c085cbcbbf"
+        }
+      ],
+      "name": "health_yellow",
+      "origin": "deterministic",
+      "surfaced_by_lenses": [
+        "risk_lens"
+      ],
+      "value": 1.0
+    },
+    {
+      "contribution": 42,
+      "evidence": [
+        {
+          "field": "status",
+          "observed_at": "2026-06-05T09:00:00Z",
+          "source": "crm",
+          "source_id": "2f58ad23-3753-57e4-9c32-e947ae5be24b"
+        },
+        {
+          "field": "status",
+          "observed_at": "2026-06-18T11:00:00Z",
+          "source": "crm",
+          "source_id": "dfbdc5b7-dfb2-5d0e-9375-49abb0b75aaa"
+        },
+        {
+          "field": "status",
+          "observed_at": "2026-06-28T00:00:00Z",
+          "source": "crm",
+          "source_id": "9ad8a964-f5aa-5ec1-b3ae-8994f083e55f"
+        },
+        {
+          "field": "status",
+          "observed_at": "2026-06-28T00:00:00Z",
+          "source": "crm",
+          "source_id": "5efcf78d-534e-5eff-a61d-36270c35d39f"
+        },
+        {
+          "field": "status",
+          "observed_at": "2026-06-28T00:00:00Z",
+          "source": "crm",
+          "source_id": "98b520af-4356-5f83-b71a-f1280318f4c8"
+        }
+      ],
+      "name": "open_support_pressure",
+      "origin": "deterministic",
+      "surfaced_by_lenses": [
+        "risk_lens"
+      ],
+      "value": 5.0
+    },
+    {
+      "contribution": 8,
+      "evidence": [
+        {
+          "field": "due_date",
+          "observed_at": "2026-06-28",
+          "source": "cs_platform",
+          "source_id": "322f80c8-d65c-5d07-b4f4-b3e934b5aa54"
+        }
+      ],
+      "name": "open_risk_cta",
+      "origin": "deterministic",
+      "surfaced_by_lenses": [
+        "risk_lens"
+      ],
+      "value": 1.0
+    }
+  ],
+  "explanation": {
+    "disclaimer": "Model-generated explanation -- may be incomplete or mischaracterize the underlying evidence. Verify against the cited sources before acting.",
+    "evidence": [
+      {
+        "field": "health_score",
+        "observed_at": "2026-09-04T00:00:00Z",
+        "source": "cs_platform",
+        "source_id": "c76ffbde-05d3-5fc0-aab3-17c085cbcbbf"
+      },
+      {
+        "field": "status",
+        "observed_at": "2026-06-05T09:00:00Z",
+        "source": "crm",
+        "source_id": "2f58ad23-3753-57e4-9c32-e947ae5be24b"
+      },
+      {
+        "field": "status",
+        "observed_at": "2026-06-18T11:00:00Z",
+        "source": "crm",
+        "source_id": "dfbdc5b7-dfb2-5d0e-9375-49abb0b75aaa"
+      },
+      {
+        "field": "status",
+        "observed_at": "2026-06-28T00:00:00Z",
+        "source": "crm",
+        "source_id": "9ad8a964-f5aa-5ec1-b3ae-8994f083e55f"
+      },
+      {
+        "field": "status",
+        "observed_at": "2026-06-28T00:00:00Z",
+        "source": "crm",
+        "source_id": "5efcf78d-534e-5eff-a61d-36270c35d39f"
+      },
+      {
+        "field": "status",
+        "observed_at": "2026-06-28T00:00:00Z",
+        "source": "crm",
+        "source_id": "98b520af-4356-5f83-b71a-f1280318f4c8"
+      },
+      {
+        "field": "due_date",
+        "observed_at": "2026-06-28",
+        "source": "cs_platform",
+        "source_id": "322f80c8-d65c-5d07-b4f4-b3e934b5aa54"
+      }
+    ],
+    "text": "Fixture explanation: no live model configured."
+  }
+}

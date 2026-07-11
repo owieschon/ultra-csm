@@ -1,0 +1,188 @@
+{
+  "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+  "candidate_divergences": [],
+  "deterministic_signals": [
+    {
+      "contribution": 20,
+      "evidence": [
+        {
+          "field": "last_interaction",
+          "observed_at": "2026-10-29T04:00:00Z",
+          "source": "crm",
+          "source_id": "5ba7aa51-a5eb-5220-9d3b-71bbe67377a1"
+        }
+      ],
+      "name": "single_threaded_risk",
+      "origin": "deterministic",
+      "surfaced_by_lenses": [
+        "value_model",
+        "risk_lens"
+      ],
+      "value": 1.0
+    },
+    {
+      "contribution": 18,
+      "evidence": [
+        {
+          "field": "active_users",
+          "observed_at": "2026-11-05T00:00:00Z",
+          "source": "cs_platform",
+          "source_id": "21830db9-7182-5d97-b22e-d57c4e28f696"
+        },
+        {
+          "field": "objectives",
+          "observed_at": "2026-09-01",
+          "source": "cs_platform",
+          "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
+        }
+      ],
+      "name": "usage_outcome_unverified",
+      "origin": "deterministic",
+      "surfaced_by_lenses": [
+        "value_model",
+        "risk_lens",
+        "expansion_lens"
+      ],
+      "value": 0.8111111111111111
+    },
+    {
+      "contribution": 20,
+      "evidence": [
+        {
+          "field": "target_date",
+          "observed_at": "2026-09-01",
+          "source": "cs_platform",
+          "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
+        }
+      ],
+      "name": "overdue_success_plan",
+      "origin": "deterministic",
+      "surfaced_by_lenses": [
+        "risk_lens"
+      ],
+      "value": 1.0
+    },
+    {
+      "contribution": 6,
+      "evidence": [
+        {
+          "field": "arr_cents",
+          "observed_at": "2025-01-01",
+          "source": "cs_platform",
+          "source_id": "21830db9-7182-5d97-b22e-d57c4e28f696"
+        }
+      ],
+      "name": "arr_risk_exposure",
+      "origin": "deterministic",
+      "surfaced_by_lenses": [
+        "risk_lens"
+      ],
+      "value": 31000000.0
+    },
+    {
+      "contribution": 28,
+      "evidence": [
+        {
+          "field": "opportunity_type",
+          "observed_at": "2026-10-01",
+          "source": "crm",
+          "source_id": "994f6508-9670-558a-b545-77092477f898"
+        }
+      ],
+      "name": "open_expansion_opportunity",
+      "origin": "deterministic",
+      "surfaced_by_lenses": [
+        "expansion_lens"
+      ],
+      "value": 4500000.0
+    },
+    {
+      "contribution": 10,
+      "evidence": [
+        {
+          "field": "adoption_rate",
+          "observed_at": "2026-11-05T00:00:00Z",
+          "source": "cs_platform",
+          "source_id": "21830db9-7182-5d97-b22e-d57c4e28f696"
+        }
+      ],
+      "name": "expansion_readiness_high_adoption",
+      "origin": "deterministic",
+      "surfaced_by_lenses": [
+        "expansion_lens"
+      ],
+      "value": 0.78
+    },
+    {
+      "contribution": 20,
+      "evidence": [
+        {
+          "field": "arr_cents",
+          "observed_at": "2025-01-01",
+          "source": "cs_platform",
+          "source_id": "21830db9-7182-5d97-b22e-d57c4e28f696"
+        }
+      ],
+      "name": "arr_expansion_surface",
+      "origin": "deterministic",
+      "surfaced_by_lenses": [
+        "expansion_lens"
+      ],
+      "value": 31000000.0
+    }
+  ],
+  "explanation": {
+    "disclaimer": "Model-generated explanation -- may be incomplete or mischaracterize the underlying evidence. Verify against the cited sources before acting.",
+    "evidence": [
+      {
+        "field": "last_interaction",
+        "observed_at": "2026-10-29T04:00:00Z",
+        "source": "crm",
+        "source_id": "5ba7aa51-a5eb-5220-9d3b-71bbe67377a1"
+      },
+      {
+        "field": "active_users",
+        "observed_at": "2026-11-05T00:00:00Z",
+        "source": "cs_platform",
+        "source_id": "21830db9-7182-5d97-b22e-d57c4e28f696"
+      },
+      {
+        "field": "objectives",
+        "observed_at": "2026-09-01",
+        "source": "cs_platform",
+        "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
+      },
+      {
+        "field": "target_date",
+        "observed_at": "2026-09-01",
+        "source": "cs_platform",
+        "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
+      },
+      {
+        "field": "arr_cents",
+        "observed_at": "2025-01-01",
+        "source": "cs_platform",
+        "source_id": "21830db9-7182-5d97-b22e-d57c4e28f696"
+      },
+      {
+        "field": "opportunity_type",
+        "observed_at": "2026-10-01",
+        "source": "crm",
+        "source_id": "994f6508-9670-558a-b545-77092477f898"
+      },
+      {
+        "field": "adoption_rate",
+        "observed_at": "2026-11-05T00:00:00Z",
+        "source": "cs_platform",
+        "source_id": "21830db9-7182-5d97-b22e-d57c4e28f696"
+      },
+      {
+        "field": "arr_cents",
+        "observed_at": "2025-01-01",
+        "source": "cs_platform",
+        "source_id": "21830db9-7182-5d97-b22e-d57c4e28f696"
+      }
+    ],
+    "text": "Fixture explanation: no live model configured."
+  }
+}

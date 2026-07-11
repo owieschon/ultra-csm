@@ -14,6 +14,7 @@ export function QueueView({
   selectedProposalId,
   onSelect,
   onSelectedItemChange,
+  onBackToBook,
 }: {
   day: number | undefined;
   accounts: AccountSummary[] | null;
@@ -22,6 +23,7 @@ export function QueueView({
   selectedProposalId: string | null;
   onSelect: (proposalId: string) => void;
   onSelectedItemChange: (item: WorkItem | null) => void;
+  onBackToBook: () => void;
 }) {
   const tierByAccount = useMemo(() => {
     const map = new Map<string, string | null>();
@@ -70,8 +72,17 @@ export function QueueView({
   }, [selectedItem]);
 
   if (sweepError) {
-    return <div className="placeholder-view">Error: {sweepError}</div>;
+    return (
+      <div className="notice-error" role="alert">
+        {sweepError}
+      </div>
+    );
   }
+
+  // The goal state of this screen is emptiness — when the last decision
+  // resolves, that moment is composed deliberately (UI_DESIGN_BRIEF's
+  // designed empty state), not left as a generic "select an item".
+  const queueClear = sweep != null && needsDecision.length === 0;
 
   return (
     <div className="queue">
@@ -90,6 +101,25 @@ export function QueueView({
             item={selectedItem}
             day={day}
           />
+        ) : queueClear ? (
+          <div className="empty payoff">
+            <div className="payoff-check" aria-hidden="true">
+              ✓
+            </div>
+            <h2>Queue clear.</h2>
+            <div className="sub">
+              <span className="mono">
+                0 decisions pending · agent operating
+              </span>
+              <br />
+              {resolved.length > 0
+                ? `${resolved.length} resolved this session · ${coveredCount} accounts covered with no action needed.`
+                : `${coveredCount} accounts covered with no action needed.`}
+            </div>
+            <button type="button" className="cta" onClick={onBackToBook}>
+              Back to a quiet book
+            </button>
+          </div>
         ) : (
           <div className="empty">
             <h2>

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { api, WorkItem } from "@/lib/api";
-import { label, MOTION_LABELS, TRIGGER_LABELS } from "@/lib/labels";
+import { label, MOTION_LABELS, ROLE_LABELS, TRIGGER_LABELS } from "@/lib/labels";
 import { ReconciliationSection } from "./ReconciliationSection";
 
 type Brief = Record<string, unknown>;
@@ -66,15 +66,68 @@ interface StakeholderRow {
   new_unengaged: boolean;
 }
 
-// Plain-English role labels (two-register rule) -- mono relationship_type
-// rides along as the title attribute, never as the primary label.
-const ROLE_LABELS: Record<string, string> = {
-  champion: "Champion",
-  executive_sponsor: "Exec sponsor",
-  technical_lead: "Technical lead",
-  end_user: "End user",
-  admin: "Admin",
-};
+// ROLE_LABELS now lives in lib/labels.ts with the other two-register maps.
+
+// Server prose (packet hypotheses, motion reasons) cites evidence inline as
+// [evidence:<uuid>] — render those citations as mono receipt chips instead
+// of raw UUIDs mid-sentence (two-register rule: the prose stays plain, the
+// receipt rides along legibly). Pure presentation: no text is invented.
+function ProseWithReceipts({ text }: { text: string }) {
+  const parts = text.split(/\[evidence:([0-9a-f-]+)\]/g);
+  return (
+    <>
+      {parts.map((part, i) =>
+        i % 2 === 1 ? (
+          <span className="evid-chip mono" key={i} title={`evidence ${part}`}>
+            {part.slice(0, 8)}
+          </span>
+        ) : (
+          <ProseTokens key={i} text={part} />
+        )
+      )}
+    </>
+  );
+}
+
+// The packet's canonical next-step sentence names internal machinery
+// ("draft_customer_outreach proposal in ActionGate") — the first sentence a
+// reader meets must be plain English (two-register rule). The raw sentence
+// rides along as the title receipt.
+function nextStepText(raw: string): string {
+  if (/^Review the pending \S+ proposal in ActionGate\.$/.test(raw)) {
+    return "Review this draft — approve, edit, or deny.";
+  }
+  return raw;
+}
+
+// The packet hypothesis template doubles the account name ("Acme: Acme has
+// deterministic…") — strip the duplicated prefix at render time. Wording is
+// otherwise untouched.
+function dedupeHypothesis(raw: string): string {
+  const match = raw.match(/^(.+?): (.+)$/);
+  if (match && match[2].startsWith(match[1])) return match[2];
+  return raw;
+}
+
+// System vocabulary embedded in server prose (snake_case enums, name=value
+// factor weights) renders in the mono receipt face — the words are kept
+// verbatim, only visually marked as system register.
+function ProseTokens({ text }: { text: string }) {
+  const parts = text.split(/([a-z][a-z0-9]*(?:_[a-z0-9]+)+(?:=[0-9.]+)?)/g);
+  return (
+    <>
+      {parts.map((part, i) =>
+        i % 2 === 1 ? (
+          <span className="mono prose-token" key={i}>
+            {part}
+          </span>
+        ) : (
+          part
+        )
+      )}
+    </>
+  );
+}
 
 // Per-drawer row formatter: plain-language primary text + optional mono/
 // colored metadata, mirroring StakeholderPersonRow's established two-part
@@ -189,6 +242,8 @@ export function QueueDetail({ item, day }: { item: WorkItem; day: number | undef
     return <ProgramDetail item={item} />;
   }
 
+  const decided = item.proposal != null && item.proposal.status !== "pending";
+
   return (
     <div className="detail-scroll">
       <div className="control-path" aria-label="Customer action control path">
@@ -204,9 +259,12 @@ export function QueueDetail({ item, day }: { item: WorkItem; day: number | undef
           <span className="control-index mono">03</span>
           <span><b>Draft proposed</b><small>AI has no authority</small></span>
         </div>
-        <div className="control-step current">
+        <div className={`control-step ${decided ? "complete" : "current"}`}>
           <span className="control-index mono">04</span>
-          <span><b>Human decision</b><small>payload-bound release</small></span>
+          <span>
+            <b>{decided ? "Decision recorded" : "Human decision"}</b>
+            <small>payload-bound release</small>
+          </span>
         </div>
       </div>
       <div className="identity">
@@ -224,6 +282,28 @@ export function QueueDetail({ item, day }: { item: WorkItem; day: number | undef
           </div>
         </div>
       </div>
+
+      {/* The draft is the artifact being approved — it leads, evidence
+          follows (the rail's verbs mean nothing before the reader has seen
+          what they act on). */}
+      {item.customer_draft && (
+        <div className="sec">
+          <div className="sec-h">
+            <span className="t">Proposed draft</span>
+            <span className="prov">
+              <span className="chip-llm">AI-written — needs your approval</span>
+            </span>
+          </div>
+          <div className="draft">
+            <div className="draft-h">
+              draft
+              {item.recipient_name ? ` · to: ${item.recipient_name}` : ""} ·
+              quality score dormant, no live source yet
+            </div>
+            <div className="draft-body">{item.customer_draft}</div>
+          </div>
+        </div>
+      )}
 
       <DecisionPacket packet={item.work_packet ?? null} />
 
@@ -281,7 +361,10 @@ export function QueueDetail({ item, day }: { item: WorkItem; day: number | undef
                 <span className="mono" style={{ fontSize: 10, color: "var(--fg-2)" }}>
                   {factor.name}
                 </span>
-                <span>{factor.evidence?.length ?? 0} records</span>
+                <span>
+                  {factor.evidence?.length ?? 0} record
+                  {(factor.evidence?.length ?? 0) === 1 ? "" : "s"}
+                </span>
               </span>
             </button>
             {openFactor === fi && (
@@ -359,24 +442,11 @@ export function QueueDetail({ item, day }: { item: WorkItem; day: number | undef
               </span>
             )}
           </div>
-          <div className="why">{item.reason}</div>
+          <div className="why">
+            <ProseWithReceipts text={item.reason} />
+          </div>
         </div>
       </div>
-
-      {item.customer_draft && (
-        <div className="sec">
-          <div className="sec-h">
-            <span className="t">Proposed draft</span>
-            <span className="prov">
-              <span className="chip-llm">AI-written — needs your approval</span>
-            </span>
-          </div>
-          <div className="draft">
-            <div className="draft-h">draft · quality score dormant, no live source yet</div>
-            <div className="draft-body">{item.customer_draft}</div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
@@ -399,12 +469,16 @@ function DecisionPacket({ packet }: { packet: WorkItem["work_packet"] | null }) 
       <div className="packet">
         <div className="packet-next">
           <span className="packet-label">Next</span>
-          <span>{packet.primary_next_step}</span>
+          <span title={packet.primary_next_step}>
+            <ProseWithReceipts text={nextStepText(packet.primary_next_step)} />
+          </span>
         </div>
 
         <div className="hyp-row packet-hyp">
           <span className="hyp-badge">Hypothesis</span>
-          <span className="hyp-claim">{hypothesis.summary}</span>
+          <span className="hyp-claim">
+            <ProseWithReceipts text={dedupeHypothesis(hypothesis.summary)} />
+          </span>
           <span className="hyp-conf">
             {hypothesis.confidence_label} · {Math.round(hypothesis.confidence * 100)}%
           </span>
@@ -804,7 +878,9 @@ function ProgramDetail({ item }: { item: WorkItem }) {
           <span className="t">The pattern</span>
         </div>
         <div className="resolve">
-          <div className="why">{item.reason}</div>
+          <div className="why">
+            <ProseWithReceipts text={item.reason} />
+          </div>
         </div>
       </div>
     </div>

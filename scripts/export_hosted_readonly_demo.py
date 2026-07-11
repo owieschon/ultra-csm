@@ -25,7 +25,7 @@ from ultra_csm.api import app
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "ui" / "public" / "demo-api"
-DAY = 140
+DAYS = range(134, 141)
 
 
 def _json_bytes(payload: Any) -> bytes:
@@ -59,7 +59,7 @@ def _proposal_id_map(proposals: dict[str, Any]) -> dict[str, str]:
         replacements[runtime_id] = str(
             uuid.uuid5(
                 uuid.NAMESPACE_URL,
-                f"ultra-csm:hosted-readonly:day-{DAY}:proposal:{fingerprint}",
+                f"ultra-csm:hosted-readonly:day-{DAYS[-1]}:proposal:{fingerprint}",
             )
         )
     return replacements
@@ -79,19 +79,45 @@ def build_fixture_bytes() -> dict[str, bytes]:
     """Build the complete deterministic hosted fixture set without repository writes."""
 
     payloads: dict[str, Any] = {}
+    last_day = DAYS[-1]
     with TestClient(app) as client:
+        work_item_counts: dict[str, int] = {}
+        for day in DAYS:
+            accounts = _get(client, f"/accounts?day={day}")
+            sweep = _post(client, f"/sweep?day={day}")
+            payloads[f"accounts-day-{day}.json"] = accounts
+            payloads[f"sweep-day-{day}.json"] = sweep
+            work_item_counts[str(day)] = len(sweep["work_items"])
+
+            account_ids = sorted(
+                {
+                    item["account_id"]
+                    for item in sweep["work_items"]
+                    if item.get("account_id") is not None
+                }
+            )
+            for account_id in account_ids:
+                payloads[f"account-{account_id}-brief-day-{day}.json"] = _get(
+                    client, f"/accounts/{account_id}/brief?day={day}"
+                )
+                reconciliation = client.get(f"/accounts/{account_id}/reconciliation?day={day}")
+                if reconciliation.status_code == 200:
+                    payloads[f"account-{account_id}-reconciliation-day-{day}.json"] = (
+                        reconciliation.json()
+                    )
+
+        # `accounts` / `account_ids` now hold the last day's values; manifest keys
+        # below keep their original day-140 semantics for backward compatibility.
         health = _get(client, "/health")
-        accounts = _get(client, f"/accounts?day={DAY}")
-        sweep = _post(client, f"/sweep?day={DAY}")
         proposals = _get(client, "/proposals")
-        ledger = _get(client, "/ledger?limit=50")
+        # Seven exported days x ~13 items x ~4 events each: limit=50 would
+        # drop the day-140 receipts the queue rail renders.
+        ledger = _get(client, "/ledger?limit=500")
         action_control = _get(client, "/demo/action-control/vertical-slice")
 
         payloads.update(
             {
                 "health.json": health,
-                f"accounts-day-{DAY}.json": accounts,
-                f"sweep-day-{DAY}.json": sweep,
                 "proposals.json": proposals,
                 "ledger.json": ledger,
                 "action-control-vertical-slice-v1.json": action_control,
@@ -100,28 +126,13 @@ def build_fixture_bytes() -> dict[str, bytes]:
             }
         )
 
-        account_ids = sorted(
-            {
-                item["account_id"]
-                for item in sweep["work_items"]
-                if item.get("account_id") is not None
-            }
-        )
-        for account_id in account_ids:
-            payloads[f"account-{account_id}-brief-day-{DAY}.json"] = _get(
-                client, f"/accounts/{account_id}/brief?day={DAY}"
-            )
-            reconciliation = client.get(f"/accounts/{account_id}/reconciliation?day={DAY}")
-            if reconciliation.status_code == 200:
-                payloads[f"account-{account_id}-reconciliation-day-{DAY}.json"] = (
-                    reconciliation.json()
-                )
-
         payloads["manifest.json"] = {
             "mode": "hosted-readonly",
-            "day": DAY,
+            "day": last_day,
+            "days": list(DAYS),
             "account_count": accounts["account_count"],
-            "work_item_count": len(sweep["work_items"]),
+            "work_item_count": work_item_counts[str(last_day)],
+            "work_item_counts": work_item_counts,
             "proposal_count": len(proposals["proposals"]),
             "action_control_contract_version": action_control["schema_version"],
             "exported_account_detail_count": len(account_ids),
