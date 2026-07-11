@@ -255,6 +255,62 @@ the quarter headline, which never grades against latent truth.
 ratifications -> Q5 shakedown/freeze -> quarter (headline path) with P3
 scheduled behind it.
 
+## Resolution plan for the referee objections (P2.6-P2.8 continued)
+
+R-A. **Two-tier run design (resolves the n=3-seeds / unit-of-inference
+objection at its root, not just in the analysis).** Confirmatory tier: 8-10
+seeds x a shorter window x both arms; primary analysis = paired per-seed
+miss-rate deltas (same seed, both arms -> one delta; Wilcoxon signed-rank or
+t on n=8-10 pairs), with inter-seed variance measured at shakedown feeding
+the seed-level power calculation. Demonstrative tier: ONE full 30-day run for
+the narrative artifacts (time-series, drift canaries, shock story) -- showcase,
+explicitly non-confirmatory. Binding constraint is honest: governed-arm human
+verdict minutes scale with seed count, so n_seeds is chosen at shakedown from
+measured minutes/seed, not assumed. Estimated live spend for the confirmatory
+tier at Q4-measured rates: low hundreds of dollars; wall-clock parallelizable
+across seeds.
+
+R-B. **Counterfactual scoring of blocked items (dissolves the refusal
+objection beyond P2.6's throughput co-reporting).** The offline scorer grades
+everything the agent PRODUCED, released or gate-blocked, in both arms. This
+yields catch precision: what fraction of blocked items were actually
+defective. A governance layer that blocks good work to look safe is exposed
+directly, not just via a throughput number.
+
+R-C. **Judge-validity bundle (shrinks the same-family-circularity
+objection).** (1) Stratified double-labeling per P2.8. (2) Cross-family
+judge audit: a second, non-Anthropic model family (chosen per the program's
+standing reviewer-selection and subscription-only rules) re-scores the
+stratified sample against the same operational miss definition; report
+cross-family kappa. High agreement defangs the circularity objection; low agreement is a
+published finding adjudicated by the human labels. (3) Judge model id +
+version + prompt version pinned and asserted constant across the entire run
+(mechanical CI check).
+
+R-D. **Environment-credibility bundle (bounds the self-built-world objection
+as far as it can be bounded without production data).** (1) PRD-fitted rates
+(already planned). (2) The operational miss taxonomy is DERIVED from an
+external source (real CS QA rubric conventions), with the derivation
+documented -- so the defect classes governance catches are not authored to
+match governance capabilities. (3) The red-team catch-rate arm (planned W-RT)
+demonstrates the world is not tuned to be easily catchable. (4) The benchmark
+release (planned, content track) invites community replication -- external
+validity by others running THEIR agents. The remainder is worn as scope.
+
+R-E. **Shock generalization:** the scripted mid-run shock is placed at a
+different day per confirmatory seed (config-level), so the drift-canary story
+generalizes across k placements instead of resting on one.
+
+R-F. **Trajectory-noise floor:** 2-3 repeat runs on one seed (both arms),
+published as the run-to-run variance floor -- extending finding #3's kappa-band
+methodology from judge level to trajectory level. Cheap, and it makes the
+per-seed deltas interpretable against a known noise floor.
+
+Irreducible after all of the above, stated plainly: the world is still
+self-built (R-D bounds it, community replication tests it, production data
+would resolve it); the judge is still an LLM (human labels exist only on
+stratified samples); n stays modest by human-minutes budget, not by choice.
+
 ## Residual risks that no amendment above removes
 
 Stated so acceptance of this path is informed, not implied:
@@ -291,6 +347,10 @@ Stated so acceptance of this path is informed, not implied:
 5. Decide whether report 74 receives an inline correction note or stands with
    this report as its correction (recommendation: stands; 74's conclusions
    are unchanged, only its terrain counts are superseded).
+6. Ratify the R-A two-tier run design (confirmatory seeds + one demonstrative
+   30-day run) — it supersedes W7R's single-run framing and re-scopes the
+   quarter's cost/timeline; n_seeds is fixed at shakedown from measured
+   human-minutes per seed.
 
 ## Receipts
 
