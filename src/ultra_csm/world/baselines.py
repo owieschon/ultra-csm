@@ -2,14 +2,23 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Callable
 
 from eval.drift_power_csm import minimum_detectable_drop, required_n_per_arm
 from ultra_csm.world.generator import WorldBuildResult
 from ultra_csm.world.graph import ContextGraph
 
 
-def build_baseline_report(result: WorldBuildResult, graph: ContextGraph) -> dict[str, Any]:
+def build_policy_table(
+    result: WorldBuildResult, graph: ContextGraph
+) -> dict[str, Callable[[str], bool]]:
+    """The named surfacing policies, keyed by policy name.
+
+    Exposed separately from ``build_baseline_report`` so callers that need
+    the actual surfaced-account set (not just its scored accuracy) --
+    e.g. an LLM-dependent lane drafting only for surfaced accounts -- reuse
+    the same policy definitions instead of re-deriving them.
+    """
     decisions_by_id = {row.account_id: row for row in result.surface_decisions}
     health_by_id = {row.account_id: row for row in result.data.health_scores}
     adoption_by_id = {row.account_id: row for row in result.data.adoption_summaries}
@@ -20,7 +29,7 @@ def build_baseline_report(result: WorldBuildResult, graph: ContextGraph) -> dict
         if fact.fact_key == "cases.open"
     }
 
-    policies = {
+    return {
         "never_surface": lambda account_id: False,
         "always_surface": lambda account_id: True,
         "health_only": lambda account_id: health_by_id[account_id].band == "red",
@@ -43,6 +52,10 @@ def build_baseline_report(result: WorldBuildResult, graph: ContextGraph) -> dict
             )
         ),
     }
+
+
+def build_baseline_report(result: WorldBuildResult, graph: ContextGraph) -> dict[str, Any]:
+    policies = build_policy_table(result, graph)
     scored = {
         name: _score_policy(result, policy)
         for name, policy in policies.items()
