@@ -18,7 +18,11 @@ from typing import TYPE_CHECKING, Protocol
 
 from ultra_csm._util import evidence_ids
 from ultra_csm.knowledge import is_safe_customer_ask
-from ultra_csm.llm_transport import configured_transport_name, resolve_message_transport
+from ultra_csm.llm_transport import (
+    configured_transport_name,
+    resolve_message_transport,
+    resolve_timeout_s,
+)
 from ultra_csm.observability import Meter, NoOpMeter, NoOpTracer, Tracer
 
 if TYPE_CHECKING:
@@ -274,7 +278,7 @@ class AnthropicReasonDraftWriter:
     ) -> None:
         self._transport = transport or resolve_message_transport(
             client=client,
-            timeout_s=LIVE_TIMEOUT_S,
+            timeout_s=resolve_timeout_s(LIVE_TIMEOUT_S),
             max_retries=LIVE_MAX_RETRIES,
         )
         self.model_id = model_id or LIVE_SLOT_B_MODEL_ID
