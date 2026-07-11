@@ -1,5 +1,19 @@
 # Program Report 75 — F2R foundation audit: world ground-truth integrity
 
+## The hypothesis this program exists to test
+
+Stated here because every finding and amendment below is judged against it:
+**does a governance layer (graduation gates + in-loop QA sampling) causally
+reduce the rate of defective agent outputs shipped, and at what human-minute
+cost?** Same agent, same world seeds, two arms — governance present vs
+provably absent from the decision path — compared on sampled-miss rate vs
+human-minutes/account. Falsifiable in both directions: a null result
+(governance adds minutes, catches nothing) is a publishable outcome by the
+program's own rules. Everything else this quarter — world realism, judge
+validity, transport fidelity, writer adoption — is instrumentation for making
+that single comparison credible. An audit finding matters exactly in
+proportion to how it touches this comparison's validity or power.
+
 Trigger: Q4's blocked ablation (`docs/PROGRAM_REPORT_74.md`) exposed anomalies
 that warranted a full audit before Q5's freeze. Owner directed: "a defensible
 foundation must exist before anything moves forward." Method: (a) empirical
@@ -154,16 +168,44 @@ verbatim string copies, F3's determinism, or F4's latent-conditioned synthesis
    abstained provenance) so F7's false assurance cannot recur silently.
 5. Regenerate all affected committed artifacts (world_scoreboard.json and
    battery artifacts); post a correction addendum to report 74's terrain
-   numbers.
+   numbers. **Pre-declared expected outcome of the fix, stated before it is
+   built so it cannot read as score inflation:** once labels align, the oracle
+   false-negative rate on generated worlds drops to ~0.0 — because F3's
+   noiseless health<->doomed coupling makes surfacing trivially complete. The
+   corrected numbers will look "too good"; that is the honest disclosure of a
+   trivial detection task (F3), not evidence of agent quality, and is exactly
+   why latent-graded claims stay gated behind P3.
+6. Re-run Q4's pass^k after the fix lands (63 draws, ~$2): its scenarios drew
+   evidence containing F2's leaked strings, so the current result is
+   "measured on pre-P1 world text." The re-run replaces the W4 scoreboard
+   evidence with a post-fix measurement; expected to hold, verified rather
+   than assumed.
 
 **P2 — Governance amendments (owner ratification, no code):**
 1. Amend the OA-Q2 freeze scope to include `src/ultra_csm/world/**`,
-   `WorldConfig` defaults, and `knowledge/world_response_config.json` in the
-   recorded hash.
-2. Add to W2's spec: an operational definition of "miss," used identically by
-   the in-loop sampler and the control arm's offline scorer, plus a measured
-   baseline miss rate from the shakedown run feeding the power prereg.
-3. Standing rule: latent-graded claims run at scale >= 200 with realized
+   `WorldConfig` defaults, `knowledge/world_response_config.json`, AND the
+   fixture inputs world generation depends on (`build_synthetic_book` /
+   `simulate_data` sources under `src/ultra_csm/data_plane/`) in the recorded
+   hash — a post-freeze fixture edit would silently change every world.
+2. **Separate measurement from intervention in the headline design.** As
+   specified, the governed arm's miss rate comes from the in-loop sampler's
+   SAMPLE. Power arithmetic says that under-powers the headline: detecting a
+   5%->10% miss-rate difference needs ~435 graded items per arm (two-sided
+   alpha=0.05, power 0.80; the repo's own pass-rate machinery gives 340 for
+   the equivalent 0.95-vs-0.90 framing) — an in-loop sample at plausible
+   volumes (~120/arm over 30 days) cannot get there, and the pre-registration
+   would correctly emit `insufficient_power_for`. Amendment: the OFFLINE
+   scorer grades 100% of released items in BOTH arms after the run (judge
+   cost at Q4-measured rates: ~$20-40 for ~600 items/arm — affordable); the
+   in-loop sampler remains the governed arm's INTERVENTION only, never the
+   chart's measurement. This keeps the causal design identical and makes the
+   headline fully powered instead of pre-registered-underpowered.
+3. Add to W2's spec: an operational definition of "miss," used identically by
+   the in-loop sampler and the offline scorer, plus a measured baseline miss
+   rate feeding the power prereg. First empirical prior, from Q4's pass^k run:
+   ~4.8% of draws failed the gated bar (3/63) — a real, nonzero defect base
+   rate for the governance layer to act on.
+4. Standing rule: latent-graded claims run at scale >= 200 with realized
    prevalence disclosed alongside every rate.
 
 **P3 — World-realism wave (deferred BUILD, gates only latent-graded claims):**
@@ -180,15 +222,40 @@ the quarter headline, which never grades against latent truth.
 ratifications -> Q5 shakedown/freeze -> quarter (headline path) with P3
 scheduled behind it.
 
+## Residual risks that no amendment above removes
+
+Stated so acceptance of this path is informed, not implied:
+
+1. **Miss ground truth is the judge.** The hypothesis's dependent variable is
+   judge-graded. Its validity rests on the existing kappa work plus the
+   already-planned double-labeling (>=30 gold items, second human) and the
+   blind owner-verdict self-consistency check — the headline claim depends on
+   those directly, and they must land before the quarter, not after.
+2. **The world stays easy until P3.** Post-P1 the world is honest but its
+   detection task is trivial (F3 disclosed, not fixed). The headline
+   comparison is about drafting/governance defects, not detection, so it
+   survives — but any reviewer probing "how hard is this world?" gets the
+   F3 answer until the realism wave lands.
+3. **Expected-volume input to the power prereg is a guess until shakedown.**
+   The W7R routing residual already owns this; the dry run calibrates it.
+   If shakedown volume is far below the assumed ~20 items/day, the 100%-
+   offline-scoring amendment still helps but cannot conjure events that
+   never happened — the honest fallback is a longer run or a narrower claim.
+
 ## Owner asks
 
 1. Ratify the P1/P2/P3 split and sequencing above (specifically: Q5 proceeds
    after P1+P2, with P3 deferred).
 2. P2.1 freeze-scope amendment — approve wording before the freeze tool is
    built in W7R Phase 1.
-3. P2.2 — approve that W2's build must pin the operational miss definition
+3. P2.2 measurement/intervention separation — this changes the W7R headline
+   design (offline scorer grades 100% of both arms; sampler = intervention
+   only). It is the difference between a fully-powered headline and a
+   pre-registered-underpowered one; needs your explicit sign-off since W7R's
+   dispatch text says otherwise.
+4. P2.3 — approve that W2's build must pin the operational miss definition
    before the power prereg is treated as meaningful.
-4. Decide whether report 74 receives an inline correction note or stands with
+5. Decide whether report 74 receives an inline correction note or stands with
    this report as its correction (recommendation: stands; 74's conclusions
    are unchanged, only its terrain counts are superseded).
 
