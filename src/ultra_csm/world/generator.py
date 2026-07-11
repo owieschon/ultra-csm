@@ -43,6 +43,14 @@ class WorldConfig:
     corruption_rate: float = 0.18
     red_herring_rate: float = 0.22
     anchor_account_count: int = 35
+    # D3 (MP-W1R): three INDEPENDENT dirty-data rates, distinct from
+    # corruption_rate above (a single rate choosing ONE of three mutually
+    # exclusive corruption kinds). These can co-occur on the same account --
+    # the calibration/abstention story needs independent axes of dirtiness,
+    # not one flag from a fixed set.
+    field_missingness_rate: float = 0.12
+    stale_observation_rate: float = 0.15
+    contradictory_source_rate: float = 0.05
 
 
 @dataclass(frozen=True)
@@ -59,6 +67,15 @@ class LatentAccountTruth:
     corruption_flags: tuple[str, ...]
     causal_chain: tuple[str, ...]
     observed_day: int
+    # D3 (MP-W1R): independent dirty-data flags, any combination of
+    # "missing_field", "stale_observation", "contradictory_source".
+    data_quality_flags: tuple[str, ...] = ()
+    # D5 (MP-W1R): richer outcome than the boolean doomed/thriving pair.
+    # doomed/thriving are UNCHANGED (backward-compat, still the deterministic
+    # source of truth); latent_outcome is a pure derived view: doomed splits
+    # 50/50 seeded into churned/downgraded, thriving maps to expanded, else
+    # flat.
+    latent_outcome: str = "flat"
 
 
 @dataclass(frozen=True)
@@ -528,9 +545,34 @@ def _latent_truth_for_world(
                 corruption_flags=tuple(corruption_flags),
                 causal_chain=tuple(causal_chain),
                 observed_day=180 if anchor else 0,
+                data_quality_flags=_data_quality_flags(config, index),
+                latent_outcome=_latent_outcome(config, index, doomed=doomed, thriving=thriving),
             )
         )
     return tuple(latent_rows)
+
+
+def _data_quality_flags(config: WorldConfig, index: int) -> tuple[str, ...]:
+    """D3: three independent seeded rolls -- these CAN co-occur, unlike
+    corruption_flags' single mutually-exclusive-kind roll above."""
+    flags: list[str] = []
+    if _fraction(config.seed, index, "missingness") < config.field_missingness_rate:
+        flags.append("missing_field")
+    if _fraction(config.seed, index, "staleness") < config.stale_observation_rate:
+        flags.append("stale_observation")
+    if _fraction(config.seed, index, "contradiction") < config.contradictory_source_rate:
+        flags.append("contradictory_source")
+    return tuple(flags)
+
+
+def _latent_outcome(config: WorldConfig, index: int, *, doomed: bool, thriving: bool) -> str:
+    """D5: pure derived view of doomed/thriving -- doomed splits 50/50
+    seeded into churned/downgraded; thriving maps to expanded; else flat."""
+    if doomed:
+        return "churned" if _fraction(config.seed, index, "outcome-split") < 0.5 else "downgraded"
+    if thriving:
+        return "expanded"
+    return "flat"
 
 
 def _latent_tuple(config: WorldConfig, index: int) -> dict[str, Any]:

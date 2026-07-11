@@ -1,0 +1,70 @@
+{
+  "artifact": "world_diversity_battery",
+  "as_of": "2026-06-28",
+  "dirty_data_rates": {
+    "configured": {
+      "contradictory_source": 0.05,
+      "missing_field": 0.12,
+      "stale_observation": 0.15
+    },
+    "delta": {
+      "contradictory_source": 0.0,
+      "missing_field": 0.01,
+      "stale_observation": 0.015
+    },
+    "metric": "dirty_data_rates",
+    "n": 200,
+    "observed": {
+      "contradictory_source": 0.05,
+      "missing_field": 0.11,
+      "stale_observation": 0.135
+    },
+    "ok": true,
+    "problems": [],
+    "tolerance": 0.03
+  },
+  "evidence_count": {
+    "max": 4,
+    "metric": "evidence_count",
+    "min": 2,
+    "n": 11,
+    "variance_gt_0": true
+  },
+  "factor_count": {
+    "max": 6,
+    "metric": "factor_count",
+    "min": 1,
+    "n": 11,
+    "variance_gt_0": true
+  },
+  "hard_ok": true,
+  "latent_outcome_derivation": {
+    "all_four_outcomes_present": true,
+    "metric": "latent_outcome_derivation",
+    "ok": true,
+    "outcomes_seen": [
+      "churned",
+      "downgraded",
+      "expanded",
+      "flat"
+    ],
+    "problems": []
+  },
+  "n_accounts_total": 181,
+  "n_accounts_with_evidence": 11,
+  "problems": [],
+  "source_mix": {
+    "counts": {
+      "crm": 7,
+      "cs_platform": 11,
+      "telemetry": 5
+    },
+    "distinct_sources": [
+      "crm",
+      "cs_platform",
+      "telemetry"
+    ],
+    "metric": "source_mix",
+    "variance_gt_0": true
+  }
+}
