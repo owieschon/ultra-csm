@@ -2,9 +2,27 @@
   "account_count": 181,
   "action_control_contract_version": "action-control.vertical-slice.v1",
   "day": 140,
+  "days": [
+    134,
+    135,
+    136,
+    137,
+    138,
+    139,
+    140
+  ],
   "exported_account_detail_count": 11,
   "mode": "hosted-readonly",
-  "proposal_count": 11,
+  "proposal_count": 83,
   "work_item_count": 12,
+  "work_item_counts": {
+    "134": 13,
+    "135": 13,
+    "136": 13,
+    "137": 13,
+    "138": 13,
+    "139": 13,
+    "140": 12
+  },
   "write_routes_exported": false
 }

@@ -1,0 +1,127 @@
+{
+  "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+  "candidate_divergences": [],
+  "deterministic_signals": [
+    {
+      "contribution": 8,
+      "evidence": [
+        {
+          "field": "due_date",
+          "observed_at": "2026-07-15",
+          "source": "cs_platform",
+          "source_id": "30f4240b-e6c6-5bd2-b7b4-42a9b8d68cc1"
+        }
+      ],
+      "name": "open_risk_cta",
+      "origin": "deterministic",
+      "surfaced_by_lenses": [
+        "risk_lens"
+      ],
+      "value": 1.0
+    },
+    {
+      "contribution": 6,
+      "evidence": [
+        {
+          "field": "arr_cents",
+          "observed_at": "2025-01-01",
+          "source": "cs_platform",
+          "source_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7"
+        }
+      ],
+      "name": "arr_risk_exposure",
+      "origin": "deterministic",
+      "surfaced_by_lenses": [
+        "risk_lens"
+      ],
+      "value": 28000000.0
+    },
+    {
+      "contribution": 28,
+      "evidence": [
+        {
+          "field": "opportunity_type",
+          "observed_at": "2026-10-15",
+          "source": "crm",
+          "source_id": "41a2e8e0-c7b8-5574-b88c-93cac0f59b27"
+        }
+      ],
+      "name": "open_expansion_opportunity",
+      "origin": "deterministic",
+      "surfaced_by_lenses": [
+        "expansion_lens"
+      ],
+      "value": 8500000.0
+    },
+    {
+      "contribution": 10,
+      "evidence": [
+        {
+          "field": "adoption_rate",
+          "observed_at": "2026-11-02T00:00:00Z",
+          "source": "cs_platform",
+          "source_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7"
+        }
+      ],
+      "name": "expansion_readiness_high_adoption",
+      "origin": "deterministic",
+      "surfaced_by_lenses": [
+        "expansion_lens"
+      ],
+      "value": 1.1
+    },
+    {
+      "contribution": 20,
+      "evidence": [
+        {
+          "field": "arr_cents",
+          "observed_at": "2025-01-01",
+          "source": "cs_platform",
+          "source_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7"
+        }
+      ],
+      "name": "arr_expansion_surface",
+      "origin": "deterministic",
+      "surfaced_by_lenses": [
+        "expansion_lens"
+      ],
+      "value": 28000000.0
+    }
+  ],
+  "explanation": {
+    "disclaimer": "Model-generated explanation -- may be incomplete or mischaracterize the underlying evidence. Verify against the cited sources before acting.",
+    "evidence": [
+      {
+        "field": "due_date",
+        "observed_at": "2026-07-15",
+        "source": "cs_platform",
+        "source_id": "30f4240b-e6c6-5bd2-b7b4-42a9b8d68cc1"
+      },
+      {
+        "field": "arr_cents",
+        "observed_at": "2025-01-01",
+        "source": "cs_platform",
+        "source_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7"
+      },
+      {
+        "field": "opportunity_type",
+        "observed_at": "2026-10-15",
+        "source": "crm",
+        "source_id": "41a2e8e0-c7b8-5574-b88c-93cac0f59b27"
+      },
+      {
+        "field": "adoption_rate",
+        "observed_at": "2026-11-02T00:00:00Z",
+        "source": "cs_platform",
+        "source_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7"
+      },
+      {
+        "field": "arr_cents",
+        "observed_at": "2025-01-01",
+        "source": "cs_platform",
+        "source_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7"
+      }
+    ],
+    "text": "Fixture explanation: no live model configured."
+  }
+}

@@ -1,0 +1,152 @@
+{
+  "account_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32",
+  "candidate_divergences": [],
+  "deterministic_signals": [
+    {
+      "contribution": 15,
+      "evidence": [
+        {
+          "field": "health_score",
+          "observed_at": "2026-06-21T00:00:00Z",
+          "source": "cs_platform",
+          "source_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32"
+        }
+      ],
+      "name": "health_yellow",
+      "origin": "deterministic",
+      "surfaced_by_lenses": [
+        "risk_lens"
+      ],
+      "value": 1.0
+    },
+    {
+      "contribution": 18,
+      "evidence": [
+        {
+          "field": "status",
+          "observed_at": "2026-06-12T14:00:00Z",
+          "source": "crm",
+          "source_id": "33509b75-de98-51fa-90a0-c68c90fe9324"
+        }
+      ],
+      "name": "open_support_pressure",
+      "origin": "deterministic",
+      "surfaced_by_lenses": [
+        "risk_lens"
+      ],
+      "value": 1.0
+    },
+    {
+      "contribution": 20,
+      "evidence": [
+        {
+          "field": "target_date",
+          "observed_at": "2026-07-15",
+          "source": "cs_platform",
+          "source_id": "3ea4da77-9a46-57ce-aa0a-36440aed7192"
+        }
+      ],
+      "name": "overdue_success_plan",
+      "origin": "deterministic",
+      "surfaced_by_lenses": [
+        "risk_lens"
+      ],
+      "value": 1.0
+    },
+    {
+      "contribution": 12,
+      "evidence": [
+        {
+          "field": "active_users",
+          "observed_at": "2026-06-21T00:00:00Z",
+          "source": "cs_platform",
+          "source_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32"
+        }
+      ],
+      "name": "low_seat_penetration",
+      "origin": "deterministic",
+      "surfaced_by_lenses": [
+        "risk_lens"
+      ],
+      "value": 0.3333333333333333
+    },
+    {
+      "contribution": 15,
+      "evidence": [
+        {
+          "field": "underused_capabilities",
+          "observed_at": "2026-06-21T00:00:00Z",
+          "source": "cs_platform",
+          "source_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32"
+        },
+        {
+          "field": "capability",
+          "observed_at": "2026-06-01",
+          "source": "telemetry",
+          "source_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32:core_telematics"
+        },
+        {
+          "field": "capability",
+          "observed_at": "2026-06-01",
+          "source": "telemetry",
+          "source_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32:maintenance_alerts"
+        }
+      ],
+      "name": "feature_depth_gap",
+      "origin": "deterministic",
+      "surfaced_by_lenses": [
+        "risk_lens",
+        "expansion_lens"
+      ],
+      "value": 0.5
+    }
+  ],
+  "explanation": {
+    "disclaimer": "Model-generated explanation -- may be incomplete or mischaracterize the underlying evidence. Verify against the cited sources before acting.",
+    "evidence": [
+      {
+        "field": "health_score",
+        "observed_at": "2026-06-21T00:00:00Z",
+        "source": "cs_platform",
+        "source_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32"
+      },
+      {
+        "field": "status",
+        "observed_at": "2026-06-12T14:00:00Z",
+        "source": "crm",
+        "source_id": "33509b75-de98-51fa-90a0-c68c90fe9324"
+      },
+      {
+        "field": "target_date",
+        "observed_at": "2026-07-15",
+        "source": "cs_platform",
+        "source_id": "3ea4da77-9a46-57ce-aa0a-36440aed7192"
+      },
+      {
+        "field": "active_users",
+        "observed_at": "2026-06-21T00:00:00Z",
+        "source": "cs_platform",
+        "source_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32"
+      },
+      {
+        "field": "underused_capabilities",
+        "observed_at": "2026-06-21T00:00:00Z",
+        "source": "cs_platform",
+        "source_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32"
+      },
+      {
+        "field": "capability",
+        "observed_at": "2026-06-01",
+        "source": "telemetry",
+        "source_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32:core_telematics"
+      },
+      {
+        "field": "capability",
+        "observed_at": "2026-06-01",
+        "source": "telemetry",
+        "source_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32:maintenance_alerts"
+      }
+    ],
+    "text": "Fixture explanation: no live model configured."
+  }
+}

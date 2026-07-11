@@ -50,7 +50,8 @@ export default function CommsReviewPage() {
     title: string,
     sourceType: "notion_meeting" | "slack_channel",
     items: PendingMapping[] | null,
-    error: string | null
+    error: string | null,
+    emptyCopy: string
   ) {
     return (
       <section className="sec" aria-labelledby={`${sourceType}-heading`}>
@@ -72,10 +73,9 @@ export default function CommsReviewPage() {
           </div>
         )}
         {items?.length === 0 && (
-          <div className="evid-row">
-            <span className="eval" style={{ color: "var(--fg-3)" }}>
-              nothing pending
-            </span>
+          <div className="evidence-empty">
+            <div className="evidence-empty-title">✓ Nothing pending</div>
+            <div className="evidence-empty-copy">{emptyCopy}</div>
           </div>
         )}
         {items?.map((item) => (
@@ -123,18 +123,33 @@ export default function CommsReviewPage() {
   return (
     <main className="detail-scroll evidence-review">
       <Link className="navlink evidence-back" href="/">
-        ← Action Control
+        ← Back to the book
       </Link>
       <header className="identity evidence-heading">
         <div>
           <h1 className="id-name">Evidence mapping</h1>
           <p className="evidence-intro">
             Resolve ambiguous communication sources before they can influence an account decision.
+            When the agent pulls a Slack channel or a call transcript it can&apos;t
+            match to exactly one account, it stops and queues the mapping here —
+            unmapped evidence never reaches a score or a draft.
           </p>
         </div>
       </header>
-      {renderSection("Slack channels", "slack_channel", slack, slackError)}
-      {renderSection("Notion call transcripts", "notion_meeting", notion, notionError)}
+      {renderSection(
+        "Slack channels",
+        "slack_channel",
+        slack,
+        slackError,
+        "Every connected Slack channel is mapped to an account. A channel the agent can't place would appear here with its candidate accounts and a confidence score."
+      )}
+      {renderSection(
+        "Notion call transcripts",
+        "notion_meeting",
+        notion,
+        notionError,
+        "Every pulled call transcript is mapped. A transcript mentioning several accounts would stop here for you to confirm which one it belongs to."
+      )}
     </main>
   );
 }

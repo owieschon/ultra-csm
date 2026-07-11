@@ -1,0 +1,340 @@
+{
+  "account_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18",
+  "account_name": "Harborview Fleet",
+  "adoption": {
+    "account_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18",
+    "active_assets": 35,
+    "active_users": 25,
+    "adoption_rate": 0.64,
+    "entitled_assets": 55,
+    "licensed_users": 40,
+    "measured_at": "2026-06-21T00:00:00Z",
+    "underused_capabilities": [
+      "advanced_reporting",
+      "dispatch_automation"
+    ]
+  },
+  "comms_call_transcripts": [
+    {
+      "account_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18",
+      "attendees": [
+        "329c0c82-3c48-5ce2-991c-69b0fb39b9f4",
+        "csm-102"
+      ],
+      "channel": "call",
+      "contact_id": "329c0c82-3c48-5ce2-991c-69b0fb39b9f4",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "9f7c5377-356b-599b-acf9-2eebb7ea652b",
+      "timestamp": "2026-11-07T02:00:00Z"
+    }
+  ],
+  "comms_gmail": [
+    {
+      "account_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "5d346e9f-08bb-5736-9b51-e3be8b8c9cad",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "70e9b8c7-63ca-5340-998d-419a98d8a1b7",
+      "timestamp": "2026-11-05T00:00:00Z"
+    },
+    {
+      "account_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "5d346e9f-08bb-5736-9b51-e3be8b8c9cad",
+      "direction": "inbound",
+      "response_time_hours": 3.5,
+      "signal_id": "b1adfb00-7fdc-565f-95ee-4b71f691c64d",
+      "timestamp": "2026-11-05T03:30:00Z"
+    }
+  ],
+  "comms_internal": [
+    {
+      "account_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18",
+      "author": "csm-102",
+      "content": "Gregory wants ERP stability handled before renewal terms; David should see a concise risk recap, not a generic QBR ask.",
+      "note_id": "36f5c56f-2eaf-50a3-bf87-fde376b935d1",
+      "source": "slack",
+      "timestamp": "2026-11-07T07:00:00Z"
+    }
+  ],
+  "company": {
+    "arr_cents": 14000000,
+    "csm_owner_id": "csm-102",
+    "lifecycle_stage": "renewal",
+    "renewal_date": "2026-08-05",
+    "status": "Active"
+  },
+  "contacts": [
+    {
+      "consent_to_contact": true,
+      "email": "gregory.foster@harborview-fleet.example",
+      "name": "Gregory Foster",
+      "role": "operations",
+      "title": "VP Operations"
+    },
+    {
+      "consent_to_contact": true,
+      "email": "michelle.park@harborview-fleet.example",
+      "name": "Michelle Park",
+      "role": "fleet_operations",
+      "title": "Fleet Manager"
+    },
+    {
+      "consent_to_contact": true,
+      "email": "david.cross@harborview-fleet.example",
+      "name": "David Cross",
+      "role": "finance",
+      "title": "CFO"
+    }
+  ],
+  "divergences": [],
+  "entitlements": [
+    {
+      "account_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18",
+      "capability": "core_telematics",
+      "ends_at": null,
+      "entitled_quantity": 55,
+      "starts_at": "2025-08-01",
+      "unit": "assets"
+    },
+    {
+      "account_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18",
+      "capability": "route_optimization",
+      "ends_at": null,
+      "entitled_quantity": 55,
+      "starts_at": "2025-08-01",
+      "unit": "assets"
+    },
+    {
+      "account_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18",
+      "capability": "advanced_reporting",
+      "ends_at": null,
+      "entitled_quantity": 40,
+      "starts_at": "2025-08-01",
+      "unit": "users"
+    },
+    {
+      "account_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18",
+      "capability": "dispatch_automation",
+      "ends_at": null,
+      "entitled_quantity": 40,
+      "starts_at": "2025-08-01",
+      "unit": "assets"
+    }
+  ],
+  "health_snapshot": {
+    "band": "yellow",
+    "drivers": [
+      "save_play_active",
+      "renewal_negotiating"
+    ],
+    "measured_at": "2026-08-05T00:00:00Z",
+    "score": 44.2
+  },
+  "industry": "fleet_management",
+  "lifecycle_stage": "renewal",
+  "milestones": [],
+  "open_cases": [
+    {
+      "account_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18",
+      "case_id": "625c9e2b-353d-5bc9-b866-91b2c536d104",
+      "closed_at": null,
+      "created_at": "2026-06-08T14:00:00Z",
+      "origin": "Email",
+      "priority": "High",
+      "status": "Open",
+      "subject": "Integration with new ERP system not working as expected"
+    },
+    {
+      "account_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18",
+      "case_id": "2f75e535-4d63-5289-8084-aa72fcf3b39a",
+      "closed_at": null,
+      "created_at": "2026-07-01T00:00:00Z",
+      "origin": "Email",
+      "priority": "High",
+      "status": "Open",
+      "subject": "Simulated escalation (day 10, #1)"
+    }
+  ],
+  "open_ctas": [
+    {
+      "account_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18",
+      "cta_id": "4af5a5c0-f51a-5a83-9217-141f4333c6db",
+      "due_date": "2026-07-15",
+      "owner_id": "csm-102",
+      "priority": "High",
+      "reason": "Renewal risk - address declining satisfaction before renewal",
+      "status": "open"
+    }
+  ],
+  "opportunities": [
+    {
+      "account_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18",
+      "amount_cents": 14000000,
+      "close_date": "2026-08-05",
+      "opportunity_id": "727690bd-9e41-5919-ba3c-e7a26c4c8403",
+      "opportunity_type": "Renewal",
+      "stage_name": "Proposal"
+    }
+  ],
+  "priority": {
+    "factors": [
+      {
+        "config_version": "value-model-config-v1",
+        "contribution": 15,
+        "evidence": [
+          {
+            "field": "health_score",
+            "observed_at": "2026-08-05T00:00:00Z",
+            "source": "cs_platform",
+            "source_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18"
+          }
+        ],
+        "name": "health_yellow",
+        "rule_name": "base_default",
+        "threshold_name": "health_yellow_points",
+        "threshold_value": 15,
+        "value": 1.0
+      },
+      {
+        "config_version": "value-model-config-v1",
+        "contribution": 15,
+        "evidence": [
+          {
+            "field": "underused_capabilities",
+            "observed_at": "2026-06-21T00:00:00Z",
+            "source": "cs_platform",
+            "source_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18"
+          },
+          {
+            "field": "capability",
+            "observed_at": "2025-08-01",
+            "source": "telemetry",
+            "source_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18:core_telematics"
+          },
+          {
+            "field": "capability",
+            "observed_at": "2025-08-01",
+            "source": "telemetry",
+            "source_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18:route_optimization"
+          },
+          {
+            "field": "capability",
+            "observed_at": "2025-08-01",
+            "source": "telemetry",
+            "source_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18:advanced_reporting"
+          },
+          {
+            "field": "capability",
+            "observed_at": "2025-08-01",
+            "source": "telemetry",
+            "source_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18:dispatch_automation"
+          }
+        ],
+        "name": "feature_depth_gap",
+        "rule_name": "base_default",
+        "threshold_name": "depth_floor",
+        "threshold_value": 0.6,
+        "value": 0.5
+      }
+    ],
+    "score": 30
+  },
+  "recent_usage_signals": [
+    {
+      "account_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18",
+      "grain": "company",
+      "metric_name": "daily_active_assets",
+      "observed_at": "2026-06-21T00:00:00Z",
+      "signal_id": "d7999666-4b42-5686-a265-b24d294beaae",
+      "source_ref": "product-telemetry:daily_active_assets",
+      "subject_id": null,
+      "unit": "assets",
+      "value": 35.0
+    }
+  ],
+  "stakeholders": [
+    {
+      "champion": false,
+      "consent_to_contact": true,
+      "contact_id": "5d346e9f-08bb-5736-9b51-e3be8b8c9cad",
+      "days_since_interaction": null,
+      "departed": false,
+      "name": "Gregory Foster",
+      "new_unengaged": false,
+      "relationship_type": null,
+      "title": "VP Operations"
+    },
+    {
+      "champion": false,
+      "consent_to_contact": true,
+      "contact_id": "34b84b01-44b8-5797-854e-c3c5e50f432a",
+      "days_since_interaction": null,
+      "departed": false,
+      "name": "Michelle Park",
+      "new_unengaged": false,
+      "relationship_type": null,
+      "title": "Fleet Manager"
+    },
+    {
+      "champion": false,
+      "consent_to_contact": true,
+      "contact_id": "329c0c82-3c48-5ce2-991c-69b0fb39b9f4",
+      "days_since_interaction": null,
+      "departed": false,
+      "name": "David Cross",
+      "new_unengaged": false,
+      "relationship_type": null,
+      "title": "CFO"
+    }
+  ],
+  "success_plans": [],
+  "suggested_talking_points": [
+    "health_yellow: value=1.00, contribution=+15 (rule: base_default)",
+    "feature_depth_gap: value=0.50, contribution=+15 (rule: base_default)",
+    "Health is yellow (score 44.2) -- drivers: save_play_active, renewal_negotiating",
+    "Underused capabilities: advanced_reporting, dispatch_automation"
+  ],
+  "trajectory": {
+    "consecutive_band": "yellow",
+    "consecutive_count": 3,
+    "points": [
+      {
+        "day": 0,
+        "health_band": "yellow",
+        "health_score": 56.0,
+        "priority_score": 30
+      },
+      {
+        "day": 30,
+        "health_band": "red",
+        "health_score": 31.0,
+        "priority_score": 45
+      },
+      {
+        "day": 60,
+        "health_band": "yellow",
+        "health_score": 40.0,
+        "priority_score": 30
+      },
+      {
+        "day": 90,
+        "health_band": "yellow",
+        "health_score": 40.0,
+        "priority_score": 30
+      },
+      {
+        "day": 120,
+        "health_band": "yellow",
+        "health_score": 40.0,
+        "priority_score": 30
+      }
+    ],
+    "trend": "declining",
+    "trend_velocity": -0.1333
+  }
+}

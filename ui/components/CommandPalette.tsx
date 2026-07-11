@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { AccountSummary } from "@/lib/api";
+import { label, TIER_LABELS } from "@/lib/labels";
 
 interface Command {
   label: string;
@@ -12,12 +13,14 @@ export function CommandPalette({
   open,
   onClose,
   accounts,
+  pendingAccountIds,
   onJumpToAccount,
   commands,
 }: {
   open: boolean;
   onClose: () => void;
   accounts: AccountSummary[] | null;
+  pendingAccountIds?: Set<string>;
   onJumpToAccount: (accountId: string) => void;
   commands: Command[];
 }) {
@@ -51,12 +54,21 @@ export function CommandPalette({
     c.label.toLowerCase().includes(q)
   );
 
+  const accountMeta = (a: AccountSummary) => (
+    <span className="meta" title={a.tier ?? undefined}>
+      {pendingAccountIds?.has(a.account_id) && (
+        <span className="meta-needs">needs you · </span>
+      )}
+      {label(TIER_LABELS, a.tier)}
+    </span>
+  );
+
   const items: { render: React.ReactNode; act: () => void }[] = [
     ...matchedAccounts.map((a) => ({
       render: (
         <>
           <b>{a.account_name}</b>
-          <span className="meta">{a.tier ?? "—"}</span>
+          {accountMeta(a)}
         </>
       ),
       act: () => onJumpToAccount(a.account_id),
@@ -155,7 +167,7 @@ export function CommandPalette({
               }}
             >
               <b>{a.account_name}</b>
-              <span className="meta">{a.tier ?? "—"}</span>
+              {accountMeta(a)}
             </button>
           ))}
           {matchedCommands.length > 0 && <div className="pal-grp">Commands</div>}

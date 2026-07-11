@@ -8,7 +8,7 @@ import {
   EvidenceRefRow,
   ReconciliationResponse,
 } from "@/lib/api";
-import { label, TRIGGER_LABELS } from "@/lib/labels";
+import { label, LENS_LABELS, TRIGGER_LABELS } from "@/lib/labels";
 
 // Reconciliation agent (Harvest 31/32, report 52/53): reconciles what CS
 // tools report against what telemetry shows for this account. An
@@ -37,7 +37,11 @@ function DeterministicSignalRowView({ signal }: { signal: DeterministicSignalRow
           <span className="mono" style={{ fontSize: 10, color: "var(--fg-2)" }}>
             {signal.name}
           </span>
-          <span>{signal.surfaced_by_lenses.join(", ")}</span>
+          <span title={signal.surfaced_by_lenses.join(", ")}>
+            {signal.surfaced_by_lenses
+              .map((lens) => label(LENS_LABELS, lens))
+              .join(" · ")}
+          </span>
         </span>
       </button>
       {open && (
@@ -146,13 +150,25 @@ export function ReconciliationSection({
             <DeterministicSignalRowView key={signal.name} signal={signal} />
           ))}
 
-          <div className="rec-explain">
-            <span className="chip-llm" style={{ marginBottom: 6, display: "inline-block" }}>
-              AI-written — explanation only
-            </span>
-            <div>{data.explanation.text}</div>
-          </div>
-          <div className="hyp-disclaimer">{data.explanation.disclaimer}</div>
+          {/* The exporter runs without a live model, so the explanation slot
+              carries a stub. Labeling that stub "AI-written" would be false —
+              render the honest dormant register instead (same voice as the
+              "no live source yet" drawers). */}
+          {data.explanation.text.startsWith("Fixture explanation") ? (
+            <div className="rec-explain dormant">
+              explanation slot dormant — no live model in this snapshot
+            </div>
+          ) : (
+            <>
+              <div className="rec-explain">
+                <span className="chip-llm" style={{ marginBottom: 6, display: "inline-block" }}>
+                  AI-written — explanation only
+                </span>
+                <div>{data.explanation.text}</div>
+              </div>
+              <div className="hyp-disclaimer">{data.explanation.disclaimer}</div>
+            </>
+          )}
 
           {data.candidate_divergences.map((candidate, i) => (
             <CandidateDivergenceRowView key={i} candidate={candidate} />

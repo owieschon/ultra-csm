@@ -12,6 +12,7 @@ export function TopBar({
   accountCount,
   queueCount,
   day,
+  dayWindow,
   liveMode,
   readOnlyDemo,
   onDayChange,
@@ -24,6 +25,7 @@ export function TopBar({
   accountCount: number | null;
   queueCount: number;
   day: number;
+  dayWindow?: [number, number] | null;
   liveMode: boolean;
   readOnlyDemo?: boolean;
   onDayChange: (day: number) => void;
@@ -41,9 +43,28 @@ export function TopBar({
     document.documentElement.setAttribute("data-theme", theme);
   }, [theme]);
 
+  // The `t` shortcut and the palette command flip data-theme directly
+  // (lib/theme.ts) — mirror the attribute so the ☾/☀ icon stays truthful.
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      const current = document.documentElement.getAttribute("data-theme");
+      setTheme(current === "light" ? "light" : "dark");
+    });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
+    return () => observer.disconnect();
+  }, []);
+
   function handleToggleTheme() {
     setTheme(toggleThemeUtil());
   }
+
+  // Demo snapshots exist only for the exported window — clamp the scrubber
+  // so it can never land on a day without a fixture.
+  const scrubMin = readOnlyDemo && dayWindow ? dayWindow[0] : 1;
+  const scrubMax = readOnlyDemo && dayWindow ? dayWindow[1] : 365;
 
   return (
     <header className="topbar">
@@ -124,21 +145,34 @@ export function TopBar({
         <span className="k">⌘K</span>
       </button>
 
-      <div className="scrub">
+      <div
+        className="scrub"
+        title={
+          readOnlyDemo && dayWindow
+            ? `Re-render the whole surface as of any exported day (${dayWindow[0]}–${dayWindow[1]}) — same ledger, time-filtered`
+            : "Re-render the whole surface as of any day — same ledger, time-filtered"
+        }
+      >
         <label className="lbl" htmlFor="scenario-day">
           {liveMode ? (
             <b>live</b>
           ) : (
             <>
               day <b className="num">{day}</b>
+              {readOnlyDemo && dayWindow && (
+                <span className="scrub-window num">
+                  {" "}
+                  of {dayWindow[0]}–{dayWindow[1]}
+                </span>
+              )}
             </>
           )}
         </label>
         <input
           id="scenario-day"
           type="range"
-          min={1}
-          max={365}
+          min={scrubMin}
+          max={scrubMax}
           value={day}
           disabled={liveMode}
           onChange={(e) => onDayChange(Number(e.target.value))}
@@ -172,8 +206,11 @@ export function TopBar({
               height: 7,
               borderRadius: "50%",
               display: "inline-block",
-              background:
-                health === "ok"
+              // Claim-boundary tokens: the green dot means LIVE — a static
+              // snapshot never borrows it.
+              background: readOnlyDemo
+                ? "var(--fg-3)"
+                : health === "ok"
                   ? "var(--ok)"
                   : health === "checking"
                     ? "var(--fg-3)"

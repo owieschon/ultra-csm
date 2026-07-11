@@ -72,7 +72,7 @@ svg { display: block; }
 .brand .mark { width: 22px; height: 22px; color: var(--accent); }
 .brand b { font-weight: 650; font-size: 15px; letter-spacing: -.02em; }
 .envchip { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--fg-2); padding-left: 12px; border-left: 1px solid var(--hair); }
-.envchip .pb { font-size: 10px; font-weight: 700; letter-spacing: .05em; color: var(--warn); border: 1px solid rgba(217,164,82,.4); border-radius: 5px; padding: 1px 7px; }
+.envchip .pb { font-size: 10px; font-weight: 700; letter-spacing: .05em; color: var(--warn); border: 1px solid rgba(217,164,82,.4); border-radius: 5px; padding: 1px 7px; white-space: nowrap; }
 .envchip b { color: var(--fg); font-weight: 600; }
 
 .seg { display: flex; border: 1px solid var(--hair); border-radius: 8px; overflow: hidden; background: var(--canvas); }
@@ -275,6 +275,9 @@ svg { display: block; }
 .evidence-back { width: max-content; margin-bottom: 18px; }
 .evidence-heading { border-bottom: 1px solid var(--hair); }
 .evidence-intro { margin-top: 7px; max-width: 620px; color: var(--fg-2); }
+.evidence-empty { border: 1px dashed var(--hair); border-radius: 9px; padding: 14px 16px; max-width: 620px; }
+.evidence-empty-title { font-size: 12.5px; font-weight: 650; color: var(--ok); margin-bottom: 4px; }
+.evidence-empty-copy { font-size: 12.5px; color: var(--fg-2); line-height: 1.55; }
 .empty { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 40px; }
 .empty h2 { font-size: 19px; font-weight: 650; }
 .empty .sub { font-size: 13px; color: var(--fg-2); text-align: center; line-height: 1.6; }
@@ -317,6 +320,51 @@ svg { display: block; }
   .control-step:nth-child(2) { border-right: 0; }
   .control-step:nth-child(-n+2) { border-bottom: 1px solid var(--hair); }
 }
+
+/* ===== DEMO PRODUCT-FEEL (ux/demo-product-feel pass) ===== */
+/* Designed load-failure state: plain-English line, quiet danger accent —
+   never a raw error string as the primary label. */
+.notice-error { margin: 14px 26px 0; padding: 9px 13px; border: 1px solid rgba(230,123,128,.4); border-left: 2px solid var(--danger); border-radius: 8px; background: var(--danger-dim); color: var(--fg); font-size: 12.5px; }
+
+/* First-run orientation strip (demo only, dismissible). */
+.intro-strip { display: flex; align-items: center; gap: 14px; padding: 9px 26px; border-bottom: 1px solid var(--hair); background: var(--accent-dim); font-size: 12.5px; color: var(--fg); }
+.intro-strip .intro-text { flex: 1; line-height: 1.45; }
+.intro-strip .intro-cta { flex: 0 0 auto; background: var(--accent); color: var(--accent-fg); border-radius: 7px; padding: 5px 12px; font-size: 12px; font-weight: 600; }
+.intro-strip .intro-dismiss { flex: 0 0 auto; color: var(--fg-2); font-size: 12px; padding: 4px 6px; border-radius: 5px; }
+.intro-strip .intro-dismiss:hover { color: var(--fg); }
+
+/* Simulated receipt mark: demo-only ledger lines are visibly not backend
+   events. */
+.sim-chip { flex: 0 0 auto; align-self: center; font-family: ui-monospace, "JetBrains Mono", monospace; font-size: 9px; font-weight: 700; letter-spacing: .04em; color: var(--warn); border: 1px solid rgba(217,164,82,.45); border-radius: 4px; padding: 0 4px; }
+
+/* Coverage lane content line — the long-tail value, stated. */
+.lane-note { padding: 4px 14px 14px; font-size: 11.5px; color: var(--fg-2); line-height: 1.5; }
+
+/* Composed payoff: the goal state of the queue is emptiness. */
+.empty.payoff .payoff-check { width: 42px; height: 42px; border-radius: 50%; border: 1px solid rgba(93,190,147,.45); color: var(--ok); display: flex; align-items: center; justify-content: center; font-size: 19px; }
+.empty.payoff .sub .mono { font-family: ui-monospace, "JetBrains Mono", monospace; font-size: 11.5px; color: var(--fg-2); }
+.empty.payoff .cta { background: var(--accent); color: var(--accent-fg); border-radius: 8px; padding: 8px 15px; font-size: 12.5px; font-weight: 600; }
+
+/* Evidence citations + system tokens inside server prose (two-register:
+   verbatim text, receipt face). */
+.evid-chip { font-size: 10.5px; color: var(--fg-2); border: 1px solid var(--hair); border-radius: 4px; padding: 0 5px; margin: 0 2px; white-space: nowrap; }
+.prose-token { font-size: 11.5px; color: var(--fg-2); }
+
+/* Lens strip caption — the chips are vocabulary, not controls. */
+.lens-cap { font-size: 11px; color: var(--fg-2); }
+
+/* Scrubber window annotation (demo). */
+.scrub-window { color: var(--fg-2); font-weight: 400; font-size: 11px; }
+
+/* Palette: pending-account mark. */
+.pal-item .meta-needs { color: var(--warn); font-weight: 650; }
+
+/* Reconciliation explanation slot with no live model behind it. */
+.rec-explain.dormant { color: var(--fg-2); font-style: italic; font-size: 12px; }
+
+/* Palette-jump landing flash on a book tile. */
+@keyframes tile-flash { 0%, 60% { border-color: var(--accent-line); box-shadow: 0 0 0 1.5px var(--accent-line); } 100% { box-shadow: none; } }
+.tile.flash { animation: tile-flash 2.2s ease-out; }
 
 /* ===== PALETTE + SHORTCUTS (ported as-is per Decisions) ===== */
 .scrim { position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 100; display: none; align-items: flex-start; justify-content: center; padding-top: 14vh; }
