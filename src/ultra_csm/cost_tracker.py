@@ -170,6 +170,8 @@ class CostTracker:
             return {
                 "total_calls": n,
                 "total_tokens": self._total_tokens,
+                "total_input_tokens": sum(call.input_tokens for call in self._calls),
+                "total_output_tokens": sum(call.output_tokens for call in self._calls),
                 "total_cost_usd": round(self._total_cost_usd, 6),
                 "avg_latency_ms": (
                     round(self._total_latency_ms / n, 2) if n > 0 else 0.0

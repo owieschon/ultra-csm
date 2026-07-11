@@ -143,6 +143,8 @@ class DrawResult:
     gated_pass: bool
     input_tokens: int | None
     output_tokens: int | None
+    cost_usd: float | None = None
+    latency_ms: float | None = None
 
 
 def _call_with_retry(fn):
@@ -206,11 +208,15 @@ def run_arm(
     *,
     pass_k: int = PASS_K,
     checkpoint_path: Path | None = None,
-    cost_tracker: CostTracker | None = None,
 ) -> dict:
+    # A per-draw CostTracker (not one shared across the whole arm) is
+    # deliberate: its stats are folded into the checkpoint dict for THIS
+    # draw before returning, so token/cost telemetry survives a process
+    # kill+resume by construction (the checkpoint is the source of truth,
+    # not an in-memory tracker that dies with the process -- see
+    # docs/R2_TELEMETRY_RESUME_FINDING.md).
     draws = _load_checkpoint(checkpoint_path)
     already = {(d["scenario_id"], d["draw_index"]) for d in draws}
-    writer = AnthropicReasonDraftWriter(model_id=model_id, cost_tracker=cost_tracker)
     judge = AnthropicQualityJudge(model_id=JUDGE_MODEL_ID, reasoning=True)
     total = len(scenarios) * pass_k
     done = len(draws)
@@ -224,8 +230,17 @@ def run_arm(
                 f"scenario={scenario.scenario_id} family={scenario.family} draw={draw_index}",
                 flush=True,
             )
+            draw_tracker = CostTracker()
+            writer = AnthropicReasonDraftWriter(model_id=model_id, cost_tracker=draw_tracker)
             result = run_draw(scenario, draw_index, writer=writer, judge=judge)
-            draws.append(asdict(result))
+            draw_dict = asdict(result)
+            stats = draw_tracker.stats()
+            if stats["total_calls"]:
+                draw_dict["input_tokens"] = stats["total_input_tokens"]
+                draw_dict["output_tokens"] = stats["total_output_tokens"]
+                draw_dict["cost_usd"] = stats["total_cost_usd"]
+                draw_dict["latency_ms"] = stats["avg_latency_ms"]
+            draws.append(draw_dict)
             _write_checkpoint(checkpoint_path, draws)
     return _aggregate_arm(model_id, scenarios, draws, pass_k=pass_k)
 
@@ -269,6 +284,7 @@ def _aggregate_arm(model_id: str, scenarios: tuple[Scenario, ...], draws: list[d
         and pass_k_rate >= ADOPT_MIN_PASS_K_RATE
         and contract_violation_rate == 0.0
     )
+    telemetry = _telemetry_from_draws(draws)
     return {
         "model_id": model_id,
         "n_scenarios": len(scenarios),
@@ -288,6 +304,35 @@ def _aggregate_arm(model_id: str, scenarios: tuple[Scenario, ...], draws: list[d
             "max_contract_violation_rate": 0.0,
         },
         "adopt_eligible": adopt_eligible,
+        "telemetry": telemetry,
+    }
+
+
+def _telemetry_from_draws(draws: list[dict]) -> dict:
+    """Token/cost/latency aggregated from the checkpoint's per-draw fields.
+
+    Deliberately NOT derived from a live CostTracker: a tracker is
+    in-memory only and does not survive a process kill+resume, silently
+    undercounting whichever draws were already checkpointed before a
+    restart (see docs/R2_TELEMETRY_RESUME_FINDING.md). Summing the
+    checkpoint's own per-draw fields is correct across any number of
+    resumes because the checkpoint itself is what survives.
+    """
+    priced = [d for d in draws if d.get("input_tokens") is not None]
+    n_priced = len(priced)
+    input_tokens = sum(d["input_tokens"] for d in priced)
+    output_tokens = sum(d["output_tokens"] or 0 for d in priced)
+    cost_usd = sum(d["cost_usd"] or 0.0 for d in priced)
+    latency_ms = sum(d["latency_ms"] or 0.0 for d in priced)
+    return {
+        "n_draws_total": len(draws),
+        "n_draws_priced": n_priced,
+        "coverage": round(n_priced / len(draws), 4) if draws else 0.0,
+        "total_input_tokens": input_tokens,
+        "total_output_tokens": output_tokens,
+        "total_tokens": input_tokens + output_tokens,
+        "total_cost_usd": round(cost_usd, 6),
+        "avg_latency_ms": round(latency_ms / n_priced, 2) if n_priced else None,
     }
 
 
@@ -302,7 +347,6 @@ def build_report(
     n_total = n_per_arm if n_per_arm is not None else sized_n_per_arm(drop_pp)
     scenarios = build_scenario_set(n_total)
 
-    trackers = {key: CostTracker() for key in CANDIDATE_MODELS}
     arms = {}
     for key, model_id in CANDIDATE_MODELS.items():
         checkpoint_path = checkpoint_dir / f"writer_bakeoff_{key}.json" if checkpoint_dir else None
@@ -311,16 +355,17 @@ def build_report(
             scenarios,
             pass_k=pass_k,
             checkpoint_path=checkpoint_path,
-            cost_tracker=trackers[key],
         )
-        arms[key]["tokens"] = trackers[key].stats()
 
     recommended = [key for key, arm in arms.items() if arm["adopt_eligible"]]
+    fully_priced = [key for key in recommended if arms[key]["telemetry"]["coverage"] == 1.0]
     cheapest_eligible = min(
-        recommended,
-        key=lambda key: trackers[key].stats()["total_cost_usd"],
+        fully_priced,
+        key=lambda key: arms[key]["telemetry"]["total_cost_usd"],
         default=None,
     )
+    if recommended and not fully_priced:
+        cheapest_eligible = None  # every eligible arm has incomplete telemetry; do not guess
 
     return {
         "artifact": "writer_bakeoff_report",
@@ -357,9 +402,13 @@ def build_report(
             "adopt_eligible_models": recommended,
             "cheapest_adopt_eligible": cheapest_eligible,
             "note": (
-                "Both arms' full results are committed regardless of this "
-                "recommendation -- an honest comparison, not a beauty contest. "
-                "STOP -> OA-Q1: owner decides."
+                "cheapest_adopt_eligible is null if any eligible arm's "
+                "telemetry.coverage < 1.0 (e.g. after a resumed run whose "
+                "earlier checkpoint predates per-draw telemetry) -- an "
+                "incomplete-population comparison is not reported as a cost "
+                "finding. Both arms' full results are committed regardless of "
+                "this recommendation -- an honest comparison, not a beauty "
+                "contest. STOP -> OA-Q1: owner decides."
             ),
         },
     }
@@ -404,11 +453,13 @@ def main(argv: list[str] | None = None) -> int:
     Path(args.output).write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
     for key, arm in report["arms"].items():
+        t = arm["telemetry"]
         print(
             f"\n[{key}] model={arm['model_id']} n_draws={arm['n_draws']} "
             f"gated_pass_rate={arm['gated_pass_rate']} pass_k_rate={arm['pass_k_rate']} "
             f"contract_violation_rate={arm['contract_violation_rate']} "
-            f"adopt_eligible={arm['adopt_eligible']}"
+            f"adopt_eligible={arm['adopt_eligible']} "
+            f"telemetry_coverage={t['coverage']} total_cost_usd={t['total_cost_usd']}"
         )
     print(f"\nrecommendation: {report['recommendation']}")
     print(f"report -> {args.output}")

@@ -4,11 +4,14 @@ from __future__ import annotations
 
 import json
 
+import pytest
+
 from eval.writer_bakeoff import (
     GATED_DIMENSIONS,
     REPORTED_NOT_GATED,
     Scenario,
     _aggregate_arm,
+    _telemetry_from_draws,
     build_scenario_set,
     run_arm,
     run_draw,
@@ -205,3 +208,115 @@ def test_run_arm_checkpoint_skips_already_completed_draws(tmp_path):
     finally:
         bakeoff_mod.AnthropicReasonDraftWriter = original_writer_cls
         bakeoff_mod.AnthropicQualityJudge = original_judge_cls
+
+
+def test_telemetry_from_draws_sums_only_priced_draws_and_reports_coverage():
+    draws = [
+        {"input_tokens": 100, "output_tokens": 50, "cost_usd": 0.001, "latency_ms": 500.0},
+        {"input_tokens": 200, "output_tokens": 80, "cost_usd": 0.002, "latency_ms": 700.0},
+        # A contract violation (or a draw from a pre-fix checkpoint) has no
+        # telemetry -- must be excluded from the sums, not treated as zero.
+        {"input_tokens": None, "output_tokens": None, "cost_usd": None, "latency_ms": None},
+    ]
+
+    telemetry = _telemetry_from_draws(draws)
+
+    assert telemetry["n_draws_total"] == 3
+    assert telemetry["n_draws_priced"] == 2
+    assert telemetry["coverage"] == pytest.approx(2 / 3, abs=1e-4)
+    assert telemetry["total_input_tokens"] == 300
+    assert telemetry["total_output_tokens"] == 130
+    assert telemetry["total_cost_usd"] == pytest.approx(0.003)
+    assert telemetry["avg_latency_ms"] == pytest.approx(600.0)
+
+
+def test_telemetry_from_draws_empty_arm_is_zero_not_a_crash():
+    telemetry = _telemetry_from_draws([])
+
+    assert telemetry["n_draws_total"] == 0
+    assert telemetry["coverage"] == 0.0
+    assert telemetry["avg_latency_ms"] is None
+
+
+def test_run_arm_captures_per_draw_telemetry_via_a_real_per_draw_tracker(tmp_path, monkeypatch):
+    # Reproduces the R2 finding: telemetry must NOT depend on a single
+    # tracker shared across the whole arm (that tracker dies with the
+    # process on a kill+resume). Each draw gets its own real
+    # AnthropicReasonDraftWriter + CostTracker, stubbed only at the
+    # transport boundary -- the constructor and cost-recording logic run
+    # for real.
+    scenarios = build_scenario_set(11)[:1]
+    checkpoint = tmp_path / "checkpoint.json"
+    _scenario, output_text = _scenario_and_output_text(scenarios[0].family)
+
+    import eval.writer_bakeoff as bakeoff_mod
+
+    def fake_writer(*, model_id, cost_tracker=None, **_):
+        return AnthropicReasonDraftWriter(
+            transport=_StubWriterTransport(output_text),
+            model_id=model_id,
+            cost_tracker=cost_tracker,
+        )
+
+    def fake_judge(**_):
+        return AnthropicQualityJudge(
+            transport=_StubJudgeTransport(_passing_llm_scores()),
+            model_id="claude-sonnet-5",
+            reasoning=True,
+        )
+
+    monkeypatch.setattr(bakeoff_mod, "AnthropicReasonDraftWriter", fake_writer)
+    monkeypatch.setattr(bakeoff_mod, "AnthropicQualityJudge", fake_judge)
+
+    arm = run_arm("claude-haiku-4-5", scenarios, pass_k=3, checkpoint_path=checkpoint)
+
+    # _StubWriterTransport reports fixed input_tokens=100/output_tokens=50
+    # per call; 3 draws (pass_k=3) with no retries needed.
+    assert arm["telemetry"]["coverage"] == 1.0
+    assert arm["telemetry"]["total_input_tokens"] == 3 * 100
+    assert arm["telemetry"]["total_output_tokens"] == 3 * 50
+
+
+def test_run_arm_telemetry_survives_from_checkpoint_alone_after_a_simulated_resume(tmp_path):
+    # This is the direct regression test for the bug: a checkpoint written
+    # by an earlier, now-dead process already has full per-draw telemetry.
+    # run_arm must report it correctly WITHOUT making any new calls and
+    # WITHOUT any live tracker -- because the checkpoint is the only thing
+    # that survived the kill.
+    scenarios = build_scenario_set(11)[:1]
+    checkpoint = tmp_path / "checkpoint.json"
+    passing_scores = {dim: 3 for dim in (*GATED_DIMENSIONS, *REPORTED_NOT_GATED)}
+    prewritten_draws = [
+        {
+            "scenario_id": scenarios[0].scenario_id,
+            "family": scenarios[0].family,
+            "draw_index": i,
+            "contract_ok": True,
+            "contract_error": None,
+            "scores": passing_scores,
+            "gated_pass": True,
+            "input_tokens": 100,
+            "output_tokens": 50,
+            "cost_usd": 0.001,
+            "latency_ms": 500.0,
+        }
+        for i in range(3)
+    ]
+    checkpoint.write_text(json.dumps({"draws": prewritten_draws}))
+
+    import eval.writer_bakeoff as bakeoff_mod
+
+    original_judge_cls = bakeoff_mod.AnthropicQualityJudge
+    # No draws are outstanding, so this judge is never actually called --
+    # stubbed only so run_arm's unconditional construction doesn't reach
+    # for a real ANTHROPIC_API_KEY-backed client in this test environment.
+    bakeoff_mod.AnthropicQualityJudge = lambda **_: object()
+    try:
+        arm = run_arm("claude-haiku-4-5", scenarios, pass_k=3, checkpoint_path=checkpoint)
+    finally:
+        bakeoff_mod.AnthropicQualityJudge = original_judge_cls
+
+    assert arm["n_draws"] == 3
+    assert arm["telemetry"]["coverage"] == 1.0
+    assert arm["telemetry"]["total_input_tokens"] == 300
+    assert arm["telemetry"]["total_cost_usd"] == pytest.approx(0.003)
