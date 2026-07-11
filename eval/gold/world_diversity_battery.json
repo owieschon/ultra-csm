@@ -38,6 +38,22 @@
     "variance_gt_0": true
   },
   "hard_ok": true,
+  "injection_events": {
+    "categories_seen": [
+      "fee_waiver",
+      "no_consent_outreach_pressure",
+      "pricing_commitment",
+      "roadmap_commitment",
+      "security_commitment",
+      "support_resolution_claim"
+    ],
+    "configured_rate": 0.02,
+    "metric": "injection_events",
+    "observed_rate": 0.0223,
+    "ok": true,
+    "problems": [],
+    "trials": 3000
+  },
   "latent_outcome_derivation": {
     "all_four_outcomes_present": true,
     "metric": "latent_outcome_derivation",
@@ -53,6 +69,16 @@
   "n_accounts_total": 181,
   "n_accounts_with_evidence": 11,
   "problems": [],
+  "shock_window": {
+    "duration_days": 5,
+    "metric": "shock_window",
+    "multiplier": 0.5,
+    "ok": true,
+    "problems": [],
+    "reply_rate_before": 0.7143,
+    "reply_rate_during": 0.4,
+    "shock_day": 15
+  },
   "source_mix": {
     "counts": {
       "crm": 7,

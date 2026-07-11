@@ -35,11 +35,24 @@ def _config() -> dict:
     return json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
 
 
-def _reply_probability(champion_engagement: str) -> float:
+def _in_shock_window(day: int) -> bool:
+    shock = _config()["shock"]
+    start = shock["shock_day"]
+    return start <= day < start + shock["shock_duration_days"]
+
+
+def _reply_probability(champion_engagement: str, *, day: int) -> float:
     cfg = _config()
     bands = cfg["engagement_reply_probability"]
     default_band = cfg["default_reply_probability_band"]
-    return bands.get(champion_engagement, bands[default_band])
+    probability = bands.get(champion_engagement, bands[default_band])
+    if _in_shock_window(day):
+        # D6: one config-scheduled nonstationary shock -- shifts the reply
+        # rate for a fixed window, same mechanism regardless of shock_kind
+        # (the kind is descriptive metadata for the flight recorder /
+        # improvement-loop reporting, not a second branch of logic here).
+        probability *= cfg["shock"]["shock_reply_probability_multiplier"]
+    return probability
 
 
 def _is_customer_facing(action_id: str) -> bool:
@@ -70,13 +83,14 @@ def respond(
     knowledge/world_response_config.json) -- a customer never sees them, so
     there is nothing to observe. For customer-facing actions, same
     (seed, account, action, day) always returns the same event; the reply
-    probability is conditioned on latent_state.champion_engagement but that
-    field, and every other latent field, never appears in the returned
+    probability is conditioned on latent_state.champion_engagement (and,
+    during the D6 shock window, shifted by the configured multiplier) but
+    that field, and every other latent field, never appears in the returned
     event.
     """
     if not _is_customer_facing(action_id):
         return None
-    probability = _reply_probability(latent_state.champion_engagement)
+    probability = _reply_probability(latent_state.champion_engagement, day=day)
     roll = _fraction(
         world_seed,
         0,
@@ -89,3 +103,39 @@ def respond(
         day=day,
         replied=roll < probability,
     )
+
+
+@dataclass(frozen=True)
+class InjectionEvent:
+    """A live, world-stream untrusted-text event -- arrives the same way a
+    CRM note or ingested email would. Carries no latent fields. Category
+    strings and paraphrase content live entirely in
+    knowledge/world_response_config.json's ``injection_categories`` (reusing
+    the CATEGORIES eval.gold_slot_b_hard's A6_*_INJECTION constants define,
+    never their exact frozen strings -- new paraphrases, same adversarial
+    intent per category)."""
+
+    account_id: str
+    day: int
+    category: str
+    text: str
+
+
+def injection_event(account_id: str, world_seed: int, day: int) -> InjectionEvent | None:
+    """Seeded-deterministic: ~injection_event_rate of (account, day) pairs
+    fire an event, uniformly distributed across the configured categories."""
+    cfg = _config()
+    roll = _fraction(world_seed, 0, f"{account_id}:{day}:injection")
+    if roll >= cfg["injection_event_rate"]:
+        return None
+    categories = cfg["injection_categories"]
+    category = sorted(categories)[
+        int(_fraction(world_seed, 0, f"{account_id}:{day}:injection-category") * len(categories))
+        % len(categories)
+    ]
+    paraphrases = categories[category]["paraphrases"]
+    text = paraphrases[
+        int(_fraction(world_seed, 0, f"{account_id}:{day}:injection-text") * len(paraphrases))
+        % len(paraphrases)
+    ]
+    return InjectionEvent(account_id=account_id, day=day, category=category, text=text)

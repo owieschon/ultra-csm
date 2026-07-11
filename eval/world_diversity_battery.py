@@ -42,7 +42,7 @@ from ultra_csm.data_plane.fixtures import (
     FixtureProductTelemetryConnector,
 )
 from ultra_csm.data_plane.synthetic_book import build_synthetic_book
-from ultra_csm.world.generator import WorldConfig, generate_world
+from ultra_csm.world.generator import LatentAccountTruth, WorldConfig, generate_world
 
 ARTIFACT_DIR = Path(__file__).with_name("gold")
 DEFAULT_OUTPUT = ARTIFACT_DIR / "world_diversity_battery.json"
@@ -149,6 +149,72 @@ def _check_latent_outcome_derivation(latent_truth) -> dict[str, Any]:
     }
 
 
+def _check_injection_events() -> dict[str, Any]:
+    from ultra_csm.world.response import _config as response_config
+    from ultra_csm.world.response import injection_event
+
+    cfg = response_config()
+    configured_rate = cfg["injection_event_rate"]
+    expected_categories = set(cfg["injection_categories"])
+    trials = 3000
+    fired = 0
+    categories_seen: set[str] = set()
+    for day in range(1, trials + 1):
+        event = injection_event("battery-acct", DEFAULT_WORLD_SEED, day)
+        if event is not None:
+            fired += 1
+            categories_seen.add(event.category)
+    observed_rate = fired / trials
+    problems = []
+    if abs(observed_rate - configured_rate) > RATE_TOLERANCE:
+        problems.append(f"injection rate {observed_rate:.4f} outside +/-{RATE_TOLERANCE} of configured {configured_rate}")
+    if categories_seen != expected_categories:
+        problems.append(f"categories seen {sorted(categories_seen)} != configured {sorted(expected_categories)}")
+    return {
+        "metric": "injection_events",
+        "trials": trials,
+        "configured_rate": configured_rate,
+        "observed_rate": round(observed_rate, 4),
+        "categories_seen": sorted(categories_seen),
+        "ok": not problems,
+        "problems": problems,
+    }
+
+
+def _check_shock_window() -> dict[str, Any]:
+    from ultra_csm.world.response import _config as response_config
+    from ultra_csm.world.response import respond
+
+    cfg = response_config()["shock"]
+    start, duration, multiplier = cfg["shock_day"], cfg["shock_duration_days"], cfg["shock_reply_probability_multiplier"]
+    latent = LatentAccountTruth(
+        account_id="shock-acct", account_slug="shock-acct", anchor_account=False,
+        doomed=False, thriving=False, champion_engagement="engaged", product_fit="adequate",
+        org_state="stable", latent_label="battery", corruption_flags=(), causal_chain=(), observed_day=1,
+    )
+    before_rate = sum(
+        1 for day in range(1, start) if respond("draft_customer_outreach", latent, DEFAULT_WORLD_SEED, day).replied
+    ) / (start - 1)
+    during_rate = sum(
+        1
+        for day in range(start, start + duration)
+        if respond("draft_customer_outreach", latent, DEFAULT_WORLD_SEED, day).replied
+    ) / duration
+    problems = []
+    if not during_rate < before_rate:
+        problems.append(f"shock window did not lower reply rate: before={before_rate} during={during_rate}")
+    return {
+        "metric": "shock_window",
+        "shock_day": start,
+        "duration_days": duration,
+        "multiplier": multiplier,
+        "reply_rate_before": round(before_rate, 4),
+        "reply_rate_during": round(during_rate, 4),
+        "ok": not problems,
+        "problems": problems,
+    }
+
+
 def run_battery(*, as_of: str = DEFAULT_AS_OF) -> dict[str, Any]:
     data_plane, book = _data_plane()
     shapes = _sample_shapes(data_plane, book.accounts, as_of=as_of)
@@ -167,6 +233,8 @@ def run_battery(*, as_of: str = DEFAULT_AS_OF) -> dict[str, Any]:
     world = generate_world(world_config)
     dirty_data_row = _check_dirty_data_rates(world_config, world.latent_truth)
     outcome_row = _check_latent_outcome_derivation(world.latent_truth)
+    injection_row = _check_injection_events()
+    shock_row = _check_shock_window()
 
     problems = [row["metric"] for row in (evidence_row, factor_row, source_mix_row) if not row["variance_gt_0"]]
     if not shapes:
@@ -175,6 +243,10 @@ def run_battery(*, as_of: str = DEFAULT_AS_OF) -> dict[str, Any]:
         problems.append("dirty_data_rates")
     if not outcome_row["ok"]:
         problems.append("latent_outcome_derivation")
+    if not injection_row["ok"]:
+        problems.append("injection_events")
+    if not shock_row["ok"]:
+        problems.append("shock_window")
 
     return {
         "artifact": "world_diversity_battery",
@@ -186,6 +258,8 @@ def run_battery(*, as_of: str = DEFAULT_AS_OF) -> dict[str, Any]:
         "source_mix": source_mix_row,
         "dirty_data_rates": dirty_data_row,
         "latent_outcome_derivation": outcome_row,
+        "injection_events": injection_row,
+        "shock_window": shock_row,
         "problems": problems,
         "hard_ok": not problems,
     }
