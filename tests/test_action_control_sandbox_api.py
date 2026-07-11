@@ -7,7 +7,7 @@ from fastapi.testclient import TestClient
 
 from ultra_csm.action_control_demo import _PROPOSAL_ID, _TENANT_ID
 from ultra_csm.action_control_sandbox_api import app
-from ultra_csm.committers import SimOutboundCommitter
+from ultra_csm.action_control_sandbox_committer import RollbackSandboxCommitter
 
 
 def test_minimal_app_exposes_only_health_contract_and_sandbox():
@@ -119,11 +119,11 @@ def test_committer_failure_is_sanitized_and_erases_database_and_filesystem(monke
         "command_id": "adf77940-125f-4f47-a7fe-d0ed7e4991b9",
         "type": "commit_simulated",
     }
-    original_commit = SimOutboundCommitter.commit
+    original_commit = RollbackSandboxCommitter.commit
     temporary_directories: list[Path] = []
 
-    def fail_after_physical_commit(self, proposal, outcome, *, dry_run=False):
-        original_commit(self, proposal, outcome, dry_run=dry_run)
+    def fail_after_physical_commit(self, proposal, outcome):
+        original_commit(self, proposal, outcome)
         temporary_directories.append(self._state_dir)
         assert self._outbox.exists()
         raise RuntimeError("PRIVATE-COMMITTER-SENTINEL")
@@ -147,7 +147,7 @@ def test_committer_failure_is_sanitized_and_erases_database_and_filesystem(monke
                 "commands": [approve],
             },
         ).json()
-        monkeypatch.setattr(SimOutboundCommitter, "commit", fail_after_physical_commit)
+        monkeypatch.setattr(RollbackSandboxCommitter, "commit", fail_after_physical_commit)
         response = client.post(
             "/demo/action-control/sandbox/evaluate",
             json={

@@ -6,6 +6,8 @@ from contextlib import asynccontextmanager
 import logging
 import os
 from pathlib import Path
+from typing import Any
+from urllib.parse import urlsplit
 
 import psycopg
 from fastapi import FastAPI, HTTPException, Request, Response
@@ -24,13 +26,11 @@ from ultra_csm.action_control_sandbox_http import (
     NO_STORE_HEADERS,
     validation_error_response,
 )
-from ultra_csm.platform import EphemeralCluster
-from ultra_csm.platform.db import apply_migrations
-from ultra_csm.platform.runtime import (
-    bootstrap_persistent_database,
+from ultra_csm.action_control_sandbox_runtime import (
     connect_persistent_runtime_database,
     persistent_database_configured,
 )
+from ultra_csm.platform.db import apply_migrations
 from ultra_csm.platform.seed import seed
 
 
@@ -41,10 +41,16 @@ log = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    cluster: EphemeralCluster | None = None
+    cluster: Any | None = None
     if persistent_database_configured():
-        bootstrap_persistent_database(_MIGRATIONS)
+        if os.environ.get("ULTRA_CSM_DATABASE_ADMIN_URL"):
+            raise RuntimeError(
+                "ULTRA_CSM_DATABASE_ADMIN_URL is bootstrap-only and must not be "
+                "present in the hosted runtime"
+            )
     else:
+        from ultra_csm.platform import EphemeralCluster
+
         cluster = EphemeralCluster().start()
         with psycopg.connect(**cluster.dsn(user=cluster.BOOTSTRAP_USER)) as boot:
             apply_migrations(boot, _MIGRATIONS)
@@ -63,17 +69,34 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-allowed_origins = [
-    origin.strip()
-    for origin in os.environ.get(
-        "ULTRA_CSM_SANDBOX_ALLOWED_ORIGINS",
-        "http://localhost:3000,http://127.0.0.1:3000",
-    ).split(",")
-    if origin.strip()
-]
+
+def _allowed_origins() -> list[str]:
+    configured = os.environ.get("ULTRA_CSM_SANDBOX_ALLOWED_ORIGINS")
+    if not persistent_database_configured():
+        configured = configured or "http://localhost:3000,http://127.0.0.1:3000"
+        return [origin.strip() for origin in configured.split(",") if origin.strip()]
+    if configured is None or "," in configured:
+        raise RuntimeError(
+            "persistent sandbox requires exactly one ULTRA_CSM_SANDBOX_ALLOWED_ORIGINS value"
+        )
+    origin = configured.strip()
+    parsed = urlsplit(origin)
+    if (
+        parsed.scheme != "https"
+        or not parsed.netloc
+        or parsed.path not in {"", "/"}
+        or parsed.query
+        or parsed.fragment
+        or "*" in origin
+        or parsed.username is not None
+    ):
+        raise RuntimeError("hosted sandbox CORS origin must be one exact HTTPS origin")
+    return [origin.removesuffix("/")]
+
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins,
+    allow_origins=_allowed_origins(),
     allow_methods=["GET", "POST"],
     allow_headers=["Content-Type"],
 )
