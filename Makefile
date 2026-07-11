@@ -96,6 +96,9 @@ world-scoreboard:
 world-response-battery:
 	PYTHONPATH=src:. $(PYTHON) -m eval.world_response_battery
 
+world-diversity-battery:
+	PYTHONPATH=src:. $(PYTHON) -m eval.world_diversity_battery
+
 scorecard-csm:
 	PYTHONPATH=src:. $(PYTHON) -m eval.scorecard_csm
 

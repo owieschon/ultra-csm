@@ -6,16 +6,16 @@
       "problems": [],
       "reply_rates_by_seed": {
         "7": {
-          "engaged": 0.78,
-          "high": 0.56,
+          "engaged": 0.77,
+          "high": 0.55,
           "medium": 0.41,
-          "quiet": 0.09
+          "quiet": 0.085
         },
         "42": {
-          "engaged": 0.79,
-          "high": 0.535,
-          "medium": 0.47,
-          "quiet": 0.125
+          "engaged": 0.78,
+          "high": 0.53,
+          "medium": 0.46,
+          "quiet": 0.12
         }
       },
       "response_class": "customer_facing"
@@ -26,16 +26,16 @@
       "problems": [],
       "reply_rates_by_seed": {
         "7": {
-          "engaged": 0.84,
-          "high": 0.61,
-          "medium": 0.435,
+          "engaged": 0.82,
+          "high": 0.605,
+          "medium": 0.43,
           "quiet": 0.08
         },
         "42": {
-          "engaged": 0.805,
-          "high": 0.595,
-          "medium": 0.36,
-          "quiet": 0.105
+          "engaged": 0.785,
+          "high": 0.585,
+          "medium": 0.35,
+          "quiet": 0.1
         }
       },
       "response_class": "customer_facing"
@@ -46,15 +46,15 @@
       "problems": [],
       "reply_rates_by_seed": {
         "7": {
-          "engaged": 0.795,
+          "engaged": 0.79,
           "high": 0.52,
-          "medium": 0.385,
+          "medium": 0.38,
           "quiet": 0.1
         },
         "42": {
-          "engaged": 0.815,
+          "engaged": 0.805,
           "high": 0.59,
-          "medium": 0.33,
+          "medium": 0.325,
           "quiet": 0.085
         }
       },
@@ -66,15 +66,15 @@
       "problems": [],
       "reply_rates_by_seed": {
         "7": {
-          "engaged": 0.81,
+          "engaged": 0.8,
           "high": 0.615,
-          "medium": 0.43,
+          "medium": 0.42,
           "quiet": 0.07
         },
         "42": {
-          "engaged": 0.825,
-          "high": 0.645,
-          "medium": 0.33,
+          "engaged": 0.82,
+          "high": 0.64,
+          "medium": 0.325,
           "quiet": 0.105
         }
       },
