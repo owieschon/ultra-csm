@@ -76,6 +76,45 @@ WRONG_DOMAIN_PATTERNS = (
     re.compile("".join((r"\bs", "ku", r"\b")), re.IGNORECASE),
 )
 
+# MP-W1R (D7): a normalized-token DIGEST denylist, distinct from
+# SOURCE_COMPANY_PATTERNS above. That regex list splits terms across string
+# concatenation so this file doesn't self-match, but the term is still
+# reconstructable by anyone reading this source (concatenate the parts).
+# A digest cannot be reversed -- this list is enforceable by an executor who
+# never learns the underlying term, per the PRD rule (private reference
+# dataset: patterns as priors only, name never in any artifact). Digests
+# ONLY below -- no comment, variable name, or fixture may spell the term.
+DIGEST_DENYLIST: tuple[str, ...] = (
+    "4e0c381ece8a5bfbe50226bc3a3b65ebd4a755ff6eb2b7a79a2e7d4bcf9850d4",
+)
+
+_TOKEN_RE = re.compile(r"[a-z0-9]+")
+
+
+def _normalized_tokens(line: str) -> list[str]:
+    return _TOKEN_RE.findall(line.lower())
+
+
+def _digest_hit_count(line: str, denylist: tuple[str, ...] = DIGEST_DENYLIST) -> int:
+    """Hash every single token AND every adjacent-pair join, compare
+    against the denylist. Pair-joining catches a two-word term split across
+    normal word boundaries (the case this exists for); single tokens catch
+    it written as one word. Returns a COUNT only, deliberately -- returning
+    the matched candidate string would print the very term this exists to
+    keep out of every artifact, defeating the whole mechanism the moment a
+    real hit occurs."""
+    if not denylist:
+        return 0
+    denylist_set = set(denylist)
+    tokens = _normalized_tokens(line)
+    candidates = list(tokens) + [a + b for a, b in zip(tokens, tokens[1:])]
+    return sum(
+        1
+        for candidate in candidates
+        if hashlib.sha256(candidate.encode("utf-8")).hexdigest() in denylist_set
+    )
+
+
 META_RESIDUE_PATTERNS = (
     re.compile("".join((r"\bload", r"[- ]?", "bearing", r"\b")), re.IGNORECASE),
     re.compile("".join((r"\bload", "bearing", r"\b")), re.IGNORECASE),
@@ -179,6 +218,13 @@ def _raw_scan(
                     findings.append(
                         Finding(path, line_no, "meta-residue", match.group(0), line_hash)
                     )
+            for _ in range(_digest_hit_count(line, DIGEST_DENYLIST)):
+                # DIGEST_DENYLIST re-read from module globals here (not a
+                # bound default) so a test can monkeypatch the module-level
+                # name and have it actually take effect at call time.
+                # match is deliberately a fixed redaction, never the actual
+                # matched text -- see _digest_hit_count's docstring.
+                findings.append(Finding(path, line_no, "digest-residue", "[redacted]", line_hash))
     return findings
 
 
