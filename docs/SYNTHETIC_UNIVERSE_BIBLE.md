@@ -1072,6 +1072,54 @@ superseded by this one account; all other 180 remain untouched).
 tier-gating battery's dynamic real-sweep case non-vacuous, per
 `eval/gold/fleetops_expected_actions.json`'s new entry for it.
 
+## World response (MP-W1R, Wave A)
+
+F1's closed-loop hooks were, per `docs/WORLD.md`, "deterministic
+placeholders" — agent actions never fed back into the world's observable
+state. `src/ultra_csm/world/response.py`'s `respond()` is that feedback
+path: seeded-deterministic per `(seed, account_id, action_id, day)`, with
+reply probability conditioned on the account's latent `champion_engagement`
+so the response carries information about the hidden truth instead of
+being uniform noise with extra steps.
+
+**Reply-probability bands** (`ENGAGEMENT_REPLY_PROBABILITY`), keyed to the
+`champion_engagement` values `generator.py` actually emits (`engaged`,
+`quiet` on the anchor path; `quiet`, `high`, `medium` on the generated
+path):
+
+| champion_engagement | reply probability |
+| --- | --- |
+| engaged | 0.8 |
+| high | 0.6 |
+| medium | 0.4 |
+| quiet | 0.1 (also the fallback for any unrecognized value) |
+
+**Action → response-class mapping.** The nine `CSMActionName` values
+(`src/ultra_csm/governance/csm_actions.py`) split into two response
+classes, stated here rather than left implicit in code:
+
+- **Customer-facing (gets a `respond()` call, may reply):**
+  `draft_customer_outreach`, `initiate_customer_call`, `campaign_enroll`,
+  `cohort_action` — each of these can plausibly reach a customer, so each
+  gets a real `ObservableEvent` with a latent-conditioned `replied` roll.
+- **Internal, no observable customer response (`respond()` returns
+  `None`):** `recommend_next_best_action`, `log_crm_activity`,
+  `update_cs_platform_record`, `edit_success_plan`, `content_route` — none
+  of these are ever seen by a customer; a customer-facing agent org built
+  on top of the sweep should not learn anything from them beyond their own
+  internal side effects.
+
+This mapping is a world-model judgment call (which actions are
+customer-visible), not a measurement — recorded here as the ratified
+mapping `knowledge/world_response_config.json` encodes, so a future config
+change is a bible change first, per this file's own Anti-Goodhart rule
+below.
+
+**Configured, not hardcoded:** the exact probability bands and the
+action→class mapping live in `knowledge/world_response_config.json`, which
+carries the same values as this table. Changing either is an OA
+ratification, config-only, never a code change.
+
 ## Anti-Goodhart note
 
 This bible is authored once, before any extractor or battery code exists.

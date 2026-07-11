@@ -34,8 +34,31 @@ Blindness boundary:
 - Surface decisions may not cite latent-only keys or evidence ids.
 - `make eval` now runs `python -m eval.knowability_audit --check` as a hard gate.
 
+World response (MP-W1R):
+
+- `src/ultra_csm/world/response.py`'s `respond()` closes the loop the
+  "Known gaps" section below used to describe as a placeholder: it returns
+  a seeded-deterministic, latent-conditioned `ObservableEvent` (or `None`
+  for internal/no-response actions) per `(seed, account_id, action_id,
+  day)`. Reply-probability bands, the action-to-response-class mapping,
+  live injection-event categories, and the one scripted mid-run shock are
+  all in `knowledge/world_response_config.json`
+  (`docs/SYNTHETIC_UNIVERSE_BIBLE.md`'s "World response" section is the
+  ratified record; a config change is a bible change first).
+- These are WORLD-LEVEL properties. Wiring them into the live agent-visible
+  evidence path (`src/ultra_csm/agent1/sweep.py`) is a natural next-wave
+  task, not yet done — this dispatch's ownership map is `world/**` only.
+- Replay claim, stated precisely: `make world` itself is byte-deterministic
+  (no LLM calls in world generation). Deterministic replay applies to all
+  non-LLM state; LLM calls made BY AGENTS OPERATING IN this world vary
+  run-to-run (neither transport pins temperature) — see
+  `docs/R0_KAPPA_BAND_FINDING.md` for the internal evidence. Never claim
+  "replayable" without this distinction.
+
 Known gaps:
 
 - The pass^k lane is built as a handoff surface only; the local builder lane does not execute the metered branch.
-- The current closed-loop hooks are deterministic placeholders for follow-up measurement, not live retention outcomes.
 - The graph is intentionally limited to the six required sections and does not claim a broader ontology.
+- D3's dirty-data flags (`LatentAccountTruth.data_quality_flags`) and D4's
+  injection events are generated but, like world response above, not yet
+  wired into the live agent-visible evidence path.

@@ -1,0 +1,122 @@
+{
+  "actions": [
+    {
+      "action_id": "draft_customer_outreach",
+      "hard_ok": true,
+      "problems": [],
+      "reply_rates_by_seed": {
+        "7": {
+          "engaged": 0.77,
+          "high": 0.55,
+          "medium": 0.41,
+          "quiet": 0.085
+        },
+        "42": {
+          "engaged": 0.78,
+          "high": 0.53,
+          "medium": 0.46,
+          "quiet": 0.12
+        }
+      },
+      "response_class": "customer_facing"
+    },
+    {
+      "action_id": "initiate_customer_call",
+      "hard_ok": true,
+      "problems": [],
+      "reply_rates_by_seed": {
+        "7": {
+          "engaged": 0.82,
+          "high": 0.605,
+          "medium": 0.43,
+          "quiet": 0.08
+        },
+        "42": {
+          "engaged": 0.785,
+          "high": 0.585,
+          "medium": 0.35,
+          "quiet": 0.1
+        }
+      },
+      "response_class": "customer_facing"
+    },
+    {
+      "action_id": "campaign_enroll",
+      "hard_ok": true,
+      "problems": [],
+      "reply_rates_by_seed": {
+        "7": {
+          "engaged": 0.79,
+          "high": 0.52,
+          "medium": 0.38,
+          "quiet": 0.1
+        },
+        "42": {
+          "engaged": 0.805,
+          "high": 0.59,
+          "medium": 0.325,
+          "quiet": 0.085
+        }
+      },
+      "response_class": "customer_facing"
+    },
+    {
+      "action_id": "cohort_action",
+      "hard_ok": true,
+      "problems": [],
+      "reply_rates_by_seed": {
+        "7": {
+          "engaged": 0.8,
+          "high": 0.615,
+          "medium": 0.42,
+          "quiet": 0.07
+        },
+        "42": {
+          "engaged": 0.82,
+          "high": 0.64,
+          "medium": 0.325,
+          "quiet": 0.105
+        }
+      },
+      "response_class": "customer_facing"
+    },
+    {
+      "action_id": "recommend_next_best_action",
+      "hard_ok": true,
+      "problems": [],
+      "response_class": "internal_no_response"
+    },
+    {
+      "action_id": "log_crm_activity",
+      "hard_ok": true,
+      "problems": [],
+      "response_class": "internal_no_response"
+    },
+    {
+      "action_id": "update_cs_platform_record",
+      "hard_ok": true,
+      "problems": [],
+      "response_class": "internal_no_response"
+    },
+    {
+      "action_id": "edit_success_plan",
+      "hard_ok": true,
+      "problems": [],
+      "response_class": "internal_no_response"
+    },
+    {
+      "action_id": "content_route",
+      "hard_ok": true,
+      "problems": [],
+      "response_class": "internal_no_response"
+    }
+  ],
+  "artifact": "world_response_battery",
+  "config_path": "knowledge/world_response_config.json",
+  "hard_ok": true,
+  "seeds": [
+    7,
+    42
+  ],
+  "trials_per_band": 200
+}
