@@ -311,6 +311,106 @@ self-built (R-D bounds it, community replication tests it, production data
 would resolve it); the judge is still an LLM (human labels exist only on
 stratified samples); n stays modest by human-minutes budget, not by choice.
 
+## Operational integrity protocol (I-1..I-9)
+
+The design-level protections above do not cover the layer where selective
+reporting actually happens in practice: run operations. These rules are part
+of the pre-registration, violated = run invalidated.
+
+- **I-1 Stopping rule + monitoring firewall.** Confirmatory run length,
+  window, and n_seeds are fixed at prereg (from shakedown calibration). No
+  interim analysis of arm-comparative miss rates during the run; operational
+  monitoring (process health, quota, crash detection) is firewalled from
+  outcome metrics — the monitor scripts read process state and error logs,
+  never scores. No early stop on favorable data, no extension on unfavorable.
+- **I-2 Seed-failure and exclusion protocol, pre-committed.** An agent
+  failure (crash, contract violation, hang) is DATA, never an exclusion. Only
+  infrastructure failure external to both arms (host reboot, provider outage)
+  permits a seed rerun — both arms rerun together, the event logged before
+  any partial results are examined. Exclusions decided by rule, not by
+  looking.
+- **I-3 Holdout-seed burning.** Any post-freeze change to agent, world,
+  judge, or analysis code burns every holdout seed already generated or run:
+  the fix is applied, a NEW freeze is countersigned, NEW seeds are generated.
+  No "fix the bug and rerun the same seeds" — the old seeds are contaminated
+  by having been seen.
+- **I-4 Confirmatory/demonstrative firewall.** The headline chart is built
+  from confirmatory-tier data only, by artifact path (separate run_id
+  namespaces); the 30-day demonstrative run is labeled non-confirmatory in
+  every artifact that touches it. A better-looking demonstrative number never
+  substitutes into the headline.
+- **I-5 Scoring protocol.** Offline scoring runs post-hoc with items from
+  both arms SHUFFLED into one batch per seed, arm identity stripped from
+  every payload and filename the scorer sees, one scoring session per batch
+  (no re-scoring on disagreement with expectations). Arm runs per seed execute
+  temporally interleaved (governed/control back-to-back), so provider-side
+  drift and cache states cannot systematically favor one arm.
+- **I-6 The analysis is inside the freeze.** The confirmatory analysis
+  script (paired per-seed deltas, pre-registered test, CI method) is written,
+  tested against shakedown data, and committed BEFORE the confirmatory run;
+  the headline is produced by executing that committed script on committed
+  raw artifacts, and the report carries the one-command reproduction line.
+- **I-7 Verdict-standard stability.** The owner's verdict rubric is written
+  down before the run; the blind self-consistency check (re-presented decided
+  packets) is scheduled at run midpoint AND end, so verdict drift is measured
+  during the experiment, not discovered after it.
+- **I-8 The improvement loop stays outside the confirmatory window.** W6's
+  improvement cycle operates on a post-run fork. Any agent change it produces
+  is a NEW experiment under I-3, never a mid-run mutation of a frozen arm.
+- **I-9 Provider drift disclosed as unfixable.** Subscription transport
+  cannot pin silent provider-side model updates. Mitigations: I-5 temporal
+  interleaving (drift hits both arms equally), model id + prompt version
+  asserted constant, run dates recorded. Residual risk disclosed in the
+  report, not hidden.
+
+## Implementation plan (dependency-ordered; each stage names its verification)
+
+Current build state, honestly: W1R and the Q1-Q4 tooling exist; W7R is an
+emitted dispatch, not built; W2 (QA sampler + miss definition + verdict
+tooling), W4 (cost architecture), the offline scorer, the chart pipeline, and
+the analysis script DO NOT EXIST yet. The plan below is the full path from
+here to the headline.
+
+0. **Merge #139 and #140** (owner). Ratify asks 1-6.
+1. **P1 corrective BUILD** (one PR): alignment fix + F2 leak removal +
+   semantic knowability checks + artifact regeneration. Verify: new
+   regression tests green; pre-declared FNR ~0.0 observed; full suite green.
+2. **Pass^k re-run post-P1** (~$2, 63 draws). Verify: coverage 1.0; W4
+   scoreboard evidence refreshed. Baseline-miss prior updated from its result.
+3. **Re-emit amended dispatches** encoding P2.1-P2.8 + R-A..R-F + I-1..I-9:
+   W7R-R (arms + two-tier runner + freeze tool + power prereg), W2 spec
+   (sampler, operational miss definition derived from the external rubric,
+   verdict-session timing capture, verdict rubric doc), W4 (cost), plus a new
+   SCORER dispatch (offline scorer + shuffle/blind harness + chart pipeline +
+   locked analysis script). Verify: lint + freeze stamps + cold-reader review
+   per emitter protocol.
+4. **BUILD wave executes those dispatches** (separate sessions/PRs each).
+   Verify: each dispatch's own DoD; cross-family judge access is proven
+   working HERE (a 5-item smoke test), not discovered broken at scoring time.
+5. **Shakedown on throwaway seed 9001** (Q5 as amended): calibrates released
+   items/day, human minutes/seed, inter-seed variance (2-3 throwaway seeds),
+   baseline miss rate, scorer throughput, and — named surprise pre-empted —
+   whether the graduation-gate horizon fits the confirmatory window (if gates
+   need >window days to graduate, the window lengthens or the gate config is
+   scaled, decided and recorded BEFORE prereg lock).
+6. **Prereg lock**: n_seeds, window length, sampling rate, MDD, decision
+   rule, exclusion rules, stopping rule — all numbers final, committed, from
+   shakedown measurements. Scoring budget check against measured throughput
+   (order-of-magnitude at Q4 rates: ~4,000 items across a 10-seed
+   confirmatory tier ≈ ~$110 and ~27h wall-clock, parallelizable — scheduled,
+   not discovered).
+7. **Freeze + countersign (OA-Q2)** — hash scope per P2.1 (agent + world +
+   fixtures + judge prompt + analysis code). THEN holdout seeds generated.
+8. **Confirmatory tier runs** under I-1/I-2/I-5. Verify: ledger true-negative
+   test per seed; artifact completeness per run_id before scoring.
+9. **Offline scoring** under I-5, then **execute the locked analysis script**
+   (I-6). The output IS the headline, whatever it says.
+10. **Demonstrative 30-day run** (I-4), reports, and the content track.
+
+Estimated total live spend for stages 5-10 at Q4-measured rates: low hundreds
+of dollars, dominated by scoring; the binding resource is owner
+verdict-minutes (measured at stage 5, sets n_seeds at stage 6).
+
 ## Residual risks that no amendment above removes
 
 Stated so acceptance of this path is informed, not implied:
