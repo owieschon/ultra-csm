@@ -207,6 +207,17 @@ verbatim string copies, F3's determinism, or F4's latent-conditioned synthesis
    rate for the governance layer to act on.
 4. Standing rule: latent-graded claims run at scale >= 200 with realized
    prevalence disclosed alongside every rate.
+5. **Pre-register the decision rule, not just the power.** The power prereg
+   commits an MDD; no document commits the test itself. Before day 1 the
+   prereg artifact must also pin: primary endpoint (per-item miss rate over
+   all released items, both arms, offline-scored), the test (two-proportion,
+   two-sided, alpha=0.05 — the repo's `one_sided_two_proportion_p_value`
+   exists if a directional test is preferred, but the choice is made NOW),
+   the CI method (Wilson, the repo's existing convention), and the secondary
+   endpoints (human-minutes measured/modeled, per-day trend) explicitly
+   labeled non-confirmatory. Anything not pre-registered is reported as
+   exploratory. This closes the forking-paths hole: without it, the
+   favorable test could be chosen after seeing the data.
 
 **P3 — World-realism wave (deferred BUILD, gates only latent-graded claims):**
 Noise/lag between latent state and observable symptoms (health as a noisy,
