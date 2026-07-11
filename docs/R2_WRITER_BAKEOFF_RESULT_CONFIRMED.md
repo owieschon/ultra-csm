@@ -77,8 +77,8 @@ calls apparently didn't benefit from caching as consistently.
   without an exact dollar figure. Capturing `cache_read_input_tokens` and
   pricing it correctly (Anthropic's documented cache-read rate is a
   fraction of fresh input cost) is a small, well-scoped follow-up fix if
-  an exact number becomes load-bearing later — not urgent for this
-  decision.
+  a future decision comes to depend on the exact number — not urgent for
+  this one.
 
 ## Sanity check against the first (corrupted-telemetry) run
 
