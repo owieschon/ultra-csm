@@ -218,6 +218,28 @@ verbatim string copies, F3's determinism, or F4's latent-conditioned synthesis
    labeled non-confirmatory. Anything not pre-registered is reported as
    exploratory. This closes the forking-paths hole: without it, the
    favorable test could be chosen after seeing the data.
+6. **Close the refusal loophole with a co-reported throughput metric.** The
+   governed arm's gates can BLOCK releases, so its released-item miss rate
+   improves partly by refusing work — taken to the limit, "never release"
+   scores a perfect miss rate. The headline must co-report released volume /
+   task coverage per arm alongside miss rate and minutes, and the claim
+   wording must be "misses per released item at comparable throughput," not
+   miss rate alone. Without this the design is gameable by conservatism.
+7. **State the unit of inference and analyze accordingly.** Items within an
+   arm share one agent trajectory and one world state — they are not
+   independent Bernoulli draws, and after the first governance intervention
+   the two arms' item mixes diverge (treatment changes the world it acts
+   on). The item-level two-proportion test is therefore anti-conservative.
+   Pre-register: per-seed aggregation as the primary analysis (n = seeds),
+   item-level tests reported with a design-effect caveat, and the claim
+   worded as the TOTAL effect of governance (direct catches + downstream
+   world-state effects), never as a pure gate-filtering effect.
+8. **Stratify the double-labeling and blind the arms.** At a ~5% miss rate,
+   30 randomly-drawn gold items contain ~1-2 misses — the second labeler
+   would barely sample the class the whole experiment turns on. The >=30
+   double-labeled items must oversample scorer-flagged misses (e.g. all
+   flagged misses + a matched clean sample). Any human grading or verdict
+   session that could touch the comparison must be blind to arm identity.
 
 **P3 — World-realism wave (deferred BUILD, gates only latent-graded claims):**
 Noise/lag between latent state and observable symptoms (health as a noisy,
