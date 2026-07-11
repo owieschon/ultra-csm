@@ -13,7 +13,9 @@
     linear-gradient(rgba(255, 255, 255, .018) 1px, transparent 1px),
     var(--ac-graphite);
   background-size: 100% 42px;
-  font-family: "Public Sans", "Avenir Next", "Segoe UI", sans-serif;
+  /* One product family: the lab keeps its own layout and palette but
+     speaks in the app's type (was Public Sans / Avenir Next). */
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif;
   letter-spacing: -.008em;
 }
 
@@ -50,7 +52,7 @@
 
 .brand > span:last-child { display: flex; flex-direction: column; }
 .brand b {
-  font-family: "Avenir Next Condensed", "Arial Narrow", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif;
   font-size: 17px;
   letter-spacing: .045em;
   text-transform: uppercase;
@@ -100,7 +102,7 @@
 .hero h1 {
   max-width: 800px;
   margin: 7px 0 8px;
-  font-family: "Avenir Next Condensed", "Arial Narrow", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif;
   font-size: clamp(31px, 3.4vw, 54px);
   line-height: .98;
   letter-spacing: -.025em;
@@ -145,6 +147,22 @@
 .notice { display: flex; gap: 16px; padding: 11px 14px; font-size: 12px; }
 .notice b { color: var(--ac-coral); white-space: nowrap; }
 .notice span { color: rgba(233, 234, 228, .75); }
+/* Informational variant: backend-absent-with-proof is the hosted demo's
+   intended state, not an error. */
+.noticeInfo {
+  max-width: 1480px;
+  margin: 0 auto 18px;
+  display: flex;
+  gap: 16px;
+  padding: 11px 14px;
+  font-size: 12px;
+  border: 1px solid rgba(233, 234, 228, .16);
+  background: rgba(233, 234, 228, .04);
+}
+.noticeInfo b { color: var(--ac-cobalt); white-space: nowrap; text-transform: uppercase; letter-spacing: .05em; font-size: 11px; }
+.noticeInfo span { color: rgba(233, 234, 228, .75); }
+/* The frozen proof is composed content — keep it off the error palette. */
+.frozen { border-color: rgba(233, 234, 228, .16); background: rgba(233, 234, 228, .03); }
 .loading { padding: 40px; border-color: rgba(233, 234, 228, .14); text-align: center; color: rgba(233, 234, 228, .6); }
 
 .timeline {
@@ -193,7 +211,7 @@
 .dialog h2,
 .frozen h2 {
   margin-top: 5px;
-  font-family: "Avenir Next Condensed", "Arial Narrow", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif;
   font-size: 22px;
   line-height: 1.05;
   letter-spacing: -.015em;

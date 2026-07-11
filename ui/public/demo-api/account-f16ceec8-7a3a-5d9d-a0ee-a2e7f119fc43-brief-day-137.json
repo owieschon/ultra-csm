@@ -1,0 +1,416 @@
+{
+  "account_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+  "account_name": "Ironhorse Freight Co",
+  "adoption": {
+    "account_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+    "active_assets": 104,
+    "active_users": 65,
+    "adoption_rate": 0.87,
+    "entitled_assets": 120,
+    "licensed_users": 65,
+    "measured_at": "2026-11-05T00:00:00Z",
+    "underused_capabilities": [
+      "driver_coaching",
+      "maintenance_alerts"
+    ]
+  },
+  "comms_call_transcripts": [],
+  "comms_gmail": [
+    {
+      "account_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "3610a030-a5cd-55db-80b7-7b89d66203a4",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "7703133c-6a9c-5fe5-ae74-63a60c27a0d2",
+      "timestamp": "2026-11-04T00:00:00Z"
+    },
+    {
+      "account_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "3610a030-a5cd-55db-80b7-7b89d66203a4",
+      "direction": "inbound",
+      "response_time_hours": 3.0,
+      "signal_id": "9486a35a-57f1-5852-ba02-1cbfd7cd3169",
+      "timestamp": "2026-11-04T03:00:00Z"
+    }
+  ],
+  "comms_internal": [],
+  "company": {
+    "arr_cents": 14800000,
+    "csm_owner_id": "csm-101",
+    "lifecycle_stage": "adopting",
+    "renewal_date": "2027-06-01",
+    "status": "Active"
+  },
+  "contacts": [
+    {
+      "consent_to_contact": true,
+      "email": "marcus.webb@ironhorse-freight.example",
+      "name": "Marcus Webb",
+      "role": "fleet_operations",
+      "title": "Dir Fleet Ops"
+    },
+    {
+      "consent_to_contact": true,
+      "email": "lisa.chang@ironhorse-freight.example",
+      "name": "Lisa Chang",
+      "role": "information_technology",
+      "title": "IT Manager"
+    },
+    {
+      "consent_to_contact": false,
+      "email": "robert.haines@ironhorse-freight.example",
+      "name": "Robert Haines",
+      "role": "finance",
+      "title": "CFO"
+    }
+  ],
+  "divergences": [
+    {
+      "config_version": "value-model-config-v1",
+      "contribution": 18,
+      "evidence": [
+        {
+          "field": "active_users",
+          "observed_at": "2026-11-05T00:00:00Z",
+          "source": "cs_platform",
+          "source_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43"
+        },
+        {
+          "field": "objectives",
+          "observed_at": "2026-07-15",
+          "source": "cs_platform",
+          "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
+        }
+      ],
+      "name": "usage_outcome_unverified",
+      "rule_name": "base_default",
+      "threshold_name": "outcome_activity_floor",
+      "threshold_value": 0.75,
+      "value": 1.0
+    }
+  ],
+  "entitlements": [
+    {
+      "account_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+      "capability": "core_telematics",
+      "ends_at": null,
+      "entitled_quantity": 120,
+      "starts_at": "2026-06-01",
+      "unit": "assets"
+    },
+    {
+      "account_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+      "capability": "route_optimization",
+      "ends_at": null,
+      "entitled_quantity": 120,
+      "starts_at": "2026-06-01",
+      "unit": "assets"
+    },
+    {
+      "account_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+      "capability": "driver_coaching",
+      "ends_at": null,
+      "entitled_quantity": 120,
+      "starts_at": "2026-06-01",
+      "unit": "assets"
+    },
+    {
+      "account_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+      "capability": "maintenance_alerts",
+      "ends_at": null,
+      "entitled_quantity": 120,
+      "starts_at": "2026-06-01",
+      "unit": "assets"
+    }
+  ],
+  "health_snapshot": {
+    "band": "green",
+    "drivers": [
+      "activation_complete",
+      "growing_usage"
+    ],
+    "measured_at": "2026-07-26T00:00:00Z",
+    "score": 100.0
+  },
+  "industry": "fleet_management",
+  "lifecycle_stage": "adopting",
+  "milestones": [
+    {
+      "account_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+      "achieved_at": null,
+      "evidence_signal_ids": [
+        "4635cdb7-5bb5-5c43-acc1-5dc989d4d583"
+      ],
+      "expected_by": "2026-06-22",
+      "milestone": "activate_50pct_assets"
+    },
+    {
+      "account_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+      "achieved_at": null,
+      "evidence_signal_ids": [
+        "4635cdb7-5bb5-5c43-acc1-5dc989d4d583"
+      ],
+      "expected_by": "2026-07-01",
+      "milestone": "first_route_optimization"
+    }
+  ],
+  "open_cases": [
+    {
+      "account_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+      "case_id": "7d61c11f-73d4-52f6-a738-33ab96634a61",
+      "closed_at": null,
+      "created_at": "2026-06-15T10:00:00Z",
+      "origin": "Email",
+      "priority": "Medium",
+      "status": "Open",
+      "subject": "GPS hardware compatibility issue with older vehicles"
+    }
+  ],
+  "open_ctas": [],
+  "opportunities": [],
+  "priority": {
+    "factors": [
+      {
+        "config_version": "value-model-config-v1",
+        "contribution": 50,
+        "evidence": [
+          {
+            "field": "ttv_milestone",
+            "observed_at": "2026-06-22",
+            "source": "telemetry",
+            "source_id": "4635cdb7-5bb5-5c43-acc1-5dc989d4d583"
+          },
+          {
+            "field": "ttv_milestone",
+            "observed_at": "2026-07-01",
+            "source": "telemetry",
+            "source_id": "4635cdb7-5bb5-5c43-acc1-5dc989d4d583"
+          }
+        ],
+        "name": "milestones_overdue",
+        "rule_name": "base_default",
+        "threshold_name": "milestone_overdue_points",
+        "threshold_value": 25,
+        "value": 2.0
+      },
+      {
+        "config_version": "value-model-config-v1",
+        "contribution": 40,
+        "evidence": [
+          {
+            "field": "ttv_milestone",
+            "observed_at": "2026-06-22",
+            "source": "telemetry",
+            "source_id": "4635cdb7-5bb5-5c43-acc1-5dc989d4d583"
+          },
+          {
+            "field": "ttv_milestone",
+            "observed_at": "2026-07-01",
+            "source": "telemetry",
+            "source_id": "4635cdb7-5bb5-5c43-acc1-5dc989d4d583"
+          }
+        ],
+        "name": "days_overdue",
+        "rule_name": "base_default",
+        "threshold_name": "days_overdue_cap",
+        "threshold_value": 40,
+        "value": 136.0
+      },
+      {
+        "config_version": "value-model-config-v1",
+        "contribution": 20,
+        "evidence": [
+          {
+            "field": "target_date",
+            "observed_at": "2026-07-15",
+            "source": "cs_platform",
+            "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
+          }
+        ],
+        "name": "success_plan_overdue",
+        "rule_name": "base_default",
+        "threshold_name": "success_plan_overdue_points",
+        "threshold_value": 20,
+        "value": 1.0
+      },
+      {
+        "config_version": "value-model-config-v1",
+        "contribution": 15,
+        "evidence": [
+          {
+            "field": "underused_capabilities",
+            "observed_at": "2026-11-05T00:00:00Z",
+            "source": "cs_platform",
+            "source_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43"
+          },
+          {
+            "field": "capability",
+            "observed_at": "2026-06-01",
+            "source": "telemetry",
+            "source_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43:core_telematics"
+          },
+          {
+            "field": "capability",
+            "observed_at": "2026-06-01",
+            "source": "telemetry",
+            "source_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43:route_optimization"
+          },
+          {
+            "field": "capability",
+            "observed_at": "2026-06-01",
+            "source": "telemetry",
+            "source_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43:driver_coaching"
+          },
+          {
+            "field": "capability",
+            "observed_at": "2026-06-01",
+            "source": "telemetry",
+            "source_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43:maintenance_alerts"
+          }
+        ],
+        "name": "feature_depth_gap",
+        "rule_name": "base_default",
+        "threshold_name": "depth_floor",
+        "threshold_value": 0.6,
+        "value": 0.5
+      },
+      {
+        "config_version": "value-model-config-v1",
+        "contribution": 18,
+        "evidence": [
+          {
+            "field": "active_users",
+            "observed_at": "2026-11-05T00:00:00Z",
+            "source": "cs_platform",
+            "source_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43"
+          },
+          {
+            "field": "objectives",
+            "observed_at": "2026-07-15",
+            "source": "cs_platform",
+            "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
+          }
+        ],
+        "name": "usage_outcome_unverified",
+        "rule_name": "base_default",
+        "threshold_name": "outcome_activity_floor",
+        "threshold_value": 0.75,
+        "value": 1.0
+      }
+    ],
+    "score": 143
+  },
+  "recent_usage_signals": [
+    {
+      "account_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+      "grain": "company",
+      "metric_name": "daily_active_assets",
+      "observed_at": "2026-11-05T00:00:00Z",
+      "signal_id": "4635cdb7-5bb5-5c43-acc1-5dc989d4d583",
+      "source_ref": "product-telemetry:daily_active_assets",
+      "subject_id": null,
+      "unit": "assets",
+      "value": 104.0
+    }
+  ],
+  "stakeholders": [
+    {
+      "champion": false,
+      "consent_to_contact": true,
+      "contact_id": "3610a030-a5cd-55db-80b7-7b89d66203a4",
+      "days_since_interaction": null,
+      "departed": false,
+      "name": "Marcus Webb",
+      "new_unengaged": false,
+      "relationship_type": null,
+      "title": "Dir Fleet Ops"
+    },
+    {
+      "champion": false,
+      "consent_to_contact": true,
+      "contact_id": "c1c67c21-2110-5d2a-a805-2c495b9bb031",
+      "days_since_interaction": null,
+      "departed": false,
+      "name": "Lisa Chang",
+      "new_unengaged": false,
+      "relationship_type": null,
+      "title": "IT Manager"
+    },
+    {
+      "champion": false,
+      "consent_to_contact": false,
+      "contact_id": "bb0a068d-0c27-55fe-86ed-27bd5939777c",
+      "days_since_interaction": null,
+      "departed": false,
+      "name": "Robert Haines",
+      "new_unengaged": false,
+      "relationship_type": null,
+      "title": "CFO"
+    }
+  ],
+  "success_plans": [
+    {
+      "account_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+      "objectives": [
+        "activate_core_fleet",
+        "complete_driver_onboarding"
+      ],
+      "plan_id": "afbc6091-985b-50e5-8522-e1a916af56c9",
+      "status": "active",
+      "target_date": "2026-07-15"
+    }
+  ],
+  "suggested_talking_points": [
+    "milestones_overdue: value=2.00, contribution=+50 (rule: base_default)",
+    "days_overdue: value=136.00, contribution=+40 (rule: base_default)",
+    "success_plan_overdue: value=1.00, contribution=+20 (rule: base_default)",
+    "feature_depth_gap: value=0.50, contribution=+15 (rule: base_default)",
+    "usage_outcome_unverified: value=1.00, contribution=+18 (rule: base_default)",
+    "Divergence signal: usage_outcome_unverified (value=1.00, contribution=+18)",
+    "Underused capabilities: driver_coaching, maintenance_alerts",
+    "Overdue milestone: activate_50pct_assets (expected by 2026-06-22)",
+    "Overdue milestone: first_route_optimization (expected by 2026-07-01)"
+  ],
+  "trajectory": {
+    "consecutive_band": "green",
+    "consecutive_count": 4,
+    "points": [
+      {
+        "day": 0,
+        "health_band": "yellow",
+        "health_score": 72.0,
+        "priority_score": 30
+      },
+      {
+        "day": 30,
+        "health_band": "green",
+        "health_score": 100.0,
+        "priority_score": 33
+      },
+      {
+        "day": 60,
+        "health_band": "green",
+        "health_score": 100.0,
+        "priority_score": 33
+      },
+      {
+        "day": 90,
+        "health_band": "green",
+        "health_score": 100.0,
+        "priority_score": 33
+      },
+      {
+        "day": 120,
+        "health_band": "green",
+        "health_score": 100.0,
+        "priority_score": 33
+      }
+    ],
+    "trend": "improving",
+    "trend_velocity": 0.2333
+  }
+}

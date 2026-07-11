@@ -1,0 +1,311 @@
+{
+  "account_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32",
+  "account_name": "Clearwater Field Ops",
+  "adoption": {
+    "account_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32",
+    "active_assets": 6,
+    "active_users": 4,
+    "adoption_rate": 0.3,
+    "entitled_assets": 20,
+    "licensed_users": 12,
+    "measured_at": "2026-06-21T00:00:00Z",
+    "underused_capabilities": [
+      "maintenance_alerts"
+    ]
+  },
+  "comms_call_transcripts": [
+    {
+      "account_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32",
+      "attendees": [
+        "4294e961-ee2d-536b-9a91-136ef3e39fbd",
+        "csm-104"
+      ],
+      "channel": "call",
+      "contact_id": "4294e961-ee2d-536b-9a91-136ef3e39fbd",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "03dd52b5-fe37-5fbe-aa5c-fcc8f5059977",
+      "timestamp": "2026-11-06T02:00:00Z"
+    }
+  ],
+  "comms_gmail": [
+    {
+      "account_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "4294e961-ee2d-536b-9a91-136ef3e39fbd",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "2c96073f-4e0b-5b76-9555-5186e93c68a1",
+      "timestamp": "2026-11-04T00:00:00Z"
+    },
+    {
+      "account_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "4294e961-ee2d-536b-9a91-136ef3e39fbd",
+      "direction": "inbound",
+      "response_time_hours": 5.0,
+      "signal_id": "1693435f-da91-573f-b761-634ac6c4ee90",
+      "timestamp": "2026-11-04T05:00:00Z"
+    }
+  ],
+  "comms_internal": [
+    {
+      "account_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32",
+      "author": "csm-104",
+      "content": "Kelly needs technician setup examples before the content route; mobile rollout is the useful evidence, not a generic adoption nudge.",
+      "note_id": "2c6be138-97a3-5aa7-8e92-bf814e78fbbc",
+      "source": "csm_note",
+      "timestamp": "2026-11-07T07:00:00Z"
+    }
+  ],
+  "company": {
+    "arr_cents": 3200000,
+    "csm_owner_id": "csm-104",
+    "lifecycle_stage": "adopting",
+    "renewal_date": "2027-06-01",
+    "status": "Active"
+  },
+  "contacts": [
+    {
+      "consent_to_contact": true,
+      "email": "kelly.vance@clearwater-fo.example",
+      "name": "Kelly Vance",
+      "role": "operations",
+      "title": "Field Ops Manager"
+    }
+  ],
+  "divergences": [],
+  "entitlements": [
+    {
+      "account_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32",
+      "capability": "core_telematics",
+      "ends_at": null,
+      "entitled_quantity": 20,
+      "starts_at": "2026-06-01",
+      "unit": "assets"
+    },
+    {
+      "account_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32",
+      "capability": "maintenance_alerts",
+      "ends_at": null,
+      "entitled_quantity": 20,
+      "starts_at": "2026-06-01",
+      "unit": "assets"
+    }
+  ],
+  "health_snapshot": {
+    "band": "yellow",
+    "drivers": [
+      "slow_activation"
+    ],
+    "measured_at": "2026-06-21T00:00:00Z",
+    "score": 60.0
+  },
+  "industry": "field_services",
+  "lifecycle_stage": "adopting",
+  "milestones": [
+    {
+      "account_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32",
+      "achieved_at": "2026-06-14T09:00:00Z",
+      "evidence_signal_ids": [
+        "8e0b135e-e23c-55a3-b1fe-1e21f48ed76e"
+      ],
+      "expected_by": "2026-06-15",
+      "milestone": "admin_setup"
+    },
+    {
+      "account_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32",
+      "achieved_at": "2026-07-31T00:00:00Z",
+      "evidence_signal_ids": [
+        "8e0b135e-e23c-55a3-b1fe-1e21f48ed76e"
+      ],
+      "expected_by": "2026-06-22",
+      "milestone": "activate_50pct_assets"
+    }
+  ],
+  "open_cases": [
+    {
+      "account_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32",
+      "case_id": "33509b75-de98-51fa-90a0-c68c90fe9324",
+      "closed_at": null,
+      "created_at": "2026-06-12T14:00:00Z",
+      "origin": "Portal",
+      "priority": "Low",
+      "status": "Open",
+      "subject": "Question about mobile app setup for technicians"
+    }
+  ],
+  "open_ctas": [],
+  "opportunities": [],
+  "priority": {
+    "factors": [
+      {
+        "config_version": "value-model-config-v1",
+        "contribution": 20,
+        "evidence": [
+          {
+            "field": "target_date",
+            "observed_at": "2026-07-15",
+            "source": "cs_platform",
+            "source_id": "3ea4da77-9a46-57ce-aa0a-36440aed7192"
+          }
+        ],
+        "name": "success_plan_overdue",
+        "rule_name": "base_default",
+        "threshold_name": "success_plan_overdue_points",
+        "threshold_value": 20,
+        "value": 1.0
+      },
+      {
+        "config_version": "value-model-config-v1",
+        "contribution": 15,
+        "evidence": [
+          {
+            "field": "health_score",
+            "observed_at": "2026-06-21T00:00:00Z",
+            "source": "cs_platform",
+            "source_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32"
+          }
+        ],
+        "name": "health_yellow",
+        "rule_name": "base_default",
+        "threshold_name": "health_yellow_points",
+        "threshold_value": 15,
+        "value": 1.0
+      },
+      {
+        "config_version": "value-model-config-v1",
+        "contribution": 12,
+        "evidence": [
+          {
+            "field": "active_users",
+            "observed_at": "2026-06-21T00:00:00Z",
+            "source": "cs_platform",
+            "source_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32"
+          }
+        ],
+        "name": "low_seat_penetration",
+        "rule_name": "base_default",
+        "threshold_name": "seat_penetration_floor",
+        "threshold_value": 0.5,
+        "value": 0.3333333333333333
+      },
+      {
+        "config_version": "value-model-config-v1",
+        "contribution": 15,
+        "evidence": [
+          {
+            "field": "underused_capabilities",
+            "observed_at": "2026-06-21T00:00:00Z",
+            "source": "cs_platform",
+            "source_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32"
+          },
+          {
+            "field": "capability",
+            "observed_at": "2026-06-01",
+            "source": "telemetry",
+            "source_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32:core_telematics"
+          },
+          {
+            "field": "capability",
+            "observed_at": "2026-06-01",
+            "source": "telemetry",
+            "source_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32:maintenance_alerts"
+          }
+        ],
+        "name": "feature_depth_gap",
+        "rule_name": "base_default",
+        "threshold_name": "depth_floor",
+        "threshold_value": 0.6,
+        "value": 0.5
+      }
+    ],
+    "score": 62
+  },
+  "recent_usage_signals": [
+    {
+      "account_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32",
+      "grain": "company",
+      "metric_name": "daily_active_assets",
+      "observed_at": "2026-06-21T00:00:00Z",
+      "signal_id": "8e0b135e-e23c-55a3-b1fe-1e21f48ed76e",
+      "source_ref": "product-telemetry:daily_active_assets",
+      "subject_id": null,
+      "unit": "assets",
+      "value": 6.0
+    }
+  ],
+  "stakeholders": [
+    {
+      "champion": false,
+      "consent_to_contact": true,
+      "contact_id": "4294e961-ee2d-536b-9a91-136ef3e39fbd",
+      "days_since_interaction": null,
+      "departed": false,
+      "name": "Kelly Vance",
+      "new_unengaged": false,
+      "relationship_type": null,
+      "title": "Field Ops Manager"
+    }
+  ],
+  "success_plans": [
+    {
+      "account_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32",
+      "objectives": [
+        "activate_core_fleet",
+        "mobile_rollout"
+      ],
+      "plan_id": "3ea4da77-9a46-57ce-aa0a-36440aed7192",
+      "status": "active",
+      "target_date": "2026-07-15"
+    }
+  ],
+  "suggested_talking_points": [
+    "success_plan_overdue: value=1.00, contribution=+20 (rule: base_default)",
+    "health_yellow: value=1.00, contribution=+15 (rule: base_default)",
+    "low_seat_penetration: value=0.33, contribution=+12 (rule: base_default)",
+    "feature_depth_gap: value=0.50, contribution=+15 (rule: base_default)",
+    "Health is yellow (score 60.0) -- drivers: slow_activation",
+    "Underused capabilities: maintenance_alerts"
+  ],
+  "trajectory": {
+    "consecutive_band": "yellow",
+    "consecutive_count": 5,
+    "points": [
+      {
+        "day": 0,
+        "health_band": "yellow",
+        "health_score": 60.0,
+        "priority_score": 42
+      },
+      {
+        "day": 30,
+        "health_band": "yellow",
+        "health_score": 60.0,
+        "priority_score": 42
+      },
+      {
+        "day": 60,
+        "health_band": "yellow",
+        "health_score": 60.0,
+        "priority_score": 42
+      },
+      {
+        "day": 90,
+        "health_band": "yellow",
+        "health_score": 60.0,
+        "priority_score": 42
+      },
+      {
+        "day": 120,
+        "health_band": "yellow",
+        "health_score": 60.0,
+        "priority_score": 42
+      }
+    ],
+    "trend": "stable",
+    "trend_velocity": 0.0
+  }
+}

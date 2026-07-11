@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AccountSummary, WorkItem } from "@/lib/api";
 import { SweepData } from "@/lib/useSweep";
 import { label, MOTION_LABELS, TIER_LABELS } from "@/lib/labels";
@@ -18,16 +18,41 @@ export function BookView({
   accounts,
   sweep,
   day,
+  highlightAccountId = null,
+  onHighlightDone,
   onWorkQueue,
   onSelectAccount,
 }: {
   accounts: AccountSummary[] | null;
   sweep: SweepData | null;
   day: number | undefined;
+  highlightAccountId?: string | null;
+  onHighlightDone?: () => void;
   onWorkQueue: () => void;
   onSelectAccount: (accountId: string) => void;
 }) {
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+
+  // Palette jump to a quiet account: expand its band if the tile is folded
+  // behind "+N quiet", scroll it into view, flash it, then clear.
+  useEffect(() => {
+    if (!highlightAccountId || !accounts) return;
+    const tier = accounts.find((a) => a.account_id === highlightAccountId)?.tier;
+    // Deliberate: unfold the band so the target tile exists before scrolling.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (tier) setExpanded((e) => ({ ...e, [tier]: true }));
+    const raf = requestAnimationFrame(() => {
+      document
+        .querySelector(`[data-account-id="${highlightAccountId}"]`)
+        ?.scrollIntoView({ block: "center", behavior: "smooth" });
+    });
+    const timer = window.setTimeout(() => onHighlightDone?.(), 2200);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.clearTimeout(timer);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [highlightAccountId, accounts]);
 
   const workItemByAccount = useMemo(() => {
     const map = new Map<string, WorkItem>();
@@ -98,11 +123,8 @@ export function BookView({
         <div className="sec-h">
           <span className="t">Lenses</span>
         </div>
-        <div style={{ display: "flex", gap: 8 }}>
-          <span className="lens" title="lens: adoption">
-            Adoption
-          </span>
-          {["Risk", "Expansion", "Program"].map((l) => (
+        <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+          {["Adoption", "Risk", "Expansion", "Program"].map((l) => (
             <span
               className="lens"
               key={l}
@@ -111,6 +133,10 @@ export function BookView({
               {l}
             </span>
           ))}
+          <span className="lens-cap">
+            four ways the agent reads the book — each queue item carries the
+            lens that surfaced it
+          </span>
         </div>
       </div>
 
@@ -120,13 +146,11 @@ export function BookView({
           band={band}
           workItemByAccount={workItemByAccount}
           expanded={expanded[band.tier] ?? false}
+          highlightAccountId={highlightAccountId}
           onToggleExpand={() =>
             setExpanded((e) => ({ ...e, [band.tier]: !e[band.tier] }))
           }
-          onSelectAccount={(accountId) => {
-            onSelectAccount(accountId);
-            onWorkQueue();
-          }}
+          onSelectAccount={onSelectAccount}
         />
       ))}
     </div>
@@ -137,12 +161,14 @@ function BandView({
   band,
   workItemByAccount,
   expanded,
+  highlightAccountId,
   onToggleExpand,
   onSelectAccount,
 }: {
   band: Band;
   workItemByAccount: Map<string, WorkItem>;
   expanded: boolean;
+  highlightAccountId?: string | null;
   onToggleExpand: () => void;
   onSelectAccount: (accountId: string) => void;
 }) {
@@ -180,7 +206,8 @@ function BandView({
         {hot.map((a) => (
           <button
             key={a.account_id}
-            className="tile hot"
+            data-account-id={a.account_id}
+            className={`tile hot${highlightAccountId === a.account_id ? " flash" : ""}`}
             onClick={() => onSelectAccount(a.account_id)}
           >
             <span className="tname">{a.account_name}</span>
@@ -190,7 +217,11 @@ function BandView({
           </button>
         ))}
         {handled.map((a) => (
-          <div key={a.account_id} className="tile handled">
+          <div
+            key={a.account_id}
+            data-account-id={a.account_id}
+            className={`tile handled${highlightAccountId === a.account_id ? " flash" : ""}`}
+          >
             <span className="tname">{a.account_name}</span>
             <span className="tdone">
               {workItemByAccount.get(a.account_id)?.proposal?.status === "denied"
@@ -202,7 +233,8 @@ function BandView({
         {internal.map((a) => (
           <div
             key={a.account_id}
-            className="tile handled"
+            data-account-id={a.account_id}
+            className={`tile handled${highlightAccountId === a.account_id ? " flash" : ""}`}
             title={workItemByAccount.get(a.account_id)?.reason}
           >
             <span className="tname">{a.account_name}</span>
@@ -210,7 +242,12 @@ function BandView({
           </div>
         ))}
         {shownQuiet.map((a) => (
-          <div key={a.account_id} className="tile quiet" title="Swept today — no trigger fired">
+          <div
+            key={a.account_id}
+            data-account-id={a.account_id}
+            className={`tile quiet${highlightAccountId === a.account_id ? " flash" : ""}`}
+            title="Swept today — no trigger fired"
+          >
             <span className="tname">{a.account_name}</span>
             <span className="tsub">quiet</span>
           </div>

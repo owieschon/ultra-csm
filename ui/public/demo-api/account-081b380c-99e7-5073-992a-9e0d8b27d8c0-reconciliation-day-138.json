@@ -1,0 +1,81 @@
+{
+  "account_id": "081b380c-99e7-5073-992a-9e0d8b27d8c0",
+  "candidate_divergences": [],
+  "deterministic_signals": [
+    {
+      "contribution": 15,
+      "evidence": [
+        {
+          "field": "health_score",
+          "observed_at": "2026-06-21T00:00:00Z",
+          "source": "cs_platform",
+          "source_id": "081b380c-99e7-5073-992a-9e0d8b27d8c0"
+        }
+      ],
+      "name": "health_yellow",
+      "origin": "deterministic",
+      "surfaced_by_lenses": [
+        "risk_lens"
+      ],
+      "value": 1.0
+    },
+    {
+      "contribution": 20,
+      "evidence": [
+        {
+          "field": "target_date",
+          "observed_at": "2026-07-14",
+          "source": "cs_platform",
+          "source_id": "eb6f3bbc-1ea8-5b0c-b6d5-ad15afda0e34"
+        }
+      ],
+      "name": "overdue_success_plan",
+      "origin": "deterministic",
+      "surfaced_by_lenses": [
+        "risk_lens"
+      ],
+      "value": 1.0
+    },
+    {
+      "contribution": 12,
+      "evidence": [
+        {
+          "field": "active_users",
+          "observed_at": "2026-06-21T00:00:00Z",
+          "source": "cs_platform",
+          "source_id": "081b380c-99e7-5073-992a-9e0d8b27d8c0"
+        }
+      ],
+      "name": "low_seat_penetration",
+      "origin": "deterministic",
+      "surfaced_by_lenses": [
+        "risk_lens"
+      ],
+      "value": 0.3
+    }
+  ],
+  "explanation": {
+    "disclaimer": "Model-generated explanation -- may be incomplete or mischaracterize the underlying evidence. Verify against the cited sources before acting.",
+    "evidence": [
+      {
+        "field": "health_score",
+        "observed_at": "2026-06-21T00:00:00Z",
+        "source": "cs_platform",
+        "source_id": "081b380c-99e7-5073-992a-9e0d8b27d8c0"
+      },
+      {
+        "field": "target_date",
+        "observed_at": "2026-07-14",
+        "source": "cs_platform",
+        "source_id": "eb6f3bbc-1ea8-5b0c-b6d5-ad15afda0e34"
+      },
+      {
+        "field": "active_users",
+        "observed_at": "2026-06-21T00:00:00Z",
+        "source": "cs_platform",
+        "source_id": "081b380c-99e7-5073-992a-9e0d8b27d8c0"
+      }
+    ],
+    "text": "Fixture explanation: no live model configured."
+  }
+}

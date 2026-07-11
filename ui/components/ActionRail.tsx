@@ -2,6 +2,13 @@
 
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { api, LedgerEvent, WorkItem } from "@/lib/api";
+import {
+  DemoLedgerEvent,
+  DemoVerdict,
+  simulateApproval,
+  simulateDenial,
+  simulateRevision,
+} from "@/lib/demoSim";
 import { PROPOSAL_STATUS_LABELS, label } from "@/lib/labels";
 
 export interface ActionRailHandle {
@@ -12,8 +19,21 @@ export interface ActionRailHandle {
 
 export const ActionRail = forwardRef<
   ActionRailHandle,
-  { item: WorkItem | null; onVerdict: (proposalId: string) => void; readOnly?: boolean }
->(function ActionRail({ item, onVerdict, readOnly = false }, ref) {
+  {
+    item: WorkItem | null;
+    onVerdict: (proposalId: string) => void;
+    readOnly?: boolean;
+    demoLedger?: DemoLedgerEvent[];
+    onDemoVerdict?: (
+      proposalId: string,
+      verdict: DemoVerdict | null,
+      events: DemoLedgerEvent[]
+    ) => void;
+  }
+>(function ActionRail(
+  { item, onVerdict, readOnly = false, demoLedger = [], onDemoVerdict },
+  ref
+) {
   const [ledger, setLedger] = useState<LedgerEvent[]>([]);
   const [ledgerGap, setLedgerGap] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
@@ -47,7 +67,10 @@ export const ActionRail = forwardRef<
     (gateApprovalCta ? gateApprovalCta.enabled : true);
   const canEdit = canAct && item?.proposal?.action_type === "draft_customer_outreach";
   const receiptEvents = proposalId
-    ? ledger.filter((event) => event.proposal_id === proposalId).slice(-12)
+    ? [
+        ...ledger.filter((event) => event.proposal_id === proposalId),
+        ...demoLedger.filter((event) => event.proposal_id === proposalId),
+      ].slice(-12)
     : [];
 
   useEffect(() => {
@@ -57,9 +80,34 @@ export const ActionRail = forwardRef<
     }
   }, [canEdit, proposalId]);
 
+  // Hosted demo: the verdict is simulated client-side (labeled below and on
+  // every simulated receipt line) — the live path posts through the gate.
+  function actDemo(verdict: "approve" | "deny" | "revise") {
+    if (!proposalId || !canAct) return;
+    if (verdict === "revise") {
+      const instruction = editInstruction.trim();
+      if (!instruction) {
+        setError("Add an edit instruction before saving.");
+        return;
+      }
+      onDemoVerdict?.(proposalId, null, simulateRevision(proposalId, instruction));
+      setEditOpen(false);
+      setEditInstruction("");
+      return;
+    }
+    setError(null);
+    onDemoVerdict?.(
+      proposalId,
+      verdict === "approve" ? "approved" : "denied",
+      verdict === "approve"
+        ? simulateApproval(proposalId)
+        : simulateDenial(proposalId)
+    );
+  }
+
   async function act(verdict: "approve" | "deny" | "revise") {
     if (readOnly) {
-      setError("Hosted demo is read-only. Decisions are disabled.");
+      actDemo(verdict);
       return;
     }
     if (!proposalId || !canAct || busy) return;
@@ -95,9 +143,7 @@ export const ActionRail = forwardRef<
     approve: () => act("approve"),
     deny: () => act("deny"),
     edit: () => {
-      if (readOnly) {
-        setError("Hosted demo is read-only. Decisions are disabled.");
-      } else if (canEdit) setEditOpen(true);
+      if (canEdit) setEditOpen(true);
     },
   }));
 
@@ -110,7 +156,11 @@ export const ActionRail = forwardRef<
             proposalId ? (
               <>
                 proposal <span className="mono">{proposalId.slice(0, 8)}</span> ·{" "}
-                <span className="st">{label(PROPOSAL_STATUS_LABELS, status)}</span>
+                <span className="st">
+                  {readOnly && status === "approved"
+                    ? "approved · sent (simulated)"
+                    : label(PROPOSAL_STATUS_LABELS, status)}
+                </span>
               </>
             ) : (
               "no gate-tracked proposal for this item"
@@ -126,7 +176,7 @@ export const ActionRail = forwardRef<
         )}
         {readOnly && (
           <div className="gate" role="note">
-            hosted read-only demo — decisions and commits disabled
+            Simulated — decisions update this page only; nothing is sent
           </div>
         )}
       </div>
@@ -147,7 +197,7 @@ export const ActionRail = forwardRef<
           type="button"
           className="btn approve"
           aria-keyshortcuts="A"
-          disabled={readOnly || !canAct || busy}
+          disabled={!canAct || busy}
           onClick={() => act("approve")}
         >
           Approve exact draft<span className="k">A</span>
@@ -156,7 +206,7 @@ export const ActionRail = forwardRef<
           type="button"
           className="btn edit"
           aria-keyshortcuts="E"
-          disabled={readOnly || !canEdit || busy}
+          disabled={!canEdit || busy}
           onClick={() => setEditOpen((open) => !open)}
         >
           Edit draft<span className="k">E</span>
@@ -165,7 +215,7 @@ export const ActionRail = forwardRef<
           type="button"
           className="btn deny"
           aria-keyshortcuts="D"
-          disabled={readOnly || !canAct || busy}
+          disabled={!canAct || busy}
           onClick={() => act("deny")}
         >
           Deny<span className="k">D</span>
@@ -212,9 +262,12 @@ export const ActionRail = forwardRef<
       <div className="audit">
         <div className="audit-h">
           <span className="t">Decision receipt</span>
-          <span className="gap" title={ledgerGap.join(", ")}>
-            {receiptEvents.length} events · {ledgerGap.length} source gaps
-          </span>
+          {proposalId && (
+            <span className="gap" title={ledgerGap.join(", ")}>
+              {receiptEvents.length} events
+              {ledgerGap.length > 0 ? ` · ${ledgerGap.length} source gaps` : ""}
+            </span>
+          )}
         </div>
         <div className="ledger" role="log" aria-live="polite" aria-label="Selected proposal receipt events">
           {proposalId && receiptEvents.length === 0 && (
@@ -233,11 +286,24 @@ export const ActionRail = forwardRef<
           )}
           {receiptEvents.map((e, i) => (
             <div className="lg" key={i}>
-              <span className="ts mono">{e.ts.slice(11, 19)}</span>
+              {/* Sim lines happen in the viewer's wall-clock, not the
+                  snapshot's day — "now" keeps the fixture world coherent. */}
+              <span className="ts mono">
+                {"simulated" in e && e.simulated === true
+                  ? "now"
+                  : e.ts.slice(11, 19)}
+              </span>
               <span className="ev" title={e.event}>
                 {e.label}
               </span>
-              <span className="rest">{e.detail}</span>
+              <span className="rest" title={e.detail}>
+                {e.detail}
+              </span>
+              {"simulated" in e && e.simulated === true && (
+                <span className="sim-chip" title="Simulated in this demo — not a backend event">
+                  sim
+                </span>
+              )}
             </div>
           ))}
         </div>

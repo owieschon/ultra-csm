@@ -31,6 +31,7 @@ export const TRIGGER_LABELS: Record<string, string> = {
   arr_tier: "Contract value requires review",
   days_overdue: "Days overdue",
   feature_depth_gap: "Paid capabilities unused",
+  open_support_pressure: "Open support tickets piling up",
 };
 
 export const MOTION_LABELS: Record<string, string> = {
@@ -59,6 +60,33 @@ export const PROPOSAL_STATUS_LABELS: Record<string, string> = {
   pending: "needs your approval",
   approved: "approved · awaiting commit",
   denied: "denied · won't recur",
+};
+
+// Lenses are sources, never views (UI_DESIGN_BRIEF lens rule): plain-word
+// chips, raw enum rides along as the title attribute.
+export const LENS_LABELS: Record<string, string> = {
+  adoption_lens: "Adoption",
+  risk_lens: "Risk",
+  expansion_lens: "Expansion",
+  program_lens: "Program",
+  value_model: "Value model",
+};
+
+export const LANE_LABELS: Record<string, string> = {
+  needs_judgment: "Needs judgment",
+  autonomous: "Acted alone · logged",
+  internal_only: "Internal only",
+};
+
+export const ROLE_LABELS: Record<string, string> = {
+  champion: "Champion",
+  executive_sponsor: "Exec sponsor",
+  technical_lead: "Technical lead",
+  end_user: "End user",
+  admin: "Admin",
+  fleet_operations: "Fleet operations",
+  it_admin: "IT admin",
+  procurement: "Procurement",
 };
 
 export function label(map: Record<string, string>, key: string | null | undefined): string {

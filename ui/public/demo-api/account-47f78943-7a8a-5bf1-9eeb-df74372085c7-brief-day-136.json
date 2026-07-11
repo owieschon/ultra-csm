@@ -1,0 +1,746 @@
+{
+  "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+  "account_name": "Meridian Fleet Group",
+  "adoption": {
+    "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+    "active_assets": 66,
+    "active_users": 55,
+    "adoption_rate": 1.1,
+    "entitled_assets": 60,
+    "licensed_users": 55,
+    "measured_at": "2026-11-04T00:00:00Z",
+    "underused_capabilities": []
+  },
+  "comms_call_transcripts": [],
+  "comms_gmail": [
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "b2d52039-fa63-5981-8b9b-e08ee50e8a14",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "b2ea6b25-0fb6-5677-81b2-a60c2c2f4445",
+      "timestamp": "2026-06-23T00:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "b2d52039-fa63-5981-8b9b-e08ee50e8a14",
+      "direction": "inbound",
+      "response_time_hours": 5.0,
+      "signal_id": "2d1275fe-510f-5ba4-89f5-6ac86e03ad01",
+      "timestamp": "2026-06-23T05:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "b2d52039-fa63-5981-8b9b-e08ee50e8a14",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "b2c486fd-9295-5d7d-ae2d-daa62bda2628",
+      "timestamp": "2026-07-01T00:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "b2d52039-fa63-5981-8b9b-e08ee50e8a14",
+      "direction": "inbound",
+      "response_time_hours": 4.0,
+      "signal_id": "d113eff3-a786-5081-9392-d2953391e0cc",
+      "timestamp": "2026-07-01T04:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "b2d52039-fa63-5981-8b9b-e08ee50e8a14",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "39f4f11d-99ee-58d6-85a3-18a0ed407b7e",
+      "timestamp": "2026-07-09T00:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "b2d52039-fa63-5981-8b9b-e08ee50e8a14",
+      "direction": "inbound",
+      "response_time_hours": 26.0,
+      "signal_id": "d41a8fbe-80b5-5829-ad4f-bf50ca5cb71b",
+      "timestamp": "2026-07-10T02:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "b2d52039-fa63-5981-8b9b-e08ee50e8a14",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "0650b670-a0ad-5455-bb09-f6c3a03d5683",
+      "timestamp": "2026-07-21T00:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "b2d52039-fa63-5981-8b9b-e08ee50e8a14",
+      "direction": "inbound",
+      "response_time_hours": 5.0,
+      "signal_id": "141c99e4-ae9b-514f-9f95-c4a9a413e0bc",
+      "timestamp": "2026-07-21T05:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "b2d52039-fa63-5981-8b9b-e08ee50e8a14",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "7b0a52a9-8c6a-513e-99c9-be985bdf72e8",
+      "timestamp": "2026-08-05T00:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "b2d52039-fa63-5981-8b9b-e08ee50e8a14",
+      "direction": "inbound",
+      "response_time_hours": 7.0,
+      "signal_id": "f0b6b21f-8a91-5e9d-a48a-489e67527abd",
+      "timestamp": "2026-08-05T07:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "b2d52039-fa63-5981-8b9b-e08ee50e8a14",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "86fd37b3-92fd-5b96-8a21-998c4150983e",
+      "timestamp": "2026-08-20T00:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "b2d52039-fa63-5981-8b9b-e08ee50e8a14",
+      "direction": "inbound",
+      "response_time_hours": 3.0,
+      "signal_id": "6fa5a120-78fe-56a0-9687-4d00ce78da56",
+      "timestamp": "2026-08-20T03:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "b2d52039-fa63-5981-8b9b-e08ee50e8a14",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "e2f97262-5c2d-5d75-80f9-595c3d973dca",
+      "timestamp": "2026-09-04T00:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "b2d52039-fa63-5981-8b9b-e08ee50e8a14",
+      "direction": "inbound",
+      "response_time_hours": 4.0,
+      "signal_id": "f21a5e9b-85cb-513e-b1e5-293ab20b67b4",
+      "timestamp": "2026-09-04T04:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "b2d52039-fa63-5981-8b9b-e08ee50e8a14",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "291fd075-759a-56c4-a1db-94ff1d1200e3",
+      "timestamp": "2026-09-19T00:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "b2d52039-fa63-5981-8b9b-e08ee50e8a14",
+      "direction": "inbound",
+      "response_time_hours": 2.0,
+      "signal_id": "abdee678-01bb-51ed-aa78-e8bf6c6b9ac9",
+      "timestamp": "2026-09-19T02:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "b2d52039-fa63-5981-8b9b-e08ee50e8a14",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "b4a7c412-571c-54b9-b29f-04b61973216f",
+      "timestamp": "2026-09-29T00:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "b2d52039-fa63-5981-8b9b-e08ee50e8a14",
+      "direction": "inbound",
+      "response_time_hours": 3.0,
+      "signal_id": "8136952b-52e2-53b2-8473-5a9e45677ee4",
+      "timestamp": "2026-09-29T03:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "b2d52039-fa63-5981-8b9b-e08ee50e8a14",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "5a7f480c-f358-5d5a-aa6c-9e1da3a92f63",
+      "timestamp": "2026-10-14T00:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "b2d52039-fa63-5981-8b9b-e08ee50e8a14",
+      "direction": "inbound",
+      "response_time_hours": 4.0,
+      "signal_id": "951b7ad4-827a-58d3-8a5c-243b08575784",
+      "timestamp": "2026-10-14T04:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "b2d52039-fa63-5981-8b9b-e08ee50e8a14",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "3668e6fb-daaf-5a92-bead-53086f5742db",
+      "timestamp": "2026-10-29T00:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "b2d52039-fa63-5981-8b9b-e08ee50e8a14",
+      "direction": "inbound",
+      "response_time_hours": 2.0,
+      "signal_id": "02367460-4908-51f0-9a05-a5fef158390d",
+      "timestamp": "2026-10-29T02:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "34212b95-2e23-590a-b94f-2775cdb9d58e",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "70fd052e-9570-5150-9243-429bf959a288",
+      "timestamp": "2026-07-01T00:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "34212b95-2e23-590a-b94f-2775cdb9d58e",
+      "direction": "inbound",
+      "response_time_hours": 6.0,
+      "signal_id": "107cd603-43a2-5a6c-8a77-daccf299cc70",
+      "timestamp": "2026-07-01T06:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "34212b95-2e23-590a-b94f-2775cdb9d58e",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "7a652924-e2ef-5a24-8a22-028a13e4a48b",
+      "timestamp": "2026-07-08T00:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "34212b95-2e23-590a-b94f-2775cdb9d58e",
+      "direction": "inbound",
+      "response_time_hours": 3.0,
+      "signal_id": "a607eccf-126b-52b7-aa85-4c73faf6d59f",
+      "timestamp": "2026-07-08T03:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "34212b95-2e23-590a-b94f-2775cdb9d58e",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "0ad3e0de-b9a6-5974-bd57-3031b08388fc",
+      "timestamp": "2026-07-16T00:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "34212b95-2e23-590a-b94f-2775cdb9d58e",
+      "direction": "inbound",
+      "response_time_hours": 3.0,
+      "signal_id": "bf9b2847-b303-5fa2-8ede-6af131b1686b",
+      "timestamp": "2026-07-16T03:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "34212b95-2e23-590a-b94f-2775cdb9d58e",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "68d60c47-e460-5372-abf5-f9b1264bd440",
+      "timestamp": "2026-07-31T00:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "34212b95-2e23-590a-b94f-2775cdb9d58e",
+      "direction": "inbound",
+      "response_time_hours": 5.0,
+      "signal_id": "962c6263-b11a-5759-9f77-cda94e7bc3b7",
+      "timestamp": "2026-07-31T05:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "34212b95-2e23-590a-b94f-2775cdb9d58e",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "3e2691ce-92fa-5a13-ace8-4c6a19405d9d",
+      "timestamp": "2026-08-10T00:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "34212b95-2e23-590a-b94f-2775cdb9d58e",
+      "direction": "inbound",
+      "response_time_hours": 4.0,
+      "signal_id": "019cd8f0-1cb5-5403-bd9e-9f31fc701f72",
+      "timestamp": "2026-08-10T04:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "34212b95-2e23-590a-b94f-2775cdb9d58e",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "9e4f8a91-36f2-5197-9970-32d140d40fc9",
+      "timestamp": "2026-08-20T00:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "34212b95-2e23-590a-b94f-2775cdb9d58e",
+      "direction": "inbound",
+      "response_time_hours": 5.0,
+      "signal_id": "14e0c725-cd5c-51ec-a174-561ad18cc913",
+      "timestamp": "2026-08-20T05:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "34212b95-2e23-590a-b94f-2775cdb9d58e",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "e4b6179b-29aa-5bfd-837e-96daaf14ce93",
+      "timestamp": "2026-08-30T00:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "34212b95-2e23-590a-b94f-2775cdb9d58e",
+      "direction": "inbound",
+      "response_time_hours": 2.0,
+      "signal_id": "a9087894-43bb-5410-ae80-013496875ffa",
+      "timestamp": "2026-08-30T02:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "34212b95-2e23-590a-b94f-2775cdb9d58e",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "a30089e0-cdc5-5a0c-bdf7-41cc15fa5230",
+      "timestamp": "2026-09-14T00:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "34212b95-2e23-590a-b94f-2775cdb9d58e",
+      "direction": "inbound",
+      "response_time_hours": 2.0,
+      "signal_id": "385741df-0cbd-536f-9eb5-18e60cea77c1",
+      "timestamp": "2026-09-14T02:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "34212b95-2e23-590a-b94f-2775cdb9d58e",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "6733ffa2-3ed1-56fc-97c4-b58a18ce521d",
+      "timestamp": "2026-09-24T00:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "34212b95-2e23-590a-b94f-2775cdb9d58e",
+      "direction": "inbound",
+      "response_time_hours": 4.0,
+      "signal_id": "3f16bf35-6b93-56d3-9995-ebf3e8a7e6d0",
+      "timestamp": "2026-09-24T04:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "34212b95-2e23-590a-b94f-2775cdb9d58e",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "67ca50ba-fad8-5658-8031-091f2b0453f2",
+      "timestamp": "2026-10-09T00:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "34212b95-2e23-590a-b94f-2775cdb9d58e",
+      "direction": "inbound",
+      "response_time_hours": 4.0,
+      "signal_id": "1db24bb9-e07c-56c8-a30f-8d6f8ae43209",
+      "timestamp": "2026-10-09T04:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "34212b95-2e23-590a-b94f-2775cdb9d58e",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "245aceee-21ec-5f90-9aae-4587dbafb3b9",
+      "timestamp": "2026-10-19T00:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "34212b95-2e23-590a-b94f-2775cdb9d58e",
+      "direction": "inbound",
+      "response_time_hours": 1.0,
+      "signal_id": "01729b40-191a-5b88-8bfc-c1bfde5fc018",
+      "timestamp": "2026-10-19T01:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "34212b95-2e23-590a-b94f-2775cdb9d58e",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "e74b8d25-5b51-5c03-b288-347e71a36514",
+      "timestamp": "2026-10-24T00:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "34212b95-2e23-590a-b94f-2775cdb9d58e",
+      "direction": "inbound",
+      "response_time_hours": 1.0,
+      "signal_id": "1e6c59c3-9d88-56f4-8af5-bfa2872eff28",
+      "timestamp": "2026-10-24T01:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "34212b95-2e23-590a-b94f-2775cdb9d58e",
+      "direction": "outbound",
+      "response_time_hours": null,
+      "signal_id": "6c97d1ed-596d-5f5b-b13b-a4161a5e857b",
+      "timestamp": "2026-10-29T00:00:00Z"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "attendees": [],
+      "channel": "email",
+      "contact_id": "34212b95-2e23-590a-b94f-2775cdb9d58e",
+      "direction": "inbound",
+      "response_time_hours": 5.0,
+      "signal_id": "19638425-02f5-5403-88ed-46025c1230b9",
+      "timestamp": "2026-10-29T05:00:00Z"
+    }
+  ],
+  "comms_internal": [],
+  "company": {
+    "arr_cents": 28000000,
+    "csm_owner_id": "csm-101",
+    "lifecycle_stage": "steady_state",
+    "renewal_date": "2027-01-01",
+    "status": "Active"
+  },
+  "contacts": [
+    {
+      "consent_to_contact": true,
+      "email": "alicia.fernandez@meridian-fleet.example",
+      "name": "Alicia Fernandez",
+      "role": "fleet_operations",
+      "title": "VP Fleet Ops"
+    },
+    {
+      "consent_to_contact": true,
+      "email": "james.tuttle@meridian-fleet.example",
+      "name": "James Tuttle",
+      "role": "fleet_operations",
+      "title": "Regional Fleet Manager"
+    },
+    {
+      "consent_to_contact": true,
+      "email": "karen.bright@meridian-fleet.example",
+      "name": "Karen Bright",
+      "role": "facilities",
+      "title": "Facilities Director"
+    },
+    {
+      "consent_to_contact": true,
+      "email": "rob.mcallister@meridian-fleet.example",
+      "name": "Rob McAllister",
+      "role": "finance",
+      "title": "CFO"
+    },
+    {
+      "consent_to_contact": true,
+      "email": "sarah.chen@meridian-fleet.example",
+      "name": "Sarah Chen",
+      "role": "facilities",
+      "title": "Facilities Manager"
+    }
+  ],
+  "divergences": [],
+  "entitlements": [
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "capability": "core_telematics",
+      "ends_at": null,
+      "entitled_quantity": 60,
+      "starts_at": "2025-01-01",
+      "unit": "assets"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "capability": "route_optimization",
+      "ends_at": null,
+      "entitled_quantity": 60,
+      "starts_at": "2025-01-01",
+      "unit": "assets"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "capability": "driver_coaching",
+      "ends_at": null,
+      "entitled_quantity": 55,
+      "starts_at": "2025-01-01",
+      "unit": "assets"
+    },
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "capability": "maintenance_alerts",
+      "ends_at": null,
+      "entitled_quantity": 60,
+      "starts_at": "2025-01-01",
+      "unit": "assets"
+    }
+  ],
+  "health_snapshot": {
+    "band": "green",
+    "drivers": [
+      "expansion_signal",
+      "high_usage",
+      "usage_growth"
+    ],
+    "measured_at": "2026-11-04T00:00:00Z",
+    "score": 97.7
+  },
+  "industry": "fleet_management",
+  "lifecycle_stage": "steady_state",
+  "milestones": [],
+  "open_cases": [],
+  "open_ctas": [
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "cta_id": "30f4240b-e6c6-5bd2-b7b4-42a9b8d68cc1",
+      "due_date": "2026-07-15",
+      "owner_id": "csm-101",
+      "priority": "High",
+      "reason": "Expansion opportunity - facilities department interested",
+      "status": "open"
+    }
+  ],
+  "opportunities": [
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "amount_cents": 8500000,
+      "close_date": "2026-10-15",
+      "opportunity_id": "41a2e8e0-c7b8-5574-b88c-93cac0f59b27",
+      "opportunity_type": "Expansion",
+      "stage_name": "Qualification"
+    }
+  ],
+  "priority": {
+    "factors": [
+      {
+        "config_version": "value-model-config-v1",
+        "contribution": 5,
+        "evidence": [
+          {
+            "field": "arr_cents",
+            "observed_at": "2025-01-01",
+            "source": "cs_platform",
+            "source_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7"
+          }
+        ],
+        "name": "arr_tier",
+        "rule_name": "high_arr_review_default",
+        "threshold_name": "arr_review_floor_cents",
+        "threshold_value": 15000000,
+        "value": 28000000.0
+      }
+    ],
+    "score": 5
+  },
+  "recent_usage_signals": [
+    {
+      "account_id": "47f78943-7a8a-5bf1-9eeb-df74372085c7",
+      "grain": "company",
+      "metric_name": "daily_active_assets",
+      "observed_at": "2026-11-04T00:00:00Z",
+      "signal_id": "09fba0f4-4466-5eb3-bc3c-980454402f48",
+      "source_ref": "product-telemetry:daily_active_assets",
+      "subject_id": null,
+      "unit": "assets",
+      "value": 66.0
+    }
+  ],
+  "stakeholders": [
+    {
+      "champion": true,
+      "consent_to_contact": true,
+      "contact_id": "b2d52039-fa63-5981-8b9b-e08ee50e8a14",
+      "days_since_interaction": 6,
+      "departed": false,
+      "name": "Alicia Fernandez",
+      "new_unengaged": false,
+      "relationship_type": "champion",
+      "title": "VP Fleet Ops"
+    },
+    {
+      "champion": false,
+      "consent_to_contact": true,
+      "contact_id": "eda83e0a-a86f-5963-a978-063cf7e08b72",
+      "days_since_interaction": null,
+      "departed": false,
+      "name": "James Tuttle",
+      "new_unengaged": false,
+      "relationship_type": null,
+      "title": "Regional Fleet Manager"
+    },
+    {
+      "champion": false,
+      "consent_to_contact": true,
+      "contact_id": "5201f1e5-9be6-5a77-9020-bde365511aba",
+      "days_since_interaction": null,
+      "departed": false,
+      "name": "Karen Bright",
+      "new_unengaged": false,
+      "relationship_type": null,
+      "title": "Facilities Director"
+    },
+    {
+      "champion": false,
+      "consent_to_contact": true,
+      "contact_id": "7a381458-06fa-59ab-a6f8-93b9137b06bd",
+      "days_since_interaction": null,
+      "departed": false,
+      "name": "Rob McAllister",
+      "new_unengaged": false,
+      "relationship_type": null,
+      "title": "CFO"
+    },
+    {
+      "champion": true,
+      "consent_to_contact": true,
+      "contact_id": "34212b95-2e23-590a-b94f-2775cdb9d58e",
+      "days_since_interaction": 6,
+      "departed": false,
+      "name": "Sarah Chen",
+      "new_unengaged": false,
+      "relationship_type": "champion",
+      "title": "Facilities Manager"
+    }
+  ],
+  "success_plans": [],
+  "suggested_talking_points": [
+    "arr_tier: value=28000000.00, contribution=+5 (rule: high_arr_review_default)"
+  ],
+  "trajectory": {
+    "consecutive_band": "green",
+    "consecutive_count": 5,
+    "points": [
+      {
+        "day": 0,
+        "health_band": "green",
+        "health_score": 91.0,
+        "priority_score": 5
+      },
+      {
+        "day": 30,
+        "health_band": "green",
+        "health_score": 91.0,
+        "priority_score": 5
+      },
+      {
+        "day": 60,
+        "health_band": "green",
+        "health_score": 91.0,
+        "priority_score": 5
+      },
+      {
+        "day": 90,
+        "health_band": "green",
+        "health_score": 91.0,
+        "priority_score": 5
+      },
+      {
+        "day": 120,
+        "health_band": "green",
+        "health_score": 91.0,
+        "priority_score": 5
+      }
+    ],
+    "trend": "stable",
+    "trend_velocity": 0.0
+  }
+}

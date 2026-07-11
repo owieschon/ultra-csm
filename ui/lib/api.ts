@@ -68,6 +68,30 @@ function demoPath(path: string): string {
   });
 }
 
+export interface DemoManifest {
+  day: number;
+  days?: number[];
+  account_count: number;
+  mode: string;
+}
+
+// The exported fixture window (manifest.json's `days`). The TopBar clamps
+// the day scrubber to this in demo mode so scrubbing can never land on a
+// day without a fixture. Older manifests carry only `day` — fall back to a
+// single-day window.
+export async function demoManifest(): Promise<DemoManifest | null> {
+  if (!isReadOnlyDemo) return null;
+  try {
+    const resp = await fetch(`${DEMO_API_BASE}/manifest.json`, {
+      headers: { Accept: "application/json" },
+    });
+    if (!resp.ok) return null;
+    return (await resp.json()) as DemoManifest;
+  } catch {
+    return null;
+  }
+}
+
 async function demoRequest<T>(path: string, init?: RequestInit): Promise<T> {
   const method = init?.method ?? "GET";
   const [rawPath] = path.split("?");

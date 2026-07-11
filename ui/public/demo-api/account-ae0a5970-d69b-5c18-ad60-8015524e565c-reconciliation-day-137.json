@@ -1,0 +1,176 @@
+{
+  "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
+  "candidate_divergences": [],
+  "deterministic_signals": [
+    {
+      "contribution": 20,
+      "evidence": [
+        {
+          "field": "last_interaction",
+          "observed_at": "2026-10-29T05:00:00Z",
+          "source": "crm",
+          "source_id": "fdd4645a-e0b6-53d8-ba03-249f260574d8"
+        }
+      ],
+      "name": "single_threaded_risk",
+      "origin": "deterministic",
+      "surfaced_by_lenses": [
+        "value_model",
+        "risk_lens"
+      ],
+      "value": 1.0
+    },
+    {
+      "contribution": 15,
+      "evidence": [
+        {
+          "field": "health_score",
+          "observed_at": "2026-11-05T00:00:00Z",
+          "source": "cs_platform",
+          "source_id": "ae0a5970-d69b-5c18-ad60-8015524e565c"
+        }
+      ],
+      "name": "health_yellow",
+      "origin": "deterministic",
+      "surfaced_by_lenses": [
+        "risk_lens"
+      ],
+      "value": 1.0
+    },
+    {
+      "contribution": 24,
+      "evidence": [
+        {
+          "field": "status",
+          "observed_at": "2026-06-10T09:00:00Z",
+          "source": "crm",
+          "source_id": "4e2db753-f222-5f7b-8356-0a2f59fae1e3"
+        }
+      ],
+      "name": "open_support_pressure",
+      "origin": "deterministic",
+      "surfaced_by_lenses": [
+        "risk_lens"
+      ],
+      "value": 1.0
+    },
+    {
+      "contribution": 20,
+      "evidence": [
+        {
+          "field": "target_date",
+          "observed_at": "2026-06-21",
+          "source": "cs_platform",
+          "source_id": "df3f3e70-7ed8-5d10-9b05-395fd3d1a0f1"
+        }
+      ],
+      "name": "overdue_success_plan",
+      "origin": "deterministic",
+      "surfaced_by_lenses": [
+        "risk_lens"
+      ],
+      "value": 1.0
+    },
+    {
+      "contribution": 12,
+      "evidence": [
+        {
+          "field": "active_users",
+          "observed_at": "2026-11-05T00:00:00Z",
+          "source": "cs_platform",
+          "source_id": "ae0a5970-d69b-5c18-ad60-8015524e565c"
+        }
+      ],
+      "name": "low_seat_penetration",
+      "origin": "deterministic",
+      "surfaced_by_lenses": [
+        "risk_lens"
+      ],
+      "value": 0.24
+    },
+    {
+      "contribution": 15,
+      "evidence": [
+        {
+          "field": "underused_capabilities",
+          "observed_at": "2026-11-05T00:00:00Z",
+          "source": "cs_platform",
+          "source_id": "ae0a5970-d69b-5c18-ad60-8015524e565c"
+        },
+        {
+          "field": "capability",
+          "observed_at": "2026-05-17",
+          "source": "telemetry",
+          "source_id": "ae0a5970-d69b-5c18-ad60-8015524e565c:core_telematics"
+        },
+        {
+          "field": "capability",
+          "observed_at": "2026-05-17",
+          "source": "telemetry",
+          "source_id": "ae0a5970-d69b-5c18-ad60-8015524e565c:route_optimization"
+        }
+      ],
+      "name": "feature_depth_gap",
+      "origin": "deterministic",
+      "surfaced_by_lenses": [
+        "risk_lens",
+        "expansion_lens"
+      ],
+      "value": 0.5
+    }
+  ],
+  "explanation": {
+    "disclaimer": "Model-generated explanation -- may be incomplete or mischaracterize the underlying evidence. Verify against the cited sources before acting.",
+    "evidence": [
+      {
+        "field": "last_interaction",
+        "observed_at": "2026-10-29T05:00:00Z",
+        "source": "crm",
+        "source_id": "fdd4645a-e0b6-53d8-ba03-249f260574d8"
+      },
+      {
+        "field": "health_score",
+        "observed_at": "2026-11-05T00:00:00Z",
+        "source": "cs_platform",
+        "source_id": "ae0a5970-d69b-5c18-ad60-8015524e565c"
+      },
+      {
+        "field": "status",
+        "observed_at": "2026-06-10T09:00:00Z",
+        "source": "crm",
+        "source_id": "4e2db753-f222-5f7b-8356-0a2f59fae1e3"
+      },
+      {
+        "field": "target_date",
+        "observed_at": "2026-06-21",
+        "source": "cs_platform",
+        "source_id": "df3f3e70-7ed8-5d10-9b05-395fd3d1a0f1"
+      },
+      {
+        "field": "active_users",
+        "observed_at": "2026-11-05T00:00:00Z",
+        "source": "cs_platform",
+        "source_id": "ae0a5970-d69b-5c18-ad60-8015524e565c"
+      },
+      {
+        "field": "underused_capabilities",
+        "observed_at": "2026-11-05T00:00:00Z",
+        "source": "cs_platform",
+        "source_id": "ae0a5970-d69b-5c18-ad60-8015524e565c"
+      },
+      {
+        "field": "capability",
+        "observed_at": "2026-05-17",
+        "source": "telemetry",
+        "source_id": "ae0a5970-d69b-5c18-ad60-8015524e565c:core_telematics"
+      },
+      {
+        "field": "capability",
+        "observed_at": "2026-05-17",
+        "source": "telemetry",
+        "source_id": "ae0a5970-d69b-5c18-ad60-8015524e565c:route_optimization"
+      }
+    ],
+    "text": "Fixture explanation: no live model configured."
+  }
+}

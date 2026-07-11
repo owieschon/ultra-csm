@@ -14,7 +14,7 @@ test("Evidence mapping route is present in the exported application", async ({ p
 
   expect(response?.status()).toBe(200);
   await expect(page.getByRole("heading", { name: "Evidence mapping" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Action Control" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Back to the book" })).toBeVisible();
 });
 
 test("populated Evidence mapping owns a viewport-height scroll region", async ({ page }) => {
@@ -92,6 +92,10 @@ test("versioned Action Control contract ships with the static demo", async ({ re
 test("proposal draft and governance controls are reachable without document overflow", async ({ page }) => {
   await openTrailheadDecision(page);
 
+  // The draft is the artifact being approved — it now leads the detail
+  // pane (visible without scrolling), with evidence below it.
+  await expect(page.getByText("Proposed draft", { exact: true })).toBeVisible();
+
   const detail = page.locator(".detail-scroll");
   const dimensions = await detail.evaluate((element) => ({
     clientHeight: element.clientHeight,
@@ -102,7 +106,7 @@ test("proposal draft and governance controls are reachable without document over
   await detail.evaluate((element) => {
     element.scrollTop = element.scrollHeight;
   });
-  await expect(page.getByText("Proposed draft", { exact: true })).toBeVisible();
+  await expect(page.getByText("Chosen action — and why", { exact: true })).toBeVisible();
 
   const releasePanel = page.getByRole("complementary", {
     name: "Decision controls and receipt",

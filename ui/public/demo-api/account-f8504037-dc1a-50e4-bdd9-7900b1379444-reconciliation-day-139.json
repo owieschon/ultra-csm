@@ -1,0 +1,81 @@
+{
+  "account_id": "f8504037-dc1a-50e4-bdd9-7900b1379444",
+  "candidate_divergences": [],
+  "deterministic_signals": [
+    {
+      "contribution": 30,
+      "evidence": [
+        {
+          "field": "health_score",
+          "observed_at": "2026-08-30T00:00:00Z",
+          "source": "cs_platform",
+          "source_id": "f8504037-dc1a-50e4-bdd9-7900b1379444"
+        }
+      ],
+      "name": "health_red",
+      "origin": "deterministic",
+      "surfaced_by_lenses": [
+        "risk_lens"
+      ],
+      "value": 1.0
+    },
+    {
+      "contribution": 24,
+      "evidence": [
+        {
+          "field": "status",
+          "observed_at": "2026-06-15T08:30:00Z",
+          "source": "crm",
+          "source_id": "3acf0291-5b0b-55b9-8653-d042239fcc17"
+        }
+      ],
+      "name": "open_support_pressure",
+      "origin": "deterministic",
+      "surfaced_by_lenses": [
+        "risk_lens"
+      ],
+      "value": 1.0
+    },
+    {
+      "contribution": 8,
+      "evidence": [
+        {
+          "field": "due_date",
+          "observed_at": "2026-07-01",
+          "source": "cs_platform",
+          "source_id": "751d5071-7c34-5cd1-bca9-178d0f38ad1d"
+        }
+      ],
+      "name": "open_risk_cta",
+      "origin": "deterministic",
+      "surfaced_by_lenses": [
+        "risk_lens"
+      ],
+      "value": 1.0
+    }
+  ],
+  "explanation": {
+    "disclaimer": "Model-generated explanation -- may be incomplete or mischaracterize the underlying evidence. Verify against the cited sources before acting.",
+    "evidence": [
+      {
+        "field": "health_score",
+        "observed_at": "2026-08-30T00:00:00Z",
+        "source": "cs_platform",
+        "source_id": "f8504037-dc1a-50e4-bdd9-7900b1379444"
+      },
+      {
+        "field": "status",
+        "observed_at": "2026-06-15T08:30:00Z",
+        "source": "crm",
+        "source_id": "3acf0291-5b0b-55b9-8653-d042239fcc17"
+      },
+      {
+        "field": "due_date",
+        "observed_at": "2026-07-01",
+        "source": "cs_platform",
+        "source_id": "751d5071-7c34-5cd1-bca9-178d0f38ad1d"
+      }
+    ],
+    "text": "Fixture explanation: no live model configured."
+  }
+}
