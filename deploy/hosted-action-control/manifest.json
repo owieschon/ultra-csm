@@ -1,0 +1,154 @@
+{
+  "admin_database_credentials_accepted": false,
+  "aggregate_sha256": "8925be4e4d2623a4ee85af5a5e088d92556520409b5cd93a9f9297f690d353f5",
+  "entrypoint": "app.py:app",
+  "external_effects_enabled": false,
+  "files": {
+    ".env.example": {
+      "bytes": 59,
+      "sha256": "621995f6c7f1a2e8573b18b24fed7886b38f9cef82e4623362c90abc2e6baf66"
+    },
+    ".python-version": {
+      "bytes": 5,
+      "sha256": "7b55f8e67b5623c4bef3fa691288da9437d79d3aba156de48d481db32ac7d16d"
+    },
+    ".vercelignore": {
+      "bytes": 35,
+      "sha256": "dcaae497d6a19de5097a648a60cd1f4702d4ab62c45dbe185d90d400b45927e7"
+    },
+    "app.py": {
+      "bytes": 637,
+      "sha256": "f2b1ab9555a82a204f88c4a312b2659ef99c7f613959d3921c91112751445649"
+    },
+    "migrations/0001_schema.sql": {
+      "bytes": 7858,
+      "sha256": "f12c4342da13c14dc708578ce716ed7b5edade8e8eca6f4bbf5fee24fe5d3d2e"
+    },
+    "migrations/0002_rls.sql": {
+      "bytes": 2313,
+      "sha256": "c127aa5b2166c45c65260ccacdbd08621cb220b751f6e7cb17ecacbb87bada3d"
+    },
+    "migrations/0003_provenance.sql": {
+      "bytes": 3517,
+      "sha256": "dbc9a6cbbb644613885e0e3eb84fe4a816eeecdc474aba62f253a6c444f91a31"
+    },
+    "migrations/0004_governance.sql": {
+      "bytes": 10414,
+      "sha256": "f0b5355d5a494306a35bbc41a8a9f2a104493d352dbe876871af8dcde7504d72"
+    },
+    "migrations/0005_gate_human_ness.sql": {
+      "bytes": 3067,
+      "sha256": "f73353c10e6d12f06329f2a816080dcb1306e7a830893a0f82f2fdadd7ec172f"
+    },
+    "migrations/0005_internal_notes.sql": {
+      "bytes": 2419,
+      "sha256": "b0e1cb569dfd3122c5eff24908a5ae3fd621a8cb29df49e7da32fe226bec8c35"
+    },
+    "migrations/0006_comms_source_mappings.sql": {
+      "bytes": 2668,
+      "sha256": "6f542fb8f8a4ec2da3d266c17414796a0392a1c9c4034b8b80cf3ced1e2f9da0"
+    },
+    "migrations/0007_internal_note_message_timestamp.sql": {
+      "bytes": 804,
+      "sha256": "a00fed276ec99d45d8784df312b7a9738bd38ea2d03ec289b3275eb70bd98ffb"
+    },
+    "migrations/0008_communication_signals.sql": {
+      "bytes": 2741,
+      "sha256": "adf3b029b9605ab4e8c603b24d6a0acfdaa01ffa5e6b1e434ad2b8576ba9e075"
+    },
+    "migrations/0009_safety_backstops.sql": {
+      "bytes": 5930,
+      "sha256": "004ca011b061284a4e5e3abbdd7c6709b0a2235ea2e3fa236ccc8275826e188e"
+    },
+    "migrations/0010_audit_event_log.sql": {
+      "bytes": 1590,
+      "sha256": "a910802051144971756725afffdb0e9be0d44c9f2187d0b52bbf526fdfa899da"
+    },
+    "migrations/0011_action_gate_integrity.sql": {
+      "bytes": 1986,
+      "sha256": "ec7414f4e8a8d35e27c20fe73dff91130e3f74960997bb2954f3b9ae95f27947"
+    },
+    "migrations/0011_workflow_packet.sql": {
+      "bytes": 1183,
+      "sha256": "54b1d99891e27e63809035fd60f23c039a5b9b3a870c3ce5da9711d31748d026"
+    },
+    "requirements.txt": {
+      "bytes": 230,
+      "sha256": "32eec24836b90a5b3ca9a88ddf8c912637db162e867d8d22db8c5fd4eed351cd"
+    },
+    "ultra_csm/__init__.py": {
+      "bytes": 112,
+      "sha256": "a2f57e9e3ab05bcf3f951e1b95152caa3d1ec099a0dda85f84af16792840da38"
+    },
+    "ultra_csm/action_control_contract.py": {
+      "bytes": 10311,
+      "sha256": "3daff710570e9442520c12e471a39526bdcd6909f27b541bf492268abd1e86c3"
+    },
+    "ultra_csm/action_control_sandbox.py": {
+      "bytes": 19027,
+      "sha256": "23d6fd3490136f8683e5dea527a198a4a5884690439db0f163815c728d9d5c44"
+    },
+    "ultra_csm/action_control_sandbox_api.py": {
+      "bytes": 5613,
+      "sha256": "c8bbc97c7fa727dcd9a6374a24bb6f656ec8fca820c39ddc52de8ef89113f45a"
+    },
+    "ultra_csm/action_control_sandbox_committer.py": {
+      "bytes": 9159,
+      "sha256": "b6287d9cb758cf9a1a496a989179504cb328d08c29300174c2ec7599ed3cdb49"
+    },
+    "ultra_csm/action_control_sandbox_contract.py": {
+      "bytes": 10016,
+      "sha256": "94ec9c1228f1614dfbb4127b96fb847e74e75e5547e940465271665ec4d089fa"
+    },
+    "ultra_csm/action_control_sandbox_fixture.py": {
+      "bytes": 2876,
+      "sha256": "e1129eaf1caf31200a99b3d5432bb2e226aa5235c11b2d83538ea9f6c24919af"
+    },
+    "ultra_csm/action_control_sandbox_http.py": {
+      "bytes": 1999,
+      "sha256": "4b7fb2133c83ec3d3bfe4f1838eff772f3b0e98afe4d378ff7d489b792c5ef89"
+    },
+    "ultra_csm/action_control_sandbox_runtime.py": {
+      "bytes": 960,
+      "sha256": "6f8fa050c1034438892d27c894699cae09a5db0185abeeac1ce206b4bcb66762"
+    },
+    "ultra_csm/governance/__init__.py": {
+      "bytes": 1007,
+      "sha256": "597fbf6e08d2e5515562394c8e50629defbcf2a36f24ae9d64d0ee251e654778"
+    },
+    "ultra_csm/governance/authorizer.py": {
+      "bytes": 4764,
+      "sha256": "ab0ba502cc5425328c99b85552069359445576e61a063472f533f228f8861ca0"
+    },
+    "ultra_csm/governance/csm_actions.py": {
+      "bytes": 6008,
+      "sha256": "4c7fde17dced88ff7ce09e872257f8ba563755b1f2cf6761ad7c67e0ca8838f8"
+    },
+    "ultra_csm/governance/gate.py": {
+      "bytes": 28773,
+      "sha256": "f78feabe976953a70edfb04fba97f6dcfc1b8a0bcacee70ecf8aeae0b8be7dbe"
+    },
+    "ultra_csm/platform/__init__.py": {
+      "bytes": 79,
+      "sha256": "61ab29e5ba06b62c273469a7ccb609da6b6127dd6009fece643a9ed0a406dcdf"
+    },
+    "ultra_csm/platform/db.py": {
+      "bytes": 5559,
+      "sha256": "c372266a73f11ea9374e2344cfec221998ea64740d598638772d2c492ab21677"
+    },
+    "ultra_csm/platform/seed.py": {
+      "bytes": 2524,
+      "sha256": "1981b6b09b3df4bfa35b14785850b2709690e27bc252eb24428e4952332084c5"
+    },
+    "vercel.json": {
+      "bytes": 226,
+      "sha256": "f2ea8df0e5d020f400e22264ca276a5a0d7a09925dc2bfdf1dffa1e06f505496"
+    }
+  },
+  "python": "3.12",
+  "runtime_database_env": "ULTRA_CSM_DATABASE_URL",
+  "schema_version": "ultra.hosted-action-control-bundle.v1",
+  "source_budget_bytes": 524288,
+  "source_bytes": 156469,
+  "vercel_python_uncompressed_limit_bytes": 524288000
+}

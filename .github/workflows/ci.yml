@@ -68,6 +68,9 @@ jobs:
       - name: Hosted read-only fixture drift gate
         run: make hosted-readonly-demo-check
 
+      - name: Hosted Action Control deployment bundle gate
+        run: make hosted-action-control-deploy-check
+
       - name: Hygiene scan
         run: make hygiene
 

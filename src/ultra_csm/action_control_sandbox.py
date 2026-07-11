@@ -14,13 +14,9 @@ from ultra_csm.action_control_contract import (
     TAMPER_REFUSAL_CODE,
     TAMPER_REFUSAL_REASON,
 )
-from ultra_csm.action_control_demo import (
-    _ACCOUNT_ID,
-    _CONTACT_ID,
-    _EVIDENCE_IDS,
-    _PROPOSAL_ID,
-    _TENANT_ID,
-    _initialize_demo_principals,
+from ultra_csm.action_control_sandbox_committer import (
+    load_sandbox_proposal,
+    RollbackSandboxCommitter,
 )
 from ultra_csm.action_control_sandbox_contract import (
     ActionControlSandboxRequest,
@@ -36,7 +32,14 @@ from ultra_csm.action_control_sandbox_contract import (
     SandboxScenarioView,
     SandboxTamperRefusalView,
 )
-from ultra_csm.committers import SimOutboundCommitter, load_action_proposal
+from ultra_csm.action_control_sandbox_fixture import (
+    ACCOUNT_ID,
+    CONTACT_ID,
+    EVIDENCE_IDS,
+    initialize_sandbox_principals,
+    PROPOSAL_ID,
+    TENANT_ID,
+)
 from ultra_csm.governance import (
     ActionGate,
     ActionProposal,
@@ -63,12 +66,12 @@ _ISOLATION = SandboxIsolationView(
 
 def _base_payload() -> dict:
     return {
-        "account_id": _ACCOUNT_ID,
+        "account_id": ACCOUNT_ID,
         "account_name": "Trailhead Logistics",
-        "contact_id": _CONTACT_ID,
+        "contact_id": CONTACT_ID,
         "contact_email": _CONTACT_EMAIL,
         "body": _ORIGINAL_DRAFT,
-        "evidence_ids": list(_EVIDENCE_IDS),
+        "evidence_ids": list(EVIDENCE_IDS),
     }
 
 
@@ -150,19 +153,19 @@ def _render(
         "outbound_effects_enabled": False,
         "scenario": SandboxScenarioView(
             scenario_id=SCENARIO_ID,
-            account_id=_ACCOUNT_ID,
+            account_id=ACCOUNT_ID,
             account_name="Trailhead Logistics",
             contact_name="Vanessa Torres",
             recipient=_CONTACT_EMAIL,
             original_draft=_ORIGINAL_DRAFT,
             evidence=(
                 SandboxEvidenceView(
-                    evidence_id=_EVIDENCE_IDS[0],
+                    evidence_id=EVIDENCE_IDS[0],
                     label="Activation gap remains unresolved",
                     provenance="synthetic_fixture",
                 ),
                 SandboxEvidenceView(
-                    evidence_id=_EVIDENCE_IDS[1],
+                    evidence_id=EVIDENCE_IDS[1],
                     label="Success plan is overdue",
                     provenance="synthetic_fixture",
                 ),
@@ -202,24 +205,24 @@ def evaluate_action_control_sandbox(
         # V1 uses fixed deterministic fixture IDs. Serialize these short demo
         # transactions so concurrent no-login runs cannot contend on those rows.
         conn.execute("SELECT pg_advisory_xact_lock(hashtext('action-control-sandbox-v1'))")
-        orchestrator, human = _initialize_demo_principals(conn)
+        orchestrator, human = initialize_sandbox_principals(conn)
         gate = ActionGate(
             conn,
-            tenant_id=_TENANT_ID,
+            tenant_id=TENANT_ID,
             actor_principal_id=orchestrator,
             verdict_source=FixtureVerdictSource(),
             now=SEED_CLOCK,
         )
         gate.record_outreach_contact_ref(
-            account_ref=_ACCOUNT_ID,
-            contact_ref=_CONTACT_ID,
+            account_ref=ACCOUNT_ID,
+            contact_ref=CONTACT_ID,
             email=_CONTACT_EMAIL,
             name="Vanessa Torres",
             consent=True,
             cause_ref=f"sandbox:{request.run_id}:consent",
         )
         proposal = gate.propose(
-            proposal_id=_PROPOSAL_ID,
+            proposal_id=PROPOSAL_ID,
             intent="agent1_time_to_value_sweep",
             action="draft_customer_outreach",
             payload=_base_payload(),
@@ -246,7 +249,7 @@ def evaluate_action_control_sandbox(
 
         with tempfile.TemporaryDirectory(prefix="ultra-action-control-sandbox-") as raw_dir:
             state_dir = Path(raw_dir)
-            committer = SimOutboundCommitter(
+            committer = RollbackSandboxCommitter(
                 gate,
                 state_dir=state_dir,
                 target_ref="simulated_outbox",
@@ -292,9 +295,9 @@ def evaluate_action_control_sandbox(
                         ),
                         cause_ref=f"sandbox:{request.run_id}:{command.type}",
                     )
-                    proposal = load_action_proposal(
+                    proposal = load_sandbox_proposal(
                         conn,
-                        tenant_id=_TENANT_ID,
+                        tenant_id=TENANT_ID,
                         actor_principal_id=orchestrator,
                         proposal_id=proposal.proposal_id,
                         now=SEED_CLOCK,
