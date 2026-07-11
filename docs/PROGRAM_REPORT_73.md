@@ -98,8 +98,7 @@ shape-variance sample (11 accounts with qualifying evidence, out of 181, at
 one `as_of` date) is real and non-trivial but modest — sufficient to prove
 nonzero variance exists (the DoD's actual bar), not to characterize its
 full distribution; a larger sample or multiple `as_of` dates would
-strengthen this further if it becomes load-bearing for a specific claim
-later.
+strengthen this further if a future claim comes to depend on it.
 
 ## Final verification table
 
