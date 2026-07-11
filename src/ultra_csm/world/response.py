@@ -13,23 +13,37 @@ producing uniform noise dressed up as a response.
 
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass
+from functools import lru_cache
+from pathlib import Path
 
 from ultra_csm.world.generator import LatentAccountTruth, _fraction
 
-# D1: reply-probability bands keyed to the champion_engagement values
-# generator.py actually emits (bible section for this lands in Phase 2)
-# -- {engaged, quiet} on the anchor path, {quiet, high, medium} on the
-# generated path. An unrecognized value falls back to the "quiet" band
-# (0.1) rather than raising, since new latent states should degrade to the
-# most conservative response rather than crash a live sweep.
-ENGAGEMENT_REPLY_PROBABILITY = {
-    "engaged": 0.8,
-    "high": 0.6,
-    "medium": 0.4,
-    "quiet": 0.1,
-}
-_DEFAULT_REPLY_PROBABILITY = ENGAGEMENT_REPLY_PROBABILITY["quiet"]
+# Ratified in knowledge/world_response_config.json and
+# docs/SYNTHETIC_UNIVERSE_BIBLE.md's "World response" section -- a config
+# change is a bible change first. This module reads the config as the
+# single source of truth (no hardcoded duplicate of the bands/mapping) so
+# the two can never silently drift apart.
+CONFIG_PATH = (
+    Path(__file__).resolve().parents[3] / "knowledge" / "world_response_config.json"
+)
+
+
+@lru_cache(maxsize=1)
+def _config() -> dict:
+    return json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
+
+
+def _reply_probability(champion_engagement: str) -> float:
+    cfg = _config()
+    bands = cfg["engagement_reply_probability"]
+    default_band = cfg["default_reply_probability_band"]
+    return bands.get(champion_engagement, bands[default_band])
+
+
+def _is_customer_facing(action_id: str) -> bool:
+    return action_id in _config()["customer_facing_actions"]
 
 
 @dataclass(frozen=True)
@@ -52,14 +66,17 @@ def respond(
 ) -> ObservableEvent | None:
     """Seeded-deterministic observable response to one agent action.
 
-    Same (seed, account, action, day) always returns the same event. The
-    reply probability is conditioned on latent_state.champion_engagement but
-    that field, and every other latent field, never appears in the returned
+    Returns None for actions in the internal/no-response class (config:
+    knowledge/world_response_config.json) -- a customer never sees them, so
+    there is nothing to observe. For customer-facing actions, same
+    (seed, account, action, day) always returns the same event; the reply
+    probability is conditioned on latent_state.champion_engagement but that
+    field, and every other latent field, never appears in the returned
     event.
     """
-    probability = ENGAGEMENT_REPLY_PROBABILITY.get(
-        latent_state.champion_engagement, _DEFAULT_REPLY_PROBABILITY
-    )
+    if not _is_customer_facing(action_id):
+        return None
+    probability = _reply_probability(latent_state.champion_engagement)
     roll = _fraction(
         world_seed,
         0,

@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "pack_version": "world-response-config-v1",
+  "doc_type": "world_response_config",
+  "summary": "Reply-probability bands and the action-to-response-class mapping for src/ultra_csm/world/response.py. Ratified alongside docs/SYNTHETIC_UNIVERSE_BIBLE.md's 'World response' section -- the two must stay in sync; a config change is a bible change first.",
+  "engagement_reply_probability": {
+    "engaged": 0.8,
+    "high": 0.6,
+    "medium": 0.4,
+    "quiet": 0.1
+  },
+  "default_reply_probability_band": "quiet",
+  "customer_facing_actions": [
+    "draft_customer_outreach",
+    "initiate_customer_call",
+    "campaign_enroll",
+    "cohort_action"
+  ],
+  "internal_no_response_actions": [
+    "recommend_next_best_action",
+    "log_crm_activity",
+    "update_cs_platform_record",
+    "edit_success_plan",
+    "content_route"
+  ],
+  "provenance": "authored for MP-W1R (F2R Measured Quarter runway)",
+  "review_status": "draft",
+  "as_of": "2026-07-11"
+}
