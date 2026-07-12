@@ -7,9 +7,13 @@
 - [`READING_PATH.md`](READING_PATH.md) - representative input-to-receipt vertical slice.
 - [`LIMITS.md`](LIMITS.md) - material boundaries and their evidence.
 - [`DEPLOYMENT_READINESS_PREREGISTRATION.md`](DEPLOYMENT_READINESS_PREREGISTRATION.md) -
-  draft claim boundary, hazards, decision rules, and reporting contract for the
-  development-evidence readiness assessment; no measurement is governed until
-  its version is pinned in a clean receipt.
+  frozen claim boundary, hazards, decision rules, and reporting contract for the
+  development-evidence readiness assessment; the governed receipt pins its
+  clean version.
+- [`DEPLOYMENT_READINESS_CASE_STUDY.md`](DEPLOYMENT_READINESS_CASE_STUDY.md) -
+  verdict-first development-evidence assessment and integrity receipts.
+- [`DEPLOYMENT_READINESS_SCORECARD.md`](DEPLOYMENT_READINESS_SCORECARD.md) -
+  one-page gate table; the human review-time gate remains pending.
 - [`../SECURITY.md`](../SECURITY.md) - canonical security posture.
 
 ## Decisive proof
