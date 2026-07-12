@@ -108,8 +108,8 @@ def generate_world(config: WorldConfig) -> WorldBuildResult:
     generated_needed = max(0, config.scale - len(anchors.accounts))
     generated = _generate_accounts(config, start_index=0, count=generated_needed)
     merged = _merge_fixture_data(anchors, generated)
-    latent = _latent_truth_for_world(config, merged, anchor_count=len(anchors.accounts))
-    decisions = surface_world(merged, latent)
+    latent = _latent_truth_for_world(config, merged)
+    decisions = surface_world(merged)
     return WorldBuildResult(
         config=config,
         data=merged,
@@ -126,11 +126,10 @@ def build_data_plane(data: FixtureCustomerData) -> CustomerDataPlane:
     )
 
 
-def surface_world(
-    data: FixtureCustomerData,
-    latent_truth: tuple[LatentAccountTruth, ...],
-) -> tuple[SurfaceDecision, ...]:
-    latent_by_id = {row.account_id: row for row in latent_truth}
+def surface_world(data: FixtureCustomerData) -> tuple[SurfaceDecision, ...]:
+    """Surfacing decisions computed from OBSERVABLE data only. Takes no latent
+    truth by construction, so a surface decision cannot leak it -- the
+    knowability property the audit now also checks semantically."""
     health_by_id = {row.account_id: row for row in data.health_scores}
     adoption_by_id = {row.account_id: row for row in data.adoption_summaries}
     cases_by_id: dict[str, list[CRMCase]] = {}
@@ -142,12 +141,14 @@ def surface_world(
         usage_by_id.setdefault(signal.account_id, []).append(signal)
     for milestone in data.milestones:
         milestones_by_id.setdefault(milestone.account_id, []).append(milestone)
+    emails_by_id: dict[str, list[str]] = {}
+    for contact in data.contacts:
+        emails_by_id.setdefault(contact.account_id, []).append(contact.email)
 
     decisions: list[SurfaceDecision] = []
     for account in sorted(data.accounts, key=lambda row: row.account_id):
         health = health_by_id[account.account_id]
         adoption = adoption_by_id[account.account_id]
-        latent = latent_by_id[account.account_id]
         cases = tuple(cases_by_id.get(account.account_id, ()))
         usage = tuple(usage_by_id.get(account.account_id, ()))
         milestones = tuple(milestones_by_id.get(account.account_id, ()))
@@ -159,7 +160,9 @@ def surface_world(
             or any(case.priority.lower() == "high" and case.closed_at is None for case in cases)
             or any(milestone.achieved_at is None for milestone in milestones)
         )
-        abstained = latent.latent_label == "conflicted" and not surfaced
+        emails = emails_by_id.get(account.account_id, ())
+        has_identity_conflict = len(emails) != len(set(emails))
+        abstained = has_identity_conflict and not surfaced
         if surfaced:
             if health.band == "red":
                 disposition = "escalate"
@@ -358,7 +361,7 @@ def _generate_accounts(
                 account_id=account_id,
                 score=health_score,
                 band=health_band,
-                drivers=tuple(latent["causal_chain"][:3]),
+                drivers=_drivers_for_band(health_band),
                 measured_at=f"{SEED_DATE}T00:00:00Z",
             )
         )
@@ -452,7 +455,7 @@ def _generate_accounts(
                 CTA(
                     cta_id=det_id("world-cta", account_id),
                     account_id=account_id,
-                    reason="Doomed latent trajectory surfaced",
+                    reason="Red health with open high-priority blocker",
                     priority="High",
                     status="open",
                     due_date="2026-06-28",
@@ -490,17 +493,31 @@ def _generate_accounts(
 def _latent_truth_for_world(
     config: WorldConfig,
     data: FixtureCustomerData,
-    *,
-    anchor_count: int,
 ) -> tuple[LatentAccountTruth, ...]:
     base_book = build_synthetic_book()
     base_ids = {account.account_id for account in base_book.accounts}
     simulated = simulate_data(base_book, day=180)
     health_by_id = {row.account_id: row for row in data.health_scores}
+
+    # Single source of truth for the latent index each account was generated
+    # at. A generated account's id is det_id("world-account", seed, gen_index),
+    # so the generation index is recoverable from identity -- recording latent
+    # at that SAME index makes recorded truth match the state that produced the
+    # observables. Anchors (fixture-book accounts) have no generation index, so
+    # they get a stable index past the generated range, keyed by fixture-book
+    # position -- NOT by account_id sort order, which was the F1 bug.
+    generated_count = sum(1 for row in data.accounts if row.account_id not in base_ids)
+    latent_index_by_id: dict[str, int] = {
+        det_id("world-account", config.seed, i): i for i in range(generated_count)
+    }
+    for book_pos, book_account in enumerate(base_book.accounts):
+        latent_index_by_id.setdefault(book_account.account_id, generated_count + book_pos)
+
     latent_rows: list[LatentAccountTruth] = []
-    for index, account in enumerate(sorted(data.accounts, key=lambda row: row.account_id)):
-        anchor = index < anchor_count and account.account_id in base_ids
-        if anchor and account.account_id in simulated.accounts:
+    for account in sorted(data.accounts, key=lambda row: row.account_id):
+        latent_index = latent_index_by_id[account.account_id]
+        anchor = account.account_id in base_ids and account.account_id in simulated.accounts
+        if anchor:
             deep = simulated.accounts[account.account_id]
             doomed = (
                 not deep.champion_active
@@ -514,7 +531,7 @@ def _latent_truth_for_world(
             corruption_flags: tuple[str, ...] = ()
             causal_chain = _anchor_causal_chain(health_by_id[account.account_id])
         else:
-            latent = _latent_tuple(config, max(0, index - anchor_count))
+            latent = _latent_tuple(config, latent_index)
             doomed = latent["doomed"]
             thriving = latent["thriving"]
             champion_engagement = latent["champion_engagement"]
@@ -545,8 +562,8 @@ def _latent_truth_for_world(
                 corruption_flags=tuple(corruption_flags),
                 causal_chain=tuple(causal_chain),
                 observed_day=180 if anchor else 0,
-                data_quality_flags=_data_quality_flags(config, index),
-                latent_outcome=_latent_outcome(config, index, doomed=doomed, thriving=thriving),
+                data_quality_flags=_data_quality_flags(config, latent_index),
+                latent_outcome=_latent_outcome(config, latent_index, doomed=doomed, thriving=thriving),
             )
         )
     return tuple(latent_rows)
@@ -654,12 +671,19 @@ def _serialize_fixture_data(data: FixtureCustomerData) -> dict[str, Any]:
     }
 
 
-def _anchor_causal_chain(health: HealthScore) -> tuple[str, ...]:
-    if health.band == "red":
+def _drivers_for_band(band: str) -> tuple[str, ...]:
+    """Health drivers derived from the OBSERVABLE band -- never from latent
+    truth. Used for both generated and anchor accounts so an agent reading
+    health.drivers learns nothing it could not compute from the band itself."""
+    if band == "red":
         return ("health_red", "usage_decline", "support_pressure")
-    if health.band == "yellow":
+    if band == "yellow":
         return ("slow_activation", "partial_adoption", "routine_friction")
     return ("healthy_usage", "stable_contacts", "base_rate_boring")
+
+
+def _anchor_causal_chain(health: HealthScore) -> tuple[str, ...]:
+    return _drivers_for_band(health.band)
 
 
 def _surface_evidence_ids(
