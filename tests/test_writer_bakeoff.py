@@ -9,8 +9,10 @@ import pytest
 from eval.writer_bakeoff import (
     GATED_DIMENSIONS,
     REPORTED_NOT_GATED,
+    CheckpointProvenanceError,
     Scenario,
     _aggregate_arm,
+    _run_provenance,
     _telemetry_from_draws,
     build_scenario_set,
     run_arm,
@@ -302,7 +304,14 @@ def test_run_arm_telemetry_survives_from_checkpoint_alone_after_a_simulated_resu
         }
         for i in range(3)
     ]
-    checkpoint.write_text(json.dumps({"draws": prewritten_draws}))
+    checkpoint.write_text(
+        json.dumps(
+            {
+                "provenance": _run_provenance("claude-haiku-4-5", 3, scenarios),
+                "draws": prewritten_draws,
+            }
+        )
+    )
 
     import eval.writer_bakeoff as bakeoff_mod
 
@@ -320,3 +329,68 @@ def test_run_arm_telemetry_survives_from_checkpoint_alone_after_a_simulated_resu
     assert arm["telemetry"]["coverage"] == 1.0
     assert arm["telemetry"]["total_input_tokens"] == 300
     assert arm["telemetry"]["total_cost_usd"] == pytest.approx(0.003)
+
+
+def test_resume_refuses_when_scenario_content_changed(tmp_path):
+    """report 76 finding D: a checkpoint whose scenarios_hash no longer matches
+    (e.g. the P1 world fix changed request content while ids stayed stable)
+    must refuse to resume rather than return stale draws."""
+    scenarios = build_scenario_set(11)[:1]
+    checkpoint = tmp_path / "checkpoint.json"
+    stale = _run_provenance("claude-haiku-4-5", 3, scenarios)
+    stale["scenarios_hash"] = "0" * 64  # simulate pre-fix world content
+    checkpoint.write_text(json.dumps({"provenance": stale, "draws": []}))
+
+    import eval.writer_bakeoff as bakeoff_mod
+
+    original_judge_cls = bakeoff_mod.AnthropicQualityJudge
+    bakeoff_mod.AnthropicQualityJudge = lambda **_: object()
+    try:
+        with pytest.raises(CheckpointProvenanceError, match="scenarios_hash"):
+            run_arm("claude-haiku-4-5", scenarios, pass_k=3, checkpoint_path=checkpoint)
+    finally:
+        bakeoff_mod.AnthropicQualityJudge = original_judge_cls
+
+
+def test_resume_refuses_legacy_checkpoint_without_provenance(tmp_path):
+    scenarios = build_scenario_set(11)[:1]
+    checkpoint = tmp_path / "checkpoint.json"
+    checkpoint.write_text(json.dumps({"draws": []}))  # pre-guard format
+
+    import eval.writer_bakeoff as bakeoff_mod
+
+    original_judge_cls = bakeoff_mod.AnthropicQualityJudge
+    bakeoff_mod.AnthropicQualityJudge = lambda **_: object()
+    try:
+        with pytest.raises(CheckpointProvenanceError, match="predates provenance"):
+            run_arm("claude-haiku-4-5", scenarios, pass_k=3, checkpoint_path=checkpoint)
+    finally:
+        bakeoff_mod.AnthropicQualityJudge = original_judge_cls
+
+
+def test_aggregate_arm_drops_orphan_draws():
+    """A draw whose (scenario_id, draw_index) is outside the current scenario
+    set x pass_k must not be counted."""
+    scenarios = build_scenario_set(11)[:1]
+    passing = {dim: 3 for dim in (*GATED_DIMENSIONS, *REPORTED_NOT_GATED)}
+
+    def draw(scenario_id, di):
+        return {
+            "scenario_id": scenario_id,
+            "family": "x",
+            "draw_index": di,
+            "contract_ok": True,
+            "contract_error": None,
+            "scores": passing,
+            "gated_pass": True,
+            "input_tokens": 1,
+            "output_tokens": 1,
+            "cost_usd": 0.0,
+            "latency_ms": 1.0,
+        }
+
+    valid = [draw(scenarios[0].scenario_id, i) for i in range(3)]
+    orphans = [draw(scenarios[0].scenario_id, 9), draw("ghost-scenario", 0)]
+    arm = _aggregate_arm("claude-haiku-4-5", scenarios, valid + orphans, pass_k=3)
+
+    assert arm["n_draws"] == 3  # orphans excluded
