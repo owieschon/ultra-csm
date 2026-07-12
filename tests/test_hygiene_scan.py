@@ -35,3 +35,25 @@ def test_hygiene_scan_rejects_legacy_paths(tmp_path):
     legacy.write_text(f'OK = "{legacy_words}"\n')
 
     assert scan(("eval",), root=tmp_path)
+
+
+def test_hygiene_scan_rejects_backstage_delivery_ceremony(tmp_path):
+    probe = tmp_path / "docs" / "_probe.md"
+    probe.parent.mkdir(parents=True)
+    backstage_phrases = " | ".join(
+        (
+            "live " + "application",
+            "target-" + "company brief",
+            "publication " + "window",
+        )
+    )
+    probe.write_text(backstage_phrases + "\n")
+
+    findings = scan(("docs",), root=tmp_path)
+
+    expected = {
+        "live " + "application",
+        "target-" + "company brief",
+        "publication " + "window",
+    }
+    assert {f.match.lower() for f in findings if f.kind == "meta-residue"} == expected
