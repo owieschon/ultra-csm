@@ -8,12 +8,18 @@
   },
   "independence_attestation": "Reviewer reports sequential review against the frozen checklist without consulting the machine verdict.",
   "judgment_result": "COMPLETE_SINGLE_REVIEWER_EXPLORATORY_EVIDENCE",
-  "max_reported_seconds": 240,
-  "median_reported_seconds": 182.5,
-  "o1_result": "INCONCLUSIVE",
-  "o1_rationale": "The reported durations satisfy the numerical limits but were modeled rather than measured as wall-clock human review time. They therefore cannot establish the preregistered human-effort endpoint.",
+  "estimated_full_packet_minutes_range": [
+    25,
+    40
+  ],
+  "estimated_typical_minutes_per_output_range": [
+    2,
+    4
+  ],
+  "o1_result": "PLAUSIBLE_BUT_UNMEASURED",
+  "o1_rationale": "The qualitative review is complete and the complexity-based planning ranges sit within the operating envelope, but no wall-clock measurements were taken. The ranges support plausibility and do not establish the preregistered timing endpoint.",
   "release_approval": false,
-  "required_next_action": "Repeat the frozen ten-row review with observed wall-clock timing, preserving the existing qualitative judgments as a separate exploratory review.",
+  "required_next_action": "Complete a wall-clock-timed review of the frozen ten rows before claiming that O1 passed; preserve this qualitative review as exploratory evidence.",
   "timing_thresholds_seconds": {
     "maximum_per_output": 600,
     "median": 300
