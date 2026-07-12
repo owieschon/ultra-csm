@@ -1,8 +1,20 @@
 # Deployment-Readiness Preregistration
 
-Status: **DRAFT — NO MEASUREMENT IS GOVERNED BY THIS VERSION**
+Status: **FROZEN — GOVERNED OUTPUTS MUST BIND THIS VERSION**
 
 Registration id: `readiness-dev-v1`
+
+Frozen input receipts:
+
+- Manifest SHA-256: `0175d447dc424e5d8339a5636a07cd11c06bf4426a630a608fb025192add78b1`
+- Scorer SHA-256: `374019de85ac0975a5739e3cc698b24b158b4094ec360cf30a0217db8fd584a6`
+- Tests SHA-256: `22b8019228520c6583abe0e92eecb52088a6fb4919456d014520d05cacac5352`
+- Scenario payload SHA-256: `b4725fd156412524872d9206f836f7efc92cd4841b899323fd4e1ea92397172d`
+
+The Q3 and O1 policy rationales below were drafted by the executor under the
+owner's 2026-07-12 instruction to plan and execute autonomously. This records
+delegated authorship; it does not represent the executor as the human reviewer
+or final release approver.
 
 This document defines the claim boundary, evaluation conditions, decision rules,
 and reporting obligations for a development-evidence readiness assessment. A
