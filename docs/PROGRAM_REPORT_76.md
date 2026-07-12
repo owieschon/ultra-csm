@@ -262,34 +262,75 @@ journal.
 4. Agent retry-on-rejection is an unmodeled treatment component (folded to C).
 5. Legal/residue on the publication track (cluster G).
 
-## Owner asks (this report)
+## Owner asks (this report) — RATIFIED 2026-07-11
 
-- **A (design fork, highest value):** add a gates-only third arm (or 2x2) to
-  isolate the marginal value of human QA sampling from free automated gates —
-  or accept the weaker "governance vs nothing" claim.
-- **B (pre-freeze, power):** activate the three inert `WorldConfig` dirty-data
-  rates into the observable path before freeze — or accept a low-power
-  confirmatory tier.
-- **C (measurement):** commit to a named second human labeler + pilot, or
-  pre-commit the single-labeler fallback wording now.
-- **D (continuity):** ratify an owner-unavailability pause policy.
-- **E (scope):** approve adding the paired per-seed power function, W3 +
-  graduation-gate build, and the residue/license review to the plan; approve
-  cutting the three lowest-value protocol items (R-F, I-7 midpoint, R-E
-  shocks).
-- **F (disposition):** confirm the FOLD items may be encoded into the
-  re-emitted dispatches without further per-item approval (they are corrective,
-  not forks); DECIDE items wait on A-E.
+The three design forks (A/B/C) were decided on the "most rigorous that stays
+powered / highest chance of a substantive result" basis; D/E/F take the
+recommended defaults absent objection. This section is the ratified design
+basis the stage-3 dispatch re-emission builds to.
+
+- **A (design — RATIFIED: three-arm).** Arms are `control` / `gates_only` /
+  `governed`. Primary contrast `governed − gates_only` = the marginal value of
+  human QA sampling over near-zero-cost automated gates (the substantive,
+  non-obvious result); secondary `gates_only − control` = automated-gate
+  effect. Rejected: two-arm (can only claim "governance vs nothing," a-priori
+  expected) and 2×2 (two sampler arms exceed the single-owner verdict-minute
+  budget; an underpowered 2×2 is less rigorous than a powered 3-arm). Cost vs
+  the old two-arm design: +1 arm of `gates_only`, which consumes ZERO owner
+  verdict-minutes, so the binding resource is unchanged. Downstream folds:
+  the two pre-registered contrasts require an alpha-allocation rule in the
+  prereg (P2.5 extended); the per-seed paired analysis now spans three arms
+  with `governed − gates_only` as the paired primary delta.
+- **B (world difficulty — RATIFIED: activate + calibrate before freeze).**
+  Wire the three declared-but-inert `WorldConfig` rates (`field_missingness`,
+  `stale_observation`, `contradictory_source`) into the agent-observable
+  request-build path, and calibrate them at shakedown to a PRE-REGISTERED
+  target defect prevalence (working target ~15–20%, final value locked at
+  stage 6 from shakedown measurement). Difficulty becomes a committed design
+  parameter, not an accident. Must land before the P2.1 freeze (I-3 burns
+  holdout seeds on any post-freeze change). No ruler touched. This is the
+  power fix (est. ~3.4×) and the counter to the deck-stacking-toward-null risk.
+- **C (validity chain — RATIFIED: human-free primary, labeler as optional
+  upgrade).** The judge-validity chain does NOT gate on a scarce second human
+  labeler (a dependency unmet in reports 65 and 68). Primary inter-rater
+  evidence: cross-family judge agreement (real inter-rater reliability, no
+  scarce human), with a pinned agreement threshold and a pre-committed
+  headline-consequence rule if it fails (finding B, cluster B). Plus owner
+  labels on a stratified sample AND an unconditioned false-negative slice
+  (finding B, cluster B — catches scorer blind spots). A named human labeler
+  remains an opportunistic upgrade that never gates the run. This is the
+  strengthened fallback, not the bare "narrow to judge-scored."
+- **D (continuity — default taken):** pre-commit an owner-unavailability
+  pause-and-resume policy that suspends the sim clock and the verdict SLA
+  together for owner-out periods, so a pause contaminates neither the
+  release-latency measure nor the minutes measure. Logged, symmetric across
+  arms.
+- **E (scope — default taken):** add to the plan the paired per-seed power
+  function (committed + tested before stage 6), the W3 + graduation-gate build
+  + graduation-config ratification (stages 3/4), and the residue/license
+  review as a publication precondition (cluster G); cut the three lowest-value
+  protocol items (R-F both-arm repeats, I-7 midpoint self-consistency check,
+  R-E confirmatory-seed shocks) to preserve owner verdict-minutes.
+- **F (disposition — default taken):** the ~30 FOLD items are encoded into the
+  re-emitted dispatches without further per-item approval (corrective, not
+  forks). The stage-3 re-emission is diffed against reports 75 AND 76 by a
+  cold reviewer to catch spec drift (finding E).
 
 ## Sequencing impact
 
 The FOLD items (~30) are absorbed when the dispatches are re-emitted at plan
 stage 3 — no schedule change, but that re-emission must now happen against
-this report plus report 75, and someone must diff the emitted dispatches
-against both (finding E, spec-drift). The DECIDE items (A-D, F-second-writer,
-F-cuts) gate what those dispatches contain, so they precede stage 3. Net: one
-more owner-decision round before any building resumes, which is the correct
-outcome of having asked for the sweep.
+this report plus report 75, and a cold reviewer diffs the emitted dispatches
+against both (finding E, spec-drift). The DECIDE items are now ratified
+(A/B/C above), so stage 3 is unblocked once PR #140 merges: the re-emission
+produces a three-arm W7R-R, a W2 spec (sampler + gate + externally-derived
+tiered miss taxonomy + timing harness + verdict rubric), a W3 build, W4, and a
+SCORER dispatch (offline scorer grading 100% of released AND blocked items in
+all three arms, blind/shuffled, cross-family audit, locked analysis script
+with the paired per-seed power function and the two-contrast alpha rule).
+The one net-new schedule item is the difficulty-calibration step folded into
+shakedown (Owner Ask B) and the seed-level power function as a stage-6
+prerequisite (Owner Ask E).
 
 ## Receipts
 
