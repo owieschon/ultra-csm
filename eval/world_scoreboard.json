@@ -5,8 +5,8 @@
     "n_accounts": 60,
     "no_spine_ablation": {
       "accuracy_delta": 0.0,
-      "full_spine_accuracy": 0.5667,
-      "no_spine_accuracy": 0.5667
+      "full_spine_accuracy": 0.6167,
+      "no_spine_accuracy": 0.6167
     },
     "pass_k_handoff": {
       "built_not_executed": true,
@@ -15,74 +15,74 @@
     },
     "policies": {
       "adoption_only": {
-        "accuracy": 0.5667,
-        "false_negative_rate": 1.0,
-        "fn": 1,
-        "fp": 25,
-        "precision": 0.0,
-        "recall": 0.0,
-        "tn": 34,
-        "tp": 0
-      },
-      "always_surface": {
-        "accuracy": 0.0167,
+        "accuracy": 0.6167,
         "false_negative_rate": 0.0,
         "fn": 0,
-        "fp": 59,
-        "precision": 0.0167,
+        "fp": 23,
+        "precision": 0.08,
+        "recall": 1.0,
+        "tn": 35,
+        "tp": 2
+      },
+      "always_surface": {
+        "accuracy": 0.0333,
+        "false_negative_rate": 0.0,
+        "fn": 0,
+        "fp": 58,
+        "precision": 0.0333,
         "recall": 1.0,
         "tn": 0,
-        "tp": 1
+        "tp": 2
       },
       "health_only": {
-        "accuracy": 0.8833,
-        "false_negative_rate": 1.0,
-        "fn": 1,
-        "fp": 6,
-        "precision": 0.0,
-        "recall": 0.0,
-        "tn": 53,
-        "tp": 0
+        "accuracy": 0.9333,
+        "false_negative_rate": 0.0,
+        "fn": 0,
+        "fp": 4,
+        "precision": 0.3333,
+        "recall": 1.0,
+        "tn": 54,
+        "tp": 2
       },
       "never_surface": {
-        "accuracy": 0.9833,
+        "accuracy": 0.9667,
         "false_negative_rate": 1.0,
-        "fn": 1,
+        "fn": 2,
         "fp": 0,
         "precision": 0.0,
         "recall": 0.0,
-        "tn": 59,
+        "tn": 58,
         "tp": 0
       },
       "no_spine_ablation": {
-        "accuracy": 0.5667,
-        "false_negative_rate": 1.0,
-        "fn": 1,
-        "fp": 25,
-        "precision": 0.0,
-        "recall": 0.0,
-        "tn": 34,
-        "tp": 0
+        "accuracy": 0.6167,
+        "false_negative_rate": 0.0,
+        "fn": 0,
+        "fp": 23,
+        "precision": 0.08,
+        "recall": 1.0,
+        "tn": 35,
+        "tp": 2
       },
       "spine_policy": {
-        "accuracy": 0.5667,
-        "false_negative_rate": 1.0,
-        "fn": 1,
-        "fp": 25,
-        "precision": 0.0,
-        "recall": 0.0,
-        "tn": 34,
-        "tp": 0
+        "accuracy": 0.6167,
+        "false_negative_rate": 0.0,
+        "fn": 0,
+        "fp": 23,
+        "precision": 0.08,
+        "recall": 1.0,
+        "tn": 35,
+        "tp": 2
       }
     },
     "power_sizing": {
       "current_sample_n": 60,
       "method": "existing_mdd_helpers_from_eval.drift_power_csm",
-      "minimum_detectable_drop_at_current_n": 0.221,
+      "minimum_detectable_drop_at_current_n": 0.222,
       "required_n_per_arm": {
-        "drop_10pp": 306,
-        "drop_20pp": 74,
-        "drop_30pp": 31
+        "drop_10pp": 301,
+        "drop_20pp": 75,
+        "drop_30pp": 32
       }
     },
     "schema_version": 1
@@ -92,6 +92,7 @@
     "graph_consultation_integrity": true,
     "hard_failures": [],
     "hard_ok": true,
+    "observable_free_of_latent_strings": true,
     "planted_violation": false,
     "schema_version": 1,
     "structural_agent_blindness": true
@@ -100,10 +101,8 @@
     "abstention_rate": 0.0167,
     "artifact": "living_world_oracles",
     "causal_path_recovery_rate": 0.05,
-    "false_negative_accounts": [
-      "c529251c-78a6-5710-88ad-a89710d02bee"
-    ],
-    "false_negative_rate_vs_latent_truth": 1.0,
+    "false_negative_accounts": [],
+    "false_negative_rate_vs_latent_truth": 0.0,
     "graph_sections": {
       "bitemporal_spine": 240,
       "closed_loop_hooks": 60,
@@ -113,7 +112,7 @@
       "supersedence": 0
     },
     "n_accounts": 60,
-    "n_doomed": 1,
+    "n_doomed": 2,
     "schema_version": 1
   },
   "rows": [
@@ -144,7 +143,7 @@
     },
     {
       "evidence": {
-        "false_negative_rate": 1.0,
+        "false_negative_rate": 0.0,
         "hard_ok": true
       },
       "status": "built",
