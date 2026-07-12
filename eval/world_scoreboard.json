@@ -164,8 +164,8 @@
             "adopt_eligible": true,
             "by_family": {
               "world_surfaced": {
-                "gated_pass": 60,
-                "gated_pass_rate": 0.9524,
+                "gated_pass": 59,
+                "gated_pass_rate": 0.9365,
                 "n_draws": 63
               }
             },
@@ -178,38 +178,38 @@
               "safety_boundary",
               "tone_fit"
             ],
-            "gated_pass_rate": 0.9524,
+            "gated_pass_rate": 0.9365,
             "model_id": "claude-sonnet-5",
             "n_draws": 63,
             "n_scenarios": 21,
             "pass_k": 3,
-            "pass_k_rate": 0.8571,
+            "pass_k_rate": 0.8095,
             "per_dimension_pass_rate": {
-              "account_specificity": 0.9841,
-              "grounding_fidelity": 0.9841,
+              "account_specificity": 1.0,
+              "grounding_fidelity": 0.9524,
               "on_task_relevance": 1.0,
-              "priority_fidelity": 1.0,
+              "priority_fidelity": 0.9841,
               "safety_boundary": 1.0,
-              "tone_fit": 0.9841
+              "tone_fit": 1.0
             },
             "reported_not_gated": [
               "on_task_relevance"
             ],
             "telemetry": {
-              "avg_latency_ms": 23587.4,
+              "avg_latency_ms": 23293.5,
               "coverage": 1.0,
               "n_draws_priced": 63,
               "n_draws_total": 63,
-              "total_cost_usd": 1.75182,
-              "total_input_tokens": 160,
-              "total_output_tokens": 175150,
-              "total_tokens": 175310
+              "total_cost_usd": 1.546774,
+              "total_input_tokens": 152,
+              "total_output_tokens": 154647,
+              "total_tokens": 154799
             }
           },
           "artifact": "q4_pass_k_report",
-          "context": "Q4/R4 -- single-arm pass^k, ablation blocked (docs/PROGRAM_REPORT_74.md)",
-          "generated_by": ".scratch/q4_pass_k_operate.py (one-off runner, not committed)",
-          "schema_version": 1,
+          "context": "Post-P1 re-run: original Q4/R4 result (schema_version 1) was measured on pre-fix world text (F2 leaked strings in evidence). This re-run uses the fixed generator (PR #141) with a checkpoint-provenance-guarded clean run (PR #142).",
+          "generated_by": ".scratch/q4_passk_rerun.py (P1 stage-2 re-run, not committed)",
+          "schema_version": 2,
           "world_scale": 62,
           "world_seed": 1
         }
