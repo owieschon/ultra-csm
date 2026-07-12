@@ -6,6 +6,9 @@
 - [`DEMO.md`](DEMO.md) - 90-second no-login reviewer walkthrough.
 - [`READING_PATH.md`](READING_PATH.md) - representative input-to-receipt vertical slice.
 - [`LIMITS.md`](LIMITS.md) - material boundaries and their evidence.
+- [`DEPLOYMENT_READINESS_FREEZE.md`](DEPLOYMENT_READINESS_FREEZE.md) -
+  owner-ratified ruler for the bounded five-day readiness study (currently draft
+  until signed).
 - [`../SECURITY.md`](../SECURITY.md) - canonical security posture.
 
 ## Decisive proof
