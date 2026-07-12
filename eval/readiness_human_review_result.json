@@ -1,0 +1,21 @@
+{
+  "artifact": "readiness_human_review_result",
+  "schema_version": 1,
+  "decision_counts": {
+    "approve": 8,
+    "reject": 0,
+    "revise": 2
+  },
+  "independence_attestation": "Reviewer reports sequential review against the frozen checklist without consulting the machine verdict.",
+  "judgment_result": "COMPLETE_SINGLE_REVIEWER_EXPLORATORY_EVIDENCE",
+  "max_reported_seconds": 240,
+  "median_reported_seconds": 182.5,
+  "o1_result": "INCONCLUSIVE",
+  "o1_rationale": "The reported durations satisfy the numerical limits but were modeled rather than measured as wall-clock human review time. They therefore cannot establish the preregistered human-effort endpoint.",
+  "release_approval": false,
+  "required_next_action": "Repeat the frozen ten-row review with observed wall-clock timing, preserving the existing qualitative judgments as a separate exploratory review.",
+  "timing_thresholds_seconds": {
+    "maximum_per_output": 600,
+    "median": 300
+  }
+}
