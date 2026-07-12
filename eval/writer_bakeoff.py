@@ -40,6 +40,7 @@ F2"). ``--drop-pp 0.10`` or ``0.15`` remain available for a larger run.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import time
 from dataclasses import asdict, dataclass
@@ -215,7 +216,8 @@ def run_arm(
     # kill+resume by construction (the checkpoint is the source of truth,
     # not an in-memory tracker that dies with the process -- see
     # docs/R2_TELEMETRY_RESUME_FINDING.md).
-    draws = _load_checkpoint(checkpoint_path)
+    provenance = _run_provenance(model_id, pass_k, scenarios)
+    draws = _load_checkpoint(checkpoint_path, expected=provenance)
     already = {(d["scenario_id"], d["draw_index"]) for d in draws}
     judge = AnthropicQualityJudge(model_id=JUDGE_MODEL_ID, reasoning=True)
     total = len(scenarios) * pass_k
@@ -241,11 +243,18 @@ def run_arm(
                 draw_dict["cost_usd"] = stats["total_cost_usd"]
                 draw_dict["latency_ms"] = stats["avg_latency_ms"]
             draws.append(draw_dict)
-            _write_checkpoint(checkpoint_path, draws)
+            _write_checkpoint(checkpoint_path, draws, provenance=provenance)
     return _aggregate_arm(model_id, scenarios, draws, pass_k=pass_k)
 
 
 def _aggregate_arm(model_id: str, scenarios: tuple[Scenario, ...], draws: list[dict], *, pass_k: int) -> dict:
+    # Drop orphan draws -- any (scenario_id, draw_index) not in the current
+    # scenario set x pass_k (e.g. left over from a run with a larger pass_k
+    # or a different scenario set). The provenance guard refuses cross-run
+    # resumes; this is the within-provenance backstop so aggregation counts
+    # exactly the draws this arm is defined over.
+    valid_keys = {(s.scenario_id, di) for s in scenarios for di in range(pass_k)}
+    draws = [d for d in draws if (d["scenario_id"], d["draw_index"]) in valid_keys]
     by_scenario: dict[str, list[dict]] = {}
     for draw in draws:
         by_scenario.setdefault(draw["scenario_id"], []).append(draw)
@@ -414,21 +423,69 @@ def build_report(
     }
 
 
-def _load_checkpoint(checkpoint_path: Path | None) -> list[dict]:
+class CheckpointProvenanceError(RuntimeError):
+    """Raised when a checkpoint's provenance does not match the current run.
+
+    A checkpoint stores only draws; a resume that skips already-present
+    (scenario_id, draw_index) keys will silently return stale draws if the
+    world, model, judge, transport, or pass_k changed since the checkpoint
+    was written (see docs/PROGRAM_REPORT_76.md finding D -- the P1 world fix
+    changes scenario request CONTENT while ids stay stable, so a re-run
+    against a surviving checkpoint would return pre-fix results verbatim).
+    Resuming refuses unless the stored provenance matches.
+    """
+
+
+def _scenarios_hash(scenarios: tuple[Scenario, ...]) -> str:
+    payload = json.dumps(
+        [_request_dict(s.request) for s in scenarios], sort_keys=True, default=str
+    )
+    return hashlib.sha256(payload.encode()).hexdigest()
+
+
+def _run_provenance(model_id: str, pass_k: int, scenarios: tuple[Scenario, ...]) -> dict:
+    return {
+        "model_id": model_id,
+        "judge_model_id": JUDGE_MODEL_ID,
+        "judge_prompt_version": JUDGE_PROMPT_VERSION,
+        "transport": configured_transport_name(),
+        "pass_k": pass_k,
+        "scenarios_hash": _scenarios_hash(scenarios),
+    }
+
+
+def _load_checkpoint(checkpoint_path: Path | None, *, expected: dict | None = None) -> list[dict]:
     if checkpoint_path is None or not checkpoint_path.exists():
         return []
     payload = json.loads(checkpoint_path.read_text(encoding="utf-8"))
     draws = payload.get("draws")
     if not isinstance(draws, list):
         raise ValueError(f"checkpoint {checkpoint_path} has no draws list")
+    if expected is not None:
+        stored = payload.get("provenance")
+        if stored is None:
+            raise CheckpointProvenanceError(
+                f"checkpoint {checkpoint_path} predates provenance headers; it cannot "
+                "be safely resumed. Use a clean checkpoint dir for this run."
+            )
+        mismatched = sorted(k for k in expected if stored.get(k) != expected[k])
+        if mismatched:
+            raise CheckpointProvenanceError(
+                f"checkpoint {checkpoint_path} provenance mismatch on {mismatched}: "
+                f"stored={ {k: stored.get(k) for k in mismatched} } "
+                f"current={ {k: expected[k] for k in mismatched} }. Refusing to resume "
+                "stale draws; use a clean checkpoint dir."
+            )
     return draws
 
 
-def _write_checkpoint(checkpoint_path: Path | None, draws: list[dict]) -> None:
+def _write_checkpoint(
+    checkpoint_path: Path | None, draws: list[dict], *, provenance: dict | None = None
+) -> None:
     if checkpoint_path is None:
         return
     checkpoint_path.write_text(
-        json.dumps({"draws": draws}, indent=2, sort_keys=True) + "\n",
+        json.dumps({"provenance": provenance, "draws": draws}, indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
     )
 
