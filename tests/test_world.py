@@ -105,3 +105,18 @@ def test_world_eval_artifacts_cover_scoreboard_and_planted_violation():
     assert [row["wave"] for row in scoreboard["rows"]] == ["W0", "W1", "W2", "W3", "W4", "W5"]
     assert knowability["hard_ok"] is False
     assert knowability["planted_violation"] is True
+
+
+def test_w4_row_defaults_to_built_handoff_without_a_pass_k_result():
+    scoreboard = build_world_scoreboard(seed=7, scale=20)
+    w4 = next(row for row in scoreboard["rows"] if row["wave"] == "W4")
+    assert w4["status"] == "built_handoff"
+
+
+def test_w4_row_reports_executed_when_a_pass_k_result_is_supplied():
+    stub_result = {"n_draws": 63, "gated_pass_rate": 0.9524}
+    scoreboard = build_world_scoreboard(seed=7, scale=20, pass_k_result=stub_result)
+    w4 = next(row for row in scoreboard["rows"] if row["wave"] == "W4")
+    assert w4["status"] == "executed"
+    assert w4["evidence"]["pass_k_run"] == stub_result
+    assert "PROGRAM_REPORT_74" in w4["evidence"]["ablation_status"]

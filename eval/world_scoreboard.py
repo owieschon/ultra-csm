@@ -25,6 +25,7 @@ def build_world_scoreboard(
     scale: int,
     pass_k: int = 8,
     model: str = "claude-sonnet-5",
+    pass_k_result: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     world = generate_world(WorldConfig(seed=seed, scale=scale))
     graph = build_context_graph(world)
@@ -68,16 +69,32 @@ def build_world_scoreboard(
                     "false_negative_rate": oracle["false_negative_rate_vs_latent_truth"],
                 },
             },
-            {
-                "wave": "W4",
-                "status": "built_handoff",
-                "summary": "Deterministic degenerate baselines run locally; pass^k is documented but not executed.",
-                "evidence": {
-                    "pass_k": pass_k,
-                    "model": model,
-                    "command": baselines["pass_k_handoff"]["recommended_command"],
-                },
-            },
+            (
+                {
+                    "wave": "W4",
+                    "status": "executed",
+                    "summary": (
+                        "Pass^k executed live (Q4/R4) on world-surfaced accounts with the "
+                        "OA-Q1 adopted writer; no-spine ablation (Q4/R3) is blocked, not run "
+                        "-- see docs/PROGRAM_REPORT_74.md."
+                    ),
+                    "evidence": {
+                        "pass_k_run": pass_k_result,
+                        "ablation_status": "blocked_see_docs/PROGRAM_REPORT_74.md",
+                    },
+                }
+                if pass_k_result is not None
+                else {
+                    "wave": "W4",
+                    "status": "built_handoff",
+                    "summary": "Deterministic degenerate baselines run locally; pass^k is documented but not executed.",
+                    "evidence": {
+                        "pass_k": pass_k,
+                        "model": model,
+                        "command": baselines["pass_k_handoff"]["recommended_command"],
+                    },
+                }
+            ),
             {
                 "wave": "W5",
                 "status": "built",
@@ -98,8 +115,11 @@ def write_world_scoreboard(
     scale: int,
     pass_k: int = 8,
     model: str = "claude-sonnet-5",
+    pass_k_result: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    artifact = build_world_scoreboard(seed=seed, scale=scale, pass_k=pass_k, model=model)
+    artifact = build_world_scoreboard(
+        seed=seed, scale=scale, pass_k=pass_k, model=model, pass_k_result=pass_k_result
+    )
     path.write_text(json.dumps(artifact, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return artifact
 
@@ -111,14 +131,25 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--pass-k", type=int, default=8)
     parser.add_argument("--model", default="claude-sonnet-5")
     parser.add_argument("--output", default=str(ARTIFACT_PATH))
+    parser.add_argument(
+        "--pass-k-report",
+        default=None,
+        help="Path to a live pass^k report JSON (e.g. from an OPERATE run) to record as W4 evidence.",
+    )
     args = parser.parse_args(argv)
 
+    pass_k_result = (
+        json.loads(Path(args.pass_k_report).read_text(encoding="utf-8"))
+        if args.pass_k_report
+        else None
+    )
     artifact = write_world_scoreboard(
         Path(args.output),
         seed=args.seed,
         scale=args.scale,
         pass_k=args.pass_k,
         model=args.model,
+        pass_k_result=pass_k_result,
     )
     for row in artifact["rows"]:
         print(f"{row['wave']}: {row['status']} - {row['summary']}")
