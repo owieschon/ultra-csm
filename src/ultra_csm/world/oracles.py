@@ -65,6 +65,7 @@ def run_knowability_audit(
             failures.append(f"decision_points_to_missing_fact:{decision.account_id}")
 
     failures.extend(_agent_blindness_failures(root))
+    failures.extend(_observable_latent_string_failures(result))
 
     if planted_violation:
         failures.append("planted_violation:latent_truth_imported_into_surface_path")
@@ -78,10 +79,52 @@ def run_knowability_audit(
         "graph_consultation_integrity": not any(
             failure.startswith("decision_points_to_missing_fact:") for failure in failures
         ),
+        "observable_free_of_latent_strings": not any(
+            failure.startswith("observable_leaks_latent_string:") for failure in failures
+        ),
         "planted_violation": planted_violation,
         "hard_ok": not failures,
         "hard_failures": failures,
     }
+
+
+# Latent vocabulary that must never appear in an observable (agent-readable)
+# field. The generic band-derived driver strings and neutral CTA text are
+# deliberately excluded; these tokens only ever originate from latent truth.
+_LATENT_TOKENS = (
+    "doomed",
+    "thriving",
+    "conflicted",
+    "champion_disengaged",
+    "healthy_champion",
+    "product_fit_gap",
+    "fit_confirmed",
+    "no_major_org_change",
+    "org_change",
+    "latent",
+)
+
+
+def _observable_latent_string_failures(result: "WorldBuildResult") -> list[str]:
+    """Semantic knowability check (beyond name-matching): no latent enum or
+    label string may appear in an observable text field an agent can read.
+    Catches the health.drivers / CTA-reason class of leak that a structural
+    import scan cannot see."""
+    failures: list[str] = []
+
+    def scan(account_id: str, where: str, text: str) -> None:
+        lowered = text.lower()
+        if any(token in lowered for token in _LATENT_TOKENS):
+            failures.append(f"observable_leaks_latent_string:{where}:{account_id}")
+
+    for health in result.data.health_scores:
+        for driver in health.drivers:
+            scan(health.account_id, "health.drivers", driver)
+    for cta in result.data.ctas:
+        scan(cta.account_id, "cta.reason", cta.reason)
+    for case in result.data.cases:
+        scan(case.account_id, "case.subject", case.subject)
+    return sorted(set(failures))
 
 
 def _agent_blindness_failures(repo_root: Path) -> list[str]:

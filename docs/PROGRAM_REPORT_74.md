@@ -120,3 +120,16 @@ scope invented for this report.
   inspected directly (see this report's finding sections for exact figures).
 - No commits from this investigation touch ruler files, gold corpora, or
   already-merged product code beyond PR #138 (already merged, BUILD only).
+
+## Correction addendum (P1, 2026-07-12)
+
+The terrain counts in this report's findings (per-seed doomed prevalence,
+the 0/13 spine-only-vs-doomed figure) were computed against latent truth that
+was index-misaligned with the world it described — root-caused as finding F1
+in `docs/PROGRAM_REPORT_75.md` and fixed in the P1 corrective build. The
+subsumption conclusion (`spine_policy` cannot diverge from `no_spine_ablation`)
+is formula-level and data-independent, so it stands unchanged. The specific
+prevalence numbers are superseded by report 75 F6 and the P1 build's verified
+figures (generated-account doomed rate ~0.12 aligned; band⟺doomed exact). The
+ablation remains blocked on the same grounds; only the illustrative counts
+are corrected.
