@@ -16,6 +16,13 @@
       "detail": "move process history under an archive directory"
     },
     {
+      "fingerprint": "99da338bf921dfb76689f5fb352647dc5444c674c38fc8f03e30e34d938deba2",
+      "rule": "purpose-contract",
+      "path": "BLOCKED.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
       "fingerprint": "0fba22af2a3dbb016ab50f5972e407a0d73ccdc7413b8523d1976db62d15bfa9",
       "rule": "section-length",
       "path": "BLOCKED.md",
@@ -30,11 +37,25 @@
       "detail": "move process history under an archive directory"
     },
     {
+      "fingerprint": "ac5a7c8d8cd116aa9b867204f249cac6e9fcdd6073a6d7571d41e9ad5cba5d3e",
+      "rule": "purpose-contract",
+      "path": "BLOCKED_MPA_A4.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
       "fingerprint": "9b94b10e4a97951592404c964f1f3b86b57e03858cc6bdce774b57d2ab157f75",
       "rule": "process-artifact",
       "path": "BLOCKED_MPA_A6.md",
       "line": 1,
       "detail": "move process history under an archive directory"
+    },
+    {
+      "fingerprint": "3c11d2068081d05a8b9b395f08edacaefc9c19c1f9913852e3d3c73e4e42861d",
+      "rule": "purpose-contract",
+      "path": "BLOCKED_MPA_A6.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
     },
     {
       "fingerprint": "5267a76851cbd45f375c8b9d97ff4ce1371b29ab097b83449ba5dc3363346ca3",
@@ -58,6 +79,13 @@
       "detail": "231 lines exceeds 120; split it or add a reasoned allowance"
     },
     {
+      "fingerprint": "ebae747fc01922aee3f65866733aceeab362533ae2783615fec77982b7e8f2d9",
+      "rule": "purpose-contract",
+      "path": "QUICKSTART.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
       "fingerprint": "bb0684843cfac0524210f251ff2d44e6bb0ac5b4ad83caa99fa2dba3741931d3",
       "rule": "section-length",
       "path": "QUICKSTART.md",
@@ -65,11 +93,18 @@
       "detail": "'Exercise Connector Readiness Without Network Calls' is 42 lines; split it or add a reasoned allowance"
     },
     {
-      "fingerprint": "83751d9880eaa3667e603e4b2fab5721024169e744a0364693b91d5240d046e1",
+      "fingerprint": "99c2ff7ec15e13bff87d5502452b184f3a08e0a6c0a0ee66d3609c91ab3e5f2d",
       "rule": "doc-length",
       "path": "README.md",
       "line": 1,
-      "detail": "133 lines exceeds 120; split it or add a reasoned allowance"
+      "detail": "135 lines exceeds 120; split it or add a reasoned allowance"
+    },
+    {
+      "fingerprint": "ff5b22943f958b7aba2c19f41b0f0398984c3765ac98077cbf0f729d6529ab16",
+      "rule": "purpose-contract",
+      "path": "SECURITY.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
     },
     {
       "fingerprint": "ef3e49f90c420443e76e5e7faa3446eaf9232f312f1e531434140a134b1d23ba",
@@ -79,11 +114,39 @@
       "detail": "move process history under an archive directory"
     },
     {
+      "fingerprint": "76834172a1a48ccc7f054b79b967be3ae18f8014ada84f0ed1da99a38e408f0a",
+      "rule": "purpose-contract",
+      "path": "STATUS.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
+      "fingerprint": "7e27780c6aebfc4da5c5aff51a4b34e8de5db29192b8531ad16dc85c257832b7",
+      "rule": "purpose-contract",
+      "path": "docs/A6_HARD_GOLD_LABELING_INSTRUCTIONS.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
+      "fingerprint": "6bd8c4acaf9cf6b1f69ea1e6566d77214e0c89f724b0355b06ad14ffcd1b28de",
+      "rule": "purpose-contract",
+      "path": "docs/ACTION_CONTROL_SANDBOX.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
       "fingerprint": "24a12bc4b5a04d059f41f5b6d487755bde8c475e5ef34ce966f4fce46b636586",
       "rule": "doc-length",
       "path": "docs/AGENT_PROFILE.md",
       "line": 1,
       "detail": "201 lines exceeds 120; split it or add a reasoned allowance"
+    },
+    {
+      "fingerprint": "381771b233293a4ec3abf4981d78fd32b27db07b3d1b35613b85de4f1cad455d",
+      "rule": "purpose-contract",
+      "path": "docs/AGENT_PROFILE.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
     },
     {
       "fingerprint": "fd019da51e3cc2985ac34248aadec454f1443e589f372c7fb22fded77a9d22f1",
@@ -100,11 +163,32 @@
       "detail": "1 provenance/receipt marks in a reference doc (e.g. '(Harvest 1)')"
     },
     {
+      "fingerprint": "a2db09903da7e28b0d46bd9aa98bfe31794b1e315fa954ac54bbc710081391c0",
+      "rule": "purpose-contract",
+      "path": "docs/ARCHITECTURE.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
       "fingerprint": "61d650c7503581e603ace5ed9e82e9c2f6df3ff1eb53779291ddfe68efcde267",
       "rule": "doc-length",
       "path": "docs/CAPABILITY_MAP.md",
       "line": 1,
       "detail": "131 lines exceeds 120; split it or add a reasoned allowance"
+    },
+    {
+      "fingerprint": "f884dc509c3e8bb089abafca82e416aa8441a5c94e5e134e77684f67022b890f",
+      "rule": "purpose-contract",
+      "path": "docs/CAPABILITY_MAP.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
+      "fingerprint": "75a9ef0608341591e4c768b374936063c1795a92e79980da93f471c58ef75362",
+      "rule": "purpose-contract",
+      "path": "docs/CONTENT_ROADMAP.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
     },
     {
       "fingerprint": "3547e199fa2df6865e9d45cc2b63a37392b99f1adcda5b5c00977e5ee9fc7cab",
@@ -126,6 +210,13 @@
       "path": "docs/CURRENT_EXECUTOR_HANDOFF.md",
       "line": 1,
       "detail": "move process history under an archive directory"
+    },
+    {
+      "fingerprint": "5fcc23696bb37f8b7ab923d14543f8d0595af6f45d896d3a88355cea4f99ae5e",
+      "rule": "purpose-contract",
+      "path": "docs/CURRENT_EXECUTOR_HANDOFF.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
     },
     {
       "fingerprint": "1e1669233871585241e54db16b165c54b8a61550500190382b9df6c1e8ff5481",
@@ -163,6 +254,13 @@
       "detail": "217 lines exceeds 120; split it or add a reasoned allowance"
     },
     {
+      "fingerprint": "3019429d8a918ab3832a996eea8c5feddde34fc8fabffc4a647d44050284d992",
+      "rule": "purpose-contract",
+      "path": "docs/CUSTOMER_VALUE_MODEL.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
       "fingerprint": "a9df5d6fd952c6a852e4ef5f1757fb74ee4d475dfd5d281327f4c16f98c57db2",
       "rule": "near-duplicate",
       "path": "docs/CUSTOMER_VALUE_MODEL.md",
@@ -170,11 +268,32 @@
       "detail": "~62% overlap with docs/SYSTEM_ARCHITECTURE.md:132 (different doc -- pick one canonical home)"
     },
     {
+      "fingerprint": "a203f4f13eca44bde53479dbfa0d0a456a410b3c627f4b75e608fdd86aad2a72",
+      "rule": "purpose-contract",
+      "path": "docs/DATA_HANDLING.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
+      "fingerprint": "afce48eb18e1aaa587ef7b5b734cd39b24d16cc775677d982387e32887746d8b",
+      "rule": "purpose-contract",
+      "path": "docs/DATA_PLANE.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
       "fingerprint": "e27013cbf6fb179ad6b3587b985b4bd27c4e1ef63539c838ab57f8d2ac32475f",
       "rule": "doc-length",
       "path": "docs/DECISION_LOG.md",
       "line": 1,
       "detail": "505 lines exceeds 120; split it or add a reasoned allowance"
+    },
+    {
+      "fingerprint": "5bff906a6697aa42cb148077929a6a1465eb4819b310132ccbb9e505468ae091",
+      "rule": "purpose-contract",
+      "path": "docs/DECISION_LOG.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
     },
     {
       "fingerprint": "68ba345fdd92e15bbc659a0c7b711df07646a0bd0f04d80340b537ff66b96913",
@@ -219,6 +338,13 @@
       "detail": "'Content Roadmap: taxonomy canonicalization, additive ARR scoring, disk-only matcher (Stream 46)' is 53 lines; split it or add a reasoned allowance"
     },
     {
+      "fingerprint": "5a3193b4cca9a8f1dd242f2665c8beac41aec6d4f1c2db3be95d46ec45252b72",
+      "rule": "purpose-contract",
+      "path": "docs/DEMO.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
       "fingerprint": "f00b313878da5bdff60347054fa99c11c62dd24be78ca912f4300cdda1d72e20",
       "rule": "doc-length",
       "path": "docs/DEMO_EXECUTION_PLAN.md",
@@ -231,6 +357,13 @@
       "path": "docs/DEMO_EXECUTION_PLAN.md",
       "line": 1,
       "detail": "move process history under an archive directory"
+    },
+    {
+      "fingerprint": "d2b5998d6d48b370d4eb0c4deb0f00776a8a1197c7d41b7d0dc760c8c96775b8",
+      "rule": "purpose-contract",
+      "path": "docs/DEMO_EXECUTION_PLAN.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
     },
     {
       "fingerprint": "b47b4e5c29c5a3a8149bdc510e6e79c5dbc966c0a3ec3ba030d5bbc019f3abfc",
@@ -254,11 +387,32 @@
       "detail": "'\u00a74 \u2014 Slice 3: The loop closes in sim \u2014 stateful tenant, committers, tiered autonomy, re-observation' is 78 lines; split it or add a reasoned allowance"
     },
     {
+      "fingerprint": "37bccd1ca91779ba42725cd83218da25fcf5b3e0d45aededce2917f3dd9cfe83",
+      "rule": "purpose-contract",
+      "path": "docs/DEPLOYMENT_READINESS.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
       "fingerprint": "430341156fb63763f8d28a5c7140f1e541216110e4b6924c73d7e460cc1d6bf1",
       "rule": "process-artifact",
       "path": "docs/EVAL_PLAN.md",
       "line": 1,
       "detail": "move process history under an archive directory"
+    },
+    {
+      "fingerprint": "0ed5414bbe26b9b072ebfd95050bf4b125f209e8a5526da4ac444c439fa110ec",
+      "rule": "purpose-contract",
+      "path": "docs/EVAL_PLAN.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
+      "fingerprint": "38efb27beebc66a6956b63f79385e56af9a2ee7ebe01f4f77d009dabc54fcd02",
+      "rule": "purpose-contract",
+      "path": "docs/EVAL_STANDARD.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
     },
     {
       "fingerprint": "7d7285bd1a6e0f153a71742275050e8b0ef83c2d2cc8ac18a080408b454f0077",
@@ -275,6 +429,13 @@
       "detail": "move process history under an archive directory"
     },
     {
+      "fingerprint": "3b0eb2a8df311b037252ea3252fd8753de5545c5ed0bb1b3fb001df065886bfb",
+      "rule": "purpose-contract",
+      "path": "docs/EXECUTOR_HANDOFF.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
       "fingerprint": "4e5f4da00e5d64939c18ab596e9a17e3c4b4bc9f0de93c1f8c1041e66537cd82",
       "rule": "doc-length",
       "path": "docs/EXECUTOR_HANDOFF_LANE_E.md",
@@ -287,6 +448,13 @@
       "path": "docs/EXECUTOR_HANDOFF_LANE_E.md",
       "line": 1,
       "detail": "move process history under an archive directory"
+    },
+    {
+      "fingerprint": "b893755cc8a2eb5876bfcf55ed8caf4ab3ed115bc105c4e6d358a660a4323c7c",
+      "rule": "purpose-contract",
+      "path": "docs/EXECUTOR_HANDOFF_LANE_E.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
     },
     {
       "fingerprint": "6bc4638f9c0a2462b44bc37bfb614b8d87e05259f016aecbfaef5f096f65c449",
@@ -310,6 +478,13 @@
       "detail": "move process history under an archive directory"
     },
     {
+      "fingerprint": "e41f34037360665d20cea5b8fea879d65da969867ba0ac7fc1c23ee1747f5c51",
+      "rule": "purpose-contract",
+      "path": "docs/EXECUTOR_HANDOFF_LANE_F.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
       "fingerprint": "34c1f85f27104b3547ed21b78ee10d97d6a8f8cc3bb038d0d37bf400223dfc90",
       "rule": "doc-length",
       "path": "docs/EXECUTOR_HANDOFF_LANE_G.md",
@@ -324,11 +499,25 @@
       "detail": "move process history under an archive directory"
     },
     {
+      "fingerprint": "fc7973fa8a6ad9af6ef2e7c23acd9c5b19e03bd62ce24290ae2434a05896ad90",
+      "rule": "purpose-contract",
+      "path": "docs/EXECUTOR_HANDOFF_LANE_G.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
       "fingerprint": "50a4dc15c8fd0efe98fab2595bc15d6a61b77b5294001ae177de3283c70dc1fe",
       "rule": "process-artifact",
       "path": "docs/EXECUTOR_HANDOFF_LANE_H.md",
       "line": 1,
       "detail": "move process history under an archive directory"
+    },
+    {
+      "fingerprint": "ca3db2a404c784b5142e49125aba98004b18b16813a90b48a90a2d7444387f86",
+      "rule": "purpose-contract",
+      "path": "docs/EXECUTOR_HANDOFF_LANE_H.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
     },
     {
       "fingerprint": "4092a77420e89c557a676512728e480cfbd25817ee5b3be89f684bf9ed71dd87",
@@ -343,6 +532,13 @@
       "path": "docs/EXECUTOR_HANDOFF_LANE_I.md",
       "line": 1,
       "detail": "move process history under an archive directory"
+    },
+    {
+      "fingerprint": "521794de053fe593646f978d8c0497c9a7b6815387b86c570f45d2ccd16d1b67",
+      "rule": "purpose-contract",
+      "path": "docs/EXECUTOR_HANDOFF_LANE_I.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
     },
     {
       "fingerprint": "4f1fc2855a52bc3e56914fe8cb9889ae95b93a13ba422d90b27472a17b72df4e",
@@ -366,6 +562,20 @@
       "detail": "move process history under an archive directory"
     },
     {
+      "fingerprint": "53ab162fc68170d9e84b129d6fc926bf453f7fe54082084c23380f7644d28d6a",
+      "rule": "purpose-contract",
+      "path": "docs/EXECUTOR_HANDOFF_LANE_J.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
+      "fingerprint": "ba297579df7fec092f04546bdf824e6fbee059db3f751254adc877d0d1c2aa32",
+      "rule": "purpose-contract",
+      "path": "docs/EXPLORER_MAPPING_CONFIG_SPEC.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
       "fingerprint": "9caa2a0e9fc1ec7793db6ff47b91da8478cc31214ac54c7d014410136beb0ba8",
       "rule": "doc-length",
       "path": "docs/FOREIGN_CORPUS_FINDINGS.md",
@@ -380,6 +590,13 @@
       "detail": "move process history under an archive directory"
     },
     {
+      "fingerprint": "19a5b5af96c020eeb719efd03404554be8eb0582bec144a709f0040d3d69c073",
+      "rule": "purpose-contract",
+      "path": "docs/FOREIGN_CORPUS_FINDINGS.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
       "fingerprint": "6adb266aade762f31d5b01b18549bccad38845962df46c832354dfe762e152a6",
       "rule": "process-artifact",
       "path": "docs/HANDOFF_SPIKE_SPEC.md",
@@ -387,11 +604,32 @@
       "detail": "move process history under an archive directory"
     },
     {
+      "fingerprint": "6fadb3748e2083a5671e4e1aa499fac54f6c0c5b72974167b31167d4322dc9f2",
+      "rule": "purpose-contract",
+      "path": "docs/HANDOFF_SPIKE_SPEC.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
       "fingerprint": "0c9c4cacc8b6107e52384d7ca14eb2024d4aa47ac20b97401999596ee05807f1",
       "rule": "doc-length",
       "path": "docs/HOSTED_ACTION_CONTROL_RUNBOOK.md",
       "line": 1,
       "detail": "166 lines exceeds 120; split it or add a reasoned allowance"
+    },
+    {
+      "fingerprint": "93871a17a27553e9e33460e24891a69a97a7c6755ac13ca75df34b1f3488211a",
+      "rule": "purpose-contract",
+      "path": "docs/HOSTED_ACTION_CONTROL_RUNBOOK.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
+      "fingerprint": "bcbb811e84d624229b594e0cdbfbd30da4255a38b24a580d447945c3c35c3fcc",
+      "rule": "purpose-contract",
+      "path": "docs/LIMITS.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
     },
     {
       "fingerprint": "50ba2afb4dc1f11a37924d81025ba9d6f6b20647d81f050ec5c3fb7f99741c6f",
@@ -406,6 +644,13 @@
       "path": "docs/LIVE_INTEGRATION_FINDINGS.md",
       "line": 1,
       "detail": "move process history under an archive directory"
+    },
+    {
+      "fingerprint": "a7bd211f7ef0d033535beb6a93a5186fb8c96b3d58cbfefa8f0dcc6bf2de36bd",
+      "rule": "purpose-contract",
+      "path": "docs/LIVE_INTEGRATION_FINDINGS.md",
+      "line": 1,
+      "detail": "add one H1 followed immediately by one marked BLUF purpose contract"
     },
     {
       "fingerprint": "685a000f04e98c827b5538f147668d54cc2a35fab2dc97215457b32ed94cdaa0",
@@ -436,6 +681,13 @@
       "detail": "move process history under an archive directory"
     },
     {
+      "fingerprint": "fd351110625f6ae04a58103698fce8372ab84e1aa95bc39f663bcc43001c4377",
+      "rule": "purpose-contract",
+      "path": "docs/MP_D2_WAVE1_SALVAGE_RECEIPT.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
       "fingerprint": "39de92661787c98400671da8f1595f9b226dcd47946f40432e26ad8f5874ed1d",
       "rule": "local-path-residue",
       "path": "docs/MP_D2_WAVE1_SALVAGE_RECEIPT.md",
@@ -448,6 +700,13 @@
       "path": "docs/MP_D2_WAVE2_VALIDATION_RECEIPT.md",
       "line": 1,
       "detail": "move process history under an archive directory"
+    },
+    {
+      "fingerprint": "edbb72e64d8220f9795531bc2288fc133858a4a7a4fa62d331dfdcbd3e67fa72",
+      "rule": "purpose-contract",
+      "path": "docs/MP_D2_WAVE2_VALIDATION_RECEIPT.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
     },
     {
       "fingerprint": "d614cb69d1b99179dc984dbc28b6de48ad9c65b8d06432c0e06641cb8c5e13e7",
@@ -464,11 +723,25 @@
       "detail": "move process history under an archive directory"
     },
     {
+      "fingerprint": "375bbb0f437fcb674790e48f7269ce43c4307677cbef22499bafbbf36fef4e5f",
+      "rule": "purpose-contract",
+      "path": "docs/MP_D2_WAVE3_UI_RECEIPT.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
       "fingerprint": "ff47669506912a7f6cd0d349c9e8a36309cca2af644ae97157229478208b05c0",
       "rule": "process-artifact",
       "path": "docs/MP_D2_WAVE4_SELF_SERVE_WORKFLOW_RECEIPT.md",
       "line": 1,
       "detail": "move process history under an archive directory"
+    },
+    {
+      "fingerprint": "b33f5ed3fd3e921c98dfac744e4a4a1ba4447d7bf1c430f4cdb8d52703213366",
+      "rule": "purpose-contract",
+      "path": "docs/MP_D2_WAVE4_SELF_SERVE_WORKFLOW_RECEIPT.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
     },
     {
       "fingerprint": "0303a5eb634180bdf0d76743b3be812e5163bfa2bd9894176158086f33c92931",
@@ -478,11 +751,39 @@
       "detail": "move process history under an archive directory"
     },
     {
+      "fingerprint": "d4bab2c399f36c754a7eeadfbee95dcf28d4a093420c89015dcff70380adf65c",
+      "rule": "purpose-contract",
+      "path": "docs/NEXT_DISPATCH.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
       "fingerprint": "f2ccb4a0b920d8f6dacd96127100e97788eff0b376ae642aa2ed962322d36586",
       "rule": "doc-length",
       "path": "docs/NONDETERMINISM_EVAL_HARDENING_SPEC.md",
       "line": 1,
       "detail": "162 lines exceeds 120; split it or add a reasoned allowance"
+    },
+    {
+      "fingerprint": "1e51d8502a8eedd5fcc44d0a19a0b6cd5eb76569369b762c3089844f7c53175d",
+      "rule": "purpose-contract",
+      "path": "docs/NONDETERMINISM_EVAL_HARDENING_SPEC.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
+      "fingerprint": "5ed3dd463e88b7ce47dcfcd529d41625e43f9685fcca6f98234375fd703a46c4",
+      "rule": "purpose-contract",
+      "path": "docs/NOTION_AUTHORING_EDGE.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
+      "fingerprint": "656e777d343f66dd7edc440a635ae9dc7cd0104a12f40a43c035b131d0a2e8f8",
+      "rule": "purpose-contract",
+      "path": "docs/OA_A2_ONTASK_RELABEL_INSTRUCTIONS.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
     },
     {
       "fingerprint": "7d36d2fe2b629e0de345beba5f85411e92bf878d6aaf511343117e31026f98e7",
@@ -492,6 +793,20 @@
       "detail": "~96% overlap with docs/QUALITY_LABELING_PROTOCOL.md:37 (different doc -- pick one canonical home)"
     },
     {
+      "fingerprint": "53b913320b4857ef4dfc4c280770234c92b4a63b65743be0e1ff82c70e4c6e66",
+      "rule": "purpose-contract",
+      "path": "docs/OA_Q1_WRITER_ADOPTION.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
+      "fingerprint": "bad5b81a8eedbc096aabc2ed859ddbcdf0d8b277d797d030c187b08c680b2089",
+      "rule": "purpose-contract",
+      "path": "docs/OBSERVABILITY.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
       "fingerprint": "c1c0501f7129b8284f38587de480aeea42943ea2c4216970c84fc54b9bc446b7",
       "rule": "section-length",
       "path": "docs/OBSERVABILITY.md",
@@ -499,11 +814,25 @@
       "detail": "'Troubleshooting' is 46 lines; split it or add a reasoned allowance"
     },
     {
+      "fingerprint": "794611a953d7a6e64fb8ef1b5c3ce2ac577e4c9fc59b66fa73f78129d778f540",
+      "rule": "purpose-contract",
+      "path": "docs/OPERATING_PROOF.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
       "fingerprint": "1be67feda2c3173b33c5ef1ed911f95350a254e42e57aaf4cd79b768e6c8e6f2",
       "rule": "doc-length",
       "path": "docs/OPERATOR_RUNBOOK.md",
       "line": 1,
       "detail": "126 lines exceeds 120; split it or add a reasoned allowance"
+    },
+    {
+      "fingerprint": "2dc8a74abbee65183d031211e31160eed49cf633343d39de9aee30d058262d3c",
+      "rule": "purpose-contract",
+      "path": "docs/OPERATOR_RUNBOOK.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
     },
     {
       "fingerprint": "67d63c7392d5fc0bfc99507a938eb80e6a68e3144b2e0ee1cd3570c314979d68",
@@ -518,6 +847,13 @@
       "path": "docs/P3_EXECUTION_PLAN.md",
       "line": 1,
       "detail": "move process history under an archive directory"
+    },
+    {
+      "fingerprint": "0f8269b65023da29aefa9157e2792f7a2fa5d80cdec99a506b2cf15a7a73c321",
+      "rule": "purpose-contract",
+      "path": "docs/P3_EXECUTION_PLAN.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
     },
     {
       "fingerprint": "9952cddbef97f69f511638b260295ea89a2ce3237daf836a907416d5c03a9b8b",
@@ -562,11 +898,32 @@
       "detail": "move process history under an archive directory"
     },
     {
+      "fingerprint": "d52aabfdb1dc088adf380adff911e61ed0cba78ee5d98cb5707ae1ea035608bf",
+      "rule": "purpose-contract",
+      "path": "docs/PHASE_2_3_PLAN.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
+      "fingerprint": "45971f1060417a1e77e9364bc9df50fb69679b9715c7afb588ec7b143f2e592b",
+      "rule": "purpose-contract",
+      "path": "docs/POSITION.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
       "fingerprint": "e9d6c1e8e88430050b7ecb76fbdce23bed8e01939c6f9e88d86c4476070965a0",
       "rule": "doc-length",
       "path": "docs/PRODUCTION_GRADE_QUALITY_SPEC.md",
       "line": 1,
       "detail": "168 lines exceeds 120; split it or add a reasoned allowance"
+    },
+    {
+      "fingerprint": "e93a1c142c6a9f2d0b093d6818be20e1caa512dab4c1269b2b91fa5b3342fa10",
+      "rule": "purpose-contract",
+      "path": "docs/PRODUCTION_GRADE_QUALITY_SPEC.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
     },
     {
       "fingerprint": "bcdff31d2037d015927057038ccdb76383c1a90ea63334051bb279baacc4c223",
@@ -583,6 +940,13 @@
       "detail": "move process history under an archive directory"
     },
     {
+      "fingerprint": "da524ad0fc16332e113f10b2531316dd545a3296a116896c8ada0e4342f095ed",
+      "rule": "purpose-contract",
+      "path": "docs/PROGRAM_REPORT.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
       "fingerprint": "47f79a988da4a46f48a2de65852f9e3c46b028b7828f59e662d39603f3db88f3",
       "rule": "doc-length",
       "path": "docs/PROGRAM_REPORT_40.md",
@@ -595,6 +959,13 @@
       "path": "docs/PROGRAM_REPORT_40.md",
       "line": 1,
       "detail": "move process history under an archive directory"
+    },
+    {
+      "fingerprint": "ab111eb549d0d7852fbb31190dc5eebd44a83e21faeeb411dc085725d139d327",
+      "rule": "purpose-contract",
+      "path": "docs/PROGRAM_REPORT_40.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
     },
     {
       "fingerprint": "fa2685ebc218a73370a428f86ae4f62c1785dcb6260e4947278204d7de81a6ec",
@@ -618,6 +989,13 @@
       "detail": "move process history under an archive directory"
     },
     {
+      "fingerprint": "770774fc17256b175aa636f04699cad31ed65f0f6a0fa674e7f40320933aa917",
+      "rule": "purpose-contract",
+      "path": "docs/PROGRAM_REPORT_54.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
       "fingerprint": "a430d6605064d5c50fcf0df153c3c9518376e1a442f267d020aa204cce1fd668",
       "rule": "doc-length",
       "path": "docs/PROGRAM_REPORT_58.md",
@@ -630,6 +1008,13 @@
       "path": "docs/PROGRAM_REPORT_58.md",
       "line": 1,
       "detail": "move process history under an archive directory"
+    },
+    {
+      "fingerprint": "cd82d7ce74ed0ee5bcef0f006b95cb6b6910bac765ab5a74a6a927e1ddc5b97a",
+      "rule": "purpose-contract",
+      "path": "docs/PROGRAM_REPORT_58.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
     },
     {
       "fingerprint": "b10af26edce305bb82768896ba62922b7f0f2dfea2da33e12de4c9cb631f3234",
@@ -653,6 +1038,13 @@
       "detail": "move process history under an archive directory"
     },
     {
+      "fingerprint": "261ca1914d4c5b56ef595e62880ecfed8376ba5ddda1546853e47edb1c21b8c2",
+      "rule": "purpose-contract",
+      "path": "docs/PROGRAM_REPORT_60.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
       "fingerprint": "476cf286645fc716065235d69de9b3a4208801467705dc005c0469f872d1fbd4",
       "rule": "section-length",
       "path": "docs/PROGRAM_REPORT_60.md",
@@ -667,6 +1059,13 @@
       "detail": "move process history under an archive directory"
     },
     {
+      "fingerprint": "1ba4edb21786856d54527740df080557052bd83475432371d52add410f7e007c",
+      "rule": "purpose-contract",
+      "path": "docs/PROGRAM_REPORT_65.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
       "fingerprint": "e8e2d6bda99c367e0caa6bc3eb247f53d73dc5267f335277f4a81830fed23428",
       "rule": "process-artifact",
       "path": "docs/PROGRAM_REPORT_66.md",
@@ -674,11 +1073,25 @@
       "detail": "move process history under an archive directory"
     },
     {
+      "fingerprint": "58e135e6073f2a7351e05807eed0f2190a83c607da951193d8d6fec7be63373f",
+      "rule": "purpose-contract",
+      "path": "docs/PROGRAM_REPORT_66.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
       "fingerprint": "fed090c645cea9020d22ea6803cb2917f3c162e08b8771e7df1ed9192df6d4d9",
       "rule": "process-artifact",
       "path": "docs/PROGRAM_REPORT_67.md",
       "line": 1,
       "detail": "move process history under an archive directory"
+    },
+    {
+      "fingerprint": "f38d6815c945c1dfd4e2c396cb327447af817eef5f1a0b2cd5380364e50a9a5b",
+      "rule": "purpose-contract",
+      "path": "docs/PROGRAM_REPORT_67.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
     },
     {
       "fingerprint": "42bee6e1ba58b93798ac7718198c28335f057bdc350a2280047d32933bb8312a",
@@ -695,11 +1108,25 @@
       "detail": "move process history under an archive directory"
     },
     {
+      "fingerprint": "902b163ca6d8a106295cf30ef16f036c33182bf29ac449d27ae9f7de0b99c0be",
+      "rule": "purpose-contract",
+      "path": "docs/PROGRAM_REPORT_68.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
       "fingerprint": "d8296b76a802c66ba8b91b0d7110a6cb1eba0bb38aa67b198242e2e1cccebe40",
       "rule": "process-artifact",
       "path": "docs/PROGRAM_REPORT_69.md",
       "line": 1,
       "detail": "move process history under an archive directory"
+    },
+    {
+      "fingerprint": "57d44bca8b33d35ac919dc4f3f266bfe28b62945a1b3ba00e1419116fa97e329",
+      "rule": "purpose-contract",
+      "path": "docs/PROGRAM_REPORT_69.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
     },
     {
       "fingerprint": "52ee1c1291598341add8e2b8809c91103c3401be0a467fee9b51c483a0cdd905",
@@ -709,11 +1136,25 @@
       "detail": "move process history under an archive directory"
     },
     {
+      "fingerprint": "1465a745652ea0286e2d8dcd582b695765412c9cc86d28cf1583d4cd2b7a3562",
+      "rule": "purpose-contract",
+      "path": "docs/PROGRAM_REPORT_70.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
       "fingerprint": "3d8da9b4fa8039c39032bdad7ec0bba74e5c16ea9b6ea3f4a9268b6516d248db",
       "rule": "process-artifact",
       "path": "docs/PROGRAM_REPORT_71.md",
       "line": 1,
       "detail": "move process history under an archive directory"
+    },
+    {
+      "fingerprint": "118d19c1ab133832018a38acdd5a21c743d36a7c76481ed19146274fba206738",
+      "rule": "purpose-contract",
+      "path": "docs/PROGRAM_REPORT_71.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
     },
     {
       "fingerprint": "c11928586f098c1ad0e4ace040ab487418d6a5b731a8b25788bd4e85754cf5f1",
@@ -730,6 +1171,13 @@
       "detail": "move process history under an archive directory"
     },
     {
+      "fingerprint": "7f09c83d0fb70c83fcfbb01c71e3d9d5c9b70ea43a5153d74d65e88ddcc4bb6b",
+      "rule": "purpose-contract",
+      "path": "docs/PROGRAM_REPORT_73.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
       "fingerprint": "8d38d2626e60c9d994b199b53ca2875ccf1870c65b42a628e5dcd44bfc6255cf",
       "rule": "doc-length",
       "path": "docs/PROGRAM_REPORT_74.md",
@@ -744,6 +1192,13 @@
       "detail": "move process history under an archive directory"
     },
     {
+      "fingerprint": "08feff131c08bf0676e2e588de3e42c0d741cfcfd75c1fdc36f13f8813ffc616",
+      "rule": "purpose-contract",
+      "path": "docs/PROGRAM_REPORT_74.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
       "fingerprint": "763b4ceec21c44306772e1ba8777466d65ac3eaf0de449e7832fb685dfcc4d4b",
       "rule": "doc-length",
       "path": "docs/PROGRAM_REPORT_75.md",
@@ -756,6 +1211,13 @@
       "path": "docs/PROGRAM_REPORT_75.md",
       "line": 1,
       "detail": "move process history under an archive directory"
+    },
+    {
+      "fingerprint": "6a239ce8f8ca38c8a4a9827a25983474eb6c8a9e798897c7639d04d5e4410493",
+      "rule": "purpose-contract",
+      "path": "docs/PROGRAM_REPORT_75.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
     },
     {
       "fingerprint": "0dac6d5922a7dddf32c17c2a5fd28a9d421b68b5c99494e5cbfab44ea6fc3b56",
@@ -800,6 +1262,13 @@
       "detail": "move process history under an archive directory"
     },
     {
+      "fingerprint": "97a2761ac6dd09fcb7dfcdefc6867d2bede7433066ca5f97f7ccbdb60e7aec2e",
+      "rule": "purpose-contract",
+      "path": "docs/PROGRAM_REPORT_76.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
       "fingerprint": "db71f4e0bedacbb20bcb8f524a1663ed08409da937d4f0dd44cbc0000962f39e",
       "rule": "section-length",
       "path": "docs/PROGRAM_REPORT_76.md",
@@ -814,11 +1283,32 @@
       "detail": "139 lines exceeds 120; split it or add a reasoned allowance"
     },
     {
+      "fingerprint": "7622e309b8128ccd943c0083af1256d075b468a7b532b058c219434bf782d683",
+      "rule": "purpose-contract",
+      "path": "docs/QUALITY_GOLD_CORPUS_REBUILD_SPEC.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
+      "fingerprint": "08deea49300afeb29b674348bb2285655cc93c39efcc9df73bda5b9ee6426b9c",
+      "rule": "purpose-contract",
+      "path": "docs/QUALITY_GOLD_HARD_LAYER_SPEC.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
       "fingerprint": "78318da8b7929e6181b7f4396c9699769817434d012539f2a065038fa422bcb2",
       "rule": "doc-length",
       "path": "docs/QUALITY_JUDGE_ADJUDICATION.md",
       "line": 1,
       "detail": "174 lines exceeds 120; split it or add a reasoned allowance"
+    },
+    {
+      "fingerprint": "c277caf37838b373938d6cb5354027833b5f1d9e77e718e48e3016c016df7c99",
+      "rule": "purpose-contract",
+      "path": "docs/QUALITY_JUDGE_ADJUDICATION.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
     },
     {
       "fingerprint": "c9ac46e1fe7f3e213b47d3cf8f8710ad881c066f2c04042b25c08827bcd854d9",
@@ -849,6 +1339,13 @@
       "detail": "process-artifact name on the reader-facing doc surface"
     },
     {
+      "fingerprint": "606d897df00565d1e8d6724e404b59fe77771e96a368db497a2b766beaf3e403",
+      "rule": "purpose-contract",
+      "path": "docs/QUALITY_LABELING_PROTOCOL.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
       "fingerprint": "48e8f06045f770d07626e9cdbbec93c38fa0d88be165fb5274c706579e0ef26d",
       "rule": "section-length",
       "path": "docs/QUALITY_LABELING_PROTOCOL.md",
@@ -863,6 +1360,55 @@
       "detail": "133 lines exceeds 120; split it or add a reasoned allowance"
     },
     {
+      "fingerprint": "e24481c282be26a412fbb0dd92c83d739d155e52a6fd6408d3b91e0c1afdab9f",
+      "rule": "purpose-contract",
+      "path": "docs/QUALITY_REGRESSION_EVAL_SPEC.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
+      "fingerprint": "baadda10bb954a46e35093d825b05ce1524b3430c82879069f33e1c107c06b32",
+      "rule": "purpose-contract",
+      "path": "docs/R0_KAPPA_BAND_FINDING.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
+      "fingerprint": "d5a4ca9c77f7ae858271aa41693e975db0e461539644530107cae05abb354836",
+      "rule": "purpose-contract",
+      "path": "docs/R0_RETRY_COVERAGE_FINDING.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
+      "fingerprint": "e6ec3d346e494fd9cb67b85a100ad3fbc153e038f00629a41b9b9c7ec6712d09",
+      "rule": "purpose-contract",
+      "path": "docs/R0_TRANSPORT_FIDELITY_FINDING.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
+      "fingerprint": "7853434d65dbec8a7412eb5955252e32953a4cd0df1793b34d7d4dfa7cd7c522",
+      "rule": "purpose-contract",
+      "path": "docs/R0_VALIDITY_RESOLUTION.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
+      "fingerprint": "90020100880b00c60101a4aa56fa5e759f1a80050491422877ebd74bb8c7f1c3",
+      "rule": "purpose-contract",
+      "path": "docs/R2_TELEMETRY_RESUME_FINDING.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
+      "fingerprint": "41e355c95204efff52fe17eefa1028cdfa686aa2fe12f7972bfa366b72983c8b",
+      "rule": "purpose-contract",
+      "path": "docs/R2_WRITER_BAKEOFF_RESULT.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
       "fingerprint": "76cb7d4657972fee68df61cc35e9af38c8b46e38a767c449496c0ee61b6c4900",
       "rule": "section-length",
       "path": "docs/R2_WRITER_BAKEOFF_RESULT.md",
@@ -870,11 +1416,46 @@
       "detail": "'Cost/latency telemetry \u2014 flagged as unreliable, do not use to decide' is 42 lines; split it or add a reasoned allowance"
     },
     {
+      "fingerprint": "e54482106323d33b2ba70e075d03d937032823736bb8c0fd1b5a801976bb3d71",
+      "rule": "purpose-contract",
+      "path": "docs/R2_WRITER_BAKEOFF_RESULT_CONFIRMED.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
+      "fingerprint": "66f8e73e16d3aad89e41d6215095fdb9683294325c9cb38c289f12da7c31dd2e",
+      "rule": "purpose-contract",
+      "path": "docs/R2_WRITER_TIMEOUT_FINDING.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
+      "fingerprint": "68b2ba64ef7afb3d7576b26959f9ca45ebc29297f7901caac23a382b074e02f4",
+      "rule": "purpose-contract",
+      "path": "docs/READING_PATH.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
+      "fingerprint": "84019f3ae6c3766a0b9128d0bab284fa2a894031d1ca3bfae6eac9fda4641763",
+      "rule": "purpose-contract",
+      "path": "docs/README.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
       "fingerprint": "dcf8ff591a0468258d8bd91280ebebc9546716c83780cdd95c5a84c0f9cf2aa0",
       "rule": "doc-length",
       "path": "docs/REAL_READY_ARCHITECTURE.md",
       "line": 1,
       "detail": "322 lines exceeds 120; split it or add a reasoned allowance"
+    },
+    {
+      "fingerprint": "25c04ba9589c6ce414726f838dfa56d5fccc812fffbc4836373a020fcd60c97c",
+      "rule": "purpose-contract",
+      "path": "docs/REAL_READY_ARCHITECTURE.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
     },
     {
       "fingerprint": "57f29654c33521a30c3c1de9c8ddc40fd926153d5e260fd974483e9414b3a576",
@@ -898,6 +1479,13 @@
       "detail": "move process history under an archive directory"
     },
     {
+      "fingerprint": "be64f86ef3ffe40b3c3fc5cf56365ef61d45dc69a230bfaf86642b8148dc9e33",
+      "rule": "purpose-contract",
+      "path": "docs/REAL_READY_RESEARCH_DISPATCH.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
       "fingerprint": "241b43bd6ccc9f21102ed5914f80465b8c622e0d1ce329bb992135f1dc4be5d0",
       "rule": "section-length",
       "path": "docs/REAL_READY_RESEARCH_DISPATCH.md",
@@ -919,11 +1507,25 @@
       "detail": "process-artifact name on the reader-facing doc surface"
     },
     {
+      "fingerprint": "50d30bce7b188a3b9cd70a77adf9ec192cdbe0c3fb61db4eafd5e381f51482ce",
+      "rule": "purpose-contract",
+      "path": "docs/REPO_AUDIT.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
       "fingerprint": "3815bfd39a8e4bc7dc747846db0332cf22b6290af0c6961648458bd1b865491b",
       "rule": "process-artifact",
       "path": "docs/RESEED_PLAN.md",
       "line": 1,
       "detail": "move process history under an archive directory"
+    },
+    {
+      "fingerprint": "581b8f26c3b61f05488d5555c7c79a201b7eb9e448285978a8dc0eb67a6e330d",
+      "rule": "purpose-contract",
+      "path": "docs/RESEED_PLAN.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
     },
     {
       "fingerprint": "e20ef28995a0e8374ff69cca69acc85deaa86f0e7a4b43ec643cee37f0eef477",
@@ -947,6 +1549,13 @@
       "detail": "process-artifact name on the reader-facing doc surface"
     },
     {
+      "fingerprint": "4fc6924057aeb7820109abb9879e61363279a6eb057dd7189bcf5c48af9218eb",
+      "rule": "purpose-contract",
+      "path": "docs/RETRO_PROPOSALS_2026-07.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
       "fingerprint": "76e79e7ea4e22fb2d5fec7dddae137e9ffa8f728186ba236a5b4b2053ce306fa",
       "rule": "section-length",
       "path": "docs/RETRO_PROPOSALS_2026-07.md",
@@ -959,6 +1568,13 @@
       "path": "docs/ROCKETLANE_ONBOARDING_CONNECTOR_SPEC.md",
       "line": 1,
       "detail": "282 lines exceeds 120; split it or add a reasoned allowance"
+    },
+    {
+      "fingerprint": "5782305934efa39284db3e2b3d25803ce0aa2e897032cfc086ed7b3f24e76bdb",
+      "rule": "purpose-contract",
+      "path": "docs/ROCKETLANE_ONBOARDING_CONNECTOR_SPEC.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
     },
     {
       "fingerprint": "0b9679421b419b522cfee509f9cb6918463058d570c9401807a2d15475fb552f",
@@ -989,6 +1605,13 @@
       "detail": "move process history under an archive directory"
     },
     {
+      "fingerprint": "bce3112659d70da1c3b8942174267cd134be1374f7934ac030b639529ce6f231",
+      "rule": "purpose-contract",
+      "path": "docs/SALESFORCE_ONESHOT_FINDINGS.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
       "fingerprint": "6fa711edc8a8f813fd2b7bb127841bc2a9e4441609763f054d66719fcd87bac4",
       "rule": "section-length",
       "path": "docs/SALESFORCE_ONESHOT_FINDINGS.md",
@@ -1003,11 +1626,32 @@
       "detail": "133 lines exceeds 120; split it or add a reasoned allowance"
     },
     {
+      "fingerprint": "02efc7588c0f29d56e6e2ee203b62276731cfa2fb8096c23f18b3e4a484fac61",
+      "rule": "purpose-contract",
+      "path": "docs/SCREENCAST_SCRIPT.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
+      "fingerprint": "50e811e15cc7903e685955384a89da2bf6587d2d5c854aba8b81d2194327dde4",
+      "rule": "purpose-contract",
+      "path": "docs/SECURITY.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
       "fingerprint": "249aaff347fabd1a9b13f00bf457bab70d225225ecc86fa5cbd90087b05e0b93",
       "rule": "doc-length",
       "path": "docs/SYNTHETIC_UNIVERSE_BIBLE.md",
       "line": 1,
       "detail": "1129 lines exceeds 120; split it or add a reasoned allowance"
+    },
+    {
+      "fingerprint": "b3dfe342736e90dfe7579a275f31d4f08a48e84eb09182c4d1ce97a3b3d13d0f",
+      "rule": "purpose-contract",
+      "path": "docs/SYNTHETIC_UNIVERSE_BIBLE.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
     },
     {
       "fingerprint": "b1cecccd8e65d9acad9eb53a24b1762b5d183157bcd3f10e1b8e3e2820a3221a",
@@ -1115,6 +1759,13 @@
       "detail": "802 lines exceeds 120; split it or add a reasoned allowance"
     },
     {
+      "fingerprint": "f8a826e5c4549ddc428b136220b4dcef21f0a529bd1ff29fa46402712d75fcc2",
+      "rule": "purpose-contract",
+      "path": "docs/SYSTEM_ARCHITECTURE.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
       "fingerprint": "2a1c03c72bb4255cff83cbfbe22599fe6db95b4f6f3bf137d283cdf4fa6e3f65",
       "rule": "section-length",
       "path": "docs/SYSTEM_ARCHITECTURE.md",
@@ -1143,6 +1794,13 @@
       "detail": "261 lines exceeds 120; split it or add a reasoned allowance"
     },
     {
+      "fingerprint": "f0bddb145d3088414c0172cb2c54a5eca1c15733c2e9e520ac21535430b89d3d",
+      "rule": "purpose-contract",
+      "path": "docs/TENANT_CRATEWORKS_BIBLE.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
       "fingerprint": "03d767c2a209eae92831f2698ba86dcdb4b179fac6618c5ab60cf433fbae7b87",
       "rule": "section-length",
       "path": "docs/TENANT_CRATEWORKS_BIBLE.md",
@@ -1155,6 +1813,13 @@
       "path": "docs/TENANT_FIELDSTONE_BIBLE.md",
       "line": 1,
       "detail": "273 lines exceeds 120; split it or add a reasoned allowance"
+    },
+    {
+      "fingerprint": "10e886aa15d49c62360249bbd094627234abd6a8a2d76a2d91726c9ee2fb99d0",
+      "rule": "purpose-contract",
+      "path": "docs/TENANT_FIELDSTONE_BIBLE.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
     },
     {
       "fingerprint": "44c3bc7dc11e3fe2ad3c4254555cc6ac6f0b54bf23dcd3e4bfb36dd6905b9a26",
@@ -1178,6 +1843,13 @@
       "detail": "320 lines exceeds 120; split it or add a reasoned allowance"
     },
     {
+      "fingerprint": "430ebb0e4e78f99a72292adc4e86ab1e411b7da8e44b045382b1623a59750db2",
+      "rule": "purpose-contract",
+      "path": "docs/TENANT_LOOPWAY_BIBLE.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
       "fingerprint": "a305bb76bc07b981978a5d6b4ba02d7170a5fda7c49aac4bd10007250b1982ee",
       "rule": "section-length",
       "path": "docs/TENANT_LOOPWAY_BIBLE.md",
@@ -1192,11 +1864,25 @@
       "detail": "'Arc L1 \u2014 cohort activation stall' is 46 lines; split it or add a reasoned allowance"
     },
     {
+      "fingerprint": "fdcfea1a2ce0bfbfc95e0fa8d533f20321b15e8c4fc6bf73973c1c268831ed7e",
+      "rule": "purpose-contract",
+      "path": "docs/TOUR.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
       "fingerprint": "75e43a6b5065cb64b034ebfbb11b9bb6ce955ef48229c5a0dae607dde651f0ff",
       "rule": "doc-length",
       "path": "docs/UNIVERSE_V2_CONVENTIONS.md",
       "line": 1,
       "detail": "130 lines exceeds 120; split it or add a reasoned allowance"
+    },
+    {
+      "fingerprint": "b9190f94aaef4dc028c266af30f2f174b18fbc71f44c95c83c63dbf17701a883",
+      "rule": "purpose-contract",
+      "path": "docs/UNIVERSE_V2_CONVENTIONS.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
     },
     {
       "fingerprint": "924c4355712e2b1c3610c3e9bddd2bc62911c07d7b06901317405dfce216143d",
@@ -1218,6 +1904,13 @@
       "path": "docs/WEEK1_PROTOCOL.md",
       "line": 1,
       "detail": "process-artifact name on the reader-facing doc surface"
+    },
+    {
+      "fingerprint": "b0a6735274ea6e8661c3422b812743c36ff55745230104dba8e0bb6e637c40b1",
+      "rule": "purpose-contract",
+      "path": "docs/WEEK1_PROTOCOL.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
     },
     {
       "fingerprint": "88019b264c4943432e60672fd1e83173c9c6a6f1ba654d14121af04890dfc11a",
@@ -1248,6 +1941,34 @@
       "detail": "'Fieldstone baseline table (measured 2026-07-04, Universe v2' is 44 lines; split it or add a reasoned allowance"
     },
     {
+      "fingerprint": "5df5ec496941b41a2367236002da473a6da9820850ded21de02f17c78fe0dea3",
+      "rule": "purpose-contract",
+      "path": "docs/WORLD.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
+      "fingerprint": "e4c4f9a32fc95110df0d164e54f69bfcd374550535a4b3479ac796c6e98a7cfb",
+      "rule": "purpose-contract",
+      "path": "docs/prompts/agent1_reconciliation_v1.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
+      "fingerprint": "848c7f708d497bb9a50d333f1b4db5e948029b1936c1da02f5a499770e0e298d",
+      "rule": "purpose-contract",
+      "path": "docs/prompts/agent1_slot_a_case_note_v1.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
+      "fingerprint": "81896732a8c2cbd98c4b95a9756955dcf0a930a066ab44dbef0668c24e2d1f47",
+      "rule": "purpose-contract",
+      "path": "docs/prompts/agent1_slot_b_expansion_v1.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
       "fingerprint": "19ba4950ea5a31c245515bd18e961af3ca4b619b0923ddb84e85d73c7acba296",
       "rule": "near-duplicate",
       "path": "docs/prompts/agent1_slot_b_expansion_v1.md",
@@ -1260,6 +1981,13 @@
       "path": "docs/prompts/agent1_slot_b_expansion_v1.md",
       "line": 11,
       "detail": "~100% overlap with docs/prompts/agent1_slot_b_risk_v1.md:11 (different doc -- pick one canonical home)"
+    },
+    {
+      "fingerprint": "aaed92a9b89aea3e07a95ad00fac2c7baafddead3e0738e084889548fd75a356",
+      "rule": "purpose-contract",
+      "path": "docs/prompts/agent1_slot_b_reason_draft_v1.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
     },
     {
       "fingerprint": "cbda1946cf741ea6b33f8a8fd85dce509e2cb6340e3358cb299b0ada9e962a9b",
@@ -1302,6 +2030,13 @@
       "path": "docs/prompts/agent1_slot_b_reason_draft_v1.md",
       "line": 59,
       "detail": "~97% overlap with docs/prompts/agent1_slot_b_reason_draft_v2.md:71 (different doc -- pick one canonical home)"
+    },
+    {
+      "fingerprint": "075cfa02f8e2b1e44a6df5011f32c2b0e7e9ec89baa8483ec95e270da2202faa",
+      "rule": "purpose-contract",
+      "path": "docs/prompts/agent1_slot_b_reason_draft_v2.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
     },
     {
       "fingerprint": "d664fe82d7855711f67531de36fddb9cdd74aa71610a3ffe29fb3ab8562c0d49",
@@ -1351,6 +2086,13 @@
       "path": "docs/prompts/agent1_slot_b_reason_draft_v2.md",
       "line": 71,
       "detail": "~97% overlap with docs/prompts/agent1_slot_b_reason_draft_v3.md:82 (different doc -- pick one canonical home)"
+    },
+    {
+      "fingerprint": "cbebc2877fe54c966074c67c17c5a24f52cda54adf7fe0e24a79b1cdbf56aee1",
+      "rule": "purpose-contract",
+      "path": "docs/prompts/agent1_slot_b_reason_draft_v3.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
     },
     {
       "fingerprint": "c8f2d6981e054d0512b8d9c0d7464ac2d799090987af218339c9eb9cc5c03b28",
@@ -1407,6 +2149,27 @@
       "path": "docs/prompts/agent1_slot_b_reason_draft_v3.md",
       "line": 82,
       "detail": "~79% overlap with docs/prompts/agent1_slot_b_reason_draft_v4.md:105 (different doc -- pick one canonical home)"
+    },
+    {
+      "fingerprint": "323d39c4867a4daab092124ae2be38c69a0c3c629d995dd7577af1450362b10e",
+      "rule": "purpose-contract",
+      "path": "docs/prompts/agent1_slot_b_reason_draft_v4.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
+      "fingerprint": "3c5065b3e65c48987e969593de4c3afd3e8e1bcd13912fd8d07dcb759a1c05a4",
+      "rule": "purpose-contract",
+      "path": "docs/prompts/agent1_slot_b_risk_v1.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
+    },
+    {
+      "fingerprint": "ffa99b4c9bd215a399dc039f0165ceca34603c6045bd2065f85eeb1b44beb28a",
+      "rule": "purpose-contract",
+      "path": "eval/gold/expected_actions_schema.md",
+      "line": 1,
+      "detail": "add exactly one complete marked BLUF purpose contract after the H1"
     }
   ]
 }

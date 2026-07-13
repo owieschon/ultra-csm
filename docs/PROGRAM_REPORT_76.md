@@ -1,7 +1,7 @@
 # Program Report 76 — F2R design: 12-lens adversarial sweep
 
 Trigger: the owner observed that each successive review pass on report 75 kept
-finding more flaws, and directed a comprehensive sweep for both integrity
+finding more flaws, and directed a full sweep for both integrity
 issues and missed opportunities before the experimental design is frozen.
 
 Method: 12 independent finder lenses (8 integrity, 4 opportunity) over report
