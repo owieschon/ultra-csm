@@ -1,0 +1,7 @@
+# Repository documentation
+
+> Source-bound repository documentation.
+
+## Source-bound documentation
+
+- [README.md](README.md): bindings: repository-surface; sha256: 09ed8ce6f31b29545307f13103adbc637501f37e7b2db843b53ebafe5ee29a12
