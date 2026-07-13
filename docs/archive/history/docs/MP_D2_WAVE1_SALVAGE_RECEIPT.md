@@ -49,7 +49,7 @@ until expectations come from deterministic or owner-labeled ground truth.
 
 ## Gates
 
-Run from `/Users/owieschon/dev/ultra-csm-mp-d2-salvage`.
+Run from the repository root.
 
 - Compile:
   `python3 -m py_compile src/ultra_csm/work_packets.py src/ultra_csm/agent1/sweep.py src/ultra_csm/api.py`

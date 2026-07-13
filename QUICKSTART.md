@@ -1,7 +1,11 @@
 # Quickstart
 
+<!-- clean-docs:purpose -->
 Start from a fresh clone of this repository, then run the local fixture/sim path from
 the repo root. No live tenant credentials are required for this path.
+<!-- clean-docs:end purpose -->
+<!-- clean-docs:allow doc-length reason="The offline setup and connector-readiness path is one runnable onboarding task" -->
+<!-- clean-docs:allow section-length reason="The connector-readiness exercise is one ordered verification sequence" -->
 
 ## Set Up
 
@@ -37,6 +41,7 @@ PYTHONPATH=src:. .venv/bin/python -m ultra_csm.cli demo-sweep --day 60 --deep --
 ```
 
 ## Exercise Connector Readiness Without Network Calls
+<!-- clean-docs:allow section-length reason="The Exercise Connector Readiness Without Network Calls reference keeps its ordered evidence and constraints together" -->
 
 ```sh
 ULTRA_CSM_ROCKETLANE_API_KEY=dummy \

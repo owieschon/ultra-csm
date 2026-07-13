@@ -1,6 +1,8 @@
 # Ultra CSM Data Plane
 
+<!-- clean-docs:purpose -->
 Status: initial integration contracts and deterministic fixtures.
+<!-- clean-docs:end purpose -->
 
 Ultra CSM should not start by inventing an agent prompt. It starts by defining the
 systems the agent is allowed to read and, later, write through a gate:

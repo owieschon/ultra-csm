@@ -2,13 +2,46 @@ version: 1
 bindings:
   - id: repository-surface
     type: region
-    doc: README.md
+    doc: docs/SURFACE.md
     region: repository-surface
     extractor: repository-overview
     source: {path: .}
     renderer: markdown-fragment
+  - id: evidence-sweep
+    type: symbol
+    doc: README.md
+    anchor: the-control-path
+    source: {path: src/ultra_csm/agent1/sweep.py, symbol: run_time_to_value_sweep}
+  - id: human-action-gate
+    type: symbol
+    doc: README.md
+    anchor: the-control-path
+    source: {path: src/ultra_csm/governance/gate.py, symbol: ActionGate}
+  - id: payload-committer
+    type: symbol
+    doc: README.md
+    anchor: the-control-path
+    source: {path: src/ultra_csm/committers.py, symbol: SimOutboundCommitter}
+  - id: hosted-readonly-export
+    type: symbol
+    doc: README.md
+    anchor: run-the-read-only-demo-in-90-seconds
+    source: {path: scripts/export_hosted_readonly_demo.py, symbol: build_fixture_bytes}
 projections:
   llms_txt:
     output: llms.txt
     title: Repository documentation
-    summary: Source-bound repository documentation.
+    summary: Canonical product documentation with source bindings and declared context.
+    include:
+      - README.md
+      - QUICKSTART.md
+      - SECURITY.md
+      - docs/ACTION_CONTROL_SANDBOX.md
+      - docs/ARCHITECTURE.md
+      - docs/DATA_HANDLING.md
+      - docs/DEMO.md
+      - docs/LIMITS.md
+      - docs/OPERATOR_RUNBOOK.md
+      - docs/READING_PATH.md
+      - docs/SECURITY.md
+      - docs/SURFACE.md

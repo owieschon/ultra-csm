@@ -1,7 +1,11 @@
 # Customer Value Model & Agent Roadmap
 
+<!-- clean-docs:purpose -->
 Status: architecture + forward spec. Supersedes the "four independent agents" framing.
 Per-agent priority factors are **projections** of the model defined here.
+<!-- clean-docs:end purpose -->
+<!-- clean-docs:allow doc-length reason="The scoring formula, outcome states, and guardrails form one canonical model reference" -->
+<!-- clean-docs:allow near-duplicate reason="This formula reference repeats only the architecture context needed to interpret scores" -->
 
 ## Where we are now (built + verified)
 

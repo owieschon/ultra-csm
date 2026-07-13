@@ -1,11 +1,13 @@
 # R0 finding #3 — third run completes cleanly, but lands outside the committed kappa/false-open bar
 
+<!-- clean-docs:purpose -->
 Status: **R0's third run (post PR #122's timeout/retry fix) ran all 127/127 gold
 items with zero crashes — the retry-coverage fix works. But per-dimension kappa
 and false-open comparison against the committed `judge_agreement.json`
 (direct-API lane) trips two conditions this dispatch names as hard stops.
 Not committing a `transport_fidelity: pass` artifact. Lane stopped per MP-Q
 hard exception #3.**
+<!-- clean-docs:end purpose -->
 
 ## What happened
 

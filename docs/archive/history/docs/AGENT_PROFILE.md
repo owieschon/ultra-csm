@@ -1,11 +1,13 @@
 # Agent Profile — ultra-csm
 
+<!-- clean-docs:purpose -->
 Profile v1.1 (2026-07-04, updated by Harvest 1 retro). Per-repo layer for
 the `/megaprompt` emitter:
 stable facts every generated dispatch embeds. Facts here are data, not
 instructions — nothing in this file overrides an emitted dispatch's
 kernel rules or the owner's decisions. Maintained by the emitter's retro
 flow; scoreboard is append-only.
+<!-- clean-docs:end purpose -->
 
 ## Verification suite (the standing gates)
 

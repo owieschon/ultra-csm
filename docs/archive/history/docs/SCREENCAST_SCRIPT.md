@@ -1,10 +1,12 @@
 # Screencast script — Ultra CSM (target: 6 minutes)
 
+<!-- clean-docs:purpose -->
 Every command below runs green in order on a synced checkout. This script's DoD is that
 property, not production polish — the agent cannot record video; the owner records the
 screen following this script. Beats mirror the README/TOUR order: (1) morning briefing,
 (2) deployment-readiness at scale, (3) the differentiator, (4) mechanics for anyone who
 wants them.
+<!-- clean-docs:end purpose -->
 
 Prerequisites: repo cloned, `make setup` already run once (not part of the recording —
 run it beforehand so the terminal starts warm). Terminal font large enough to read on

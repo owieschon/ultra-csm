@@ -1,6 +1,8 @@
 # Living World
 
+<!-- clean-docs:purpose -->
 `ucsm world` builds a deterministic synthetic world with two layers:
+<!-- clean-docs:end purpose -->
 
 - Surface data in the repo’s existing `FixtureCustomerData` contract shapes.
 - Latent truth that remains isolated from agent import paths and is used only by world-local eval code.
