@@ -131,5 +131,5 @@ This summary is generated from statically detected package, CLI, API, schema, an
 | schema | 3 | `ActionControlSandboxSession`, `ActionControlVerticalSlice`, `vercel` |
 | test-suite | 143 | `tests/test_account_brief_comms.py`, `tests/test_action_control_contract.py`, `tests/test_action_control_sandbox.py`, and 140 more |
 
-<!-- clean-docs:inventory-sha256 59dba44e3357795e77481674cd424af04662267f719f152edd4231bf02f9b51c -->
+<!-- clean-docs:inventory-sha256 d99e679a5c61beaa3328be71b61c036aece6c388ef54a335fbc8716fc5b8f3b2 -->
 <!-- clean-docs:end repository-surface -->
