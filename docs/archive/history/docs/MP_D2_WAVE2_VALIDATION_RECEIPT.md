@@ -41,7 +41,7 @@ validated.
 
 ## Gates
 
-Run from `/Users/owieschon/dev/ultra-csm-mp-d2-salvage`.
+Run from the repository root.
 
 - Compile:
   `python3 -m py_compile eval/work_packet_eval.py src/ultra_csm/work_packets.py src/ultra_csm/rejection_ledger.py`
