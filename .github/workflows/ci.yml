@@ -137,7 +137,7 @@ jobs:
 
       - name: Endor scan
         if: ${{ env.ENDOR_TOKEN != '' }}
-        uses: endorlabs/github-action@b7d24ea6c66af3772707f0fc96e05a91c10107b0 # main @ 2026-06-09
+        uses: endorlabs/github-action@f46ffb04c928a9c9c356f9627bd60b710ed0963e # main @ 2026-06-09
         with:
           namespace: ${{ env.ENDOR_NAMESPACE }}
           scan_dependencies: true
