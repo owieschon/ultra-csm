@@ -68,7 +68,7 @@ verified against the code rather than assumed:**
   calls `cost_tracker.record()` only when the transport response's
   `input_tokens` field is present (`if ... and in_tok is not None`). If a
   subset of `claude_code` CLI responses for Haiku returned usage-less JSON,
-  those completed, successful calls are simply invisible to telemetry —
+  those completed, successful calls are absent from telemetry —
   confirmed from the code path, not speculation. Sonnet's count (188 ≥ 171)
   is internally consistent with a few retries; Haiku's is not internally
   consistent at all.

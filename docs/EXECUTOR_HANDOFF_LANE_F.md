@@ -101,7 +101,7 @@ Composes existing entrypoints — it does not modify them:
 Authority guard (hard, tested): a trigger selects WORK, never authority. Whatever a
 trigger causes still lands in the gate at the action's existing tier. There is no field
 in trigger config that can name a tier, a release condition, or a recipient — the schema
-simply does not have one; add a test asserting the loader rejects any such key.
+does not have one; add a test asserting the loader rejects any such key.
 
 ## F4 — Eval battery FIRST (`eval/trigger_battery.py`)
 

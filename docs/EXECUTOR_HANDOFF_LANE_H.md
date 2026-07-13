@@ -1,7 +1,7 @@
 # Executor Handoff Addendum — Lane H: The Oversight Evidence Pack
 
 Addendum to `EXECUTOR_HANDOFF.md` (rev 2); same protocol, §X triggers, and one-shot
-autonomy contract. Small lane: one render-only feature, high leverage.
+autonomy contract. Small lane: one render-only feature with broad review value.
 
 **Goal:** `make oversight-report` renders the ledgers the system already keeps into a
 single **oversight evidence artifact** + a human-readable report — the document an
