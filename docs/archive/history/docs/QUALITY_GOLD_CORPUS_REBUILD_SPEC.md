@@ -1,8 +1,10 @@
 # Quality Gold Corpus Rebuild Spec (Bucket-B taxonomy + 6-dimension rubric)
 
+<!-- clean-docs:purpose -->
 Status: implemented direction (2026-06-28). Sequence: **corpus (this) → deterministic
 faithfulness checks → stochastic real-run sampling**. This spec covers the corpus only.
 Each section names exact files.
+<!-- clean-docs:end purpose -->
 
 ## 0. Why
 

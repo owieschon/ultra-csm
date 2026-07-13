@@ -88,10 +88,10 @@ consent satisfied) on a real `draft_customer_outreach` proposal, through a
 principal identity that is actually a human reviewer -- not the
 orchestrator's own principal and not the demo-operator's auto-minted
 stand-in. Concretely, this likely means: run the sweep to generate real
-pending proposals, have Owen (or another human with the appropriate
+pending proposals, have repository owner (or another human with the appropriate
 `customer.outreach.draft` authority) review the actual draft content, and
 call `submit_verdict(proposal_id, "approve", reason, token=<a real
-ULTRA_CSM_API_TOKENS-mapped bearer token identifying Owen>)` through the
+ULTRA_CSM_API_TOKENS-mapped bearer token identifying repository owner>)` through the
 live MCP tool surface (not this dispatch's own script) -- i.e. approval
 happens through the same channel a real CSM would use, outside an
 autonomous dispatch's own code path.

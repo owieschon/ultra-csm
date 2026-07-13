@@ -1,15 +1,17 @@
 # Honest Limits
 
+<!-- clean-docs:purpose -->
 Ultra CSM is meant to be judged by what it can prove. The strongest claim in
 the repo is not that every surface is production-finished; it is that the
 system records the boundary when evidence runs out.
+<!-- clean-docs:end purpose -->
 
 ## What The Evidence Proves
 
 | Limit | Current line | Receipt |
 | --- | --- | --- |
 | Synthetic universe | The fixture book is deterministic and internally consistent, but it is not proof on real customer data. Synthetic accounts, personas, support cases, telemetry, and comms are built as a controlled test world. | `docs/SYNTHETIC_UNIVERSE_BIBLE.md`; `docs/UNIVERSE_V2_CONVENTIONS.md`; `docs/PROGRAM_REPORT_67.md` |
-| Read-only demo build | The local static demo is read-only and fixture-backed. It proves the operations UI and a deployable static artifact, not a currently hosted service, live connector access, or production approval. | `scripts/export_hosted_readonly_demo.py`; `ui/public/demo-api/` |
+| Read-only demo build | The hosted and local static demo is read-only and fixture-backed. It proves the operations UI and a deployed static artifact, not live connector access, production approval, or a production API. | `https://ultra-csm.vercel.app/`; `scripts/export_hosted_readonly_demo.py`; `ui/public/demo-api/` |
 | Sandbox backend deployment | The repository now proves a deterministic separate-project FastAPI bundle, constrained database bootstrap, and local end-to-end sandbox journey. No Vercel project, Neon database, preview, production alias, or live UI wiring is claimed until the operator runbook produces those external receipts. | `deploy/hosted-action-control/manifest.json`; `scripts/build_hosted_action_control_bundle.py`; `docs/HOSTED_ACTION_CONTROL_RUNBOOK.md`; `tests/test_hosted_action_control_bundle.py` |
 | Outcome rail | The value model can represent `known`, `unknown`, and `not_instrumented` outcome states and the VM-8 slice proves it does not infer `known` from usage alone. The current realized-outcome source is synthetic terminal Renewal `CRMOpportunity` evidence; broader business metrics, attribution, and live connector rollout remain unbuilt. | `docs/PROGRAM_REPORT_69.md`; `tests/test_value_model.py`; `tests/test_agent1_sweep.py`; `src/ultra_csm/value_model.py` |
 | Judge validation | The full judge validation claim is false. Five dimensions are scoped-gateable; `on_task_relevance` is excluded by the per-dimension guard because three hard-layer aggregate false opens remain. The gold posture is single-labeler; no independent second blind human labeler has been supplied. | `docs/PROGRAM_REPORT_70.md`; `eval/gold/slot_b_quality_status.json`; `eval/gold/slot_b_quality_hard_status.json`; `docs/archive/PROGRAM_REPORT_64.md` |

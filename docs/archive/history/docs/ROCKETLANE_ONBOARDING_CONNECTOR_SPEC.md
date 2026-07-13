@@ -1,7 +1,9 @@
 # Rocketlane Onboarding Connector — Spec
 
+<!-- clean-docs:purpose -->
 Status: integration spec, grounded in Rocketlane public developer documentation.
 Date: 2026-06-27.
+<!-- clean-docs:end purpose -->
 
 ## Ground Rules
 

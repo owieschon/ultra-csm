@@ -1,6 +1,8 @@
 # Ultra CSM Tour
 
+<!-- clean-docs:purpose -->
 This tour follows the current proof shape: local read-only use first, then the live-build receipts that show what has been wired and run.
+<!-- clean-docs:end purpose -->
 
 ## 1. Ask The Book
 

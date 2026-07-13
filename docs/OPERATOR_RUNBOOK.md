@@ -1,7 +1,10 @@
 # Operator Runbook
 
+<!-- clean-docs:purpose -->
 This file is the builder-to-operator handoff surface for credentialed lanes.
 Builder lanes only add commands here; they do not execute them.
+<!-- clean-docs:end purpose -->
+<!-- clean-docs:allow doc-length reason="The daily operation and its recovery path are one operator task" -->
 
 ## R0 — Transport Fidelity Agreement Check
 

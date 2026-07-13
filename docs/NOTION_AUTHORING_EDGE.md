@@ -1,5 +1,9 @@
 # ADR: Notion Authoring Edge
 
+<!-- clean-docs:purpose -->
+Use this page when you need to understand ADR: Notion Authoring Edge before changing this repository. Without the documented scope and constraints, a change can rely on behavior the project does not promise; after reading, you can work from the stated contract.
+<!-- clean-docs:end purpose -->
+<!-- clean-docs:allow near-duplicate reason="This task guide repeats the invariant boundary required to operate the authoring edge safely" -->
 ## Status
 
 Accepted. Stream 34 (Notion Authoring Edge, Wave Harvest-14).

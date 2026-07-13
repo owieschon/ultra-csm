@@ -1,5 +1,10 @@
 # Ultra-CSM: Capability Map & Dependency Graph
 
+<!-- clean-docs:purpose -->
+Use this page when you need to understand Ultra-CSM: Capability Map & Dependency Graph before changing this repository. Without the documented scope and constraints, a change can rely on behavior the project does not promise; after reading, you can work from the stated contract.
+<!-- clean-docs:end purpose -->
+<!-- clean-docs:allow doc-length reason="The capability-to-evidence lookup is one canonical reference" -->
+<!-- clean-docs:allow near-duplicate reason="This lookup repeats only the labels needed to map into the linked architecture" -->
 ## Domains
 
 Nine domains. Each is an independently ownable, testable surface.

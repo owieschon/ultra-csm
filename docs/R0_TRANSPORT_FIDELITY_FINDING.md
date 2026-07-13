@@ -1,7 +1,9 @@
 # R0 Finding — claude_code transport cannot authenticate (--bare forces API-key auth)
 
+<!-- clean-docs:purpose -->
 Status: **R0 FAILED on item 1/63. Lane stopped per MP-R hard exception #1. Not a
 kappa/fidelity mismatch — the transport crashes before producing a single score.**
+<!-- clean-docs:end purpose -->
 
 ## Root cause
 

@@ -1,6 +1,8 @@
 # Ultra CSM Architecture
 
+<!-- clean-docs:purpose -->
 Status: active architecture landing page.
+<!-- clean-docs:end purpose -->
 
 Ultra CSM is a thin CSM-agent repo centered on one verifiable loop:
 

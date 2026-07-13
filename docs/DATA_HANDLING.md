@@ -1,6 +1,8 @@
 # Data Handling
 
+<!-- clean-docs:purpose -->
 Status: active pre-live-ingestion posture.
+<!-- clean-docs:end purpose -->
 
 Ultra CSM stores only the evidence needed to explain, govern, and audit customer-success
 work. Live connector reads must happen through confirmed tenant scope and must not put raw
