@@ -1,6 +1,8 @@
 # Operating Proof (v2)
 
+<!-- clean-docs:purpose -->
 Date: 2026-07-05.
+<!-- clean-docs:end purpose -->
 
 Supersedes the v1 note (see git history for this file) -- that version
 proved local operation against `run_verification.sh`'s core gates; this

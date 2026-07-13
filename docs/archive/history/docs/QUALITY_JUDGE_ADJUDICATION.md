@@ -1,8 +1,10 @@
 # Quality Judge Adjudication
 
+<!-- clean-docs:purpose -->
 Status: iteration-2 decision record for the Slot B quality judge. The purpose is to keep
 the judge-validation path evidence-driven: audit result, bucket counts, owner decisions,
 and the exact implementation response.
+<!-- clean-docs:end purpose -->
 
 ## Fresh Audit
 

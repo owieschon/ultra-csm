@@ -1,5 +1,6 @@
 # R2 writer bake-off — confirmatory rerun with corrected telemetry
 
+<!-- clean-docs:purpose -->
 Status: **Both arms adopt_eligible=True, quality tied to within run-to-run
 noise. Cost/latency, now measured with full coverage, shows a real and
 substantial gap: Sonnet 5 is cheaper and faster than Haiku 4.5 — the
@@ -7,6 +8,7 @@ opposite of the dispatch's stated expectation. One further, smaller
 measurement gap discovered and disclosed below (prompt-caching
 undercounts Sonnet's true cost; direction of the finding is unaffected).
 STOP → OA-Q1: owner decides.**
+<!-- clean-docs:end purpose -->
 
 ## Why this run exists
 

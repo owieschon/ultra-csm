@@ -1,5 +1,8 @@
 # Customer Action Control Plane docs
 
+<!-- clean-docs:purpose -->
+Use this page when you need to understand Customer Action Control Plane docs before changing this repository. Without the documented scope and constraints, a change can rely on behavior the project does not promise; after reading, you can work from the stated contract.
+<!-- clean-docs:end purpose -->
 ## Start Here
 
 - [`../README.md`](../README.md) - product front door and current proof table.
@@ -13,17 +16,17 @@
 - `eval/scorecard_csm.json` - 24/24 hard-gate result.
 - `tests/test_action_gate_machine.py` - authorization and tamper attacks.
 - `eval/internal_bridge_validation_report.json` - Product/Engineering handoff result.
-- [`PROGRAM_REPORT_60.md`](PROGRAM_REPORT_60.md) - the human-approval stop.
+- [`PROGRAM_REPORT_60.md`](archive/history/docs/PROGRAM_REPORT_60.md) - the human-approval stop.
 
 ## Core References
 
 - [`ARCHITECTURE.md`](ARCHITECTURE.md)
-- [`REPO_AUDIT.md`](REPO_AUDIT.md)
+- [`REPO_AUDIT.md`](archive/history/docs/REPO_AUDIT.md)
 - [`CUSTOMER_VALUE_MODEL.md`](CUSTOMER_VALUE_MODEL.md)
 - [`DATA_HANDLING.md`](DATA_HANDLING.md)
 - [`DATA_PLANE.md`](DATA_PLANE.md)
 - [`DECISION_LOG.md`](DECISION_LOG.md)
-- [`LIVE_INTEGRATION_FINDINGS.md`](LIVE_INTEGRATION_FINDINGS.md)
+- [`LIVE_INTEGRATION_FINDINGS.md`](archive/history/docs/LIVE_INTEGRATION_FINDINGS.md)
 - [`DEPLOYMENT_READINESS.md`](DEPLOYMENT_READINESS.md)
 
 ## Evidence archive

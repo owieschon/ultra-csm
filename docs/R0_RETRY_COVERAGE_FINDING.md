@@ -1,7 +1,9 @@
 # R0 finding #2 — claude_code transport failures aren't retried
 
+<!-- clean-docs:purpose -->
 Status: **R0 re-run (post PR #117) FAILED again, on a different item, for a
 different reason. Auth is fixed. This is a retry-coverage gap.**
+<!-- clean-docs:end purpose -->
 
 ## What happened
 

@@ -1,7 +1,18 @@
 # Repository documentation
 
-> Source-bound repository documentation.
+> Canonical product documentation with source bindings and declared context.
 
-## Source-bound documentation
+## Canonical documentation
 
-- [README.md](README.md): bindings: repository-surface; sha256: 00efa4773032e25a9729735dcf3d2938e1f6d6c2c15e1a8bad9ed15a4fffb61a
+- [QUICKSTART.md](QUICKSTART.md): declared canonical context; sha256: 09935e2ae439d5d78c8f451ca37511fd3c6e8f55fc33c2e9bfd0f7806712c0a9
+- [README.md](README.md): bindings: evidence-sweep, hosted-readonly-export, human-action-gate, payload-committer; sha256: c58fd0b13873cb02a6707a6783a0f410c4518341b0f0426fb68c5e08763deed2
+- [SECURITY.md](SECURITY.md): declared canonical context; sha256: 429198529fb342e4b0ab6ca0c1aaa978fee94168e7d410fc98d19c9c26c953e3
+- [docs/ACTION_CONTROL_SANDBOX.md](docs/ACTION_CONTROL_SANDBOX.md): declared canonical context; sha256: 1ac3e3e9b7bf7752cb42a1e26a0f3962634c70638d1ed7bba5086ae77588918f
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md): declared canonical context; sha256: 824868c1ddbcd784c48fc049588e242f04989368ff22cfcb35d18a341ffb1ba7
+- [docs/DATA_HANDLING.md](docs/DATA_HANDLING.md): declared canonical context; sha256: 43c6ac731de1fd7aef6158d98cf4e3f8c611bb50e368025e68740d36022f9f80
+- [docs/DEMO.md](docs/DEMO.md): declared canonical context; sha256: 9337d653e0ba7d842139aee40fac66ab04c8f8e1c8e22bf5cc99434937751f88
+- [docs/LIMITS.md](docs/LIMITS.md): declared canonical context; sha256: a17cd2e60b944dd07e01741ded8721c079b217a1bacdb01a314170274a129773
+- [docs/OPERATOR_RUNBOOK.md](docs/OPERATOR_RUNBOOK.md): declared canonical context; sha256: 8a6036629775170e50eb85ee322b9c0460fe8af3e45e06034c0ed54f28c6537f
+- [docs/READING_PATH.md](docs/READING_PATH.md): declared canonical context; sha256: b4ccfe0f5f351102abf8378a051cb516cbd0cac459c748878a614a23095d92e3
+- [docs/SECURITY.md](docs/SECURITY.md): declared canonical context; sha256: ba0b694946d82b2f9e2d6903afe39503c0fc228b164c5796f871eafecd8ca442
+- [docs/SURFACE.md](docs/SURFACE.md): bindings: repository-surface; sha256: 162dd3c9b5508395dde4d112d4d1ffbc49a4fdc604b948e9dcb139631ffd4abf

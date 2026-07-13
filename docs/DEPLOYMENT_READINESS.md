@@ -1,6 +1,8 @@
 # Deployment Readiness
 
+<!-- clean-docs:purpose -->
 Auto-rendered by `make deployment-readiness` (`scripts/render_deployment_readiness.py`) from committed battery/week-1/perturbation/drift artifacts. Never hand-edited -- every cell below cites the artifact it was read from.
+<!-- clean-docs:end purpose -->
 
 ## The claim
 
@@ -71,4 +73,3 @@ Every tenant's tier-appropriate action economics (motion → CSM action type, ti
 
 - All tenant + cross-cutting batteries `hard_ok`: **true**
 - All four tenants' week-1 protocol `ok`: **true**
-

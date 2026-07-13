@@ -1,9 +1,11 @@
 # R0 finding #3 resolution — claude_code judge revalidated against ground truth
 
+<!-- clean-docs:purpose -->
 Status: **PASS by a rule pre-registered before the run. R0 is resolved as a
 claim rescope (owner-directed): the transport meets the same validity gate
 the committed judge path met, rather than reproducing a single frozen run's
 point estimates. Q3 (writer bake-off OPERATE) is unblocked.**
+<!-- clean-docs:end purpose -->
 
 ## Why the original R0 bar was retired
 

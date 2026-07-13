@@ -1,6 +1,9 @@
 # Ultra CSM Observability
 
+<!-- clean-docs:purpose -->
 Status: active observability landing page.
+<!-- clean-docs:end purpose -->
+<!-- clean-docs:allow section-length reason="The troubleshooting branch is one symptom-to-repair decision tree" -->
 
 Observability is a port around the proof, not an authority path. Offline evals
 remain deterministic and credential-free.
@@ -18,6 +21,7 @@ recording or live implementations. The deterministic scorecard does not depend o
 wall-clock timing, network exporters, or credentials.
 
 ## Troubleshooting
+<!-- clean-docs:allow section-length reason="The Troubleshooting reference keeps its ordered evidence and constraints together" -->
 
 Known hazards a stranger reading an error message would hit, and where each is
 handled:
