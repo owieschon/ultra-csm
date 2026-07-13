@@ -113,3 +113,21 @@ and model lanes are intentionally separate from offline verification.
 The detailed receipts live in [docs/LIMITS.md](docs/LIMITS.md).
 
 Apache-2.0 — see [LICENSE](LICENSE).
+
+## Repository surface
+
+This summary is generated from statically detected package, CLI, API, schema, and test surfaces. Run `clean-docs inventory` for the full catalog.
+
+<!-- clean-docs:begin repository-surface -->
+| surface | discovered | examples |
+| --- | ---: | --- |
+| api-symbol | 1554 | `APIMetrics`, `ARRChange`, `AccountAttributionCandidate`, and 1551 more |
+| cli-command | 19 | `alarms`, `approve`, `check-in`, and 16 more |
+| cli-option | 261 | `--a6-expansion`, `--account`, `--account-slug`, and 258 more |
+| mcp-tool | 18 | `confirm_book`, `confirm_book_mappings`, `get_account_brief`, and 15 more |
+| package | 1 | `ultra-csm` |
+| schema | 3 | `ActionControlSandboxSession`, `ActionControlVerticalSlice`, `vercel` |
+| test-suite | 143 | `tests/test_account_brief_comms.py`, `tests/test_action_control_contract.py`, `tests/test_action_control_sandbox.py`, and 140 more |
+
+<!-- clean-docs:inventory-sha256 b83409383ff2249939c6175211986ff35ac6390c1063fd322f63653d46486873 -->
+<!-- clean-docs:end repository-surface -->
