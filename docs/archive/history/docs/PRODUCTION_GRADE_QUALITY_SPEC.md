@@ -1,9 +1,11 @@
 # Production-Grade Agent Quality — Spec + Dispatch
 
+<!-- clean-docs:purpose -->
 Status: the bar and the path to it. Blinded gold-set candidates, explorer mapping, and the
 demo org-knowledge pack/wiring are built; human labels, validated judge, live vertical,
 and operations gates remain open. "Production-grade agent quality, full stop."
 Date: 2026-06-28.
+<!-- clean-docs:end purpose -->
 
 ## What "production-grade agent quality" actually means
 
@@ -95,7 +97,7 @@ config/eval-lane only), and ships with a machine-readable `claim_boundary`.
    `make quality-gold-csm`.
 1a. Blind the queue -> **built.** Label records use opaque ids, the variant lives in a
    held-out key file, and `quality-gold-status/validate` enforce `blind=true` before judge
-   validation. Per [`QUALITY_LABELING_PROTOCOL.md`](QUALITY_LABELING_PROTOCOL.md).
+   validation. Per [`QUALITY_LABELING_PROTOCOL.md`](archive/history/docs/QUALITY_LABELING_PROTOCOL.md).
 1b. **Human labels the blinded set** per the protocol (rubric + blind + self-consistency
    re-label). Labels MUST be human; an LLM judge validated against LLM labels is circular.
 2. Validate the judge (weighted Cohen κ >= 0.6/dim, report the 95% CI), + the category

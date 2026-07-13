@@ -7,10 +7,10 @@ Branch: `codex/mpa-a6`
 ## Outcome
 
 OA-A2 Option 3 / Definition A was ratified, the owner supplied blind
-`on_task_relevance` relabels for the full 64-row hard layer, and Codex
+`on_task_relevance` relabels for the full 64-row hard layer, and automation runner
 mechanically merged only that dimension.
 
-Codex must not choose a production judge model, must not relabel any gold case,
+automation runner must not choose a production judge model, must not relabel any gold case,
 must not edit any human label, and must not edit the 0.6 gate to force a pass.
 Those boundaries were preserved.
 

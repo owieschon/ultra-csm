@@ -1,6 +1,8 @@
 # Decision Log
 
+<!-- clean-docs:purpose -->
 Append-only record of non-obvious engineering decisions and the evidence behind them.
+<!-- clean-docs:end purpose -->
 
 ---
 

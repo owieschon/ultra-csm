@@ -1,6 +1,8 @@
 # Security
 
+<!-- clean-docs:purpose -->
 Ultra CSM's security posture is enforced in code, tested in CI, and, where persistent state is involved, backed by database constraints or row-level security. The claim is not "no risk"; the claim is that the remaining risk is named and bounded.
+<!-- clean-docs:end purpose -->
 
 ## Enforced Properties
 

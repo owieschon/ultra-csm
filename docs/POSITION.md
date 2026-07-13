@@ -1,9 +1,11 @@
 # Position — where this system sits in the 2026 landscape
 
+<!-- clean-docs:purpose -->
 Grounded competitive positioning, researched **2026-07-02** against the cited public
 sources below. Claim discipline applies to positioning too: every comparative statement
 here is dated and sourced; if the landscape moves, this document is stale until re-run —
 it does not silently stay true.
+<!-- clean-docs:end purpose -->
 
 ## The landscape: three vendor classes, one open loop
 
