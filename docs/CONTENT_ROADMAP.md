@@ -70,7 +70,7 @@ existing one-directional/loader-as-oracle boundary, untouched by this dispatch.
 dispatch and used a different vocabulary than the 7 real triggers — only
 `feature_shallow_depth` matched exactly. 6 were relabeled to their closest trigger; 3
 with no corresponding trigger today (`alert_fatigue`, `integration_blocker`,
-`usage_decay_silent`) were left as-is, a stated exclusion — the roadmap simply cannot
+`usage_decay_silent`) were left as-is, a stated exclusion — the roadmap cannot
 demand-match them until a future dispatch adds a trigger that detects that pattern. See
 `docs/DECISION_LOG.md`'s Stream 46 entry for the exact mapping table.
 

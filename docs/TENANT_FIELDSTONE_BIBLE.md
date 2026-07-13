@@ -77,7 +77,7 @@ absolute value against a FleetOps-tuned threshold.
 ## No-CS-platform discipline
 
 `CustomerDataPlane.cs` is a required field on the shared dataclass
-(`contracts.py`) — Fieldstone cannot simply omit it the way
+(`contracts.py`) — Fieldstone cannot omit it the way
 `onboarding: OnboardingConnector | None = None` supports omission. Instead,
 `tenants/fieldstone/data_plane.py`'s `FieldstoneCSPlatformConnector`
 implements the full `CSPlatformConnector` protocol but every method

@@ -960,7 +960,7 @@ tech-touch (below both floors) — fictional logistics/field-ops businesses,
 authored as frozen data (deterministic hash-derived at authoring time, no
 runtime randomness), hygiene-scanner-clean. The existing 35 accounts are
 untouched; tier resolution (`resolve_tenant_tier`, built in Foundations)
-now simply applies to a much larger book.
+now applies to a much larger book.
 
 **Comms discipline for the tail (FINAL).** None of the 145 new accounts
 has an email-thread comms module — thinness is CORRECT at tech tier, not
