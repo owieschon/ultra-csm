@@ -116,7 +116,7 @@ A gold set is only ground truth if it's reliable. Two checks, in order of prefer
 ## Effort
 
 63 items at ~1-2 min each is roughly 1-2 hours, plus the ~10-item re-label. Bounded, real, and the
-single highest-leverage input to production-grade quality. It unblocks the validated judge,
+single input that unlocks the most production-quality work. It unblocks the validated judge,
 the real quality regression, and the migration lane at once.
 
 ---
