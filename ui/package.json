@@ -2,7 +2,7 @@
   "name": "ultra-csm-ops-surface",
   "version": "0.1.0",
   "private": true,
-  "license": "PolyForm-Noncommercial-1.0.0",
+  "license": "Apache-2.0",
   "scripts": {
     "dev": "NEXT_PUBLIC_API_BASE=http://localhost:8000 next dev",
     "build": "next build",

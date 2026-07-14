@@ -9,7 +9,7 @@ The catalog catches additions, removals, and replacements. It does not assert th
 <!-- clean-docs:begin repository-surface -->
 | surface | discovered | examples |
 | --- | ---: | --- |
-| api-symbol | 1554 | `APIMetrics`, `ARRChange`, `AccountAttributionCandidate`, and 1551 more |
+| api-symbol | 1555 | `APIMetrics`, `ARRChange`, `AccountAttributionCandidate`, and 1552 more |
 | cli-command | 20 | `alarms`, `approve`, `check-in`, and 17 more |
 | cli-option | 261 | `--a6-expansion`, `--account`, `--account-slug`, and 258 more |
 | mcp-tool | 18 | `confirm_book`, `confirm_book_mappings`, `get_account_brief`, and 15 more |
@@ -20,5 +20,5 @@ The catalog catches additions, removals, and replacements. It does not assert th
 | test-runner | 1 | `test:e2e` |
 | test-suite | 143 | `tests/test_account_brief_comms.py`, `tests/test_action_control_contract.py`, `tests/test_action_control_sandbox.py`, and 140 more |
 
-<!-- clean-docs:inventory-sha256 ad8618e583e3e6ba464a8a212797b8f51102c6d868fe523119812f8a4cb2464f -->
+<!-- clean-docs:inventory-sha256 22a06d1e42796118c0529ebd26943396f83cd613cc84d6e4db9e8aadf344cff6 -->
 <!-- clean-docs:end repository-surface -->

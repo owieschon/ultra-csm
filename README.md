@@ -114,4 +114,6 @@ and model lanes are intentionally separate from offline verification.
 
 The detailed receipts live in [docs/LIMITS.md](docs/LIMITS.md).
 
+## License
+
 Apache-2.0 — see [LICENSE](LICENSE).
