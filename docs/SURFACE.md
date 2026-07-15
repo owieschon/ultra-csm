@@ -20,5 +20,5 @@ The catalog catches additions, removals, and replacements. It does not assert th
 | test-runner | 1 | `test:e2e` |
 | test-suite | 143 | `tests/test_account_brief_comms.py`, `tests/test_action_control_contract.py`, `tests/test_action_control_sandbox.py`, and 140 more |
 
-<!-- clean-docs:inventory-sha256 22a06d1e42796118c0529ebd26943396f83cd613cc84d6e4db9e8aadf344cff6 -->
+<!-- clean-docs:inventory-sha256 2db9675a15f9f6cfbd54a82afe96b20136abdcd6d4dc4cc20dd091498e8e0227 -->
 <!-- clean-docs:end repository-surface -->
