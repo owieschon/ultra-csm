@@ -3,6 +3,7 @@
   "graph_consultation_integrity": true,
   "hard_failures": [],
   "hard_ok": true,
+  "observable_free_of_latent_strings": true,
   "planted_violation": false,
   "scale": 60,
   "schema_version": 1,

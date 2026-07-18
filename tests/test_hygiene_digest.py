@@ -32,6 +32,17 @@ def test_digest_mechanism_clean_pass_on_unrelated_text():
     assert hygiene_scan._digest_hit_count("this text discusses ultra csm eval batteries") == 0
 
 
+def test_single_token_digest_does_not_join_adjacent_short_variables():
+    synthetic = hashlib.sha256("xy".encode("utf-8")).hexdigest()
+    original = hygiene_scan.SINGLE_TOKEN_DIGEST_DENYLIST
+    hygiene_scan.SINGLE_TOKEN_DIGEST_DENYLIST = (synthetic,)
+    try:
+        assert hygiene_scan._digest_hit_count("xy", ()) == 1
+        assert hygiene_scan._digest_hit_count("x, y", ()) == 0
+    finally:
+        hygiene_scan.SINGLE_TOKEN_DIGEST_DENYLIST = original
+
+
 def test_digest_finding_never_surfaces_the_matched_text():
     fixture = Path("/tmp/_w1r_digest_test_fixture.py")
     fixture.write_text("# a zorble quax reference\n", encoding="utf-8")
