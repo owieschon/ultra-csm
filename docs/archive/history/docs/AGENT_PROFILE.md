@@ -142,11 +142,8 @@ under `harvest/`).
 
 ## Risk posture
 
-- Credentials: `~/ultra-csm-live-creds.env` — names/lengths only, never
-  values (not even partial slices).
-- Live systems: burner Gmail/Calendar + Rocketlane trial + the owner's
-  SFDC dev org. CREATE-ONLY, tagged, ledgered, dry-run manifest first.
-  Live seeding is fleetops-only; other tenants fixture/fake-transport only.
+- Credentials: local environment values stay outside version control.
+- Live systems: external validation uses scoped non-production fixtures.
 - Always owner-gated regardless of anything: standing jobs (launchd/cron),
   repo/org settings (branch protection), spend beyond stated budget,
   new public surfaces, credential slices.

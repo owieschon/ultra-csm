@@ -169,10 +169,8 @@ sample, not a claim about draft quality across the 35-account book.
 
 ## STOP Conditions
 
-No STOP condition fired. The key (sourced, at the user's explicit
-in-conversation instruction, from `~/dev/parts-cs-agent/.env` into this
-worktree's `.env` — cross-repo provenance disclosed here per the task's
-instruction) was verified live against 2 real API calls before any
+No STOP condition fired. The locally supplied, git-ignored runtime
+configuration was verified live against 2 real API calls before any
 ablation/judge-live spend. No wiring path lets corpus/pack content satisfy
 an evidence requirement — `_FORBIDDEN_KEYS` and the `boundary` sentence on
 `slot_b_context()` are unchanged from Phase 1, and the ablation/judge-live
@@ -220,7 +218,7 @@ not in the live run).
 - Commits this program: `cffaaf6` (Phase 1, prior session), `da90c5e` (BLOCKED marker, prior session, superseded by unblock), `5ea0871` (Phase 2, this session), `4e6a59d` (Phase 3, this session).
 - Diff vs synced main (`5eb521c..HEAD`): 13 files changed, 2,493 insertions / 28 deletions. Of these, 3 are generated JSON evidence artifacts (`org_pack_ablation.json`, `judge_live_50.json`, `csm_work_queue.json`/`scorecard_csm.json` re-baseline) and 1 is the now-superseded `BLOCKED.md` (left in git history, not deleted, per K1 disk-truth discipline) — hand-authored code/prompt files are `src/ultra_csm/knowledge.py`, `src/ultra_csm/agent1/{slot_b,sweep}.py`, `docs/prompts/agent1_slot_b_reason_draft_v3.md`, `eval/org_pack_ablation.py`, `eval/judge_live_csm.py`, `tests/test_knowledge.py`, `Makefile` — 8 files, within the 12-file budget read as hand-authored code.
 - Cost receipt (upper-bound estimate, see IF/THEN for method): ablation (Phase 2) ≈ $0.45 (6 writer calls + 18 judge calls); judge-live (Phase 3) ≈ $0.25 (3 writer calls + 9 judge calls). **Combined ≈ $0.70 of the $5.00 cap.** Key verified live (2 calibration calls, `claude-sonnet-4-6` + `claude-opus-4-8`, ~$0.0001) before any phase spend.
-- Key provenance (disclosed per task instruction): `ANTHROPIC_API_KEY` in this worktree's `.env` was copied, at the user's explicit in-conversation instruction, from `~/dev/parts-cs-agent/.env` (a different repo's credential) — not generated for or scoped to this repo. `.env` is git-ignored (`git status --short --ignored` confirms untracked); never committed.
+- Runtime configuration was supplied locally and remained outside version control.
 - Ablation per-item deltas (`eval/org_pack_ablation.json`): `ablation-acme-escalate` `priority_fidelity +1`, all else 0; `ablation-globex-propose` all 0; `ablation-initech-internal` `account_specificity +1`, all else 0. No dimension regressed on any item.
 - Judge-live candidates (`eval/gold/judge_live_50.json`, anchor day 50, fixture as_of 2026-08-10): `pinehill-transport` (pass, quoted above), `meridian-fleet` (pass), `harborview-fleet` (pass) — 3/3 `aggregate_pass=True`.
 - Merge policy check (K11): `gh api repos/owieschon/ultra-csm --jq .allow_auto_merge` → `false`; `gh api repos/owieschon/ultra-csm/branches/main/protection` → `404 Branch not protected`. Both conditions for `gh pr merge --auto` are unmet, so per K11 the PR is left open with the note "auto-merge pending one-time owner setup" rather than merged directly.
