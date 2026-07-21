@@ -1,9 +1,9 @@
 # OA-A2 On-Task Relabel Instructions
 
-<!-- clean-docs:purpose -->
+<!-- sourcebound:purpose -->
 Use this file while labeling. It intentionally contains no answer key, family names,
 judge scores, model identity, or previous human scores.
-<!-- clean-docs:end purpose -->
+<!-- sourcebound:end purpose -->
 
 File to label:
 

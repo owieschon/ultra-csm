@@ -1,8 +1,8 @@
 # Eval Standard
 
-<!-- clean-docs:purpose -->
+<!-- sourcebound:purpose -->
 This repo now carries a frontier-style living-world evaluation substrate with an explicit honesty boundary.
-<!-- clean-docs:end purpose -->
+<!-- sourcebound:end purpose -->
 
 Frontier-standard mapping:
 

@@ -1,9 +1,9 @@
 # MP-A A6 Hard-Gold Expansion Labeling Instructions
 
-<!-- clean-docs:purpose -->
+<!-- sourcebound:purpose -->
 Use this file while labeling. It intentionally contains no answer key, family names,
 intended failures, or judge results.
-<!-- clean-docs:end purpose -->
+<!-- sourcebound:end purpose -->
 
 File to label: `eval/gold/slot_b_quality_hard_a6_expansion.jsonl`
 

@@ -1,10 +1,10 @@
 # R2 finding #1 — writer transport still used the flat 30s timeout
 
-<!-- clean-docs:purpose -->
+<!-- sourcebound:purpose -->
 Status: **R2's first live run aborted on draw 1/171. Lane stopped per
 dual-role discipline; this build-phase fix reuses the Q1 seam. No mid-lane
 edits were made.**
-<!-- clean-docs:end purpose -->
+<!-- sourcebound:end purpose -->
 
 ## What happened
 

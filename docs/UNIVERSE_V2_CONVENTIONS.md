@@ -1,15 +1,15 @@
 # Universe v2 Conventions
 
-<!-- clean-docs:purpose -->
+<!-- sourcebound:purpose -->
 Binding, repo-committed conventions for the deployment-readiness test bed:
 four tenants (`fleetops`, `fieldstone`, `crateworks`, `loopway`) exercised
 from cold start across distinct vendor stacks, tiers, safety canaries, and
 (eventually) perturbation/drift. This document is the single source of
 truth for the decisions below — later work reads these conventions from
 the repo itself, not from any external planning artifact.
-<!-- clean-docs:end purpose -->
-<!-- clean-docs:allow doc-length reason="The fixture schema and service-tier rules are one canonical conventions reference" -->
-<!-- clean-docs:allow section-length reason="The schema table and its constraints must be read together" -->
+<!-- sourcebound:end purpose -->
+<!-- sourcebound:allow doc-length reason="The fixture schema and service-tier rules are one canonical conventions reference" -->
+<!-- sourcebound:allow section-length reason="The schema table and its constraints must be read together" -->
 
 ## 1. Tenant canon
 
@@ -43,7 +43,7 @@ fixture + fake-transport only, with per-tenant anchor files reserved for a
 future decision, not built now.
 
 ## 2. Playbook schema + tenant service tiers
-<!-- clean-docs:allow section-length reason="The 2. Playbook schema + tenant service tiers reference keeps its ordered evidence and constraints together" -->
+<!-- sourcebound:allow section-length reason="The 2. Playbook schema + tenant service tiers reference keeps its ordered evidence and constraints together" -->
 
 Tenant playbooks are CONFIG, never code: `knowledge/tenants/<slug>/playbooks.json`,
 loaded via `ultra_csm.knowledge.load_playbooks(tenant_slug)` (fail-closed,
