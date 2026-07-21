@@ -1,6 +1,6 @@
 # Tenant Bible — Loopway (Universe v2, WS-Tenant-Loopway, Wave 3)
 
-<!-- clean-docs:purpose -->
+<!-- sourcebound:purpose -->
 Loopway is the SCALE/PLG tenant (`docs/UNIVERSE_V2_CONVENTIONS.md` §1):
 ~400 accounts, ≥90% tech-touch, campaign-dominant motions, Attio-shaped
 CRM, product-analytics-heavy telemetry, Intercom-ish support chat. Where
@@ -12,9 +12,9 @@ sub-optimal, it is impossible by construction. There are no named CSMs on
 this book. The correct agent behavior is cohort-level and campaign-shaped
 almost everywhere, and the one place it flips back to a human motion
 (Arc L2) is exactly where the economics themselves flip.
-<!-- clean-docs:end purpose -->
-<!-- clean-docs:allow doc-length reason="This file is the canonical Loopway fixture dataset" -->
-<!-- clean-docs:allow section-length reason="Each tenant arc keeps its timeline and evidence together" -->
+<!-- sourcebound:end purpose -->
+<!-- sourcebound:allow doc-length reason="This file is the canonical Loopway fixture dataset" -->
+<!-- sourcebound:allow section-length reason="Each tenant arc keeps its timeline and evidence together" -->
 
 Fictional in full: every company name, person name, product code, and
 datum below is invented for this test bed. No real company, product, or
@@ -59,7 +59,7 @@ Intercom-ish in-app chat widget. There is no CSM email inbox for the
 tech-touch tail to generate thread history in. See "Chat class" below.
 
 ## The book: 400 accounts
-<!-- clean-docs:allow section-length reason="The The book: 400 accounts reference keeps its ordered evidence and constraints together" -->
+<!-- sourcebound:allow section-length reason="The The book: 400 accounts reference keeps its ordered evidence and constraints together" -->
 
 - **4 high-touch** (`arr_cents >= 10_000_000`, i.e. >= $100K ARR) — the
   only accounts with a named growth-team point of contact.
@@ -147,7 +147,7 @@ is the only correct action, and silence (or a per-account personal
 motion where a cohort action was correct) is a grading failure.
 
 ### Arc L1 — cohort activation stall
-<!-- clean-docs:allow section-length reason="The Arc L1 — cohort activation stall reference keeps its ordered evidence and constraints together" -->
+<!-- sourcebound:allow section-length reason="The Arc L1 — cohort activation stall reference keeps its ordered evidence and constraints together" -->
 
 60 tech-touch accounts sign up in a day-30-45 wave (signup days spread
 evenly across that window). By day 75, 35 of them have never activated

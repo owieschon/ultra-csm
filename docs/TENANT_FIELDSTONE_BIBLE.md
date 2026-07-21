@@ -1,6 +1,6 @@
 # Tenant Fieldstone Bible — the NORMS tenant
 
-<!-- clean-docs:purpose -->
+<!-- sourcebound:purpose -->
 Fictional ground truth for `fieldstone`'s 12-account book. Same discipline
 as `docs/SYNTHETIC_UNIVERSE_BIBLE.md` (fleetops): this bible is authored
 before any fixture or battery code exists, and every generated artifact
@@ -8,9 +8,9 @@ must be causal exhaust of it. If an artifact for account X were shuffled
 onto account Y, `eval/fieldstone_battery.py` must fail: X's evidence should
 not support Y's story and vice versa. See `docs/UNIVERSE_V2_CONVENTIONS.md`
 section 1 for `fieldstone`'s row in the tenant canon and D5 namespacing.
-<!-- clean-docs:end purpose -->
-<!-- clean-docs:allow doc-length reason="This file is the canonical Fieldstone fixture dataset" -->
-<!-- clean-docs:allow section-length reason="Each tenant arc keeps its timeline and evidence together" -->
+<!-- sourcebound:end purpose -->
+<!-- sourcebound:allow doc-length reason="This file is the canonical Fieldstone fixture dataset" -->
+<!-- sourcebound:allow section-length reason="Each tenant arc keeps its timeline and evidence together" -->
 
 ## Product canon
 
@@ -132,7 +132,7 @@ conventions. `det_id(*parts)` conventions namespaced with the tenant slug:
 `det_id("fieldstone", "account", slug)`, etc. — see D5.
 
 ## Arc F1 — the norms proof (`masonry-home-services`)
-<!-- clean-docs:allow section-length reason="The Arc F1 — the norms proof (`masonry-home-services`) reference keeps its ordered evidence and constraints together" -->
+<!-- sourcebound:allow section-length reason="The Arc F1 — the norms proof (`masonry-home-services`) reference keeps its ordered evidence and constraints together" -->
 
 **Grading mode: `none`.** The correct read at every checkpoint is "no
 action." This account is FleetOps-alarming and Fieldstone-healthy at the
@@ -174,7 +174,7 @@ it against Fieldstone's own norms (delta-from-baseline, not absolute)
 correctly reports nothing to do.
 
 ## Arc F2 — real risk under slow norms (`culvert-mechanical`)
-<!-- clean-docs:allow section-length reason="The Arc F2 — real risk under slow norms (`culvert-mechanical`) reference keeps its ordered evidence and constraints together" -->
+<!-- sourcebound:allow section-length reason="The Arc F2 — real risk under slow norms (`culvert-mechanical`) reference keeps its ordered evidence and constraints together" -->
 
 **Grading mode: `none` through day 89, `gap` from day 90 onward.** The
 scripted CSM never acts (there is no scripted CSM action in this fixture

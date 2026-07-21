@@ -1,9 +1,9 @@
 # OA-Q1 — Writer adoption decision
 
-<!-- clean-docs:purpose -->
+<!-- sourcebound:purpose -->
 Status: **DECIDED. Adopted: claude-sonnet-5 (transport: claude_code, subscription).**
 Owner ratified 2026-07-11.
-<!-- clean-docs:end purpose -->
+<!-- sourcebound:end purpose -->
 
 ## Decision
 

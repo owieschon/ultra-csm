@@ -1,13 +1,13 @@
 # Hosted Action Control deployment runbook
 
-<!-- clean-docs:purpose -->
+<!-- sourcebound:purpose -->
 This runbook deploys the rollback-isolated synthetic sandbox as a **separate
 Vercel project**. It does not change the root static project's `vercel.json`,
 and the generated bundle contains no main API, MCP, connector, UI, test, or
 evaluation modules. No deployment or database has been provisioned by the
 repository build itself.
-<!-- clean-docs:end purpose -->
-<!-- clean-docs:allow doc-length reason="Deployment, verification, rollback, and teardown are one operator sequence" -->
+<!-- sourcebound:end purpose -->
+<!-- sourcebound:allow doc-length reason="Deployment, verification, rollback, and teardown are one operator sequence" -->
 
 The bundle follows Vercel's current [FastAPI entrypoint
 contract](https://vercel.com/docs/frameworks/backend/fastapi) and [Python

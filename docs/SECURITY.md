@@ -1,7 +1,7 @@
 # Security
 
-<!-- clean-docs:purpose -->
+<!-- sourcebound:purpose -->
 The canonical security posture is [`../SECURITY.md`](../SECURITY.md).
-<!-- clean-docs:end purpose -->
+<!-- sourcebound:end purpose -->
 
 This file remains as a stable docs link for older references.
