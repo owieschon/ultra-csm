@@ -1,9 +1,9 @@
 # Quality Gold — Hard Layer Spec (adversarial cases that make judge-agreement mean something)
 
-<!-- clean-docs:purpose -->
+<!-- sourcebound:purpose -->
 Status: approved direction. Sequence position: **hard layer (this) → real
 6-dim LLM judge run against it**. Live Anthropic creds available for the judge step.
-<!-- clean-docs:end purpose -->
+<!-- sourcebound:end purpose -->
 
 ## Why this exists
 

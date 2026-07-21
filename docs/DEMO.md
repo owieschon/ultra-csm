@@ -1,8 +1,8 @@
 # Customer Action Control Plane demo
 
-<!-- clean-docs:purpose -->
+<!-- sourcebound:purpose -->
 Status: current reviewer walkthrough for the local read-only operations surface.
-<!-- clean-docs:end purpose -->
+<!-- sourcebound:end purpose -->
 
 This is not a dashboard. Demo it as a customer action control plane: the system reads
 account evidence, decides what needs attention, drafts the next CSM action, routes

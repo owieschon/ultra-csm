@@ -1,12 +1,12 @@
 # Detected repository surface
 
-<!-- clean-docs:purpose -->
+<!-- sourcebound:purpose -->
 Use this reference when deciding whether a detected Ultra CSM source locator has a direct reader claim or is only tracked by the repository catalog. It keeps catalog coverage distinct from source-specific documentation and exposes the current detected surface behind the clean-docs receipt.
-<!-- clean-docs:end purpose -->
+<!-- sourcebound:end purpose -->
 
-The catalog catches additions, removals, and replacements. It does not assert that every internal symbol needs a reader-facing explanation. `clean-docs verify` reports source-specific coverage as `bound` and the remaining catalog as `cataloged`.
+The catalog catches additions, removals, and replacements. It does not assert that every internal symbol needs a reader-facing explanation. `sourcebound verify` reports source-specific coverage as `bound` and the remaining catalog as `cataloged`.
 
-<!-- clean-docs:begin repository-surface -->
+<!-- sourcebound:begin repository-surface -->
 | surface | discovered | examples |
 | --- | ---: | --- |
 | api-symbol | 1555 | `APIMetrics`, `ARRChange`, `AccountAttributionCandidate`, and 1552 more |
@@ -18,7 +18,7 @@ The catalog catches additions, removals, and replacements. It does not assert th
 | runtime-constraint | 1 | `Python >=3.10` |
 | schema | 3 | `ActionControlSandboxSession`, `ActionControlVerticalSlice`, `vercel` |
 | test-runner | 1 | `test:e2e` |
-| test-suite | 143 | `tests/test_account_brief_comms.py`, `tests/test_action_control_contract.py`, `tests/test_action_control_sandbox.py`, and 140 more |
+| test-suite | 144 | `tests/test_account_brief_comms.py`, `tests/test_action_control_contract.py`, `tests/test_action_control_sandbox.py`, and 141 more |
 
-<!-- clean-docs:inventory-sha256 b8c782dde2179f954021b75ca6a27a8af7a0c98e0488fc616a92bf05e4b1fda8 -->
-<!-- clean-docs:end repository-surface -->
+<!-- sourcebound:inventory-sha256 582182b8e616abea826cd6d321bad524224cab9c3b495ff989e57853b8d66361 -->
+<!-- sourcebound:end repository-surface -->

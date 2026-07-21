@@ -1,10 +1,10 @@
 # Ultra CSM: System Architecture
 
-<!-- clean-docs:purpose -->
+<!-- sourcebound:purpose -->
 Use this page when you need to understand Ultra CSM: System Architecture before changing this repository. Without the documented scope and constraints, a change can rely on behavior the project does not promise; after reading, you can work from the stated contract.
-<!-- clean-docs:end purpose -->
-<!-- clean-docs:allow doc-length reason="The system boundary and lifecycle form one canonical architecture reference" -->
-<!-- clean-docs:allow section-length reason="Architecture sections keep each lifecycle boundary with its constraints" -->
+<!-- sourcebound:end purpose -->
+<!-- sourcebound:allow doc-length reason="The system boundary and lifecycle form one canonical architecture reference" -->
+<!-- sourcebound:allow section-length reason="Architecture sections keep each lifecycle boundary with its constraints" -->
 ## The Problem
 
 A Customer Success Manager owns 30–80 accounts. For each one, they need to know: is
@@ -37,7 +37,7 @@ doesn't require judgment but consumes the time that judgment needs.
 ---
 
 ## What the CSM Becomes
-<!-- clean-docs:allow section-length reason="The What the CSM Becomes reference keeps its ordered evidence and constraints together" -->
+<!-- sourcebound:allow section-length reason="The What the CSM Becomes reference keeps its ordered evidence and constraints together" -->
 
 The system handles context assembly, health computation, change detection, activity
 logging, call and email summarization, feedback aggregation, internal drafting, and
@@ -714,7 +714,7 @@ architecture enforces the boundary between them.
 ---
 
 ## The Lifecycle Coverage
-<!-- clean-docs:allow section-length reason="The The Lifecycle Coverage reference keeps its ordered evidence and constraints together" -->
+<!-- sourcebound:allow section-length reason="The The Lifecycle Coverage reference keeps its ordered evidence and constraints together" -->
 
 Mapping the system's three modes to the customer lifecycle:
 
@@ -767,7 +767,7 @@ The CSM decides whether the moment is right and makes the ask personally.
 ---
 
 ## Design Decisions Still Open
-<!-- clean-docs:allow section-length reason="The Design Decisions Still Open reference keeps its ordered evidence and constraints together" -->
+<!-- sourcebound:allow section-length reason="The Design Decisions Still Open reference keeps its ordered evidence and constraints together" -->
 
 **Advocacy: separate lens or filter?** Does "this customer would be a good reference"
 need its own projection, filter chain, and governance tier? Or is it a condition
