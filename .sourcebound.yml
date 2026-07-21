@@ -1,22 +1,12 @@
-version: 1
-execution:
-  commands: deny
-  allowed_commands:
-    license-consistency:
-      argv: ["{python}", scripts/check_license_consistency.py]
-      timeout_seconds: 10
-      network: false
+version: 2
 bindings:
-  - id: license-consistency
-    type: claim
+  - id: license
+    type: region
     doc: README.md
-    anchor: license
-    extractor: command
-    command: license-consistency
-    assertion:
-      json_path: $.license
-      operator: equals
-      expected: Apache-2.0
+    region: license
+    extractor: python-literal
+    source: {path: scripts/check_license_consistency.py, symbol: README_LICENSE_LINE}
+    renderer: scalar
   - id: repository-surface
     type: region
     doc: docs/SURFACE.md

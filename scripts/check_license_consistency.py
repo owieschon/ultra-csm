@@ -10,6 +10,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 EXPECTED = "Apache-2.0"
+README_LICENSE_LINE = "Apache-2.0 — see [LICENSE](LICENSE)."
 
 
 def main() -> int:
@@ -21,7 +22,7 @@ def main() -> int:
         "pyproject.toml": python_license == EXPECTED,
         "ui/package.json": ui_license == EXPECTED,
         "LICENSE": "Apache License" in license_text and "Version 2.0" in license_text,
-        "README.md": f"{EXPECTED} — see [LICENSE](LICENSE)." in readme,
+        "README.md": README_LICENSE_LINE in readme,
     }
     failed = [path for path, ok in checks.items() if not ok]
     print(json.dumps({"license": EXPECTED if not failed else None, "surfaces": checks}, sort_keys=True))

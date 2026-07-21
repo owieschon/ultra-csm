@@ -1,6 +1,6 @@
 # Customer Action Control Plane
 
-<!-- clean-docs:purpose -->
+<!-- sourcebound:purpose -->
 Customer teams already have enough dashboards. The harder problem is turning scattered
 CRM, onboarding, product, support, and communication evidence into the right action—then
 keeping an AI draft from becoming an unauthorized customer commitment.
@@ -10,7 +10,7 @@ drafts the next action, and stops at a human decision boundary. An approval auth
 one exact payload hash. Revise the message and the authorized hash changes; tamper with
 it afterward and the committer refuses. The agent can propose. It cannot approve itself
 or mint permission through model text.
-<!-- clean-docs:end purpose -->
+<!-- sourcebound:end purpose -->
 
 **The receipt that matters:** the current scorecard passes **24/24 hard gates** covering
 evidence, consent, tenant isolation, human identity, payload binding, unsafe drafts, and
@@ -116,4 +116,6 @@ The detailed receipts live in [docs/LIMITS.md](docs/LIMITS.md).
 
 ## License
 
+<!-- sourcebound:begin license -->
 Apache-2.0 — see [LICENSE](LICENSE).
+<!-- sourcebound:end license -->

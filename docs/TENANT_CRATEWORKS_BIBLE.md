@@ -1,15 +1,15 @@
 # Tenant Crateworks Bible
 
-<!-- clean-docs:purpose -->
+<!-- sourcebound:purpose -->
 Fictional ground truth for `crateworks` (Universe v2, Wave 3, WS-Tenant-Crateworks).
 Same discipline as `docs/SYNTHETIC_UNIVERSE_BIBLE.md` (the fleetops bible):
 this document is the deterministic script every generated artifact must be
 causal exhaust of; `eval/crateworks_battery.py` grades against this file,
 never the other way around (anti-Goodhart rule, `docs/UNIVERSE_V2_CONVENTIONS.md`
 section 7).
-<!-- clean-docs:end purpose -->
-<!-- clean-docs:allow doc-length reason="This file is the canonical Crateworks fixture dataset" -->
-<!-- clean-docs:allow section-length reason="Each tenant arc keeps its timeline and evidence together" -->
+<!-- sourcebound:end purpose -->
+<!-- sourcebound:allow doc-length reason="This file is the canonical Crateworks fixture dataset" -->
+<!-- sourcebound:allow section-length reason="Each tenant arc keeps its timeline and evidence together" -->
 
 ## 0. Canon
 
@@ -66,7 +66,7 @@ book, not just the arc account, exactly as a real homegrown export would
 be uniformly bad across every row.
 
 ## 2. Arc C1 — the fading champion, read through the mess (`gap` mode)
-<!-- clean-docs:allow section-length reason="The 2. Arc C1 — the fading champion, read through the mess (`gap` mode) reference keeps its ordered evidence and constraints together" -->
+<!-- sourcebound:allow section-length reason="The 2. Arc C1 — the fading champion, read through the mess (`gap` mode) reference keeps its ordered evidence and constraints together" -->
 
 **Host account:** `crateworks-dockside-storage`.
 

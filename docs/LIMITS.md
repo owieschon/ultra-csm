@@ -1,10 +1,10 @@
 # Honest Limits
 
-<!-- clean-docs:purpose -->
+<!-- sourcebound:purpose -->
 Ultra CSM is meant to be judged by what it can prove. The strongest claim in
 the repo is not that every surface is production-finished; it is that the
 system records the boundary when evidence runs out.
-<!-- clean-docs:end purpose -->
+<!-- sourcebound:end purpose -->
 
 ## What The Evidence Proves
 

@@ -1,10 +1,10 @@
 # Action Control sandbox
 
-<!-- clean-docs:purpose -->
+<!-- sourcebound:purpose -->
 The sandbox is a no-login synthetic laboratory for one bounded Trailhead
 Logistics draft. It is not a production action endpoint and cannot select a
 tenant, account, recipient, permission, action type, or outbound target.
-<!-- clean-docs:end purpose -->
+<!-- sourcebound:end purpose -->
 
 ## What executes
 

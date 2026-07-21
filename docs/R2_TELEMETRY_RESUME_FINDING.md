@@ -1,10 +1,10 @@
 # R2 finding #2 — cost telemetry didn't survive the mid-run process kill
 
-<!-- clean-docs:purpose -->
+<!-- sourcebound:purpose -->
 Status: **Root cause confirmed and fixed. This corrects a wrong hypothesis
 already published in `docs/R2_WRITER_BAKEOFF_RESULT.md` (PR #133) — see
 "What I got wrong" below.**
-<!-- clean-docs:end purpose -->
+<!-- sourcebound:end purpose -->
 
 ## What happened
 

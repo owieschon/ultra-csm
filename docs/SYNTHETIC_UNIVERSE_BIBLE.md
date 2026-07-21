@@ -1,16 +1,16 @@
 # Synthetic Universe Bible
 
-<!-- clean-docs:purpose -->
+<!-- sourcebound:purpose -->
 Fictional ground truth for the 35-account synthetic book. This is not a blind
 human gold set — it is the deterministic script every generated artifact must
 be causal exhaust of. If an artifact for account X were shuffled onto account
 Y, the narrative battery (`eval/narrative_battery.py`, Phase U3) must fail:
 X's evidence should not support Y's story and vice versa.
-<!-- clean-docs:end purpose -->
-<!-- clean-docs:allow doc-length reason="The synthetic universe is the canonical fixture-data reference" -->
-<!-- clean-docs:allow section-length reason="Each account dossier must keep its timeline and evidence together" -->
-<!-- clean-docs:allow provenance reason="Scenario lineage is part of the fixture contract, not a completion receipt" -->
-<!-- clean-docs:allow near-duplicate reason="Tenant and convention pages repeat invariant fixture keys needed to read each standalone dataset" -->
+<!-- sourcebound:end purpose -->
+<!-- sourcebound:allow doc-length reason="The synthetic universe is the canonical fixture-data reference" -->
+<!-- sourcebound:allow section-length reason="Each account dossier must keep its timeline and evidence together" -->
+<!-- sourcebound:allow provenance reason="Scenario lineage is part of the fixture contract, not a completion receipt" -->
+<!-- sourcebound:allow near-duplicate reason="Tenant and convention pages repeat invariant fixture keys needed to read each standalone dataset" -->
 
 ## Spine
 
@@ -37,7 +37,7 @@ Phase U1/U2 fixture code computes the actual UUID5 strings.
 ## The six arcs
 
 ### 1. Onboarding-stall — `pinehill-transport` (PILOT ACCOUNT, Phase U1)
-<!-- clean-docs:allow section-length reason="The 1. Onboarding-stall — `pinehill-transport` (PILOT ACCOUNT, Phase U1) reference keeps its ordered evidence and constraints together" -->
+<!-- sourcebound:allow section-length reason="The 1. Onboarding-stall — `pinehill-transport` (PILOT ACCOUNT, Phase U1) reference keeps its ordered evidence and constraints together" -->
 
 Persona: `stalled_onboarding` (`data_simulator.py:256`). Industry: logistics,
 CSM `csm-102`.
@@ -127,7 +127,7 @@ authoring: `latency`/`tickets` at day 20/50/310 are byte-identical to the
 pre-extension baseline (`None`/`1.0`, `115.5`/`2.0`, `10.0`/`0.0`).
 
 ### 2. Single-threaded-risk — `pinnacle-supply`
-<!-- clean-docs:allow section-length reason="The 2. Single-threaded-risk — `pinnacle-supply` reference keeps its ordered evidence and constraints together" -->
+<!-- sourcebound:allow section-length reason="The 2. Single-threaded-risk — `pinnacle-supply` reference keeps its ordered evidence and constraints together" -->
 
 Persona: `at_risk_champion`. Industry: logistics, CSM `csm-101`.
 
@@ -223,7 +223,7 @@ day-160 renewal case goes unanswered — so the agent's recommendation is
 the only correct action at every checkpoint; silence is a failure.
 
 ### 4. Silent-decline (green-but-quiet) — `aspenridge-supply`
-<!-- clean-docs:allow section-length reason="The 4. Silent-decline (green-but-quiet) — `aspenridge-supply` reference keeps its ordered evidence and constraints together" -->
+<!-- sourcebound:allow section-length reason="The 4. Silent-decline (green-but-quiet) — `aspenridge-supply` reference keeps its ordered evidence and constraints together" -->
 
 Persona: `stable`. Industry: logistics, CSM `csm-102`. Existing spine: no
 entries — a clean slate (deliberately not `redwood-fleet`, which is part of
@@ -270,7 +270,7 @@ are driven entirely by `book_simulator.py`'s `UsageDecline`, untouched by
 this program.
 
 ### 5. Expansion-ready — `meridian-fleet`
-<!-- clean-docs:allow section-length reason="The 5. Expansion-ready — `meridian-fleet` reference keeps its ordered evidence and constraints together" -->
+<!-- sourcebound:allow section-length reason="The 5. Expansion-ready — `meridian-fleet` reference keeps its ordered evidence and constraints together" -->
 
 Persona: `expanding`. Industry: fleet_management, CSM `csm-101`. Existing
 spine: day 10 `NewContactAppears("Sarah Chen", "Facilities Manager")`; day 14
@@ -332,7 +332,7 @@ messages to compute a trend where before there weren't) — recorded per
 the anti-Goodhart disclosure norm, not because any gate required it.
 
 ### 6. Healthy-control — `trailhead-logistics`
-<!-- clean-docs:allow section-length reason="The 6. Healthy-control — `trailhead-logistics` reference keeps its ordered evidence and constraints together" -->
+<!-- sourcebound:allow section-length reason="The 6. Healthy-control — `trailhead-logistics` reference keeps its ordered evidence and constraints together" -->
 
 Persona: `exemplary`. Industry: logistics, CSM `csm-101`. Existing spine:
 day 80 `HealthBandChange(..., "green", ("exemplary_adoption", "strong_champion", "advocacy_active"))`;
@@ -477,7 +477,7 @@ not the other way around — checked line by line against
 `src/ultra_csm/data_plane/synthetic_book.py` before writing this section.
 
 ### The vendor: FleetOps Platform
-<!-- clean-docs:allow section-length reason="The The vendor: FleetOps Platform reference keeps its ordered evidence and constraints together" -->
+<!-- sourcebound:allow section-length reason="The The vendor: FleetOps Platform reference keeps its ordered evidence and constraints together" -->
 
 A mid-market B2B SaaS company for commercial fleet operations (trucking,
 field services, supply-chain logistics), HQ'd in a fictional US Midwest
@@ -561,7 +561,7 @@ lag, incomplete data preventing milestone sign-off.
   commercial terms are never drafted by the CSM motion.
 
 ### Per-account dossiers
-<!-- clean-docs:allow section-length reason="The Per-account dossiers reference keeps its ordered evidence and constraints together" -->
+<!-- sourcebound:allow section-length reason="The Per-account dossiers reference keeps its ordered evidence and constraints together" -->
 
 Firmographics and commercial figures below are read directly from
 `synthetic_book.py` (`_COMPANY`, entitlement tables) — canon adds the
@@ -913,7 +913,7 @@ grading) — this arc exists solely to exercise the new value-model factor,
 not to add a new narrative beat the briefing/extractor layer is graded on.
 
 ### Routine health check-ins — four uncalibrated accounts (Harvest 17, dispatch 28)
-<!-- clean-docs:allow section-length reason="The Routine health check-ins — four uncalibrated accounts (Harvest 17, dispatch 28) reference keeps its ordered evidence and constraints together" -->
+<!-- sourcebound:allow section-length reason="The Routine health check-ins — four uncalibrated accounts (Harvest 17, dispatch 28) reference keeps its ordered evidence and constraints together" -->
 
 UI data-depth work (docs/PROGRAM_REPORT_45.md) found the operations-surface
 UI's Comms drawer empty for the account a demo actually opens
@@ -1087,7 +1087,7 @@ tier-gating battery's dynamic real-sweep case non-vacuous, per
 `eval/gold/fleetops_expected_actions.json`'s new entry for it.
 
 ## World response (MP-W1R, Wave A)
-<!-- clean-docs:allow section-length reason="The World response (MP-W1R, Wave A) reference keeps its ordered evidence and constraints together" -->
+<!-- sourcebound:allow section-length reason="The World response (MP-W1R, Wave A) reference keeps its ordered evidence and constraints together" -->
 
 F1's closed-loop hooks were, per `docs/WORLD.md`, "deterministic
 placeholders" — agent actions never fed back into the world's observable

@@ -1,8 +1,8 @@
 # CI/CD
 
-<!-- clean-docs:purpose -->
+<!-- sourcebound:purpose -->
 `.github/workflows/ci.yml` runs the offline-safe gates for this repo:
-<!-- clean-docs:end purpose -->
+<!-- sourcebound:end purpose -->
 
 | Job | Lane | What it does | Secrets |
 | --- | --- | --- | --- |

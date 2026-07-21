@@ -1,8 +1,8 @@
 # Explorer Mapping And Config Spec
 
-<!-- clean-docs:purpose -->
+<!-- sourcebound:purpose -->
 Status: first operational slice built. Date: 2026-06-28.
-<!-- clean-docs:end purpose -->
+<!-- sourcebound:end purpose -->
 
 ## Purpose
 

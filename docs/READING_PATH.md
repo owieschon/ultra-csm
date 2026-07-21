@@ -1,9 +1,9 @@
 # Representative reading path
 
-<!-- clean-docs:purpose -->
+<!-- sourcebound:purpose -->
 Read these four files in order. Together they show the normal customer-action path,
 including its least flattering seam; none is an isolated showcase module.
-<!-- clean-docs:end purpose -->
+<!-- sourcebound:end purpose -->
 
 1. **`src/ultra_csm/agent1/sweep.py`** — joins source evidence, computes deterministic
    priority, requests a bounded draft, and emits a pending proposal. Start at

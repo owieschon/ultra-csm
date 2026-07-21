@@ -1,8 +1,8 @@
 # Deployment Readiness
 
-<!-- clean-docs:purpose -->
+<!-- sourcebound:purpose -->
 Auto-rendered by `make deployment-readiness` (`scripts/render_deployment_readiness.py`) from committed battery/week-1/perturbation/drift artifacts. Never hand-edited -- every cell below cites the artifact it was read from.
-<!-- clean-docs:end purpose -->
+<!-- sourcebound:end purpose -->
 
 ## The claim
 
