@@ -3,6 +3,7 @@ from pathlib import Path
 import pytest
 
 WORKFLOW = Path(".github/workflows/ci.yml")
+CI_REFERENCE = Path(".github/CI.md")
 
 
 def _endor_job(workflow: str) -> str:
@@ -37,6 +38,14 @@ def test_unconfigured_job_is_not_selected() -> None:
 
 def test_incomplete_enabled_configuration_fails_before_checkout() -> None:
     _assert_endor_contract(_endor_job(WORKFLOW.read_text()))
+
+
+def test_documented_states() -> None:
+    reference = CI_REFERENCE.read_text().lower()
+
+    for state in ("passed", "failed", "not configured", "unverified"):
+        assert state in reference
+    assert "is not a passed scan" in reference
 
 
 def test_rejects_successful_noop() -> None:
