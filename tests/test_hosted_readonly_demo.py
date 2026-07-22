@@ -48,13 +48,13 @@ def test_docs_distinguish_static_export_from_mutation_capable_local_api():
         assert "loopback" in document
 
 
-def test_sourcebound_workflow_pins_the_stable_release_commit():
+def test_sourcebound_workflow_pins_the_verified_makefile_adapter_commit():
     workflow = (ROOT / ".github" / "workflows" / "sourcebound.yml").read_text(
         encoding="utf-8"
     )
-    stable_commit = "76ad72aa7d7c72e3156ae6d7981d5de2a47d9b0d"
+    verified_commit = "b2851ce13a3f6a0313ee6e17e200e085b495dc07"
 
-    assert workflow.count(stable_commit) == 2
+    assert workflow.count(verified_commit) == 2
 
 
 def test_ci_checks_committed_scorecard_without_regenerating_first():
