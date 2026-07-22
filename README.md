@@ -1,72 +1,78 @@
 # Customer Action Control Plane
 
 <!-- sourcebound:purpose -->
-Customer teams already have enough dashboards. The harder problem is turning scattered
-CRM, onboarding, product, support, and communication evidence into the right action—then
-keeping an AI draft from becoming an unauthorized customer commitment.
+Ultra CSM is a work-in-progress, eval-first customer action control plane. It turns
+tenant-scoped CRM, onboarding, product, support, and communication evidence into a
+proposed next action while keeping that draft from becoming an unauthorized customer
+commitment.
 
-This system assembles account evidence, computes priority with deterministic rules,
-drafts the next action, and stops at a human decision boundary. An approval authorizes
-one exact payload hash. Revise the message and the authorized hash changes; tamper with
-it afterward and the committer refuses. The agent can propose. It cannot approve itself
-or mint permission through model text.
+The repository is a synthetic reference build, not a production customer system. It
+computes priority with deterministic rules, drafts a bounded next action, and stops at a
+configured approval boundary. In credentialed paths, a bearer token maps to a principal
+stored as human-kind and distinct from the proposing actor. The software verifies that
+mapping, not whether a person is behind the token. The local no-auth demo uses a labeled
+stand-in.
 <!-- sourcebound:end purpose -->
 
-**The receipt that matters:** the current scorecard passes **24/24 hard gates** covering
-evidence, consent, tenant isolation, human identity, payload binding, unsafe drafts, and
-the real proposal-to-commit path.
+**[Open the live read-only demo](https://ultra-csm.vercel.app/)**. Synthetic data, no login, customer sends disabled.
+**Deterministic receipt:** [**24/24 hard gates**](eval/scorecard_csm.json) pass for
+evidence, consent, tenant separation, grounding, injection defense, reproducibility, and
+proposal-only behavior. **Governance receipts:**
+[`tests/test_action_gate_machine.py`](tests/test_action_gate_machine.py) covers identity
+kind, actor separation, consent, and payload binding;
+[`tests/test_action_control_sandbox.py`](tests/test_action_control_sandbox.py) covers
+tamper refusal, idempotent retry, and simulated commit.
 
-**[Open the live read-only demo](https://ultra-csm.vercel.app/)** — synthetic data,
-no login, and customer sends disabled.
+![Customer Action Control Plane: evidence becomes a proposed customer action; release requires an approval record bound to the same payload hash](docs/customer-action-control-plane.svg)
 
-![Customer Action Control Plane: evidence becomes a proposed customer action, but only a human can release the payload bound to the approval receipt](docs/customer-action-control-plane.svg)
+## Why this exists
+
+Customer teams can inspect CRM, onboarding, product, support, and communication systems
+one at a time. The harder job is to reconcile those records into one explainable action
+without letting a generated draft become permission. Ultra CSM makes the evidence path
+inspectable and keeps authorization in code and durable state.
+
+## Start here
+
+| Your job | Start here |
+| --- | --- |
+| Run the fixture-backed system | [Quickstart](QUICKSTART.md) |
+| Follow the local or hosted UI | [Demo walkthrough](docs/DEMO.md) |
+| Inspect the input-to-receipt code path | [Representative reading path](docs/READING_PATH.md) |
+| Understand the trust boundary | [Security posture](SECURITY.md) |
+| Check what remains unproven | [Current limits](docs/LIMITS.md) |
+| Navigate the rest of the documentation | [Documentation index](docs/README.md) |
 
 ## Run the read-only demo in 90 seconds
 
-The [hosted demo](https://ultra-csm.vercel.app/) is a no-login, read-only operations
-workspace backed by synthetic data. You can also run the same build locally.
-Open the queue, select **Trailhead Logistics**, and follow four stages shown in the UI:
+Open the hosted demo, select **Trailhead Logistics**, and inspect four stages:
 
-1. evidence assembled from tenant-scoped source records;
-2. priority computed without a model;
-3. an AI-written draft proposed with cited evidence;
-4. a human decision required before release.
+1. tenant-scoped source records supply the evidence;
+2. deterministic rules compute priority;
+3. a bounded fixture writer proposes a draft with cited evidence;
+4. the interface stops at the configured approval boundary.
 
-The read-only build deliberately disables decisions and sends. The same UI against the
-local governed API records approve, deny, and revise verdicts; an approved verdict is
-not labeled as sent or committed without a separate committer receipt.
+The hosted build disables decisions and sends, so a click cannot be mistaken for an
+approval. A non-read-only local build can record approve, deny, and revise verdicts, but
+an approved verdict is not labeled sent or committed without a separate committer
+receipt.
 
-The dedicated `/ui/action-control/` route makes that boundary inspectable. In a local
-build it can approve an exact synthetic payload, commit it to a temporary outbox, prove
-an idempotent retry, and demonstrate tamper refusal. The hosted static build does **not**
-fabricate those interactions: until a separate sandbox-only API is deployed, it shows
-the frozen executable proof and names the backend as unavailable. See
-[`docs/ACTION_CONTROL_SANDBOX.md`](docs/ACTION_CONTROL_SANDBOX.md).
-
-```bash
-make setup
-make hosted-readonly-demo
-ULTRA_CSM_DEMO_NOAUTH=1 ULTRA_CSM_BIND_HOST=127.0.0.1 PYTHONPATH=src:. \
-  .venv/bin/python -m uvicorn ultra_csm.api:app --host 127.0.0.1 --port 8000
-```
-
-Open `http://127.0.0.1:8000/ui/`. See [the walkthrough](docs/DEMO.md) for the
-reviewer script and exact boundaries.
-
-`make hosted-readonly-demo` verifies the committed fixtures and static build without
-rewriting source files. Maintainers can intentionally refresh fixtures with
-`make hosted-readonly-demo-generate`.
+The `/ui/action-control/` route makes the boundary inspectable. The hosted build shows
+frozen output from the executable proof and names its sandbox backend as unavailable. A
+local sandbox can
+approve one synthetic payload, commit it to a temporary outbox, retry idempotently, and
+refuse tampering. See [the sandbox contract](docs/ACTION_CONTROL_SANDBOX.md).
 
 ## The control path
 
 ```text
 tenant-scoped evidence
-  → deterministic value model and priority
-  → grounded AI draft
-  → pending action proposal
-  → human approve / revise / deny
-  → payload-bound committer
-  → decision receipt
+  -> deterministic value model and priority
+  -> bounded draft (live model or labeled fixture/fallback)
+  -> pending action proposal
+  -> configured approval identity: verdict record
+  -> payload-bound committer
+  -> commit receipt
 ```
 
 The system uses one shared customer value model rather than independent agents that can
@@ -74,47 +80,17 @@ disagree about account truth. Time-to-value, retention, and expansion are lenses
 that model. Product and Engineering handoffs share the evidence spine but do not bypass
 the customer-action gate.
 
-## Start reading here
-
-The representative vertical slice is documented in [docs/READING_PATH.md](docs/READING_PATH.md):
-
-- `src/ultra_csm/agent1/sweep.py` — evidence becomes deterministic priority and a proposed action;
-- `src/ultra_csm/governance/gate.py` — the human verdict and payload-binding state machine;
-- `src/ultra_csm/committers.py` — fail-closed simulated writes and idempotent receipts;
-- `tests/test_action_gate_machine.py` — approve, deny, revise, self-approval, consent, and tamper attacks.
-
-The first file is still too large. That is named debt, not hidden craft; the reading-path
-note identifies the extraction seam and why it has not been disguised with a showcase
-wrapper.
-
 ## Verify the claim
 
-```bash
-make scorecard-csm-check   # 24/24 deterministic hard gates
-make eval                  # offline suite + gold/knowability checks
-make lint hygiene
-make security-scan         # full public history, narrow fixture allowlist
-make hosted-readonly-demo # fixture drift check, UI lint, static build
-make hosted-action-control-deploy-check # isolated backend bundle + sandbox contracts
-```
-
-No cloud credentials or customer data are needed for these gates. Credentialed connector
-and model lanes are intentionally separate from offline verification.
+Run `make scorecard-csm-check` and `make eval`. The [quickstart](QUICKSTART.md) lists the
+remaining local gates and prerequisites. None needs cloud credentials or customer data;
+credentialed connector and model lanes stay separate.
 
 ## Claim boundary
 
-- The reviewer demo is synthetic and read-only. It proves the operations surface and the
-  decision boundary, not production customer outcomes.
-- Salesforce, Rocketlane, and Gmail paths were exercised only against dev, trial, or
-  burner scopes. This is not a production deployment claim.
-- The quality judge is not fully validated: five dimensions are scoped-gateable, one is
-  excluded, and the gold set has one human labeler.
-- Realized-outcome evidence currently covers a synthetic terminal-renewal slice. The
-  system does not infer customer value from usage alone.
-
-The detailed receipts live in [docs/LIMITS.md](docs/LIMITS.md).
-
-## License
+The static demo, dev and trial connector receipts, single-labeler judge, and synthetic
+renewal outcomes do not prove a production deployment or customer impact. The canonical
+[limits page](docs/LIMITS.md) states each boundary with its direct evidence.
 
 <!-- sourcebound:begin license -->
 Apache-2.0 — see [LICENSE](LICENSE).

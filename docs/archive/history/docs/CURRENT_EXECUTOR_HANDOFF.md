@@ -1,6 +1,10 @@
-# Current Executor Handoff — 2026-07-02 (superseded, see §0 update)
+# Executor handoff — 2026-07-02 (archived)
 
-This is the pickup note for the next executor. It covers the last active work window,
+> Historical process record. It does not define the current branch, operating state, or work
+> queue. Use the [documentation index](../../../README.md) for current guidance; branch-specific facts
+> below are preserved only as provenance.
+
+This was the pickup note for the next executor. It covers the last active work window,
 the current worktree state, and the next safe sequence. It is intentionally operational:
 verify the claims below before building on them.
 

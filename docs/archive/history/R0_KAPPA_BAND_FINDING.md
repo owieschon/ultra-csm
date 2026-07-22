@@ -1,5 +1,8 @@
 # R0 finding #3 — third run completes cleanly, but lands outside the committed kappa/false-open bar
 
+> Historical evaluation record, archived 2026-07-22. Retained for provenance; current
+> evaluation claims live in `docs/EVAL_STANDARD.md` and `docs/WORLD.md`.
+
 <!-- sourcebound:purpose -->
 Status: **R0's third run (post PR #122's timeout/retry fix) ran all 127/127 gold
 items with zero crashes — the retry-coverage fix works. But per-dimension kappa

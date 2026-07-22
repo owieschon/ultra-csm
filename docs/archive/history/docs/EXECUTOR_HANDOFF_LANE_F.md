@@ -1,6 +1,9 @@
-# Executor Handoff Addendum — Lane F: Triggers & the Tick Runner
+# Executor handoff addendum — Lane F (2026-07-02, archived)
 
-Addendum to `EXECUTOR_HANDOFF.md` (rev 2). Same protocol, same §X check-in triggers, same
+> Historical process record. It does not define current implementation or operating guidance.
+> Use the [documentation index](../../../README.md) for current pages.
+
+This was an addendum to `EXECUTOR_HANDOFF.md` (rev 2). It used the same §X check-in triggers and
 one-shot autonomy contract. Read this AFTER the main handoff.
 
 **What Lane F adds:** configurable **schedule**, **deadline**, and **event** triggers so
@@ -101,7 +104,7 @@ Composes existing entrypoints — it does not modify them:
 Authority guard (hard, tested): a trigger selects WORK, never authority. Whatever a
 trigger causes still lands in the gate at the action's existing tier. There is no field
 in trigger config that can name a tier, a release condition, or a recipient — the schema
-does not have one; add a test asserting the loader rejects any such key.
+simply does not have one; add a test asserting the loader rejects any such key.
 
 ## F4 — Eval battery FIRST (`eval/trigger_battery.py`)
 

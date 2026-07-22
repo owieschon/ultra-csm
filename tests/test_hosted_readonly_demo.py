@@ -37,6 +37,26 @@ def test_hosted_demo_make_target_declares_safe_local_noauth_boundary():
     assert "--check" in target
 
 
+def test_docs_distinguish_static_export_from_mutation_capable_local_api():
+    quickstart = (ROOT / "QUICKSTART.md").read_text(encoding="utf-8")
+    walkthrough = (ROOT / "docs" / "DEMO.md").read_text(encoding="utf-8")
+
+    for document in (quickstart, walkthrough):
+        assert "static export" in document
+        assert "does not remove" in document
+        assert "mutation routes" in document
+        assert "loopback" in document
+
+
+def test_sourcebound_workflow_pins_the_verified_makefile_adapter_commit():
+    workflow = (ROOT / ".github" / "workflows" / "sourcebound.yml").read_text(
+        encoding="utf-8"
+    )
+    verified_commit = "b2851ce13a3f6a0313ee6e17e200e085b495dc07"
+
+    assert workflow.count(verified_commit) == 2
+
+
 def test_ci_checks_committed_scorecard_without_regenerating_first():
     workflow = (ROOT / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
 

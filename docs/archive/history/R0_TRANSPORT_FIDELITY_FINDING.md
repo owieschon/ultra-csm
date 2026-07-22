@@ -1,5 +1,8 @@
 # R0 Finding — claude_code transport cannot authenticate (--bare forces API-key auth)
 
+> Historical evaluation record, archived 2026-07-22. Retained for provenance, not current
+> operator guidance.
+
 <!-- sourcebound:purpose -->
 Status: **R0 FAILED on item 1/63. Lane stopped per MP-R hard exception #1. Not a
 kappa/fidelity mismatch — the transport crashes before producing a single score.**

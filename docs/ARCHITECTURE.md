@@ -1,18 +1,22 @@
-# Ultra CSM Architecture
+# Ultra CSM architecture
 
-<!-- sourcebound:purpose -->
-Status: active architecture landing page.
-<!-- sourcebound:end purpose -->
+Use this page to locate the current runtime spine and the boundaries that model output
+cannot cross.
 
-Ultra CSM is a thin CSM-agent repo centered on one verifiable loop:
+Ultra CSM centers on one verifiable customer-action loop:
 
 ```text
-CustomerDataPlane -> CustomerValueModel -> TTV lens -> ActionGate -> Slot B
+CustomerDataPlane
+  -> CustomerValueModel and TTV lens
+  -> bounded Slot B reason and draft
+  -> ActionGate proposal
+  -> verdict from a configured approval identity
+  -> payload-bound committer receipt
 ```
 
-## Kept Spine
+## Runtime components
 
-- `src/ultra_csm/agent1/`: Time-to-Value evidence, sweep, and Slot B reason/draft.
+- `src/ultra_csm/agent1/`: Time-to-Value evidence, sweep, and bounded Slot B reason/draft.
 - `src/ultra_csm/value_model.py`: deterministic rails, config resolution, factors,
   and TTV projection.
 - `src/ultra_csm/data_plane/`: CRM, CS-platform, and product telemetry contracts,
@@ -26,7 +30,8 @@ CustomerDataPlane -> CustomerValueModel -> TTV lens -> ActionGate -> Slot B
 
 ## Hard Boundaries
 
-- The deterministic model computes priority. Slot B never mints factors or scores.
+- The deterministic model computes priority. Slot B never mints factors or scores. Its
+  source is labeled as fixture, live, template fallback, or none.
 - Customer-affecting actions are proposals. Delivery and record mutation require
   explicit release outside the scored agent.
 - Ambiguous identity never auto-picks an account.
@@ -39,5 +44,5 @@ CustomerDataPlane -> CustomerValueModel -> TTV lens -> ActionGate -> Slot B
   the current gate count.
 - `make regression-csm`: exact deterministic spine regression plus seeded
   distributional mechanics.
-- `make eval`: CSM-relevant pytest suite.
+- `make eval`: offline pytest suite, scoped quality-gold checks, and knowability audit.
 - `make hygiene`: active-surface residue scan.

@@ -1,5 +1,8 @@
 # MP-A A6 Hard-Gold Expansion Labeling Instructions
 
+> Historical record, archived 2026-07-22. The labeling run is complete. Keep this file
+> for provenance; do not use it as an active instruction.
+
 <!-- sourcebound:purpose -->
 Use this file while labeling. It intentionally contains no answer key, family names,
 intended failures, or judge results.
@@ -12,7 +15,8 @@ Do not open while labeling:
 - `eval/gold/slot_b_quality_hard_a6_expansion_key.jsonl`
 - `eval/gold_slot_b_hard.py`
 - Judge outputs, migration outputs, or validation status files generated after this staging set
-- The A6 expansion family table in `docs/QUALITY_GOLD_HARD_LAYER_SPEC.md`
+- The A6 expansion family table in
+  `docs/archive/history/QUALITY_GOLD_HARD_LAYER_SPEC.md`
 
 For each JSONL row:
 

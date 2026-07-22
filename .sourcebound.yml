@@ -41,6 +41,7 @@ projections:
     summary: Canonical product documentation with source bindings and declared context.
     include:
       - README.md
+      - docs/README.md
       - QUICKSTART.md
       - SECURITY.md
       - docs/ACTION_CONTROL_SANDBOX.md

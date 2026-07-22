@@ -54,12 +54,15 @@ World response (MP-W1R):
   (no LLM calls in world generation). Deterministic replay applies to all
   non-LLM state; LLM calls made BY AGENTS OPERATING IN this world vary
   run-to-run (neither transport pins temperature) — see
-  `docs/R0_KAPPA_BAND_FINDING.md` for the internal evidence. Never claim
+  the [archived R0 finding](archive/history/R0_KAPPA_BAND_FINDING.md) for the internal evidence. Never claim
   "replayable" without this distinction.
 
 Known gaps:
 
-- The pass^k lane is built as a handoff surface only; the local builder lane does not execute the metered branch.
+- The Q4/R4 pass^k evaluation executed 63 live draws over 21 world-surfaced scenarios. The
+  committed report records pass^3 at 0.8095 and 59/63 gated draws passing. Repeating the metered
+  lane with another seed, scale, or model remains an operator-owned command.
+- The no-spine ablation is blocked and unrun; the current baseline row is not ablation evidence.
 - The graph is intentionally limited to the six required sections and does not claim a broader ontology.
 - D3's dirty-data flags (`LatentAccountTruth.data_quality_flags`) and D4's
   injection events are generated but, like world response above, not yet

@@ -1,9 +1,9 @@
 # Real-Ready Architecture & Onboarding
 
-<!-- clean-docs:purpose -->
+<!-- sourcebound:purpose -->
 Status: synthesis spec. Research inputs came from R1-R10 in `REAL_READY_RESEARCH_DISPATCH`.
 Date: 2026-06-28.
-<!-- clean-docs:end purpose -->
+<!-- sourcebound:end purpose -->
 
 Current implementation status:
 

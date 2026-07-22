@@ -5,12 +5,14 @@ lifespan (see tests/test_api.py for the degrade-to-empty integration test).
 from __future__ import annotations
 
 import dataclasses
+from pathlib import Path
 
 from ultra_csm._api_helpers import _build_account_brief
 from ultra_csm.data_plane.contracts import CommunicationSignal, InternalCommsNote
 from ultra_csm.data_plane.fixtures import ACME_LOGISTICS, build_fixture_data_plane
 
 _AS_OF = "2026-06-27"
+ROOT = Path(__file__).resolve().parents[1]
 
 
 class _StubCommsConnector:
@@ -58,3 +60,14 @@ def test_brief_populates_comms_fields_when_a_comms_source_is_configured():
             "timestamp": "2026-06-03T00:00:00Z", "content": "renewal risk flagged", "source": "csm_note",
         }
     ]
+
+
+def test_synthetic_universe_doc_tracks_the_live_comms_boundary():
+    documentation = (ROOT / "docs/SYNTHETIC_UNIVERSE_BIBLE.md").read_text(
+        encoding="utf-8"
+    )
+
+    assert "CustomerDataPlane.comms" in documentation
+    assert "_build_account_brief" in documentation
+    assert "no consumer wires `CommunicationSignal`" not in documentation
+    assert "Comms drawer's continued empty-for-every-account state" not in documentation

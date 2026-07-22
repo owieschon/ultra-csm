@@ -10,7 +10,7 @@ not support Y's story and vice versa. See `docs/UNIVERSE_V2_CONVENTIONS.md`
 section 1 for `fieldstone`'s row in the tenant canon and D5 namespacing.
 <!-- sourcebound:end purpose -->
 <!-- sourcebound:allow doc-length reason="This file is the canonical Fieldstone fixture dataset" -->
-<!-- sourcebound:allow section-length reason="Each tenant arc keeps its timeline and evidence together" -->
+<!-- sourcebound:allow section-length reason="The Fieldstone reference keeps its dated account arc beside the evidence that drives its evaluator" -->
 
 ## Product canon
 

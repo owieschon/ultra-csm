@@ -89,9 +89,9 @@ wrong — never the oracle.
   anything except this renderer's own tests and manual `make notion-render` runs.
 - The live Notion pull (`notion_reader.live_authoring_payload`) is read-only and
   credential-gated (`ULTRA_CSM_NOTION_TOKEN`); absent that credential it raises
-  `NotionReadError` rather than silently no-op'ing. As of 2026-07-05 no `NOTION_*`
-  credential exists in `~/ultra-csm-live-creds.env`, so the live pull is an Owner Ask —
-  see `docs/PROGRAM_REPORT_34.md`.
+  `NotionReadError` rather than silently no-op'ing. Fixture tests prove parsing and
+  rendering. The repository contains no receipt from a live authoring database, so it
+  makes no live-integration claim.
 
 ## What this does not prove
 
