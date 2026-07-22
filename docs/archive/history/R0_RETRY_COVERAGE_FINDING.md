@@ -1,5 +1,8 @@
 # R0 finding #2 — claude_code transport failures aren't retried
 
+> Historical evaluation record, archived 2026-07-22. Retained for provenance, not current
+> operator guidance.
+
 <!-- sourcebound:purpose -->
 Status: **R0 re-run (post PR #117) FAILED again, on a different item, for a
 different reason. Auth is fixed. This is a retry-coverage gap.**

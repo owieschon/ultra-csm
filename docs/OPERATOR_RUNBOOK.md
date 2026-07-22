@@ -1,129 +1,74 @@
-# Operator Runbook
+# Credentialed evaluation runbook
 
-<!-- sourcebound:purpose -->
-This file is the builder-to-operator handoff surface for credentialed lanes.
-Builder lanes only add commands here; they do not execute them.
-<!-- sourcebound:end purpose -->
-<!-- sourcebound:allow doc-length reason="The daily operation and its recovery path are one operator task" -->
+Use this page to run the model-backed and metered evaluation lanes that remain outside
+the default offline proof.
 
-## R0 — Transport Fidelity Agreement Check
+Run `make setup`, `make doctor`, and the offline gates before supplying credentials.
+Keep API keys and model credentials in the environment; do not write them to artifacts,
+commands committed to the repository, or issue text.
 
-Purpose: verify the `claude_code` transport reproduces the committed judge path
-before any later operator lane trusts it.
+<a id="r0-transport-adapter"></a>
+## Check transport fidelity
 
-Command:
+Run the committed quality-judge path through the command-backed model transport:
 
-```bash
+```sh
 ULTRA_CSM_LLM_TRANSPORT=claude_code \
-python -m eval.run_quality_judge --model claude-sonnet-5
+  PYTHONPATH=src:. .venv/bin/python -m eval.run_quality_judge \
+  --model claude-sonnet-5
 ```
 
-Expected receipt:
+The written artifact must retain the committed `judge_prompt_version` and `model_id` and
+record the selected transport. Token counts are runtime telemetry; dollar values remain
+estimates unless reconciled to a provider bill.
 
-- The run completes through the existing judge path without direct API wiring.
-- The written artifact records the same `judge_prompt_version` and `model_id`
-  as the committed lane, with transport set to `claude_code` in runtime
-  telemetry.
-- Token telemetry is present from the transport layer; any dollar field remains
-  an estimate or zero-cost local receipt, not a billing claim.
+The command-backed transport allows process startup and authentication overhead, so its
+default per-call timeout is 120 seconds. Set `ULTRA_CSM_LLM_TIMEOUT_S` to override it.
+Timeouts and nonzero subprocess exits use the same bounded retry policy as the direct API
+transport.
 
-Timeout and retries: the `claude_code` transport shells out to the `claude`
-CLI, which has real process startup and auth/session overhead on top of model
-latency, so it defaults to a 120s per-call timeout (vs. 30s for the direct
-API). Override either transport's timeout with `ULTRA_CSM_LLM_TIMEOUT_S=<seconds>`.
-`subprocess.TimeoutExpired` and `subprocess.CalledProcessError` from the
-`claude_code` transport are retried like the direct API's connection/timeout
-errors, up to the same `MAX_RETRIES`.
+## Run the writer bake-off
 
-Status:
-
-- Added by builder during MP-F1 Wave 0.
-- Timeout/retry coverage for the `claude_code` transport landed via finding #2
-  (`docs/R0_RETRY_COVERAGE_FINDING.md`).
-- Third run completed all 127/127 items with zero crashes but landed outside
-  the committed kappa/false-open bar; see `docs/R0_KAPPA_BAND_FINDING.md`
-  (owner reviewed and authorized proceeding).
-
-## R2 — Writer Bake-off: Haiku 4.5 vs Sonnet 5 (`eval.writer_bakeoff`)
-
-Purpose: validate the cheap drafting model the program will use for Slot B,
-before adopting it. Both candidates draft the same MDD-power-sized, stratified
-scenario set; drafts are scored by the Sonnet-5 judge on the five currently-
-validated gating dimensions (`eval.judge_validation`'s scope guard) plus Slot
-B's own deterministic contract checks; `on_task_relevance` is scored and
-reported, never gated. Adoption is an absolute bar per arm, not head-to-head —
-see the module docstring in `eval/writer_bakeoff.py` for the exact bar and the
-self-preference disclosure (the judge is Sonnet 5, and one candidate arm is
-Sonnet 5 too).
-
-Command:
-
-```bash
+```sh
 ULTRA_CSM_LLM_TRANSPORT=claude_code \
-python -m eval.writer_bakeoff --drop-pp 0.20 --pass-k 3 \
-  --checkpoint-dir .writer_bakeoff_checkpoints
+  PYTHONPATH=src:. .venv/bin/python -m eval.writer_bakeoff \
+  --drop-pp 0.20 --pass-k 3 --checkpoint-dir .writer_bakeoff_checkpoints
 ```
 
-Expected receipt:
+The report at `eval/gold/writer_bakeoff_report.json` records gated pass rate, pass-k rate,
+contract violations, per-dimension results, token telemetry, and adoption eligibility for
+each arm. The judge shares a model family with one candidate arm, so interpret comparison
+results with that self-preference risk visible. A checkpoint is keyed by scenario and draw
+index and can resume after interruption.
 
-- `eval/gold/writer_bakeoff_report.json` records both arms' `gated_pass_rate`,
-  `pass_k_rate`, `contract_violation_rate`, per-dimension pass rates, and
-  token telemetry, plus the `adopt_eligible` verdict per arm.
-- Checkpointed per model under `--checkpoint-dir`; safe to stop and resume —
-  each draw's checkpoint entry is keyed by `(scenario_id, draw_index)`.
-- STOP → OA-Q1/OA-R2: the owner picks the adopted writer from the table; the
-  gates decide eligibility, not this recommendation.
+Eligibility gates do not select a production writer. Review the report, the contract
+failures, and cost telemetry before changing configuration.
 
-Status:
+## Rebuild the deterministic world
 
-- Harness built by builder (no prior R2 harness existed); not yet operated.
-
-## R1 — Deterministic World Build Receipt
-
-Purpose: regenerate the seeded living-world artifact and verify the graph,
-oracle, and knowability surfaces from a single operator command.
-
-Command:
-
-```bash
+```sh
 make world SEED=7 SCALE=60
 ```
 
-Expected receipt:
+The command rewrites `build/world/seed-7/world.json`, reports the knowability result, and
+emits counts for each required graph section. Run the planted negative control before
+trusting a green auditor result:
 
-- `build/world/seed-7/world.json` is rewritten deterministically.
-- The CLI reports `knowability hard_ok: True`.
-- The graph section counts cover the six required graph sections.
-
-## R3 — Knowability Auditor Challenge
-
-Purpose: prove the hard-gate auditor can catch a planted violation instead of
-merely reporting green on the clean path.
-
-Command:
-
-```bash
-PYTHONPATH=src:. python -m eval.knowability_audit --seed 7 --scale 60 --planted-violation
+```sh
+PYTHONPATH=src:. .venv/bin/python -m eval.knowability_audit \
+  --seed 7 --scale 60 --planted-violation
 ```
 
-Expected receipt:
+The negative control must report `hard_ok=False` and include
+`planted_violation:latent_truth_imported_into_surface_path` in `hard_failures`.
 
-- The command reports `hard_ok=False`.
-- `hard_failures` includes `planted_violation:latent_truth_imported_into_surface_path`.
+## Run pass-k sampling
 
-## R4 — Pass^k Handoff Only
-
-Purpose: hand the metered pass^k lane to the operator without the local builder lane executing it.
-
-Command:
-
-```bash
+```sh
 ULTRA_CSM_LLM_TRANSPORT=claude_code \
-python -m eval.world_scoreboard --seed 7 --scale 60 --pass-k 8 --model claude-sonnet-5
+  PYTHONPATH=src:. .venv/bin/python -m eval.world_scoreboard \
+  --seed 7 --scale 60 --pass-k 8 --model claude-sonnet-5
 ```
 
-Expected receipt:
-
-- The scoreboard artifact records the operator-selected `pass_k` and `model`.
-- Any actual metered pass^k sampling remains an operator decision outside the
-  builder lane.
+This is a metered lane. The scoreboard must record the selected model and `pass_k`; it
+does not convert sampling results into authority to approve or send customer actions.

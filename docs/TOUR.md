@@ -1,49 +1,49 @@
-# Ultra CSM Tour
+# Ultra CSM tour
 
-<!-- sourcebound:purpose -->
-This tour follows the current proof shape: local read-only use first, then the live-build receipts that show what has been wired and run.
-<!-- sourcebound:end purpose -->
+Use this tour to move from the fixture-backed interface to the implementation and its
+negative tests without detouring through build reports.
 
-## 1. Ask The Book
+## 1. Inspect the operations surface
 
-```sh
-python3 -m venv .venv
-.venv/bin/pip install -q -e ".[mcp]"
-claude mcp add ultra-csm --env ULTRA_CSM_MCP_READONLY=1 -- \
-  "$(pwd)/.venv/bin/python" -m ultra_csm.mcp_server
-```
-
-Ask which accounts are most at risk, which accounts are ready for expansion, or why a proposal is held. Read-only mode never writes proposals, never sends email, and returns typed refusals for write tools.
-
-## 2. Run The Local Gates
+Open the [hosted read-only demo](https://ultra-csm.vercel.app/) or build it locally:
 
 ```sh
 make setup
+make hosted-readonly-demo
+ULTRA_CSM_DEMO_NOAUTH=1 ULTRA_CSM_BIND_HOST=127.0.0.1 PYTHONPATH=src:. \
+  .venv/bin/python -m uvicorn ultra_csm.api:app --host 127.0.0.1 --port 8000
+```
+
+Follow [`DEMO.md`](DEMO.md). The UI separates deterministic priority, a labeled fixture
+draft, the pending proposal, and the disabled decision boundary.
+
+## 2. Trace one action through code
+
+Read the four files in [`READING_PATH.md`](READING_PATH.md). They show evidence assembly,
+bounded drafting, proposal creation, a verdict from the configured identity, hash
+verification, simulated commit,
+and the attacks against that sequence.
+
+## 3. Run the local proof
+
+```sh
 make doctor
-make scorecard-csm
+make scorecard-csm-check
 make eval
 make lint hygiene
 ```
 
-These prove the deterministic spine and test suite without cloud credentials or customer data. `make eval` boots an ephemeral Postgres cluster, applies migrations, runs the suite, and tears the cluster down.
+These gates need no customer data or cloud credentials. The scorecard checks the
+committed 24-case artifact; the test suite boots a temporary PostgreSQL 16 cluster.
 
-## 3. Read The Live-Build Receipts
+## 4. Choose an integration boundary
 
-| Receipt | What It Proves |
-| --- | --- |
-| `docs/PROGRAM_REPORT_54.md` | Layer 1: judge validation fixed, UI dead ends closed, data handling posture added. |
-| `docs/PROGRAM_REPORT_58.md` | Layer 2: persistent state, live serving, audit ledger, re-observation seam, and lens chips wired. |
-| `docs/PROGRAM_REPORT_65.md` | Layer 3: daily job loaded, durable ledger accumulating, live adversarial drill, Sonnet 5 judge migration, drift-power scope, and clean Phase 14 skip. |
-| `docs/PROGRAM_REPORT_60.md` | Human approval stop: a burner outreach proposal is staged, but owner approval is required before any send. |
-| `docs/PROGRAM_REPORT.md` | Hollow-number correction: relay mapping now prefers loud unknowns over fabricated records. |
-| `docs/PROGRAM_REPORT_40.md` | Governance hardening: agent-kind self-approval cannot authorize tier >=2 customer-facing work. |
+- [`MCP_MODES.md`](MCP_MODES.md) separates MCP access flags, data-plane selection,
+  governed native tools, and host-relayed books.
+- [`CONNECTORS.md`](CONNECTORS.md) separates request-shape dry runs, simulated onboarding,
+  and tenant-specific live readiness.
+- [`LIMITS.md`](LIMITS.md) states the evidence still missing for live sends, monitoring,
+  judge validation, and production outcomes.
 
-Historical process reports live in `docs/archive/`.
-
-## 4. Understand The Boundaries
-
-- Connected live orgs are the Salesforce dev org, Rocketlane trial, and Gmail burner account.
-- The staged Phase 10 proposal has not been approved or sent.
-- The judge is validated against a single-labeler gold set; no second labeler has been supplied.
-- Sentry alarm payloads are tested, but live Sentry ingestion is still waiting on a configured DSN/token.
-- No claim is made about production-customer retention or expansion lift.
+Program reports record how individual slices were built. They are provenance, not the
+current path through the system.

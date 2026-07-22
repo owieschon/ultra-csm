@@ -15,8 +15,8 @@ Frontier-standard mapping:
 | False-negative vs latent truth tracking | `build_oracle_report()` | built |
 | Auditor challenge case | `--planted-violation` mode | built |
 | Degenerate baselines | `build_baseline_report()` | built |
-| No-spine ablation | baseline report row | built |
-| Pass^k | operator handoff only | partial by design |
+| No-spine ablation | `eval/world_scoreboard.json` W4 row | blocked, not run |
+| Pass^k | `eval/gold/q4_pass_k_report.json` | executed for Q4/R4; repeat lane operator-owned |
 | Statistical power sizing | `eval.drift_power_csm` helpers reused in baseline report | built |
 
 Hard gates:
@@ -30,4 +30,7 @@ Claim boundary:
 
 - The living-world harness proves deterministic structure, agent blindness, and auditability.
 - It does not prove production retention impact.
-- It does not claim that pass^k has been executed locally; that lane is documented for the operator and intentionally unrun by the local builder lane.
+- The committed Q4/R4 report contains one executed pass^k evaluation: 63 live draws across 21
+  scenarios, with pass^3 at 0.8095. It does not generalize that result to another seed, model,
+  prompt, or world scale.
+- The no-spine ablation remains blocked and unrun.

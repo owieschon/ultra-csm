@@ -1,6 +1,9 @@
-# Executor Handoff — Lane J: The Sim Morning (operator demo mode)
+# Executor handoff — Lane J (2026-07-02, archived)
 
-Same protocol as prior lanes (one-shot autonomy, IF/THEN criteria, verify by
+> Historical process record. It does not define current implementation or operating guidance.
+> Use the [documentation index](../../../README.md) for current pages.
+
+This lane used the same protocol as prior lanes (one-shot autonomy, IF/THEN criteria, verify by
 executing). This lane builds the **first-value experience**: a self-narrating,
 zero-credential "morning as a CSM with an agent" that a stranger can reach from
 `claude mcp add` in under five minutes, experiencing the full designed loop —

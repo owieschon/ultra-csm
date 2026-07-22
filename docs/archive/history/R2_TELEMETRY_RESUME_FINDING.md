@@ -1,8 +1,11 @@
 # R2 finding #2 — cost telemetry didn't survive the mid-run process kill
 
+> Historical evaluation record, archived 2026-07-22. Retained for provenance, not current
+> operator guidance.
+
 <!-- sourcebound:purpose -->
 Status: **Root cause confirmed and fixed. This corrects a wrong hypothesis
-already published in `docs/R2_WRITER_BAKEOFF_RESULT.md` (PR #133) — see
+already published in `docs/archive/history/docs/R2_WRITER_BAKEOFF_RESULT.md` (PR #133) — see
 "What I got wrong" below.**
 <!-- sourcebound:end purpose -->
 

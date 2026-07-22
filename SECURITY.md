@@ -1,37 +1,48 @@
 # Security
 
-<!-- sourcebound:purpose -->
-Ultra CSM's security posture is enforced in code, tested in CI, and, where persistent state is involved, backed by database constraints or row-level security. The claim is not "no risk"; the claim is that the remaining risk is named and bounded.
-<!-- sourcebound:end purpose -->
+Use this page to identify Ultra CSM's enforced trust boundaries, their executable
+evidence, and the risks that remain outside those boundaries.
+
+Controls are enforced in code, tested in CI, and, where persistent state is involved,
+backed by database constraints or row-level security. This is not a claim of zero risk.
 
 ## Enforced Properties
 
 | Property | Enforcement | Database backstop | Evidence |
 | --- | --- | --- | --- |
-| Tenant containment | Data-plane reads, sweep execution, API paths, and connector serving all carry tenant scope. | Persistent event/audit tables use tenant-scoped RLS. | `docs/PROGRAM_REPORT_58.md`, `tests/test_cross_tenant_rls.py` |
-| Human approval for customer-facing actions | Customer outreach stays as a pending proposal until a human principal records a verdict. | Tier >=2 approvals reject agent-kind self-approval and bind verdicts to proposal payload hashes. | `docs/PROGRAM_REPORT_40.md`, `docs/PROGRAM_REPORT_60.md` |
-| Consent gate | Draft outreach requires a consented contact and fails closed when consent is missing. | Proposal/verdict persistence preserves payload and consent references for audit. | `eval/scorecard_csm.json`, `tests/test_api.py` |
-| Payload binding | `ActionGate` canonicalizes proposal payloads and stores/verifies SHA-256 bindings before verdict outcomes can authorize work. | Verdict rows carry the approved payload hash. | `docs/PROGRAM_REPORT_58.md`, `tests/test_action_gate_machine.py` |
-| No authority minting | Platform session context creates proposals with explicit principal, tenant, cause, and clock context. | Governance checks prevent lower-authority principals from creating effective higher-authority approvals. | `docs/PROGRAM_REPORT_40.md` |
-| Untrusted content handling | Hostile source text is treated as evidence data, not instruction. URI scheme guards reject unsafe draft links. | Customer-facing execution remains behind the same gate. | `docs/archive/PROGRAM_REPORT_61.md`, `docs/PROGRAM_REPORT_65.md` |
-| Data handling | Logs scrub secrets, PII-shaped values, and customer content before JSON emission. Live ingestion is bounded by retention posture. | Persistent stores keep audit facts and hashes, not OAuth tokens or raw customer-content logs. | `docs/DATA_HANDLING.md`, `docs/PROGRAM_REPORT_54.md` |
-| Operating monitor | Daily job, missed-run alarm, cost alarm, and Sentry envelope/check-in paths are implemented. | Durable operating and audit logs survive restart. | `docs/archive/PROGRAM_REPORT_59.md`, `docs/PROGRAM_REPORT_65.md` |
+| Tenant containment | Data-plane reads, sweep execution, API paths, and connector serving carry tenant scope. | Persistent tenant tables use forced row-level security for the runtime role. | `migrations/0002_rls.sql`, `tests/test_cross_tenant_rls.py` |
+| Configured approval identity | Customer outreach stays pending until a bearer token maps to a principal stored as human-kind and distinct from the proposing actor. The software does not establish who holds the token. | Tier 2 and higher approvals reject agent-kind and proposing-actor principals, then bind verdicts to proposal payload hashes. | `src/ultra_csm/_api_helpers.py`, `src/ultra_csm/governance/gate.py`, `tests/test_action_gate_machine.py` |
+| Consent gate | Customer outreach requires a consented contact and fails closed when consent is absent. | A database trigger independently checks the proposal's contact and account references. | `migrations/0009_safety_backstops.sql`, `tests/test_action_gate_machine.py`, `tests/test_api.py` |
+| Payload binding | `ActionGate` canonicalizes proposal payloads and verifies SHA-256 bindings before a committer may execute. | Proposal and verdict triggers require the current payload and approved hash to agree. | `migrations/0009_safety_backstops.sql`, `migrations/0011_action_gate_integrity.sql`, `tests/test_action_gate_machine.py` |
+| No authority minting | Proposals carry principal, tenant, cause, and clock context; permissions are looked up from role grants. | Token mapping, stored principal kind, required permission, and current verdict remain code and database checks rather than model output. | `src/ultra_csm/governance/authorizer.py`, `src/ultra_csm/governance/gate.py` |
+| Untrusted content handling | Source text remains evidence data; URI guards reject unsafe draft links. | Customer-facing execution remains behind consent, verdict, and payload-binding checks. | `tests/test_agent1_slot_b.py`, `tests/test_action_gate_machine.py` |
+| Data handling | Structured logs scrub secrets, email addresses, and customer-content fields. | Persistent stores keep governed evidence and audit records; secrets remain environment inputs. | [`docs/DATA_HANDLING.md`](docs/DATA_HANDLING.md), `tests/test_logging_config.py` |
+| Operating monitor | Daily-run, missed-run, cost-alarm, and Sentry envelope paths are implemented. | Monitor tests use fake transports; a live receipt requires operator configuration. | `src/ultra_csm/operating_monitor.py`, `tests/test_operating_monitor.py` |
 
 ## Residual Risks
 
-- **No real customer send yet.** Phase 10 stopped correctly at owner approval. The staged burner proposal is ready, but no `submit_verdict` approval or Gmail send has occurred.
+- **No production customer-send receipt.** Bounded Gmail and Salesforce committers exist,
+  but the repository includes no receipt for an approved production customer send.
+- **Approval identity is a configured trust anchor.** `ULTRA_CSM_API_TOKENS` maps bearer
+  tokens to display names and human-kind principals; the software cannot prove that a
+  person holds a token. Local `ULTRA_CSM_DEMO_NOAUTH=1` mints a labeled stand-in and is
+  restricted to a loopback bind.
 - **No second blind labeler yet.** Judge validation is single-labeler and clearly marked that way.
-- **No live Sentry ingestion proof yet.** Alarm and envelope behavior are tested with fake transports; no `SENTRY_DSN`/`SENTRY_AUTH_TOKEN` was found on disk.
-- **No production customer outcome proof.** The repo proves mechanism, safety, and measurement discipline against connected dev/trial/burner orgs and fixtures. Retention or expansion lift requires a real customer deployment.
+- **No live Sentry ingestion receipt.** Alarm and envelope behavior are tested with fake
+  transports. A live check-in requires an operator-supplied `SENTRY_DSN`.
+- **No production customer outcome proof.** Tests and scoped connector receipts cover
+  mechanism and refusal behavior. Retention or expansion lift requires a real customer
+  deployment.
 - **Local developer UI audit exposure.** `ui/` uses a static export for served paths. `next dev` is a local developer-only path and is not the served production path.
 
 ## Dependency And Scan Notes
 
 The repository has two dependency surfaces: Python for the agent/API and npm for `ui/`.
 
-The last documented Endor scan found no dependency, secret, or known-vulnerability findings, and reported SAST items that are dispositioned in `docs/archive/PROGRAM_REPORT_39.md`. The npm audit disposition for the static-export UI is also historical: advisories that require a running Next server do not apply to the served FastAPI static-file path.
-
-CI continues to run the Endor security scan job. When Endor is not configured, the job records the skip explicitly rather than pretending a scan ran.
+CI defines an Endor dependency, secret, and SAST scan when `ENDOR_TOKEN` is configured.
+The result of that workflow run is the current receipt. Without the token, CI emits an
+explicit skip notice and makes no scan claim. Run `make security-scan` locally for the
+repository-history secret gate.
 
 ## Reporting A Vulnerability
 

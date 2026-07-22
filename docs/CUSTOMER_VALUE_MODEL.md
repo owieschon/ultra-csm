@@ -13,6 +13,9 @@ Per-agent priority factors are **projections** of the model defined here.
   disposition → gated proposal → `SweepResult`. CSM scorecard hard gates are green.
 - **Slot B** (reason/draft): fixture-scored + optional live Anthropic adapter; contract
   validator at the boundary; red-path falsifiers.
+- In-memory snapshot persistence and trajectory computation feed deterministic Time-to-Value,
+  Risk, and Expansion lenses. The scheduler dispatches all three; the API, UI, CLI, and MCP
+  surfaces accept governed proposal verdicts.
 - **Two-lane regression (447d7a4 + live capture):** `regression-csm` (offline,
   CI-gated) = exact spine regression vs `baseline_csm.json` + seeded
   **distributional** fixture proving the Slot B band/cluster machinery (planted
@@ -23,8 +26,8 @@ Per-agent priority factors are **projections** of the model defined here.
   stored. This is not yet a semantic quality-drift proof.
 
 **Open / next work:** realistic quality degradation, human-labeled judge validation,
-model-migration comparison,
-the value-model dimensions beyond usage, and the lenses beyond Time-to-Value.
+model-migration comparison, durable snapshot persistence, broader realized-outcome sources, and
+the value-model dimensions that still lack source evidence.
 
 ## The reframe (core decision)
 
@@ -104,41 +107,36 @@ Thin policies that consume the same model at different trigger-states. Each is a
 eval-first slice with its own action-taxonomy binding + gate. **None re-gather evidence or
 re-derive health.**
 
-- **Lens 1 — Time-to-Value** (onboarding/activation gaps). *In progress.*
+- **Lens 1 — Time-to-Value** (onboarding/activation gaps). *Built and fixture-verified.*
 - **Lens 2 — Risk / Retention** (steady-state divergences, value-loop fragility, renewal
-  proximity). *Deferred.*
+  proximity). *Built and fixture-verified; no churn-probability claim.*
 - **Lens 3 — Expansion** (low penetration/feature-depth in a large org, unrealized value
-  props). *Deferred.*
+  props). *Built and fixture-verified; customer action remains precedence-gated.*
 
 The per-account **priority is a projection of the model through a lens** — not the model
 itself. This is the structural change: stop adding factors to a per-agent score; compute
 the model once, project per lens.
 
-## Agent 4 — the genuinely separate one
+## Population analysis
 
-Population / program-feedback analyst. Cohort patterns by **firmographic / technographic /
-value-loop** segmentation → recommendations that feed onboarding, implementation, self-serve
-education, and **Gainsight scorecard/CTA calibration** (grounded: Gainsight supports
-segment scorecards + Rules-Engine cohort CTAs). Deterministic analysis + LLM narration.
-Carries the **causation + leakage** discipline (correlation ≠ causation; selection
-bias; demographics scoped to role/persona, never protected attributes). Deferred behind its
-trip-wire.
+Deterministic cohort rollups and governed cohort-action packets are built over fixture data and
+appear in the manager rollup. They group the same source-bound account evidence by declared segment
+axes; they do not prove causal impact, use live customer outcomes, or validate an LLM-generated
+recommendation. Those remain separate promotion gates.
 
-### Deferred facet — friction → content planning
+### Friction to content planning
 
-A **friction** signal class ("where do customers struggle": support tickets, deflection,
-search-with-no-result, repeated questions; product friction telemetry — error rates, rage-clicks,
-flow drop-off) is distinct from the value rails ("are they getting value"). Per *compute-once*, it
-enters as a **shared-model signal source**, not an Agent 4 input: the per-account enablement play
-(Agent 1/3) reads it as "this account hit X → send the X guide," and Agent 4 reads the same signal
-at population altitude → a prioritized **content plan** (docs/education roadmap) for
-Enablement/Product. Discipline if/when built: (1) classify each pattern as **doc-gap vs
-product-defect vs expectation/sequencing-gap** and route to the right owner — never default to
-"write content"; (2) recommend a plan, never author/publish; (3) close the flywheel with the
-**outcome rail** — each recommendation carries the friction-delta to re-measure (did tickets /
-drop-off for X fall after publishing?), or it is theater. Maps to standard CS-org needs —
-self-serve education programs, and using real-world usage data to drive what changes next.
-**Deferred behind the same trip-wire** — not built until the model + per-account lenses are proven.
+A **friction** signal asks where customers struggle, while the value rails ask whether they receive
+value. The fixture-backed roadmap ranks seven declared struggle triggers across two synthetic
+tenants and can preview or explicitly push rows without overwriting a human-set status.
+
+Three boundaries remain:
+
+1. An operator must classify each pattern as a documentation gap, product defect, or expectation
+   and sequencing gap. The tool does not route that judgment automatically.
+2. The roadmap recommends a plan; it does not author or publish content.
+3. Outcome remeasurement is unbuilt. Until each recommendation carries a later friction delta, the
+   roadmap is a prioritization artifact rather than a closed learning loop.
 
 ## Grounding — buildable now vs Planned
 
@@ -187,14 +185,15 @@ The model is the thing under regression; as rails/factors are added, the baselin
 3. **Value-loop coverage.** Author the curated value-prop map (agent wiki); build
    stakeholder-presence coverage + the title→role taxonomy; evaluate whether **Slot A**
    graduates.
-4. **Lens 1 (Time-to-Value) completes** over the richer model.
-5. **Lens 2 (Risk), Lens 3 (Expansion)** — each eval-first, same model, no re-derivation.
-6. **Model-migration live comparison.** Re-run `regression-csm-live` for a candidate model
+4. **Deepen the three built lenses** as new value-model evidence lands, without re-deriving the
+   shared model or widening their current claim boundaries.
+5. **Model-migration live comparison.** Re-run `regression-csm-live` for a candidate model
    at a larger `--runs` value and compare pass-rate bands/failure clusters while
    the deterministic spine remains exact-green.
-7. **Rocketlane connector** as a pluggable onboarding source feeding the model + resolve
+6. **Rocketlane connector** as a pluggable onboarding source feeding the model + resolve
    the **account-join** decision.
-8. **Agent 4 (population)** — last, behind its trip-wire, with the causation/leakage bar.
+7. **Deepen population analysis** only after its fixture-backed rollups gain a declared causal
+   question, live outcome evidence, and a leakage-resistant evaluation.
 
 ## Open decisions / Planned dependencies
 

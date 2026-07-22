@@ -87,9 +87,10 @@ this is the version where the promise is checkable.
 ## Claim boundary
 
 This document positions a **simulation-stage system**: no live tenant has run through
-it; quality claims are gated per-dimension on judge validation status (see `STATUS.md`,
-which is rendered from artifacts, not hand-written); connectors are verified to the
-credential boundary. Comparative statements reflect the cited sources as of 2026-07-02.
+it. Quality claims are gated per dimension by the committed
+`eval/gold/judge_agreement.json` artifact, and [`LIMITS.md`](LIMITS.md) records the current
+proof boundary. Connectors are verified to the credential boundary. Comparative statements
+reflect the cited sources as of 2026-07-02.
 
 ## Sources
 

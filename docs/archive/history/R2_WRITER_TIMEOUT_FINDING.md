@@ -1,5 +1,8 @@
 # R2 finding #1 — writer transport still used the flat 30s timeout
 
+> Historical evaluation record, archived 2026-07-22. Retained for provenance, not current
+> operator guidance.
+
 <!-- sourcebound:purpose -->
 Status: **R2's first live run aborted on draw 1/171. Lane stopped per
 dual-role discipline; this build-phase fix reuses the Q1 seam. No mid-lane

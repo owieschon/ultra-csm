@@ -1,11 +1,11 @@
 # Production-Grade Agent Quality — Spec + Dispatch
 
-<!-- clean-docs:purpose -->
+<!-- sourcebound:purpose -->
 Status: the bar and the path to it. Blinded gold-set candidates, explorer mapping, and the
 demo org-knowledge pack/wiring are built; human labels, validated judge, live vertical,
 and operations gates remain open. "Production-grade agent quality, full stop."
 Date: 2026-06-28.
-<!-- clean-docs:end purpose -->
+<!-- sourcebound:end purpose -->
 
 ## What "production-grade agent quality" actually means
 

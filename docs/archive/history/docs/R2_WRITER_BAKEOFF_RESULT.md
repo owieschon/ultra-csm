@@ -1,10 +1,10 @@
 # R2 writer bake-off result — Haiku 4.5 vs Sonnet 5
 
-<!-- clean-docs:purpose -->
+<!-- sourcebound:purpose -->
 Status: **Both arms clear the adoption bar. Quality is a near-tie. Cost/latency
 telemetry is compromised for one arm and should NOT be used to break the
 tie. STOP → OA-Q1: owner picks.**
-<!-- clean-docs:end purpose -->
+<!-- sourcebound:end purpose -->
 
 ## Run
 

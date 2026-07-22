@@ -280,13 +280,13 @@ evidence for the others, but it is not a proof of each.
   never reached `origin/main`, correctly absent here.
 - Hung-process/cluster incident during Phase 2 test design (first rejected
   RLS-proof design): killed pid 80589 (the hung pytest process) and ran
-  `pg_ctl -D ~/dev/ultra-csm-gate-governance-hardening/build/tmp/pgdata.skwtmfeq
-  stop -m immediate` — scoped to this worktree's own ephemeral cluster only;
+  `pg_ctl -D <worktree>/build/tmp/<ephemeral-pgdata> stop -m immediate` —
+  scoped to this worktree's own ephemeral cluster only;
   confirmed via `ps aux` before and after that sibling worktrees'
   concurrently-running clusters (`ultra-csm-act1-knowledge-judge`,
   `ultra-csm-ui-data-depth`, etc.) were unaffected.
 - All throwaway diagnostic/probe scripts (tier confirmation for
   `test_salesforce_writeback.py`; RLS-drop-vs-permissive-policy behavior
   confirmation; post-rollback policy-restoration confirmation) were written
-  to `/private/tmp/claude-501/.../scratchpad/`, never committed, and deleted
-  immediately after use — none appear in the diff.
+  to an isolated temporary directory, never committed, and deleted immediately
+  after use — none appear in the diff.
