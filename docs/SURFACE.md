@@ -12,6 +12,7 @@ The catalog catches additions, removals, and replacements. It does not assert th
 | api-symbol | 1559 | `APIMetrics`, `ARRChange`, `AccountAttributionCandidate`, and 1556 more |
 | cli-command | 20 | `alarms`, `approve`, `check-in`, and 17 more |
 | cli-option | 262 | `--a6-expansion`, `--account`, `--account-slug`, and 259 more |
+| make-target | 107 | `action-control-contract`, `action-control-contract-check`, `action-control-sandbox-check`, and 104 more |
 | mcp-tool | 18 | `confirm_book`, `confirm_book_mappings`, `get_account_brief`, and 15 more |
 | package | 2 | `ultra-csm`, `ultra-csm-ops-surface` |
 | package-script | 5 | `build`, `build:e2e`, `dev`, and 2 more |
@@ -20,5 +21,5 @@ The catalog catches additions, removals, and replacements. It does not assert th
 | test-runner | 1 | `test:e2e` |
 | test-suite | 145 | `tests/test_account_brief_comms.py`, `tests/test_action_control_contract.py`, `tests/test_action_control_sandbox.py`, and 142 more |
 
-<!-- sourcebound:inventory-sha256 e188c74545470b1d67ef714a7d05776d04ea0e5e20ca6d0831128b28c8f0c469 -->
+<!-- sourcebound:inventory-sha256 b271a9ba72dee785f085be6cc1d0a54f7482e759310b119aae3d7c288e844345 -->
 <!-- sourcebound:end repository-surface -->
