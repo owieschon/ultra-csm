@@ -18,6 +18,20 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT_PATH = ROOT / "docs" / "DEPLOYMENT_READINESS.md"
 
+PERTURBATION_ARTIFACTS: tuple[tuple[str, Path], ...] = (
+    ("fleetops", Path("eval/perturbation_battery.json")),
+    ("fieldstone", Path("eval/fieldstone_perturbation_battery.json")),
+    ("crateworks", Path("eval/crateworks_perturbation_battery.json")),
+    ("loopway", Path("eval/loopway_perturbation_battery.json")),
+)
+
+DRIFT_ARTIFACTS: tuple[tuple[str, Path], ...] = (
+    ("fleetops", Path("eval/drift_battery.json")),
+    ("fieldstone", Path("eval/fieldstone_drift_battery.json")),
+    ("crateworks", Path("eval/crateworks_drift_battery.json")),
+    ("loopway", Path("eval/loopway_drift_battery.json")),
+)
+
 BATTERY_ARTIFACTS: tuple[tuple[str, str, Path], ...] = (
     ("fleetops", "narrative", Path("eval/narrative_battery.json")),
     ("fleetops", "content", Path("eval/content_battery.json")),
@@ -28,8 +42,8 @@ BATTERY_ARTIFACTS: tuple[tuple[str, str, Path], ...] = (
     ("fieldstone", "fieldstone", Path("eval/fieldstone_battery.json")),
     ("crateworks", "crateworks", Path("eval/crateworks_battery.json")),
     ("loopway", "loopway", Path("eval/loopway_battery.json")),
-    ("all", "perturbation", Path("eval/perturbation_battery.json")),
-    ("fleetops", "drift", Path("eval/drift_battery.json")),
+    *((tenant, "perturbation", path) for tenant, path in PERTURBATION_ARTIFACTS),
+    *((tenant, "drift", path) for tenant, path in DRIFT_ARTIFACTS),
 )
 
 WEEK1_ARTIFACTS: tuple[tuple[str, str, Path], ...] = (
@@ -160,28 +174,40 @@ def render() -> str:
 
     lines.append("## Perturbation resilience")
     lines.append("")
-    perturb_payload, perturb_error = _load(Path("eval/perturbation_battery.json"))
-    if perturb_error:
-        lines.append(f"**{perturb_error}** at `eval/perturbation_battery.json`.")
-    else:
-        lines.append("| Cell | ok | Evidence |")
-        lines.append("| --- | --- | --- |")
+    lines.append("| Tenant | Cell | ok | Evidence |")
+    lines.append("| --- | --- | --- | --- |")
+    perturbation_all_green = True
+    for tenant, rel_path in PERTURBATION_ARTIFACTS:
+        perturb_payload, perturb_error = _load(rel_path)
+        if perturb_error or perturb_payload is None:
+            perturbation_all_green = False
+            lines.append(f"| {tenant} | -- | **{perturb_error}** | `{rel_path}` |")
+            continue
+        if perturb_payload.get("hard_ok") is not True:
+            perturbation_all_green = False
         for case in perturb_payload.get("cases", []):
             lines.append(
-                f"| {case['case']} | {_bool_cell(case.get('ok'))} | `eval/perturbation_battery.json` |"
+                f"| {tenant} | {case['case']} | {_bool_cell(case.get('ok'))} | `{rel_path}` |"
             )
     lines.append("")
 
     lines.append("## Drift resilience")
     lines.append("")
-    drift_payload, drift_error = _load(Path("eval/drift_battery.json"))
-    if drift_error:
-        lines.append(f"**{drift_error}** at `eval/drift_battery.json`.")
-    else:
-        lines.append("| Check | ok | Evidence |")
-        lines.append("| --- | --- | --- |")
+    lines.append("| Tenant | Check | ok | Evidence |")
+    lines.append("| --- | --- | --- | --- |")
+    drift_all_green = True
+    for tenant, rel_path in DRIFT_ARTIFACTS:
+        drift_payload, drift_error = _load(rel_path)
+        if drift_error or drift_payload is None:
+            drift_all_green = False
+            lines.append(f"| {tenant} | -- | **{drift_error}** | `{rel_path}` |")
+            continue
+        if drift_payload.get("hard_ok") is not True:
+            drift_all_green = False
         for case in drift_payload.get("cases", []):
-            lines.append(f"| {case['case']} | {_bool_cell(case.get('ok'))} | `eval/drift_battery.json` |")
+            lines.append(
+                f"| {tenant} | {case['case']} | {_bool_cell(case.get('ok'))} | `{rel_path}` |"
+            )
     lines.append("")
 
     lines.append("## Zero ad-hoc per-tenant rules")
@@ -199,11 +225,7 @@ def render() -> str:
     )
     lines.append("")
 
-    all_ok = all_batteries_green and not perturb_error and not drift_error
-    if perturb_payload is not None:
-        all_ok = all_ok and perturb_payload.get("hard_ok") is True
-    if drift_payload is not None:
-        all_ok = all_ok and drift_payload.get("hard_ok") is True
+    all_ok = all_batteries_green and perturbation_all_green and drift_all_green
     all_week1_ok = True
     for _tenant, _vendor, rel_path in WEEK1_ARTIFACTS:
         payload, error = _load(rel_path)
@@ -214,7 +236,6 @@ def render() -> str:
     lines.append("")
     lines.append(f"- All tenant + cross-cutting batteries `hard_ok`: **{_bool_cell(all_ok)}**")
     lines.append(f"- All four tenants' week-1 protocol `ok`: **{_bool_cell(all_week1_ok)}**")
-    lines.append("")
 
     return "\n".join(lines) + "\n"
 

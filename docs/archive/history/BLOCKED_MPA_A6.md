@@ -1,17 +1,16 @@
-# MP-A Phase A6 OA-A2 Outcome
+# MP-A Phase A6 outcome record
 
-Dispatch: `$HOME/ultra-csm-dispatches/MP_A_INTEGRITY_CLOSURE.md`
-Worktree: `$HOME/dev/ultra-csm-mpa-a6`
-Branch: `codex/mpa-a6`
+> **Point-in-time record last updated 2026-07-10; archived 2026-07-21.** This is
+> provenance, not current model-selection or operating guidance.
 
 ## Outcome
 
 OA-A2 Option 3 / Definition A was ratified, the owner supplied blind
-`on_task_relevance` relabels for the full 64-row hard layer, and automation runner
+`on_task_relevance` relabels for the full 64-row hard layer, and the implementation process
 mechanically merged only that dimension.
 
-automation runner must not choose a production judge model, must not relabel any gold case,
-must not edit any human label, and must not edit the 0.6 gate to force a pass.
+The implementation process must not choose a production judge model, relabel a gold case,
+edit a human label, or change the 0.6 gate to force a pass.
 Those boundaries were preserved.
 
 ## Completed Work
@@ -64,11 +63,10 @@ Those boundaries were preserved.
 
 ## Claim Boundary
 
-This is OA-A2 Outcome 2. Keep Sonnet 5, but do not claim full autonomous judge
-validation. The v9 prompt recovered `on_task_relevance` dimension agreement
+This was OA-A2 Outcome 2. At that point, the result retained Sonnet 5 without claiming
+full autonomous judge validation. The v9 prompt recovered `on_task_relevance` dimension agreement
 (`0.289 -> 0.736` on hard `cot@N`), but the quality gate still fails closed
 because the judge is lenient on 3/64 warm-but-generic drafts and would let those
-bad drafts pass. Do not sharpen again just to clear those three rows. Use the
-judge only with that boundary disclosed, and do not use `on_task_relevance` as an
-autonomous pass/fail gate until a future owner-approved change validates the
-false-open boundary.
+bad drafts pass. The recorded boundary prohibited sharpening just to clear those rows and
+kept `on_task_relevance` out of autonomous pass/fail use until a later approved change
+validated the false-open boundary.

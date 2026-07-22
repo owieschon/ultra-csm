@@ -57,7 +57,8 @@ Existing spine beats:
   paired with the case/latency story (added after Phase U1 verification
   found the seat-penetration/feature-depth pillars were reading a frozen
   day-0 snapshot with no scripted delta at all -- an authoring gap, not a
-  sweep-scoring one; see docs/PROGRAM_REPORT_3.md).
+  sweep-scoring one; see the
+  [archived Program 3 report](archive/PROGRAM_REPORT_3.md)).
 
 New artifact layers (U1) hang beats at three checkpoints:
 - **Before (day 20)**: kickoff cadence still weekly, champion responsive
@@ -363,7 +364,8 @@ replies (a few hours), the same "boringly fine" cadence as every existing
 exchange in this arc, and involve no new participant (Vanessa or Mike
 only). This raises Trailhead from 21 to 27 messages. Full 2-3x density
 across all six arcs was scoped down to this single, hand-verified arc for
-Program 8 (see docs/PROGRAM_REPORT_8.md's IF/THEN section for why); the
+Program 8 (see the
+[archived Program 8 report](archive/PROGRAM_REPORT_8.md) for why); the
 other five arcs' density expansion remains explicitly future work, not
 silently dropped.
 
@@ -824,7 +826,7 @@ deterministic layer's computed output.
 ## Class canon (Universe v2, WS-Data-Classes Wave 1)
 
 Appendix for the six new data classes added in Program 12
-(`docs/PROGRAM_REPORT_12.md`): telemetry events, meeting transcripts,
+([archived report](archive/PROGRAM_REPORT_12.md)): telemetry events, meeting transcripts,
 content catalog + campaigns, surveys, sales→CS handoff notes, and the
 job-change signal class. Every row below is causal exhaust of an existing
 scripted beat above — no new story invented, only rendered in a new
@@ -853,11 +855,13 @@ strings, or `book_simulator.py`'s Pinehill `active_assets` trajectory that
 silently changes one side of an already-documented row without updating
 this table is what `eval/quantity_battery.py` exists to catch.
 
-### Survey canon table (NPS, Phase 4)
+### Planned survey canon table (NPS, Phase 4)
 
-Quarterly waves (days 45, 135, 225, 315), `src/ultra_csm/data_plane/surveys.py`.
-A row's `Response?` column of "none" means no `SurveyResponse` is emitted
-for that account/wave at all -- absence, not a fabricated neutral score.
+Quarterly waves at days 45, 135, 225, and 315 are authored fixture requirements. The
+`SurveyResponse` contract exists in `src/ultra_csm/data_plane/contracts.py`, but no runtime
+producer or survey fixture module emits these rows yet. The table is planned canon, not
+runtime or evaluation evidence. A value of "none" means the future producer must preserve
+absence rather than fabricate a neutral score.
 
 | Account | Day 45 | Day 135 | Day 225 | Day 315 | Arc consistency |
 | --- | --- | --- | --- | --- | --- |
@@ -915,7 +919,8 @@ not to add a new narrative beat the briefing/extractor layer is graded on.
 ### Routine health check-ins — four uncalibrated accounts (Harvest 17, dispatch 28)
 <!-- sourcebound:allow section-length reason="The Routine health check-ins — four uncalibrated accounts (Harvest 17, dispatch 28) reference keeps its ordered evidence and constraints together" -->
 
-UI data-depth work (docs/PROGRAM_REPORT_45.md) found the operations-surface
+UI data-depth work (see the
+[archived Program 45 report](archive/PROGRAM_REPORT_45.md)) found the operations-surface
 UI's Comms drawer empty for the account a demo actually opens
 (`ironhorse-freight`, the highest priority_score account at day 140).
 Fixing that by seeding comms for the highest-scoring accounts directly
@@ -951,20 +956,14 @@ actually say. No calendar or stakeholder-relationship layer added (out of
 this addition's scope; Stakeholders already reads richer real data via
 `_person_layer_inputs`).
 
-**Not yet live:** as of this writing, no consumer wires `CommunicationSignal`
-content (from these four modules or the pre-existing six arcs' modules)
-into `_build_account_brief`'s API response — `CustomerDataPlane` has no
-`comms` connector field, and `_api_helpers.py` never reads `*_comms.py`
-output. The Comms drawer's continued empty-for-every-account state is a
-live-wiring gap outside this addition's ownership (see
-docs/PROGRAM_REPORT_45.md's Owner Asks), not something these four modules
-fix on their own. They exist so that wiring, once built, has real fixture
-content to read.
+**Current wiring:** `CustomerDataPlane.comms` owns the communication connector, the fixture book
+supplies these signals, and `_build_account_brief` renders email, call-transcript, and internal-note
+rows for the Comms drawer. A configured connector may still return an empty list for an account
+with no matching fixture evidence; the API does not invent correspondence to fill the panel.
 
 **Grading mode:** unchanged from boring-control (`none`) — these four
 accounts exist solely to give the Comms drawer real, non-colliding fixture
-content once wired, not to add a narrative beat any existing battery is
-graded on.
+content, not to add a narrative beat any existing battery is graded on.
 
 ## Segmented book (Universe v2, WS-Segmented-Book, Wave 2)
 

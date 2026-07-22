@@ -1,8 +1,8 @@
 # ADR: Content Roadmap
 
-<!-- clean-docs:purpose -->
+<!-- sourcebound:purpose -->
 Use this page when you need to understand ADR: Content Roadmap before changing this repository. Without the documented scope and constraints, a change can rely on behavior the project does not promise; after reading, you can work from the stated contract.
-<!-- clean-docs:end purpose -->
+<!-- sourcebound:end purpose -->
 ## Status
 
 Accepted. Stream 46 (Content Roadmap, Wave Harvest-29).

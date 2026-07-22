@@ -1,7 +1,9 @@
 # Ultra CSM: System Architecture
 
 <!-- sourcebound:purpose -->
-Use this page when you need to understand Ultra CSM: System Architecture before changing this repository. Without the documented scope and constraints, a change can rely on behavior the project does not promise; after reading, you can work from the stated contract.
+Use this preserved 2026-07-21 design record only to understand the system originally proposed. It
+mixes implemented and future behavior and is not operating guidance; use the
+[canonical architecture](../../ARCHITECTURE.md) for current boundaries.
 <!-- sourcebound:end purpose -->
 <!-- sourcebound:allow doc-length reason="The system boundary and lifecycle form one canonical architecture reference" -->
 <!-- sourcebound:allow section-length reason="Architecture sections keep each lifecycle boundary with its constraints" -->

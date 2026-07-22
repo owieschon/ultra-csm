@@ -9,7 +9,7 @@ never the other way around (anti-Goodhart rule, `docs/UNIVERSE_V2_CONVENTIONS.md
 section 7).
 <!-- sourcebound:end purpose -->
 <!-- sourcebound:allow doc-length reason="This file is the canonical Crateworks fixture dataset" -->
-<!-- sourcebound:allow section-length reason="Each tenant arc keeps its timeline and evidence together" -->
+<!-- sourcebound:allow section-length reason="The Crateworks reference keeps its renewal timeline beside the relationship evidence that defines the scenario" -->
 
 ## 0. Canon
 
@@ -31,7 +31,7 @@ mess isn't malice, it's under-resourcing.
 lives in a homegrown spreadsheet-turned-database whose only "API" is a
 CSV-export-shaped flat table dump, ingested via the existing flat
 `ingest_external_book`/`ingest_book` path (`src/ultra_csm/data_plane/external_book.py`,
-`docs/PROGRAM_REPORT_3.md`'s corpus-A precedent). A thin Zendesk-ish ticket
+the [archived Program 3 report](archive/PROGRAM_REPORT_3.md)). A thin Zendesk-ish ticket
 transport supplies support-case history (see Phase 2 fixtures). No CS
 platform, no product telemetry vendor — value-model rails that require
 those sources are `unknown` here by design, same honest-degradation posture
@@ -124,12 +124,12 @@ truth, not decorative):**
   layer (`StakeholderRelationship`/`thread_participation_width`) has no
   identity-resolution concept: it counts distinct `contact_id`s, full
   stop, and this bible does not ask this program to build one (see Owner
-  Ask in `docs/PROGRAM_REPORT_16.md`). The agent is graded on the honest
+  Ask in the [archived Program 16 report](archive/PROGRAM_REPORT_16.md)). The agent is graded on the honest
   intermediate, not a fabricated resolution:
   - **FORBIDDEN:** reporting width 2 as "two engaged stakeholders" /
     multi-threaded health, or any output that treats the duplicate contact
     rows as two distinct relationships in good health.
-  - **REQUIRED (gold, `docs/gold` row for this checkpoint):** `mode: "gap"`,
+  - **REQUIRED (gold, `eval/gold/crateworks_expected_actions.json` row for this checkpoint):** `mode: "gap"`,
     `motion_in: ["escalation"]`, with evidence citing (a) the reply-latency
     stretch on `dana.okafor@...` and (b) the duplicate-contact ambiguity
     itself named as evidence (not resolved) — e.g. "two contact records
@@ -236,9 +236,10 @@ un-arced tech-touch accounts).
 `eval/gold/crateworks_expected_actions.json` (same schema as
 `eval/gold/expected_actions_schema.md`) seeds the checkpoint rows per
 section 2 above; `eval/expected_actions_gold.py` is the shared loader
-(tenant-parameterized already — see IF/THEN in `docs/PROGRAM_REPORT_16.md`
-for how its account-slug validation was widened to recognize crateworks
-slugs without touching its fleetops behavior).
+(tenant-parameterized already; see the
+[archived Program 16 report](archive/PROGRAM_REPORT_16.md) for how its
+account-slug validation was widened to recognize Crateworks slugs without
+touching its FleetOps behavior).
 
 ## 6. Canary spec
 
@@ -262,5 +263,6 @@ genuinely defeat Tier B exact-alias auto-mapping on some columns — that is
 the honest result, not a defect to engineer away), what Tier B exact-alias
 mapping DID survive the casing chaos, what was refused as `not_mappable`,
 and — the critical assertion — zero hollow records and zero fabricated
-mappings across the run. See `docs/PROGRAM_REPORT_16.md` for the actual
+mappings across the run. See the
+[archived Program 16 report](archive/PROGRAM_REPORT_16.md) for the actual
 measured numbers.

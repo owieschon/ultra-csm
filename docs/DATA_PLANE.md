@@ -1,11 +1,10 @@
-# Ultra CSM Data Plane
+# Ultra CSM data plane
 
-<!-- sourcebound:purpose -->
-Status: initial integration contracts and deterministic fixtures.
-<!-- sourcebound:end purpose -->
+Use this page to understand the tenant-scoped evidence contracts that feed the value
+model and the mapping boundary between fixture, simulated, and live connector data.
 
-Ultra CSM should not start by inventing an agent prompt. It starts by defining the
-systems the agent is allowed to read and, later, write through a gate:
+Ultra CSM starts by defining the systems the agent is allowed to read and, later, write
+through a gate:
 
 - Salesforce-backed CRM context: account, contact, case, opportunity, activity.
 - Gainsight-backed CS context: company, health score, CTA, success plan, adoption
@@ -36,14 +35,20 @@ The vendor traceability layer lives in
   vendor object, API field, documentation URL, and whether the field is standard
   or an explicit extension.
 
-## Current Fixture Scenarios
+## Fixture layers
 
-- `Acme Logistics`: onboarding account with activation lag, underused
-  capabilities, an open high-priority case, and yellow health.
-- `Nova Field Services`: renewal account with stable usage and active renewal
-  work.
+The repository contains more than one fixture scale:
 
-These are synthetic `.example` fixtures with deterministic IDs.
+- `data_plane/fixtures.py` provides the small contract and scorecard scenarios used by
+  focused tests;
+- `data_plane/synthetic_book.py` and `data_plane/book_simulator.py` build the larger
+  deterministic book used by the hosted demo and time-series exercises;
+- `data_plane/tenants/` contains separate synthetic tenant shapes for normalized and
+  flat CRM onboarding paths.
+
+All fixture contacts use synthetic identities and `.example` addresses. Counts shown in
+the UI come from `ui/public/demo-api/manifest.json`; do not infer them from the small
+contract fixture.
 
 ## Source Mapping
 

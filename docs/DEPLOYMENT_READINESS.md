@@ -1,8 +1,6 @@
 # Deployment Readiness
 
-<!-- sourcebound:purpose -->
 Auto-rendered by `make deployment-readiness` (`scripts/render_deployment_readiness.py`) from committed battery/week-1/perturbation/drift artifacts. Never hand-edited -- every cell below cites the artifact it was read from.
-<!-- sourcebound:end purpose -->
 
 ## The claim
 
@@ -30,8 +28,14 @@ Auto-rendered by `make deployment-readiness` (`scripts/render_deployment_readine
 | fieldstone | fieldstone | 6 | true | `eval/fieldstone_battery.json` |
 | crateworks | crateworks | 6 | true | `eval/crateworks_battery.json` |
 | loopway | loopway | 9 | true | `eval/loopway_battery.json` |
-| all | perturbation | 6 | true | `eval/perturbation_battery.json` |
+| fleetops | perturbation | 6 | true | `eval/perturbation_battery.json` |
+| fieldstone | perturbation | 4 | true | `eval/fieldstone_perturbation_battery.json` |
+| crateworks | perturbation | 3 | true | `eval/crateworks_perturbation_battery.json` |
+| loopway | perturbation | 3 | true | `eval/loopway_perturbation_battery.json` |
 | fleetops | drift | 5 | true | `eval/drift_battery.json` |
+| fieldstone | drift | 2 | true | `eval/fieldstone_drift_battery.json` |
+| crateworks | drift | 2 | true | `eval/crateworks_drift_battery.json` |
+| loopway | drift | 2 | true | `eval/loopway_drift_battery.json` |
 
 ## Onboarding cost (cold-start, across four vendor dialects)
 
@@ -46,24 +50,40 @@ Onboarding question count is a function of schema-shape diversity, not account c
 
 ## Perturbation resilience
 
-| Cell | ok | Evidence |
-| --- | --- | --- |
-| latency-uniform-no-new-flags | true | `eval/perturbation_battery.json` |
-| latency-recent-window-flags-real-stretch | true | `eval/perturbation_battery.json` |
-| volume-down-degrades-honestly | true | `eval/perturbation_battery.json` |
-| hygiene-drop-no-crash | true | `eval/perturbation_battery.json` |
-| schema-rename-asks-or-refuses | true | `eval/perturbation_battery.json` |
-| arr-shift-moves-tier-and-forbidden-motions | true | `eval/perturbation_battery.json` |
+| Tenant | Cell | ok | Evidence |
+| --- | --- | --- | --- |
+| fleetops | latency-uniform-no-new-flags | true | `eval/perturbation_battery.json` |
+| fleetops | latency-recent-window-flags-real-stretch | true | `eval/perturbation_battery.json` |
+| fleetops | volume-down-degrades-honestly | true | `eval/perturbation_battery.json` |
+| fleetops | hygiene-drop-no-crash | true | `eval/perturbation_battery.json` |
+| fleetops | schema-rename-asks-or-refuses | true | `eval/perturbation_battery.json` |
+| fleetops | arr-shift-moves-tier-and-forbidden-motions | true | `eval/perturbation_battery.json` |
+| fieldstone | latency-uniform-no-new-flags | true | `eval/fieldstone_perturbation_battery.json` |
+| fieldstone | latency-recent-window-flags-real-stretch | true | `eval/fieldstone_perturbation_battery.json` |
+| fieldstone | volume-down-degrades-honestly | true | `eval/fieldstone_perturbation_battery.json` |
+| fieldstone | hygiene-drop-no-crash | true | `eval/fieldstone_perturbation_battery.json` |
+| crateworks | hygiene-drop-stress-no-crash | true | `eval/crateworks_perturbation_battery.json` |
+| crateworks | identity-collision-width-isolated-from-comms-noise | true | `eval/crateworks_perturbation_battery.json` |
+| crateworks | volume-down-degrades-honestly | true | `eval/crateworks_perturbation_battery.json` |
+| loopway | chat-volume-thinning-does-not-flip-l1-verdict | true | `eval/loopway_perturbation_battery.json` |
+| loopway | cohort-threshold-boundary | true | `eval/loopway_perturbation_battery.json` |
+| loopway | schema-rename-email-stops-silent-mapping | true | `eval/loopway_perturbation_battery.json` |
 
 ## Drift resilience
 
-| Check | ok | Evidence |
-| --- | --- | --- |
-| schema-field-rename-before-at-after | true | `eval/drift_battery.json` |
-| junk-contacts-present-after-day150 | true | `eval/drift_battery.json` |
-| width-signals-unaffected-by-junk-import | true | `eval/drift_battery.json` |
-| narrative-battery-still-green-post-drift | true | `eval/drift_battery.json` |
-| content-invariance-isolation | true | `eval/drift_battery.json` |
+| Tenant | Check | ok | Evidence |
+| --- | --- | --- | --- |
+| fleetops | schema-field-rename-before-at-after | true | `eval/drift_battery.json` |
+| fleetops | junk-contacts-present-after-day150 | true | `eval/drift_battery.json` |
+| fleetops | width-signals-unaffected-by-junk-import | true | `eval/drift_battery.json` |
+| fleetops | narrative-battery-still-green-post-drift | true | `eval/drift_battery.json` |
+| fleetops | content-invariance-isolation | true | `eval/drift_battery.json` |
+| fieldstone | schema-field-rename-before-at-after | true | `eval/fieldstone_drift_battery.json` |
+| fieldstone | narrative-battery-still-green-post-drift | true | `eval/fieldstone_drift_battery.json` |
+| crateworks | schema-field-rename-before-at-after | true | `eval/crateworks_drift_battery.json` |
+| crateworks | crateworks-battery-still-green-post-drift | true | `eval/crateworks_drift_battery.json` |
+| loopway | schema-field-rename-before-at-after | true | `eval/loopway_drift_battery.json` |
+| loopway | loopway-battery-still-green-post-drift | true | `eval/loopway_drift_battery.json` |
 
 ## Zero ad-hoc per-tenant rules
 

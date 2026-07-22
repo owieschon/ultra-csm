@@ -4,7 +4,7 @@
 Binding, repo-committed conventions for the deployment-readiness test bed:
 four tenants (`fleetops`, `fieldstone`, `crateworks`, `loopway`) exercised
 from cold start across distinct vendor stacks, tiers, safety canaries, and
-(eventually) perturbation/drift. This document is the single source of
+committed perturbation and drift batteries. This document is the single source of
 truth for the decisions below — later work reads these conventions from
 the repo itself, not from any external planning artifact.
 <!-- sourcebound:end purpose -->
@@ -79,10 +79,9 @@ scale-motion types added here:
 | `cohort_action` | `cohort_action` (new) |
 
 The three new action types are registered in `CSM_ACTION_SPECS` with test
-parity to the pre-existing six (`tests/test_csm_actions.py`); they are
-governance-layer additions only — no downstream lens/sweep/precedence
-consumer is required to emit them yet (none of those consumers exhaustively
-switch over `CSMActionName`, so the addition is purely additive).
+parity to the pre-existing six (`tests/test_csm_actions.py`). `collapse_cohorts` emits governed
+`cohort_action` proposals, and the tick and API surfaces carry those results. The shared
+permission and precedence layers still decide whether any scale motion may proceed.
 
 ## 3. Ground-truth grading modes
 
@@ -117,10 +116,10 @@ Cost ledger metric: `cost_usd_per_account_day`, by tier. Budgets:
 deterministic runs record $0; the credentialed lane records real spend;
 the assertion runs only when spend data exists (skip cleanly otherwise).
 
-## 6. Reserved perturbation + drift vocabulary
+## 6. Perturbation and drift vocabulary
 
-Named now so wave-1/2/3 code cannot collide with these identifiers;
-nothing below is implemented before wave 4. Perturbation axes:
+These identifiers were reserved before wave 4 and now name the committed
+per-tenant perturbation and drift batteries. Perturbation axes:
 `latency_scale`, `volume_scale`, `hygiene_drop_pct`, `schema_rename_map`,
 `arr_shift_pct`. Drift events (scripted against the `fleetops` timeline):
 day 120 `SchemaFieldRename`, day 150 `JunkContactImport`.

@@ -1,5 +1,8 @@
 # R2 writer bake-off — confirmatory rerun with corrected telemetry
 
+> Historical evaluation record, archived 2026-07-22. Retained for provenance; the adopted
+> writer is encoded in committed runtime and evaluation artifacts.
+
 <!-- sourcebound:purpose -->
 Status: **Both arms adopt_eligible=True, quality tied to within run-to-run
 noise. Cost/latency, now measured with full coverage, shows a real and
@@ -16,7 +19,7 @@ PR #133 (the first bake-off) reported both arms `adopt_eligible=True` with
 tied quality, but its cost/latency numbers were corrupted: a per-arm
 `CostTracker` held only in process memory lost all data for the Haiku arm's
 draws that were already checkpointed before a mid-run process kill (root
-cause + fix: PR #134, `docs/R2_TELEMETRY_RESUME_FINDING.md`). This run is
+cause + fix: PR #134, `docs/archive/history/R2_TELEMETRY_RESUME_FINDING.md`). This run is
 the same bake-off, same scenarios, same config, on the fixed code —
 confirmatory, not a redo of anything that was already trustworthy.
 

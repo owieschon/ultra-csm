@@ -1,6 +1,6 @@
 # Non-Determinism Eval Hardening Spec
 
-<!-- clean-docs:purpose -->
+<!-- sourcebound:purpose -->
 Status: offline quality-regression mechanics built, blinded gold-set label queue generated.
 The repo now has deterministic Slot B quality-label candidates, rubric/label structures,
 judge-to-human agreement math, a named degradation ladder, a no-op negative control,
@@ -10,7 +10,7 @@ Wilson bands, a CI-safe `make quality-regression-csm` artifact, and
 live semantic quality detection until the labels are filled in and the judge clears the
 validation gate.
 Date: 2026-06-28.
-<!-- clean-docs:end purpose -->
+<!-- sourcebound:end purpose -->
 
 ## What's wrong today (the gap this closes)
 

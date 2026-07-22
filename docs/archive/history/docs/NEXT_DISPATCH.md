@@ -1,8 +1,9 @@
-# Next Dispatch
+# Next dispatch — 2026-07-02 (archived)
 
-Date: 2026-07-02.
+> Historical process record. It does not define the current roadmap, work queue, or operating
+> guidance. Use the [documentation index](../../../README.md) for current pages.
 
-The living roadmap. It sequences the work, sets the bar, and names the decisions that
+This was the roadmap for the July 2 work window. It sequenced the work, set the bar, and named the decisions that
 require owner input. Detail lives in the linked specs; build to them.
 
 ## Where we are (built + verified)
@@ -28,7 +29,7 @@ human-validated judge + plausible degradation + candidate model comparison.
 The local simulated operating surface is now verified separately from the judge lane:
 REST API, MCP tools, CLI demo commands, deep simulated timeline, demo loop, cost/budget
 metrics, and quality-breaker fallback were executed. See
-[`OPERATING_PROOF.md`](OPERATING_PROOF.md) and rendered status in `../STATUS.md`. This is
+[`OPERATING_PROOF.md`](../OPERATING_PROOF.md) and rendered status in `../../STATUS.md`. This is
 not live-tenant proof.
 
 Direction set by the owner: **do all three build tracks, then package the demo** — sequenced below.
@@ -46,7 +47,7 @@ not deferred to the end.
 - **Outcome rail** — stated outcomes from `SuccessPlan.objectives`; `realized_state` stays
   `unknown`/`not_instrumented` (never faked); the **usage↔outcome divergence** ("working
   hard, no value"). The rail that makes "time-to-*value*" honest. Eval-first, per
-  [`CUSTOMER_VALUE_MODEL.md`](CUSTOMER_VALUE_MODEL.md).
+  [`CUSTOMER_VALUE_MODEL.md`](../CUSTOMER_VALUE_MODEL.md).
 
 ### Phase 2 — prove live quality drift, then package the eval story
 - **Structural capture:** recorded in `eval/regression_csm_live.json` when credentials are
@@ -65,7 +66,7 @@ not deferred to the end.
 ### Phase 3 — deepen + breadth, then package the data-source story
 - **Rocketlane connector** feeding the model (decide the **account-join**), then a **second
   lens** (Risk or Expansion) over the now-deeper model.
-  Spec: [`ROCKETLANE_ONBOARDING_CONNECTOR_SPEC.md`](ROCKETLANE_ONBOARDING_CONNECTOR_SPEC.md).
+  Spec: [`ROCKETLANE_ONBOARDING_CONNECTOR_SPEC.md`](../ROCKETLANE_ONBOARDING_CONNECTOR_SPEC.md).
 - **Then package the data-source story:** with Rocketlane as a pluggable source + the
   value model + multiple lenses, the source-pluggability story is complete and grounded in
   a real onboarding-system shape.

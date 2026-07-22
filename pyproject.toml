@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "ultra-csm"
 version = "0.0.0"
-description = "Ultra CSM — eval-first customer-success agent: one governed value model with thin agent-lenses over it"
+description = "A customer-action control plane with deterministic evidence, proposal, approval-record, payload-binding, and receipt boundaries."
 requires-python = ">=3.10"
 license = "Apache-2.0"
 dependencies = [

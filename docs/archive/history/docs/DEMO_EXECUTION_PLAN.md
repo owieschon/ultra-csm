@@ -1,6 +1,10 @@
-# Demo Execution Plan — five slices to the highest-fidelity product demo
+# Demo execution plan — 2026-06-28 (archived)
 
-Status: the binding execution plan for the demo storyline. Written for implementers:
+> Historical process record. It does not define current implementation or operating guidance.
+> Use the [documentation index](../../../README.md) for current pages. Dates, branches, and work queues
+> below are preserved only as provenance.
+
+This was the execution plan for the demo storyline. Written for implementers,
 every step has a reuse inventory, explicit decision criteria (IF/THEN), and a
 command-verifiable Definition of Done. Constraint: **simulated systems only** — no live
 credentials exist; the loop closes inside a stateful simulated tenant, honestly labeled.
@@ -11,7 +15,7 @@ execution time; the repo moves fast.**
 
 ## START HERE
 
-**Current state + the next work queue live in [`EXECUTOR_HANDOFF.md`](EXECUTOR_HANDOFF.md)**
+**The state and work queue at the time lived in [`EXECUTOR_HANDOFF.md`](EXECUTOR_HANDOFF.md).**
 (2026-07-02, post-dispatch). Read it before anything else in this plan — it supersedes
 stale state below, carries the corrected git sequence (**do not run the prior handoff's
 `reset --hard` housekeeping — data-loss footgun; use its Task 0 instead**), and restates
@@ -105,7 +109,7 @@ iteration 1 of 3 and must be paired with a fresh agreed-cell audit sample.
 
 Iteration 1 returned a fresh audit pass (`10/10`) plus a bucket table over 261 disagreeing
 cells. The decisions and implementation response are recorded in
-[`QUALITY_JUDGE_ADJUDICATION.md`](QUALITY_JUDGE_ADJUDICATION.md). Iteration 2 moves
+[`QUALITY_JUDGE_ADJUDICATION.md`](../QUALITY_JUDGE_ADJUDICATION.md). Iteration 2 moves
 `priority_fidelity` to deterministic scoring, clarifies grounding/specificity/tone, and
 adds the non-conflation rule.
 

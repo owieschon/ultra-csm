@@ -1,12 +1,12 @@
-"""Offline tests for content_roadmap_push.py's write mechanics -- no live
-Notion calls. The live smoke (real database create/update, idempotency
-across two real runs) is a separate DoD row, BLOCKED per K8: the
-ULTRA_CSM_NOTION_TOKEN integration has zero pages shared with it
-(verified 2026-07-05, see PROGRESS.md/BLOCKED.md), an Owner Ask, not
-something more test coverage here can substitute for."""
+"""Offline tests for the content-roadmap write mechanics.
+
+These tests exercise request and update behavior with fakes. Credentialed Notion behavior
+belongs to a separate live-integration lane and is outside this suite.
+"""
 
 from __future__ import annotations
 
+from pathlib import Path
 from unittest.mock import patch
 
 from scripts.content_roadmap_push import (
@@ -24,6 +24,20 @@ _ROW = RoadmapRow(
     existing_content_count=2,
     coverage_gap_score=4,
 )
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def test_retired_roadmaps_do_not_remain_on_the_active_documentation_surface():
+    docs = ROOT / "docs"
+    assert not (docs / "CAPABILITY_MAP.md").exists()
+    assert not (docs / "SYSTEM_ARCHITECTURE.md").exists()
+    assert (docs / "archive/history/CAPABILITY_MAP_2026-07-21.md").is_file()
+    assert (docs / "archive/history/SYSTEM_ARCHITECTURE_2026-07-21.md").is_file()
+
+    index = (docs / "README.md").read_text(encoding="utf-8")
+    assert "CAPABILITY_MAP.md" not in index
+    assert "SYSTEM_ARCHITECTURE.md" not in index
 
 
 def test_unwrap_placeholder_brackets_strips_angle_brackets():

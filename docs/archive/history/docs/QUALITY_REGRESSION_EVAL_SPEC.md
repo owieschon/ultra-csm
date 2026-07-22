@@ -1,6 +1,6 @@
 # Quality Regression Eval Spec
 
-<!-- clean-docs:purpose -->
+<!-- sourcebound:purpose -->
 Status: offline mechanics built; blinded gold-set label queue generated; judge validated;
 drift-power scoped by `eval/drift_power_csm.json`. The current live artifact proves
 structural contract drift only.
@@ -9,7 +9,7 @@ with a degradation ladder and no-op negative control. `make quality-gold-csm` wr
 63-record synthetic label queue at `eval/gold/slot_b_quality.jsonl` and the held-out key at
 `eval/gold/slot_b_quality_key.jsonl`.
 Date: 2026-06-28.
-<!-- clean-docs:end purpose -->
+<!-- sourcebound:end purpose -->
 
 ## Goal
 

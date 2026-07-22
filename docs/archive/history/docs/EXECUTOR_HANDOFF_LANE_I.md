@@ -1,6 +1,9 @@
-# Executor Handoff — Lane I: Foreign-Corpus Ingest Proof
+# Executor handoff — Lane I (2026-07-02, archived)
 
-Same protocol as prior lane handoffs (one-shot autonomy, IF/THEN decision criteria,
+> Historical process record. It does not define current implementation or operating guidance.
+> Use the [documentation index](../../../README.md) for current pages.
+
+This lane used the same protocol as prior lane handoffs (one-shot autonomy, IF/THEN decision criteria,
 verify claims by executing). This lane produces **evidence, not product UX**: it
 proves — or breaks — the ingest boundary on a real third-party CRM corpus that
 nobody on this project authored, and turns what it learns into a sanitized findings

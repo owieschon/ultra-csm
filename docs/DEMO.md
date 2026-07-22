@@ -1,17 +1,10 @@
-# Customer Action Control Plane demo
+# Operations UI walkthrough
 
-<!-- sourcebound:purpose -->
-Status: current reviewer walkthrough for the local read-only operations surface.
-<!-- sourcebound:end purpose -->
+Use this walkthrough to inspect the fixture-backed customer-action path without
+mistaking a static demo interaction for a production approval, send, or outcome.
 
-This is not a dashboard. Demo it as a customer action control plane: the system reads
-account evidence, decides what needs attention, drafts the next CSM action, routes
-internal Product/Engineering handoffs when the evidence supports one, and keeps
-customer-facing work behind a human approval gate.
-
-## Build And Serve
-
-From the repo root:
+The [hosted build](https://ultra-csm.vercel.app/) serves committed synthetic fixtures and
+exports no write routes. To build that static export and co-host it with the full local API:
 
 ```sh
 make hosted-readonly-demo
@@ -21,70 +14,63 @@ ULTRA_CSM_DEMO_NOAUTH=1 ULTRA_CSM_BIND_HOST=127.0.0.1 PYTHONPATH=src:. \
 
 Open `http://127.0.0.1:8000/ui/`.
 
-Fresh C3 verification:
+The static export is read-only. The loopback FastAPI process is not: `ULTRA_CSM_DEMO_NOAUTH=1`
+disables authentication but does not remove the full application's mutation routes. It can change
+only the configured local data, so keep it bound to loopback and stop it after the walkthrough.
 
-- `make hosted-readonly-demo` passed; Next lint reported 0 errors and 6 existing
-  React effect warnings, then `next build` completed.
-- `http://127.0.0.1:8000/ui/`, `/ui/comms-review/`, and the built CSS asset
-  returned HTTP 200.
-- `ui/public/demo-api/manifest.json` records day 140, 181 accounts, 12 work
-  items, 11 pending proposals, and `write_routes_exported=false`.
+## Inspect the fixture contract
 
-## Ninety-Second Walkthrough
+Before quoting counts, read them from the committed fixtures:
 
-1. Start on the Book view.
-   Say: this is the account book the agents operate over, not a BI dashboard. It
-   shows 181 fixture accounts and a `READ-ONLY DEMO` banner.
+```sh
+jq '{day, account_count, work_item_count, proposal_count, write_routes_exported}' \
+  ui/public/demo-api/manifest.json
+jq '{pending: ([.work_items[] | select(.proposal.status == "pending")] | length),
+     escalations: (.escalations | length)}' \
+  ui/public/demo-api/sweep-day-140.json
+```
 
-2. Click `Queue`.
-   The queue shows 10 items needing approval, 170 accounts covered with no action,
-   no escalations this sweep, and the audit ledger. This is the CSM worklist the
-   agents produced from CRM, CS-platform, telemetry, and comms-shaped evidence.
+`make hosted-readonly-demo` fails if those fixture bytes are stale. The manifest's
+`write_routes_exported` field must remain `false`.
 
-3. Select `Trailhead Logistics`.
-   Show the account brief: lifecycle stage, account sources, priority score, cited
-   deterministic factors, reconciliation signals, chosen action, and proposed
-   customer draft. The draft is evidence-backed, but it is still only a proposal.
+## Follow one action
 
-4. Point at `Internal handoff`.
-   Trailhead shows a Product handoff: `content route`, `feature request cluster`,
-   with CRM evidence `12b20f2f...`. This is the MP-B handoff slice made visible in
-   the work item: the system can route a grounded customer signal to Product or
-   Engineering without changing the customer-facing approval path.
+1. Start on **Book**. The page lists the synthetic account universe and labels the
+   surface `READ-ONLY DEMO`.
+2. Open **Queue**. The queue separates pending proposals, resolved work, and accounts
+   covered with no action. Treat the displayed counts as fixture facts, not product
+   outcomes.
+3. Select **Trailhead Logistics**. Inspect the tenant-scoped sources, deterministic
+   priority factors, selected action, cited evidence, and fixture-generated draft. The
+   work item records `draft_mode: fixture`; this path does not demonstrate a live model
+   call.
+4. Inspect **Internal handoff**. The fixture routes a cited feature-request signal to
+   Product without changing the customer-facing approval path.
+5. Inspect **Decision**. The hosted build disables approvals and sends. The governed
+   local path requires a proposal, a verdict from a configured approval identity, a
+   payload-bound committer, and a receipt.
+6. Inspect the audit ledger. The fixture exposes proposal, judge, draft, and value-model
+   events instead of hiding missing event classes behind a clean screen.
 
-5. Point at `Decision`.
-   The approval rail says the read-only demo has approvals and sends disabled. In the
-   live governed path, customer-facing work follows proposal -> human verdict ->
-   committer. The agent does not approve its own send.
+## What this path proves
 
-6. Point at the audit ledger.
-   The ledger shows proposal, judge, draft, and value-model events. The read-only
-   fixture reports `ledger_gap=[]`, so the visible demo is not hiding missing event
-   classes behind a clean screen.
+- The static operations UI renders a deterministic, internally consistent fixture.
+- The queue and account views preserve evidence references and distinguish deterministic
+  priority from a draft.
+- The hosted export contains no write routes.
+- The interface states where an operator decision would enter the governed local path.
 
-## Outcome Boundary
+## What it does not prove
 
-Do not claim the read-only UI demonstrates realized customer outcomes. The outcome
-integrity proof is in code and docs, not this click path:
+- It does not demonstrate a live model call, live connector access, or a production
+  customer action.
+- It does not approve or send the displayed draft.
+- It does not demonstrate retention, expansion, or other realized customer outcomes.
 
-- `tests/test_value_model.py::test_green_high_usage_account_that_later_churns_does_not_backfill_known_outcome`
-- `tests/test_value_model.py::test_closed_won_renewal_is_positive_realized_outcome_evidence`
-- `tests/test_value_model.py::test_non_terminal_or_non_renewal_opportunity_does_not_fabricate_known_outcome`
-- `tests/test_agent1_sweep.py::test_outcome_unknown_trigger_absent_when_terminal_renewal_outcome_known`
-- `docs/PROGRAM_REPORT_69.md`
-- `docs/LIMITS.md`
+Outcome integrity is tested below the UI. Before terminal renewal evidence exists, the
+value model keeps the outcome unverified; a terminal renewal records won or lost direction
+with cited opportunity evidence. See `tests/test_value_model.py`,
+`tests/test_agent1_sweep.py`, and [`LIMITS.md`](LIMITS.md).
 
-The honest claim: before terminal renewal evidence exists, the value model stays
-`not_instrumented` / unverified; after terminal renewal evidence exists, it records
-won/lost direction with cited opportunity evidence. The read-only UI walkthrough does
-not expose that state directly.
-
-## Demo Boundaries
-
-- Reviewer mode is static and read-only. It serves committed JSON fixtures from
-  `ui/public/demo-api/` and exports no write routes.
-- The data is synthetic and internally consistent, not production customer proof.
-- Salesforce, Rocketlane, Gmail, and persistent-ledger receipts exist in program
-  reports, but this demo is fixture-backed.
-- Sales-to-CS context exists in the account/knowledge corpus, but the 90-second UI
-  path is queue -> account brief -> internal handoff -> governed proposal.
+For an interactive local sandbox that writes only to temporary state, see
+[`ACTION_CONTROL_SANDBOX.md`](ACTION_CONTROL_SANDBOX.md).

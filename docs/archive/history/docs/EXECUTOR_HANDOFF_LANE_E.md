@@ -1,6 +1,9 @@
-# Executor Handoff Addendum — Lane E (rev 2): Risk + Expansion Lenses, Cross-Lens Precedence, Manager Cohort Packets
+# Executor handoff addendum — Lane E (2026-07-02, archived)
 
-Supersedes the Lane E paragraph in `EXECUTOR_HANDOFF.md` (rev 2). Same protocol, same §X
+> Historical process record. It does not define current implementation or operating guidance.
+> Use the [documentation index](../../../README.md) for current pages.
+
+This addendum superseded the Lane E paragraph in `EXECUTOR_HANDOFF.md` (rev 2). It used the same §X
 check-in triggers, same one-shot autonomy contract. Owner has ratified every policy
 decision below — none of them are open; implement as written.
 

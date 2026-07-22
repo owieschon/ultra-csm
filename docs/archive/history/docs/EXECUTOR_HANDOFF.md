@@ -1,7 +1,10 @@
-# Executor Handoff — three-bucket scope, lane-parallel (2026-07-02, rev 2)
+# Executor handoff — three-bucket scope, lane-parallel (2026-07-02, archived)
 
-The single entry point. Supersedes rev 1 and the START HERE block in
-`DEMO_EXECUTION_PLAN.md`. Protocol rules (§0 there) apply unchanged: verify-before-build,
+> Historical process record. It does not define the current branch, work queue, or operating
+> guidance. Use the [documentation index](../../../README.md) for current pages.
+
+This was the single entry point for the July 2 work window. It superseded rev 1 and the START
+HERE block in `DEMO_EXECUTION_PLAN.md`. Its protocol rules required verify-before-build,
 eval-first, provable-core, claim_boundary on every artifact, no hand-typed metrics,
 progress output on long runs.
 

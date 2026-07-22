@@ -5,7 +5,7 @@ Loopway is the SCALE/PLG tenant (`docs/UNIVERSE_V2_CONVENTIONS.md` §1):
 ~400 accounts, ≥90% tech-touch, campaign-dominant motions, Attio-shaped
 CRM, product-analytics-heavy telemetry, Intercom-ish support chat. Where
 `fleetops` proves tier-appropriateness at 180 accounts
-(`docs/PROGRAM_REPORT_14.md`), Loopway proves it at 400 — and proves the
+([archived Program 14 report](archive/PROGRAM_REPORT_14.md)), Loopway proves it at 400 — and proves the
 harder claim: for the overwhelming majority of this book, the human
 motion (`personal_email`, `working_session`, `qbr`) is not merely
 sub-optimal, it is impossible by construction. There are no named CSMs on
@@ -14,7 +14,7 @@ almost everywhere, and the one place it flips back to a human motion
 (Arc L2) is exactly where the economics themselves flip.
 <!-- sourcebound:end purpose -->
 <!-- sourcebound:allow doc-length reason="This file is the canonical Loopway fixture dataset" -->
-<!-- sourcebound:allow section-length reason="Each tenant arc keeps its timeline and evidence together" -->
+<!-- sourcebound:allow section-length reason="The Loopway reference keeps its activation timeline beside the cohort evidence that defines the scenario" -->
 
 Fictional in full: every company name, person name, product code, and
 datum below is invented for this test bed. No real company, product, or
@@ -80,13 +80,13 @@ route/logistics-flavored word stems) crossed with a suffix list
 `Transit`, `Movers`), indexed by position and cycle count so no name
 repeats even after the 48-stem list cycles past its own length (the same
 collision the Segmented-Book generator hit and fixed — see
-`docs/PROGRAM_REPORT_14.md` IF/THEN — avoided here from the start by
+the [archived Program 14 report](archive/PROGRAM_REPORT_14.md) — avoided here from the start by
 mixing the cycle count into suffix selection, verified with a
 zero-collision check over all 376 slugs before freezing). `det_id` (via
 `account_id_for`) derives each account's UUID from its slug exactly like
 every other tenant. This rule is authored once, by a one-time,
 non-shipped generator script (mirrors
-`docs/PROGRAM_REPORT_14.md`'s IF/THEN: the output is frozen literal
+the [archived Program 14 report](archive/PROGRAM_REPORT_14.md): the output is frozen literal
 Python data with zero runtime generation — no `random`, no clock read —
 exactly as if a human had typed 376 rows by hand, just faster and
 collision-checked); the code module
@@ -230,7 +230,8 @@ stops).
 **Truth:** ONE win-back `cohort_action` by day 200, citing the decay
 pattern across the cohort. Per-account drafts (20 individual
 `content_route`/`personal_email` proposals) are a grading FAILURE — the
-same anti-pattern `docs/PROGRAM_REPORT_14.md`'s tier-mirror 3 tests, at a
+same anti-pattern covered by the
+[archived Program 14 report](archive/PROGRAM_REPORT_14.md), at a
 different trigger (usage decay rather than shallow adoption) and a
 tighter cohort (20 vs. 25, still comfortably above the 10-account
 cohort-collapse threshold precedent set in `eval/tier_policy_battery.py`).
@@ -276,7 +277,8 @@ the case `docs/UNIVERSE_V2_CONVENTIONS.md` §7 sanctions ("frozen contracts
 stay frozen unless explicitly sanctioned here") together with the
 dispatch's own instruction ("If the contract's channel field is a closed
 literal that excludes 'chat', extend it additively... and record it") —
-recorded here, in `docs/PROGRAM_REPORT_17.md`'s IF/THEN, and in the
+recorded here, in the
+[archived Program 17 report](archive/PROGRAM_REPORT_17.md), and in the
 contract's own docstring.
 
 A `chat_signals_as_of(account_id, as_of_day)` reader
@@ -296,7 +298,8 @@ accounts (4 high + 20 mid) plus a fixed, deterministic 40-account sample
 of the 376-account tail (seeded by `det_id`, same sampling discipline as
 the batteries below) — not all 400, for the same runtime/fixture-bloat
 reason the canary battery's sweep-list line documents. This is recorded
-as a deviation in `docs/PROGRAM_REPORT_17.md`, not silently narrowed.
+as a deviation in the
+[archived Program 17 report](archive/PROGRAM_REPORT_17.md), not silently narrowed.
 
 ## Runtime + sampling discipline (binding for every Loopway battery/eval)
 

@@ -1,5 +1,8 @@
 # R0 finding #3 resolution — claude_code judge revalidated against ground truth
 
+> Historical evaluation record, archived 2026-07-22. Retained for provenance; current
+> evaluation claims live in `docs/EVAL_STANDARD.md` and `docs/WORLD.md`.
+
 <!-- sourcebound:purpose -->
 Status: **PASS by a rule pre-registered before the run. R0 is resolved as a
 claim rescope (owner-directed): the transport meets the same validity gate
@@ -9,7 +12,7 @@ point estimates. Q3 (writer bake-off OPERATE) is unblocked.**
 
 ## Why the original R0 bar was retired
 
-Finding #3 (`docs/R0_KAPPA_BAND_FINDING.md`, PR #123): run 3 completed
+Finding #3 (`docs/archive/history/R0_KAPPA_BAND_FINDING.md`, PR #123): run 3 completed
 127/127 items but landed outside the committed `judge_agreement.json` CI
 bands — specifically a zero-width `[1.0, 1.0]` clean-layer safety_boundary
 band that any single flipped item breaches, and a recomposed (not grown)

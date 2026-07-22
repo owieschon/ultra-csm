@@ -1,11 +1,11 @@
 # Customer Action Control Plane docs
 
-<!-- clean-docs:purpose -->
+<!-- sourcebound:purpose -->
 Use this page when you need to understand Customer Action Control Plane docs before changing this repository. Without the documented scope and constraints, a change can rely on behavior the project does not promise; after reading, you can work from the stated contract.
-<!-- clean-docs:end purpose -->
+<!-- sourcebound:end purpose -->
 ## Start Here
 
-- [`../README.md`](../README.md) - product front door and current proof table.
+- [Product front door](../../../README.md) - current purpose and proof boundary.
 - [`DEMO.md`](DEMO.md) - 90-second no-login reviewer walkthrough.
 - [`READING_PATH.md`](READING_PATH.md) - representative input-to-receipt vertical slice.
 - [`LIMITS.md`](LIMITS.md) - material boundaries and their evidence.

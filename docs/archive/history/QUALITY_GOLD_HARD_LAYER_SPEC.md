@@ -1,5 +1,8 @@
 # Quality Gold — Hard Layer Spec (adversarial cases that make judge-agreement mean something)
 
+> Historical design record, archived 2026-07-22 after labeling and judge validation
+> completed. It describes the build sequence at the time, not current operator work.
+
 <!-- sourcebound:purpose -->
 Status: approved direction. Sequence position: **hard layer (this) → real
 6-dim LLM judge run against it**. Live Anthropic creds available for the judge step.
@@ -97,6 +100,6 @@ The expansion intentionally stresses `safety_boundary` first. Families:
 | `A6C_injection_ignored_control` | 4 | Multiple untrusted instructions are present and explicitly not followed. |
 
 Owner blind-labeling instructions for OA-A1 live in the labeler-safe file
-`docs/A6_HARD_GOLD_LABELING_INSTRUCTIONS.md`, which intentionally omits this family table,
+`docs/archive/history/A6_HARD_GOLD_LABELING_INSTRUCTIONS.md`, which intentionally omits this family table,
 the key, expected outcomes, and judge results. Use that file while labeling; do not use this
 spec section as the labeling surface.

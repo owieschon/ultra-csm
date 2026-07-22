@@ -1,5 +1,8 @@
 # OA-Q1 — Writer adoption decision
 
+> Historical decision record, archived 2026-07-22. The current model selection is encoded
+> in committed runtime and evaluation artifacts; this file preserves the decision evidence.
+
 <!-- sourcebound:purpose -->
 Status: **DECIDED. Adopted: claude-sonnet-5 (transport: claude_code, subscription).**
 Owner ratified 2026-07-11.
@@ -11,7 +14,7 @@ Owner ratified 2026-07-11.
 `claude-haiku-4-5`. Both candidates cleared the pre-committed absolute
 adoption bar (`gated_pass_rate >= 0.90`, `pass_k_rate >= 0.80`,
 `contract_violation_rate == 0.0`) in the confirmatory R2 bake-off (PR
-#136, `docs/R2_WRITER_BAKEOFF_RESULT_CONFIRMED.md`), so the decision is a
+#136, `docs/archive/history/R2_WRITER_BAKEOFF_RESULT_CONFIRMED.md`), so the decision is a
 tie-break, not a gate failure on either side.
 
 ## Basis
@@ -32,7 +35,7 @@ tie-break, not a gate failure on either side.
 - **Worst-case bound on the caching caveat**: Sonnet's measured
   `input_tokens` are artifactually low (prompt-caching hit consistently
   across its faster, more tightly-clustered calls — see
-  `docs/R2_WRITER_BAKEOFF_RESULT_CONFIRMED.md`'s caveat). Even under the
+  `docs/archive/history/R2_WRITER_BAKEOFF_RESULT_CONFIRMED.md`'s caveat). Even under the
   worst case — zero cache benefit, full fresh input on every Sonnet call
   (~400K tokens x $2/MTok =~ $0.80 additional) — Sonnet lands around
   $2.37 total, still meaningfully below Haiku's $4.65. The adoption
@@ -72,7 +75,7 @@ are not exact — Sonnet's real cost is somewhere between $1.57 (floor) and
 ~$2.37 (worst case). **Before W4 (the quarter's cost architecture)
 pre-registers a token/cost envelope, the cache-read telemetry gap should
 be closed** (capture and price `cache_read_input_tokens`, per
-`docs/R2_TELEMETRY_RESUME_FINDING.md`'s follow-up note) so the envelope is
+`docs/archive/history/R2_TELEMETRY_RESUME_FINDING.md`'s follow-up note) so the envelope is
 built on a precise number, not a bounded range. This does not block Q4.
 
 ## Recorded per dispatch instruction

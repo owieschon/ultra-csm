@@ -1,5 +1,8 @@
 # OA-A2 On-Task Relabel Instructions
 
+> Historical record, archived 2026-07-22. All 64 rows were labeled and the amendment was
+> applied. Keep this file for provenance; do not relabel from it.
+
 <!-- sourcebound:purpose -->
 Use this file while labeling. It intentionally contains no answer key, family names,
 judge scores, model identity, or previous human scores.

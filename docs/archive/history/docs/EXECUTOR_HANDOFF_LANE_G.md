@@ -1,6 +1,9 @@
-# Executor Handoff Addendum — Lane G: Capability Expansion (through the registry, never around it)
+# Executor handoff addendum — Lane G (2026-07-02, archived)
 
-Addendum to `EXECUTOR_HANDOFF.md` (rev 2), same protocol, same §X triggers, same one-shot
+> Historical process record. It does not define current implementation or operating guidance.
+> Use the [documentation index](../../../README.md) for current pages.
+
+This was an addendum to `EXECUTOR_HANDOFF.md` (rev 2), with the same §X triggers and one-shot
 autonomy contract. Owner-ratified direction: **grow the capability surface without
 breaking the safety case.** The governing rule for every task here: a new capability
 enters ONLY through the existing registries (action taxonomy + tiers + gate; enumerated,

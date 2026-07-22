@@ -1,4 +1,7 @@
-# MP-A Phase A4 STOP
+# MP-A Phase A4 stop record
+
+> **Point-in-time record last updated 2026-07-06; archived 2026-07-21.** This is
+> provenance, not current setup, architecture, or operating guidance.
 
 Phase A4 stopped on its explicit drift condition.
 

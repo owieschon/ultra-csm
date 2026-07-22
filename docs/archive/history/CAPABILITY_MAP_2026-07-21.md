@@ -1,7 +1,9 @@
 # Ultra-CSM: Capability Map & Dependency Graph
 
 <!-- sourcebound:purpose -->
-Use this page when you need to understand Ultra-CSM: Capability Map & Dependency Graph before changing this repository. Without the documented scope and constraints, a change can rely on behavior the project does not promise; after reading, you can work from the stated contract.
+Use this preserved 2026-07-21 capability snapshot only to trace prior roadmap assumptions. Its
+status cells are not current; use the [canonical architecture](../../ARCHITECTURE.md), current
+tests, and source for present behavior.
 <!-- sourcebound:end purpose -->
 <!-- sourcebound:allow doc-length reason="The capability-to-evidence lookup is one canonical reference" -->
 <!-- sourcebound:allow near-duplicate reason="This lookup repeats only the labels needed to map into the linked architecture" -->
