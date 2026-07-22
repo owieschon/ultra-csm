@@ -19,7 +19,7 @@ The catalog catches additions, removals, and replacements. It does not assert th
 | runtime-constraint | 1 | `Python >=3.10` |
 | schema | 3 | `ActionControlSandboxSession`, `ActionControlVerticalSlice`, `vercel` |
 | test-runner | 1 | `test:e2e` |
-| test-suite | 145 | `tests/test_account_brief_comms.py`, `tests/test_action_control_contract.py`, `tests/test_action_control_sandbox.py`, and 142 more |
+| test-suite | 146 | `tests/test_account_brief_comms.py`, `tests/test_action_control_contract.py`, `tests/test_action_control_sandbox.py`, and 143 more |
 
-<!-- sourcebound:inventory-sha256 b271a9ba72dee785f085be6cc1d0a54f7482e759310b119aae3d7c288e844345 -->
+<!-- sourcebound:inventory-sha256 0161762a847a94e66976da567e78c94c35afb0adc946de96a45cd7c174fdcf52 -->
 <!-- sourcebound:end repository-surface -->
