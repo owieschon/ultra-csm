@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { api, WorkItem } from "@/lib/api";
-import { label, MOTION_LABELS, ROLE_LABELS, TRIGGER_LABELS } from "@/lib/labels";
+import { api, isReadOnlyDemo, WorkItem } from "@/lib/api";
+import { draftProvenanceLabel, label, MOTION_LABELS, ROLE_LABELS, TRIGGER_LABELS } from "@/lib/labels";
 import { ReconciliationSection } from "./ReconciliationSection";
 
 type Brief = Record<string, unknown>;
@@ -291,7 +291,7 @@ export function QueueDetail({ item, day }: { item: WorkItem; day: number | undef
           <div className="sec-h">
             <span className="t">Proposed draft</span>
             <span className="prov">
-              <span className="chip-llm">AI-written — needs your approval</span>
+              <span className="chip-llm">{draftProvenanceLabel(item.draft_mode)} — needs your approval</span>
             </span>
           </div>
           <div className="draft">
@@ -311,7 +311,9 @@ export function QueueDetail({ item, day }: { item: WorkItem; day: number | undef
         <div className="sec-h">
           <span className="t">Account sources</span>
           <span className="prov">
-            <span className="chip-det">8 systems — 5 live, 3 no source yet</span>
+            <span className="chip-det">
+              {isReadOnlyDemo ? "Synthetic account records" : `${DRAWERS.length} systems tracked`}
+            </span>
           </span>
         </div>
         {DRAWERS.map((d) =>

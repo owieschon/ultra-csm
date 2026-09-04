@@ -51,10 +51,26 @@ export const TIER_LABELS: Record<string, string> = {
 };
 
 export const DISPOSITION_LABELS: Record<string, string> = {
-  propose_customer_action: "AI-written — needs your approval",
   internal_review: "Rule-based · no AI",
   escalate: "Needs judgment",
 };
+
+// WorkItem.draft_mode states how customer_draft was produced. The primary
+// label must say which register produced it — "AI-written" is only true for
+// draft_mode "live", and even then this snapshot never made a current model
+// call.
+export const DRAFT_MODE_LABELS: Record<string, string> = {
+  fixture: "Example draft",
+  live: "AI-generated draft (not a current live call)",
+  template_fallback: "Template fallback",
+};
+
+export function draftProvenanceLabel(draftMode: string | null | undefined): string {
+  if (draftMode && Object.prototype.hasOwnProperty.call(DRAFT_MODE_LABELS, draftMode)) {
+    return DRAFT_MODE_LABELS[draftMode];
+  }
+  return "Draft provenance unavailable";
+}
 
 export const PROPOSAL_STATUS_LABELS: Record<string, string> = {
   pending: "needs your approval",

@@ -54,29 +54,103 @@ test("approving simulates the full receipt and advances the queue", async ({ pag
   const pendingCount = page.locator(".lane-h .c").first();
   await expect(pendingCount).toHaveText("10");
 
+  // No verdict, sweep, or commit call ever leaves the browser for a
+  // simulated decision — the hosted build is read-only and the decision
+  // is client-side state only.
+  const mutatingRequests: string[] = [];
+  page.on("request", (req) => {
+    const method = req.method();
+    if (method !== "GET" && method !== "HEAD") mutatingRequests.push(`${method} ${req.url()}`);
+  });
+
   await page.keyboard.press("a");
 
   // Count decrements at once; the resolved item HOLDS while its receipt
   // streams into the rail, then selection auto-advances.
   await expect(pendingCount).toHaveText("9");
-  await expect(page.getByText("approved · sent (simulated)")).toBeVisible();
+  await expect(page.getByText("Approved (simulated)")).toBeVisible();
   await expect(page.getByRole("heading", { name: "Pinehill Transport" })).toBeVisible({
     timeout: 5000,
   });
 
   // The resolved row strikes through; inspecting it shows the simulated
-  // receipt, honesty-labeled.
+  // receipt, honesty-labeled — no claim of a verified payload hash, a real
+  // ActionGate call, a committer receipt, or a sent message.
   await page.locator(".row.resolved", { hasText: "Ironhorse" }).click();
-  await expect(page.getByText("approved · sent (simulated)")).toBeVisible();
+  await expect(page.getByText("Approved (simulated)")).toBeVisible();
   const ledger = page.getByRole("log");
-  await expect(ledger.getByText("Email sent")).toBeVisible();
-  await expect(ledger.getByText(/message-id sim-/)).toBeVisible();
+  await expect(ledger.getByText("Send simulated")).toBeVisible();
+  await expect(ledger.getByText("no message sent — demo only")).toBeVisible();
+  await expect(ledger.getByText("Commit simulated")).toBeVisible();
+  await expect(ledger.getByText("no committer ran — nothing released")).toBeVisible();
+  await expect(ledger.getByText(/message-id/)).toHaveCount(0);
   expect(await ledger.locator(".sim-chip").count()).toBeGreaterThanOrEqual(4);
   // Original backend receipts survive alongside the simulated ones.
   await expect(ledger.getByText("Proposed", { exact: true })).toBeVisible();
 
   // Step 04 reflects the recorded decision.
   await expect(page.getByText("Decision recorded")).toBeVisible();
+
+  expect(mutatingRequests).toEqual([]);
+});
+
+test("reloading clears simulated decisions and restores the full pending queue", async ({ page }) => {
+  await dismissIntro(page);
+  await openQueue(page);
+  await expect(page.getByRole("heading", { name: "Ironhorse Freight Co" })).toBeVisible();
+
+  const pendingCount = page.locator(".lane-h .c").first();
+  await expect(pendingCount).toHaveText("10");
+  await page.keyboard.press("a");
+  await expect(pendingCount).toHaveText("9");
+
+  await page.reload();
+  await openQueue(page);
+  await expect(page.getByRole("heading", { name: "Ironhorse Freight Co" })).toBeVisible();
+  await expect(pendingCount).toHaveText("10");
+  await page.locator(".row", { hasText: "Ironhorse" }).click();
+  const ledger = page.getByRole("log");
+  await expect(ledger.locator(".sim-chip")).toHaveCount(0);
+});
+
+test("draft provenance is labeled by draft_mode, not asserted as AI-written", async ({ page }) => {
+  await dismissIntro(page);
+
+  async function draftLabelFor(draftMode: string | null): Promise<string> {
+    await page.route("**/ui/demo-api/sweep-day-140.json", async (route) => {
+      const response = await route.fetch();
+      const body = await response.json();
+      body.work_items[0].draft_mode = draftMode;
+      await route.fulfill({ response, json: body });
+    });
+    await openQueue(page);
+    await expect(page.getByRole("heading", { name: "Ironhorse Freight Co" })).toBeVisible();
+    const chip = page.locator(".chip-llm").first();
+    const text = (await chip.textContent()) ?? "";
+    await page.unroute("**/ui/demo-api/sweep-day-140.json");
+    return text;
+  }
+
+  expect(await draftLabelFor("fixture")).toContain("Example draft");
+  expect(await draftLabelFor("live")).toContain("AI-generated draft (not a current live call)");
+  expect(await draftLabelFor("template_fallback")).toContain("Template fallback");
+  expect(await draftLabelFor(null)).toContain("Draft provenance unavailable");
+  expect(await draftLabelFor("unknown")).toContain("Draft provenance unavailable");
+  // Regression: a lookup keyed off prototype-chain membership (`key in obj`)
+  // resolves "toString" to Object.prototype.toString and renders it as a
+  // legitimate provenance label — the label must come from an own-property
+  // check only.
+  expect(await draftLabelFor("toString")).toContain("Draft provenance unavailable");
+});
+
+test("hosted account sources are named as synthetic, not claimed live", async ({ page }) => {
+  await dismissIntro(page);
+  await openQueue(page);
+  await expect(page.getByRole("heading", { name: "Ironhorse Freight Co" })).toBeVisible();
+
+  const sourcesChip = page.locator(".sec-h", { hasText: "Account sources" }).locator(".chip-det");
+  await expect(sourcesChip).toHaveText("Synthetic account records");
+  await expect(page.getByText(/\d+ systems? — \d+ live/)).toHaveCount(0);
 });
 
 test("clearing the queue composes the payoff and returns to a quiet book", async ({ page }) => {
