@@ -2,7 +2,7 @@
 
 Follow one customer action from source evidence to a payload-bound receipt, then the
 tests that attack every step. Links are pinned to
-[`62b4972`](https://github.com/owieschon/ultra-csm/blob/62b497286352fd2db1b6d67187e82d058effaed5),
+[`62b4972`](https://github.com/owieschon/ultra-csm/tree/62b497286352fd2db1b6d67187e82d058effaed5),
 so each resolves to the exact line even after later edits move the code.
 
 ## 1. Source evidence -> proposal
@@ -15,8 +15,9 @@ recipient. When customer contact is allowed,
 [`sweep.py#L1204 _propose_outreach`](https://github.com/owieschon/ultra-csm/blob/62b497286352fd2db1b6d67187e82d058effaed5/src/ultra_csm/agent1/sweep.py#L1204)
 builds the payload and calls `gate.propose`. The draft body behind that payload comes
 from [`sweep.py#L1190 _write_slot_b_with_fallback`](https://github.com/owieschon/ultra-csm/blob/62b497286352fd2db1b6d67187e82d058effaed5/src/ultra_csm/agent1/sweep.py#L1190),
-which reports its `draft_mode` as `fixture`, `live`, `template_fallback` (on a writer
-exception or contract violation), or `none`.
+which reports its `draft_mode` as `fixture`, `live`, or `template_fallback` (on a writer
+exception or contract violation). `none` is a separate, unset default on
+`CSMWorkItem.draft_mode`, never returned by this function.
 
 ## 2. Configured human approval
 
@@ -50,9 +51,13 @@ authorized payload hash, and the target
 ([`committers.py#L331 _idempotency_key`](https://github.com/owieschon/ultra-csm/blob/62b497286352fd2db1b6d67187e82d058effaed5/src/ultra_csm/committers.py#L331))
 is leased through `gate.acquire_sim_idempotency_attempt`
 ([`gate.py#L468`](https://github.com/owieschon/ultra-csm/blob/62b497286352fd2db1b6d67187e82d058effaed5/src/ultra_csm/governance/gate.py#L468))
-before the write to the simulated outbox happens. A retry that already holds a
-completed result short-circuits to the existing receipt instead of writing again; a
-failed lease is reclaimable, an active one is not.
+before the write to the simulated outbox happens. A `failed` reservation, or a `pending`
+one whose lease has expired (or was never set), can be reclaimed by a new attempt; an
+active unexpired lease or a `completed` result cannot. On a key that is already
+`completed`, the committer returns a freshly synthesized receipt with `committed=False`
+rather than writing again; if it instead finds the canonical target row present but
+owns a reclaimed failed/expired lease, it repairs the missing audit entry before
+marking the key complete.
 
 ## Negative tests
 
@@ -62,7 +67,8 @@ attacks each step above:
 - [`L305 test_agent_kind_self_approve_rejected_for_tier_two`](https://github.com/owieschon/ultra-csm/blob/62b497286352fd2db1b6d67187e82d058effaed5/tests/test_action_gate_machine.py#L305) —
   the proposing actor approving its own tier-2 proposal is rejected.
 - [`L320 test_agent_kind_distinct_approver_still_rejected_for_tier_two`](https://github.com/owieschon/ultra-csm/blob/62b497286352fd2db1b6d67187e82d058effaed5/tests/test_action_gate_machine.py#L320) —
-  a distinct but non-human approver is rejected; human-kind alone is not sufficient.
+  an approver distinct from the actor but not `kind='human'` is still rejected;
+  distinctness alone is not sufficient without human-kind.
 - [`L224 test_db_rejects_approved_outreach_without_contact_consent`](https://github.com/owieschon/ultra-csm/blob/62b497286352fd2db1b6d67187e82d058effaed5/tests/test_action_gate_machine.py#L224) —
   the database backstops consent even if an app-level check is bypassed.
 - [`L123 test_gate_tampered_payload_refused`](https://github.com/owieschon/ultra-csm/blob/62b497286352fd2db1b6d67187e82d058effaed5/tests/test_action_gate_machine.py#L123) —
@@ -71,6 +77,13 @@ attacks each step above:
   a second verdict against an already-decided proposal loses the compare-and-set.
 - [`L86 test_gate_revise_applies_revised_payload`](https://github.com/owieschon/ultra-csm/blob/62b497286352fd2db1b6d67187e82d058effaed5/tests/test_action_gate_machine.py#L86) —
   after a revise, the original payload no longer authorizes; only the edited one does.
+
+[`tests/test_demo_loop.py#L171 test_sim_committers_recover_pending_crash_reservations`](https://github.com/owieschon/ultra-csm/blob/62b497286352fd2db1b6d67187e82d058effaed5/tests/test_demo_loop.py#L171)
+proves the idempotency retry statement above end to end: a planted `OSError` between
+the outbox append and the audit append leaves the reservation `failed`; the retry
+reclaims that failed lease, repairs the missing audit entry, and marks the key
+`completed`; a further retry against the now-`completed` key returns `committed=False`
+without appending a second customer action.
 
 The adjacent UI is `ui/components/QueueDetail.tsx` and `ui/components/ActionRail.tsx`.
 It distinguishes rule-based priority from a draft, labels the draft source, and shows
