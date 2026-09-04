@@ -16,4 +16,4 @@
 - [docs/READING_PATH.md](docs/READING_PATH.md): declared canonical context; sha256: 90d98a93de9a92bb14073ed80a6f2ed6e8363f4f0aede3345c7544ad1fcaa668
 - [docs/README.md](docs/README.md): declared canonical context; sha256: 61c539aca289194fea39a7425300378253bd4423dd721e4d5746b1e441fb198c
 - [docs/SECURITY.md](docs/SECURITY.md): declared canonical context; sha256: 19ba9728dbfec8c5fb3985e7cf92534f16c67d2bb22392499963c878e3896253
-- [docs/SURFACE.md](docs/SURFACE.md): bindings: repository-surface; sha256: af81399bb472c58ec0b2b5682c0e848e6f68188e70e0fe7723a5a8894633c767
+- [docs/SURFACE.md](docs/SURFACE.md): bindings: repository-surface; sha256: f59aeceb7c518b33fc6b846c16fd177f1c4b29b29748b64f0c46691a964945ee
