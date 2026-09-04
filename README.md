@@ -49,13 +49,18 @@ Open the hosted demo, select **Trailhead Logistics**, and inspect four stages:
 
 1. tenant-scoped source records supply the evidence;
 2. deterministic rules compute priority;
-3. a bounded fixture writer proposes a draft with cited evidence;
+3. a bounded fixture writer proposes a draft with cited evidence, labeled by its actual
+   source (example, AI-generated, or template fallback — never asserted as AI-written
+   by default);
 4. the interface stops at the configured approval boundary.
 
-The hosted build disables decisions and sends, so a click cannot be mistaken for an
-approval. A non-read-only local build can record approve, deny, and revise verdicts, but
-an approved verdict is not labeled sent or committed without a separate committer
-receipt.
+The hosted build has no write path: approve, deny, and edit run entirely as browser
+state, never as a network call. Clicking Approve does not call the gate, run a
+committer, or send a message — the receipt panel labels every one of those steps
+"simulated" and says so explicitly. Reloading the page clears all simulated decisions
+and restores the full pending queue; nothing persists past the tab. A non-read-only
+local build can record real approve, deny, and revise verdicts, but an approved verdict
+there is not labeled sent or committed without a separate committer receipt.
 
 The `/ui/action-control/` route makes the boundary inspectable. The hosted build shows
 frozen output from the executable proof and names its sandbox backend as unavailable. A

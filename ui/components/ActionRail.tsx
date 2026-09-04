@@ -158,7 +158,7 @@ export const ActionRail = forwardRef<
                 proposal <span className="mono">{proposalId.slice(0, 8)}</span> ·{" "}
                 <span className="st">
                   {readOnly && status === "approved"
-                    ? "approved · sent (simulated)"
+                    ? "Approved (simulated)"
                     : label(PROPOSAL_STATUS_LABELS, status)}
                 </span>
               </>
