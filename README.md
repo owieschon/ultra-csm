@@ -50,7 +50,7 @@ Open the hosted demo, select **Trailhead Logistics**, and inspect four stages:
 1. tenant-scoped source records supply the evidence;
 2. deterministic rules compute priority;
 3. a bounded fixture writer proposes a draft with cited evidence, labeled by its actual
-   source (example, AI-generated, or template fallback — never asserted as AI-written
+   source (example, model-generated, or template fallback — never asserted as AI-written
    by default);
 4. the interface stops at the configured approval boundary.
 

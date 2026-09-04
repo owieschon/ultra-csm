@@ -44,7 +44,7 @@ jq '{pending: ([.work_items[] | select(.proposal.status == "pending")] | length)
    priority factors, selected action, cited evidence, and fixture-generated draft. The
    work item records `draft_mode: fixture`; this path does not demonstrate a live model
    call. The chip above the draft names its actual source ("Example draft" here; the
-   label reads "AI-generated draft" or "Template fallback" depending on how a given
+   label reads "model-generated draft" or "Template fallback" depending on how a given
    draft was produced).
 4. Inspect **Internal handoff**. The fixture routes a cited feature-request signal to
    Product without changing the customer-facing approval path.
