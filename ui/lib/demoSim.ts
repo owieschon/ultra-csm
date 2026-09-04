@@ -16,35 +16,33 @@ function ts(offsetSeconds: number): string {
   return d.toISOString();
 }
 
-function simId(): string {
-  return Math.random().toString(16).slice(2, 10);
-}
-
+// This demo runs no ActionGate call, verifies no payload hash, and obtains
+// no committer receipt — every line below states only what happened in the
+// browser: a button click updated local state. Nothing left the tab.
 export function simulateApproval(proposalId: string): DemoLedgerEvent[] {
-  const messageId = `sim-${simId()}`;
   return [
     {
       ts: ts(0),
       event: "gate.approve",
       label: "Approved",
       proposal_id: proposalId,
-      detail: "human verdict recorded — exact payload authorized",
+      detail: "Approved in this demo — no gate call made",
       simulated: true,
     },
     {
       ts: ts(1),
       event: "committer.commit",
-      label: "Committed",
+      label: "Commit simulated",
       proposal_id: proposalId,
-      detail: "payload-bound release through the gate",
+      detail: "no committer ran — nothing released",
       simulated: true,
     },
     {
       ts: ts(2),
       event: "send.receipt",
-      label: "Email sent",
+      label: "Send simulated",
       proposal_id: proposalId,
-      detail: `message-id ${messageId}`,
+      detail: "no message sent — demo only",
       simulated: true,
     },
     {

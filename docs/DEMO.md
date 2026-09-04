@@ -43,12 +43,18 @@ jq '{pending: ([.work_items[] | select(.proposal.status == "pending")] | length)
 3. Select **Trailhead Logistics**. Inspect the tenant-scoped sources, deterministic
    priority factors, selected action, cited evidence, and fixture-generated draft. The
    work item records `draft_mode: fixture`; this path does not demonstrate a live model
-   call.
+   call. The chip above the draft names its actual source ("Example draft" here; the
+   label reads "AI-generated draft" or "Template fallback" depending on how a given
+   draft was produced).
 4. Inspect **Internal handoff**. The fixture routes a cited feature-request signal to
    Product without changing the customer-facing approval path.
-5. Inspect **Decision**. The hosted build disables approvals and sends. The governed
-   local path requires a proposal, a verdict from a configured approval identity, a
-   payload-bound committer, and a receipt.
+5. Inspect **Decision**. Approve, deny, and edit run in this demo, but entirely as
+   browser state, not a network call: no gate, committer, or send runs. The receipt
+   panel labels every simulated step ("Approved (simulated)", "Commit simulated", "Send
+   simulated") and says plainly that no message was sent. Reloading clears the
+   simulated decision and restores the full pending queue. The governed local path
+   requires a proposal, a verdict from a configured approval identity, a payload-bound
+   committer, and a receipt; the agent does not approve its own send.
 6. Inspect the audit ledger. The fixture exposes proposal, judge, draft, and value-model
    events instead of hiding missing event classes behind a clean screen.
 

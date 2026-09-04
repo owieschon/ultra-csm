@@ -15,7 +15,8 @@ ULTRA_CSM_DEMO_NOAUTH=1 ULTRA_CSM_BIND_HOST=127.0.0.1 PYTHONPATH=src:. \
 ```
 
 Follow [`DEMO.md`](DEMO.md). The UI separates deterministic priority, a labeled fixture
-draft, the pending proposal, and the disabled decision boundary.
+draft, and the pending proposal. Approve, deny, and edit run as browser state only — no
+gate, committer, or send call happens, and reloading clears the simulated decision.
 
 ## 2. Trace one action through code
 
