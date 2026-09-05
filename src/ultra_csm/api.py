@@ -241,6 +241,7 @@ class AccountBriefResponse(BaseModel):
     divergences: list[dict[str, Any]]
     open_ctas: list[dict[str, Any]]
     success_plans: list[dict[str, Any]]
+    objective_evidence: list[dict[str, Any]] = Field(default_factory=list)
     open_cases: list[dict[str, Any]]
     contacts: list[dict[str, Any]]
     stakeholders: list[dict[str, Any]]

@@ -388,7 +388,9 @@ def test_usage_outcome_divergence_requires_high_usage_and_stated_outcome():
     assert factor.contribution == 18
     assert factor.threshold_name == "outcome_activity_floor"
     assert factor.threshold_value == 0.75
-    assert {ref.field for ref in factor.evidence} >= {"active_users", "objectives"}
+    # Evidence now cites the unresolved objective's own plan status, not the
+    # coarser "objectives" listing factor -- more precise, not less grounded.
+    assert {ref.field for ref in factor.evidence} >= {"active_users", "status"}
 
 
 def test_green_high_usage_account_that_later_churns_does_not_backfill_known_outcome():
@@ -420,7 +422,11 @@ def test_green_high_usage_account_that_later_churns_does_not_backfill_known_outc
 
     assert checkpoint.outcome.realized_state == "not_instrumented"
     assert "usage_outcome_unverified" in _factor_names(checkpoint)
-    assert after_churn.outcome.realized_state == "known"
+    # A lost renewal is a real, cited fact -- but it does not verify (or
+    # refute) the plan's own stated objective, which is still "active".
+    # realized_state moves from no-evidence-at-all to "unknown", not "known",
+    # and the unresolved objective keeps driving follow-up.
+    assert after_churn.outcome.realized_state == "unknown"
     factors = {item.name: item for item in after_churn.outcome.factors}
     factor = factors["renewal_outcome_closed_lost"]
     assert factor.value == -1.0
@@ -428,7 +434,7 @@ def test_green_high_usage_account_that_later_churns_does_not_backfill_known_outc
     assert factor.evidence[0].source == "crm"
     assert factor.evidence[0].source_id == lost_renewal.opportunity_id
     assert factor.evidence[0].field == "stage_name"
-    assert "usage_outcome_unverified" not in _factor_names(after_churn)
+    assert "usage_outcome_unverified" in _factor_names(after_churn)
 
 
 def test_closed_won_renewal_is_positive_realized_outcome_evidence():
@@ -445,12 +451,14 @@ def test_closed_won_renewal_is_positive_realized_outcome_evidence():
         as_of="2026-06-21",
     )
 
-    assert model.outcome.realized_state == "known"
+    # A won renewal does not prove the plan's own ("active") objective was
+    # achieved -- it stays unresolved and keeps driving follow-up.
+    assert model.outcome.realized_state == "unknown"
     factors = {item.name: item for item in model.outcome.factors}
     factor = factors["renewal_outcome_closed_won"]
     assert factor.value == 1.0
     assert factor.evidence[0].source_id == won_renewal.opportunity_id
-    assert "usage_outcome_unverified" not in _factor_names(model)
+    assert "usage_outcome_unverified" in _factor_names(model)
 
 
 def test_non_terminal_or_non_renewal_opportunity_does_not_fabricate_known_outcome():
@@ -476,6 +484,36 @@ def test_non_terminal_or_non_renewal_opportunity_does_not_fabricate_known_outcom
     assert {
         item.name for item in model.outcome.factors
     } == {"outcome_stated"}
+
+
+def test_unrelated_plan_completion_and_renewal_do_not_resolve_other_objective():
+    """Defect: _outcome_rail flipped the whole account to realized_state
+    "known" on any completed plan/renewal, silencing follow-up for an
+    unrelated, still-open objective on a different plan."""
+    _, _, _, adoption, *_ = _facts()
+    won_renewal = _renewal_opportunity(stage_name="Closed Won", close_date="2026-06-15")
+    open_plan = _plan()  # status="active" -- objective unresolved
+    realized_plan = SuccessPlan(
+        plan_id="plan-other-realized",
+        account_id=ACME_LOGISTICS,
+        status="realized",
+        objectives=("cut onboarding time",),
+        target_date="2026-05-01",
+    )
+
+    model = _model(
+        adoption=replace(adoption, active_users=90, licensed_users=100),
+        plans=(open_plan, realized_plan),
+        opportunities=(won_renewal,),
+        as_of="2026-06-21",
+    )
+
+    assert model.outcome.realized_state != "known"
+    assert "usage_outcome_unverified" in _factor_names(model)
+    by_objective = {r.objective: r for r in model.outcome.objective_evidence}
+    assert by_objective["reduce detention time"].source_reported_complete is False
+    assert by_objective["reduce detention time"].plan_id == "plan-outcome-integrity"
+    assert by_objective["cut onboarding time"].source_reported_complete is True
 
 
 def test_min_seats_guard_blocks_single_threaded_risk():

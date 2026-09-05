@@ -18,6 +18,7 @@ from ultra_csm.data_plane.contracts import (
     CSCompany,
     Entitlement,
     EvidenceRef,
+    EvidenceSource,
     HealthScore,
     JobChangeSignal,
     LifecycleStage,
@@ -184,10 +185,26 @@ class FeatureDepthRail:
 
 
 @dataclass(frozen=True)
+class ObjectiveEvidence:
+    """One customer-stated objective, tied to the success plan that reported
+    it. ``source_reported_complete`` reflects only that plan's own ``status``
+    field -- the plan owner's self-report, never independent verification
+    that the underlying business objective was achieved. A renewal or an
+    onboarding milestone on a *different* plan never flips this."""
+
+    objective: str
+    plan_id: str
+    plan_status: str
+    source_reported_complete: bool
+    evidence: tuple[EvidenceRef, ...]
+
+
+@dataclass(frozen=True)
 class OutcomeRail:
     stated_objectives: tuple[str, ...]
     realized_state: OutcomeState
     factors: tuple[ValueFactor, ...]
+    objective_evidence: tuple[ObjectiveEvidence, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -412,7 +429,15 @@ def build_customer_value_model(
     threaded = _single_threaded_risk(usage_signals, adoption, resolved, stakeholders=stakeholders)
     if threaded is not None:
         divergences.append(threaded)
-    usage_outcome = _usage_outcome_divergence(adoption, outcome, resolved)
+    usage_outcome = _usage_outcome_divergence(
+        outcome,
+        resolved,
+        active_users=adoption.active_users if adoption else None,
+        licensed_users=adoption.licensed_users if adoption else None,
+        account_id=adoption.account_id if adoption else "",
+        measured_at=adoption.measured_at if adoption else "",
+        evidence_source="cs_platform",
+    )
     if usage_outcome is not None:
         divergences.append(usage_outcome)
 
@@ -589,6 +614,55 @@ def _feature_depth_rail(
     return FeatureDepthRail(entitled, underused, factors)
 
 
+def objective_coverage(success_plans: tuple[SuccessPlan, ...]) -> tuple[ObjectiveEvidence, ...]:
+    """One :class:`ObjectiveEvidence` per stated objective, carrying its
+    source plan's identity and status. Shared by :func:`_outcome_rail` and
+    ``value_model_bridge._outcome_rail_from_data`` so both model paths use
+    the exact same per-objective resolution rule -- there is no per-objective
+    milestone mapping to invent, only the plan's own reported status."""
+
+    return tuple(
+        ObjectiveEvidence(
+            objective=objective,
+            plan_id=plan.plan_id,
+            plan_status=plan.status,
+            source_reported_complete=plan.status in {"realized", "achieved", "complete"},
+            evidence=(EvidenceRef("cs_platform", plan.plan_id, "status", plan.target_date),),
+        )
+        for plan in success_plans
+        for objective in plan.objectives
+    )
+
+
+def unresolved_objectives(
+    objective_evidence: tuple[ObjectiveEvidence, ...],
+) -> tuple[ObjectiveEvidence, ...]:
+    return tuple(record for record in objective_evidence if not record.source_reported_complete)
+
+
+def outcome_realized_state(
+    objective_evidence: tuple[ObjectiveEvidence, ...],
+    *,
+    has_other_evidence: bool,
+) -> OutcomeState:
+    """Roll per-objective coverage up to the rail-level state.
+
+    A stated objective is only ``known`` when ITS OWN plan self-reports
+    completion. Evidence from a different objective's plan, a renewal, or an
+    onboarding milestone can resolve the ambiguity of "no evidence at all"
+    (``not_instrumented`` -> ``unknown``) but never counts as proof for an
+    objective it was never about -- that objective stays out of ``known``
+    until its own plan resolves.
+    """
+
+    unresolved = unresolved_objectives(objective_evidence)
+    if objective_evidence:
+        if not unresolved:
+            return "known"
+        return "unknown" if has_other_evidence else "not_instrumented"
+    return "known" if has_other_evidence else "not_instrumented"
+
+
 def _outcome_rail(
     success_plans: tuple[SuccessPlan, ...],
     resolved: ResolvedThresholds,
@@ -597,11 +671,8 @@ def _outcome_rail(
     onboarding_milestones: tuple[TimeToValueMilestone, ...] = (),
     as_of: str | None = None,
 ) -> OutcomeRail:
-    objectives = tuple(
-        objective
-        for plan in success_plans
-        for objective in plan.objectives
-    )
+    objective_evidence = objective_coverage(success_plans)
+    objectives = tuple(record.objective for record in objective_evidence)
     factors = ()
     if objectives:
         factors = (_factor(
@@ -617,9 +688,6 @@ def _outcome_rail(
             None,
             None,
         ),)
-    plan_realized = any(
-        plan.status in {"realized", "achieved", "complete"} for plan in success_plans
-    )
     renewal_outcome_factors = _terminal_renewal_outcome_factors(
         opportunities,
         resolved,
@@ -632,10 +700,10 @@ def _outcome_rail(
     onboarding_achieved = tuple(
         m for m in onboarding_milestones if m.achieved_at is not None
     )
-    if plan_realized or renewal_outcome_factors or onboarding_achieved:
-        realized_state: OutcomeState = "known"
-    else:
-        realized_state = "not_instrumented"
+    realized_state = outcome_realized_state(
+        objective_evidence,
+        has_other_evidence=bool(renewal_outcome_factors) or bool(onboarding_achieved),
+    )
     if renewal_outcome_factors:
         factors = (*factors, *renewal_outcome_factors)
     if onboarding_achieved:
@@ -656,6 +724,7 @@ def _outcome_rail(
         stated_objectives=objectives,
         realized_state=realized_state,
         factors=factors,
+        objective_evidence=objective_evidence,
     )
 
 
@@ -820,18 +889,27 @@ def _ttv_base_factors(
 
 
 def _usage_outcome_divergence(
-    adoption: AdoptionSummary | None,
     outcome: OutcomeRail,
     resolved: ResolvedThresholds,
+    *,
+    active_users: int | None,
+    licensed_users: int | None,
+    account_id: str,
+    measured_at: str,
+    evidence_source: EvidenceSource,
 ) -> ValueFactor | None:
-    if (
-        adoption is None
-        or adoption.licensed_users <= 0
-        or not outcome.stated_objectives
-        or outcome.realized_state == "known"
-    ):
+    """Shared usage/outcome follow-up calculation (used by both
+    :func:`build_customer_value_model` and
+    ``value_model_bridge.build_deep_value_model``): fires whenever usage is
+    high but at least one stated objective is still unresolved, regardless of
+    what an unrelated plan, renewal, or onboarding milestone reports."""
+
+    if not licensed_users or licensed_users <= 0 or active_users is None:
         return None
-    activity = adoption.active_users / adoption.licensed_users
+    unresolved = unresolved_objectives(outcome.objective_evidence)
+    if not unresolved:
+        return None
+    activity = active_users / licensed_users
     if activity < resolved.thresholds.outcome_activity_floor:
         return None
     return _factor(
@@ -839,8 +917,8 @@ def _usage_outcome_divergence(
         activity,
         18,
         (
-            EvidenceRef("cs_platform", adoption.account_id, "active_users", adoption.measured_at),
-            *outcome.factors[0].evidence,
+            EvidenceRef(evidence_source, account_id, "active_users", measured_at),
+            *(ev for record in unresolved for ev in record.evidence),
         ),
         resolved,
         "outcome_activity_floor",

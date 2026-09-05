@@ -553,6 +553,11 @@ def _build_account_brief(
         "divergences": [asdict(d) for d in model.divergences],
         "open_ctas": [asdict(c) for c in open_ctas],
         "success_plans": [asdict(p) for p in plans],
+        # Per-objective coverage (source plan id/status, unresolved vs
+        # source-reported-complete) -- see value_model.ObjectiveEvidence.
+        # A separate plan/renewal/onboarding completing never marks another
+        # plan's objective resolved; the operator view must not lose it.
+        "objective_evidence": [asdict(r) for r in model.outcome.objective_evidence],
         "open_cases": [asdict(c) for c in open_cases],
         "contacts": [
             {
