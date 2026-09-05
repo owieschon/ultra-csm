@@ -1227,13 +1227,13 @@ def _write_slot_b_with_fallback(
         return fallback, "template_fallback", "writer_error"
     try:
         validate_reason_draft_output(request, output)
+        mode: DraftMode = "fixture" if output.model_id == FIXTURE_SLOT_B_MODEL_ID else "live"
     except SlotBContractError:
         fallback = FixtureReasonDraftWriter().write(request)
         return fallback, "template_fallback", "contract_rejected"
     except Exception:
         fallback = FixtureReasonDraftWriter().write(request)
         return fallback, "template_fallback", "validation_error"
-    mode: DraftMode = "fixture" if output.model_id == FIXTURE_SLOT_B_MODEL_ID else "live"
     return output, mode, None
 
 

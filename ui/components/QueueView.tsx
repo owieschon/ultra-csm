@@ -5,6 +5,7 @@ import { AccountSummary, WorkItem } from "@/lib/api";
 import { SweepData } from "@/lib/useSweep";
 import { QueueLanes, LaneItem } from "@/components/QueueLanes";
 import { QueueDetail } from "@/components/QueueDetail";
+import { draftFallbackReasonLabel } from "@/lib/labels";
 
 export function QueueView({
   day,
@@ -38,6 +39,14 @@ export function QueueView({
   }, [accounts]);
 
   const withProposal = (sweep?.work_items ?? []).filter((i) => i.proposal);
+  const fallbacks = (sweep?.work_items ?? [])
+    .filter((item) => !item.proposal && item.draft_mode === "template_fallback" && draftFallbackReasonLabel(item.draft_fallback_reason))
+    .map((item, index) => ({
+      id: `fallback:${JSON.stringify([item.tenant_id, item.account_id ?? index, item.motion, item.recommended_action])}`,
+      item,
+      accountName: item.account_id ? nameByAccount.get(item.account_id) ?? item.account_id : "Portfolio-wide action",
+    }));
+
   const needsDecision: LaneItem[] = withProposal
     .filter((i) => i.proposal!.status === "pending")
     .map((item) => ({
@@ -62,7 +71,7 @@ export function QueueView({
   const selectedItem =
     (sweep?.work_items ?? []).find(
       (i) => i.proposal?.proposal_id === selectedProposalId
-    ) ?? null;
+    ) ?? fallbacks.find((entry) => entry.id === selectedProposalId)?.item ?? null;
 
   useEffect(() => {
     onSelectedItemChange(selectedItem);
@@ -82,13 +91,14 @@ export function QueueView({
   // The goal state of this screen is emptiness — when the last decision
   // resolves, that moment is composed deliberately (UI_DESIGN_BRIEF's
   // designed empty state), not left as a generic "select an item".
-  const queueClear = sweep != null && needsDecision.length === 0;
+  const queueClear = sweep != null && needsDecision.length === 0 && fallbacks.length === 0;
 
   return (
     <div className="queue">
       <QueueLanes
         needsDecision={needsDecision}
         resolved={resolved}
+        fallbacks={fallbacks}
         escalations={sweep?.escalations ?? []}
         coveredCount={coveredCount}
         selectedId={selectedProposalId}
@@ -127,8 +137,7 @@ export function QueueView({
             </h2>
             {sweep && (
               <div className="sub">
-                {needsDecision.length} need you · {coveredCount} covered, no
-                action needed
+                {needsDecision.length} decisions pending · {fallbacks.length} draft statuses to inspect
               </div>
             )}
           </div>
