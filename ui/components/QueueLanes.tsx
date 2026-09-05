@@ -2,6 +2,7 @@
 
 import { WorkItem } from "@/lib/api";
 import {
+  draftFallbackReasonLabel,
   label,
   LANE_LABELS,
   MOTION_LABELS,
@@ -18,6 +19,7 @@ export interface LaneItem {
 export function QueueLanes({
   needsDecision,
   resolved,
+  fallbacks,
   escalations,
   coveredCount,
   selectedId,
@@ -25,6 +27,7 @@ export function QueueLanes({
 }: {
   needsDecision: LaneItem[];
   resolved: LaneItem[];
+  fallbacks: { id: string; item: WorkItem; accountName: string }[];
   escalations: Record<string, unknown>[];
   coveredCount: number;
   selectedId: string | null;
@@ -47,6 +50,29 @@ export function QueueLanes({
           onSelect={onSelect}
         />
       ))}
+
+      {fallbacks.length > 0 && (
+        <>
+          <div className="lane-h">
+            <span className="t">Draft status</span>
+            <span className="c num">{fallbacks.length}</span>
+            <span className="badge">no proposal to approve</span>
+          </div>
+          {fallbacks.map(({ id, item, accountName }) => (
+            <button
+              key={id}
+              type="button"
+              className={`row${selectedId === id ? " sel" : ""}`}
+              aria-label={`Inspect fallback for ${accountName}`}
+              aria-pressed={selectedId === id}
+              onClick={() => onSelect(id)}
+            >
+              <div className="l1"><span className="acct">{accountName}</span></div>
+              <div className="l2">{draftFallbackReasonLabel(item.draft_fallback_reason)}</div>
+            </button>
+          ))}
+        </>
+      )}
 
       <div className="lane-h">
         <span className="t">Resolved this session</span>
