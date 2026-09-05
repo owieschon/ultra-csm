@@ -82,7 +82,7 @@ DraftMode = Literal["fixture", "live", "template_fallback", "none"]
 # Low-cardinality operator diagnostic for why a template_fallback happened.
 # Never carries exception text, class names, prompts, credentials, or
 # customer data -- only the fixed reason code below.
-DraftFallbackReason = Literal["writer_error", "contract_rejected", "customer_action_blocked"]
+DraftFallbackReason = Literal["writer_error", "contract_rejected", "customer_action_blocked", "validation_error"]
 TrajectoryFactorState = Literal["known", "unknown"]
 
 
@@ -1212,8 +1212,10 @@ def _write_slot_b_with_fallback(
     The returned diagnostic distinguishes a writer call that raised (writer
     error -- transport outage, exception in the writer) from writer output
     that was rejected by the Slot B contract (contract_rejected -- e.g.
-    fabricated evidence, forbidden URL). Neither the exception text nor any
-    part of the rejected output is retained: only this fixed reason code.
+    fabricated evidence, forbidden URL) from validation failures
+    (validation_error -- malformed or incomplete output). Neither the
+    exception text nor any part of the rejected output is retained: only
+    this fixed reason code.
     """
     try:
         output = writer.write(request)
@@ -1228,6 +1230,9 @@ def _write_slot_b_with_fallback(
     except SlotBContractError:
         fallback = FixtureReasonDraftWriter().write(request)
         return fallback, "template_fallback", "contract_rejected"
+    except Exception:
+        fallback = FixtureReasonDraftWriter().write(request)
+        return fallback, "template_fallback", "validation_error"
     mode: DraftMode = "fixture" if output.model_id == FIXTURE_SLOT_B_MODEL_ID else "live"
     return output, mode, None
 

@@ -82,6 +82,34 @@ class ContractRejectingWriter:
         )
 
 
+class MalformedOutputWriter:
+    """Writer returning None (malformed output) to test validation error handling."""
+
+    model_id = "fake-live-slot-b"
+    prompt_version = SLOT_B_PROMPT_VERSION
+
+    def write(self, request):  # noqa: ANN001 - protocol-shaped test double
+        return None  # type: ignore
+
+
+class InvalidReasonTypeWriter:
+    """Writer returning output with invalid reason field type."""
+
+    model_id = "fake-live-slot-b"
+    prompt_version = SLOT_B_PROMPT_VERSION
+
+    def write(self, request):  # noqa: ANN001 - protocol-shaped test double
+        from ultra_csm.agent1.slot_b import ReasonDraftOutput
+
+        return ReasonDraftOutput(
+            reason=None,  # type: ignore - invalid: should be string
+            cited_evidence_ids=[],
+            customer_draft=None,
+            model_id=self.model_id,
+            prompt_version=self.prompt_version,
+        )
+
+
 class RecordingSlotAClassifier:
     model_id = "recording-slot-a"
     prompt_version = SLOT_A_PROMPT_VERSION
@@ -496,6 +524,54 @@ def test_agent1_sweep_marks_contract_rejected_distinctly_from_writer_error(sweep
     assert sweep.work_items
     assert all(item.draft_mode == "template_fallback" for item in sweep.work_items)
     assert all(item.draft_fallback_reason == "contract_rejected" for item in sweep.work_items)
+
+
+def test_agent1_sweep_marks_validation_error_on_malformed_output(sweep_conn):
+    orch, _authority = setup_roster(sweep_conn)
+    gate = ActionGate(
+        sweep_conn,
+        tenant_id=T1,
+        actor_principal_id=orch,
+        verdict_source=FixtureVerdictSource(),
+        now=CLOCK,
+    )
+
+    sweep = run_time_to_value_sweep(
+        build_sweep_fixture_data_plane(tenant_id=DEFAULT_TENANT),
+        DEFAULT_TENANT,
+        gate,
+        sweep_principal_id=orch,
+        as_of=AS_OF,
+        reason_draft_writer=MalformedOutputWriter(),
+    )
+
+    assert sweep.work_items
+    assert all(item.draft_mode == "template_fallback" for item in sweep.work_items)
+    assert all(item.draft_fallback_reason == "validation_error" for item in sweep.work_items)
+
+
+def test_agent1_sweep_marks_validation_error_on_invalid_reason_type(sweep_conn):
+    orch, _authority = setup_roster(sweep_conn)
+    gate = ActionGate(
+        sweep_conn,
+        tenant_id=T1,
+        actor_principal_id=orch,
+        verdict_source=FixtureVerdictSource(),
+        now=CLOCK,
+    )
+
+    sweep = run_time_to_value_sweep(
+        build_sweep_fixture_data_plane(tenant_id=DEFAULT_TENANT),
+        DEFAULT_TENANT,
+        gate,
+        sweep_principal_id=orch,
+        as_of=AS_OF,
+        reason_draft_writer=InvalidReasonTypeWriter(),
+    )
+
+    assert sweep.work_items
+    assert all(item.draft_mode == "template_fallback" for item in sweep.work_items)
+    assert all(item.draft_fallback_reason == "validation_error" for item in sweep.work_items)
 
 
 def test_quality_breaker_routes_customer_drafts_to_internal_review(sweep_conn, tmp_path):
