@@ -9,7 +9,7 @@ The catalog catches additions, removals, and replacements. It does not assert th
 <!-- sourcebound:begin repository-surface -->
 | surface | discovered | examples |
 | --- | ---: | --- |
-| api-symbol | 1561 | `APIMetrics`, `ARRChange`, `AccountAttributionCandidate`, and 1558 more |
+| api-symbol | 1565 | `APIMetrics`, `ARRChange`, `AccountAttributionCandidate`, and 1562 more |
 | cli-command | 20 | `alarms`, `approve`, `check-in`, and 17 more |
 | cli-option | 262 | `--a6-expansion`, `--account`, `--account-slug`, and 259 more |
 | make-target | 107 | `action-control-contract`, `action-control-contract-check`, `action-control-sandbox-check`, and 104 more |
@@ -21,5 +21,5 @@ The catalog catches additions, removals, and replacements. It does not assert th
 | test-runner | 1 | `test:e2e` |
 | test-suite | 146 | `tests/test_account_brief_comms.py`, `tests/test_action_control_contract.py`, `tests/test_action_control_sandbox.py`, and 143 more |
 
-<!-- sourcebound:inventory-sha256 617b9b9949764b7bae63810db0b94d5133e445de385aa4f536a8c2900acaeb0f -->
+<!-- sourcebound:inventory-sha256 1f353dc6e76c834ac19f0623a0f44bbffc36a31dd2682e3c498c310d341b1e26 -->
 <!-- sourcebound:end repository-surface -->
