@@ -446,7 +446,8 @@ def test_agent1_sweep_loudly_falls_back_when_live_writer_fails(sweep_conn):
     }
 
 
-def test_agent1_sweep_healthy_fixture_drafts_have_no_fallback_diagnostic(sweep_conn):
+@pytest.mark.parametrize("writer_mode", ["fixture", "live"])
+def test_agent1_sweep_healthy_fixture_drafts_have_no_fallback_diagnostic(sweep_conn, writer_mode):
     orch, _authority = setup_roster(sweep_conn)
     gate = ActionGate(
         sweep_conn,
@@ -456,16 +457,23 @@ def test_agent1_sweep_healthy_fixture_drafts_have_no_fallback_diagnostic(sweep_c
         now=CLOCK,
     )
 
+    from ultra_csm.agent1.slot_b import FixtureReasonDraftWriter
+
+    writer = FixtureReasonDraftWriter()
+    if writer_mode == "live":
+        writer.model_id = "fake-live-slot-b"  # Simulate valid live output without an API call.
+
     sweep = run_time_to_value_sweep(
         build_sweep_fixture_data_plane(tenant_id=DEFAULT_TENANT),
         DEFAULT_TENANT,
         gate,
         sweep_principal_id=orch,
         as_of=AS_OF,
+        reason_draft_writer=writer,
     )
 
     assert sweep.work_items
-    assert all(item.draft_mode in ("fixture", "none") for item in sweep.work_items)
+    assert all(item.draft_mode in (writer_mode, "none") for item in sweep.work_items)
     assert all(item.draft_fallback_reason is None for item in sweep.work_items)
 
 

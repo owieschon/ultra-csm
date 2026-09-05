@@ -143,53 +143,46 @@ test("draft provenance is labeled by draft_mode, not asserted as AI-written", as
   expect(await draftLabelFor("toString")).toContain("Draft provenance unavailable");
 });
 
-test("template fallback reason distinguishes writer failure from rejected output, with missing-field compatibility", async ({ page }) => {
-  await dismissIntro(page);
-
-  async function fallbackChipFor(patch: (item: Record<string, unknown>) => void) {
+for (const scenario of [
+  { name: "writer failure", reason: "writer_error", label: "Writer call failed", mode: "template_fallback", noDraft: false },
+  { name: "rejected output", reason: "contract_rejected", label: "Writer output rejected", mode: "template_fallback", noDraft: false },
+  { name: "validation failure", reason: "validation_error", label: "Output validation failed", mode: "template_fallback", noDraft: false },
+  { name: "blocked action without a draft", reason: "customer_action_blocked", label: "Customer action blocked", mode: "template_fallback", noDraft: true },
+  { name: "legacy snapshot", reason: undefined, label: null, mode: "template_fallback", noDraft: false },
+  { name: "unknown reason", reason: "unrecognized-private-error", label: null, mode: "template_fallback", noDraft: false },
+  { name: "healthy draft", reason: "writer_error", label: null, mode: "fixture", noDraft: false },
+]) {
+  test(`fallback reason: ${scenario.name}`, async ({ page }, testInfo) => {
+    await dismissIntro(page);
     await page.route("**/ui/demo-api/sweep-day-140.json", async (route) => {
       const response = await route.fetch();
       const body = await response.json();
-      patch(body.work_items[0]);
+      const item = body.work_items[0];
+      item.draft_mode = scenario.mode;
+      if (scenario.reason === undefined) delete item.draft_fallback_reason;
+      else item.draft_fallback_reason = scenario.reason;
+      if (scenario.noDraft) { item.customer_draft = null; item.proposal = null; item.work_packet = null; item.customer_contact_allowed = false; item.disposition = "internal_review"; }
       await route.fulfill({ response, json: body });
     });
     await openQueue(page);
+    if (scenario.noDraft) await page.getByRole("button", { name: "Inspect fallback for Ironhorse Freight Co", exact: true }).click();
     await expect(page.getByRole("heading", { name: "Ironhorse Freight Co" })).toBeVisible();
     const chip = page.locator(".chip-fallback-reason");
-    const count = await chip.count();
-    const text = count > 0 ? (await chip.first().textContent()) ?? "" : "";
-    await page.unroute("**/ui/demo-api/sweep-day-140.json");
-    return { count, text };
-  }
-
-  const writerError = await fallbackChipFor((item) => {
-    item.draft_mode = "template_fallback";
-    item.draft_fallback_reason = "writer_error";
+    if (scenario.label) await expect(chip).toHaveText(scenario.label);
+    else await expect(chip).toHaveCount(0);
+    await expect(page.locator("body")).not.toContainText("unrecognized-private-error");
+    if (scenario.noDraft) {
+      await expect(page.locator(".sec-h .t").filter({ hasText: /^Draft status$/ })).toBeVisible();
+      await expect(page.locator(".draft-body")).toHaveCount(0);
+      await expect(page.locator(".control-path")).toContainText("No customer draft");
+      await expect(page.locator(".control-path")).toContainText("Human review");
+      await expect(page.getByRole("button", { name: /^Approve/, exact: false })).toBeDisabled();
+      await expect(page.getByRole("button", { name: /^Deny/, exact: false })).toBeDisabled();
+      await expect(page.locator(".sec-h").filter({ has: page.locator(".chip-fallback-reason") }).locator(".chip-llm")).not.toContainText("needs your approval");
+      await page.screenshot({ path: testInfo.outputPath("blocked-fallback.png"), fullPage: true });
+    }
   });
-  expect(writerError.count).toBe(1);
-  expect(writerError.text).toBe("Writer call failed");
-
-  const contractRejected = await fallbackChipFor((item) => {
-    item.draft_mode = "template_fallback";
-    item.draft_fallback_reason = "contract_rejected";
-  });
-  expect(contractRejected.count).toBe(1);
-  expect(contractRejected.text).toBe("Writer output rejected");
-
-  // Legacy snapshots recorded before this field existed must render with no
-  // fallback-reason chip at all, not a placeholder.
-  const missingField = await fallbackChipFor((item) => {
-    item.draft_mode = "template_fallback";
-    delete item.draft_fallback_reason;
-  });
-  expect(missingField.count).toBe(0);
-
-  const healthy = await fallbackChipFor((item) => {
-    item.draft_mode = "fixture";
-    delete item.draft_fallback_reason;
-  });
-  expect(healthy.count).toBe(0);
-});
+}
 
 test("hosted account sources are named as synthetic, not claimed live", async ({ page }) => {
   await dismissIntro(page);
@@ -209,11 +202,12 @@ test("clearing the queue composes the payoff and returns to a quiet book", async
 
   const pendingCount = page.locator(".lane-h .c").first();
   for (let expected = 9; expected >= 0; expected--) {
+    const previousProposal = await page.locator(".rail-top .gate .mono").first().innerText();
     await page.keyboard.press("a");
     await expect(pendingCount).toHaveText(String(expected));
     if (expected > 0) {
-      // Wait out the receipt hold: the next `a` only lands once selection
-      // has advanced to a pending item again.
+      // Wait for a different proposal; the old approval label can survive one render.
+      await expect(page.locator(".rail-top .gate").first()).not.toContainText(previousProposal);
       await expect(page.locator(".rail-top .gate").first()).toContainText(
         "needs your approval",
         { timeout: 5000 }

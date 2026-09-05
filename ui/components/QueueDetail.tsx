@@ -289,15 +289,15 @@ export function QueueDetail({ item, day }: { item: WorkItem; day: number | undef
           <span className="control-index mono">02</span>
           <span><b>Priority computed</b><small>deterministic rules</small></span>
         </div>
-        <div className="control-step complete">
+        <div className={`control-step${item.customer_draft ? " complete" : ""}`}>
           <span className="control-index mono">03</span>
-          <span><b>Draft proposed</b><small>AI has no authority</small></span>
+          <span><b>{item.customer_draft ? "Draft proposed" : "No customer draft"}</b><small>AI has no authority</small></span>
         </div>
         <div className={`control-step ${decided ? "complete" : "current"}`}>
           <span className="control-index mono">04</span>
           <span>
-            <b>{decided ? "Decision recorded" : "Human decision"}</b>
-            <small>payload-bound release</small>
+            <b>{decided ? "Decision recorded" : item.proposal ? "Human decision" : "Human review"}</b>
+            <small>{item.proposal ? "payload-bound release" : "inspect fallback reason"}</small>
           </span>
         </div>
       </div>
@@ -323,9 +323,9 @@ export function QueueDetail({ item, day }: { item: WorkItem; day: number | undef
       {(item.customer_draft || (item.draft_mode === "template_fallback" && draftFallbackReasonLabel(item.draft_fallback_reason))) && (
         <div className="sec">
           <div className="sec-h">
-            <span className="t">Proposed draft</span>
+            <span className="t">{item.customer_draft ? "Proposed draft" : "Draft status"}</span>
             <span className="prov">
-              <span className="chip-llm">{draftProvenanceLabel(item.draft_mode)} — needs your approval</span>
+              <span className="chip-llm">{draftProvenanceLabel(item.draft_mode)}{item.customer_draft ? " — needs your approval" : ""}</span>
               {item.draft_mode === "template_fallback" && draftFallbackReasonLabel(item.draft_fallback_reason) && (
                 <span className="chip-fallback-reason">
                   {draftFallbackReasonLabel(item.draft_fallback_reason)}

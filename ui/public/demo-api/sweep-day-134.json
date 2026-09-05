@@ -194,6 +194,7 @@
       "customer_contact_allowed": true,
       "customer_draft": "Hi Marcus Webb, Ironhorse Freight Co is showing an onboarding risk tied to overdue onboarding milestones, overdue activation steps. Can we review the overdue activation steps and agree on owners?",
       "disposition": "propose_customer_action",
+      "draft_fallback_reason": null,
       "draft_mode": "fixture",
       "evidence": [
         {
@@ -628,6 +629,7 @@
       "customer_contact_allowed": true,
       "customer_draft": "Hi Dennis Gruber, Pinehill Transport is showing an onboarding risk tied to an overdue success plan, a declining health signal. Can we map the missing users needed for a complete rollout?",
       "disposition": "propose_customer_action",
+      "draft_fallback_reason": null,
       "draft_mode": "fixture",
       "evidence": [
         {
@@ -1004,6 +1006,7 @@
       "customer_contact_allowed": true,
       "customer_draft": "Hi Vanessa Torres, Trailhead Logistics is showing an onboarding risk tied to an overdue success plan, the current account review. Can we review the activation blockers and next steps?",
       "disposition": "propose_customer_action",
+      "draft_fallback_reason": null,
       "draft_mode": "fixture",
       "evidence": [
         {
@@ -1359,6 +1362,7 @@
       "customer_contact_allowed": false,
       "customer_draft": null,
       "disposition": "internal_review",
+      "draft_fallback_reason": null,
       "draft_mode": "fixture",
       "evidence": [
         {
@@ -1672,6 +1676,7 @@
       "customer_contact_allowed": true,
       "customer_draft": "Hi Kelly Vance, Clearwater Field Ops is showing an onboarding risk tied to an overdue success plan, a declining health signal. Can we map the missing users needed for a complete rollout?",
       "disposition": "propose_customer_action",
+      "draft_fallback_reason": null,
       "draft_mode": "fixture",
       "evidence": [
         {
@@ -2020,6 +2025,7 @@
       "customer_contact_allowed": true,
       "customer_draft": "Hi Jared Nolan, Ridgeline Warehousing is showing an onboarding risk tied to an overdue success plan, a declining health signal. Can we map the missing users needed for a complete rollout?",
       "disposition": "propose_customer_action",
+      "draft_fallback_reason": null,
       "draft_mode": "fixture",
       "evidence": [
         {
@@ -2310,6 +2316,7 @@
       "customer_contact_allowed": true,
       "customer_draft": "Hi Sandra Faulkner, Northstar Couriers is showing an onboarding risk tied to an overdue success plan, a declining health signal. Can we check whether the current adoption gap is putting launch timing at risk?",
       "disposition": "propose_customer_action",
+      "draft_fallback_reason": null,
       "draft_mode": "fixture",
       "evidence": [
         {
@@ -2584,6 +2591,7 @@
       "customer_contact_allowed": true,
       "customer_draft": "Hi Brett Sawyer, Sagebrush Transport is showing an onboarding risk tied to a critical health signal. Can we review the blocker behind the red health signal?",
       "disposition": "propose_customer_action",
+      "draft_fallback_reason": null,
       "draft_mode": "fixture",
       "evidence": [
         {
@@ -2878,6 +2886,7 @@
       "customer_contact_allowed": true,
       "customer_draft": "Hi Gregory Foster, Harborview Fleet is showing an onboarding risk tied to a declining health signal, unused paid capabilities. Can we check whether the current adoption gap is putting launch timing at risk?",
       "disposition": "propose_customer_action",
+      "draft_fallback_reason": null,
       "draft_mode": "fixture",
       "evidence": [
         {
@@ -3259,6 +3268,7 @@
       "customer_contact_allowed": true,
       "customer_draft": "Hi Diana Kowalski, Summit Industrial Supply is showing an onboarding risk tied to an overdue success plan. Can we review the activation blockers and next steps?",
       "disposition": "propose_customer_action",
+      "draft_fallback_reason": null,
       "draft_mode": "fixture",
       "evidence": [
         {
@@ -3515,6 +3525,7 @@
       "customer_contact_allowed": true,
       "customer_draft": "Hi Irene Chu, Cypress Field Ops is showing an onboarding risk tied to a declining health signal. Can we check whether the current adoption gap is putting launch timing at risk?",
       "disposition": "propose_customer_action",
+      "draft_fallback_reason": null,
       "draft_mode": "fixture",
       "evidence": [
         {
@@ -3926,6 +3937,7 @@
       "customer_contact_allowed": true,
       "customer_draft": "Hi Alicia Fernandez, Meridian Fleet Group is showing an onboarding risk tied to the current account review. Can we review the activation blockers and next steps?",
       "disposition": "propose_customer_action",
+      "draft_fallback_reason": null,
       "draft_mode": "fixture",
       "evidence": [
         {
@@ -4212,6 +4224,7 @@
       "customer_contact_allowed": false,
       "customer_draft": null,
       "disposition": "propose_customer_action",
+      "draft_fallback_reason": null,
       "draft_mode": "none",
       "evidence": [],
       "internal_bridge_decision": null,
