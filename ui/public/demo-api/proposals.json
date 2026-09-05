@@ -9,7 +9,7 @@
         "account_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
         "account_name": "Ironhorse Freight Co",
         "as_of": "2026-11-02",
-        "body": "Hi Marcus Webb, Ironhorse Freight Co is showing an onboarding risk tied to overdue onboarding milestones, overdue activation steps. Can we review the overdue activation steps and agree on owners?",
+        "body": "Hi Marcus Webb, could you confirm the current status of Ironhorse Freight Co's success-plan objectives and share any completion evidence or updates we should record?",
         "contact_email": "marcus.webb@ironhorse-freight.example",
         "contact_id": "3610a030-a5cd-55db-80b7-7b89d66203a4",
         "draft_channel": "email",
@@ -171,7 +171,7 @@
         },
         "subject": "Time-to-Value follow-up for Ironhorse Freight Co"
       },
-      "proposal_id": "20453792-785c-509e-928c-5f2cf55159e4",
+      "proposal_id": "3bb4d53b-1c8d-59b9-babc-5534d1df36ac",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -677,7 +677,7 @@
         "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
         "account_name": "Trailhead Logistics",
         "as_of": "2026-11-02",
-        "body": "Hi Vanessa Torres, Trailhead Logistics is showing an onboarding risk tied to an overdue success plan, the current account review. Can we review the activation blockers and next steps?",
+        "body": "Hi Vanessa Torres, could you confirm the current status of Trailhead Logistics's success-plan objectives and share any completion evidence or updates we should record?",
         "contact_email": "vanessa.torres@trailhead-logistics.example",
         "contact_id": "5ba7aa51-a5eb-5220-9d3b-71bbe67377a1",
         "draft_channel": "email",
@@ -784,7 +784,7 @@
         },
         "subject": "Time-to-Value follow-up for Trailhead Logistics"
       },
-      "proposal_id": "9b5036d1-e1ff-5c9a-bfb2-52a9e871158f",
+      "proposal_id": "46ece128-a914-51cd-bb08-024c4efce1df",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -1061,7 +1061,7 @@
         "account_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
         "account_name": "Ironhorse Freight Co",
         "as_of": "2026-11-03",
-        "body": "Hi Marcus Webb, Ironhorse Freight Co is showing an onboarding risk tied to overdue onboarding milestones, overdue activation steps. Can we review the overdue activation steps and agree on owners?",
+        "body": "Hi Marcus Webb, could you confirm the current status of Ironhorse Freight Co's success-plan objectives and share any completion evidence or updates we should record?",
         "contact_email": "marcus.webb@ironhorse-freight.example",
         "contact_id": "3610a030-a5cd-55db-80b7-7b89d66203a4",
         "draft_channel": "email",
@@ -1223,7 +1223,7 @@
         },
         "subject": "Time-to-Value follow-up for Ironhorse Freight Co"
       },
-      "proposal_id": "53dec86c-4450-5e80-8d54-9e7d2b89491e",
+      "proposal_id": "5d54a828-9e64-5e10-a987-8f69877a7880",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -1573,7 +1573,7 @@
         "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
         "account_name": "Trailhead Logistics",
         "as_of": "2026-11-03",
-        "body": "Hi Vanessa Torres, Trailhead Logistics is showing an onboarding risk tied to an overdue success plan, the current account review. Can we review the activation blockers and next steps?",
+        "body": "Hi Vanessa Torres, could you confirm the current status of Trailhead Logistics's success-plan objectives and share any completion evidence or updates we should record?",
         "contact_email": "vanessa.torres@trailhead-logistics.example",
         "contact_id": "5ba7aa51-a5eb-5220-9d3b-71bbe67377a1",
         "draft_channel": "email",
@@ -1680,7 +1680,7 @@
         },
         "subject": "Time-to-Value follow-up for Trailhead Logistics"
       },
-      "proposal_id": "2d876152-7c3a-5e0b-9e47-5273b3bddae8",
+      "proposal_id": "30ebb8b1-6780-53ac-93a8-784684f6c17b",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -1937,7 +1937,7 @@
         "account_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
         "account_name": "Ironhorse Freight Co",
         "as_of": "2026-11-04",
-        "body": "Hi Marcus Webb, Ironhorse Freight Co is showing an onboarding risk tied to overdue onboarding milestones, overdue activation steps. Can we review the overdue activation steps and agree on owners?",
+        "body": "Hi Marcus Webb, could you confirm the current status of Ironhorse Freight Co's success-plan objectives and share any completion evidence or updates we should record?",
         "contact_email": "marcus.webb@ironhorse-freight.example",
         "contact_id": "3610a030-a5cd-55db-80b7-7b89d66203a4",
         "draft_channel": "email",
@@ -2099,7 +2099,7 @@
         },
         "subject": "Time-to-Value follow-up for Ironhorse Freight Co"
       },
-      "proposal_id": "8bc7fc0e-c968-502c-afa1-8fe65fc16de3",
+      "proposal_id": "0c9f4f47-e80c-5b5e-9cc9-5050e891d04c",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -2527,7 +2527,7 @@
         "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
         "account_name": "Trailhead Logistics",
         "as_of": "2026-11-04",
-        "body": "Hi Vanessa Torres, Trailhead Logistics is showing an onboarding risk tied to an overdue success plan, the current account review. Can we review the activation blockers and next steps?",
+        "body": "Hi Vanessa Torres, could you confirm the current status of Trailhead Logistics's success-plan objectives and share any completion evidence or updates we should record?",
         "contact_email": "vanessa.torres@trailhead-logistics.example",
         "contact_id": "5ba7aa51-a5eb-5220-9d3b-71bbe67377a1",
         "draft_channel": "email",
@@ -2634,7 +2634,7 @@
         },
         "subject": "Time-to-Value follow-up for Trailhead Logistics"
       },
-      "proposal_id": "e034ef4f-d280-5d1b-a8a3-c2d2c1699d4f",
+      "proposal_id": "accb0249-04e6-5251-b67d-c5a43b7f217c",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -2871,7 +2871,7 @@
         "account_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
         "account_name": "Ironhorse Freight Co",
         "as_of": "2026-11-05",
-        "body": "Hi Marcus Webb, Ironhorse Freight Co is showing an onboarding risk tied to overdue onboarding milestones, overdue activation steps. Can we review the overdue activation steps and agree on owners?",
+        "body": "Hi Marcus Webb, could you confirm the current status of Ironhorse Freight Co's success-plan objectives and share any completion evidence or updates we should record?",
         "contact_email": "marcus.webb@ironhorse-freight.example",
         "contact_id": "3610a030-a5cd-55db-80b7-7b89d66203a4",
         "draft_channel": "email",
@@ -3033,7 +3033,7 @@
         },
         "subject": "Time-to-Value follow-up for Ironhorse Freight Co"
       },
-      "proposal_id": "38bbab4c-df5a-59a9-9b96-4bb62b6b5b9f",
+      "proposal_id": "ccccae98-5b52-571a-8c6a-6849ad277db0",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -3539,7 +3539,7 @@
         "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
         "account_name": "Trailhead Logistics",
         "as_of": "2026-11-05",
-        "body": "Hi Vanessa Torres, Trailhead Logistics is showing an onboarding risk tied to an overdue success plan, the current account review. Can we review the activation blockers and next steps?",
+        "body": "Hi Vanessa Torres, could you confirm the current status of Trailhead Logistics's success-plan objectives and share any completion evidence or updates we should record?",
         "contact_email": "vanessa.torres@trailhead-logistics.example",
         "contact_id": "5ba7aa51-a5eb-5220-9d3b-71bbe67377a1",
         "draft_channel": "email",
@@ -3646,7 +3646,7 @@
         },
         "subject": "Time-to-Value follow-up for Trailhead Logistics"
       },
-      "proposal_id": "e6abc13b-c58a-572a-adeb-b6e065f4b020",
+      "proposal_id": "0bfc009f-7ce7-50f9-8f32-546bb8b9ec91",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -3923,7 +3923,7 @@
         "account_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
         "account_name": "Ironhorse Freight Co",
         "as_of": "2026-11-06",
-        "body": "Hi Marcus Webb, Ironhorse Freight Co is showing an onboarding risk tied to overdue onboarding milestones, overdue activation steps. Can we review the overdue activation steps and agree on owners?",
+        "body": "Hi Marcus Webb, could you confirm the current status of Ironhorse Freight Co's success-plan objectives and share any completion evidence or updates we should record?",
         "contact_email": "marcus.webb@ironhorse-freight.example",
         "contact_id": "3610a030-a5cd-55db-80b7-7b89d66203a4",
         "draft_channel": "email",
@@ -4085,7 +4085,7 @@
         },
         "subject": "Time-to-Value follow-up for Ironhorse Freight Co"
       },
-      "proposal_id": "29c81570-eeeb-5504-89b0-060494092a3c",
+      "proposal_id": "a0bb7176-d783-511d-948e-c2eea992522b",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -4435,7 +4435,7 @@
         "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
         "account_name": "Trailhead Logistics",
         "as_of": "2026-11-06",
-        "body": "Hi Vanessa Torres, Trailhead Logistics is showing an onboarding risk tied to an overdue success plan, the current account review. Can we review the activation blockers and next steps?",
+        "body": "Hi Vanessa Torres, could you confirm the current status of Trailhead Logistics's success-plan objectives and share any completion evidence or updates we should record?",
         "contact_email": "vanessa.torres@trailhead-logistics.example",
         "contact_id": "5ba7aa51-a5eb-5220-9d3b-71bbe67377a1",
         "draft_channel": "email",
@@ -4542,7 +4542,7 @@
         },
         "subject": "Time-to-Value follow-up for Trailhead Logistics"
       },
-      "proposal_id": "c890b565-41cc-5975-9c3d-9bd10aa4e9c0",
+      "proposal_id": "4585f238-1fe7-559d-8a5c-0708e9a14d9e",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -4799,7 +4799,7 @@
         "account_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
         "account_name": "Ironhorse Freight Co",
         "as_of": "2026-11-07",
-        "body": "Hi Marcus Webb, Ironhorse Freight Co is showing an onboarding risk tied to overdue onboarding milestones, overdue activation steps. Can we review the overdue activation steps and agree on owners?",
+        "body": "Hi Marcus Webb, could you confirm the current status of Ironhorse Freight Co's success-plan objectives and share any completion evidence or updates we should record?",
         "contact_email": "marcus.webb@ironhorse-freight.example",
         "contact_id": "3610a030-a5cd-55db-80b7-7b89d66203a4",
         "draft_channel": "email",
@@ -4961,7 +4961,7 @@
         },
         "subject": "Time-to-Value follow-up for Ironhorse Freight Co"
       },
-      "proposal_id": "f6a9d48c-f859-50ac-8e0f-581a2d6f28dc",
+      "proposal_id": "b440786e-74c8-5ab3-a475-b620a015a995",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -5389,7 +5389,7 @@
         "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
         "account_name": "Trailhead Logistics",
         "as_of": "2026-11-07",
-        "body": "Hi Vanessa Torres, Trailhead Logistics is showing an onboarding risk tied to an overdue success plan, the current account review. Can we review the activation blockers and next steps?",
+        "body": "Hi Vanessa Torres, could you confirm the current status of Trailhead Logistics's success-plan objectives and share any completion evidence or updates we should record?",
         "contact_email": "vanessa.torres@trailhead-logistics.example",
         "contact_id": "5ba7aa51-a5eb-5220-9d3b-71bbe67377a1",
         "draft_channel": "email",
@@ -5496,7 +5496,7 @@
         },
         "subject": "Time-to-Value follow-up for Trailhead Logistics"
       },
-      "proposal_id": "293511b9-9f2a-594b-a024-f3282fb9a6c6",
+      "proposal_id": "8decdb3d-ca85-5e95-b4bd-0b1c4d69f488",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -5733,7 +5733,7 @@
         "account_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
         "account_name": "Ironhorse Freight Co",
         "as_of": "2026-11-08",
-        "body": "Hi Marcus Webb, Ironhorse Freight Co is showing an onboarding risk tied to overdue onboarding milestones, overdue activation steps. Can we review the overdue activation steps and agree on owners?",
+        "body": "Hi Marcus Webb, could you confirm the current status of Ironhorse Freight Co's success-plan objectives and share any completion evidence or updates we should record?",
         "contact_email": "marcus.webb@ironhorse-freight.example",
         "contact_id": "3610a030-a5cd-55db-80b7-7b89d66203a4",
         "draft_channel": "email",
@@ -5895,7 +5895,7 @@
         },
         "subject": "Time-to-Value follow-up for Ironhorse Freight Co"
       },
-      "proposal_id": "109cee5e-49eb-56c7-bfc6-2a5238717cb3",
+      "proposal_id": "ee694121-d8c3-555f-8db9-8a68c1f43703",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -6323,7 +6323,7 @@
         "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
         "account_name": "Trailhead Logistics",
         "as_of": "2026-11-08",
-        "body": "Hi Vanessa Torres, Trailhead Logistics is showing an onboarding risk tied to an overdue success plan, the current account review. Can we review the activation blockers and next steps?",
+        "body": "Hi Vanessa Torres, could you confirm the current status of Trailhead Logistics's success-plan objectives and share any completion evidence or updates we should record?",
         "contact_email": "vanessa.torres@trailhead-logistics.example",
         "contact_id": "5ba7aa51-a5eb-5220-9d3b-71bbe67377a1",
         "draft_channel": "email",
@@ -6430,7 +6430,7 @@
         },
         "subject": "Time-to-Value follow-up for Trailhead Logistics"
       },
-      "proposal_id": "8d08dad7-9c5b-514f-97b1-038021121b0a",
+      "proposal_id": "88d350cb-1b2b-53bd-a39b-73579686196c",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },

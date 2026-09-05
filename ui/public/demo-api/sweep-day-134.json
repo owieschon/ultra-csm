@@ -192,7 +192,7 @@
       "account_resolution": "exactly_one",
       "candidate_account_ids": [],
       "customer_contact_allowed": true,
-      "customer_draft": "Hi Marcus Webb, Ironhorse Freight Co is showing an onboarding risk tied to overdue onboarding milestones, overdue activation steps. Can we review the overdue activation steps and agree on owners?",
+      "customer_draft": "Hi Marcus Webb, could you confirm the current status of Ironhorse Freight Co's success-plan objectives and share any completion evidence or updates we should record?",
       "disposition": "propose_customer_action",
       "draft_fallback_reason": null,
       "draft_mode": "fixture",
@@ -385,10 +385,10 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "20453792-785c-509e-928c-5f2cf55159e4",
+        "proposal_id": "3bb4d53b-1c8d-59b9-babc-5534d1df36ac",
         "status": "pending"
       },
-      "reason": "Ironhorse Freight Co has deterministic Time-to-Value score 143 from milestones_overdue=50, days_overdue=40, success_plan_overdue=20; draft customer outreach. Evidence [evidence:4635cdb7-5bb5-5c43-acc1-5dc989d4d583], [evidence:afbc6091-985b-50e5-8522-e1a916af56c9], [evidence:7d61c11f-73d4-52f6-a738-33ab96634a61].",
+      "reason": "Ironhorse Freight Co: outcome verification needed. Usage does not establish completion of the recorded objectives. Request an objective-status update using the cited plan records. Priority 143 from days_overdue=40, feature_depth_gap=15, milestones_overdue=50, success_plan_overdue=20, usage_outcome_unverified=18. Evidence [evidence:4635cdb7-5bb5-5c43-acc1-5dc989d4d583], [evidence:7d61c11f-73d4-52f6-a738-33ab96634a61], [evidence:afbc6091-985b-50e5-8522-e1a916af56c9], [evidence:f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43].",
       "recipient_name": "Marcus Webb",
       "recipient_resolution": "first_consenting_fallback",
       "recipient_role": "fleet_operations",
@@ -505,7 +505,7 @@
           "confidence": 0.72,
           "confidence_label": "medium",
           "label": "unverified_hypothesis",
-          "summary": "Ironhorse Freight Co: Ironhorse Freight Co has deterministic Time-to-Value score 143 from milestones_overdue=50, days_overdue=40, success_plan_overdue=20; draft customer outreach. Evidence [evidence:4635cdb7-5bb5-5c43-acc1-5dc989d4d583], [evidence:afbc6091-985b-50e5-8522-e1a916af56c9], [evidence:7d61c11f-73d4-52f6-a738-33ab96634a61].",
+          "summary": "Ironhorse Freight Co: Ironhorse Freight Co: outcome verification needed. Usage does not establish completion of the recorded objectives. Request an objective-status update using the cited plan records. Priority 143 from days_overdue=40, feature_depth_gap=15, milestones_overdue=50, success_plan_overdue=20, usage_outcome_unverified=18. Evidence [evidence:4635cdb7-5bb5-5c43-acc1-5dc989d4d583], [evidence:7d61c11f-73d4-52f6-a738-33ab96634a61], [evidence:afbc6091-985b-50e5-8522-e1a916af56c9], [evidence:f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43].",
           "unknowns": [
             "best_customer_recipient"
           ],
@@ -604,7 +604,7 @@
         "packet_version": "csm-work-packet-v1",
         "prepared_artifact": {
           "artifact_type": "customer_draft",
-          "body": "Hi Marcus Webb, Ironhorse Freight Co is showing an onboarding risk tied to overdue onboarding milestones, overdue activation steps. Can we review the overdue activation steps and agree on owners?",
+          "body": "Hi Marcus Webb, could you confirm the current status of Ironhorse Freight Co's success-plan objectives and share any completion evidence or updates we should record?",
           "requires_approval": true,
           "source_organ": "agent1.slot_b",
           "title": "Customer outreach draft",
@@ -1004,7 +1004,7 @@
       "account_resolution": "exactly_one",
       "candidate_account_ids": [],
       "customer_contact_allowed": true,
-      "customer_draft": "Hi Vanessa Torres, Trailhead Logistics is showing an onboarding risk tied to an overdue success plan, the current account review. Can we review the activation blockers and next steps?",
+      "customer_draft": "Hi Vanessa Torres, could you confirm the current status of Trailhead Logistics's success-plan objectives and share any completion evidence or updates we should record?",
       "disposition": "propose_customer_action",
       "draft_fallback_reason": null,
       "draft_mode": "fixture",
@@ -1140,10 +1140,10 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "9b5036d1-e1ff-5c9a-bfb2-52a9e871158f",
+        "proposal_id": "46ece128-a914-51cd-bb08-024c4efce1df",
         "status": "pending"
       },
-      "reason": "Trailhead Logistics has deterministic Time-to-Value score 63 from success_plan_overdue=20, arr_tier=5, single_threaded_risk=20; draft customer outreach. Evidence [evidence:20527c0a-8156-5119-934a-4017e19fc39d], [evidence:21830db9-7182-5d97-b22e-d57c4e28f696].",
+      "reason": "Trailhead Logistics: outcome verification needed. Usage does not establish completion of the recorded objectives. Request an objective-status update using the cited plan records. Priority 63 from arr_tier=5, single_threaded_risk=20, success_plan_overdue=20, usage_outcome_unverified=18. Evidence [evidence:20527c0a-8156-5119-934a-4017e19fc39d], [evidence:21830db9-7182-5d97-b22e-d57c4e28f696].",
       "recipient_name": "Vanessa Torres",
       "recipient_resolution": "role_graph",
       "recipient_role": "champion",
@@ -1258,7 +1258,7 @@
           "confidence": 0.6500000000000001,
           "confidence_label": "medium",
           "label": "unverified_hypothesis",
-          "summary": "Trailhead Logistics: Trailhead Logistics has deterministic Time-to-Value score 63 from success_plan_overdue=20, arr_tier=5, single_threaded_risk=20; draft customer outreach. Evidence [evidence:20527c0a-8156-5119-934a-4017e19fc39d], [evidence:21830db9-7182-5d97-b22e-d57c4e28f696].",
+          "summary": "Trailhead Logistics: Trailhead Logistics: outcome verification needed. Usage does not establish completion of the recorded objectives. Request an objective-status update using the cited plan records. Priority 63 from arr_tier=5, single_threaded_risk=20, success_plan_overdue=20, usage_outcome_unverified=18. Evidence [evidence:20527c0a-8156-5119-934a-4017e19fc39d], [evidence:21830db9-7182-5d97-b22e-d57c4e28f696].",
           "unknowns": [
             "best_customer_recipient"
           ],
@@ -1337,7 +1337,7 @@
         "packet_version": "csm-work-packet-v1",
         "prepared_artifact": {
           "artifact_type": "customer_draft",
-          "body": "Hi Vanessa Torres, Trailhead Logistics is showing an onboarding risk tied to an overdue success plan, the current account review. Can we review the activation blockers and next steps?",
+          "body": "Hi Vanessa Torres, could you confirm the current status of Trailhead Logistics's success-plan objectives and share any completion evidence or updates we should record?",
           "requires_approval": true,
           "source_organ": "agent1.slot_b",
           "title": "Customer outreach draft",
