@@ -377,9 +377,40 @@ class AnthropicReasonDraftWriter:
         return output
 
 
+def bounded_customer_draft_edit(
+    request: ReasonDraftRequest,
+    draft: str | None,
+    edit_instruction: str,
+) -> str | None:
+    """Apply finite wording changes; instruction text is never copied into the draft."""
+    if not request.customer_contact_allowed:
+        return draft
+    if not draft:
+        return draft
+
+    text = edit_instruction.lower()
+    edited = draft
+    if "warmer" in text or "friendly" in text or "softer" in text:
+        edited = edited.replace("Can we ", "Would you be open to ")
+        if edited == draft:
+            edited = f"{draft} I am happy to help."
+    if "concise" in text or "shorter" in text or "brief" in text:
+        edited = edited.replace(" is showing an onboarding risk tied to", " has onboarding risk from")
+        edited = edited.replace("confirm the current status of", "confirm the status of")
+    if "evidence" in text:
+        evidence_text = ", ".join(request.evidence_ids()[:2])
+        edited = f"{edited} I am basing this on evidence {evidence_text}."
+    if edited == draft:
+        edited = f"{draft} I want to make sure this is useful for your team."
+
+    return edited
+
+
 def validate_reason_draft_output(
     request: ReasonDraftRequest,
     output: ReasonDraftOutput,
+    *,
+    edit_instruction: str | None = None,
 ) -> None:
     if output.prompt_version != SLOT_B_PROMPT_VERSION:
         raise SlotBContractError("unexpected prompt_version")
@@ -422,6 +453,8 @@ def validate_reason_draft_output(
 
     if request.decision_purpose == "outcome_verification":
         reason, draft, cited = _verification_output_fields(request)
+        if edit_instruction is not None:
+            draft = bounded_customer_draft_edit(request, draft, edit_instruction)
         if (output.reason, output.customer_draft, output.cited_evidence_ids) != (reason, draft, cited):
             raise SlotBContractError("outcome verification requires the grounded verification output")
 
