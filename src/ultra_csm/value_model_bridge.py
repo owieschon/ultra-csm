@@ -43,14 +43,16 @@ from ultra_csm.value_model import (
     CustomerValueModel,
     FeatureDepthRail,
     OutcomeRail,
-    OutcomeState,
     PenetrationRail,
     ResolvedThresholds,
     UsageRail,
     ValueFactor,
     ValueModelConfig,
+    _usage_outcome_divergence,
     account_attributes,
     load_value_model_config,
+    objective_coverage,
+    outcome_realized_state,
     resolve_thresholds,
 )
 
@@ -307,11 +309,8 @@ def _outcome_rail_from_data(
     support topic recurs (negative signal) and notes high average CSAT
     as a positive.
     """
-    objectives = tuple(
-        objective
-        for plan in success_plans
-        for objective in plan.objectives
-    )
+    objective_evidence = objective_coverage(success_plans)
+    objectives = tuple(record.objective for record in objective_evidence)
 
     factors: list[ValueFactor] = []
     if objectives:
@@ -354,19 +353,16 @@ def _outcome_rail_from_data(
     if renewal_outcome_factors:
         factors.extend(renewal_outcome_factors)
 
-    realized_state: OutcomeState = (
-        "known"
-        if renewal_outcome_factors or any(
-            plan.status in {"realized", "achieved", "complete"}
-            for plan in success_plans
-        )
-        else "not_instrumented"
+    realized_state = outcome_realized_state(
+        objective_evidence,
+        has_other_evidence=bool(renewal_outcome_factors),
     )
 
     return OutcomeRail(
         stated_objectives=objectives,
         realized_state=realized_state,
         factors=tuple(factors),
+        objective_evidence=objective_evidence,
     )
 
 
@@ -487,26 +483,20 @@ def _compute_divergences(
             ))
 
     # --- Usage-outcome unverified ---
-    if (
-        licensed_users > 0
-        and outcome.stated_objectives
-        and outcome.realized_state != "known"
-    ):
-        activity = ab.active_user_count / licensed_users
-        if activity >= thresholds.outcome_activity_floor:
-            outcome_evidence = outcome.factors[0].evidence if outcome.factors else ()
-            divergences.append(_factor(
-                "usage_outcome_unverified",
-                activity,
-                18,
-                (
-                    EvidenceRef("telemetry", ab.account_id, "active_users", as_of),
-                    *outcome_evidence,
-                ),
-                resolved,
-                "outcome_activity_floor",
-                thresholds.outcome_activity_floor,
-            ))
+    # Reuses value_model._usage_outcome_divergence -- the same
+    # outcome-coverage calculation the plain (non-deep) model path uses, so
+    # unresolved-objective follow-up cannot diverge between the two paths.
+    usage_outcome = _usage_outcome_divergence(
+        outcome,
+        resolved,
+        active_users=ab.active_user_count,
+        licensed_users=licensed_users,
+        account_id=ab.account_id,
+        measured_at=as_of,
+        evidence_source="telemetry",
+    )
+    if usage_outcome is not None:
+        divergences.append(usage_outcome)
 
     # --- Usage decline ---
     trend = _usage_trend_30d(ab, day)
