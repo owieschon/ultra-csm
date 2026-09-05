@@ -251,6 +251,24 @@
           "observed_at": "2026-09-01",
           "source": "cs_platform",
           "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
+        },
+        {
+          "field": "status",
+          "observed_at": "2026-09-01",
+          "source": "cs_platform",
+          "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
+        },
+        {
+          "field": "objectives",
+          "observed_at": "2026-09-01",
+          "source": "cs_platform",
+          "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
+        },
+        {
+          "field": "status",
+          "observed_at": "2026-09-01",
+          "source": "cs_platform",
+          "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
         }
       ],
       "name": "usage_outcome_unverified",
@@ -315,6 +333,48 @@
   "industry": "logistics",
   "lifecycle_stage": "steady_state",
   "milestones": [],
+  "objective_evidence": [
+    {
+      "evidence": [
+        {
+          "field": "objectives",
+          "observed_at": "2026-09-01",
+          "source": "cs_platform",
+          "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
+        },
+        {
+          "field": "status",
+          "observed_at": "2026-09-01",
+          "source": "cs_platform",
+          "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
+        }
+      ],
+      "objective": "maintain_exemplary_adoption",
+      "plan_id": "20527c0a-8156-5119-934a-4017e19fc39d",
+      "plan_status": "active",
+      "source_reported_complete": false
+    },
+    {
+      "evidence": [
+        {
+          "field": "objectives",
+          "observed_at": "2026-09-01",
+          "source": "cs_platform",
+          "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
+        },
+        {
+          "field": "status",
+          "observed_at": "2026-09-01",
+          "source": "cs_platform",
+          "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
+        }
+      ],
+      "objective": "expand_compliance_reporting",
+      "plan_id": "20527c0a-8156-5119-934a-4017e19fc39d",
+      "plan_status": "active",
+      "source_reported_complete": false
+    }
+  ],
   "open_cases": [],
   "open_ctas": [],
   "opportunities": [
@@ -375,6 +435,24 @@
           },
           {
             "field": "objectives",
+            "observed_at": "2026-09-01",
+            "source": "cs_platform",
+            "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
+          },
+          {
+            "field": "status",
+            "observed_at": "2026-09-01",
+            "source": "cs_platform",
+            "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
+          },
+          {
+            "field": "objectives",
+            "observed_at": "2026-09-01",
+            "source": "cs_platform",
+            "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
+          },
+          {
+            "field": "status",
             "observed_at": "2026-09-01",
             "source": "cs_platform",
             "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"

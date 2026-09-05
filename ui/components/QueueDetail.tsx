@@ -648,8 +648,8 @@ function Drawer({
   const dormant = field === null;
   const rows = field && brief ? (brief[field] as unknown[]) : null;
   const briefLoaded = brief !== null;
-  const fieldMissing = briefLoaded && field && !(field in brief);
-  let summary = dormant
+  const fieldMissing = briefLoaded && field === "objective_evidence" && !(field in brief);
+  const summary = dormant
     ? "no live source yet"
     : rows
       ? `${rows.length} record${rows.length === 1 ? "" : "s"}`

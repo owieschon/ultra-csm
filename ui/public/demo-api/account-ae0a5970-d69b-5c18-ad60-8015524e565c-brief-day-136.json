@@ -301,6 +301,108 @@
       "milestone": "configure_routing"
     }
   ],
+  "objective_evidence": [
+    {
+      "evidence": [
+        {
+          "field": "objectives",
+          "observed_at": "2026-06-21",
+          "source": "cs_platform",
+          "source_id": "df3f3e70-7ed8-5d10-9b05-395fd3d1a0f1"
+        },
+        {
+          "field": "status",
+          "observed_at": "2026-06-21",
+          "source": "cs_platform",
+          "source_id": "df3f3e70-7ed8-5d10-9b05-395fd3d1a0f1"
+        }
+      ],
+      "objective": "activate_core_fleet",
+      "plan_id": "df3f3e70-7ed8-5d10-9b05-395fd3d1a0f1",
+      "plan_status": "active",
+      "source_reported_complete": false
+    },
+    {
+      "evidence": [
+        {
+          "field": "objectives",
+          "observed_at": "2026-06-21",
+          "source": "cs_platform",
+          "source_id": "df3f3e70-7ed8-5d10-9b05-395fd3d1a0f1"
+        },
+        {
+          "field": "status",
+          "observed_at": "2026-06-21",
+          "source": "cs_platform",
+          "source_id": "df3f3e70-7ed8-5d10-9b05-395fd3d1a0f1"
+        }
+      ],
+      "objective": "configure_routing",
+      "plan_id": "df3f3e70-7ed8-5d10-9b05-395fd3d1a0f1",
+      "plan_status": "active",
+      "source_reported_complete": false
+    },
+    {
+      "evidence": [
+        {
+          "field": "objectives",
+          "observed_at": "2026-06-21",
+          "source": "cs_platform",
+          "source_id": "df3f3e70-7ed8-5d10-9b05-395fd3d1a0f1"
+        },
+        {
+          "field": "status",
+          "observed_at": "2026-06-21",
+          "source": "cs_platform",
+          "source_id": "df3f3e70-7ed8-5d10-9b05-395fd3d1a0f1"
+        }
+      ],
+      "objective": "api_integration",
+      "plan_id": "df3f3e70-7ed8-5d10-9b05-395fd3d1a0f1",
+      "plan_status": "active",
+      "source_reported_complete": false
+    },
+    {
+      "evidence": [
+        {
+          "field": "objectives",
+          "observed_at": "2026-06-21",
+          "source": "cs_platform",
+          "source_id": "df3f3e70-7ed8-5d10-9b05-395fd3d1a0f1"
+        },
+        {
+          "field": "status",
+          "observed_at": "2026-06-21",
+          "source": "cs_platform",
+          "source_id": "df3f3e70-7ed8-5d10-9b05-395fd3d1a0f1"
+        }
+      ],
+      "objective": "driver_training",
+      "plan_id": "df3f3e70-7ed8-5d10-9b05-395fd3d1a0f1",
+      "plan_status": "active",
+      "source_reported_complete": false
+    },
+    {
+      "evidence": [
+        {
+          "field": "objectives",
+          "observed_at": "2026-06-21",
+          "source": "cs_platform",
+          "source_id": "df3f3e70-7ed8-5d10-9b05-395fd3d1a0f1"
+        },
+        {
+          "field": "status",
+          "observed_at": "2026-06-21",
+          "source": "cs_platform",
+          "source_id": "df3f3e70-7ed8-5d10-9b05-395fd3d1a0f1"
+        }
+      ],
+      "objective": "go_live",
+      "plan_id": "df3f3e70-7ed8-5d10-9b05-395fd3d1a0f1",
+      "plan_status": "active",
+      "source_reported_complete": false
+    }
+  ],
   "open_cases": [
     {
       "account_id": "ae0a5970-d69b-5c18-ad60-8015524e565c",
