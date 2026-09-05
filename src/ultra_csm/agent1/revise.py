@@ -9,7 +9,7 @@ new pending superseding proposal after one deterministic Slot B re-run.
 from __future__ import annotations
 
 import json
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 from pathlib import Path
 from typing import Any, Literal, Protocol
 
@@ -19,6 +19,7 @@ from ultra_csm.agent1.slot_b import (
     ReasonDraftRequest,
     ReasonDraftWriter,
     validate_reason_draft_output,
+    bounded_customer_draft_edit,
 )
 from ultra_csm.governance import ActionGate, ActionProposal, GateError, Verdict
 from ultra_csm.knowledge import is_safe_customer_ask
@@ -145,12 +146,13 @@ def run_slot_b_revise_loop(
 
     writer = reason_draft_writer or FixtureReasonDraftWriter()
     slot_b_output = writer.write(_request_with_edit_context(request, instruction.text))
+    validate_reason_draft_output(request, slot_b_output)
     revised_output = _apply_safe_edit_instruction(
         request,
         slot_b_output,
         instruction,
     )
-    validate_reason_draft_output(request, revised_output)
+    validate_reason_draft_output(request, revised_output, edit_instruction=instruction.text)
 
     new_payload = _superseding_payload(
         proposal,
@@ -221,23 +223,9 @@ def _request_with_edit_context(
     request: ReasonDraftRequest,
     edit_instruction: str,
 ) -> ReasonDraftRequest:
-    return ReasonDraftRequest(
-        tenant_id=request.tenant_id,
-        account_id=request.account_id,
-        account_name=request.account_name,
-        disposition=request.disposition,
-        recommended_action=request.recommended_action,
-        customer_contact_allowed=request.customer_contact_allowed,
-        priority=request.priority,
-        evidence=request.evidence,
-        as_of=request.as_of,
-        contact_name=request.contact_name,
-        contact_email=request.contact_email,
-        untrusted_text_fragments=(
-            *request.untrusted_text_fragments,
-            edit_instruction,
-        ),
-        org_context=request.org_context,
+    return replace(
+        request,
+        untrusted_text_fragments=(*request.untrusted_text_fragments, edit_instruction),
     )
 
 
@@ -246,32 +234,11 @@ def _apply_safe_edit_instruction(
     output: ReasonDraftOutput,
     instruction: _ConstrainedEditInstruction,
 ) -> ReasonDraftOutput:
-    if not request.customer_contact_allowed:
-        return output
-    draft = output.customer_draft
-    if not draft:
-        return output
-
-    text = instruction.text.lower()
-    edited = draft
-    if "warmer" in text or "friendly" in text or "softer" in text:
-        edited = edited.replace("Can we ", "Would you be open to ")
-        if edited == draft:
-            edited = f"{draft} I am happy to help."
-    if "concise" in text or "shorter" in text or "brief" in text:
-        edited = edited.replace(" is showing an onboarding risk tied to", " has onboarding risk from")
-    if "evidence" in text:
-        evidence_text = ", ".join(request.evidence_ids()[:2])
-        edited = f"{edited} I am basing this on evidence {evidence_text}."
-    if edited == draft:
-        edited = f"{draft} I want to make sure this is useful for your team."
-
-    return ReasonDraftOutput(
-        reason=output.reason,
-        cited_evidence_ids=output.cited_evidence_ids,
-        customer_draft=edited,
-        model_id=output.model_id,
-        prompt_version=output.prompt_version,
+    return replace(
+        output,
+        customer_draft=bounded_customer_draft_edit(
+            request, output.customer_draft, instruction.text,
+        ),
     )
 
 

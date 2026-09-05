@@ -15,6 +15,7 @@ from ultra_csm.agent1.content_route_matcher import (
 )
 from ultra_csm.agent1.slot_b import (
     FIXTURE_SLOT_B_MODEL_ID,
+    DecisionPurpose,
     FixtureReasonDraftWriter,
     ReasonDraftOutput,
     ReasonDraftRequest,
@@ -1646,6 +1647,15 @@ def _trajectory_decline_evaluation(
     )
 
 
+def _decision_purpose_for_factors(factors: tuple[PriorityFactor, ...]) -> DecisionPurpose:
+    # The existing case classifier supplies corroboration. Plan/health proxies
+    # alone cannot turn missing outcome evidence into an onboarding diagnosis.
+    names = {factor.name for factor in factors}
+    if "usage_outcome_unverified" in names and "slot_a_case_blocker" not in names:
+        return "outcome_verification"
+    return "standard"
+
+
 def _slot_b_request(
     *,
     tenant_id: str,
@@ -1667,6 +1677,7 @@ def _slot_b_request(
         disposition=disposition,
         recommended_action=action,
         customer_contact_allowed=customer_contact_allowed,
+        decision_purpose=_decision_purpose_for_factors(priority.factors),
         priority=SlotBPriority(
             score=priority.score,
             factors=tuple(
