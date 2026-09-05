@@ -50,6 +50,38 @@ class AlwaysFailingLiveWriter:
         raise RuntimeError("simulated live writer outage")
 
 
+# Synthetic secret-like sentinel used to prove the writer-error diagnostic
+# never carries exception text (or anything else from the raised exception)
+# into the operator work item, customer draft, or serialized payload.
+SECRET_SENTINEL = "sk-test-sentinel-do-not-leak-9f3a1c"
+
+
+class SecretLeakingFailingWriter:
+    model_id = "fake-live-slot-b"
+    prompt_version = SLOT_B_PROMPT_VERSION
+
+    def write(self, request):  # noqa: ANN001 - protocol-shaped test double
+        raise RuntimeError(f"simulated outage: {SECRET_SENTINEL}")
+
+
+class ContractRejectingWriter:
+    """Writer whose output is well-formed Python but fails the Slot B contract."""
+
+    model_id = "fake-live-slot-b"
+    prompt_version = SLOT_B_PROMPT_VERSION
+
+    def write(self, request):  # noqa: ANN001 - protocol-shaped test double
+        from ultra_csm.agent1.slot_b import ReasonDraftOutput
+
+        return ReasonDraftOutput(
+            reason="",
+            cited_evidence_ids=(),
+            customer_draft=None,
+            model_id=self.model_id,
+            prompt_version=self.prompt_version,
+        )
+
+
 class RecordingSlotAClassifier:
     model_id = "recording-slot-a"
     prompt_version = SLOT_A_PROMPT_VERSION
@@ -380,9 +412,90 @@ def test_agent1_sweep_loudly_falls_back_when_live_writer_fails(sweep_conn):
     assert sweep.work_items
     assert sweep.degraded_items == len(sweep.work_items)
     assert all(item.draft_mode == "template_fallback" for item in sweep.work_items)
+    assert all(item.draft_fallback_reason == "writer_error" for item in sweep.work_items)
     assert {ACME_LOGISTICS, GLOBEX_TELEMETRY_GAP, INITECH_CSPLAN_GAP} <= {
         item.account_id for item in sweep.work_items
     }
+
+
+def test_agent1_sweep_healthy_fixture_drafts_have_no_fallback_diagnostic(sweep_conn):
+    orch, _authority = setup_roster(sweep_conn)
+    gate = ActionGate(
+        sweep_conn,
+        tenant_id=T1,
+        actor_principal_id=orch,
+        verdict_source=FixtureVerdictSource(),
+        now=CLOCK,
+    )
+
+    sweep = run_time_to_value_sweep(
+        build_sweep_fixture_data_plane(tenant_id=DEFAULT_TENANT),
+        DEFAULT_TENANT,
+        gate,
+        sweep_principal_id=orch,
+        as_of=AS_OF,
+    )
+
+    assert sweep.work_items
+    assert all(item.draft_mode in ("fixture", "none") for item in sweep.work_items)
+    assert all(item.draft_fallback_reason is None for item in sweep.work_items)
+
+
+def test_agent1_sweep_marks_writer_error_and_keeps_sentinel_out_of_output(sweep_conn):
+    orch, _authority = setup_roster(sweep_conn)
+    gate = ActionGate(
+        sweep_conn,
+        tenant_id=T1,
+        actor_principal_id=orch,
+        verdict_source=FixtureVerdictSource(),
+        now=CLOCK,
+    )
+
+    sweep = run_time_to_value_sweep(
+        build_sweep_fixture_data_plane(tenant_id=DEFAULT_TENANT),
+        DEFAULT_TENANT,
+        gate,
+        sweep_principal_id=orch,
+        as_of=AS_OF,
+        reason_draft_writer=SecretLeakingFailingWriter(),
+    )
+
+    assert sweep.work_items
+    assert all(item.draft_mode == "template_fallback" for item in sweep.work_items)
+    assert all(item.draft_fallback_reason == "writer_error" for item in sweep.work_items)
+
+    from dataclasses import asdict
+    import json
+
+    for item in sweep.work_items:
+        assert SECRET_SENTINEL not in item.reason
+        assert item.customer_draft is None or SECRET_SENTINEL not in item.customer_draft
+        payload = json.dumps(asdict(item), default=str)
+        assert SECRET_SENTINEL not in payload
+
+
+def test_agent1_sweep_marks_contract_rejected_distinctly_from_writer_error(sweep_conn):
+    orch, _authority = setup_roster(sweep_conn)
+    gate = ActionGate(
+        sweep_conn,
+        tenant_id=T1,
+        actor_principal_id=orch,
+        verdict_source=FixtureVerdictSource(),
+        now=CLOCK,
+    )
+
+    sweep = run_time_to_value_sweep(
+        build_sweep_fixture_data_plane(tenant_id=DEFAULT_TENANT),
+        DEFAULT_TENANT,
+        gate,
+        sweep_principal_id=orch,
+        as_of=AS_OF,
+        reason_draft_writer=ContractRejectingWriter(),
+    )
+
+    assert sweep.work_items
+    assert all(item.draft_mode == "template_fallback" for item in sweep.work_items)
+    assert all(item.draft_fallback_reason == "contract_rejected" for item in sweep.work_items)
 
 
 def test_quality_breaker_routes_customer_drafts_to_internal_review(sweep_conn, tmp_path):
@@ -415,6 +528,7 @@ def test_quality_breaker_routes_customer_drafts_to_internal_review(sweep_conn, t
     assert all(item.proposal is None for item in blocked)
     assert all(item.customer_draft is None for item in blocked)
     assert all(item.draft_mode == "template_fallback" for item in blocked)
+    assert all(item.draft_fallback_reason == "customer_action_blocked" for item in blocked)
 
 
 def test_quality_breaker_requires_operator_event_to_clear(sweep_conn, tmp_path):

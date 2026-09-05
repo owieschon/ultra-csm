@@ -143,6 +143,54 @@ test("draft provenance is labeled by draft_mode, not asserted as AI-written", as
   expect(await draftLabelFor("toString")).toContain("Draft provenance unavailable");
 });
 
+test("template fallback reason distinguishes writer failure from rejected output, with missing-field compatibility", async ({ page }) => {
+  await dismissIntro(page);
+
+  async function fallbackChipFor(patch: (item: Record<string, unknown>) => void) {
+    await page.route("**/ui/demo-api/sweep-day-140.json", async (route) => {
+      const response = await route.fetch();
+      const body = await response.json();
+      patch(body.work_items[0]);
+      await route.fulfill({ response, json: body });
+    });
+    await openQueue(page);
+    await expect(page.getByRole("heading", { name: "Ironhorse Freight Co" })).toBeVisible();
+    const chip = page.locator(".chip-fallback-reason");
+    const count = await chip.count();
+    const text = count > 0 ? (await chip.first().textContent()) ?? "" : "";
+    await page.unroute("**/ui/demo-api/sweep-day-140.json");
+    return { count, text };
+  }
+
+  const writerError = await fallbackChipFor((item) => {
+    item.draft_mode = "template_fallback";
+    item.draft_fallback_reason = "writer_error";
+  });
+  expect(writerError.count).toBe(1);
+  expect(writerError.text).toBe("Writer call failed");
+
+  const contractRejected = await fallbackChipFor((item) => {
+    item.draft_mode = "template_fallback";
+    item.draft_fallback_reason = "contract_rejected";
+  });
+  expect(contractRejected.count).toBe(1);
+  expect(contractRejected.text).toBe("Writer output rejected");
+
+  // Legacy snapshots recorded before this field existed must render with no
+  // fallback-reason chip at all, not a placeholder.
+  const missingField = await fallbackChipFor((item) => {
+    item.draft_mode = "template_fallback";
+    delete item.draft_fallback_reason;
+  });
+  expect(missingField.count).toBe(0);
+
+  const healthy = await fallbackChipFor((item) => {
+    item.draft_mode = "fixture";
+    delete item.draft_fallback_reason;
+  });
+  expect(healthy.count).toBe(0);
+});
+
 test("hosted account sources are named as synthetic, not claimed live", async ({ page }) => {
   await dismissIntro(page);
   await openQueue(page);
