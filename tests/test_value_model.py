@@ -514,6 +514,11 @@ def test_unrelated_plan_completion_and_renewal_do_not_resolve_other_objective():
     assert by_objective["reduce detention time"].source_reported_complete is False
     assert by_objective["reduce detention time"].plan_id == "plan-outcome-integrity"
     assert by_objective["cut onboarding time"].source_reported_complete is True
+    # Evidence must carry both objectives and status refs for each objective.
+    for obj_rec in model.outcome.objective_evidence:
+        evidence_fields = {ev.field for ev in obj_rec.evidence}
+        assert "objectives" in evidence_fields, f"Missing objectives ref for {obj_rec.objective}"
+        assert "status" in evidence_fields, f"Missing status ref for {obj_rec.objective}"
 
 
 def test_min_seats_guard_blocks_single_threaded_risk():

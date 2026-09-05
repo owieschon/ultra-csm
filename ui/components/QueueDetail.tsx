@@ -647,11 +647,15 @@ function Drawer({
 }) {
   const dormant = field === null;
   const rows = field && brief ? (brief[field] as unknown[]) : null;
-  const summary = dormant
+  const briefLoaded = brief !== null;
+  const fieldMissing = briefLoaded && field && !(field in brief);
+  let summary = dormant
     ? "no live source yet"
     : rows
       ? `${rows.length} record${rows.length === 1 ? "" : "s"}`
-      : "…";
+      : fieldMissing && field === "objective_evidence"
+        ? "objective evidence unavailable in this snapshot"
+        : "…";
   return (
     <div className="drawer">
       <button
@@ -669,10 +673,17 @@ function Drawer({
           {(rows ?? []).map((row, i) =>
             <DrawerRow key={i} row={row} formatter={formatter ?? genericDrawerRowText} />
           )}
-          {(rows ?? []).length === 0 && (
+          {(rows ?? []).length === 0 && !fieldMissing && (
             <div className="evid-row">
               <span className="eval" style={{ color: "var(--fg-2)" }}>
                 none
+              </span>
+            </div>
+          )}
+          {fieldMissing && (
+            <div className="evid-row">
+              <span className="eval" style={{ color: "var(--fg-2)" }}>
+                {summary}
               </span>
             </div>
           )}

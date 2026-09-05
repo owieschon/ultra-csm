@@ -627,7 +627,10 @@ def objective_coverage(success_plans: tuple[SuccessPlan, ...]) -> tuple[Objectiv
             plan_id=plan.plan_id,
             plan_status=plan.status,
             source_reported_complete=plan.status in {"realized", "achieved", "complete"},
-            evidence=(EvidenceRef("cs_platform", plan.plan_id, "status", plan.target_date),),
+            evidence=(
+                EvidenceRef("cs_platform", plan.plan_id, "objectives", plan.target_date),
+                EvidenceRef("cs_platform", plan.plan_id, "status", plan.target_date),
+            ),
         )
         for plan in success_plans
         for objective in plan.objectives
