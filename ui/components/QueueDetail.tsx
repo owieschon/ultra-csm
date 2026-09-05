@@ -320,27 +320,29 @@ export function QueueDetail({ item, day }: { item: WorkItem; day: number | undef
       {/* The draft is the artifact being approved — it leads, evidence
           follows (the rail's verbs mean nothing before the reader has seen
           what they act on). */}
-      {item.customer_draft && (
+      {(item.customer_draft || (item.draft_mode === "template_fallback" && draftFallbackReasonLabel(item.draft_fallback_reason))) && (
         <div className="sec">
           <div className="sec-h">
             <span className="t">Proposed draft</span>
             <span className="prov">
               <span className="chip-llm">{draftProvenanceLabel(item.draft_mode)} — needs your approval</span>
-              {draftFallbackReasonLabel(item.draft_fallback_reason) && (
+              {item.draft_mode === "template_fallback" && draftFallbackReasonLabel(item.draft_fallback_reason) && (
                 <span className="chip-fallback-reason">
                   {draftFallbackReasonLabel(item.draft_fallback_reason)}
                 </span>
               )}
             </span>
           </div>
-          <div className="draft">
-            <div className="draft-h">
-              draft
-              {item.recipient_name ? ` · to: ${item.recipient_name}` : ""} ·
-              quality score dormant, no live source yet
+          {item.customer_draft && (
+            <div className="draft">
+              <div className="draft-h">
+                draft
+                {item.recipient_name ? ` · to: ${item.recipient_name}` : ""} ·
+                quality score dormant, no live source yet
+              </div>
+              <div className="draft-body">{item.customer_draft}</div>
             </div>
-            <div className="draft-body">{item.customer_draft}</div>
-          </div>
+          )}
         </div>
       )}
 

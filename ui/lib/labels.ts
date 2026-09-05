@@ -80,6 +80,7 @@ export const DRAFT_FALLBACK_REASON_LABELS: Record<string, string> = {
   writer_error: "Writer call failed",
   contract_rejected: "Writer output rejected",
   customer_action_blocked: "Customer action blocked",
+  validation_error: "Output validation failed",
 };
 
 export function draftFallbackReasonLabel(reason: string | null | undefined): string | null {
