@@ -246,6 +246,33 @@ class TestAccountBriefEndpoint:
         assert body["comms_call_transcripts"] == []
         assert body["comms_internal"] == []
 
+    def test_brief_objective_evidence_serialization(self, client: TestClient):
+        """Account brief must serialize objective_evidence field with unresolved
+        objectives, each carrying its source plan id and reported-complete status
+        from value_model.objective_coverage(), not independent verification."""
+        from ultra_csm.data_plane.fixtures import account_id_for
+
+        account_id = account_id_for("pinnacle-supply")
+        resp = client.get(f"/accounts/{account_id}/brief?day=10")
+        assert resp.status_code == 200
+        body = resp.json()
+        assert "objective_evidence" in body
+        obj_evidence = body["objective_evidence"]
+        assert isinstance(obj_evidence, list)
+        # pinnacle-supply fixture should have stated objectives.
+        if obj_evidence:
+            for obj_rec in obj_evidence:
+                assert "objective" in obj_rec
+                assert "plan_id" in obj_rec
+                assert "plan_status" in obj_rec
+                assert "source_reported_complete" in obj_rec
+                assert isinstance(obj_rec["source_reported_complete"], bool)
+                # Evidence must carry both objectives and status refs.
+                assert "evidence" in obj_rec
+                evidence_fields = {ev.get("field") for ev in obj_rec.get("evidence", [])}
+                assert "objectives" in evidence_fields, f"Missing objectives ref in {obj_rec['plan_id']}"
+                assert "status" in evidence_fields, f"Missing status ref in {obj_rec['plan_id']}"
+
 
 class TestAccountReconciliationEndpoint:
     """Reconciliation agent (Harvest 31 / report 52): read-only endpoint
