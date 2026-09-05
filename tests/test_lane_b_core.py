@@ -290,6 +290,109 @@ def test_value_model_bridge_known_bundle_maps_expected_rails():
     ]
 
 
+def test_deep_value_model_unresolved_objective_with_completed_renewal():
+    """Regression: unresolved objective plus a separate completed plan/renewal
+    must keep usage_outcome_unverified and each source plan id (objective_coverage
+    fix). The deep-data path (_outcome_rail_from_data) must not let an unrelated
+    plan's completion flip the rail to 'known'."""
+    account_id = "acct-mixed-plan-renewal"
+    account = CRMAccount(
+        account_id=account_id,
+        name="Mixed Plan/Renewal Account",
+        owner_id="csm-test",
+        industry="logistics",
+    )
+    company = CSCompany(
+        company_id=account_id,
+        name="Mixed Plan/Renewal Account",
+        industry="logistics",
+        arr_cents=15_000_000,
+        lifecycle_stage="active",
+        status="Active",
+        original_contract_date="2026-01-01",
+        renewal_date="2027-01-01",
+        csm_owner_id="csm-test",
+        current_score=65.0,
+    )
+    entitlements = (
+        Entitlement(account_id, "core", 100, "users", "2026-01-01"),
+    )
+    unresolved_plan = SuccessPlan(
+        plan_id="plan-unresolved",
+        account_id=account_id,
+        status="active",
+        objectives=("accelerate time to value",),
+        target_date="2026-09-01",
+    )
+    realized_plan = SuccessPlan(
+        plan_id="plan-realized",
+        account_id=account_id,
+        status="realized",
+        objectives=("complete migration",),
+        target_date="2026-07-01",
+    )
+    bundle = SimulatedDataBundle(
+        day=60,
+        as_of_date="2026-08-20",
+        accounts={
+            account_id: AccountDataBundle(
+                account_id=account_id,
+                account_slug="mixed-renewal",
+                login_histories=(
+                    UserLoginHistory(
+                        contact_id="contact-c",
+                        account_id=account_id,
+                        login_days=(5, 55),
+                        role_type="admin",
+                        is_champion=False,
+                    ),
+                ),
+                feature_adoptions=(
+                    FeatureAdoptionState(account_id, "core", "exploring", 50, 1, 100),
+                ),
+                cases=(),
+                opportunities=(),
+                contacts=(),
+                activities=(),
+                dau=50,
+                wau=60,
+                mau=75,
+                overall_csat=3.5,
+                feature_depth_score=0.4,
+                active_user_count=90,
+                champion_active=True,
+            )
+        },
+    )
+
+    model, health = build_deep_value_model(
+        bundle=bundle,
+        account_id=account_id,
+        account=account,
+        company=company,
+        entitlements=entitlements,
+        success_plans=(unresolved_plan, realized_plan),
+        licensed_users=100,
+    )
+
+    # Unresolved objective on its own plan must NOT be marked complete
+    # by the realized status of a different plan.
+    assert model.outcome.realized_state != "known"
+    # Both objectives must appear with their source plan ids.
+    by_objective = {r.objective: r for r in model.outcome.objective_evidence}
+    assert "accelerate time to value" in by_objective
+    assert "complete migration" in by_objective
+    assert by_objective["accelerate time to value"].plan_id == "plan-unresolved"
+    assert by_objective["accelerate time to value"].source_reported_complete is False
+    assert by_objective["complete migration"].plan_id == "plan-realized"
+    assert by_objective["complete migration"].source_reported_complete is True
+    # Both objectives and status must be in evidence for each plan.
+    for objective_record in model.outcome.objective_evidence:
+        fields = {ev.field for ev in objective_record.evidence}
+        assert "objectives" in fields, f"Missing objectives ref for {objective_record.plan_id}"
+        assert "status" in fields, f"Missing status ref for {objective_record.plan_id}"
+
+
 def test_deep_data_simulator_is_deterministic_for_same_inputs():
     base = build_synthetic_book()
     first = simulate_data(base, day=90)

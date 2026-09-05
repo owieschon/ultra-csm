@@ -115,6 +115,7 @@
   "industry": "fleet_management",
   "lifecycle_stage": "renewal",
   "milestones": [],
+  "objective_evidence": [],
   "open_cases": [
     {
       "account_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18",
