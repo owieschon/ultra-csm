@@ -75,6 +75,7 @@
   "industry": "logistics",
   "lifecycle_stage": "at_risk",
   "milestones": [],
+  "objective_evidence": [],
   "open_cases": [
     {
       "account_id": "c79ad97e-e2ad-5b6a-beeb-800e4755adca",

@@ -351,6 +351,24 @@
                 "observed_at": "2026-07-15",
                 "source": "cs_platform",
                 "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
+              },
+              {
+                "field": "status",
+                "observed_at": "2026-07-15",
+                "source": "cs_platform",
+                "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
+              },
+              {
+                "field": "objectives",
+                "observed_at": "2026-07-15",
+                "source": "cs_platform",
+                "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
+              },
+              {
+                "field": "status",
+                "observed_at": "2026-07-15",
+                "source": "cs_platform",
+                "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
               }
             ],
             "name": "usage_outcome_unverified",
@@ -366,7 +384,7 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "e2b008d6-1196-5b3b-9a25-99c7f952108a",
+        "proposal_id": "8bc7fc0e-c968-502c-afa1-8fe65fc16de3",
         "status": "pending"
       },
       "reason": "Ironhorse Freight Co has deterministic Time-to-Value score 143 from milestones_overdue=50, days_overdue=40, success_plan_overdue=20; draft customer outreach. Evidence [evidence:4635cdb7-5bb5-5c43-acc1-5dc989d4d583], [evidence:afbc6091-985b-50e5-8522-e1a916af56c9], [evidence:7d61c11f-73d4-52f6-a738-33ab96634a61].",
@@ -1086,6 +1104,24 @@
                 "observed_at": "2026-09-01",
                 "source": "cs_platform",
                 "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
+              },
+              {
+                "field": "status",
+                "observed_at": "2026-09-01",
+                "source": "cs_platform",
+                "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
+              },
+              {
+                "field": "objectives",
+                "observed_at": "2026-09-01",
+                "source": "cs_platform",
+                "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
+              },
+              {
+                "field": "status",
+                "observed_at": "2026-09-01",
+                "source": "cs_platform",
+                "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
               }
             ],
             "name": "usage_outcome_unverified",
@@ -1101,7 +1137,7 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "d96ff107-7a9f-5a4b-8944-46b36d69e0d9",
+        "proposal_id": "e034ef4f-d280-5d1b-a8a3-c2d2c1699d4f",
         "status": "pending"
       },
       "reason": "Trailhead Logistics has deterministic Time-to-Value score 63 from success_plan_overdue=20, arr_tier=5, single_threaded_risk=20; draft customer outreach. Evidence [evidence:20527c0a-8156-5119-934a-4017e19fc39d], [evidence:21830db9-7182-5d97-b22e-d57c4e28f696].",

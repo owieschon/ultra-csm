@@ -125,6 +125,48 @@
       "milestone": "activate_50pct_assets"
     }
   ],
+  "objective_evidence": [
+    {
+      "evidence": [
+        {
+          "field": "objectives",
+          "observed_at": "2026-07-15",
+          "source": "cs_platform",
+          "source_id": "3ea4da77-9a46-57ce-aa0a-36440aed7192"
+        },
+        {
+          "field": "status",
+          "observed_at": "2026-07-15",
+          "source": "cs_platform",
+          "source_id": "3ea4da77-9a46-57ce-aa0a-36440aed7192"
+        }
+      ],
+      "objective": "activate_core_fleet",
+      "plan_id": "3ea4da77-9a46-57ce-aa0a-36440aed7192",
+      "plan_status": "active",
+      "source_reported_complete": false
+    },
+    {
+      "evidence": [
+        {
+          "field": "objectives",
+          "observed_at": "2026-07-15",
+          "source": "cs_platform",
+          "source_id": "3ea4da77-9a46-57ce-aa0a-36440aed7192"
+        },
+        {
+          "field": "status",
+          "observed_at": "2026-07-15",
+          "source": "cs_platform",
+          "source_id": "3ea4da77-9a46-57ce-aa0a-36440aed7192"
+        }
+      ],
+      "objective": "mobile_rollout",
+      "plan_id": "3ea4da77-9a46-57ce-aa0a-36440aed7192",
+      "plan_status": "active",
+      "source_reported_complete": false
+    }
+  ],
   "open_cases": [
     {
       "account_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32",
