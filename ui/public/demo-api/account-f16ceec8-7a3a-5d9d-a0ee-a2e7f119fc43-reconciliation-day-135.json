@@ -16,6 +16,24 @@
           "observed_at": "2026-07-15",
           "source": "cs_platform",
           "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
+        },
+        {
+          "field": "status",
+          "observed_at": "2026-07-15",
+          "source": "cs_platform",
+          "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
+        },
+        {
+          "field": "objectives",
+          "observed_at": "2026-07-15",
+          "source": "cs_platform",
+          "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
+        },
+        {
+          "field": "status",
+          "observed_at": "2026-07-15",
+          "source": "cs_platform",
+          "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
         }
       ],
       "name": "usage_outcome_unverified",
@@ -132,6 +150,24 @@
       },
       {
         "field": "objectives",
+        "observed_at": "2026-07-15",
+        "source": "cs_platform",
+        "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
+      },
+      {
+        "field": "status",
+        "observed_at": "2026-07-15",
+        "source": "cs_platform",
+        "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
+      },
+      {
+        "field": "objectives",
+        "observed_at": "2026-07-15",
+        "source": "cs_platform",
+        "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
+      },
+      {
+        "field": "status",
         "observed_at": "2026-07-15",
         "source": "cs_platform",
         "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"

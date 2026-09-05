@@ -650,6 +650,7 @@
   "industry": "fleet_management",
   "lifecycle_stage": "steady_state",
   "milestones": [],
+  "objective_evidence": [],
   "open_cases": [],
   "open_ctas": [
     {

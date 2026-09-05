@@ -29,6 +29,18 @@ interface SuccessPlanRow {
   objectives: string[];
   target_date: string;
 }
+// One customer-stated objective + its own source plan's reported status
+// (_api_helpers.py's `objective_evidence`, value_model.ObjectiveEvidence).
+// A different plan or a renewal completing never marks this objective
+// resolved -- only its own plan's status does, and only as a source report,
+// not independent verification.
+interface ObjectiveEvidenceRow {
+  objective: string;
+  plan_id: string;
+  plan_status: string;
+  source_reported_complete: boolean;
+  evidence: { source: string; source_id: string }[];
+}
 interface CaseRow {
   subject: string;
   status: string;
@@ -155,6 +167,15 @@ function successPlanRowText(row: SuccessPlanRow): { name: string; meta: string }
   return { name: name + extra, meta: `${row.status} · due ${row.target_date}` };
 }
 
+function objectiveEvidenceRowText(row: ObjectiveEvidenceRow): { name: string; meta: string } {
+  const name = humanizeCode(row.objective);
+  const ref = row.evidence[0] ? `${row.evidence[0].source}:${row.evidence[0].source_id}` : "no source";
+  const state = row.source_reported_complete
+    ? `source-reported complete (plan ${row.plan_status})`
+    : `unresolved (plan ${row.plan_status})`;
+  return { name, meta: `${state} · ${ref}` };
+}
+
 function caseRowText(row: CaseRow): { name: string; meta: string } {
   return { name: row.subject, meta: `${row.status} · ${row.priority} priority` };
 }
@@ -215,6 +236,12 @@ const DRAWERS: {
     name: "Success plan",
     briefField: "success_plans",
     formatter: successPlanRowText as (row: unknown) => { name: string; meta: string },
+  },
+  {
+    key: "objectives",
+    name: "Objectives",
+    briefField: "objective_evidence",
+    formatter: objectiveEvidenceRowText as (row: unknown) => { name: string; meta: string },
   },
   {
     key: "cases",
@@ -620,11 +647,15 @@ function Drawer({
 }) {
   const dormant = field === null;
   const rows = field && brief ? (brief[field] as unknown[]) : null;
+  const briefLoaded = brief !== null;
+  const fieldMissing = briefLoaded && field === "objective_evidence" && !(field in brief);
   const summary = dormant
     ? "no live source yet"
     : rows
       ? `${rows.length} record${rows.length === 1 ? "" : "s"}`
-      : "…";
+      : fieldMissing && field === "objective_evidence"
+        ? "objective evidence unavailable in this snapshot"
+        : "…";
   return (
     <div className="drawer">
       <button
@@ -642,10 +673,17 @@ function Drawer({
           {(rows ?? []).map((row, i) =>
             <DrawerRow key={i} row={row} formatter={formatter ?? genericDrawerRowText} />
           )}
-          {(rows ?? []).length === 0 && (
+          {(rows ?? []).length === 0 && !fieldMissing && (
             <div className="evid-row">
               <span className="eval" style={{ color: "var(--fg-2)" }}>
                 none
+              </span>
+            </div>
+          )}
+          {fieldMissing && (
+            <div className="evid-row">
+              <span className="eval" style={{ color: "var(--fg-2)" }}>
+                {summary}
               </span>
             </div>
           )}

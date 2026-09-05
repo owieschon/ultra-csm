@@ -121,6 +121,48 @@
       "milestone": "activate_50pct_assets"
     }
   ],
+  "objective_evidence": [
+    {
+      "evidence": [
+        {
+          "field": "objectives",
+          "observed_at": "2026-07-20",
+          "source": "cs_platform",
+          "source_id": "2b9e4aff-7f3e-5fd8-af1d-482d72f79fdc"
+        },
+        {
+          "field": "status",
+          "observed_at": "2026-07-20",
+          "source": "cs_platform",
+          "source_id": "2b9e4aff-7f3e-5fd8-af1d-482d72f79fdc"
+        }
+      ],
+      "objective": "activate_core_fleet",
+      "plan_id": "2b9e4aff-7f3e-5fd8-af1d-482d72f79fdc",
+      "plan_status": "active",
+      "source_reported_complete": false
+    },
+    {
+      "evidence": [
+        {
+          "field": "objectives",
+          "observed_at": "2026-07-20",
+          "source": "cs_platform",
+          "source_id": "2b9e4aff-7f3e-5fd8-af1d-482d72f79fdc"
+        },
+        {
+          "field": "status",
+          "observed_at": "2026-07-20",
+          "source": "cs_platform",
+          "source_id": "2b9e4aff-7f3e-5fd8-af1d-482d72f79fdc"
+        }
+      ],
+      "objective": "deploy_fuel_analytics",
+      "plan_id": "2b9e4aff-7f3e-5fd8-af1d-482d72f79fdc",
+      "plan_status": "active",
+      "source_reported_complete": false
+    }
+  ],
   "open_cases": [],
   "open_ctas": [],
   "opportunities": [],

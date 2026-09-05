@@ -83,6 +83,28 @@
       "milestone": "admin_setup"
     }
   ],
+  "objective_evidence": [
+    {
+      "evidence": [
+        {
+          "field": "objectives",
+          "observed_at": "2026-07-14",
+          "source": "cs_platform",
+          "source_id": "eb6f3bbc-1ea8-5b0c-b6d5-ad15afda0e34"
+        },
+        {
+          "field": "status",
+          "observed_at": "2026-07-14",
+          "source": "cs_platform",
+          "source_id": "eb6f3bbc-1ea8-5b0c-b6d5-ad15afda0e34"
+        }
+      ],
+      "objective": "activate_core_fleet",
+      "plan_id": "eb6f3bbc-1ea8-5b0c-b6d5-ad15afda0e34",
+      "plan_status": "active",
+      "source_reported_complete": false
+    }
+  ],
   "open_cases": [],
   "open_ctas": [],
   "opportunities": [],

@@ -140,6 +140,24 @@
                   "observed_at": "2026-07-15",
                   "source": "cs_platform",
                   "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
+                },
+                {
+                  "field": "status",
+                  "observed_at": "2026-07-15",
+                  "source": "cs_platform",
+                  "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
+                },
+                {
+                  "field": "objectives",
+                  "observed_at": "2026-07-15",
+                  "source": "cs_platform",
+                  "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
+                },
+                {
+                  "field": "status",
+                  "observed_at": "2026-07-15",
+                  "source": "cs_platform",
+                  "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
                 }
               ],
               "name": "usage_outcome_unverified",
@@ -153,7 +171,7 @@
         },
         "subject": "Time-to-Value follow-up for Ironhorse Freight Co"
       },
-      "proposal_id": "02c99290-b2fd-5113-bb63-ea16426a4892",
+      "proposal_id": "20453792-785c-509e-928c-5f2cf55159e4",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -735,6 +753,24 @@
                   "observed_at": "2026-09-01",
                   "source": "cs_platform",
                   "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
+                },
+                {
+                  "field": "status",
+                  "observed_at": "2026-09-01",
+                  "source": "cs_platform",
+                  "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
+                },
+                {
+                  "field": "objectives",
+                  "observed_at": "2026-09-01",
+                  "source": "cs_platform",
+                  "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
+                },
+                {
+                  "field": "status",
+                  "observed_at": "2026-09-01",
+                  "source": "cs_platform",
+                  "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
                 }
               ],
               "name": "usage_outcome_unverified",
@@ -748,7 +784,7 @@
         },
         "subject": "Time-to-Value follow-up for Trailhead Logistics"
       },
-      "proposal_id": "d10c9b7a-8a69-5d95-877e-1183246ce289",
+      "proposal_id": "9b5036d1-e1ff-5c9a-bfb2-52a9e871158f",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -1156,6 +1192,24 @@
                   "observed_at": "2026-07-15",
                   "source": "cs_platform",
                   "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
+                },
+                {
+                  "field": "status",
+                  "observed_at": "2026-07-15",
+                  "source": "cs_platform",
+                  "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
+                },
+                {
+                  "field": "objectives",
+                  "observed_at": "2026-07-15",
+                  "source": "cs_platform",
+                  "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
+                },
+                {
+                  "field": "status",
+                  "observed_at": "2026-07-15",
+                  "source": "cs_platform",
+                  "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
                 }
               ],
               "name": "usage_outcome_unverified",
@@ -1169,7 +1223,7 @@
         },
         "subject": "Time-to-Value follow-up for Ironhorse Freight Co"
       },
-      "proposal_id": "427a4d24-5917-5663-a552-6ae7dc5f36df",
+      "proposal_id": "53dec86c-4450-5e80-8d54-9e7d2b89491e",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -1595,6 +1649,24 @@
                   "observed_at": "2026-09-01",
                   "source": "cs_platform",
                   "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
+                },
+                {
+                  "field": "status",
+                  "observed_at": "2026-09-01",
+                  "source": "cs_platform",
+                  "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
+                },
+                {
+                  "field": "objectives",
+                  "observed_at": "2026-09-01",
+                  "source": "cs_platform",
+                  "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
+                },
+                {
+                  "field": "status",
+                  "observed_at": "2026-09-01",
+                  "source": "cs_platform",
+                  "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
                 }
               ],
               "name": "usage_outcome_unverified",
@@ -1608,7 +1680,7 @@
         },
         "subject": "Time-to-Value follow-up for Trailhead Logistics"
       },
-      "proposal_id": "22d60116-ba44-5d65-91fa-52daaa98d53d",
+      "proposal_id": "2d876152-7c3a-5e0b-9e47-5273b3bddae8",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -1996,6 +2068,24 @@
                   "observed_at": "2026-07-15",
                   "source": "cs_platform",
                   "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
+                },
+                {
+                  "field": "status",
+                  "observed_at": "2026-07-15",
+                  "source": "cs_platform",
+                  "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
+                },
+                {
+                  "field": "objectives",
+                  "observed_at": "2026-07-15",
+                  "source": "cs_platform",
+                  "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
+                },
+                {
+                  "field": "status",
+                  "observed_at": "2026-07-15",
+                  "source": "cs_platform",
+                  "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
                 }
               ],
               "name": "usage_outcome_unverified",
@@ -2009,7 +2099,7 @@
         },
         "subject": "Time-to-Value follow-up for Ironhorse Freight Co"
       },
-      "proposal_id": "e2b008d6-1196-5b3b-9a25-99c7f952108a",
+      "proposal_id": "8bc7fc0e-c968-502c-afa1-8fe65fc16de3",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -2513,6 +2603,24 @@
                   "observed_at": "2026-09-01",
                   "source": "cs_platform",
                   "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
+                },
+                {
+                  "field": "status",
+                  "observed_at": "2026-09-01",
+                  "source": "cs_platform",
+                  "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
+                },
+                {
+                  "field": "objectives",
+                  "observed_at": "2026-09-01",
+                  "source": "cs_platform",
+                  "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
+                },
+                {
+                  "field": "status",
+                  "observed_at": "2026-09-01",
+                  "source": "cs_platform",
+                  "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
                 }
               ],
               "name": "usage_outcome_unverified",
@@ -2526,7 +2634,7 @@
         },
         "subject": "Time-to-Value follow-up for Trailhead Logistics"
       },
-      "proposal_id": "d96ff107-7a9f-5a4b-8944-46b36d69e0d9",
+      "proposal_id": "e034ef4f-d280-5d1b-a8a3-c2d2c1699d4f",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -2894,6 +3002,24 @@
                   "observed_at": "2026-07-15",
                   "source": "cs_platform",
                   "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
+                },
+                {
+                  "field": "status",
+                  "observed_at": "2026-07-15",
+                  "source": "cs_platform",
+                  "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
+                },
+                {
+                  "field": "objectives",
+                  "observed_at": "2026-07-15",
+                  "source": "cs_platform",
+                  "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
+                },
+                {
+                  "field": "status",
+                  "observed_at": "2026-07-15",
+                  "source": "cs_platform",
+                  "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
                 }
               ],
               "name": "usage_outcome_unverified",
@@ -2907,7 +3033,7 @@
         },
         "subject": "Time-to-Value follow-up for Ironhorse Freight Co"
       },
-      "proposal_id": "344d0ab9-de66-5f41-9915-7982552632ea",
+      "proposal_id": "38bbab4c-df5a-59a9-9b96-4bb62b6b5b9f",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -3489,6 +3615,24 @@
                   "observed_at": "2026-09-01",
                   "source": "cs_platform",
                   "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
+                },
+                {
+                  "field": "status",
+                  "observed_at": "2026-09-01",
+                  "source": "cs_platform",
+                  "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
+                },
+                {
+                  "field": "objectives",
+                  "observed_at": "2026-09-01",
+                  "source": "cs_platform",
+                  "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
+                },
+                {
+                  "field": "status",
+                  "observed_at": "2026-09-01",
+                  "source": "cs_platform",
+                  "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
                 }
               ],
               "name": "usage_outcome_unverified",
@@ -3502,7 +3646,7 @@
         },
         "subject": "Time-to-Value follow-up for Trailhead Logistics"
       },
-      "proposal_id": "06b34205-2b5b-5a10-823c-caf68449094c",
+      "proposal_id": "e6abc13b-c58a-572a-adeb-b6e065f4b020",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -3910,6 +4054,24 @@
                   "observed_at": "2026-07-15",
                   "source": "cs_platform",
                   "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
+                },
+                {
+                  "field": "status",
+                  "observed_at": "2026-07-15",
+                  "source": "cs_platform",
+                  "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
+                },
+                {
+                  "field": "objectives",
+                  "observed_at": "2026-07-15",
+                  "source": "cs_platform",
+                  "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
+                },
+                {
+                  "field": "status",
+                  "observed_at": "2026-07-15",
+                  "source": "cs_platform",
+                  "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
                 }
               ],
               "name": "usage_outcome_unverified",
@@ -3923,7 +4085,7 @@
         },
         "subject": "Time-to-Value follow-up for Ironhorse Freight Co"
       },
-      "proposal_id": "0213a2e0-025b-5f8d-a67a-0e686416cdf6",
+      "proposal_id": "29c81570-eeeb-5504-89b0-060494092a3c",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -4349,6 +4511,24 @@
                   "observed_at": "2026-09-01",
                   "source": "cs_platform",
                   "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
+                },
+                {
+                  "field": "status",
+                  "observed_at": "2026-09-01",
+                  "source": "cs_platform",
+                  "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
+                },
+                {
+                  "field": "objectives",
+                  "observed_at": "2026-09-01",
+                  "source": "cs_platform",
+                  "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
+                },
+                {
+                  "field": "status",
+                  "observed_at": "2026-09-01",
+                  "source": "cs_platform",
+                  "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
                 }
               ],
               "name": "usage_outcome_unverified",
@@ -4362,7 +4542,7 @@
         },
         "subject": "Time-to-Value follow-up for Trailhead Logistics"
       },
-      "proposal_id": "d69a2790-b96b-50e5-9deb-6f3544bfd5ba",
+      "proposal_id": "c890b565-41cc-5975-9c3d-9bd10aa4e9c0",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -4750,6 +4930,24 @@
                   "observed_at": "2026-07-15",
                   "source": "cs_platform",
                   "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
+                },
+                {
+                  "field": "status",
+                  "observed_at": "2026-07-15",
+                  "source": "cs_platform",
+                  "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
+                },
+                {
+                  "field": "objectives",
+                  "observed_at": "2026-07-15",
+                  "source": "cs_platform",
+                  "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
+                },
+                {
+                  "field": "status",
+                  "observed_at": "2026-07-15",
+                  "source": "cs_platform",
+                  "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
                 }
               ],
               "name": "usage_outcome_unverified",
@@ -4763,7 +4961,7 @@
         },
         "subject": "Time-to-Value follow-up for Ironhorse Freight Co"
       },
-      "proposal_id": "9333679f-cf79-5aa5-970a-9b520650c9e7",
+      "proposal_id": "f6a9d48c-f859-50ac-8e0f-581a2d6f28dc",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -5267,6 +5465,24 @@
                   "observed_at": "2026-09-01",
                   "source": "cs_platform",
                   "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
+                },
+                {
+                  "field": "status",
+                  "observed_at": "2026-09-01",
+                  "source": "cs_platform",
+                  "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
+                },
+                {
+                  "field": "objectives",
+                  "observed_at": "2026-09-01",
+                  "source": "cs_platform",
+                  "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
+                },
+                {
+                  "field": "status",
+                  "observed_at": "2026-09-01",
+                  "source": "cs_platform",
+                  "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
                 }
               ],
               "name": "usage_outcome_unverified",
@@ -5280,7 +5496,7 @@
         },
         "subject": "Time-to-Value follow-up for Trailhead Logistics"
       },
-      "proposal_id": "2c5e7f99-4c82-5eb0-9656-6a73be7d167f",
+      "proposal_id": "293511b9-9f2a-594b-a024-f3282fb9a6c6",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -5648,6 +5864,24 @@
                   "observed_at": "2026-07-15",
                   "source": "cs_platform",
                   "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
+                },
+                {
+                  "field": "status",
+                  "observed_at": "2026-07-15",
+                  "source": "cs_platform",
+                  "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
+                },
+                {
+                  "field": "objectives",
+                  "observed_at": "2026-07-15",
+                  "source": "cs_platform",
+                  "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
+                },
+                {
+                  "field": "status",
+                  "observed_at": "2026-07-15",
+                  "source": "cs_platform",
+                  "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
                 }
               ],
               "name": "usage_outcome_unverified",
@@ -5661,7 +5895,7 @@
         },
         "subject": "Time-to-Value follow-up for Ironhorse Freight Co"
       },
-      "proposal_id": "e5f45cd5-0685-5f3d-a96a-fa67dd4d6085",
+      "proposal_id": "109cee5e-49eb-56c7-bfc6-2a5238717cb3",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -5934,93 +6168,6 @@
       "autonomy_tier": 2,
       "intent": "agent1_time_to_value_sweep",
       "payload": {
-        "account_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18",
-        "account_name": "Harborview Fleet",
-        "as_of": "2026-11-08",
-        "body": "Hi Gregory Foster, Harborview Fleet is showing an onboarding risk tied to a declining health signal, unused paid capabilities. Can we check whether the current adoption gap is putting launch timing at risk?",
-        "contact_email": "gregory.foster@harborview-fleet.example",
-        "contact_id": "5d346e9f-08bb-5736-9b51-e3be8b8c9cad",
-        "draft_channel": "email",
-        "evidence_ids": [
-          "4af5a5c0-f51a-5a83-9217-141f4333c6db",
-          "625c9e2b-353d-5bc9-b866-91b2c536d104",
-          "2f75e535-4d63-5289-8084-aa72fcf3b39a",
-          "b8275b07-a825-5c1b-86d3-5b8063dcaf18"
-        ],
-        "priority": {
-          "factors": [
-            {
-              "config_version": "value-model-config-v1",
-              "contribution": 15,
-              "evidence": [
-                {
-                  "field": "health_score",
-                  "observed_at": "2026-08-05T00:00:00Z",
-                  "source": "cs_platform",
-                  "source_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18"
-                }
-              ],
-              "name": "health_yellow",
-              "rule_name": "base_default",
-              "threshold_name": "health_yellow_points",
-              "threshold_value": 15,
-              "value": 1.0
-            },
-            {
-              "config_version": "value-model-config-v1",
-              "contribution": 15,
-              "evidence": [
-                {
-                  "field": "underused_capabilities",
-                  "observed_at": "2026-06-21T00:00:00Z",
-                  "source": "cs_platform",
-                  "source_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18"
-                },
-                {
-                  "field": "capability",
-                  "observed_at": "2025-08-01",
-                  "source": "telemetry",
-                  "source_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18:core_telematics"
-                },
-                {
-                  "field": "capability",
-                  "observed_at": "2025-08-01",
-                  "source": "telemetry",
-                  "source_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18:route_optimization"
-                },
-                {
-                  "field": "capability",
-                  "observed_at": "2025-08-01",
-                  "source": "telemetry",
-                  "source_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18:advanced_reporting"
-                },
-                {
-                  "field": "capability",
-                  "observed_at": "2025-08-01",
-                  "source": "telemetry",
-                  "source_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18:dispatch_automation"
-                }
-              ],
-              "name": "feature_depth_gap",
-              "rule_name": "base_default",
-              "threshold_name": "depth_floor",
-              "threshold_value": 0.6,
-              "value": 0.5
-            }
-          ],
-          "score": 30
-        },
-        "subject": "Time-to-Value follow-up for Harborview Fleet"
-      },
-      "proposal_id": "4ce7dd4a-171b-52e5-8431-a25557b26aee",
-      "required_permission": "customer.outreach.draft",
-      "status": "pending"
-    },
-    {
-      "action": "draft_customer_outreach",
-      "autonomy_tier": 2,
-      "intent": "agent1_time_to_value_sweep",
-      "payload": {
         "account_id": "865e1e03-cb2f-524d-b572-1eeabebb8d32",
         "account_name": "Clearwater Field Ops",
         "as_of": "2026-11-08",
@@ -6252,6 +6399,24 @@
                   "observed_at": "2026-09-01",
                   "source": "cs_platform",
                   "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
+                },
+                {
+                  "field": "status",
+                  "observed_at": "2026-09-01",
+                  "source": "cs_platform",
+                  "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
+                },
+                {
+                  "field": "objectives",
+                  "observed_at": "2026-09-01",
+                  "source": "cs_platform",
+                  "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
+                },
+                {
+                  "field": "status",
+                  "observed_at": "2026-09-01",
+                  "source": "cs_platform",
+                  "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
                 }
               ],
               "name": "usage_outcome_unverified",
@@ -6265,7 +6430,7 @@
         },
         "subject": "Time-to-Value follow-up for Trailhead Logistics"
       },
-      "proposal_id": "3e58d143-cae9-5982-a43e-d0a5893708ef",
+      "proposal_id": "8d08dad7-9c5b-514f-97b1-038021121b0a",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -6355,6 +6520,93 @@
         "subject": "Time-to-Value follow-up for Sagebrush Transport"
       },
       "proposal_id": "cd3ef5f9-a421-577c-b5c1-27d4890f4c1b",
+      "required_permission": "customer.outreach.draft",
+      "status": "pending"
+    },
+    {
+      "action": "draft_customer_outreach",
+      "autonomy_tier": 2,
+      "intent": "agent1_time_to_value_sweep",
+      "payload": {
+        "account_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18",
+        "account_name": "Harborview Fleet",
+        "as_of": "2026-11-08",
+        "body": "Hi Gregory Foster, Harborview Fleet is showing an onboarding risk tied to a declining health signal, unused paid capabilities. Can we check whether the current adoption gap is putting launch timing at risk?",
+        "contact_email": "gregory.foster@harborview-fleet.example",
+        "contact_id": "5d346e9f-08bb-5736-9b51-e3be8b8c9cad",
+        "draft_channel": "email",
+        "evidence_ids": [
+          "4af5a5c0-f51a-5a83-9217-141f4333c6db",
+          "625c9e2b-353d-5bc9-b866-91b2c536d104",
+          "2f75e535-4d63-5289-8084-aa72fcf3b39a",
+          "b8275b07-a825-5c1b-86d3-5b8063dcaf18"
+        ],
+        "priority": {
+          "factors": [
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 15,
+              "evidence": [
+                {
+                  "field": "health_score",
+                  "observed_at": "2026-08-05T00:00:00Z",
+                  "source": "cs_platform",
+                  "source_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18"
+                }
+              ],
+              "name": "health_yellow",
+              "rule_name": "base_default",
+              "threshold_name": "health_yellow_points",
+              "threshold_value": 15,
+              "value": 1.0
+            },
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 15,
+              "evidence": [
+                {
+                  "field": "underused_capabilities",
+                  "observed_at": "2026-06-21T00:00:00Z",
+                  "source": "cs_platform",
+                  "source_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18"
+                },
+                {
+                  "field": "capability",
+                  "observed_at": "2025-08-01",
+                  "source": "telemetry",
+                  "source_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18:core_telematics"
+                },
+                {
+                  "field": "capability",
+                  "observed_at": "2025-08-01",
+                  "source": "telemetry",
+                  "source_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18:route_optimization"
+                },
+                {
+                  "field": "capability",
+                  "observed_at": "2025-08-01",
+                  "source": "telemetry",
+                  "source_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18:advanced_reporting"
+                },
+                {
+                  "field": "capability",
+                  "observed_at": "2025-08-01",
+                  "source": "telemetry",
+                  "source_id": "b8275b07-a825-5c1b-86d3-5b8063dcaf18:dispatch_automation"
+                }
+              ],
+              "name": "feature_depth_gap",
+              "rule_name": "base_default",
+              "threshold_name": "depth_floor",
+              "threshold_value": 0.6,
+              "value": 0.5
+            }
+          ],
+          "score": 30
+        },
+        "subject": "Time-to-Value follow-up for Harborview Fleet"
+      },
+      "proposal_id": "4ce7dd4a-171b-52e5-8431-a25557b26aee",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },

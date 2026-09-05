@@ -257,6 +257,52 @@ test("evidence page explains itself when nothing is pending", async ({ page }) =
   await expect(page.getByText(/A channel the agent can't place/)).toBeVisible();
 });
 
+test("objectives drawer preserves unresolved goals and source reports", async ({ page }, testInfo) => {
+  await page.route("**/ui/demo-api/account-*-brief-day-*.json", async (route) => {
+    const response = await route.fetch();
+    const brief = await response.json();
+    brief.objective_evidence = [
+      { objective: "Reduce detention time", plan_id: "plan-unresolved", plan_status: "active",
+        source_reported_complete: false,
+        evidence: [{ source: "cs_platform", source_id: "plan-unresolved" }] },
+      { objective: "Cut onboarding time", plan_id: "plan-reported", plan_status: "realized",
+        source_reported_complete: true,
+        evidence: [{ source: "cs_platform", source_id: "plan-reported" }] },
+    ];
+    await route.fulfill({ response, json: brief });
+  });
+  await dismissIntro(page);
+  await openQueue(page);
+  const drawer = page.locator(".drawer").filter({ has: page.getByRole("button", { name: /^Objectives/ }) });
+  await expect(drawer).toContainText("2 records");
+  await drawer.getByRole("button").click();
+  const unresolved = drawer.locator(".stake-row").filter({ hasText: /Reduce detention time/i });
+  await expect(unresolved).toContainText("unresolved (plan active)");
+  await expect(unresolved).toContainText("cs_platform:plan-unresolved");
+  const reported = drawer.locator(".stake-row").filter({ hasText: /Cut onboarding time/i });
+  await expect(reported).toContainText("source-reported complete (plan realized)");
+  await expect(reported).toContainText("cs_platform:plan-reported");
+  await page.screenshot({ path: testInfo.outputPath("objective-evidence.png"), fullPage: true });
+});
+
+for (const missing of [true, false]) {
+  test(`objectives drawer distinguishes ${missing ? "missing evidence" : "an empty objective list"}`, async ({ page }) => {
+    await page.route("**/ui/demo-api/account-*-brief-day-*.json", async (route) => {
+      const response = await route.fetch();
+      const brief = await response.json();
+      if (missing) delete brief.objective_evidence;
+      else brief.objective_evidence = [];
+      await route.fulfill({ response, json: brief });
+    });
+    await dismissIntro(page);
+    await openQueue(page);
+    const drawer = page.locator(".drawer").filter({ has: page.getByRole("button", { name: /^Objectives/ }) });
+    await expect(drawer).toContainText(missing ? "objective evidence unavailable in this snapshot" : "0 records");
+    await drawer.getByRole("button").click();
+    await expect(drawer.locator(".drawer-b")).toHaveText(missing ? "objective evidence unavailable in this snapshot" : "none");
+  });
+}
+
 // NOTE: the sandbox's backend-absent composition (the "static export" note
 // instead of a red alert, with the reset control disabled) only exists in
 // the hosted build — build:e2e bakes NEXT_PUBLIC_ACTION_CONTROL_SANDBOX_API
