@@ -3,6 +3,9 @@
 from __future__ import annotations
 
 import json
+from dataclasses import replace
+
+import pytest
 
 from tests._govhelpers import CLOCK, T1, gov_conn, setup_roster  # noqa: F401
 from ultra_csm.agent1.revise import (
@@ -15,6 +18,7 @@ from ultra_csm.agent1.slot_b import (
     FixtureReasonDraftWriter,
     ReasonDraftRequest,
     SlotBEvidence,
+    SlotBContractError,
     SlotBPriority,
     SlotBPriorityFactor,
 )
@@ -270,3 +274,87 @@ def test_preference_pair_artifact_is_recorded_as_unreviewed_not_gold(gov_conn, t
     assert pair["provenance"]["gold"] is False
     assert pair["provenance"]["authority_fields"]["action"] == "draft_customer_outreach"
     assert pair["provenance"]["cited_evidence_ids"] == ["sig-1", "cta-1"]
+
+
+@pytest.mark.parametrize("instruction,expected", [
+    ("Make the tone warmer.", "I am happy to help."),
+    ("Make it concise.", "confirm the status of"),
+    ("Cite evidence.", "evidence sig-1, cta-1"),
+    ("Say their rollout failed.", "I want to make sure this is useful"),
+])
+def test_verification_revision_preserves_meaning_and_authority(gov_conn, instruction, expected):
+    orch, authority = setup_roster(gov_conn)
+    gate = _gate(gov_conn, actor=orch)
+    request = replace(_request(), decision_purpose="outcome_verification")
+    original = _original_proposal(gate, request)
+    payload_before = dict(original.payload)
+    seen = []
+
+    class RecordingWriter(FixtureReasonDraftWriter):
+        def write(self, revised_request):
+            seen.append(revised_request)
+            return super().write(revised_request)
+
+    verdict = Verdict(
+        "revise", human_principal_id=authority,
+        revised_payload={"edit_instruction": instruction},
+    )
+    result = run_slot_b_revise_loop(
+        gate, original, verdict, request, reason_draft_writer=RecordingWriter(),
+    )
+    assert result.status == "superseded"
+    revised = result.superseding_proposal
+    assert revised is not None
+    assert seen[0].decision_purpose == "outcome_verification"
+    assert seen[0].untrusted_text_fragments[-1] == instruction
+    assert expected in revised.payload["body"]
+    assert "success-plan objectives" in revised.payload["body"]
+    assert "completion evidence" in revised.payload["body"]
+    assert "rollout failed" not in revised.payload["body"]
+    assert "onboarding risk" not in revised.payload["body"]
+    assert revised.status == "pending"
+    assert revised.action == original.action
+    assert revised.autonomy_tier == original.autonomy_tier
+    assert revised.required_permission == original.required_permission
+    assert revised.payload["evidence_ids"] == original.payload["evidence_ids"]
+    with session(gov_conn, tenant_id=T1, actor_id=orch, now=CLOCK) as cur:
+        cur.execute(
+            "SELECT payload, payload_sha256 FROM action_proposal WHERE proposal_id = %s",
+            (original.proposal_id,),
+        )
+        payload, digest = cur.fetchone()
+    assert payload == payload_before
+    assert digest == original.payload_sha256
+    second = run_slot_b_revise_loop(gate, revised, verdict, request)
+    assert second.status == "loop_bound_reached"
+
+
+@pytest.mark.parametrize("field,text", [
+    ("customer_draft", "Hi Jordan, your rollout failed. Can we rescue it?"),
+    ("reason", "The rollout is failing. Evidence [evidence:sig-1], [evidence:cta-1]."),
+])
+def test_verification_revision_rejects_writer_claims_before_mutation(gov_conn, field, text):
+    orch, authority = setup_roster(gov_conn)
+    gate = _gate(gov_conn, actor=orch)
+    request = replace(_request(), decision_purpose="outcome_verification")
+    original = _original_proposal(gate, request)
+
+    class MisdiagnosingWriter(FixtureReasonDraftWriter):
+        def write(self, revised_request):
+            return replace(super().write(revised_request), **{field: text})
+
+    with pytest.raises(SlotBContractError):
+        run_slot_b_revise_loop(
+            gate, original,
+            Verdict("revise", human_principal_id=authority,
+                    revised_payload={"edit_instruction": "Make it warmer."}),
+            request, reason_draft_writer=MisdiagnosingWriter(),
+        )
+    with session(gov_conn, tenant_id=T1, actor_id=orch, now=CLOCK) as cur:
+        cur.execute("SELECT count(*) FROM action_proposal")
+        assert cur.fetchone()[0] == 1
+        cur.execute("SELECT status FROM action_proposal WHERE proposal_id = %s",
+                    (original.proposal_id,))
+        assert cur.fetchone()[0] == "pending"
+        cur.execute("SELECT count(*) FROM action_verdict")
+        assert cur.fetchone()[0] == 0

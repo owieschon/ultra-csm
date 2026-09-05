@@ -11,7 +11,7 @@ test("Trailhead asks for objective evidence without asserting a failed rollout",
   await expect(page.getByText(/share any completion evidence or updates we should record/)).toBeVisible();
   await expect(page.getByText(/outcome verification needed/).first()).toBeVisible();
   await expect(page.getByText(/onboarding risk|activation blockers|rollout is unsuccessful/)).toHaveCount(0);
-  await expect(page.getByText("Example draft", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("Example draft — needs your approval", { exact: true })).toBeVisible();
   expect(mutations).toEqual([]);
   await page.screenshot({ path: testInfo.outputPath("trailhead-verification.png"), fullPage: true });
 });
