@@ -14,7 +14,7 @@ import re
 import time
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING, Protocol
+from typing import TYPE_CHECKING, Literal, Protocol
 
 from ultra_csm._util import evidence_ids
 from ultra_csm.knowledge import is_safe_customer_ask
@@ -102,6 +102,9 @@ def _customer_factor_label(name: str) -> str:
     return _CUSTOMER_FACTOR_LABELS.get(name, name.replace("_", " "))
 
 
+DecisionPurpose = Literal["standard", "outcome_verification"]
+
+
 def _booking_link_line(request: "ReasonDraftRequest") -> str | None:
     """The single sentence offering the configured booking link, or None if
     no booking is configured (dormant feature -- see knowledge.py). Always
@@ -166,6 +169,7 @@ class ReasonDraftRequest:
     contact_email: str | None = None
     untrusted_text_fragments: tuple[str, ...] = ()
     org_context: dict | None = None
+    decision_purpose: DecisionPurpose = "standard"
 
     def evidence_ids(self) -> tuple[str, ...]:
         return evidence_ids(self.evidence)
@@ -213,6 +217,11 @@ class FixtureReasonDraftWriter:
             f"{request.priority.score} from {factors}; {action}. Evidence "
             f"{_citation_text(cited)}."
         )
+        if request.decision_purpose == "outcome_verification":
+            reason, draft, cited = _verification_output_fields(request)
+            output = ReasonDraftOutput(reason, cited, draft, self.model_id, self.prompt_version)
+            validate_reason_draft_output(request, output)
+            return output
         draft = None
         if request.customer_contact_allowed:
             contact = request.contact_name or "there"
@@ -411,6 +420,11 @@ def validate_reason_draft_output(
                 f"customer draft contains unsafe URI scheme(s): {sorted(dangerous_schemes)}"
             )
 
+    if request.decision_purpose == "outcome_verification":
+        reason, draft, cited = _verification_output_fields(request)
+        if (output.reason, output.customer_draft, output.cited_evidence_ids) != (reason, draft, cited):
+            raise SlotBContractError("outcome verification requires the grounded verification output")
+
 
 def prompt_metadata() -> dict[str, str]:
     return {
@@ -468,6 +482,37 @@ def _jsonable_request(request: ReasonDraftRequest) -> dict:
     data = asdict(request)
     data["prompt_version"] = SLOT_B_PROMPT_VERSION
     return data
+
+
+def _verification_output_fields(
+    request: ReasonDraftRequest,
+) -> tuple[str, str | None, tuple[str, ...]]:
+    # Exact rendering constrains both diagnosis and draft; phrase matching cannot
+    # establish that an arbitrary model response preserves uncertainty.
+    cited = tuple(sorted(set(request.evidence_ids())))
+    factors = ", ".join(
+        f"{factor.name}={factor.contribution}"
+        for factor in sorted(request.priority.factors, key=lambda factor: factor.name)
+    )
+    action = "Request an objective-status update" if request.customer_contact_allowed else "Review internally"
+    reason = (
+        f"{request.account_name}: outcome verification needed. Usage does not establish "
+        f"completion of the recorded objectives. {action} using the cited plan records. "
+        f"Priority {request.priority.score} from {factors}. Evidence {_citation_text(cited)}."
+    )
+    draft = None
+    if request.customer_contact_allowed:
+        contact = request.contact_name or "there"
+        draft = (
+            f"Hi {contact}, could you confirm the current status of "
+            f"{request.account_name}'s success-plan objectives and share any completion "
+            "evidence or updates we should record?"
+        )
+        if request.recommended_action == _MEETING_SHAPED_ACTION:
+            link_line = _booking_link_line(request)
+            if link_line:
+                draft = f"{draft} {link_line}"
+    return reason, draft, cited
 
 
 def _play_ask(request: ReasonDraftRequest) -> str | None:
