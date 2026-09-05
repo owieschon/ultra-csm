@@ -79,6 +79,10 @@ Disposition = Literal["propose_customer_action", "internal_review", "escalate"]
 ProposalStatus = Literal["pending", "approved", "denied"]
 PriorityFactor = ValueFactor
 DraftMode = Literal["fixture", "live", "template_fallback", "none"]
+# Low-cardinality operator diagnostic for why a template_fallback happened.
+# Never carries exception text, class names, prompts, credentials, or
+# customer data -- only the fixed reason code below.
+DraftFallbackReason = Literal["writer_error", "contract_rejected", "customer_action_blocked", "validation_error"]
 TrajectoryFactorState = Literal["known", "unknown"]
 
 
@@ -124,6 +128,11 @@ class CSMWorkItem:
     proposal: ProposalRef | None
     swept_at: str
     draft_mode: DraftMode = "none"
+    # Diagnostic only, never customer-facing: distinguishes a failed writer
+    # call from rejected writer output when draft_mode is template_fallback.
+    # None for healthy fixture/live drafts and for legacy snapshots that
+    # predate this field.
+    draft_fallback_reason: DraftFallbackReason | None = None
     customer_draft: str | None = None
     motion: str | None = None
     recipient_resolution: str | None = None
@@ -1100,12 +1109,18 @@ def _work_item_for_account(
         org_context=resolved_org_context,
     )
     slot_start = time.perf_counter()
-    slot_b, draft_mode = _write_slot_b_with_fallback(slot_b_request, reason_draft_writer)
+    slot_b, draft_mode, draft_fallback_reason = _write_slot_b_with_fallback(
+        slot_b_request, reason_draft_writer
+    )
     if timing is not None:
         timing.slot_b_ms += (time.perf_counter() - slot_start) * 1000.0
         timing.slot_b_calls += 1
     if customer_action_blocked:
+        # Truthful override: this template is here because the action was
+        # blocked, not because the writer failed or its output was rejected
+        # -- even if the writer also happened to fail underneath.
         draft_mode = "template_fallback"
+        draft_fallback_reason = "customer_action_blocked"
     proposal_ref = None
     if customer_contact_allowed and not customer_action_blocked:
         governance_start = time.perf_counter()
@@ -1176,6 +1191,7 @@ def _work_item_for_account(
         proposal=proposal_ref,
         swept_at=as_of,
         draft_mode=draft_mode,
+        draft_fallback_reason=draft_fallback_reason,
         customer_draft=slot_b.customer_draft,
         motion=motion,
         recipient_resolution=recipient_resolution,
@@ -1190,15 +1206,35 @@ def _work_item_for_account(
 def _write_slot_b_with_fallback(
     request: ReasonDraftRequest,
     writer: ReasonDraftWriter,
-) -> tuple[ReasonDraftOutput, DraftMode]:
+) -> tuple[ReasonDraftOutput, DraftMode, DraftFallbackReason | None]:
+    """Write Slot B, falling back to the safe fixture template on failure.
+
+    The returned diagnostic distinguishes a writer call that raised (writer
+    error -- transport outage, exception in the writer) from writer output
+    that was rejected by the Slot B contract (contract_rejected -- e.g.
+    fabricated evidence, forbidden URL) from validation failures
+    (validation_error -- malformed or incomplete output). Neither the
+    exception text nor any part of the rejected output is retained: only
+    this fixed reason code.
+    """
     try:
         output = writer.write(request)
+    except SlotBContractError:
+        fallback = FixtureReasonDraftWriter().write(request)
+        return fallback, "template_fallback", "contract_rejected"
+    except Exception:
+        fallback = FixtureReasonDraftWriter().write(request)
+        return fallback, "template_fallback", "writer_error"
+    try:
         validate_reason_draft_output(request, output)
         mode: DraftMode = "fixture" if output.model_id == FIXTURE_SLOT_B_MODEL_ID else "live"
-        return output, mode
-    except (Exception, SlotBContractError):
+    except SlotBContractError:
         fallback = FixtureReasonDraftWriter().write(request)
-        return fallback, "template_fallback"
+        return fallback, "template_fallback", "contract_rejected"
+    except Exception:
+        fallback = FixtureReasonDraftWriter().write(request)
+        return fallback, "template_fallback", "validation_error"
+    return output, mode, None
 
 
 def _propose_outreach(

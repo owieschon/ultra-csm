@@ -72,6 +72,24 @@ export function draftProvenanceLabel(draftMode: string | null | undefined): stri
   return "Draft provenance unavailable";
 }
 
+// WorkItem.draft_fallback_reason is an optional operator-only diagnostic:
+// present only when draft_mode is "template_fallback", absent on healthy
+// fixture/live drafts and on legacy snapshots recorded before this field
+// existed. Never render raw exception text or writer identity here.
+export const DRAFT_FALLBACK_REASON_LABELS: Record<string, string> = {
+  writer_error: "Writer call failed",
+  contract_rejected: "Writer output rejected",
+  customer_action_blocked: "Customer action blocked",
+  validation_error: "Output validation failed",
+};
+
+export function draftFallbackReasonLabel(reason: string | null | undefined): string | null {
+  if (reason && Object.prototype.hasOwnProperty.call(DRAFT_FALLBACK_REASON_LABELS, reason)) {
+    return DRAFT_FALLBACK_REASON_LABELS[reason];
+  }
+  return null;
+}
+
 export const PROPOSAL_STATUS_LABELS: Record<string, string> = {
   pending: "needs your approval",
   approved: "approved · awaiting commit",

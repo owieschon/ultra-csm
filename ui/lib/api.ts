@@ -307,6 +307,7 @@ export interface WorkItem {
   proposal: WorkItemProposalRef | null;
   swept_at: string;
   draft_mode: string;
+  draft_fallback_reason?: string | null;
   customer_draft: string | null;
   motion: string | null;
   internal_bridge_decision?: InternalBridgeDecision | null;
