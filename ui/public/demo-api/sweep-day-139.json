@@ -192,7 +192,7 @@
       "account_resolution": "exactly_one",
       "candidate_account_ids": [],
       "customer_contact_allowed": true,
-      "customer_draft": "Hi Marcus Webb, could you confirm the current status of Ironhorse Freight Co's success-plan objectives and share any completion evidence or updates we should record?",
+      "customer_draft": "Hi Marcus, could you confirm the current status of Ironhorse Freight Co's success-plan objectives and share any completion evidence or updates we should record?",
       "disposition": "propose_customer_action",
       "draft_fallback_reason": null,
       "draft_mode": "fixture",
@@ -220,6 +220,24 @@
           "observed_at": "2026-07-26T00:00:00Z",
           "source": "cs_platform",
           "source_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43"
+        },
+        {
+          "field": "active_users",
+          "observed_at": "2026-11-07T00:00:00Z",
+          "source": "cs_platform",
+          "source_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43"
+        },
+        {
+          "field": "objectives",
+          "observed_at": "2026-07-15",
+          "source": "cs_platform",
+          "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
+        },
+        {
+          "field": "status",
+          "observed_at": "2026-07-15",
+          "source": "cs_platform",
+          "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9"
         }
       ],
       "internal_bridge_decision": {
@@ -385,7 +403,7 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "b440786e-74c8-5ab3-a475-b620a015a995",
+        "proposal_id": "d9c49b7e-326d-5ff2-8e9b-b907089c3a95",
         "status": "pending"
       },
       "reason": "Ironhorse Freight Co: outcome verification needed. Usage does not establish completion of the recorded objectives. Request an objective-status update using the cited plan records. Priority 143 from days_overdue=40, feature_depth_gap=15, milestones_overdue=50, success_plan_overdue=20, usage_outcome_unverified=18. Evidence [evidence:4635cdb7-5bb5-5c43-acc1-5dc989d4d583], [evidence:7d61c11f-73d4-52f6-a738-33ab96634a61], [evidence:afbc6091-985b-50e5-8522-e1a916af56c9], [evidence:f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43].",
@@ -468,7 +486,10 @@
             "evidence_ids": [
               "4635cdb7-5bb5-5c43-acc1-5dc989d4d583",
               "afbc6091-985b-50e5-8522-e1a916af56c9",
-              "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43"
+              "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+              "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+              "afbc6091-985b-50e5-8522-e1a916af56c9",
+              "afbc6091-985b-50e5-8522-e1a916af56c9"
             ],
             "state": "covered"
           },
@@ -478,7 +499,10 @@
               "4635cdb7-5bb5-5c43-acc1-5dc989d4d583",
               "afbc6091-985b-50e5-8522-e1a916af56c9",
               "7d61c11f-73d4-52f6-a738-33ab96634a61",
-              "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43"
+              "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+              "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+              "afbc6091-985b-50e5-8522-e1a916af56c9",
+              "afbc6091-985b-50e5-8522-e1a916af56c9"
             ],
             "state": "covered"
           },
@@ -500,7 +524,8 @@
             "evidence:telemetry:4635cdb7-5bb5-5c43-acc1-5dc989d4d583:daily_active_assets",
             "evidence:cs_platform:afbc6091-985b-50e5-8522-e1a916af56c9:target_date",
             "evidence:crm:7d61c11f-73d4-52f6-a738-33ab96634a61:status",
-            "evidence:cs_platform:f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43:health_score"
+            "evidence:cs_platform:f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43:health_score",
+            "evidence:cs_platform:f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43:active_users"
           ],
           "confidence": 0.72,
           "confidence_calibrated": false,
@@ -552,6 +577,36 @@
             "source": "cs_platform",
             "source_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
             "step_id": "evidence:cs_platform:f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43:health_score",
+            "validation_status": "oracle_graded"
+          },
+          {
+            "claim": "cs_platform.active_users observed for f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+            "field": "active_users",
+            "observed_at": "2026-11-07T00:00:00Z",
+            "provenance_tier": "raw_fact",
+            "source": "cs_platform",
+            "source_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+            "step_id": "evidence:cs_platform:f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43:active_users",
+            "validation_status": "oracle_graded"
+          },
+          {
+            "claim": "cs_platform.objectives observed for afbc6091-985b-50e5-8522-e1a916af56c9",
+            "field": "objectives",
+            "observed_at": "2026-07-15",
+            "provenance_tier": "raw_fact",
+            "source": "cs_platform",
+            "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9",
+            "step_id": "evidence:cs_platform:afbc6091-985b-50e5-8522-e1a916af56c9:objectives",
+            "validation_status": "oracle_graded"
+          },
+          {
+            "claim": "cs_platform.status observed for afbc6091-985b-50e5-8522-e1a916af56c9",
+            "field": "status",
+            "observed_at": "2026-07-15",
+            "provenance_tier": "raw_fact",
+            "source": "cs_platform",
+            "source_id": "afbc6091-985b-50e5-8522-e1a916af56c9",
+            "step_id": "evidence:cs_platform:afbc6091-985b-50e5-8522-e1a916af56c9:status",
             "validation_status": "oracle_graded"
           }
         ],
@@ -606,7 +661,7 @@
         "packet_version": "csm-work-packet-v1",
         "prepared_artifact": {
           "artifact_type": "customer_draft",
-          "body": "Hi Marcus Webb, could you confirm the current status of Ironhorse Freight Co's success-plan objectives and share any completion evidence or updates we should record?",
+          "body": "Hi Marcus, could you confirm the current status of Ironhorse Freight Co's success-plan objectives and share any completion evidence or updates we should record?",
           "requires_approval": true,
           "source_organ": "agent1.slot_b",
           "title": "Customer outreach draft",
@@ -1008,7 +1063,7 @@
       "account_resolution": "exactly_one",
       "candidate_account_ids": [],
       "customer_contact_allowed": true,
-      "customer_draft": "Hi Vanessa Torres, could you confirm the current status of Trailhead Logistics's success-plan objectives and share any completion evidence or updates we should record?",
+      "customer_draft": "Hi Vanessa, could you confirm the current status of Trailhead Logistics's success-plan objectives and share any completion evidence or updates we should record?",
       "disposition": "propose_customer_action",
       "draft_fallback_reason": null,
       "draft_mode": "fixture",
@@ -1024,6 +1079,24 @@
           "observed_at": "2026-09-09T00:00:00Z",
           "source": "cs_platform",
           "source_id": "21830db9-7182-5d97-b22e-d57c4e28f696"
+        },
+        {
+          "field": "active_users",
+          "observed_at": "2026-11-07T00:00:00Z",
+          "source": "cs_platform",
+          "source_id": "21830db9-7182-5d97-b22e-d57c4e28f696"
+        },
+        {
+          "field": "objectives",
+          "observed_at": "2026-09-01",
+          "source": "cs_platform",
+          "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
+        },
+        {
+          "field": "status",
+          "observed_at": "2026-09-01",
+          "source": "cs_platform",
+          "source_id": "20527c0a-8156-5119-934a-4017e19fc39d"
         }
       ],
       "internal_bridge_decision": {
@@ -1144,7 +1217,7 @@
         "action_type": "draft_customer_outreach",
         "channel": "email",
         "created_by_principal": "e4a414e8-a946-5d84-a6bd-2cc17e1ed2c9",
-        "proposal_id": "8decdb3d-ca85-5e95-b4bd-0b1c4d69f488",
+        "proposal_id": "4cf4b87c-27c3-5515-bb09-9e6ad9f6bcb3",
         "status": "pending"
       },
       "reason": "Trailhead Logistics: outcome verification needed. Usage does not establish completion of the recorded objectives. Request an objective-status update using the cited plan records. Priority 63 from arr_tier=5, single_threaded_risk=20, success_plan_overdue=20, usage_outcome_unverified=18. Evidence [evidence:20527c0a-8156-5119-934a-4017e19fc39d], [evidence:21830db9-7182-5d97-b22e-d57c4e28f696].",
@@ -1227,7 +1300,10 @@
             "bucket": "priority",
             "evidence_ids": [
               "20527c0a-8156-5119-934a-4017e19fc39d",
-              "21830db9-7182-5d97-b22e-d57c4e28f696"
+              "21830db9-7182-5d97-b22e-d57c4e28f696",
+              "21830db9-7182-5d97-b22e-d57c4e28f696",
+              "20527c0a-8156-5119-934a-4017e19fc39d",
+              "20527c0a-8156-5119-934a-4017e19fc39d"
             ],
             "state": "covered"
           },
@@ -1235,7 +1311,10 @@
             "bucket": "source_evidence",
             "evidence_ids": [
               "20527c0a-8156-5119-934a-4017e19fc39d",
-              "21830db9-7182-5d97-b22e-d57c4e28f696"
+              "21830db9-7182-5d97-b22e-d57c4e28f696",
+              "21830db9-7182-5d97-b22e-d57c4e28f696",
+              "20527c0a-8156-5119-934a-4017e19fc39d",
+              "20527c0a-8156-5119-934a-4017e19fc39d"
             ],
             "state": "covered"
           },
@@ -1257,9 +1336,12 @@
         "diagnostic_hypothesis": {
           "basis": [
             "evidence:cs_platform:20527c0a-8156-5119-934a-4017e19fc39d:target_date",
-            "evidence:cs_platform:21830db9-7182-5d97-b22e-d57c4e28f696:health_score"
+            "evidence:cs_platform:21830db9-7182-5d97-b22e-d57c4e28f696:health_score",
+            "evidence:cs_platform:21830db9-7182-5d97-b22e-d57c4e28f696:active_users",
+            "evidence:cs_platform:20527c0a-8156-5119-934a-4017e19fc39d:objectives",
+            "evidence:cs_platform:20527c0a-8156-5119-934a-4017e19fc39d:status"
           ],
-          "confidence": 0.6500000000000001,
+          "confidence": 0.72,
           "confidence_calibrated": false,
           "confidence_label": "medium",
           "confidence_method": "packet_structure_heuristic",
@@ -1289,6 +1371,36 @@
             "source": "cs_platform",
             "source_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
             "step_id": "evidence:cs_platform:21830db9-7182-5d97-b22e-d57c4e28f696:health_score",
+            "validation_status": "oracle_graded"
+          },
+          {
+            "claim": "cs_platform.active_users observed for 21830db9-7182-5d97-b22e-d57c4e28f696",
+            "field": "active_users",
+            "observed_at": "2026-11-07T00:00:00Z",
+            "provenance_tier": "raw_fact",
+            "source": "cs_platform",
+            "source_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
+            "step_id": "evidence:cs_platform:21830db9-7182-5d97-b22e-d57c4e28f696:active_users",
+            "validation_status": "oracle_graded"
+          },
+          {
+            "claim": "cs_platform.objectives observed for 20527c0a-8156-5119-934a-4017e19fc39d",
+            "field": "objectives",
+            "observed_at": "2026-09-01",
+            "provenance_tier": "raw_fact",
+            "source": "cs_platform",
+            "source_id": "20527c0a-8156-5119-934a-4017e19fc39d",
+            "step_id": "evidence:cs_platform:20527c0a-8156-5119-934a-4017e19fc39d:objectives",
+            "validation_status": "oracle_graded"
+          },
+          {
+            "claim": "cs_platform.status observed for 20527c0a-8156-5119-934a-4017e19fc39d",
+            "field": "status",
+            "observed_at": "2026-09-01",
+            "provenance_tier": "raw_fact",
+            "source": "cs_platform",
+            "source_id": "20527c0a-8156-5119-934a-4017e19fc39d",
+            "step_id": "evidence:cs_platform:20527c0a-8156-5119-934a-4017e19fc39d:status",
             "validation_status": "oracle_graded"
           }
         ],
@@ -1343,7 +1455,7 @@
         "packet_version": "csm-work-packet-v1",
         "prepared_artifact": {
           "artifact_type": "customer_draft",
-          "body": "Hi Vanessa Torres, could you confirm the current status of Trailhead Logistics's success-plan objectives and share any completion evidence or updates we should record?",
+          "body": "Hi Vanessa, could you confirm the current status of Trailhead Logistics's success-plan objectives and share any completion evidence or updates we should record?",
           "requires_approval": true,
           "source_organ": "agent1.slot_b",
           "title": "Customer outreach draft",

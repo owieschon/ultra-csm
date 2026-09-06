@@ -572,10 +572,6 @@ def _slot_b_inputs_for_account(
             onboarding_tasks=onboarding_tasks,
             as_of=as_of,
         )
-    if evidence_source_ids is not None:
-        evidence = _filter_evidence_refs_by_source_id(evidence, evidence_source_ids)
-    if not evidence:
-        return None
 
     model = build_customer_value_model(
         account=account,
@@ -608,6 +604,22 @@ def _slot_b_inputs_for_account(
         onboarding_activation_gap_ids=activation_gap_ids,
         slot_a_classifications=slot_a_classifications,
     )
+    verification_evidence = _dedup_evidence_refs(
+        ref for factor in priority.factors
+        if factor.name == "usage_outcome_unverified"
+        for ref in factor.evidence
+    )
+    evidence = _dedup_evidence_refs((*evidence, *verification_evidence))
+    if evidence_source_ids is not None:
+        # A reconstructed verification request needs both its objective and
+        # adoption sources; a partial match cannot support the same claim.
+        if _decision_purpose_for_factors(priority.factors) == "outcome_verification":
+            required_sources = {ref.source_id for ref in verification_evidence}
+            if not required_sources.issubset(evidence_source_ids):
+                return None
+        evidence = _filter_evidence_refs_by_source_id(evidence, evidence_source_ids)
+    if not evidence:
+        return None
     if priority.score <= 0:
         return None
     return _SlotBInputs(
@@ -627,6 +639,17 @@ def _proposal_contact(
         contact = next((item for item in contacts if item.contact_id == contact_id), None)
         return contact if contact is not None and contact.consent_to_contact else None
     return next((item for item in contacts if item.consent_to_contact), None)
+
+
+def _dedup_evidence_refs(refs) -> tuple[EvidenceRef, ...]:
+    seen: set[tuple[str, str, str]] = set()
+    deduped: list[EvidenceRef] = []
+    for ref in refs:
+        key = (ref.source, ref.source_id, ref.field)
+        if key not in seen:
+            deduped.append(ref)
+            seen.add(key)
+    return tuple(deduped)
 
 
 def _filter_evidence_refs_by_source_id(
