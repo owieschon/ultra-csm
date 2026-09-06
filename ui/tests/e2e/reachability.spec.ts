@@ -5,6 +5,8 @@ async function openTrailheadDecision(page: Page) {
   expect(response?.status()).toBe(200);
 
   await page.getByRole("tab", { name: /Queue/ }).click();
+  const back = page.getByRole("button", { name: "← Back to queue", exact: true });
+  if (await back.isVisible()) await back.click();
   await page.getByRole("button", { name: /Trailhead Logistics/ }).click();
   await expect(page.getByRole("heading", { name: "Trailhead Logistics" })).toBeVisible();
 }
@@ -96,24 +98,17 @@ test("proposal draft and governance controls are reachable without document over
   // pane (visible without scrolling), with evidence below it.
   await expect(page.getByText("Proposed draft", { exact: true })).toBeVisible();
 
-  const detail = page.locator(".detail-scroll");
-  const dimensions = await detail.evaluate((element) => ({
-    clientHeight: element.clientHeight,
-    scrollHeight: element.scrollHeight,
-  }));
-  expect(dimensions.scrollHeight).toBeGreaterThan(dimensions.clientHeight);
+  await page.getByText("Decision reasoning", { exact: true }).click();
+  await page.getByText("Chosen action — and why", { exact: true }).scrollIntoViewIfNeeded();
+  await expect(page.getByText("Chosen action — and why", { exact: true })).toBeInViewport();
 
-  await detail.evaluate((element) => {
-    element.scrollTop = element.scrollHeight;
-  });
-  await expect(page.getByText("Chosen action — and why", { exact: true })).toBeVisible();
-
-  const releasePanel = page.getByRole("complementary", {
-    name: "Decision controls and receipt",
-  });
+  // Decision controls are composed inline with the draft (no separate rail
+  // column/landmark) — approve/edit/deny sit right next to what they act on.
+  const releasePanel = page.locator(".decision-controls");
   await expect(releasePanel).toBeVisible();
   await expect(releasePanel.getByRole("button", { name: /Approve exact draft/ })).toBeVisible();
-  await expect(releasePanel.getByText("Decision receipt", { exact: true })).toBeVisible();
+  await releasePanel.getByText("Decision receipt").click();
+  await expect(releasePanel.getByRole("log").getByText("Proposed", { exact: true })).toBeVisible();
 
   const documentOverflows = await page.evaluate(
     () => document.documentElement.scrollWidth > window.innerWidth
