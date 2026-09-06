@@ -29,10 +29,13 @@ test("example review keeps source uncertainty and actions together across screen
   await page.getByRole("link", { name: "Inspect sources ↗" }).click();
   await expect(page.locator(".drawer-b").filter({ hasText: "maintain exemplary adoption" })).toContainText("maintain exemplary adoption");
   await page.getByRole("button", { name: /Edit draft/ }).click();
-  await page.getByLabel("Edit instruction").fill("Ask for completion evidence.");
+  const editor = page.getByLabel("Edit draft text");
+  const originalDraft = await editor.inputValue();
+  await editor.fill(`${originalDraft} Ask for completion evidence.`);
   await page.getByRole("button", { name: "Save edit", exact: true }).click();
+  await expect(page.locator(".draft-body")).toContainText("Ask for completion evidence.");
   await page.getByText("Decision receipt", { exact: false }).first().click();
-  await expect(page.getByRole("log")).toContainText("Ask for completion evidence.");
+  await expect(page.getByRole("log")).toContainText("Edited by operator");
   await page.getByRole("button", { name: /^Deny/ }).click();
   expect(mutations).toEqual([]);
   await expect(page.getByRole("log").getByText("Denied", { exact: true })).toBeVisible();

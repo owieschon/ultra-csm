@@ -7,7 +7,7 @@ import { QueueLanes, LaneItem } from "@/components/QueueLanes";
 import { QueueDetail } from "@/components/QueueDetail";
 import { draftFallbackReasonLabel } from "@/lib/labels";
 import { ActionRail, ActionRailHandle } from "@/components/ActionRail";
-import { DemoLedgerEvent, DemoVerdict } from "@/lib/demoSim";
+import { DemoApprovalSnapshot, DemoLedgerEvent, DemoVerdict } from "@/lib/demoSim";
 import { Ref } from "react";
 
 export function QueueView({
@@ -25,6 +25,8 @@ export function QueueView({
   readOnly,
   demoLedger,
   onDemoVerdict,
+  onDemoEdit,
+  demoApprovals,
 }: {
   day: number | undefined;
   accounts: AccountSummary[] | null;
@@ -36,14 +38,17 @@ export function QueueView({
   onSelectedItemChange: (item: WorkItem | null) => void;
   onBackToBook: () => void;
   railRef: Ref<ActionRailHandle>;
-  onVerdict: (proposalId: string) => void;
+  onVerdict: (item: WorkItem, replacement?: WorkItem) => void;
   readOnly?: boolean;
   demoLedger?: DemoLedgerEvent[];
   onDemoVerdict?: (
     proposalId: string,
     verdict: DemoVerdict | null,
-    events: DemoLedgerEvent[]
+    events: DemoLedgerEvent[],
+    snapshot?: { revisionId: string; body: string }
   ) => void;
+  onDemoEdit?: (proposalId: string, newBody: string, expectedRevision: string) => void;
+  demoApprovals?: Record<string, DemoApprovalSnapshot>;
 }) {
   const tierByAccount = useMemo(() => {
     const map = new Map<string, string | null>();
@@ -132,12 +137,15 @@ export function QueueView({
             onBack={onClearSelection}
             controls={
               <ActionRail
+                key={selectedItem.proposal?.proposal_id ?? selectedProposalId}
                 ref={railRef}
                 item={selectedItem}
                 onVerdict={onVerdict}
                 readOnly={readOnly}
                 demoLedger={demoLedger}
                 onDemoVerdict={onDemoVerdict}
+                onDemoEdit={onDemoEdit}
+                demoApprovals={demoApprovals}
               />
             }
           />

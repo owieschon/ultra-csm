@@ -338,7 +338,15 @@ export function QueueDetail({
           <div className="sec-h">
             <span className="t">{item.customer_draft ? "Proposed draft" : "Draft status"}</span>
             <span className="prov">
-              <span className="chip-llm">{draftProvenanceLabel(item.draft_mode)}{item.customer_draft ? " — needs your approval" : ""}</span>
+              <span className="chip-llm">{item.demo_edit ? "Operator edit" : item.redrafted_from ? "Server redraft" : draftProvenanceLabel(item.draft_mode)}{item.customer_draft && item.proposal?.status === "pending" ? " — needs your approval" : ""}</span>
+              {item.demo_edit && (
+                <span
+                  className="chip-fallback-reason"
+                  title={`revision ${item.demo_edit.revision_id}`}
+                >
+                  Edited by operator — simulated
+                </span>
+              )}
               {item.draft_mode === "template_fallback" && draftFallbackReasonLabel(item.draft_fallback_reason) && (
                 <span className="chip-fallback-reason">
                   {draftFallbackReasonLabel(item.draft_fallback_reason)}
@@ -416,7 +424,7 @@ export function QueueDetail({
         </div>
       </div>
 
-      <DecisionPacket packet={item.work_packet ?? null} />
+      <DecisionPacket packet={item.work_packet ?? null} edited={Boolean(item.demo_edit)} />
 
       <div className="sec">
         <div className="sec-h">
@@ -538,7 +546,13 @@ export function QueueDetail({
   );
 }
 
-function DecisionPacket({ packet }: { packet: WorkItem["work_packet"] | null }) {
+function DecisionPacket({
+  packet,
+  edited = false,
+}: {
+  packet: WorkItem["work_packet"] | null;
+  edited?: boolean;
+}) {
   if (!packet) return null;
   const hypothesis = packet.diagnostic_hypothesis;
   const evidence = packet.evidence_chain.slice(0, 6);
@@ -627,7 +641,7 @@ function DecisionPacket({ packet }: { packet: WorkItem["work_packet"] | null }) 
           <div className="packet-artifact">
             <span className="packet-label">Artifact</span>
             <span>{artifact.title}</span>
-            <span className="chip-det">{humanizeCode(artifact.validation_status)}</span>
+            <span className="chip-det">{edited ? "Operator edited · review required" : humanizeCode(artifact.validation_status)}</span>
           </div>
         )}
       </div>
@@ -982,7 +996,7 @@ function ProgramDetail({
         </div>
       </div>
       {controls}
-      <DecisionPacket packet={item.work_packet ?? null} />
+      <DecisionPacket packet={item.work_packet ?? null} edited={Boolean(item.demo_edit)} />
       <div className="sec">
         <div className="sec-h">
           <span className="t">The pattern</span>

@@ -116,6 +116,9 @@ jobs:
       - name: Desktop, mobile, and WCAG A/AA journey
         run: cd ui && npm run test:e2e
 
+      - name: Local API revision retrieval and approval
+        run: cd ui && npm run test:e2e:local-api
+
   endor:
     name: endor security scan
     runs-on: ubuntu-24.04

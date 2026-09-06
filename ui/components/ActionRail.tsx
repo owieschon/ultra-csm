@@ -3,12 +3,13 @@
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { api, LedgerEvent, WorkItem } from "@/lib/api";
 import {
+  DemoApprovalSnapshot,
   DemoLedgerEvent,
   DemoVerdict,
   simulateApproval,
   simulateDenial,
-  simulateRevision,
 } from "@/lib/demoSim";
+import { replacementItem } from "@/lib/revisions";
 import { PROPOSAL_STATUS_LABELS, label } from "@/lib/labels";
 
 export interface ActionRailHandle {
@@ -21,17 +22,28 @@ export const ActionRail = forwardRef<
   ActionRailHandle,
   {
     item: WorkItem | null;
-    onVerdict: (proposalId: string) => void;
+    onVerdict: (item: WorkItem, replacement?: WorkItem) => void;
     readOnly?: boolean;
     demoLedger?: DemoLedgerEvent[];
     onDemoVerdict?: (
       proposalId: string,
       verdict: DemoVerdict | null,
-      events: DemoLedgerEvent[]
+      events: DemoLedgerEvent[],
+      snapshot?: { revisionId: string; body: string }
     ) => void;
+    onDemoEdit?: (proposalId: string, newBody: string, expectedRevision: string) => void;
+    demoApprovals?: Record<string, DemoApprovalSnapshot>;
   }
 >(function ActionRail(
-  { item, onVerdict, readOnly = false, demoLedger = [], onDemoVerdict },
+  {
+    item,
+    onVerdict,
+    readOnly = false,
+    demoLedger = [],
+    onDemoVerdict,
+    onDemoEdit,
+    demoApprovals = {},
+  },
   ref
 ) {
   const [ledger, setLedger] = useState<LedgerEvent[]>([]);
@@ -39,7 +51,7 @@ export const ActionRail = forwardRef<
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [editOpen, setEditOpen] = useState(false);
-  const [editInstruction, setEditInstruction] = useState("");
+  const [editText, setEditText] = useState("");
 
   const refreshLedger = () => {
     api
@@ -65,75 +77,110 @@ export const ActionRail = forwardRef<
     proposalId != null &&
     status === "pending" &&
     (gateApprovalCta ? gateApprovalCta.enabled : true);
-  const canEdit = canAct && item?.proposal?.action_type === "draft_customer_outreach";
+  const canEdit = canAct && !item?.redrafted_from && item?.proposal?.action_type === "draft_customer_outreach";
   const receiptEvents = proposalId
     ? [
         ...ledger.filter((event) => event.proposal_id === proposalId),
         ...demoLedger.filter((event) => event.proposal_id === proposalId),
       ].slice(-12)
     : [];
+  const approvalSnapshot = proposalId ? demoApprovals[proposalId] ?? null : null;
 
-  useEffect(() => {
-    if (!canEdit) {
-      setEditOpen(false);
-      setEditInstruction("");
-    }
-  }, [canEdit, proposalId]);
+  function openEdit() {
+    if (!canEdit) return;
+    setError(null);
+    setEditText(readOnly ? item?.customer_draft ?? "" : "");
+    setEditOpen(true);
+  }
 
-  // Hosted demo: the verdict is simulated client-side (labeled below and on
-  // every simulated receipt line) — the live path posts through the gate.
-  function actDemo(verdict: "approve" | "deny" | "revise") {
+  function closeEdit() {
+    setEditOpen(false);
+    setEditText("");
+  }
+
+  function actDemo(action: "approve" | "deny" | "edit-save", newBody?: string) {
     if (!proposalId || !canAct) return;
-    if (verdict === "revise") {
-      const instruction = editInstruction.trim();
-      if (!instruction) {
-        setError("Add an edit instruction before saving.");
+    if (action === "edit-save") {
+      const trimmed = (newBody ?? "").trim();
+      const current = (item?.customer_draft ?? "").trim();
+      if (!trimmed || trimmed === current) {
+        setError(
+          !trimmed
+            ? "Draft text can't be blank."
+            : "No changes to save — edit the text before saving."
+        );
         return;
       }
-      onDemoVerdict?.(proposalId, null, simulateRevision(proposalId, instruction));
-      setEditOpen(false);
-      setEditInstruction("");
+      setError(null);
+      onDemoEdit?.(proposalId, trimmed, item?.demo_edit?.revision_id ?? proposalId);
+      closeEdit();
       return;
     }
     setError(null);
-    onDemoVerdict?.(
-      proposalId,
-      verdict === "approve" ? "approved" : "denied",
-      verdict === "approve"
-        ? simulateApproval(proposalId)
-        : simulateDenial(proposalId)
-    );
+    if (action === "approve") {
+      if (editOpen) return; // unsaved edit open — approval stays blocked
+      const revisionId = item?.demo_edit?.revision_id ?? proposalId;
+      const body = item?.customer_draft ?? "";
+      onDemoVerdict?.(proposalId, "approved", simulateApproval(proposalId, revisionId), {
+        revisionId,
+        body,
+      });
+    } else {
+      onDemoVerdict?.(proposalId, "denied", simulateDenial(proposalId));
+    }
   }
 
-  async function act(verdict: "approve" | "deny" | "revise") {
+  async function act(verdict: "approve" | "deny") {
     if (readOnly) {
       actDemo(verdict);
       return;
     }
     if (!proposalId || !canAct || busy) return;
-    if (verdict === "revise" && !canEdit) return;
-    const instruction = editInstruction.trim();
-    if (verdict === "revise" && !instruction) {
-      setError("Add an edit instruction before saving.");
-      return;
-    }
+    if (verdict === "approve" && editOpen) return; // unsaved redraft instruction open
     setBusy(true);
     setError(null);
     try {
-      await api.submitVerdict(
-        proposalId,
-        verdict,
-        verdict === "revise" ? "ops-surface UI edit" : "ops-surface UI action",
-        verdict === "revise" ? instruction : undefined
-      );
-      if (verdict === "revise") {
-        setEditOpen(false);
-        setEditInstruction("");
-      }
+      const result = await api.submitVerdict(proposalId, verdict, "ops-surface UI action");
       refreshLedger();
-      onVerdict(proposalId);
+      onVerdict({ ...item!, proposal: { ...item!.proposal!, status: result.status as "approved" | "denied" } });
     } catch (e) {
       setError(String(e));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function loadReplacement(original: WorkItem, id: string) {
+    try {
+      const list = await api.proposals();
+      onVerdict(original, replacementItem(original, id, list.proposals));
+      setError(null);
+    } catch {
+      setError("The original draft is closed. Could not load a verified replacement; retry loading before approval.");
+    }
+  }
+
+  async function actRedraft() {
+    if (!proposalId || !item || !canEdit || busy || !editText.trim()) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const result = await api.submitVerdict(proposalId, "revise", "ops-surface UI edit", editText.trim());
+      closeEdit();
+      refreshLedger();
+      const original: WorkItem = {
+        ...item,
+        proposal: { ...item.proposal!, status: "denied" },
+        replacement_proposal_id: result.superseding_proposal_id ?? undefined,
+      };
+      onVerdict(original);
+      if (result.superseding_proposal_id) {
+        await loadReplacement(original, result.superseding_proposal_id);
+      } else {
+        setError("The original draft is closed, but the server returned no replacement. Refresh to inspect its status.");
+      }
+    } catch {
+      setError("Redraft request did not complete. Refresh to check the proposal status before retrying.");
     } finally {
       setBusy(false);
     }
@@ -142,10 +189,12 @@ export const ActionRail = forwardRef<
   useImperativeHandle(ref, () => ({
     approve: () => act("approve"),
     deny: () => act("deny"),
-    edit: () => {
-      if (canEdit) setEditOpen(true);
-    },
+    edit: () => openEdit(),
   }));
+
+  const saveDisabled = readOnly
+    ? busy || !editText.trim() || editText.trim() === (item?.customer_draft ?? "").trim()
+    : busy || !editText.trim();
 
   return (
     <div className="decision-controls" data-proposal-id={proposalId ?? undefined}>
@@ -177,13 +226,23 @@ export const ActionRail = forwardRef<
           </div>
         )}
       </div>
+      {!readOnly && item?.replacement_proposal_id && (
+        <div className="sim-note">
+          <p>A replacement draft is awaiting retrieval. The original cannot be approved.</p>
+          <button className="btn" disabled={busy} onClick={async () => {
+            setBusy(true);
+            await loadReplacement(item, item.replacement_proposal_id!);
+            setBusy(false);
+          }}>Load replacement draft</button>
+        </div>
+      )}
       <div className="actions" aria-label="Proposal actions">
         <div className="cta-actions">
           <button
             type="button"
             className="btn approve"
             aria-keyshortcuts="A"
-            disabled={!canAct || busy}
+            disabled={!canAct || busy || editOpen}
             onClick={() => act("approve")}
           >
             Approve exact draft<span className="k">A</span>
@@ -191,11 +250,13 @@ export const ActionRail = forwardRef<
           <button
             type="button"
             className="btn edit"
+            title={item?.redrafted_from ? "This proposal has already used its one redraft." : undefined}
             aria-keyshortcuts="E"
             disabled={!canEdit || busy}
-            onClick={() => setEditOpen((open) => !open)}
+            onClick={() => (editOpen ? closeEdit() : openEdit())}
           >
-            Edit draft<span className="k">E</span>
+            {readOnly ? "Edit draft" : "Request redraft"}
+            <span className="k">E</span>
           </button>
           <button
             type="button"
@@ -234,37 +295,31 @@ export const ActionRail = forwardRef<
       {editOpen && (
         <div className="edit-panel">
           <label className="edit-label" htmlFor="draft-edit-instruction">
-            Edit instruction
+            {readOnly ? "Draft text" : "Edit instruction"}
           </label>
           <textarea
             id="draft-edit-instruction"
             className="edit-input"
-            value={editInstruction}
-            maxLength={280}
+            value={editText}
+            maxLength={readOnly ? undefined : 280}
             disabled={busy}
-            onChange={(e) => setEditInstruction(e.target.value)}
-            placeholder="Make the tone warmer."
+            onChange={(e) => setEditText(e.target.value)}
+            placeholder={readOnly ? "Edit the draft text directly." : "Make the tone warmer."}
+            aria-label={readOnly ? "Edit draft text" : "Edit instruction"}
+            rows={readOnly ? 8 : 4}
           />
           <div className="edit-actions">
-            <span className="edit-count num">{editInstruction.length}/280</span>
-            <button
-              type="button"
-              className="btn"
-              disabled={busy}
-              onClick={() => {
-                setEditOpen(false);
-                setEditInstruction("");
-              }}
-            >
+            {!readOnly && <span className="edit-count num">{editText.length}/280</span>}
+            <button type="button" className="btn" disabled={busy} onClick={closeEdit}>
               Cancel
             </button>
             <button
               type="button"
               className="btn approve"
-              disabled={!canEdit || busy || !editInstruction.trim()}
-              onClick={() => act("revise")}
+              disabled={saveDisabled}
+              onClick={() => (readOnly ? actDemo("edit-save", editText) : actRedraft())}
             >
-              Save edit
+              {readOnly ? "Save edit" : "Send redraft request"}
             </button>
           </div>
         </div>
@@ -279,6 +334,12 @@ export const ActionRail = forwardRef<
             </span>
           )}
         </summary>
+        {status === "approved" && (approvalSnapshot || !readOnly) && (
+          <div className="approved-message" data-revision-id={approvalSnapshot?.revisionId ?? proposalId}>
+            <h3>Approved message{readOnly ? " (simulated)" : ""}</h3>
+            <div className="approved-draft-body">{approvalSnapshot?.body ?? item?.customer_draft}</div>
+          </div>
+        )}
         <div className="audit">
         <div className="ledger" role="log" aria-live="polite" aria-label="Selected proposal receipt events">
           {proposalId && receiptEvents.length === 0 && (

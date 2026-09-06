@@ -16,7 +16,14 @@ import {
   WorkItem,
 } from "@/lib/api";
 import { useSweep } from "@/lib/useSweep";
-import { DemoLedgerEvent, DemoVerdict } from "@/lib/demoSim";
+import {
+  DemoApprovalSnapshot,
+  DemoEditRecord,
+  DemoLedgerEvent,
+  DemoVerdict,
+  nextRevisionId,
+  simulateEdit,
+} from "@/lib/demoSim";
 import { toggleTheme } from "@/lib/theme";
 
 const INTRO_DISMISSED_KEY = "ucsm-demo-intro-dismissed";
@@ -57,6 +64,11 @@ export default function Home() {
     {}
   );
   const [demoLedger, setDemoLedger] = useState<DemoLedgerEvent[]>([]);
+  const [demoEdits, setDemoEdits] = useState<Record<string, DemoEditRecord>>({});
+  const [demoApprovals, setDemoApprovals] = useState<Record<string, DemoApprovalSnapshot>>({});
+  const terminalDecisions = useRef(new Set<string>());
+  const currentRevisions = useRef<Record<string, string>>({});
+  const [liveUpdates, setLiveUpdates] = useState<Record<string, Record<string, WorkItem>>>({});
   const [introDismissed, setIntroDismissed] = useState(true);
   const servedDay = liveMode ? undefined : day;
   const { sweep, error: sweepError } = useSweep(servedDay, refreshToken, healthKnown);
@@ -102,24 +114,42 @@ export default function Home() {
       .catch((e) => setError(e));
   }, [servedDay, healthKnown]);
 
-  // Demo verdicts overlaid on the served sweep so every consumer (book
-  // tiles, queue lanes, tab count, rail) sees one consistent state.
+  // Demo verdicts + saved edits overlaid on the served sweep so every
+  // consumer (book tiles, queue lanes, tab count, rail, prepared-artifact
+  // view) sees one consistent state.
   const effectiveSweep = useMemo(() => {
-    if (!sweep || Object.keys(demoVerdicts).length === 0) return sweep;
+    if (!sweep) return sweep;
+    const updates = liveUpdates[String(servedDay ?? "live")] ?? {};
+    const seen = new Set(sweep.work_items.map((item) => item.proposal?.proposal_id));
+    const items = [
+      ...sweep.work_items.map((item) => updates[item.proposal?.proposal_id ?? ""] ?? item),
+      ...Object.values(updates).filter((item) => !seen.has(item.proposal?.proposal_id)),
+    ];
     return {
       ...sweep,
-      work_items: sweep.work_items.map((item) => {
-        const verdict = item.proposal
-          ? demoVerdicts[item.proposal.proposal_id]
-          : undefined;
-        if (!verdict) return item;
+      work_items: items.map((item) => {
+        const proposalId = item.proposal?.proposal_id;
+        const verdict = proposalId ? demoVerdicts[proposalId] : undefined;
+        const edit = proposalId ? demoEdits[proposalId] : undefined;
+        if (!verdict && !edit) return item;
         return {
           ...item,
-          proposal: { ...item.proposal!, status: verdict },
+          proposal: verdict ? { ...item.proposal!, status: verdict } : item.proposal,
+          customer_draft: edit ? edit.body : item.customer_draft,
+          demo_edit: edit
+            ? { revision_id: edit.revisionId, edited_at: edit.editedAt }
+            : item.demo_edit ?? null,
+          work_packet:
+            edit && item.work_packet
+              ? {
+                  ...item.work_packet,
+                  prepared_artifact: { ...item.work_packet.prepared_artifact, body: edit.body },
+                }
+              : item.work_packet,
         };
       }),
     };
-  }, [sweep, demoVerdicts]);
+  }, [sweep, demoVerdicts, demoEdits, liveUpdates, servedDay]);
 
   const pendingProposalIds = (effectiveSweep?.work_items ?? [])
     .filter((i) => i.proposal?.status === "pending")
@@ -157,12 +187,24 @@ export default function Home() {
   function handleDemoVerdict(
     proposalId: string,
     verdict: DemoVerdict | null,
-    events: DemoLedgerEvent[]
+    events: DemoLedgerEvent[],
+    snapshot?: { revisionId: string; body: string }
   ) {
     if (!verdict) {
-      // Revision: draft stays pending, receipt lines land at once.
+      // Non-terminal event (none currently produced this way): receipt
+      // lines land, draft stays pending.
       setDemoLedger((prev) => [...prev, ...events]);
       return;
+    }
+    if (terminalDecisions.current.has(proposalId)) return;
+    const revision = currentRevisions.current[proposalId] ?? proposalId;
+    if (verdict === "approved" && (!snapshot || snapshot.revisionId !== revision)) return;
+    terminalDecisions.current.add(proposalId);
+    if (verdict === "approved" && snapshot) {
+      setDemoApprovals((prev) => prev[proposalId] ? prev : ({
+        ...prev,
+        [proposalId]: { ...snapshot, approvedAt: new Date().toISOString() },
+      }));
     }
     const idx = pendingProposalIds.indexOf(proposalId);
     const remaining = pendingProposalIds.filter((id) => id !== proposalId);
@@ -185,6 +227,16 @@ export default function Home() {
           : current
       );
     }, events.length * 280 + 600);
+  }
+
+  function handleDemoEdit(proposalId: string, newBody: string, expectedRevision: string) {
+    if (terminalDecisions.current.has(proposalId) ||
+        (currentRevisions.current[proposalId] ?? proposalId) !== expectedRevision) return;
+    const revisionId = nextRevisionId(proposalId);
+    currentRevisions.current[proposalId] = revisionId;
+    const editedAt = new Date().toISOString();
+    setDemoEdits((prev) => ({ ...prev, [proposalId]: { body: newBody, revisionId, editedAt } }));
+    setDemoLedger((prev) => [...prev, ...simulateEdit(proposalId, revisionId)]);
   }
 
   function dismissIntro() {
@@ -342,10 +394,23 @@ export default function Home() {
                 onSelectedItemChange={setSelectedItem}
                 onBackToBook={() => setView("book")}
                 railRef={railRef}
-                onVerdict={() => setRefreshToken((t) => t + 1)}
+                onVerdict={(item, replacement) => {
+                  const id = item.proposal!.proposal_id;
+                  setLiveUpdates((prev) => ({
+                    ...prev,
+                    [String(servedDay ?? "live")]: {
+                      ...prev[String(servedDay ?? "live")],
+                      [id]: replacement ? { ...item, replacement_proposal_id: undefined } : item,
+                      ...(replacement ? { [replacement.proposal!.proposal_id]: replacement } : {}),
+                    },
+                  }));
+                  if (replacement) setSelectedProposalId((current) => current === id ? replacement.proposal!.proposal_id : current);
+                }}
                 readOnly={isReadOnlyDemo}
                 demoLedger={demoLedger}
                 onDemoVerdict={handleDemoVerdict}
+                onDemoEdit={handleDemoEdit}
+                demoApprovals={demoApprovals}
               />
             </section>
           )}
