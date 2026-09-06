@@ -44,7 +44,7 @@ from ultra_csm.data_plane import (
     TimeToValueMilestone,
     onboarding_activation_gap_ids,
 )
-from ultra_csm.data_plane.contracts import ResolutionState
+from ultra_csm.data_plane.contracts import CRMCase, ResolutionState
 from ultra_csm.governance import ActionGate, ActionProposal, proposal_fields_for
 from ultra_csm.governance.csm_actions import CSMActionType, implied_motion_for_action
 from ultra_csm.internal_bridge import InternalBridgeDecision, route_internal_bridge
@@ -505,7 +505,10 @@ def _slot_b_inputs_for_account(
 
     ctas = tuple(data_plane.cs.list_ctas(account.account_id, status="open"))
     plans = tuple(data_plane.cs.list_success_plans(account.account_id))
-    cases = tuple(data_plane.crm.list_cases(account.account_id))
+    cases = tuple(
+        case for case in data_plane.crm.list_cases(account.account_id)
+        if case.account_id == account.account_id and iso_date(case.created_at) <= iso_date(as_of)
+    )
     opportunities = tuple(data_plane.crm.list_opportunities(account.account_id))
     slot_a_classifications = _classify_case_notes(
         case_note_classifier,
@@ -975,6 +978,30 @@ def collapse_cohorts(
     return replace(sweep, work_items=kept_items + tuple(cohort_items))
 
 
+def _has_confirmed_open_blocker(
+    slot_a_classifications: tuple[CaseNoteClassificationOutput, ...],
+    cases: tuple[CRMCase, ...],
+    *,
+    account_id: str,
+    as_of: str,
+) -> bool:
+    # Classification and citation must bind to the same account-local, open case.
+    cases_by_id = {case.case_id: case for case in cases if case.account_id == account_id}
+    for item in slot_a_classifications:
+        if (item.classification != "blocker" or item.account_id != account_id
+                or item.case_id != item.cited_case_id):
+            continue
+        case = cases_by_id.get(item.cited_case_id)
+        if case is None or iso_date(case.created_at) > iso_date(as_of):
+            continue
+        if case.closed_at is not None and iso_date(case.closed_at) <= iso_date(as_of):
+            continue
+        if case.status.strip().lower() in ("resolved", "closed"):
+            continue
+        return True
+    return False
+
+
 def _work_item_for_account(
     data_plane: CustomerDataPlane,
     account: CRMAccount,
@@ -1021,6 +1048,9 @@ def _work_item_for_account(
     motion = tier_and_motion[1] if tier_and_motion is not None else None
     triggers = tier_and_motion[2] if tier_and_motion is not None else set()
     internal_bridge_decision = route_internal_bridge(inputs.cases, as_of=as_of)
+    confirmed_open_blocker = _has_confirmed_open_blocker(
+        inputs.slot_a_classifications, inputs.cases, account_id=account.account_id, as_of=as_of
+    )
 
     contact, recipient_resolution = resolve_recipient(motion, inputs.stakeholders, contacts)
     customer_contact_allowed = contact is not None
@@ -1049,6 +1079,7 @@ def _work_item_for_account(
         and (
             (quality_breaker is not None and quality_breaker.triggered)
             or tier_forbids_motion
+            or confirmed_open_blocker
         )
     )
     disposition: Disposition = (
@@ -1075,6 +1106,7 @@ def _work_item_for_account(
         action == "recommend_next_best_action"
         and customer_contact_allowed
         and not (quality_breaker is not None and quality_breaker.triggered)
+        and not confirmed_open_blocker
         and playbooks is not None
     ):
         catalog = load_tenant_content_catalog(playbooks.tenant)
@@ -1116,7 +1148,7 @@ def _work_item_for_account(
     if timing is not None:
         timing.slot_b_ms += (time.perf_counter() - slot_start) * 1000.0
         timing.slot_b_calls += 1
-    if customer_action_blocked:
+    if customer_action_blocked and not confirmed_open_blocker:
         # Truthful override: this template is here because the action was
         # blocked, not because the writer failed or its output was rejected
         # -- even if the writer also happened to fail underneath.
@@ -1188,7 +1220,7 @@ def _work_item_for_account(
         reason=slot_b.reason,
         priority=inputs.priority,
         evidence=inputs.evidence,
-        customer_contact_allowed=customer_contact_allowed,
+        customer_contact_allowed=customer_contact_allowed and not confirmed_open_blocker,
         proposal=proposal_ref,
         swept_at=as_of,
         draft_mode=draft_mode,
@@ -1196,8 +1228,8 @@ def _work_item_for_account(
         customer_draft=slot_b.customer_draft,
         motion=motion,
         recipient_resolution=recipient_resolution,
-        recipient_name=recipient_name,
-        recipient_role=recipient_role,
+        recipient_name=recipient_name if not confirmed_open_blocker else None,
+        recipient_role=recipient_role if not confirmed_open_blocker else None,
         slot_a_classifications=inputs.slot_a_classifications,
         internal_bridge_decision=internal_bridge_decision,
         work_packet=work_packet,
