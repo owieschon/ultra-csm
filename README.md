@@ -111,8 +111,9 @@ PYTHONPATH=src:. python eval/customer_outcome_comparison.py \
 Both output paths are required explicitly and are never overwritten silently
 (pass `--force` to overwrite). The Markdown report lists each case's allowed
 decisions, both policies' normalized decisions, and any forbidden-consequence
-violation; it carries no cost, budget, or private-path metadata. This is not a
-Pylon product benchmark -- it's a development-capability regression eval.
+violation. Cases and labels were revised after an invalid first run. These paired
+snapshots are development fixtures; they do not measure longitudinal recovery or
+independent generalization. The report records that exposure and source hashes.
 
 ## Claim boundary
 
