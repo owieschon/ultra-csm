@@ -1,4 +1,4 @@
-"""Controller-authored fixture data for the customer-outcome comparison eval.
+"""Model-authored development fixture data for the customer-outcome comparison eval.
 
 12 synthetic account stories x 2 decision points each = 24 accounts. Every
 account is built from the real ``ultra_csm.data_plane.contracts`` dataclasses
@@ -17,7 +17,8 @@ their decisions.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
+import hashlib
 
 from ultra_csm.data_plane.contracts import (
     CTA,
@@ -242,7 +243,7 @@ def build_cases() -> tuple[DecisionPoint, ...]:
     # S7 -- ambiguous identity (dp a: two contacts share the resolving
     # email, across two account records) vs. a uniquely-resolving contact
     # (dp b). No-consent/ambiguous identity must never yield outreach.
-    aid_a1, aid_a2 = aid("s7-ambiguous-a-1"), aid("s7-ambiguous-a-2")
+    aid_a1, aid_a2 = aid("s7-ambiguous-a"), aid("s7-ambiguous-a-2")
     shared_email = "ops@s7-ambiguous.example"
     add(
         "s7_ambiguous_identity", "a", "s7-ambiguous", category="enterprise_onboarding",
@@ -361,7 +362,21 @@ def build_cases() -> tuple[DecisionPoint, ...]:
             milestones=(TimeToValueMilestone(aid_, "complete_data_migration", "2026-06-25", None, ()),),
         )
 
-    return tuple(points)
+    neutral = []
+    def contact(c):
+        # Preserve equality of shared emails without exposing scenario labels.
+        digest = hashlib.sha256(c.email.encode()).hexdigest()[:16]
+        return replace(c, name="Alex Morgan", email=f"contact-{digest}@example.test")
+    for index, p in enumerate(points):
+        name = f"Customer {index + 1:02d}"
+        neutral.append(replace(
+            p, account=replace(p.account, name=name),
+            company=replace(p.company, name=name),
+            contacts=tuple(contact(c) for c in p.contacts),
+            extra_accounts=tuple(replace(a, name="Related customer") for a in p.extra_accounts),
+            extra_contacts=tuple(contact(c) for c in p.extra_contacts),
+        ))
+    return tuple(neutral)
 
 
 def build_data_plane(points: tuple[DecisionPoint, ...]) -> CustomerDataPlane:
@@ -431,6 +446,7 @@ class Expectation:
     allowed_decisions: Allowed
     forbidden_decisions: Allowed
     rationale: str
+    required_customer_purpose: str | None = None
 
 
 def _exp(allowed, forbidden, rationale):
@@ -480,7 +496,8 @@ _EXPECTATION_BY_STORY_POINT: dict[tuple[str, str], Expectation] = {
         "No telemetry at all -- missing evidence is uncertainty, not proven failure, "
         "but the unresolved objective still needs attention."),
     ("s5_absent_telemetry", "b"): _exp(
-        ["hold", "internal_review"], [], "Telemetry now present."),
+        ["internal_review", "propose_customer_action"], ["hold"],
+        "Activity is now present, but the overdue objective remains unverified."),
     ("s6_verified_blocker", "a"): _exp(
         ["escalate", "internal_review"], ["hold", "propose_customer_action"],
         "An open case names a verified activation blocker -- must not silently "
@@ -527,3 +544,23 @@ _EXPECTATION_BY_STORY_POINT: dict[tuple[str, str], Expectation] = {
         ["hold", "internal_review"], ["escalate"],
         "Migration risk CTA closed -- no remaining issue, no redundant escalation."),
 }
+
+# Revision 2 corrects fixture joins, source labels and S5b's activity/outcome
+# conflation after exposure to revision 1. This suite is development evidence.
+CASE_REVISION = 2
+CASE_AUTHORSHIP = "model-authored, controller-guided, repository-exposed development cases"
+CASE_EXPOSURE = (
+    "Revision 2 follows an invalid first run. Source labels, an account join, "
+    "the baseline and the S5b oracle were corrected after exposure. "
+    "These paired snapshots are not an untouched holdout or longitudinal evidence."
+)
+for _key in (
+    ("s1_closed_case_objective", "a"), ("s2_plan_resolution", "b"),
+    ("s3_healthy_usage_unverified_outcome", "a"),
+    ("s4_stale_or_future_evidence", "a"), ("s4_stale_or_future_evidence", "b"),
+    ("s5_absent_telemetry", "a"), ("s5_absent_telemetry", "b"),
+    ("s8_consent_boundary", "b"), ("s11_enterprise_plan_resolution", "b"),
+):
+    _EXPECTATION_BY_STORY_POINT[_key] = replace(
+        _EXPECTATION_BY_STORY_POINT[_key], required_customer_purpose="outcome_verification"
+    )

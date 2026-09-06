@@ -107,16 +107,63 @@ def test_ambiguous_identity_never_baseline_proposes_outreach():
     assert baseline_by_account[ambiguous_point.account_id].decision != "propose_customer_action"
 
 
-@pytest.mark.slow
 def test_real_sweep_runs_and_proposes_through_the_db_action_gate():
     """Runs the actual `run_time_to_value_sweep` behind a real `ActionGate`
     over an `EphemeralCluster`. If the ephemeral cluster cannot boot in this
     sandbox, the result records that failure rather than fabricating a pass."""
     result = run_comparison()
     if not result["metrics"]["ultra_sweep_ran"]:
-        pytest.skip(f"EphemeralCluster unavailable in this sandbox: {result['metrics']['ultra_sweep_error']}")
+        pytest.fail(f"Ultra sweep failed: {result['metrics']['ultra_sweep_error']}")
     assert result["metrics"]["case_count"] == 24
+    assert result["metrics"]["persisted_proposal_count"] > 0
+    assert len(result["pairs"]) == 12
     proposed = [c for c in result["cases"] if c["ultra"]["decision"] == "propose_customer_action"]
     assert proposed, "the real sweep should propose at least one customer action across 24 accounts"
     for c in proposed:
         assert c["ultra"]["evidence_refs"] or c["ultra"]["reason"], "a proposal must carry evidence or a reason"
+
+
+def test_partial_or_future_completion_cannot_verify_all_objectives():
+    from dataclasses import replace
+    from datetime import date
+    from eval.customer_outcome_comparison import _objective_state
+    p = build_cases()[1]
+    first = p.success_plans[0]
+    second = replace(first, plan_id="second-plan", objectives=("second-objective",))
+    assert _objective_state((first, second), p.milestones, as_of_date=date(2026, 6, 21)) != "verified"
+    future = tuple(replace(m, achieved_at="2027-01-01T00:00:00Z") for m in p.milestones)
+    assert _objective_state((first,), future, as_of_date=date(2026, 6, 21)) != "verified"
+
+
+def test_freeze_refuses_changed_oracle_even_when_facts_match(tmp_path):
+    from dataclasses import replace
+    from eval.customer_outcome_comparison import write_freeze_receipt
+    points = build_cases()
+    oracle = build_expectations(points)
+    path = tmp_path / "freeze.json"
+    write_freeze_receipt(path, points, oracle, force=False)
+    key = points[0].account_id
+    oracle[key] = replace(oracle[key], allowed_decisions=("hold",))
+    with pytest.raises(RuntimeError):
+        write_freeze_receipt(path, points, oracle, force=False)
+
+
+def test_ambiguous_case_has_real_account_joins():
+    p = next(p for p in build_cases() if p.story == "s7_ambiguous_identity" and p.point == "a")
+    assert all(c.account_id == p.account_id for c in p.contacts)
+    plane = build_data_plane(build_cases())
+    resolution = plane.crm.resolve_account_by_email(p.contacts[0].email)
+    assert resolution.state == "ambiguous"
+    assert p.account_id in resolution.candidates
+
+
+def test_verification_purpose_and_selected_recipient_are_checked():
+    from dataclasses import replace
+    p = build_cases()[0]
+    exp = build_expectations((p,))[p.account_id]
+    action = NormalizedDecision(p.account_id, "propose_customer_action", "test", (),
+                                p.contacts[0].contact_id, "standard")
+    assert forbidden_violations(p, exp, action)
+    valid = replace(action, draft_purpose="outcome_verification")
+    assert not forbidden_violations(p, exp, valid)
+    assert forbidden_violations(p, exp, replace(valid, recipient="someone-else"))
