@@ -503,7 +503,9 @@
             "evidence:cs_platform:f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43:health_score"
           ],
           "confidence": 0.72,
+          "confidence_calibrated": false,
           "confidence_label": "medium",
+          "confidence_method": "packet_structure_heuristic",
           "label": "unverified_hypothesis",
           "summary": "Ironhorse Freight Co: Ironhorse Freight Co: outcome verification needed. Usage does not establish completion of the recorded objectives. Request an objective-status update using the cited plan records. Priority 143 from days_overdue=40, feature_depth_gap=15, milestones_overdue=50, success_plan_overdue=20, usage_outcome_unverified=18. Evidence [evidence:4635cdb7-5bb5-5c43-acc1-5dc989d4d583], [evidence:7d61c11f-73d4-52f6-a738-33ab96634a61], [evidence:afbc6091-985b-50e5-8522-e1a916af56c9], [evidence:f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43].",
           "unknowns": [
@@ -890,7 +892,9 @@
             "evidence:cs_platform:ae0a5970-d69b-5c18-ad60-8015524e565c:health_score"
           ],
           "confidence": 0.72,
+          "confidence_calibrated": false,
           "confidence_label": "medium",
+          "confidence_method": "packet_structure_heuristic",
           "label": "unverified_hypothesis",
           "summary": "Pinehill Transport: Pinehill Transport has deterministic Time-to-Value score 82 from success_plan_overdue=20, health_yellow=15, low_seat_penetration=12; draft customer outreach. Evidence [evidence:df3f3e70-7ed8-5d10-9b05-395fd3d1a0f1], [evidence:4e2db753-f222-5f7b-8356-0a2f59fae1e3], [evidence:ae0a5970-d69b-5c18-ad60-8015524e565c].",
           "unknowns": [
@@ -1256,7 +1260,9 @@
             "evidence:cs_platform:21830db9-7182-5d97-b22e-d57c4e28f696:health_score"
           ],
           "confidence": 0.6500000000000001,
+          "confidence_calibrated": false,
           "confidence_label": "medium",
+          "confidence_method": "packet_structure_heuristic",
           "label": "unverified_hypothesis",
           "summary": "Trailhead Logistics: Trailhead Logistics: outcome verification needed. Usage does not establish completion of the recorded objectives. Request an objective-status update using the cited plan records. Priority 63 from arr_tier=5, single_threaded_risk=20, success_plan_overdue=20, usage_outcome_unverified=18. Evidence [evidence:20527c0a-8156-5119-934a-4017e19fc39d], [evidence:21830db9-7182-5d97-b22e-d57c4e28f696].",
           "unknowns": [
@@ -1560,7 +1566,9 @@
             "evidence:cs_platform:c79ad97e-e2ad-5b6a-beeb-800e4755adca:health_score"
           ],
           "confidence": 0.63,
+          "confidence_calibrated": false,
           "confidence_label": "medium",
+          "confidence_method": "packet_structure_heuristic",
           "label": "unverified_hypothesis",
           "summary": "Quarry Stone Logistics: Quarry Stone Logistics has deterministic Time-to-Value score 62 from health_red=30, low_seat_penetration=12, single_threaded_risk=20; route for internal review. Evidence [evidence:10b4aa63-02cd-5459-99cc-f154a26bc5e3], [evidence:633f9a3f-071c-56ef-86af-992135bd92ab], [evidence:c79ad97e-e2ad-5b6a-beeb-800e4755adca].",
           "unknowns": [
@@ -1909,7 +1917,9 @@
             "evidence:cs_platform:865e1e03-cb2f-524d-b572-1eeabebb8d32:health_score"
           ],
           "confidence": 0.69,
+          "confidence_calibrated": false,
           "confidence_label": "medium",
+          "confidence_method": "packet_structure_heuristic",
           "label": "unverified_hypothesis",
           "summary": "Clearwater Field Ops: Clearwater Field Ops has deterministic Time-to-Value score 62 from success_plan_overdue=20, health_yellow=15, low_seat_penetration=12; draft customer outreach. Evidence [evidence:3ea4da77-9a46-57ce-aa0a-36440aed7192], [evidence:33509b75-de98-51fa-90a0-c68c90fe9324], [evidence:865e1e03-cb2f-524d-b572-1eeabebb8d32].",
           "unknowns": [
@@ -2210,7 +2220,9 @@
             "evidence:cs_platform:081b380c-99e7-5073-992a-9e0d8b27d8c0:health_score"
           ],
           "confidence": 0.5900000000000001,
+          "confidence_calibrated": false,
           "confidence_label": "medium",
+          "confidence_method": "packet_structure_heuristic",
           "label": "unverified_hypothesis",
           "summary": "Ridgeline Warehousing: Ridgeline Warehousing has deterministic Time-to-Value score 47 from success_plan_overdue=20, health_yellow=15, low_seat_penetration=12; draft customer outreach. Evidence [evidence:eb6f3bbc-1ea8-5b0c-b6d5-ad15afda0e34], [evidence:081b380c-99e7-5073-992a-9e0d8b27d8c0].",
           "unknowns": [
@@ -2485,7 +2497,9 @@
             "evidence:cs_platform:162a9085-8e63-53f0-bb1b-b48426911d34:health_score"
           ],
           "confidence": 0.5900000000000001,
+          "confidence_calibrated": false,
           "confidence_label": "medium",
+          "confidence_method": "packet_structure_heuristic",
           "label": "unverified_hypothesis",
           "summary": "Northstar Couriers: Northstar Couriers has deterministic Time-to-Value score 35 from success_plan_overdue=20, health_yellow=15; draft customer outreach. Evidence [evidence:023f694d-e8cb-593b-8053-b69e06c2f22d], [evidence:162a9085-8e63-53f0-bb1b-b48426911d34].",
           "unknowns": [
@@ -2770,7 +2784,9 @@
             "evidence:cs_platform:f8504037-dc1a-50e4-bdd9-7900b1379444:health_score"
           ],
           "confidence": 0.72,
+          "confidence_calibrated": false,
           "confidence_label": "medium",
+          "confidence_method": "packet_structure_heuristic",
           "label": "unverified_hypothesis",
           "summary": "Sagebrush Transport: Sagebrush Transport has deterministic Time-to-Value score 30 from health_red=30; draft customer outreach. Evidence [evidence:751d5071-7c34-5cd1-bca9-178d0f38ad1d], [evidence:3acf0291-5b0b-55b9-8653-d042239fcc17], [evidence:f8504037-dc1a-50e4-bdd9-7900b1379444].",
           "unknowns": [
@@ -3142,7 +3158,9 @@
             "evidence:cs_platform:b8275b07-a825-5c1b-86d3-5b8063dcaf18:health_score"
           ],
           "confidence": 0.72,
+          "confidence_calibrated": false,
           "confidence_label": "medium",
+          "confidence_method": "packet_structure_heuristic",
           "label": "unverified_hypothesis",
           "summary": "Harborview Fleet: Harborview Fleet has deterministic Time-to-Value score 30 from health_yellow=15, feature_depth_gap=15; draft customer outreach. Evidence [evidence:4af5a5c0-f51a-5a83-9217-141f4333c6db], [evidence:625c9e2b-353d-5bc9-b866-91b2c536d104], [evidence:2f75e535-4d63-5289-8084-aa72fcf3b39a].",
           "unknowns": [
@@ -3419,7 +3437,9 @@
             "evidence:cs_platform:390eef5a-4d06-59ae-93cb-2c0a012e7ef8:health_score"
           ],
           "confidence": 0.5900000000000001,
+          "confidence_calibrated": false,
           "confidence_label": "medium",
+          "confidence_method": "packet_structure_heuristic",
           "label": "unverified_hypothesis",
           "summary": "Summit Industrial Supply: Summit Industrial Supply has deterministic Time-to-Value score 20 from success_plan_overdue=20; draft customer outreach. Evidence [evidence:2b9e4aff-7f3e-5fd8-af1d-482d72f79fdc], [evidence:390eef5a-4d06-59ae-93cb-2c0a012e7ef8].",
           "unknowns": [
@@ -3679,7 +3699,9 @@
             "evidence:cs_platform:47f78943-7a8a-5bf1-9eeb-df74372085c7:health_score"
           ],
           "confidence": 0.5900000000000001,
+          "confidence_calibrated": false,
           "confidence_label": "medium",
+          "confidence_method": "packet_structure_heuristic",
           "label": "unverified_hypothesis",
           "summary": "Meridian Fleet Group: Meridian Fleet Group has deterministic Time-to-Value score 5 from arr_tier=5; draft customer outreach. Evidence [evidence:30f4240b-e6c6-5bd2-b7b4-42a9b8d68cc1], [evidence:47f78943-7a8a-5bf1-9eeb-df74372085c7].",
           "unknowns": [
@@ -3905,7 +3927,9 @@
         "diagnostic_hypothesis": {
           "basis": [],
           "confidence": 0.25,
+          "confidence_calibrated": false,
           "confidence_label": "low",
+          "confidence_method": "packet_structure_heuristic",
           "label": "unverified_hypothesis",
           "summary": "This item: Cohort collapse: feature_shallow_depth affects 26 tech_touch accounts via play 'reactivate-stalled-module-cohort' -- one cohort_action covers all, not 26 individual motions.",
           "unknowns": [
