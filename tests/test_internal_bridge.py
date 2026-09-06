@@ -189,6 +189,8 @@ def _handoff_sweep(conn, *, variant="engineering", consent=True, classifier=None
         "operator": "Activation blocked: credentials rejected",
         "noise": "Invoice contact update",
         "unknown": "Account question received",
+        "current_nonblocker": "Dashboard report missing",
+        "future_nonblocker": "Dashboard report missing",
     }
     case = CRMCase(
         case_id="handoff-case", account_id=NOVA_FIELD, status="Open", priority="Low",
@@ -197,7 +199,7 @@ def _handoff_sweep(conn, *, variant="engineering", consent=True, classifier=None
     )
     if variant == "closed":
         case = replace(case, status="Closed", closed_at="2026-06-25")
-    elif variant == "future":
+    elif variant in ("future", "future_nonblocker"):
         case = replace(case, created_at="2026-06-29")
     elif variant == "foreign":
         case = replace(case, account_id=ACME_LOGISTICS)
@@ -213,6 +215,10 @@ def _handoff_sweep(conn, *, variant="engineering", consent=True, classifier=None
         cases=(case,), opportunities=(), ctas=(), success_plans=(),
         entitlements=(), usage_signals=(), milestones=(), tenant_accounts=None,
     )
+    if variant in ("current_nonblocker", "future_nonblocker"):
+        data = replace(data, health_scores=tuple(
+            replace(h, score=30, band="red") for h in data.health_scores
+        ))
     plane = CustomerDataPlane(
         crm=FixtureCRMDataConnector(data=data), cs=FixtureCSPlatformConnector(data=data),
         telemetry=FixtureProductTelemetryConnector(data=data), comms=FixtureCommsConnector(data=data),
@@ -274,3 +280,16 @@ def test_blocker_handoff_requires_bound_classification(mutation):
     assert not _has_confirmed_open_blocker(
         (output,), (replace(case, account_id="foreign"),), account_id="account", as_of="2026-06-27",
     )
+
+
+def test_current_nonblocker_retains_existing_customer_action(handoff_conn):
+    item = _handoff_sweep(handoff_conn, variant="current_nonblocker")
+    assert item is not None
+    assert all(c.classification == "unknown" for c in item.slot_a_classifications)
+    assert item.disposition == "propose_customer_action"
+    assert item.proposal is not None and item.customer_draft
+    assert any(ref.source_id == "handoff-case" for ref in item.evidence)
+
+
+def test_future_nonblocker_cannot_supply_present_day_action_evidence(handoff_conn):
+    assert _handoff_sweep(handoff_conn, variant="future_nonblocker") is None
