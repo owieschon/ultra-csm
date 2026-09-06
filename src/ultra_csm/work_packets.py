@@ -4,6 +4,12 @@ This module is a read-side planner over existing organs: Agent 1 sweep output,
 the value-model priority factors, Slot B artifacts, internal-bridge routing,
 and governance action specs. It does not introduce a second scorer, motion
 resolver, or approval source.
+
+Legacy confidence fields report the packet-structure heuristic in _confidence.
+Its inputs are raw-fact chain count, priority/proposal presence, and a
+non-abstained internal handoff.
+It does not measure diagnostic correctness or coverage of required evidence.
+The additive metadata identifies the method and its uncalibrated status.
 """
 
 from __future__ import annotations
@@ -41,6 +47,11 @@ class DiagnosticHypothesis:
     basis: tuple[str, ...]
     unknowns: tuple[str, ...]
     validation_status: Literal["out_of_validated_domain"]
+    # Defaults preserve construction from payloads recorded before this metadata.
+    confidence_method: Literal["packet_structure_heuristic"] = (
+        "packet_structure_heuristic"
+    )
+    confidence_calibrated: Literal[False] = False
 
 
 @dataclass(frozen=True)

@@ -194,11 +194,18 @@ export interface InternalBridgeDecision {
 export interface WorkPacketHypothesis {
   label: string;
   summary: string;
+  // Legacy fields, kept for compatibility: a deterministic packet-structure
+  // heuristic (evidence count, priority/proposal presence, handoff state).
+  // Not a calibrated probability and not evidence coverage.
   confidence: number;
   confidence_label: string;
   basis: string[];
   unknowns: string[];
   validation_status: string;
+  // Additive metadata. Absent on payloads recorded before this field
+  // existed -- treat missing as the same uncalibrated meaning.
+  confidence_method?: "packet_structure_heuristic";
+  confidence_calibrated?: false;
 }
 
 export interface WorkPacketRecommendedAction {

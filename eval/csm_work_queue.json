@@ -117,7 +117,9 @@
             "evidence:crm:dd638660-a13a-595c-a117-72a1ed5f15d0:email"
           ],
           "confidence": 0.35,
+          "confidence_calibrated": false,
           "confidence_label": "low",
+          "confidence_method": "packet_structure_heuristic",
           "label": "unverified_hypothesis",
           "summary": "This item: Ambiguous contact identity; no account was auto-selected.",
           "unknowns": [
@@ -564,7 +566,9 @@
             "evidence:cs_platform:a317f5e7-575e-5879-8256-9082e40ef19f:health_score"
           ],
           "confidence": 0.72,
+          "confidence_calibrated": false,
           "confidence_label": "medium",
+          "confidence_method": "packet_structure_heuristic",
           "label": "unverified_hypothesis",
           "summary": "Acme Logistics: Acme Logistics has deterministic Time-to-Value score 172 from milestones_overdue=50, days_overdue=30, success_plan_overdue=20; draft customer outreach. Evidence [evidence:6dcc1c92-e0fd-5d6f-808f-d2e747f04415], [evidence:d2212e35-9ab1-52ff-af61-7ed49fe36086], [evidence:e8171967-d726-5c85-814a-73aaa19dc2cf].",
           "unknowns": [
@@ -953,7 +957,9 @@
             "evidence:cs_platform:9bbdd7b2-55b0-5257-acf8-808ad224e276:health_score"
           ],
           "confidence": 0.72,
+          "confidence_calibrated": false,
           "confidence_label": "medium",
+          "confidence_method": "packet_structure_heuristic",
           "label": "unverified_hypothesis",
           "summary": "Cyberdyne Transport: Cyberdyne Transport has deterministic Time-to-Value score 109 from milestones_overdue=25, days_overdue=22, success_plan_overdue=20; route for internal review. Evidence [evidence:947b1c03-4cfd-57d1-8734-96a9a1d0580a], [evidence:094d20f6-589f-523d-8c1a-57ee263b4b15], [evidence:7c951754-708e-54c9-a308-927f4898a051].",
           "unknowns": [
@@ -1357,7 +1363,9 @@
             "evidence:cs_platform:ac5ddaea-764f-57ef-866d-593d57a20a00:health_score"
           ],
           "confidence": 0.72,
+          "confidence_calibrated": false,
           "confidence_label": "medium",
+          "confidence_method": "packet_structure_heuristic",
           "label": "unverified_hypothesis",
           "summary": "Soylent Distribution: Soylent Distribution has deterministic Time-to-Value score 105 from milestones_overdue=25, days_overdue=18, success_plan_overdue=20; draft customer outreach. Evidence [evidence:a6a68e4b-b7af-5b71-8e33-8964271ee848], [evidence:de370721-fcfe-5b52-9682-fa7b8e79a07a], [evidence:ef71210b-a3d3-5953-ad04-71bc869c6789].",
           "unknowns": [
@@ -1726,7 +1734,9 @@
             "evidence:cs_platform:b2178254-7d72-55e3-84af-27846a0cb7d5:health_score"
           ],
           "confidence": 0.69,
+          "confidence_calibrated": false,
           "confidence_label": "medium",
+          "confidence_method": "packet_structure_heuristic",
           "label": "unverified_hypothesis",
           "summary": "Globex Fleet: Globex Fleet has deterministic Time-to-Value score 91 from milestones_overdue=25, days_overdue=24, health_yellow=15; draft customer outreach. Evidence [evidence:85b3431d-1fe0-5c97-86da-c33dbc2d01c8], [evidence:0f5ea32b-c798-5a0d-b21b-28f3eb5f85ee], [evidence:b2178254-7d72-55e3-84af-27846a0cb7d5].",
           "unknowns": [
@@ -2050,7 +2060,9 @@
             "evidence:cs_platform:efe1d86f-af21-5ca6-8719-3ba8b4429292:health_score"
           ],
           "confidence": 0.5900000000000001,
+          "confidence_calibrated": false,
           "confidence_label": "medium",
+          "confidence_method": "packet_structure_heuristic",
           "label": "unverified_hypothesis",
           "summary": "Initech Services: Initech Services has deterministic Time-to-Value score 62 from success_plan_overdue=20, health_yellow=15, low_seat_penetration=12; draft customer outreach. Evidence [evidence:7dd6a2dc-67d4-5087-9708-7d3c5a83df44], [evidence:efe1d86f-af21-5ca6-8719-3ba8b4429292].",
           "unknowns": [

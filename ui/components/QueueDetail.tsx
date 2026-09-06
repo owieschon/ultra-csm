@@ -522,10 +522,11 @@ function DecisionPacket({ packet }: { packet: WorkItem["work_packet"] | null }) 
           <span className="hyp-claim">
             <ProseWithReceipts text={dedupeHypothesis(hypothesis.summary)} />
           </span>
-          <span className="hyp-conf">
-            {hypothesis.confidence_label} · {Math.round(hypothesis.confidence * 100)}%
-          </span>
         </div>
+        <p className="hyp-disclaimer">
+          This interpretation has not been independently validated.
+          {" "}Inspect the source evidence before acting.
+        </p>
 
         <div className="packet-grid">
           <PacketCell labelText="Job" value={humanizeCode(packet.job_type)} />
