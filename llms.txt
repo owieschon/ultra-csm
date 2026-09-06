@@ -5,7 +5,7 @@
 ## Canonical documentation
 
 - [QUICKSTART.md](QUICKSTART.md): declared canonical context; sha256: 4f141b1afb704085a1b2eccbfb45f9ac33be5981149c3fbf07cfbecb79c3345a
-- [README.md](README.md): bindings: evidence-sweep, hosted-readonly-export, human-action-gate, license, payload-committer; sha256: c1e0e100640362e16bd365305ead2ef472fa4811b877765307e2514384122839
+- [README.md](README.md): bindings: evidence-sweep, hosted-readonly-export, human-action-gate, license, payload-committer; sha256: a7263b20090c3a7a6405dd9b51589b3d4bf042fb8a7016b5ae7c5168e6d07b5a
 - [SECURITY.md](SECURITY.md): declared canonical context; sha256: 049905f2018083d74a5eb16df5dcf6ce160b66749ee56d7443ff6375a24ebfc7
 - [docs/ACTION_CONTROL_SANDBOX.md](docs/ACTION_CONTROL_SANDBOX.md): declared canonical context; sha256: 80ab83a9e4d3fefa880f9b3dfa37377cee8c79ec041d17ed0e3a408c5e39dcc7
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md): declared canonical context; sha256: 8880e607cd0c4fda084dbf27d5c9e416aa28c1e8b394b60aa04fd2baf36bf51f
