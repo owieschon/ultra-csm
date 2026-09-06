@@ -14,7 +14,7 @@ mapping, not whether a person is behind the token. The local no-auth demo uses a
 stand-in.
 <!-- sourcebound:end purpose -->
 
-**[Open the live read-only demo](https://ultra-csm.vercel.app/)**. Synthetic data, no login, customer sends disabled.
+**[Open the live read-only demo](https://ultra-csm.vercel.app/)**. Synthetic data, no login, customer sends disabled. Start with **Review an example** to inspect customer objectives, source evidence and a proposed outreach draft. [Walkthrough](docs/DEMO.md).
 **Deterministic receipt:** [**24/24 hard gates**](eval/scorecard_csm.json) pass for
 evidence, consent, tenant separation, grounding, injection defense, reproducibility, and
 proposal-only behavior. **Governance receipts:**

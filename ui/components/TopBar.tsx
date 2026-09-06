@@ -34,9 +34,9 @@ export function TopBar({
   onOpenHelp: () => void;
 }) {
   const [theme, setTheme] = useState<"dark" | "light">(() => {
-    if (typeof window === "undefined") return "dark";
+    if (typeof window === "undefined") return "light";
     const stored = window.localStorage.getItem("ucsm-theme");
-    return stored === "light" ? "light" : "dark";
+    return stored === "dark" ? "dark" : "light";
   });
 
   useEffect(() => {
@@ -79,13 +79,12 @@ export function TopBar({
             strokeLinecap="round"
           />
         </svg>
-        <b title="Customer Action Control Plane">action·control</b>
+        <b title="Ultra — customer decision workspace">Ultra</b>
         <span className="envchip">
-          <b>fleetops</b>
           <span className="num" style={{ color: "var(--fg-2)" }}>
             {accountCount != null ? `${accountCount} accounts` : "…"}
           </span>
-          <span className="pb">{readOnlyDemo ? "READ-ONLY DEMO" : "LIVE BOOK"}</span>
+          <span className="pb">{readOnlyDemo ? "Read-only demo" : "Live book"}</span>
         </span>
       </div>
 
@@ -145,6 +144,9 @@ export function TopBar({
         <span className="k">⌘K</span>
       </button>
 
+      <details className="workspace-tools">
+        <summary>Options</summary>
+        <div className="workspace-tool-panel">
       <div
         className="scrub"
         title={
@@ -217,9 +219,11 @@ export function TopBar({
                     : "var(--danger)",
             }}
           />
-          {readOnlyDemo ? "STATIC" : health === "ok" ? "LIVE" : health === "checking" ? "…" : "DEGRADED"}
+          {readOnlyDemo ? "Static" : health === "ok" ? "Live" : health === "checking" ? "…" : "Degraded"}
         </div>
       </div>
+        </div>
+      </details>
     </header>
   );
 }

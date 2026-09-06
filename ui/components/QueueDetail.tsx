@@ -259,10 +259,24 @@ const DRAWERS: {
   { key: "agent", name: "Agent history", briefField: null },
 ];
 
-export function QueueDetail({ item, day }: { item: WorkItem; day: number | undefined }) {
+export function QueueDetail({
+  item,
+  day,
+  controls,
+  onBack,
+}: {
+  item: WorkItem;
+  day: number | undefined;
+  controls?: React.ReactNode;
+  onBack?: () => void;
+}) {
   const [brief, setBrief] = useState<Brief | null>(null);
   const [openDrawer, setOpenDrawer] = useState<string | null>(null);
   const [openFactor, setOpenFactor] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (window.matchMedia("(max-width: 980px)").matches) window.scrollTo(0, 0);
+  }, [item.account_id, day]);
 
   useEffect(() => {
     if (!item.account_id) return;
@@ -273,34 +287,18 @@ export function QueueDetail({ item, day }: { item: WorkItem; day: number | undef
   }, [item.account_id, day]);
 
   if (item.account_id === null) {
-    return <ProgramDetail item={item} />;
+    return <ProgramDetail item={item} controls={controls} onBack={onBack} />;
   }
 
   const decided = item.proposal != null && item.proposal.status !== "pending";
 
   return (
     <div className="detail-scroll">
-      <div className="control-path" aria-label="Customer action control path">
-        <div className="control-step complete">
-          <span className="control-index mono">01</span>
-          <span><b>Evidence assembled</b><small>tenant-scoped sources</small></span>
-        </div>
-        <div className="control-step complete">
-          <span className="control-index mono">02</span>
-          <span><b>Priority computed</b><small>deterministic rules</small></span>
-        </div>
-        <div className={`control-step${item.customer_draft ? " complete" : ""}`}>
-          <span className="control-index mono">03</span>
-          <span><b>{item.customer_draft ? "Draft proposed" : "No customer draft"}</b><small>AI has no authority</small></span>
-        </div>
-        <div className={`control-step ${decided ? "complete" : "current"}`}>
-          <span className="control-index mono">04</span>
-          <span>
-            <b>{decided ? "Decision recorded" : item.proposal ? "Human decision" : "Human review"}</b>
-            <small>{item.proposal ? "payload-bound release" : "inspect fallback reason"}</small>
-          </span>
-        </div>
-      </div>
+      {onBack && (
+        <button type="button" className="mobile-back" onClick={onBack}>
+          ← Back to queue
+        </button>
+      )}
       <div className="identity">
         <div className="mono-avatar">
           {(brief?.account_name as string | undefined)?.slice(0, 2).toUpperCase() ?? "··"}
@@ -317,9 +315,24 @@ export function QueueDetail({ item, day }: { item: WorkItem; day: number | undef
         </div>
       </div>
 
-      {/* The draft is the artifact being approved — it leads, evidence
-          follows (the rail's verbs mean nothing before the reader has seen
-          what they act on). */}
+      <section className="customer-context" aria-label="Customer objectives">
+        <div className="context-heading"><h2>Customer objectives</h2><a href="#account-sources" onClick={() => setOpenDrawer("objectives")}>Inspect sources ↗</a></div>
+        {!Array.isArray(brief?.objective_evidence) ? (
+          <p className="context-unknown">Objective evidence unavailable.</p>
+        ) : brief.objective_evidence.length === 0 ? (
+          <p className="context-unknown">No customer objectives recorded.</p>
+        ) : (
+          <ul className="objective-summary">{(brief.objective_evidence as ObjectiveEvidenceRow[]).map((row, index) => (
+            <li key={`${row.plan_id}:${index}`}>
+              <span>{humanizeCode(row.objective)}</span>
+              <span className={row.source_reported_complete ? "objective-reported" : "objective-unknown"}>
+                {row.source_reported_complete ? "Completion reported by source plan" : "Completion not reported"}
+              </span>
+            </li>
+          ))}</ul>
+        )}
+        <p className="context-note">Usage and plan status do not independently establish customer outcomes.</p>
+      </section>
       {(item.customer_draft || (item.draft_mode === "template_fallback" && draftFallbackReasonLabel(item.draft_fallback_reason))) && (
         <div className="sec">
           <div className="sec-h">
@@ -336,9 +349,7 @@ export function QueueDetail({ item, day }: { item: WorkItem; day: number | undef
           {item.customer_draft && (
             <div className="draft">
               <div className="draft-h">
-                draft
-                {item.recipient_name ? ` · to: ${item.recipient_name}` : ""} ·
-                quality score dormant, no live source yet
+                {item.recipient_name ? `To ${item.recipient_name}` : "Recipient unavailable"}
               </div>
               <div className="draft-body">{item.customer_draft}</div>
             </div>
@@ -346,9 +357,10 @@ export function QueueDetail({ item, day }: { item: WorkItem; day: number | undef
         </div>
       )}
 
-      <DecisionPacket packet={item.work_packet ?? null} />
+      {controls}
+      <p className="hyp-disclaimer">This interpretation has not been independently validated. Inspect the source evidence before acting.</p>
 
-      <div className="sec">
+      <div className="sec" id="account-sources">
         <div className="sec-h">
           <span className="t">Account sources</span>
           <span className="prov">
@@ -374,6 +386,37 @@ export function QueueDetail({ item, day }: { item: WorkItem; day: number | undef
           )
         )}
       </div>
+
+      <details className="decision-reasoning">
+        <summary>Decision reasoning</summary>
+      <div>
+
+        <div className="tech-details-body">
+          <div className="control-path" aria-label="Customer action control path">
+            <div className="control-step complete">
+              <span className="control-index mono">01</span>
+              <span><b>Evidence assembled</b><small>tenant-scoped sources</small></span>
+            </div>
+            <div className="control-step complete">
+              <span className="control-index mono">02</span>
+              <span><b>Priority computed</b><small>deterministic rules</small></span>
+            </div>
+            <div className={`control-step${item.customer_draft ? " complete" : ""}`}>
+              <span className="control-index mono">03</span>
+              <span><b>{item.customer_draft ? "Draft proposed" : "No customer draft"}</b><small>AI has no authority</small></span>
+            </div>
+            <div className={`control-step ${decided ? "complete" : "current"}`}>
+              <span className="control-index mono">04</span>
+              <span>
+                <b>{decided ? "Decision recorded" : item.proposal ? "Human decision" : "Human review"}</b>
+                <small>{item.proposal ? "payload-bound release" : "inspect fallback reason"}</small>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <DecisionPacket packet={item.work_packet ?? null} />
 
       <div className="sec">
         <div className="sec-h">
@@ -490,6 +533,7 @@ export function QueueDetail({ item, day }: { item: WorkItem; day: number | undef
           </div>
         </div>
       </div>
+      </details>
     </div>
   );
 }
@@ -522,10 +566,8 @@ function DecisionPacket({ packet }: { packet: WorkItem["work_packet"] | null }) 
           <span className="hyp-claim">
             <ProseWithReceipts text={dedupeHypothesis(hypothesis.summary)} />
           </span>
-          <span className="hyp-conf">
-            {hypothesis.confidence_label} · {Math.round(hypothesis.confidence * 100)}%
-          </span>
         </div>
+
 
         <div className="packet-grid">
           <PacketCell labelText="Job" value={humanizeCode(packet.job_type)} />
@@ -913,9 +955,22 @@ function CommsDrawer({
   );
 }
 
-function ProgramDetail({ item }: { item: WorkItem }) {
+function ProgramDetail({
+  item,
+  controls,
+  onBack,
+}: {
+  item: WorkItem;
+  controls?: React.ReactNode;
+  onBack?: () => void;
+}) {
   return (
     <div className="detail-scroll">
+      {onBack && (
+        <button type="button" className="mobile-back" onClick={onBack}>
+          ← Back to queue
+        </button>
+      )}
       <div className="identity">
         <div className="mono-avatar">P</div>
         <div>
@@ -926,6 +981,7 @@ function ProgramDetail({ item }: { item: WorkItem }) {
           </div>
         </div>
       </div>
+      {controls}
       <DecisionPacket packet={item.work_packet ?? null} />
       <div className="sec">
         <div className="sec-h">
