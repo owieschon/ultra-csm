@@ -322,6 +322,10 @@ export interface WorkItem {
   recipient_resolution: string | null;
   recipient_name: string | null;
   recipient_role: string | null;
+  // Local overlays survive navigation until reload; server responses omit these fields.
+  demo_edit?: { revision_id: string; edited_at: string } | null;
+  replacement_proposal_id?: string;
+  redrafted_from?: string;
 }
 
 export interface SweepResponse {

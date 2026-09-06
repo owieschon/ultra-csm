@@ -48,11 +48,16 @@ jq '{pending: ([.work_items[] | select(.proposal.status == "pending")] | length)
 4. Expand **Decision reasoning** to inspect priority factors, the source chain,
    unverified interpretation and internal Product handoff. These records explain
    the proposal; they do not authorize contact.
-5. Approve, edit or deny beneath the draft. These hosted actions update browser
-   state only. Editing records an instruction; it does not redraft the fixture.
-   **Decision receipt** exposes the simulated events. No gate, committer or send
-   runs, and reload restores the pending queue. The governed local path requires
-   a configured approval identity, payload-bound commitment and a receipt.
+5. Choose **Edit draft**, change the message and **Save edit**. The saved text
+   remains visible when you leave the account and return. **Approve exact draft**
+   records that revision separately; **Decision receipt** shows the approved text.
+   Hosted edits and decisions exist only in browser memory. Reload restores the
+   fixture. No model, gate, committer or send runs in this hosted flow.
+6. With a configured local API, **Request redraft** submits a bounded instruction.
+   The server closes the original proposal and creates a pending replacement.
+   Review its persisted text before approving it separately. If retrieval fails,
+   **Load replacement draft** retries the read without another redraft request.
+   The server retains responsibility for consent, approval and commitment.
 
 
 ## What this path proves

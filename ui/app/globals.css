@@ -541,3 +541,7 @@ svg { display: block; }
   .customer-workspace .detail-scroll { flex: none; height: auto; }
   main.evidence-review { overflow-y: auto; height: 100dvh; max-height: 100dvh; }
 }
+
+.approved-message { margin: 16px 18px; }
+.approved-message h3 { font-size: 13px; margin-bottom: 10px; }
+.approved-draft-body { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.65; }
