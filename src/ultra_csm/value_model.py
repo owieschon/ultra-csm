@@ -614,6 +614,15 @@ def _feature_depth_rail(
     return FeatureDepthRail(entitled, underused, factors)
 
 
+COMPLETED_PLAN_STATUSES = frozenset({"realized", "achieved", "complete"})
+
+
+def is_completed_plan(plan: SuccessPlan) -> bool:
+    """Use the source-reported completion statuses already recognized by objective coverage."""
+
+    return plan.status in COMPLETED_PLAN_STATUSES
+
+
 def objective_coverage(success_plans: tuple[SuccessPlan, ...]) -> tuple[ObjectiveEvidence, ...]:
     """One :class:`ObjectiveEvidence` per stated objective, carrying its
     source plan's identity and status. Shared by :func:`_outcome_rail` and
@@ -626,7 +635,7 @@ def objective_coverage(success_plans: tuple[SuccessPlan, ...]) -> tuple[Objectiv
             objective=objective,
             plan_id=plan.plan_id,
             plan_status=plan.status,
-            source_reported_complete=plan.status in {"realized", "achieved", "complete"},
+            source_reported_complete=is_completed_plan(plan),
             evidence=(
                 EvidenceRef("cs_platform", plan.plan_id, "objectives", plan.target_date),
                 EvidenceRef("cs_platform", plan.plan_id, "status", plan.target_date),
@@ -844,15 +853,22 @@ def _ttv_base_factors(
                 thresholds.days_overdue_cap,
             ))
 
-    if overdue_success_plans:
+    # Defensive filter, not trust in the caller: a plan self-reported
+    # complete (objective_coverage's own completion semantics) must never
+    # drive this overdue-only factor, even if a caller's candidate list
+    # still includes one -- see is_completed_plan.
+    unresolved_overdue_plans = tuple(
+        plan for plan in overdue_success_plans if not is_completed_plan(plan)
+    )
+    if unresolved_overdue_plans:
         evidence = tuple(
             EvidenceRef("cs_platform", plan.plan_id, "target_date", plan.target_date)
-            for plan in overdue_success_plans
+            for plan in unresolved_overdue_plans
         )
         factors.append(_factor(
             "success_plan_overdue",
-            float(len(overdue_success_plans)),
-            len(overdue_success_plans) * thresholds.success_plan_overdue_points,
+            float(len(unresolved_overdue_plans)),
+            len(unresolved_overdue_plans) * thresholds.success_plan_overdue_points,
             evidence,
             resolved,
             "success_plan_overdue_points",
