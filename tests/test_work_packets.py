@@ -11,7 +11,7 @@ from ultra_csm.agent1 import run_time_to_value_sweep
 from ultra_csm.data_plane import DEFAULT_TENANT, build_sweep_fixture_data_plane
 from ultra_csm.governance import ActionGate, FixtureVerdictSource
 from ultra_csm.governance.csm_actions import csm_action_spec
-from ultra_csm.work_packets import allowed_ctas_for
+from ultra_csm.work_packets import DiagnosticHypothesis, allowed_ctas_for
 
 AS_OF = "2026-06-27"
 
@@ -60,6 +60,43 @@ def test_real_sweep_items_carry_work_packets(sweep_conn):
         assert {
             step.provenance_tier for step in packet.evidence_chain
         } <= {"raw_fact"}
+
+
+def test_diagnostic_hypothesis_names_its_score_as_an_uncalibrated_structure_heuristic(
+    sweep_conn,
+):
+    """The legacy `confidence` float is a structural heuristic over packet
+    completeness, not a calibrated probability or an evidence-coverage
+    metric. Every hypothesis must carry machine-readable metadata that says
+    so explicitly, alongside the unchanged legacy numeric fields."""
+    sweep = _sweep(sweep_conn)
+    assert sweep.work_items
+
+    for item in sweep.work_items:
+        hypothesis = item.work_packet.diagnostic_hypothesis
+        assert hypothesis.confidence_method == "packet_structure_heuristic"
+        assert hypothesis.confidence_calibrated is False
+
+
+def test_new_confidence_metadata_leaves_legacy_score_and_action_untouched(sweep_conn):
+    """The additive metadata must not perturb the legacy numeric fields, the
+    lane, or the recommended action for a seeded packet -- this is the same
+    heuristic, only truthfully labeled."""
+    sweep = _sweep(sweep_conn)
+    item = next(
+        i for i in sweep.work_items
+        if i.account_id == "a317f5e7-575e-5879-8256-9082e40ef19f"
+    )
+    packet = item.work_packet
+    assert packet is not None
+
+    assert packet.diagnostic_hypothesis.confidence == 0.72
+    assert packet.diagnostic_hypothesis.confidence_label == "medium"
+    assert packet.recommended_action.action_type == "draft_customer_outreach"
+    assert item.priority.score == 172
+    assert packet.lane == "needs_judgment"
+    assert packet.diagnostic_hypothesis.confidence_method == "packet_structure_heuristic"
+    assert packet.diagnostic_hypothesis.confidence_calibrated is False
 
 
 def test_allowed_ctas_derive_from_governance_release_condition(sweep_conn):
@@ -114,6 +151,24 @@ def test_cta_helper_has_no_second_approval_truth():
     assert approval.governance_requirement == "human_approve_with_consent"
     assert mark_internal.enabled is True
     assert mark_internal.governance_requirement == "auto_internal_only"
+
+
+def test_hypothesis_constructed_without_new_fields_still_gets_honest_defaults():
+    """A caller built against the pre-metadata constructor signature (e.g. a
+    packet deserialized from a payload recorded before this change) must
+    still resolve to the same honest labeling -- this is a default, not a
+    required field callers must learn about."""
+    legacy = DiagnosticHypothesis(
+        label="unverified_hypothesis",
+        summary="legacy packet",
+        confidence=0.4,
+        confidence_label="low",
+        basis=(),
+        unknowns=(),
+        validation_status="out_of_validated_domain",
+    )
+    assert legacy.confidence_method == "packet_structure_heuristic"
+    assert legacy.confidence_calibrated is False
 
 
 def test_work_packet_planner_has_no_generation_imports():
