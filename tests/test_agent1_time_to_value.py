@@ -81,6 +81,8 @@ def test_agent1_ttv_gap_proposes_gated_customer_outreach(agent1_conn):
     assert proposal.action == "draft_customer_outreach"
     assert proposal.autonomy_tier == 2
     assert proposal.required_permission == "customer.outreach.draft"
+    assert proposal.payload["body"].startswith("Hi Jordan,")
+    assert proposal.payload["contact_email"] == "ops@acme-logistics.example"
     assert proposal.payload["evidence"]["crm"]["case_ids"]
     assert proposal.payload["evidence"]["cs_platform"]["cta_ids"]
     assert proposal.payload["evidence"]["telemetry"]["usage_signal_ids"]

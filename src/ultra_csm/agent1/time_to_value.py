@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Literal
 
-from ultra_csm._util import iso_date
+from ultra_csm._util import customer_greeting, iso_date
 from ultra_csm.data_plane import (
     AdoptionSummary,
     CRMAccount,
@@ -331,8 +331,9 @@ def _proposal_payload(
 def _draft_body(evidence: TTVEvidenceBundle, contact: CRMContact) -> str:
     gaps = ", ".join(m.milestone for m in evidence.open_milestone_gaps)
     cta = evidence.ctas[0].reason if evidence.ctas else "activation follow-up"
+    greeting = customer_greeting(contact.name)
     return (
-        f"Hi {contact.name}, I noticed {evidence.account.name} has an open "
+        f"{greeting} I noticed {evidence.account.name} has an open "
         f"Time-to-Value milestone gap ({gaps}) and a related CTA: {cta}. "
         "I can help review the adoption signals and unblock the next step."
     )
