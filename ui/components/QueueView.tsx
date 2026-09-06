@@ -6,6 +6,9 @@ import { SweepData } from "@/lib/useSweep";
 import { QueueLanes, LaneItem } from "@/components/QueueLanes";
 import { QueueDetail } from "@/components/QueueDetail";
 import { draftFallbackReasonLabel } from "@/lib/labels";
+import { ActionRail, ActionRailHandle } from "@/components/ActionRail";
+import { DemoApprovalSnapshot, DemoLedgerEvent, DemoVerdict } from "@/lib/demoSim";
+import { Ref } from "react";
 
 export function QueueView({
   day,
@@ -14,8 +17,16 @@ export function QueueView({
   sweepError,
   selectedProposalId,
   onSelect,
+  onClearSelection,
   onSelectedItemChange,
   onBackToBook,
+  railRef,
+  onVerdict,
+  readOnly,
+  demoLedger,
+  onDemoVerdict,
+  onDemoEdit,
+  demoApprovals,
 }: {
   day: number | undefined;
   accounts: AccountSummary[] | null;
@@ -23,8 +34,21 @@ export function QueueView({
   sweepError: string | null;
   selectedProposalId: string | null;
   onSelect: (proposalId: string) => void;
+  onClearSelection: () => void;
   onSelectedItemChange: (item: WorkItem | null) => void;
   onBackToBook: () => void;
+  railRef: Ref<ActionRailHandle>;
+  onVerdict: (item: WorkItem, replacement?: WorkItem) => void;
+  readOnly?: boolean;
+  demoLedger?: DemoLedgerEvent[];
+  onDemoVerdict?: (
+    proposalId: string,
+    verdict: DemoVerdict | null,
+    events: DemoLedgerEvent[],
+    snapshot?: { revisionId: string; body: string }
+  ) => void;
+  onDemoEdit?: (proposalId: string, newBody: string, expectedRevision: string) => void;
+  demoApprovals?: Record<string, DemoApprovalSnapshot>;
 }) {
   const tierByAccount = useMemo(() => {
     const map = new Map<string, string | null>();
@@ -94,7 +118,7 @@ export function QueueView({
   const queueClear = sweep != null && needsDecision.length === 0 && fallbacks.length === 0;
 
   return (
-    <div className="queue">
+    <div className="queue" data-has-selection={selectedItem || queueClear ? "true" : "false"}>
       <QueueLanes
         needsDecision={needsDecision}
         resolved={resolved}
@@ -110,6 +134,20 @@ export function QueueView({
             key={`${selectedItem.account_id ?? "program"}:${day ?? "live"}`}
             item={selectedItem}
             day={day}
+            onBack={onClearSelection}
+            controls={
+              <ActionRail
+                key={selectedItem.proposal?.proposal_id ?? selectedProposalId}
+                ref={railRef}
+                item={selectedItem}
+                onVerdict={onVerdict}
+                readOnly={readOnly}
+                demoLedger={demoLedger}
+                onDemoVerdict={onDemoVerdict}
+                onDemoEdit={onDemoEdit}
+                demoApprovals={demoApprovals}
+              />
+            }
           />
         ) : queueClear ? (
           <div className="empty payoff">

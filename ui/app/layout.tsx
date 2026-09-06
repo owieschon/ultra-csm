@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "ultra·csm — operations surface",
+  title: "Ultra — customer decisions",
 };
 
 export default function RootLayout({
@@ -11,7 +11,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" data-theme="dark">
+    <html lang="en" data-theme="light">
       <body>{children}</body>
     </html>
   );

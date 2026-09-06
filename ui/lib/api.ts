@@ -194,11 +194,18 @@ export interface InternalBridgeDecision {
 export interface WorkPacketHypothesis {
   label: string;
   summary: string;
+  // Legacy fields, kept for compatibility: a deterministic packet-structure
+  // heuristic (evidence count, priority/proposal presence, handoff state).
+  // Not a calibrated probability and not evidence coverage.
   confidence: number;
   confidence_label: string;
   basis: string[];
   unknowns: string[];
   validation_status: string;
+  // Additive metadata. Absent on payloads recorded before this field
+  // existed -- treat missing as the same uncalibrated meaning.
+  confidence_method?: "packet_structure_heuristic";
+  confidence_calibrated?: false;
 }
 
 export interface WorkPacketRecommendedAction {
@@ -315,6 +322,10 @@ export interface WorkItem {
   recipient_resolution: string | null;
   recipient_name: string | null;
   recipient_role: string | null;
+  // Local overlays survive navigation until reload; server responses omit these fields.
+  demo_edit?: { revision_id: string; edited_at: string } | null;
+  replacement_proposal_id?: string;
+  redrafted_from?: string;
 }
 
 export interface SweepResponse {

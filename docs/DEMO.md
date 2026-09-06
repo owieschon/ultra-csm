@@ -35,28 +35,30 @@ jq '{pending: ([.work_items[] | select(.proposal.status == "pending")] | length)
 
 ## Follow one action
 
-1. Start on **Book**. The page lists the synthetic account universe and labels the
-   surface `READ-ONLY DEMO`.
-2. Open **Queue**. The queue separates pending proposals, resolved work, and accounts
-   covered with no action. Treat the displayed counts as fixture facts, not product
-   outcomes.
-3. Select **Trailhead Logistics**. Inspect the tenant-scoped sources, deterministic
-   priority factors, selected action, cited evidence, and fixture-generated draft. The
-   work item records `draft_mode: fixture`; this path does not demonstrate a live model
-   call. The chip above the draft names its actual source ("Example draft" here; the
-   label distinguishes recorded model output from a template fallback for other
-   draft modes; it does not claim a model call is running now).
-4. Inspect **Internal handoff**. The fixture routes a cited feature-request signal to
-   Product without changing the customer-facing approval path.
-5. Inspect **Decision**. Approve, deny, and edit run in this demo, but entirely as
-   browser state, not a network call: no gate, committer, or send runs. The receipt
-   panel labels every simulated step ("Approved (simulated)", "Commit simulated", "Send
-   simulated") and says plainly that no message was sent. Reloading clears the
-   simulated decision and restores the full pending queue. The governed local path
-   requires a proposal, a verdict from a configured approval identity, a payload-bound
-   committer, and a receipt; the agent does not approve its own send.
-6. Inspect the audit ledger. The fixture exposes proposal, judge, draft, and value-model
-   events instead of hiding missing event classes behind a clean screen.
+1. Open the hosted demo at its default fixture day, **140**. Select **Review an
+   example** to open **Trailhead Logistics**. If the introduction was dismissed,
+   select Trailhead from **Book**. The account list and selected review sit side by
+   side on desktop. On phones, **Back to queue** returns to the account list.
+2. Read **Customer objectives**. The source plan has not reported either objective
+   complete. Usage alone does not establish the customer's outcomes. Choose
+   **Inspect sources** to open the objective records and their source references.
+3. Read the draft to Vanessa Torres. It asks for an objective-status update and
+   completion evidence. **Example draft** identifies committed fixture output;
+   this walkthrough does not run a live model.
+4. Expand **Decision reasoning** to inspect priority factors, the source chain,
+   unverified interpretation and internal Product handoff. These records explain
+   the proposal; they do not authorize contact.
+5. Choose **Edit draft**, change the message and **Save edit**. The saved text
+   remains visible when you leave the account and return. **Approve exact draft**
+   records that revision separately; **Decision receipt** shows the approved text.
+   Hosted edits and decisions exist only in browser memory. Reload restores the
+   fixture. No model, gate, committer or send runs in this hosted flow.
+6. With a configured local API, **Request redraft** submits a bounded instruction.
+   The server closes the original proposal and creates a pending replacement.
+   Review its persisted text before approving it separately. If retrieval fails,
+   **Load replacement draft** retries the read without another redraft request.
+   The server retains responsibility for consent, approval and commitment.
+
 
 ## What this path proves
 
