@@ -16,7 +16,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING, Literal, Protocol
 
-from ultra_csm._util import evidence_ids
+from ultra_csm._util import customer_greeting, evidence_ids
 from ultra_csm.knowledge import is_safe_customer_ask
 from ultra_csm.llm_transport import (
     configured_transport_name,
@@ -224,14 +224,14 @@ class FixtureReasonDraftWriter:
             return output
         draft = None
         if request.customer_contact_allowed:
-            contact = request.contact_name or "there"
+            greeting = customer_greeting(request.contact_name)
             ask = _play_ask(request) or "review the activation blockers and next steps"
             factor_names = ", ".join(
                 _customer_factor_label(factor.name)
                 for factor in request.priority.factors[:2]
             )
             draft = (
-                f"Hi {contact}, {request.account_name} is showing an onboarding "
+                f"{greeting} {request.account_name} is showing an onboarding "
                 f"risk tied to {factor_names}. Can we {ask}?"
             )
             if request.recommended_action == _MEETING_SHAPED_ACTION:
@@ -513,6 +513,7 @@ def _text_from_message(msg) -> str:
 
 def _jsonable_request(request: ReasonDraftRequest) -> dict:
     data = asdict(request)
+    data["computed_customer_greeting"] = customer_greeting(request.contact_name)
     data["prompt_version"] = SLOT_B_PROMPT_VERSION
     return data
 
@@ -535,9 +536,9 @@ def _verification_output_fields(
     )
     draft = None
     if request.customer_contact_allowed:
-        contact = request.contact_name or "there"
+        greeting = customer_greeting(request.contact_name)
         draft = (
-            f"Hi {contact}, could you confirm the current status of "
+            f"{greeting} could you confirm the current status of "
             f"{request.account_name}'s success-plan objectives and share any completion "
             "evidence or updates we should record?"
         )
