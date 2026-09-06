@@ -208,8 +208,10 @@ def test_agent1_sweep_returns_ranked_work_queue_and_escalation_lane(sweep_conn):
     assert value_factor.threshold_name == "seat_penetration_floor"
     assert value_factor.threshold_value == 0.55
     assert value_factor.evidence
-    assert acme.customer_draft is not None
-    assert "overdue activation steps" in acme.customer_draft
+    assert acme.disposition == "internal_review"
+    assert acme.customer_draft is None
+    assert acme.proposal is None
+    assert acme.work_packet.prepared_artifact.artifact_type == "handoff_outline"
 
     assert len(sweep.escalations) == 1
     escalation = sweep.escalations[0]
@@ -607,6 +609,9 @@ def test_quality_breaker_routes_customer_drafts_to_internal_review(sweep_conn, t
     blocked = [item for item in sweep.work_items if item.customer_contact_allowed]
     assert blocked
     assert sweep.degraded_items == len(blocked)
+    acme = next(item for item in sweep.work_items if item.account_id == ACME_LOGISTICS)
+    assert acme.disposition == "internal_review"
+    assert acme.draft_fallback_reason is None
     assert all(item.disposition == "internal_review" for item in blocked)
     assert all(item.recommended_action == "recommend_next_best_action" for item in blocked)
     assert all(item.proposal is None for item in blocked)
