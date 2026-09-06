@@ -346,3 +346,41 @@ def test_request_reconstruction_cites_objective_and_adoption_evidence(sweep_conn
         evidence_source_ids=("not-a-real-source-id",),
     )
     assert unmatched is None
+
+
+@pytest.mark.parametrize("subset", ["adoption_only", "plan_only"])
+def test_verification_reconstruction_requires_all_supporting_sources(sweep_conn, subset):
+    account, *_ = GAP_SCENARIOS["technical_activation"]
+    plane, _ = _gap_sweep(sweep_conn)
+    plan_id = GAP_SCENARIOS["technical_activation"][5][0].plan_id
+    selected = account.account_id if subset == "adoption_only" else plan_id
+    assert build_reason_draft_request_for_account(
+        plane, DEFAULT_TENANT, account.account_id, as_of=GAP_AS_OF,
+        evidence_source_ids=(selected,),
+    ) is None
+
+
+@pytest.mark.parametrize("signal", ["health", "arr"])
+def test_unrelated_priority_evidence_does_not_create_verification(sweep_conn, signal):
+    data = _gap_data()
+    account = GAP_SCENARIOS["no_objectives"][0]
+    if signal == "health":
+        data = replace(data, health_scores=tuple(
+            replace(h, band="red", score=30) if h.account_id == account.account_id else h
+            for h in data.health_scores
+        ))
+    else:
+        data = replace(data, companies=tuple(
+            replace(c, arr_cents=1_000_000_000) if c.company_id == account.account_id else c
+            for c in data.companies
+        ))
+    orch, _ = setup_roster(sweep_conn)
+    gate = ActionGate(sweep_conn, tenant_id=T1, actor_principal_id=orch,
+                      verdict_source=FixtureVerdictSource(), now=CLOCK)
+    plane = CustomerDataPlane(
+        crm=FixtureCRMDataConnector(data=data), cs=FixtureCSPlatformConnector(data=data),
+        telemetry=FixtureProductTelemetryConnector(data=data), comms=FixtureCommsConnector(data=data),
+    )
+    result = run_time_to_value_sweep(plane, DEFAULT_TENANT, gate,
+                                   sweep_principal_id=orch, as_of=GAP_AS_OF)
+    assert all(i.account_id != account.account_id for i in result.work_items)

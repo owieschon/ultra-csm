@@ -604,19 +604,19 @@ def _slot_b_inputs_for_account(
         onboarding_activation_gap_ids=activation_gap_ids,
         slot_a_classifications=slot_a_classifications,
     )
-    if not evidence:
-        # No overdue plan, grounded milestone gap, open CTA, or open case --
-        # but usage_outcome_unverified (an unresolved success-plan objective
-        # against high adoption) carries its own cited evidence regardless.
-        # Reuse only that factor's evidence rather than dropping the account
-        # before Slot B ever sees it; other zero-evidence factors keep their
-        # existing (intentional) drop behavior.
-        evidence = _dedup_evidence_refs(
-            ref for factor in priority.factors
-            if factor.name == "usage_outcome_unverified"
-            for ref in factor.evidence
-        )
+    verification_evidence = _dedup_evidence_refs(
+        ref for factor in priority.factors
+        if factor.name == "usage_outcome_unverified"
+        for ref in factor.evidence
+    )
+    evidence = _dedup_evidence_refs((*evidence, *verification_evidence))
     if evidence_source_ids is not None:
+        # A reconstructed verification request needs both its objective and
+        # adoption sources; a partial match cannot support the same claim.
+        if _decision_purpose_for_factors(priority.factors) == "outcome_verification":
+            required_sources = {ref.source_id for ref in verification_evidence}
+            if not required_sources.issubset(evidence_source_ids):
+                return None
         evidence = _filter_evidence_refs_by_source_id(evidence, evidence_source_ids)
     if not evidence:
         return None

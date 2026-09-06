@@ -2160,6 +2160,296 @@
         },
         "tenant_id": "ultra-demo"
       }
+    },
+    {
+      "account_id": "87883d32-d4e1-59d3-831d-5e48278ceb7e",
+      "account_resolution": "exactly_one",
+      "candidate_account_ids": [],
+      "customer_contact_allowed": true,
+      "customer_draft": "Hi Riley, could you confirm the current status of Umbrella Logistics's success-plan objectives and share any completion evidence or updates we should record?",
+      "disposition": "propose_customer_action",
+      "draft_fallback_reason": null,
+      "draft_mode": "fixture",
+      "evidence": [
+        {
+          "field": "active_users",
+          "observed_at": "2026-06-21T00:00:00Z",
+          "source": "cs_platform",
+          "source_id": "87883d32-d4e1-59d3-831d-5e48278ceb7e"
+        },
+        {
+          "field": "objectives",
+          "observed_at": "2026-07-15",
+          "source": "cs_platform",
+          "source_id": "82051217-3f46-5a02-8c3b-1104bdf5ee11"
+        },
+        {
+          "field": "status",
+          "observed_at": "2026-07-15",
+          "source": "cs_platform",
+          "source_id": "82051217-3f46-5a02-8c3b-1104bdf5ee11"
+        }
+      ],
+      "internal_bridge_decision": {
+        "abstained": true,
+        "evidence": [],
+        "motion": null,
+        "reason": "No live engineering defect or product-feedback capability gap found.",
+        "signal": null,
+        "target": null
+      },
+      "motion": null,
+      "priority": {
+        "factors": [
+          {
+            "config_version": "value-model-config-v1",
+            "contribution": 18,
+            "evidence": [
+              {
+                "field": "active_users",
+                "observed_at": "2026-06-21T00:00:00Z",
+                "source": "cs_platform",
+                "source_id": "87883d32-d4e1-59d3-831d-5e48278ceb7e"
+              },
+              {
+                "field": "objectives",
+                "observed_at": "2026-07-15",
+                "source": "cs_platform",
+                "source_id": "82051217-3f46-5a02-8c3b-1104bdf5ee11"
+              },
+              {
+                "field": "status",
+                "observed_at": "2026-07-15",
+                "source": "cs_platform",
+                "source_id": "82051217-3f46-5a02-8c3b-1104bdf5ee11"
+              }
+            ],
+            "name": "usage_outcome_unverified",
+            "rule_name": "base_default",
+            "threshold_name": "outcome_activity_floor",
+            "threshold_value": 0.75,
+            "value": 0.8571428571428571
+          }
+        ],
+        "score": 18
+      },
+      "proposal": {
+        "action_type": "draft_customer_outreach",
+        "channel": "email",
+        "created_by_principal": "aaff1544-a693-50c6-94dc-b7a7317fb9b8",
+        "proposal_id": "runtime-generated:87883d32-d4e1-59d3-831d-5e48278ceb7e:draft_customer_outreach",
+        "status": "pending"
+      },
+      "reason": "Umbrella Logistics: outcome verification needed. Usage does not establish completion of the recorded objectives. Request an objective-status update using the cited plan records. Priority 18 from usage_outcome_unverified=18. Evidence [evidence:82051217-3f46-5a02-8c3b-1104bdf5ee11], [evidence:87883d32-d4e1-59d3-831d-5e48278ceb7e].",
+      "recipient_name": "Riley Chen",
+      "recipient_resolution": "first_consenting_fallback",
+      "recipient_role": "operations",
+      "recommended_action": "draft_customer_outreach",
+      "slot_a_classifications": [],
+      "swept_at": "2026-06-27",
+      "tenant_id": "ultra-demo",
+      "work_packet": {
+        "account_id": "87883d32-d4e1-59d3-831d-5e48278ceb7e",
+        "account_name": "Umbrella Logistics",
+        "allowed_ctas": [
+          {
+            "cta_id": "inspect_sources",
+            "enabled": true,
+            "governance_requirement": null,
+            "label": "Inspect sources",
+            "reason": "Source inspection is read-only.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "preview_artifact",
+            "enabled": true,
+            "governance_requirement": "human_approve_with_consent",
+            "label": "Preview artifact",
+            "reason": "Prepared artifact is available.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "request_gate_approval",
+            "enabled": true,
+            "governance_requirement": "human_approve_with_consent",
+            "label": "Request approval",
+            "reason": "Proposal is pending and requires human_approve_with_consent.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "mark_internal_reviewed",
+            "enabled": false,
+            "governance_requirement": "human_approve_with_consent",
+            "label": "Mark reviewed",
+            "reason": "Only internal-only recommendations can be marked reviewed.",
+            "source_organ": "governance.csm_actions"
+          },
+          {
+            "cta_id": "record_feedback",
+            "enabled": true,
+            "governance_requirement": null,
+            "label": "Record feedback",
+            "reason": "Operator feedback is ledgered for model/process review.",
+            "source_organ": "governance.csm_actions"
+          }
+        ],
+        "as_of": "2026-06-27",
+        "bucket_trace": [
+          {
+            "bucket": "identity",
+            "evidence_ids": [
+              "ae56f5f8-454c-550c-8046-dcc044a7e6bc"
+            ],
+            "state": "covered"
+          },
+          {
+            "bucket": "priority",
+            "evidence_ids": [
+              "87883d32-d4e1-59d3-831d-5e48278ceb7e",
+              "82051217-3f46-5a02-8c3b-1104bdf5ee11",
+              "82051217-3f46-5a02-8c3b-1104bdf5ee11"
+            ],
+            "state": "covered"
+          },
+          {
+            "bucket": "source_evidence",
+            "evidence_ids": [
+              "87883d32-d4e1-59d3-831d-5e48278ceb7e",
+              "82051217-3f46-5a02-8c3b-1104bdf5ee11",
+              "82051217-3f46-5a02-8c3b-1104bdf5ee11"
+            ],
+            "state": "covered"
+          },
+          {
+            "bucket": "internal_bridge",
+            "evidence_ids": [],
+            "state": "not_applicable"
+          }
+        ],
+        "cadence": "next_sweep",
+        "coverage_trace": {
+          "account_resolution": "exactly_one",
+          "accounts_in_book": 9,
+          "accounts_scanned": 9,
+          "coverage_label": "sweep_item"
+        },
+        "diagnostic_hypothesis": {
+          "basis": [
+            "evidence:cs_platform:87883d32-d4e1-59d3-831d-5e48278ceb7e:active_users",
+            "evidence:cs_platform:82051217-3f46-5a02-8c3b-1104bdf5ee11:objectives",
+            "evidence:cs_platform:82051217-3f46-5a02-8c3b-1104bdf5ee11:status"
+          ],
+          "confidence": 0.69,
+          "confidence_calibrated": false,
+          "confidence_label": "medium",
+          "confidence_method": "packet_structure_heuristic",
+          "label": "unverified_hypothesis",
+          "summary": "Umbrella Logistics: Umbrella Logistics: outcome verification needed. Usage does not establish completion of the recorded objectives. Request an objective-status update using the cited plan records. Priority 18 from usage_outcome_unverified=18. Evidence [evidence:82051217-3f46-5a02-8c3b-1104bdf5ee11], [evidence:87883d32-d4e1-59d3-831d-5e48278ceb7e].",
+          "unknowns": [
+            "best_customer_recipient"
+          ],
+          "validation_status": "out_of_validated_domain"
+        },
+        "evidence_chain": [
+          {
+            "claim": "cs_platform.active_users observed for 87883d32-d4e1-59d3-831d-5e48278ceb7e",
+            "field": "active_users",
+            "observed_at": "2026-06-21T00:00:00Z",
+            "provenance_tier": "raw_fact",
+            "source": "cs_platform",
+            "source_id": "87883d32-d4e1-59d3-831d-5e48278ceb7e",
+            "step_id": "evidence:cs_platform:87883d32-d4e1-59d3-831d-5e48278ceb7e:active_users",
+            "validation_status": "oracle_graded"
+          },
+          {
+            "claim": "cs_platform.objectives observed for 82051217-3f46-5a02-8c3b-1104bdf5ee11",
+            "field": "objectives",
+            "observed_at": "2026-07-15",
+            "provenance_tier": "raw_fact",
+            "source": "cs_platform",
+            "source_id": "82051217-3f46-5a02-8c3b-1104bdf5ee11",
+            "step_id": "evidence:cs_platform:82051217-3f46-5a02-8c3b-1104bdf5ee11:objectives",
+            "validation_status": "oracle_graded"
+          },
+          {
+            "claim": "cs_platform.status observed for 82051217-3f46-5a02-8c3b-1104bdf5ee11",
+            "field": "status",
+            "observed_at": "2026-07-15",
+            "provenance_tier": "raw_fact",
+            "source": "cs_platform",
+            "source_id": "82051217-3f46-5a02-8c3b-1104bdf5ee11",
+            "step_id": "evidence:cs_platform:82051217-3f46-5a02-8c3b-1104bdf5ee11:status",
+            "validation_status": "oracle_graded"
+          }
+        ],
+        "feedback_hooks": [
+          {
+            "enabled": true,
+            "hook_id": "verdict_reason",
+            "label": "Capture approval or rejection reason",
+            "target": "rejection_ledger"
+          },
+          {
+            "enabled": true,
+            "hook_id": "missing_factor",
+            "label": "Flag missing success factor",
+            "target": "rejection_ledger"
+          }
+        ],
+        "field_validation": {
+          "account_id": "deterministic_oracle",
+          "account_name": "deterministic_oracle",
+          "allowed_ctas": "deterministic_oracle",
+          "as_of": "deterministic_oracle",
+          "bucket_trace": "deterministic_oracle",
+          "cadence": "deterministic_oracle",
+          "coverage_trace": "deterministic_oracle",
+          "diagnostic_hypothesis": "out_of_validated_domain",
+          "evidence_chain": "deterministic_oracle",
+          "feedback_hooks": "deterministic_oracle",
+          "field_validation": "deterministic_oracle",
+          "governance_boundary": "deterministic_oracle",
+          "job_type": "deterministic_oracle",
+          "lane": "deterministic_oracle",
+          "packet_version": "deterministic_oracle",
+          "prepared_artifact": "judge_graded_in_domain_or_out_of_validated_domain",
+          "primary_next_step": "deterministic_oracle",
+          "recommended_action": "deterministic_oracle",
+          "tenant_id": "deterministic_oracle"
+        },
+        "governance_boundary": {
+          "action_type": "draft_customer_outreach",
+          "autonomy_tier": 2,
+          "can_execute_from_ui": false,
+          "customer_affecting": true,
+          "proposal_status": "pending",
+          "release_condition": "human_approve_with_consent",
+          "required_permission": "customer.outreach.draft",
+          "requires_action_gate": true,
+          "source_organ": "governance.csm_actions"
+        },
+        "job_type": "customer_outreach",
+        "lane": "needs_judgment",
+        "packet_version": "csm-work-packet-v1",
+        "prepared_artifact": {
+          "artifact_type": "customer_draft",
+          "body": "Hi Riley, could you confirm the current status of Umbrella Logistics's success-plan objectives and share any completion evidence or updates we should record?",
+          "requires_approval": true,
+          "source_organ": "agent1.slot_b",
+          "title": "Customer outreach draft",
+          "validation_status": "judge_graded_in_domain"
+        },
+        "primary_next_step": "Review the pending draft_customer_outreach proposal in ActionGate.",
+        "recommended_action": {
+          "action_type": "draft_customer_outreach",
+          "motion": null,
+          "rationale": "Customer-facing email/text draft; never sent without approval.",
+          "source_organ": "motion/playbook + governance.csm_actions",
+          "target_actor": "customer_success_manager",
+          "validation_status": "oracle_graded"
+        },
+        "tenant_id": "ultra-demo"
+      }
     }
   ]
 }
