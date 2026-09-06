@@ -12,7 +12,7 @@ import pytest
 
 from ultra_csm.agent1 import run_time_to_value_sweep
 from ultra_csm.committers import load_action_proposal
-from ultra_csm.data_plane import ACME_LOGISTICS, DEFAULT_TENANT, SimTenantStore
+from ultra_csm.data_plane import SOYLENT_INJECTION, DEFAULT_TENANT, SimTenantStore
 from ultra_csm.data_plane import salesforce_writeback as committer_module
 from ultra_csm.data_plane.live_smoke import HttpRequest, HttpResponse
 from ultra_csm.data_plane.salesforce_writeback import (
@@ -63,7 +63,7 @@ def _bridge_ctx(runtime_conn, tmp_path):
     sweep = run_time_to_value_sweep(
         store.data_plane(), DEFAULT_TENANT, gate, sweep_principal_id=orch, as_of=AS_OF,
     )
-    item = next(i for i in sweep.work_items if i.account_id == ACME_LOGISTICS)
+    item = next(i for i in sweep.work_items if i.account_id == SOYLENT_INJECTION)
     proposal = load_action_proposal(
         runtime_conn,
         tenant_id=T1,
@@ -103,7 +103,7 @@ def test_live_committer_creates_exactly_one_task_and_ledgers_it(runtime_conn, tm
         assert req.url.endswith("/sobjects/Task")
         body = json.loads(req.body)
         assert body["Subject"].startswith("UCSM-P5A ")
-        assert body["WhatId"] == ACME_LOGISTICS
+        assert body["WhatId"] == SOYLENT_INJECTION
 
         ledger_path = ledger_dir / "writeback_ledger.jsonl"
         assert ledger_path.exists()

@@ -4,6 +4,7 @@ its disk loader. No CustomerDataPlane, no live Notion -- Decision 9 of
 
 from __future__ import annotations
 
+from dataclasses import replace
 from unittest.mock import patch
 
 import pytest
@@ -115,19 +116,30 @@ def sweep_conn(runtime_conn):
         runtime_conn.rollback()
 
 
-def _run_sweep(sweep_conn, *, playbooks):
+def _run_sweep(sweep_conn, *, playbooks, open_blocker=False):
     orch, _authority = setup_roster(sweep_conn)
     gate = ActionGate(
         sweep_conn, tenant_id=T1, actor_principal_id=orch, verdict_source=FixtureVerdictSource(), now=CLOCK,
     )
-    return run_time_to_value_sweep(
-        build_sweep_fixture_data_plane(tenant_id=DEFAULT_TENANT),
-        DEFAULT_TENANT,
-        gate,
-        sweep_principal_id=orch,
-        as_of="2026-06-27",
-        playbooks=playbooks,
-    )
+    plane = build_sweep_fixture_data_plane(tenant_id=DEFAULT_TENANT)
+    list_cases = plane.crm.list_cases
+
+    def cases_for_account(account_id):
+        cases = list_cases(account_id)
+        if open_blocker or account_id != ACME_LOGISTICS:
+            return cases
+        # Content eligibility is tested after the independent activation case closes.
+        return [replace(c, status="Closed", closed_at="2026-06-26") for c in cases]
+
+    with patch.object(plane.crm, "list_cases", side_effect=cases_for_account):
+        return run_time_to_value_sweep(
+            plane,
+            DEFAULT_TENANT,
+            gate,
+            sweep_principal_id=orch,
+            as_of="2026-06-27",
+            playbooks=playbooks,
+        )
 
 
 def test_sweep_integration_content_route_fires_when_tier_forbids_outreach_but_catalog_matches(sweep_conn):
@@ -163,3 +175,12 @@ def test_sweep_integration_draft_customer_outreach_takes_precedence_over_content
 
     acme = next(item for item in sweep.work_items if item.account_id == ACME_LOGISTICS)
     assert acme.recommended_action == "draft_customer_outreach"
+
+
+def test_open_blocker_prevents_matching_catalog_from_creating_customer_action(sweep_conn):
+    with patch("ultra_csm.agent1.sweep.load_tenant_content_catalog", return_value=(_MATCHING_ENTRY,)):
+        sweep = _run_sweep(sweep_conn, playbooks=_FORBIDDING_PLAYBOOKS, open_blocker=True)
+    acme = next(item for item in sweep.work_items if item.account_id == ACME_LOGISTICS)
+    assert acme.recommended_action == "recommend_next_best_action"
+    assert acme.disposition == "internal_review"
+    assert acme.customer_draft is None and acme.proposal is None
