@@ -96,7 +96,7 @@ credentialed connector and model lanes stay separate.
 `eval/customer_outcome_comparison.py` compares the unchanged Ultra sweep
 (`run_time_to_value_sweep` behind the real `ActionGate`, on an `EphemeralCluster`
 local Postgres) against a small, independently implemented rules baseline, over
-24 controller-authored accounts (`eval/customer_outcome_cases.py`, 12 stories x 2
+24 model-authored accounts (`eval/customer_outcome_cases.py`, 12 stories x 2
 decision points). The job: choose a justified customer action, internal
 review/escalation, or hold from account facts at a point in time -- specifically
 whether a claimed completed change actually establishes the customer's stated
