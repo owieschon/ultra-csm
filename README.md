@@ -91,6 +91,29 @@ Run `make scorecard-csm-check` and `make eval`. The [quickstart](QUICKSTART.md) 
 remaining local gates and prerequisites. None needs cloud credentials or customer data;
 credentialed connector and model lanes stay separate.
 
+## Customer-outcome comparison eval
+
+`eval/customer_outcome_comparison.py` compares the unchanged Ultra sweep
+(`run_time_to_value_sweep` behind the real `ActionGate`, on an `EphemeralCluster`
+local Postgres) against a small, independently implemented rules baseline, over
+24 controller-authored accounts (`eval/customer_outcome_cases.py`, 12 stories x 2
+decision points). The job: choose a justified customer action, internal
+review/escalation, or hold from account facts at a point in time -- specifically
+whether a claimed completed change actually establishes the customer's stated
+objective. Neither policy sees the expected decisions; the oracle lives in a
+section of `customer_outcome_cases.py` that the scenario builder never reads.
+
+```
+PYTHONPATH=src:. python eval/customer_outcome_comparison.py \
+    --out-json /path/to/result.json --out-md /path/to/report.md
+```
+
+Both output paths are required explicitly and are never overwritten silently
+(pass `--force` to overwrite). The Markdown report lists each case's allowed
+decisions, both policies' normalized decisions, and any forbidden-consequence
+violation; it carries no cost, budget, or private-path metadata. This is not a
+Pylon product benchmark -- it's a development-capability regression eval.
+
 ## Claim boundary
 
 The static demo, dev and trial connector receipts, single-labeler judge, and synthetic
