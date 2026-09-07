@@ -19,6 +19,11 @@ async function openQueue(page: Page) {
   await page.getByRole("tab", { name: /Queue/ }).click();
 }
 
+async function showInbox(page: Page) {
+  const back = page.getByRole("button", { name: "← Back to queue", exact: true });
+  if (await back.isVisible()) await back.click();
+}
+
 test("first visit shows the orientation strip; dismissal persists", async ({ page }) => {
   await page.goto("/ui/");
   const strip = page.getByRole("note").filter({ hasText: "An agent works this" });
@@ -76,6 +81,7 @@ test("approving simulates the full receipt and advances the queue", async ({ pag
   // The resolved row strikes through; inspecting it shows the simulated
   // receipt, honesty-labeled — no claim of a verified payload hash, a real
   // ActionGate call, a committer receipt, or a sent message.
+  await showInbox(page);
   await page.locator(".row.resolved", { hasText: "Ironhorse" }).click();
   await expect(page.getByText("Approved (simulated)")).toBeVisible();
   const ledger = page.getByRole("log");
@@ -89,6 +95,7 @@ test("approving simulates the full receipt and advances the queue", async ({ pag
   await expect(ledger.getByText("Proposed", { exact: true })).toBeVisible();
 
   // Step 04 reflects the recorded decision.
+  await page.getByText("Decision reasoning", { exact: true }).click();
   await expect(page.getByText("Decision recorded")).toBeVisible();
 
   expect(mutatingRequests).toEqual([]);
@@ -108,6 +115,7 @@ test("reloading clears simulated decisions and restores the full pending queue",
   await openQueue(page);
   await expect(page.getByRole("heading", { name: "Ironhorse Freight Co" })).toBeVisible();
   await expect(pendingCount).toHaveText("10");
+  await showInbox(page);
   await page.locator(".row", { hasText: "Ironhorse" }).click();
   const ledger = page.getByRole("log");
   await expect(ledger.locator(".sim-chip")).toHaveCount(0);
@@ -165,7 +173,7 @@ for (const scenario of [
       await route.fulfill({ response, json: body });
     });
     await openQueue(page);
-    if (scenario.noDraft) await page.getByRole("button", { name: "Inspect fallback for Ironhorse Freight Co", exact: true }).click();
+    if (scenario.noDraft) { await showInbox(page); await page.getByRole("button", { name: "Inspect fallback for Ironhorse Freight Co", exact: true }).click(); }
     await expect(page.getByRole("heading", { name: "Ironhorse Freight Co" })).toBeVisible();
     const chip = page.locator(".chip-fallback-reason");
     if (scenario.label) await expect(chip).toHaveText(scenario.label);
@@ -174,6 +182,7 @@ for (const scenario of [
     if (scenario.noDraft) {
       await expect(page.locator(".sec-h .t").filter({ hasText: /^Draft status$/ })).toBeVisible();
       await expect(page.locator(".draft-body")).toHaveCount(0);
+      await page.getByText("Decision reasoning", { exact: true }).click();
       await expect(page.locator(".control-path")).toContainText("No customer draft");
       await expect(page.locator(".control-path")).toContainText("Human review");
       await expect(page.getByRole("button", { name: /^Approve/, exact: false })).toBeDisabled();
@@ -202,12 +211,12 @@ test("clearing the queue composes the payoff and returns to a quiet book", async
 
   const pendingCount = page.locator(".lane-h .c").first();
   for (let expected = 9; expected >= 0; expected--) {
-    const previousProposal = await page.locator(".rail-top .gate .mono").first().innerText();
+    const previousAccount = await page.locator(".id-name").first().innerText();
     await page.keyboard.press("a");
     await expect(pendingCount).toHaveText(String(expected));
     if (expected > 0) {
-      // Wait for a different proposal; the old approval label can survive one render.
-      await expect(page.locator(".rail-top .gate").first()).not.toContainText(previousProposal);
+      // Wait for a different account's decision to load; the old approval label can survive one render.
+      await expect(page.locator(".id-name").first()).not.toHaveText(previousAccount);
       await expect(page.locator(".rail-top .gate").first()).toContainText(
         "needs your approval",
         { timeout: 5000 }
@@ -227,15 +236,12 @@ test("clearing the queue composes the payoff and returns to a quiet book", async
   );
 });
 
-test("day scrubber is clamped to the exported window and re-renders real data", async ({ page, viewport }) => {
-  test.skip(
-    !!viewport && viewport.width < 640,
-    "the scrubber is display:none at phone widths"
-  );
+test("day scrubber is clamped to the exported window and re-renders real data", async ({ page }) => {
   await dismissIntro(page);
   await page.goto("/ui/");
   await expect(page.getByRole("heading", { name: /Book/ })).toBeVisible();
 
+  await page.getByText("Options", { exact: true }).click();
   const slider = page.locator('input[type="range"]');
   await expect(slider).toHaveAttribute("min", "134");
   await expect(slider).toHaveAttribute("max", "140");
@@ -257,11 +263,7 @@ test("day scrubber is clamped to the exported window and re-renders real data", 
   await expect(page.getByText(/need you\.$/)).toBeVisible();
 });
 
-test("palette speaks plain English and lands quiet accounts in the book", async ({ page, viewport }) => {
-  test.skip(
-    !!viewport && viewport.width < 640,
-    "the search affordance is display:none at phone widths"
-  );
+test("palette speaks plain English and lands quiet accounts in the book", async ({ page }) => {
   await dismissIntro(page);
   await page.goto("/ui/");
   await expect(page.getByRole("heading", { name: /Book/ })).toBeVisible();
@@ -285,8 +287,9 @@ test("queue rows carry no raw system enums as primary labels", async ({ page }) 
   await openQueue(page);
   await expect(page.getByRole("heading", { name: "Ironhorse Freight Co" })).toBeVisible();
 
+  await showInbox(page);
   const lanes = page.locator(".lanes");
-  await expect(lanes.getByText("Needs judgment").first()).toBeVisible();
+  await expect(lanes.getByText("Personal email").first()).toBeVisible();
   await expect(lanes.getByText("needs_judgment")).toHaveCount(0);
   await expect(lanes.getByText("high_touch")).toHaveCount(0);
 });
