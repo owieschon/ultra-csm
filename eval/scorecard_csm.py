@@ -507,7 +507,9 @@ def _assert_refusal(sweep: SweepResult) -> None:
     assert UMBRELLA_HEALTHY in sweep.swept_accounts
     assert STARK_INSUFFICIENT in sweep.swept_accounts
     item_ids = {item.account_id for item in sweep.work_items}
-    assert UMBRELLA_HEALTHY not in item_ids
+    umbrella = next(item for item in sweep.work_items if item.account_id == UMBRELLA_HEALTHY)
+    assert any(f.name == "usage_outcome_unverified" for f in umbrella.priority.factors)
+    assert "outcome verification needed" in umbrella.reason
     assert STARK_INSUFFICIENT not in item_ids
 
 

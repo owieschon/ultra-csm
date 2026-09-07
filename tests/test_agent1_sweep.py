@@ -181,7 +181,12 @@ def test_agent1_sweep_returns_ranked_work_queue_and_escalation_lane(sweep_conn):
 
     work_by_account = {item.account_id: item for item in sweep.work_items}
     assert {ACME_LOGISTICS, GLOBEX_TELEMETRY_GAP, INITECH_CSPLAN_GAP} <= set(work_by_account)
-    assert UMBRELLA_HEALTHY not in work_by_account
+    # UMBRELLA_HEALTHY has an unresolved (not-yet-overdue) success-plan
+    # objective against high adoption -- usage_outcome_unverified evidence,
+    # not silence. It now surfaces as a pending outcome-verification item
+    # instead of disappearing before the value model runs.
+    umbrella = work_by_account[UMBRELLA_HEALTHY]
+    assert "outcome verification needed" in umbrella.reason
     assert STARK_INSUFFICIENT not in work_by_account
     assert WAYNE_NORTH not in work_by_account
     assert WAYNE_SOUTH not in work_by_account

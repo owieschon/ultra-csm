@@ -668,6 +668,55 @@
         "proposal_action_type": "draft_customer_outreach",
         "proposal_status": "pending",
         "recommended_action": "draft_customer_outreach"
+      },
+      {
+        "account_id": "87883d32-d4e1-59d3-831d-5e48278ceb7e",
+        "account_resolution": "exactly_one",
+        "customer_contact_allowed": true,
+        "disposition": "propose_customer_action",
+        "evidence_ids": [
+          "87883d32-d4e1-59d3-831d-5e48278ceb7e",
+          "82051217-3f46-5a02-8c3b-1104bdf5ee11",
+          "82051217-3f46-5a02-8c3b-1104bdf5ee11"
+        ],
+        "has_customer_draft": true,
+        "priority": {
+          "factors": [
+            {
+              "config_version": "value-model-config-v1",
+              "contribution": 18,
+              "evidence": [
+                {
+                  "field": "active_users",
+                  "observed_at": "2026-06-21T00:00:00Z",
+                  "source": "cs_platform",
+                  "source_id": "87883d32-d4e1-59d3-831d-5e48278ceb7e"
+                },
+                {
+                  "field": "objectives",
+                  "observed_at": "2026-07-15",
+                  "source": "cs_platform",
+                  "source_id": "82051217-3f46-5a02-8c3b-1104bdf5ee11"
+                },
+                {
+                  "field": "status",
+                  "observed_at": "2026-07-15",
+                  "source": "cs_platform",
+                  "source_id": "82051217-3f46-5a02-8c3b-1104bdf5ee11"
+                }
+              ],
+              "name": "usage_outcome_unverified",
+              "rule_name": "base_default",
+              "threshold_name": "outcome_activity_floor",
+              "threshold_value": 0.75,
+              "value": 0.8571428571428571
+            }
+          ],
+          "score": 18
+        },
+        "proposal_action_type": "draft_customer_outreach",
+        "proposal_status": "pending",
+        "recommended_action": "draft_customer_outreach"
       }
     ]
   },

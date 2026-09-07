@@ -535,7 +535,7 @@ def _verification_output_fields(
     )
     draft = None
     if request.customer_contact_allowed:
-        contact = request.contact_name or "there"
+        contact = next(iter((request.contact_name or "").split()), "there")
         draft = (
             f"Hi {contact}, could you confirm the current status of "
             f"{request.account_name}'s success-plan objectives and share any completion "
