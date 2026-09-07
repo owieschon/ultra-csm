@@ -27,6 +27,8 @@ for (const legacy of [false, true]) {
     await page.getByRole("button", { name: /^Trailhead Logistics/ }).click();
     await expect(page.getByRole("heading", { name: "Trailhead Logistics" })).toBeVisible();
 
+    await expect(page.locator(".hyp-disclaimer")).toBeVisible();
+    await page.getByText("Decision reasoning", { exact: true }).click();
     const hypothesisRow = page.locator(".packet-hyp");
     await expect(hypothesisRow).toBeVisible();
     await expect(hypothesisRow).not.toContainText(/\d+\s*%/);
