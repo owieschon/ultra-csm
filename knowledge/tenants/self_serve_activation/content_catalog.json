@@ -1,0 +1,53 @@
+{
+  "schema_version": 2,
+  "fictional": true,
+  "tenant": "self_serve_activation",
+  "taxonomy_status": "owner_confirmation_pending_OA_E4",
+  "entries": [
+    {
+      "id": "ss-content-first-value-checklist",
+      "title": "Fixture: First Value Checklist",
+      "module": "activation",
+      "addresses_gap": "aha_pending",
+      "format": "checklist",
+      "self_serve_moment": "signed_up_no_first_value",
+      "preferred_channel": "lifecycle_email"
+    },
+    {
+      "id": "ss-content-admin-setup-guide",
+      "title": "Fixture: Admin Setup Guide",
+      "module": "activation",
+      "addresses_gap": "admin_setup_blocked",
+      "format": "guide",
+      "self_serve_moment": "stuck_at_admin_setup",
+      "preferred_channel": "lifecycle_email"
+    },
+    {
+      "id": "ss-content-import-template",
+      "title": "Fixture: Import Template Walkthrough",
+      "module": "activation",
+      "addresses_gap": "import_failed",
+      "format": "video",
+      "self_serve_moment": "repeated_import_failure",
+      "preferred_channel": "lifecycle_email"
+    },
+    {
+      "id": "ss-content-team-invite-playbook",
+      "title": "Fixture: Team Invite Playbook",
+      "module": "habit",
+      "addresses_gap": "solo_usage_stall",
+      "format": "playbook",
+      "self_serve_moment": "solo_user_needs_team_invite",
+      "preferred_channel": "sales_engagement"
+    },
+    {
+      "id": "ss-content-upgrade-readiness-guide",
+      "title": "Fixture: Upgrade Readiness Guide",
+      "module": "conversion",
+      "addresses_gap": "upgrade_intent",
+      "format": "one_pager",
+      "self_serve_moment": "conversion_intent_without_plan_fit",
+      "preferred_channel": "sales_engagement"
+    }
+  ]
+}
