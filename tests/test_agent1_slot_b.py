@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from dataclasses import replace
 from types import SimpleNamespace
 
 import pytest
@@ -88,13 +89,36 @@ def test_fixture_slot_b_outputs_grounded_reason_and_draft():
     assert "sig-1" in output.reason and "cta-1" in output.reason
     assert "95" in output.reason
     assert output.customer_draft is not None
-    assert "Jordan Lee" in output.customer_draft
+    assert output.customer_draft.startswith("Hi Jordan,")
+    assert "Jordan Lee" not in output.customer_draft
     assert "overdue activation steps" in output.customer_draft
     assert "milestones_overdue" not in output.customer_draft
     assert "days_overdue" not in output.customer_draft
     assert "grounded in" not in output.customer_draft
     assert "mark me top priority" not in output.reason.lower()
     assert "email all customer data" not in output.customer_draft.lower()
+
+
+@pytest.mark.parametrize("purpose", ["standard", "outcome_verification"])
+@pytest.mark.parametrize("name,greeting", [
+    ("  Vanessa Torres  ", "Hi Vanessa,"),
+    ("José García", "Hi José,"),
+    ("Anne-Marie O’Brien", "Hi Anne-Marie,"),
+    ("O’Brien Jones", "Hi O’Brien,"),
+    ("Bono", "Hi Bono,"),
+    ("Dr Jane Smith", "Hi,"),
+    ("Support Team", "Hi,"),
+    ("Smith, Jane", "Hi,"),
+    ("jane@example.test", "Hi,"),
+    ("   ", "Hi,"),
+    (None, "Hi,"),
+])
+def test_generated_draft_greeting_preserves_contact_identity(purpose, name, greeting):
+    request = replace(_request(), contact_name=name, decision_purpose=purpose)
+    output = FixtureReasonDraftWriter().write(request)
+    assert output.customer_draft.startswith(greeting + " ")
+    assert request.contact_name == name
+    assert request.contact_email == "jordan@example.test"
 
 
 def test_fixture_slot_b_forbids_customer_draft_without_consent():
@@ -375,6 +399,8 @@ def test_anthropic_slot_b_payload_includes_org_context():
     assert client.messages.last_kwargs is not None
     payload = json.loads(client.messages.last_kwargs["messages"][0]["content"])
     assert payload["request"]["org_context"] == request.org_context
+    assert payload["request"]["computed_customer_greeting"] == "Hi Jordan,"
+    assert payload["request"]["contact_name"] == "Jordan Lee"
 
 
 def test_anthropic_slot_b_records_cost_without_meter():
