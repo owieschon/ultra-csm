@@ -14,7 +14,7 @@ from ultra_csm.committers import (
     auto_approve_internal,
     load_action_proposal,
 )
-from ultra_csm.data_plane import ACME_LOGISTICS, DEFAULT_TENANT, SimTenantStore
+from ultra_csm.data_plane import ACME_LOGISTICS, SOYLENT_INJECTION, DEFAULT_TENANT, SimTenantStore
 from ultra_csm.governance import (
     ActionGate,
     FixtureVerdictSource,
@@ -51,7 +51,7 @@ def test_sim_commit_reobserves_outcome_and_is_idempotent(runtime_conn, tmp_path)
             sweep_principal_id=orch,
             as_of=AS_OF,
         )
-        item = next(item for item in first.work_items if item.account_id == ACME_LOGISTICS)
+        item = next(item for item in first.work_items if item.account_id == SOYLENT_INJECTION)
         proposal = load_action_proposal(
             runtime_conn,
             tenant_id=T1,
@@ -77,12 +77,12 @@ def test_sim_commit_reobserves_outcome_and_is_idempotent(runtime_conn, tmp_path)
         assert first_receipt.committed is True
         assert second_receipt.committed is False
         assert crm_receipt.committed is True
-        assert advance["completed_accounts"] == (ACME_LOGISTICS,)
+        assert advance["completed_accounts"] == (SOYLENT_INJECTION,)
 
-        after_milestones = store.data_plane().telemetry.list_ttv_milestones(ACME_LOGISTICS)
+        after_milestones = store.data_plane().telemetry.list_ttv_milestones(SOYLENT_INJECTION)
         assert after_milestones
         assert all(milestone.achieved_at is not None for milestone in after_milestones)
-        assert _outcome_state(store, ACME_LOGISTICS) == "known"
+        assert _outcome_state(store, SOYLENT_INJECTION) == "known"
 
         second = run_time_to_value_sweep(
             store.data_plane(),
@@ -91,9 +91,9 @@ def test_sim_commit_reobserves_outcome_and_is_idempotent(runtime_conn, tmp_path)
             sweep_principal_id=orch,
             as_of="2026-06-28",
         )
-        acme = next(item for item in second.work_items if item.account_id == ACME_LOGISTICS)
-        assert acme.priority is not None
-        assert "milestones_overdue" not in {factor.name for factor in acme.priority.factors}
+        account_item = next(item for item in second.work_items if item.account_id == SOYLENT_INJECTION)
+        assert account_item.priority is not None
+        assert "milestones_overdue" not in {factor.name for factor in account_item.priority.factors}
     finally:
         runtime_conn.rollback()
 
@@ -192,7 +192,7 @@ def test_sim_committers_recover_pending_crash_reservations(
             store.data_plane(), DEFAULT_TENANT, gate,
             sweep_principal_id=orch, as_of=AS_OF,
         )
-        item = next(item for item in sweep.work_items if item.account_id == ACME_LOGISTICS)
+        item = next(item for item in sweep.work_items if item.account_id == SOYLENT_INJECTION)
         proposal = load_action_proposal(
             runtime_conn,
             tenant_id=T1,

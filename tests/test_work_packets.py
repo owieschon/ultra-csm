@@ -78,10 +78,8 @@ def test_diagnostic_hypothesis_names_its_score_as_an_uncalibrated_structure_heur
         assert hypothesis.confidence_calibrated is False
 
 
-def test_new_confidence_metadata_leaves_legacy_score_and_action_untouched(sweep_conn):
-    """The additive metadata must not perturb the legacy numeric fields, the
-    lane, or the recommended action for a seeded packet -- this is the same
-    heuristic, only truthfully labeled."""
+def test_internal_handoff_preserves_confidence_metadata_and_priority(sweep_conn):
+    """An internal handoff retains the existing priority and confidence heuristic."""
     sweep = _sweep(sweep_conn)
     item = next(
         i for i in sweep.work_items
@@ -92,9 +90,10 @@ def test_new_confidence_metadata_leaves_legacy_score_and_action_untouched(sweep_
 
     assert packet.diagnostic_hypothesis.confidence == 0.72
     assert packet.diagnostic_hypothesis.confidence_label == "medium"
-    assert packet.recommended_action.action_type == "draft_customer_outreach"
+    assert packet.recommended_action.action_type == "recommend_next_best_action"
+    assert item.customer_draft is None and item.proposal is None
     assert item.priority.score == 172
-    assert packet.lane == "needs_judgment"
+    assert packet.lane == "prepared"
     assert packet.diagnostic_hypothesis.confidence_method == "packet_structure_heuristic"
     assert packet.diagnostic_hypothesis.confidence_calibrated is False
 

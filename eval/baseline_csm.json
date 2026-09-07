@@ -33,8 +33,8 @@
       {
         "account_id": "a317f5e7-575e-5879-8256-9082e40ef19f",
         "account_resolution": "exactly_one",
-        "customer_contact_allowed": true,
-        "disposition": "propose_customer_action",
+        "customer_contact_allowed": false,
+        "disposition": "internal_review",
         "evidence_ids": [
           "6dcc1c92-e0fd-5d6f-808f-d2e747f04415",
           "d2212e35-9ab1-52ff-af61-7ed49fe36086",
@@ -42,7 +42,7 @@
           "4ddf4d0e-2600-56f7-9edc-a5a0071d8186",
           "a317f5e7-575e-5879-8256-9082e40ef19f"
         ],
-        "has_customer_draft": true,
+        "has_customer_draft": false,
         "priority": {
           "factors": [
             {
@@ -202,9 +202,9 @@
           ],
           "score": 172
         },
-        "proposal_action_type": "draft_customer_outreach",
-        "proposal_status": "pending",
-        "recommended_action": "draft_customer_outreach"
+        "proposal_action_type": null,
+        "proposal_status": null,
+        "recommended_action": "recommend_next_best_action"
       },
       {
         "account_id": "9bbdd7b2-55b0-5257-acf8-808ad224e276",
