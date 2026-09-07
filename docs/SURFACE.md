@@ -9,9 +9,9 @@ The catalog catches additions, removals, and replacements. It does not assert th
 <!-- sourcebound:begin repository-surface -->
 | surface | discovered | examples |
 | --- | ---: | --- |
-| api-symbol | 1584 | `APIMetrics`, `ARRChange`, `AccountAttributionCandidate`, and 1581 more |
+| api-symbol | 1568 | `APIMetrics`, `ARRChange`, `AccountAttributionCandidate`, and 1565 more |
 | cli-command | 20 | `alarms`, `approve`, `check-in`, and 17 more |
-| cli-option | 267 | `--a6-expansion`, `--account`, `--account-slug`, and 264 more |
+| cli-option | 262 | `--a6-expansion`, `--account`, `--account-slug`, and 259 more |
 | make-target | 107 | `action-control-contract`, `action-control-contract-check`, `action-control-sandbox-check`, and 104 more |
 | mcp-tool | 18 | `confirm_book`, `confirm_book_mappings`, `get_account_brief`, and 15 more |
 | package | 2 | `ultra-csm`, `ultra-csm-ops-surface` |
@@ -19,7 +19,7 @@ The catalog catches additions, removals, and replacements. It does not assert th
 | runtime-constraint | 1 | `Python >=3.10` |
 | schema | 3 | `ActionControlSandboxSession`, `ActionControlVerticalSlice`, `vercel` |
 | test-runner | 1 | `test:e2e` |
-| test-suite | 152 | `tests/test_account_brief_comms.py`, `tests/test_action_control_contract.py`, `tests/test_action_control_sandbox.py`, and 149 more |
+| test-suite | 151 | `tests/test_account_brief_comms.py`, `tests/test_action_control_contract.py`, `tests/test_action_control_sandbox.py`, and 148 more |
 
-<!-- sourcebound:inventory-sha256 cd7a51e9209e878ff092fabb7a8e83804223c10e9ff5fbf4a486a26140ad5d27 -->
+<!-- sourcebound:inventory-sha256 c52efa4d57a980dfa10bb5836f70a04af25059f832b7129f366b8e83cceaa173 -->
 <!-- sourcebound:end repository-surface -->

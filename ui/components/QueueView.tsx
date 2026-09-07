@@ -6,6 +6,9 @@ import { SweepData } from "@/lib/useSweep";
 import { QueueLanes, LaneItem } from "@/components/QueueLanes";
 import { QueueDetail } from "@/components/QueueDetail";
 import { draftFallbackReasonLabel } from "@/lib/labels";
+import { ActionRail, ActionRailHandle } from "@/components/ActionRail";
+import { DemoLedgerEvent, DemoVerdict } from "@/lib/demoSim";
+import { Ref } from "react";
 
 export function QueueView({
   day,
@@ -14,8 +17,14 @@ export function QueueView({
   sweepError,
   selectedProposalId,
   onSelect,
+  onClearSelection,
   onSelectedItemChange,
   onBackToBook,
+  railRef,
+  onVerdict,
+  readOnly,
+  demoLedger,
+  onDemoVerdict,
 }: {
   day: number | undefined;
   accounts: AccountSummary[] | null;
@@ -23,8 +32,18 @@ export function QueueView({
   sweepError: string | null;
   selectedProposalId: string | null;
   onSelect: (proposalId: string) => void;
+  onClearSelection: () => void;
   onSelectedItemChange: (item: WorkItem | null) => void;
   onBackToBook: () => void;
+  railRef: Ref<ActionRailHandle>;
+  onVerdict: (proposalId: string) => void;
+  readOnly?: boolean;
+  demoLedger?: DemoLedgerEvent[];
+  onDemoVerdict?: (
+    proposalId: string,
+    verdict: DemoVerdict | null,
+    events: DemoLedgerEvent[]
+  ) => void;
 }) {
   const tierByAccount = useMemo(() => {
     const map = new Map<string, string | null>();
@@ -94,7 +113,7 @@ export function QueueView({
   const queueClear = sweep != null && needsDecision.length === 0 && fallbacks.length === 0;
 
   return (
-    <div className="queue">
+    <div className="queue" data-has-selection={selectedItem || queueClear ? "true" : "false"}>
       <QueueLanes
         needsDecision={needsDecision}
         resolved={resolved}
@@ -110,6 +129,17 @@ export function QueueView({
             key={`${selectedItem.account_id ?? "program"}:${day ?? "live"}`}
             item={selectedItem}
             day={day}
+            onBack={onClearSelection}
+            controls={
+              <ActionRail
+                ref={railRef}
+                item={selectedItem}
+                onVerdict={onVerdict}
+                readOnly={readOnly}
+                demoLedger={demoLedger}
+                onDemoVerdict={onDemoVerdict}
+              />
+            }
           />
         ) : queueClear ? (
           <div className="empty payoff">

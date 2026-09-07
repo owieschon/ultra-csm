@@ -14,7 +14,7 @@ mapping, not whether a person is behind the token. The local no-auth demo uses a
 stand-in.
 <!-- sourcebound:end purpose -->
 
-**[Open the live read-only demo](https://ultra-csm.vercel.app/)**. Synthetic data, no login, customer sends disabled.
+**[Open the live read-only demo](https://ultra-csm.vercel.app/)**. Synthetic data, no login, customer sends disabled. Start with **Review an example** to inspect customer objectives, source evidence and a proposed outreach draft. [Walkthrough](docs/DEMO.md).
 **Deterministic receipt:** [**24/24 hard gates**](eval/scorecard_csm.json) pass for
 evidence, consent, tenant separation, grounding, injection defense, reproducibility, and
 proposal-only behavior. **Governance receipts:**
@@ -90,30 +90,6 @@ the customer-action gate.
 Run `make scorecard-csm-check` and `make eval`. The [quickstart](QUICKSTART.md) lists the
 remaining local gates and prerequisites. None needs cloud credentials or customer data;
 credentialed connector and model lanes stay separate.
-
-## Customer-outcome comparison eval
-
-`eval/customer_outcome_comparison.py` compares the unchanged Ultra sweep
-(`run_time_to_value_sweep` behind the real `ActionGate`, on an `EphemeralCluster`
-local Postgres) against a small, independently implemented rules baseline, over
-24 model-authored accounts (`eval/customer_outcome_cases.py`, 12 stories x 2
-decision points). The job: choose a justified customer action, internal
-review/escalation, or hold from account facts at a point in time -- specifically
-whether a claimed completed change actually establishes the customer's stated
-objective. Neither policy sees the expected decisions; the oracle lives in a
-section of `customer_outcome_cases.py` that the scenario builder never reads.
-
-```
-PYTHONPATH=src:. python eval/customer_outcome_comparison.py \
-    --out-json /path/to/result.json --out-md /path/to/report.md
-```
-
-Both output paths are required explicitly and are never overwritten silently
-(pass `--force` to overwrite). The Markdown report lists each case's allowed
-decisions, both policies' normalized decisions, and any forbidden-consequence
-violation. Cases and labels were revised after an invalid first run. These paired
-snapshots are development fixtures; they do not measure longitudinal recovery or
-independent generalization. The report records that exposure and source hashes.
 
 ## Claim boundary
 

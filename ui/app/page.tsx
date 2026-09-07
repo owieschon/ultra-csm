@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { TopBar } from "@/components/TopBar";
 import { BookView } from "@/components/BookView";
 import { QueueView } from "@/components/QueueView";
-import { ActionRail, ActionRailHandle } from "@/components/ActionRail";
+import { ActionRailHandle } from "@/components/ActionRail";
 import { CommandPalette } from "@/components/CommandPalette";
 import { ShortcutsOverlay } from "@/components/ShortcutsOverlay";
 import {
@@ -253,7 +253,7 @@ export default function Home() {
   );
 
   return (
-    <div className="app">
+    <div className="app customer-workspace">
       <TopBar
         view={view}
         onViewChange={setView}
@@ -268,7 +268,7 @@ export default function Home() {
         onOpenPalette={() => setPaletteOpen(true)}
         onOpenHelp={() => setHelpOpen(true)}
       />
-      {isReadOnlyDemo && !introDismissed && (
+      {isReadOnlyDemo && !introDismissed && view === "book" && (
         <div className="intro-strip" role="note">
           <span className="intro-text">
             An agent works this 181-account book continuously. Anything it
@@ -278,12 +278,16 @@ export default function Home() {
           <button
             type="button"
             className="intro-cta"
+            disabled={!effectiveSweep?.work_items.some((item) => item.work_packet?.account_name === "Trailhead Logistics" && item.proposal)}
             onClick={() => {
+              const example = effectiveSweep?.work_items.find((item) => item.work_packet?.account_name === "Trailhead Logistics");
+              if (!example?.proposal) return;
               dismissIntro();
+              setSelectedProposalId(example.proposal.proposal_id);
               setView("queue");
             }}
           >
-            Work the queue
+            Review an example
           </button>
           <button
             type="button"
@@ -334,24 +338,18 @@ export default function Home() {
                 sweepError={sweepError ? describeError(sweepError) : null}
                 selectedProposalId={selectedProposalId}
                 onSelect={setSelectedProposalId}
+                onClearSelection={() => setSelectedProposalId(null)}
                 onSelectedItemChange={setSelectedItem}
                 onBackToBook={() => setView("book")}
+                railRef={railRef}
+                onVerdict={() => setRefreshToken((t) => t + 1)}
+                readOnly={isReadOnlyDemo}
+                demoLedger={demoLedger}
+                onDemoVerdict={handleDemoVerdict}
               />
             </section>
           )}
         </div>
-        <aside className="rail" aria-label="Decision controls and receipt">
-          {view === "queue" && (
-            <ActionRail
-              ref={railRef}
-              item={selectedItem}
-              onVerdict={() => setRefreshToken((t) => t + 1)}
-              readOnly={isReadOnlyDemo}
-              demoLedger={demoLedger}
-              onDemoVerdict={handleDemoVerdict}
-            />
-          )}
-        </aside>
       </div>
       <CommandPalette
         open={paletteOpen}
