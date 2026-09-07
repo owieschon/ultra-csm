@@ -1,8 +1,4 @@
-// Hosted read-only demo: the backend accepts no writes, so decisions are
-// simulated CLIENT-SIDE ONLY — nothing is sent, nothing persists past a
-// reload. Every simulated receipt line carries simulated: true and renders
-// with an explicit "sim" mark (honesty register: the demo performs the
-// product story without claiming backend state it never created).
+// Demo decisions and edits exist only in tab memory and reset on reload.
 import { LedgerEvent } from "@/lib/api";
 
 export type DemoVerdict = "approved" | "denied";
@@ -11,22 +7,47 @@ export interface DemoLedgerEvent extends LedgerEvent {
   simulated: true;
 }
 
+export interface DemoEditRecord {
+  revisionId: string;
+  body: string;
+  editedAt: string;
+}
+
+export interface DemoApprovalSnapshot {
+  revisionId: string;
+  body: string;
+  approvedAt: string;
+}
+
 function ts(offsetSeconds: number): string {
   const d = new Date(Date.now() + offsetSeconds * 1000);
   return d.toISOString();
 }
 
+let revisionSeq = 0;
+
+// Monotonic within the tab (never persisted, reset on reload along with
+// everything else in this file) — just needs to be unique enough to tell
+// two saved edits apart in the receipt.
+export function nextRevisionId(proposalId: string): string {
+  revisionSeq += 1;
+  return `sim-rev-${proposalId.slice(0, 8)}-${revisionSeq}`;
+}
+
 // This demo runs no ActionGate call, verifies no payload hash, and obtains
 // no committer receipt — every line below states only what happened in the
 // browser: a button click updated local state. Nothing left the tab.
-export function simulateApproval(proposalId: string): DemoLedgerEvent[] {
+export function simulateApproval(
+  proposalId: string,
+  revisionId: string
+): DemoLedgerEvent[] {
   return [
     {
       ts: ts(0),
       event: "gate.approve",
       label: "Approved",
       proposal_id: proposalId,
-      detail: "Approved in this demo — no gate call made",
+      detail: `Approved in this demo — no gate call made — exact revision ${revisionId}`,
       simulated: true,
     },
     {
@@ -77,20 +98,23 @@ export function simulateDenial(proposalId: string): DemoLedgerEvent[] {
   ];
 }
 
-// No live model runs in this snapshot, so the draft text cannot actually
-// change — the receipt records the instruction without claiming a redraft
-// that never happened.
-export function simulateRevision(
+// The operator typed real replacement text into the textarea and saved it —
+// this DOES change the locally displayed draft (unlike the rest of this
+// file). The receipt says exactly that: a browser-local edit, not a
+// re-generated draft from a model or the live redraft loop (that bounded,
+// server-authoritative path is exercised against the real local API, not
+// this static demo — see ActionRail.tsx's actRedraft()).
+export function simulateEdit(
   proposalId: string,
-  instruction: string
+  revisionId: string
 ): DemoLedgerEvent[] {
   return [
     {
       ts: ts(0),
-      event: "slot_b.revise",
-      label: "Edit recorded",
+      event: "draft.edit",
+      label: "Draft edited",
       proposal_id: proposalId,
-      detail: `"${instruction.slice(0, 60)}" — the live system redrafts under it; snapshot draft unchanged`,
+      detail: `Edited by operator (simulated, local only) — new revision ${revisionId}`,
       simulated: true,
     },
   ];
