@@ -229,9 +229,9 @@
       "account_id": "a317f5e7-575e-5879-8256-9082e40ef19f",
       "account_resolution": "exactly_one",
       "candidate_account_ids": [],
-      "customer_contact_allowed": true,
-      "customer_draft": "Hi Jordan Lee, Acme Logistics is showing an onboarding risk tied to overdue onboarding milestones, overdue activation steps. Can we review the overdue activation steps and agree on owners?",
-      "disposition": "propose_customer_action",
+      "customer_contact_allowed": false,
+      "customer_draft": null,
+      "disposition": "internal_review",
       "draft_fallback_reason": null,
       "draft_mode": "fixture",
       "evidence": [
@@ -441,18 +441,12 @@
         ],
         "score": 172
       },
-      "proposal": {
-        "action_type": "draft_customer_outreach",
-        "channel": "email",
-        "created_by_principal": "aaff1544-a693-50c6-94dc-b7a7317fb9b8",
-        "proposal_id": "runtime-generated:a317f5e7-575e-5879-8256-9082e40ef19f:draft_customer_outreach",
-        "status": "pending"
-      },
-      "reason": "Acme Logistics has deterministic Time-to-Value score 172 from milestones_overdue=50, days_overdue=30, success_plan_overdue=20; draft customer outreach. Evidence [evidence:6dcc1c92-e0fd-5d6f-808f-d2e747f04415], [evidence:d2212e35-9ab1-52ff-af61-7ed49fe36086], [evidence:e8171967-d726-5c85-814a-73aaa19dc2cf].",
-      "recipient_name": "Jordan Lee",
+      "proposal": null,
+      "reason": "Acme Logistics has deterministic Time-to-Value score 172 from milestones_overdue=50, days_overdue=30, success_plan_overdue=20; route for internal review. Evidence [evidence:6dcc1c92-e0fd-5d6f-808f-d2e747f04415], [evidence:d2212e35-9ab1-52ff-af61-7ed49fe36086], [evidence:e8171967-d726-5c85-814a-73aaa19dc2cf].",
+      "recipient_name": null,
       "recipient_resolution": "first_consenting_fallback",
-      "recipient_role": "operations",
-      "recommended_action": "draft_customer_outreach",
+      "recipient_role": null,
+      "recommended_action": "recommend_next_best_action",
       "slot_a_classifications": [
         {
           "account_id": "a317f5e7-575e-5879-8256-9082e40ef19f",
@@ -481,26 +475,26 @@
           },
           {
             "cta_id": "preview_artifact",
-            "enabled": true,
-            "governance_requirement": "human_approve_with_consent",
+            "enabled": false,
+            "governance_requirement": "auto_internal_only",
             "label": "Preview artifact",
-            "reason": "Prepared artifact is available.",
+            "reason": "No prepared artifact was produced.",
             "source_organ": "governance.csm_actions"
           },
           {
             "cta_id": "request_gate_approval",
-            "enabled": true,
-            "governance_requirement": "human_approve_with_consent",
+            "enabled": false,
+            "governance_requirement": "auto_internal_only",
             "label": "Request approval",
-            "reason": "Proposal is pending and requires human_approve_with_consent.",
+            "reason": "No pending customer-affecting proposal requires approval.",
             "source_organ": "governance.csm_actions"
           },
           {
             "cta_id": "mark_internal_reviewed",
-            "enabled": false,
-            "governance_requirement": "human_approve_with_consent",
+            "enabled": true,
+            "governance_requirement": "auto_internal_only",
             "label": "Mark reviewed",
-            "reason": "Only internal-only recommendations can be marked reviewed.",
+            "reason": "Internal-only recommendation may be marked reviewed.",
             "source_organ": "governance.csm_actions"
           },
           {
@@ -570,7 +564,7 @@
           "confidence_label": "medium",
           "confidence_method": "packet_structure_heuristic",
           "label": "unverified_hypothesis",
-          "summary": "Acme Logistics: Acme Logistics has deterministic Time-to-Value score 172 from milestones_overdue=50, days_overdue=30, success_plan_overdue=20; draft customer outreach. Evidence [evidence:6dcc1c92-e0fd-5d6f-808f-d2e747f04415], [evidence:d2212e35-9ab1-52ff-af61-7ed49fe36086], [evidence:e8171967-d726-5c85-814a-73aaa19dc2cf].",
+          "summary": "Acme Logistics: Acme Logistics has deterministic Time-to-Value score 172 from milestones_overdue=50, days_overdue=30, success_plan_overdue=20; route for internal review. Evidence [evidence:6dcc1c92-e0fd-5d6f-808f-d2e747f04415], [evidence:d2212e35-9ab1-52ff-af61-7ed49fe36086], [evidence:e8171967-d726-5c85-814a-73aaa19dc2cf].",
           "unknowns": [
             "best_customer_recipient"
           ],
@@ -664,32 +658,32 @@
           "tenant_id": "deterministic_oracle"
         },
         "governance_boundary": {
-          "action_type": "draft_customer_outreach",
-          "autonomy_tier": 2,
+          "action_type": "recommend_next_best_action",
+          "autonomy_tier": 1,
           "can_execute_from_ui": false,
-          "customer_affecting": true,
-          "proposal_status": "pending",
-          "release_condition": "human_approve_with_consent",
-          "required_permission": "customer.outreach.draft",
-          "requires_action_gate": true,
+          "customer_affecting": false,
+          "proposal_status": null,
+          "release_condition": "auto_internal_only",
+          "required_permission": "csm.recommend",
+          "requires_action_gate": false,
           "source_organ": "governance.csm_actions"
         },
         "job_type": "internal_escalation",
-        "lane": "needs_judgment",
+        "lane": "prepared",
         "packet_version": "csm-work-packet-v1",
         "prepared_artifact": {
-          "artifact_type": "customer_draft",
-          "body": "Hi Jordan Lee, Acme Logistics is showing an onboarding risk tied to overdue onboarding milestones, overdue activation steps. Can we review the overdue activation steps and agree on owners?",
-          "requires_approval": true,
-          "source_organ": "agent1.slot_b",
-          "title": "Customer outreach draft",
-          "validation_status": "judge_graded_in_domain"
+          "artifact_type": "handoff_outline",
+          "body": "Active or recurring technical failure requires engineering handoff.",
+          "requires_approval": false,
+          "source_organ": "internal_bridge",
+          "title": "engineering handoff",
+          "validation_status": "out_of_validated_domain"
         },
-        "primary_next_step": "Review the pending draft_customer_outreach proposal in ActionGate.",
+        "primary_next_step": "Review the internal recommendation and record operator feedback.",
         "recommended_action": {
-          "action_type": "draft_customer_outreach",
+          "action_type": "recommend_next_best_action",
           "motion": null,
-          "rationale": "Customer-facing email/text draft; never sent without approval.",
+          "rationale": "Internal CSM recommendation grounded in data-plane evidence.",
           "source_organ": "motion/playbook + governance.csm_actions",
           "target_actor": "engineering",
           "validation_status": "oracle_graded"
