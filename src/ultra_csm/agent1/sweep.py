@@ -63,6 +63,7 @@ from ultra_csm.value_model import (
     ValueModelConfig,
     account_attributes,
     build_customer_value_model,
+    is_completed_plan,
     load_value_model_config,
     project_ttv_lens,
     resolve_tenant_tier,
@@ -535,7 +536,10 @@ def _slot_b_inputs_for_account(
         milestone for milestone in open_gaps
         if any(signal_id in grounded_ids for signal_id in milestone.evidence_signal_ids)
     )
-    overdue_plans = tuple(plan for plan in plans if iso_date(plan.target_date) <= iso_date(as_of))
+    overdue_plans = tuple(
+        plan for plan in plans
+        if iso_date(plan.target_date) <= iso_date(as_of) and not is_completed_plan(plan)
+    )
 
     # Lifecycle-aware TTV: an onboarding-stage account whose only signal is
     # delivery slippage (RUNNING_LATE progress / at-risk task / overdue

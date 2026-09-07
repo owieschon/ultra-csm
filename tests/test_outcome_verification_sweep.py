@@ -120,11 +120,7 @@ def test_classified_case_retains_remediation_path(sweep_conn):
 @pytest.mark.parametrize("variant", ["complete", "no_plans"])
 def test_changed_plan_evidence_removes_verification_trigger(sweep_conn, variant):
     item = _sweep(sweep_conn, variant=variant)
-    if variant == "no_plans":
-        assert item is None
-        return
-    assert not any(f.name == "usage_outcome_unverified" for f in item.priority.factors)
-    assert "outcome verification needed" not in item.reason
+    assert item is None
 
 
 def test_verification_never_bypasses_contact_prohibition(sweep_conn):

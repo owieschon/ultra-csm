@@ -21,6 +21,7 @@ from ultra_csm.platform.seed import det_uuid
 from ultra_csm.value_model import (
     account_attributes,
     build_customer_value_model,
+    is_completed_plan,
     load_value_model_config,
     project_ttv_lens,
     resolve_thresholds,
@@ -304,7 +305,8 @@ def _score_one_account(
 
     open_gaps = tuple(m for m in milestones if m.achieved_at is None)
     overdue_plans = tuple(
-        p for p in plans if p.target_date and p.target_date <= as_of
+        p for p in plans
+        if p.target_date and p.target_date <= as_of and not is_completed_plan(p)
     )
 
     projected = project_ttv_lens(
@@ -475,7 +477,8 @@ def _build_account_brief(
 
     open_gaps = tuple(m for m in milestones if m.achieved_at is None)
     overdue_plans = tuple(
-        p for p in plans if p.target_date and p.target_date <= as_of
+        p for p in plans
+        if p.target_date and p.target_date <= as_of and not is_completed_plan(p)
     )
 
     projected = project_ttv_lens(
