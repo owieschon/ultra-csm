@@ -9,7 +9,7 @@
         "account_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
         "account_name": "Ironhorse Freight Co",
         "as_of": "2026-11-02",
-        "body": "Hi Marcus Webb, could you confirm the current status of Ironhorse Freight Co's success-plan objectives and share any completion evidence or updates we should record?",
+        "body": "Hi Marcus, could you confirm the current status of Ironhorse Freight Co's success-plan objectives and share any completion evidence or updates we should record?",
         "contact_email": "marcus.webb@ironhorse-freight.example",
         "contact_id": "3610a030-a5cd-55db-80b7-7b89d66203a4",
         "draft_channel": "email",
@@ -17,7 +17,10 @@
           "4635cdb7-5bb5-5c43-acc1-5dc989d4d583",
           "afbc6091-985b-50e5-8522-e1a916af56c9",
           "7d61c11f-73d4-52f6-a738-33ab96634a61",
-          "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43"
+          "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+          "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+          "afbc6091-985b-50e5-8522-e1a916af56c9",
+          "afbc6091-985b-50e5-8522-e1a916af56c9"
         ],
         "priority": {
           "factors": [
@@ -171,7 +174,7 @@
         },
         "subject": "Time-to-Value follow-up for Ironhorse Freight Co"
       },
-      "proposal_id": "3bb4d53b-1c8d-59b9-babc-5534d1df36ac",
+      "proposal_id": "81906e1f-9772-52d3-8ec1-9e48215b665c",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -677,13 +680,16 @@
         "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
         "account_name": "Trailhead Logistics",
         "as_of": "2026-11-02",
-        "body": "Hi Vanessa Torres, could you confirm the current status of Trailhead Logistics's success-plan objectives and share any completion evidence or updates we should record?",
+        "body": "Hi Vanessa, could you confirm the current status of Trailhead Logistics's success-plan objectives and share any completion evidence or updates we should record?",
         "contact_email": "vanessa.torres@trailhead-logistics.example",
         "contact_id": "5ba7aa51-a5eb-5220-9d3b-71bbe67377a1",
         "draft_channel": "email",
         "evidence_ids": [
           "20527c0a-8156-5119-934a-4017e19fc39d",
-          "21830db9-7182-5d97-b22e-d57c4e28f696"
+          "21830db9-7182-5d97-b22e-d57c4e28f696",
+          "21830db9-7182-5d97-b22e-d57c4e28f696",
+          "20527c0a-8156-5119-934a-4017e19fc39d",
+          "20527c0a-8156-5119-934a-4017e19fc39d"
         ],
         "priority": {
           "factors": [
@@ -784,7 +790,7 @@
         },
         "subject": "Time-to-Value follow-up for Trailhead Logistics"
       },
-      "proposal_id": "46ece128-a914-51cd-bb08-024c4efce1df",
+      "proposal_id": "2d6348ae-7a97-5c41-95f0-13b1b8bfb52d",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -1061,7 +1067,7 @@
         "account_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
         "account_name": "Ironhorse Freight Co",
         "as_of": "2026-11-03",
-        "body": "Hi Marcus Webb, could you confirm the current status of Ironhorse Freight Co's success-plan objectives and share any completion evidence or updates we should record?",
+        "body": "Hi Marcus, could you confirm the current status of Ironhorse Freight Co's success-plan objectives and share any completion evidence or updates we should record?",
         "contact_email": "marcus.webb@ironhorse-freight.example",
         "contact_id": "3610a030-a5cd-55db-80b7-7b89d66203a4",
         "draft_channel": "email",
@@ -1069,7 +1075,10 @@
           "4635cdb7-5bb5-5c43-acc1-5dc989d4d583",
           "afbc6091-985b-50e5-8522-e1a916af56c9",
           "7d61c11f-73d4-52f6-a738-33ab96634a61",
-          "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43"
+          "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+          "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+          "afbc6091-985b-50e5-8522-e1a916af56c9",
+          "afbc6091-985b-50e5-8522-e1a916af56c9"
         ],
         "priority": {
           "factors": [
@@ -1223,7 +1232,7 @@
         },
         "subject": "Time-to-Value follow-up for Ironhorse Freight Co"
       },
-      "proposal_id": "5d54a828-9e64-5e10-a987-8f69877a7880",
+      "proposal_id": "aa0448c2-21e3-5afc-bfb2-45345bf7c735",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -1573,13 +1582,16 @@
         "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
         "account_name": "Trailhead Logistics",
         "as_of": "2026-11-03",
-        "body": "Hi Vanessa Torres, could you confirm the current status of Trailhead Logistics's success-plan objectives and share any completion evidence or updates we should record?",
+        "body": "Hi Vanessa, could you confirm the current status of Trailhead Logistics's success-plan objectives and share any completion evidence or updates we should record?",
         "contact_email": "vanessa.torres@trailhead-logistics.example",
         "contact_id": "5ba7aa51-a5eb-5220-9d3b-71bbe67377a1",
         "draft_channel": "email",
         "evidence_ids": [
           "20527c0a-8156-5119-934a-4017e19fc39d",
-          "21830db9-7182-5d97-b22e-d57c4e28f696"
+          "21830db9-7182-5d97-b22e-d57c4e28f696",
+          "21830db9-7182-5d97-b22e-d57c4e28f696",
+          "20527c0a-8156-5119-934a-4017e19fc39d",
+          "20527c0a-8156-5119-934a-4017e19fc39d"
         ],
         "priority": {
           "factors": [
@@ -1680,7 +1692,7 @@
         },
         "subject": "Time-to-Value follow-up for Trailhead Logistics"
       },
-      "proposal_id": "30ebb8b1-6780-53ac-93a8-784684f6c17b",
+      "proposal_id": "de3b598c-4eb1-5ae1-bfb7-b60a8db89c11",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -1937,7 +1949,7 @@
         "account_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
         "account_name": "Ironhorse Freight Co",
         "as_of": "2026-11-04",
-        "body": "Hi Marcus Webb, could you confirm the current status of Ironhorse Freight Co's success-plan objectives and share any completion evidence or updates we should record?",
+        "body": "Hi Marcus, could you confirm the current status of Ironhorse Freight Co's success-plan objectives and share any completion evidence or updates we should record?",
         "contact_email": "marcus.webb@ironhorse-freight.example",
         "contact_id": "3610a030-a5cd-55db-80b7-7b89d66203a4",
         "draft_channel": "email",
@@ -1945,7 +1957,10 @@
           "4635cdb7-5bb5-5c43-acc1-5dc989d4d583",
           "afbc6091-985b-50e5-8522-e1a916af56c9",
           "7d61c11f-73d4-52f6-a738-33ab96634a61",
-          "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43"
+          "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+          "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+          "afbc6091-985b-50e5-8522-e1a916af56c9",
+          "afbc6091-985b-50e5-8522-e1a916af56c9"
         ],
         "priority": {
           "factors": [
@@ -2099,7 +2114,7 @@
         },
         "subject": "Time-to-Value follow-up for Ironhorse Freight Co"
       },
-      "proposal_id": "0c9f4f47-e80c-5b5e-9cc9-5050e891d04c",
+      "proposal_id": "f0c038d2-3fa6-5129-8241-2008d8d71097",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -2527,13 +2542,16 @@
         "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
         "account_name": "Trailhead Logistics",
         "as_of": "2026-11-04",
-        "body": "Hi Vanessa Torres, could you confirm the current status of Trailhead Logistics's success-plan objectives and share any completion evidence or updates we should record?",
+        "body": "Hi Vanessa, could you confirm the current status of Trailhead Logistics's success-plan objectives and share any completion evidence or updates we should record?",
         "contact_email": "vanessa.torres@trailhead-logistics.example",
         "contact_id": "5ba7aa51-a5eb-5220-9d3b-71bbe67377a1",
         "draft_channel": "email",
         "evidence_ids": [
           "20527c0a-8156-5119-934a-4017e19fc39d",
-          "21830db9-7182-5d97-b22e-d57c4e28f696"
+          "21830db9-7182-5d97-b22e-d57c4e28f696",
+          "21830db9-7182-5d97-b22e-d57c4e28f696",
+          "20527c0a-8156-5119-934a-4017e19fc39d",
+          "20527c0a-8156-5119-934a-4017e19fc39d"
         ],
         "priority": {
           "factors": [
@@ -2634,7 +2652,7 @@
         },
         "subject": "Time-to-Value follow-up for Trailhead Logistics"
       },
-      "proposal_id": "accb0249-04e6-5251-b67d-c5a43b7f217c",
+      "proposal_id": "831daaa2-2026-5930-ac56-256d283770a3",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -2871,7 +2889,7 @@
         "account_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
         "account_name": "Ironhorse Freight Co",
         "as_of": "2026-11-05",
-        "body": "Hi Marcus Webb, could you confirm the current status of Ironhorse Freight Co's success-plan objectives and share any completion evidence or updates we should record?",
+        "body": "Hi Marcus, could you confirm the current status of Ironhorse Freight Co's success-plan objectives and share any completion evidence or updates we should record?",
         "contact_email": "marcus.webb@ironhorse-freight.example",
         "contact_id": "3610a030-a5cd-55db-80b7-7b89d66203a4",
         "draft_channel": "email",
@@ -2879,7 +2897,10 @@
           "4635cdb7-5bb5-5c43-acc1-5dc989d4d583",
           "afbc6091-985b-50e5-8522-e1a916af56c9",
           "7d61c11f-73d4-52f6-a738-33ab96634a61",
-          "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43"
+          "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+          "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+          "afbc6091-985b-50e5-8522-e1a916af56c9",
+          "afbc6091-985b-50e5-8522-e1a916af56c9"
         ],
         "priority": {
           "factors": [
@@ -3033,7 +3054,7 @@
         },
         "subject": "Time-to-Value follow-up for Ironhorse Freight Co"
       },
-      "proposal_id": "ccccae98-5b52-571a-8c6a-6849ad277db0",
+      "proposal_id": "2363daa8-baad-5190-8eb6-23e3ea7d816f",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -3539,13 +3560,16 @@
         "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
         "account_name": "Trailhead Logistics",
         "as_of": "2026-11-05",
-        "body": "Hi Vanessa Torres, could you confirm the current status of Trailhead Logistics's success-plan objectives and share any completion evidence or updates we should record?",
+        "body": "Hi Vanessa, could you confirm the current status of Trailhead Logistics's success-plan objectives and share any completion evidence or updates we should record?",
         "contact_email": "vanessa.torres@trailhead-logistics.example",
         "contact_id": "5ba7aa51-a5eb-5220-9d3b-71bbe67377a1",
         "draft_channel": "email",
         "evidence_ids": [
           "20527c0a-8156-5119-934a-4017e19fc39d",
-          "21830db9-7182-5d97-b22e-d57c4e28f696"
+          "21830db9-7182-5d97-b22e-d57c4e28f696",
+          "21830db9-7182-5d97-b22e-d57c4e28f696",
+          "20527c0a-8156-5119-934a-4017e19fc39d",
+          "20527c0a-8156-5119-934a-4017e19fc39d"
         ],
         "priority": {
           "factors": [
@@ -3646,7 +3670,7 @@
         },
         "subject": "Time-to-Value follow-up for Trailhead Logistics"
       },
-      "proposal_id": "0bfc009f-7ce7-50f9-8f32-546bb8b9ec91",
+      "proposal_id": "eaa11e08-89a3-5439-84a9-81ce36a4b720",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -3923,7 +3947,7 @@
         "account_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
         "account_name": "Ironhorse Freight Co",
         "as_of": "2026-11-06",
-        "body": "Hi Marcus Webb, could you confirm the current status of Ironhorse Freight Co's success-plan objectives and share any completion evidence or updates we should record?",
+        "body": "Hi Marcus, could you confirm the current status of Ironhorse Freight Co's success-plan objectives and share any completion evidence or updates we should record?",
         "contact_email": "marcus.webb@ironhorse-freight.example",
         "contact_id": "3610a030-a5cd-55db-80b7-7b89d66203a4",
         "draft_channel": "email",
@@ -3931,7 +3955,10 @@
           "4635cdb7-5bb5-5c43-acc1-5dc989d4d583",
           "afbc6091-985b-50e5-8522-e1a916af56c9",
           "7d61c11f-73d4-52f6-a738-33ab96634a61",
-          "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43"
+          "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+          "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+          "afbc6091-985b-50e5-8522-e1a916af56c9",
+          "afbc6091-985b-50e5-8522-e1a916af56c9"
         ],
         "priority": {
           "factors": [
@@ -4085,7 +4112,7 @@
         },
         "subject": "Time-to-Value follow-up for Ironhorse Freight Co"
       },
-      "proposal_id": "a0bb7176-d783-511d-948e-c2eea992522b",
+      "proposal_id": "94f40e02-cd54-58dc-b0aa-0c0f4123b40c",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -4435,13 +4462,16 @@
         "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
         "account_name": "Trailhead Logistics",
         "as_of": "2026-11-06",
-        "body": "Hi Vanessa Torres, could you confirm the current status of Trailhead Logistics's success-plan objectives and share any completion evidence or updates we should record?",
+        "body": "Hi Vanessa, could you confirm the current status of Trailhead Logistics's success-plan objectives and share any completion evidence or updates we should record?",
         "contact_email": "vanessa.torres@trailhead-logistics.example",
         "contact_id": "5ba7aa51-a5eb-5220-9d3b-71bbe67377a1",
         "draft_channel": "email",
         "evidence_ids": [
           "20527c0a-8156-5119-934a-4017e19fc39d",
-          "21830db9-7182-5d97-b22e-d57c4e28f696"
+          "21830db9-7182-5d97-b22e-d57c4e28f696",
+          "21830db9-7182-5d97-b22e-d57c4e28f696",
+          "20527c0a-8156-5119-934a-4017e19fc39d",
+          "20527c0a-8156-5119-934a-4017e19fc39d"
         ],
         "priority": {
           "factors": [
@@ -4542,7 +4572,7 @@
         },
         "subject": "Time-to-Value follow-up for Trailhead Logistics"
       },
-      "proposal_id": "4585f238-1fe7-559d-8a5c-0708e9a14d9e",
+      "proposal_id": "f6c88f50-bc81-5a0d-a9ab-8164330a383f",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -4799,7 +4829,7 @@
         "account_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
         "account_name": "Ironhorse Freight Co",
         "as_of": "2026-11-07",
-        "body": "Hi Marcus Webb, could you confirm the current status of Ironhorse Freight Co's success-plan objectives and share any completion evidence or updates we should record?",
+        "body": "Hi Marcus, could you confirm the current status of Ironhorse Freight Co's success-plan objectives and share any completion evidence or updates we should record?",
         "contact_email": "marcus.webb@ironhorse-freight.example",
         "contact_id": "3610a030-a5cd-55db-80b7-7b89d66203a4",
         "draft_channel": "email",
@@ -4807,7 +4837,10 @@
           "4635cdb7-5bb5-5c43-acc1-5dc989d4d583",
           "afbc6091-985b-50e5-8522-e1a916af56c9",
           "7d61c11f-73d4-52f6-a738-33ab96634a61",
-          "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43"
+          "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+          "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+          "afbc6091-985b-50e5-8522-e1a916af56c9",
+          "afbc6091-985b-50e5-8522-e1a916af56c9"
         ],
         "priority": {
           "factors": [
@@ -4961,7 +4994,7 @@
         },
         "subject": "Time-to-Value follow-up for Ironhorse Freight Co"
       },
-      "proposal_id": "b440786e-74c8-5ab3-a475-b620a015a995",
+      "proposal_id": "d9c49b7e-326d-5ff2-8e9b-b907089c3a95",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -5389,13 +5422,16 @@
         "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
         "account_name": "Trailhead Logistics",
         "as_of": "2026-11-07",
-        "body": "Hi Vanessa Torres, could you confirm the current status of Trailhead Logistics's success-plan objectives and share any completion evidence or updates we should record?",
+        "body": "Hi Vanessa, could you confirm the current status of Trailhead Logistics's success-plan objectives and share any completion evidence or updates we should record?",
         "contact_email": "vanessa.torres@trailhead-logistics.example",
         "contact_id": "5ba7aa51-a5eb-5220-9d3b-71bbe67377a1",
         "draft_channel": "email",
         "evidence_ids": [
           "20527c0a-8156-5119-934a-4017e19fc39d",
-          "21830db9-7182-5d97-b22e-d57c4e28f696"
+          "21830db9-7182-5d97-b22e-d57c4e28f696",
+          "21830db9-7182-5d97-b22e-d57c4e28f696",
+          "20527c0a-8156-5119-934a-4017e19fc39d",
+          "20527c0a-8156-5119-934a-4017e19fc39d"
         ],
         "priority": {
           "factors": [
@@ -5496,7 +5532,7 @@
         },
         "subject": "Time-to-Value follow-up for Trailhead Logistics"
       },
-      "proposal_id": "8decdb3d-ca85-5e95-b4bd-0b1c4d69f488",
+      "proposal_id": "4cf4b87c-27c3-5515-bb09-9e6ad9f6bcb3",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -5733,7 +5769,7 @@
         "account_id": "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
         "account_name": "Ironhorse Freight Co",
         "as_of": "2026-11-08",
-        "body": "Hi Marcus Webb, could you confirm the current status of Ironhorse Freight Co's success-plan objectives and share any completion evidence or updates we should record?",
+        "body": "Hi Marcus, could you confirm the current status of Ironhorse Freight Co's success-plan objectives and share any completion evidence or updates we should record?",
         "contact_email": "marcus.webb@ironhorse-freight.example",
         "contact_id": "3610a030-a5cd-55db-80b7-7b89d66203a4",
         "draft_channel": "email",
@@ -5741,7 +5777,10 @@
           "4635cdb7-5bb5-5c43-acc1-5dc989d4d583",
           "afbc6091-985b-50e5-8522-e1a916af56c9",
           "7d61c11f-73d4-52f6-a738-33ab96634a61",
-          "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43"
+          "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+          "f16ceec8-7a3a-5d9d-a0ee-a2e7f119fc43",
+          "afbc6091-985b-50e5-8522-e1a916af56c9",
+          "afbc6091-985b-50e5-8522-e1a916af56c9"
         ],
         "priority": {
           "factors": [
@@ -5895,7 +5934,7 @@
         },
         "subject": "Time-to-Value follow-up for Ironhorse Freight Co"
       },
-      "proposal_id": "ee694121-d8c3-555f-8db9-8a68c1f43703",
+      "proposal_id": "88b9c366-c5f7-515c-a3bb-7a0d5fa0ec93",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
@@ -6323,13 +6362,16 @@
         "account_id": "21830db9-7182-5d97-b22e-d57c4e28f696",
         "account_name": "Trailhead Logistics",
         "as_of": "2026-11-08",
-        "body": "Hi Vanessa Torres, could you confirm the current status of Trailhead Logistics's success-plan objectives and share any completion evidence or updates we should record?",
+        "body": "Hi Vanessa, could you confirm the current status of Trailhead Logistics's success-plan objectives and share any completion evidence or updates we should record?",
         "contact_email": "vanessa.torres@trailhead-logistics.example",
         "contact_id": "5ba7aa51-a5eb-5220-9d3b-71bbe67377a1",
         "draft_channel": "email",
         "evidence_ids": [
           "20527c0a-8156-5119-934a-4017e19fc39d",
-          "21830db9-7182-5d97-b22e-d57c4e28f696"
+          "21830db9-7182-5d97-b22e-d57c4e28f696",
+          "21830db9-7182-5d97-b22e-d57c4e28f696",
+          "20527c0a-8156-5119-934a-4017e19fc39d",
+          "20527c0a-8156-5119-934a-4017e19fc39d"
         ],
         "priority": {
           "factors": [
@@ -6430,7 +6472,7 @@
         },
         "subject": "Time-to-Value follow-up for Trailhead Logistics"
       },
-      "proposal_id": "88d350cb-1b2b-53bd-a39b-73579686196c",
+      "proposal_id": "b51ebc5f-cfbd-5d29-a5b0-73a250ae4ded",
       "required_permission": "customer.outreach.draft",
       "status": "pending"
     },
