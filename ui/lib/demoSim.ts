@@ -39,7 +39,7 @@ export function nextRevisionId(proposalId: string): string {
 // browser: a button click updated local state. Nothing left the tab.
 export function simulateApproval(
   proposalId: string,
-  revisionId: string
+  revisionId?: string
 ): DemoLedgerEvent[] {
   return [
     {
@@ -47,7 +47,9 @@ export function simulateApproval(
       event: "gate.approve",
       label: "Approved",
       proposal_id: proposalId,
-      detail: `Approved in this demo — no gate call made — exact revision ${revisionId}`,
+      detail: revisionId
+      ? `Approved in this demo — no gate call made — exact revision ${revisionId}`
+      : "Approved in this demo — no gate call made",
       simulated: true,
     },
     {
@@ -106,7 +108,7 @@ export function simulateDenial(proposalId: string): DemoLedgerEvent[] {
 // this static demo — see ActionRail.tsx's actRedraft()).
 export function simulateEdit(
   proposalId: string,
-  revisionId: string
+  revisionId?: string
 ): DemoLedgerEvent[] {
   return [
     {
@@ -119,3 +121,23 @@ export function simulateEdit(
     },
   ];
 }
+
+// No live model runs in this snapshot, so the draft text cannot actually
+// change — the receipt records the instruction without claiming a redraft
+// that never happened.
+export function simulateRevision(
+  proposalId: string,
+  instruction: string
+): DemoLedgerEvent[] {
+  return [
+    {
+      ts: ts(0),
+      event: "slot_b.revise",
+      label: "Edit recorded",
+      proposal_id: proposalId,
+      detail: `"${instruction.slice(0, 60)}" — the live system redrafts under it; snapshot draft unchanged`,
+      simulated: true,
+    },
+  ];
+}
+
