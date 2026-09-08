@@ -34,11 +34,11 @@ export function QueueView({
   sweepError: string | null;
   selectedProposalId: string | null;
   onSelect: (proposalId: string) => void;
-  onClearSelection: () => void;
+  onClearSelection?: () => void;
   onSelectedItemChange: (item: WorkItem | null) => void;
   onBackToBook: () => void;
-  railRef: Ref<ActionRailHandle>;
-  onVerdict: (item: WorkItem, replacement?: WorkItem) => void;
+  railRef?: Ref<ActionRailHandle>;
+  onVerdict?: (item: WorkItem, replacement?: WorkItem) => void;
   readOnly?: boolean;
   demoLedger?: DemoLedgerEvent[];
   onDemoVerdict?: (
@@ -136,17 +136,21 @@ export function QueueView({
             day={day}
             onBack={onClearSelection}
             controls={
-              <ActionRail
-                key={selectedItem.proposal?.proposal_id ?? selectedProposalId}
-                ref={railRef}
-                item={selectedItem}
-                onVerdict={onVerdict}
-                readOnly={readOnly}
-                demoLedger={demoLedger}
-                onDemoVerdict={onDemoVerdict}
-                onDemoEdit={onDemoEdit}
-                demoApprovals={demoApprovals}
-              />
+              railRef != null && onVerdict
+                ? (
+                    <ActionRail
+                      key={selectedItem.proposal?.proposal_id ?? selectedProposalId}
+                      ref={railRef}
+                      item={selectedItem}
+                      onVerdict={onVerdict}
+                      readOnly={readOnly}
+                      demoLedger={demoLedger}
+                      onDemoVerdict={onDemoVerdict}
+                      onDemoEdit={onDemoEdit}
+                      demoApprovals={demoApprovals}
+                    />
+                  )
+                : undefined
             }
           />
         ) : queueClear ? (
