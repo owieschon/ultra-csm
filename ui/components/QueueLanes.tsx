@@ -4,7 +4,9 @@ import { WorkItem } from "@/lib/api";
 import {
   draftFallbackReasonLabel,
   label,
+  LANE_LABELS,
   MOTION_LABELS,
+  TIER_LABELS,
   TRIGGER_LABELS,
 } from "@/lib/labels";
 
@@ -152,7 +154,12 @@ function Row({
             item.account_id?.slice(0, 8) ??
             "Portfolio-wide action"}
         </span>
-
+        {tier && (
+          <span className="tier" title={tier}>
+            {label(TIER_LABELS, tier)}
+          </span>
+        )}
+        <span className="score num">{item.priority?.score ?? "—"}</span>
       </div>
       <div className="l2">
         {trigger && (
@@ -163,6 +170,11 @@ function Row({
         {item.motion && (
           <span className="motion" title={item.motion}>
             {label(MOTION_LABELS, item.motion)}
+          </span>
+        )}
+        {packet && (
+          <span className="motion" title={`${packet.job_type} · ${packet.lane}`}>
+            {label(LANE_LABELS, packet.lane)}
           </span>
         )}
         {resolved && status && (
