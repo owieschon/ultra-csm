@@ -38,7 +38,7 @@ export function QueueLanes({
       <div className="lane-h">
         <span className="t">Needs your decision</span>
         <span className="c num">{needsDecision.length}</span>
-        <span className="badge">needs your approval</span>
+
       </div>
       {needsDecision.map(({ item, tier, accountName }) => (
         <Row
