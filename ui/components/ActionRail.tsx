@@ -269,17 +269,16 @@ export const ActionRail = forwardRef<
           </div>
         </div>
       )}
-      <details className="ledger-disclosure" open={status === "approved" || status === "denied"}>
-        <summary>
-          Decision receipt
+      <div className="audit">
+        <div className="audit-h">
+          <span className="t">Decision receipt</span>
           {proposalId && (
             <span className="gap" title={ledgerGap.join(", ")}>
               {receiptEvents.length} events
               {ledgerGap.length > 0 ? ` · ${ledgerGap.length} source gaps` : ""}
             </span>
           )}
-        </summary>
-        <div className="audit">
+        </div>
         <div className="ledger" role="log" aria-live="polite" aria-label="Selected proposal receipt events">
           {proposalId && receiptEvents.length === 0 && (
             <div className="lg">
@@ -319,7 +318,7 @@ export const ActionRail = forwardRef<
           ))}
         </div>
         </div>
-      </details>
+      
     </div>
   );
 });
