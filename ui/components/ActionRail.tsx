@@ -148,9 +148,9 @@ export const ActionRail = forwardRef<
   }));
 
   return (
-    <>
+    <div className="decision-controls" data-proposal-id={proposalId ?? undefined}>
       <div className="rail-top">
-        <h2 className="t">Decision</h2>
+        <h2 className="t">Review draft</h2>
         <div className="gate">
           {item ? (
             proposalId ? (
@@ -175,51 +175,64 @@ export const ActionRail = forwardRef<
           </div>
         )}
         {readOnly && (
-          <div className="gate" role="note">
-            Simulated — decisions update this page only; nothing is sent
+          <div className="sim-note" role="note">
+            Simulated — nothing is sent
           </div>
         )}
       </div>
       <div className="actions" aria-label="Proposal actions">
+        <div className="cta-actions">
+          <button
+            type="button"
+            className="btn approve"
+            aria-keyshortcuts="A"
+            disabled={!canAct || busy}
+            onClick={() => act("approve")}
+          >
+            Approve exact draft<span className="k">A</span>
+          </button>
+          <button
+            type="button"
+            className="btn edit"
+            aria-keyshortcuts="E"
+            disabled={!canEdit || busy}
+            onClick={() => setEditOpen((open) => !open)}
+          >
+            Edit draft<span className="k">E</span>
+          </button>
+          <button
+            type="button"
+            className="btn deny"
+            aria-keyshortcuts="D"
+            disabled={!canAct || busy}
+            onClick={() => act("deny")}
+          >
+            Deny<span className="k">D</span>
+          </button>
+        </div>
         {packetCtas.length > 0 && (
-          <div className="cta-stack">
-            {packetCtas.map((cta) => (
-              <div className={`cta-row${cta.enabled ? " on" : ""}`} key={cta.cta_id}>
-                <span>{cta.label}</span>
-                <span className="cta-state">
-                  {cta.enabled ? "enabled" : "blocked"}
-                </span>
+          <details className="tech-details">
+            <summary>Capability checks</summary>
+            <div className="tech-details-body">
+              <div className="cta-stack">
+                {packetCtas.map((cta) => (
+                  <div className={`cta-row${cta.enabled ? " on" : ""}`} key={cta.cta_id}>
+                    <span>{cta.label}</span>
+                    <span className="cta-state">
+                      {cta.enabled ? "enabled" : "blocked"}
+                    </span>
+                  </div>
+                ))}
+                {proposalId && (
+                  <div className="cta-row">
+                    <span>Proposal id</span>
+                    <span className="cta-state">{proposalId}</span>
+                  </div>
+                )}
               </div>
-            ))}
-          </div>
+            </div>
+          </details>
         )}
-        <button
-          type="button"
-          className="btn approve"
-          aria-keyshortcuts="A"
-          disabled={!canAct || busy}
-          onClick={() => act("approve")}
-        >
-          Approve exact draft<span className="k">A</span>
-        </button>
-        <button
-          type="button"
-          className="btn edit"
-          aria-keyshortcuts="E"
-          disabled={!canEdit || busy}
-          onClick={() => setEditOpen((open) => !open)}
-        >
-          Edit draft<span className="k">E</span>
-        </button>
-        <button
-          type="button"
-          className="btn deny"
-          aria-keyshortcuts="D"
-          disabled={!canAct || busy}
-          onClick={() => act("deny")}
-        >
-          Deny<span className="k">D</span>
-        </button>
       </div>
       {editOpen && (
         <div className="edit-panel">
@@ -307,7 +320,8 @@ export const ActionRail = forwardRef<
             </div>
           ))}
         </div>
-      </div>
-    </>
+        </div>
+      
+    </div>
   );
 });
