@@ -118,6 +118,7 @@ export function QueueLanes({
 
 function Row({
   item,
+  tier,
   accountName,
   selected,
   onSelect,
