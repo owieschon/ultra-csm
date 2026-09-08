@@ -25,8 +25,6 @@ export function QueueView({
   readOnly,
   demoLedger,
   onDemoVerdict,
-  onDemoEdit,
-  demoApprovals,
 }: {
   day: number | undefined;
   accounts: AccountSummary[] | null;
@@ -38,14 +36,13 @@ export function QueueView({
   onSelectedItemChange: (item: WorkItem | null) => void;
   onBackToBook: () => void;
   railRef?: Ref<ActionRailHandle>;
-  onVerdict?: (item: WorkItem, replacement?: WorkItem) => void;
+  onVerdict?: (proposalId: string) => void;
   readOnly?: boolean;
   demoLedger?: DemoLedgerEvent[];
   onDemoVerdict?: (
     proposalId: string,
     verdict: DemoVerdict | null,
-    events: DemoLedgerEvent[],
-    snapshot?: { revisionId: string; body: string }
+    events: DemoLedgerEvent[]
   ) => void;
   onDemoEdit?: (proposalId: string, newBody: string, expectedRevision: string) => void;
   demoApprovals?: Record<string, DemoApprovalSnapshot>;
@@ -146,8 +143,6 @@ export function QueueView({
                       readOnly={readOnly}
                       demoLedger={demoLedger}
                       onDemoVerdict={onDemoVerdict}
-                      onDemoEdit={onDemoEdit}
-                      demoApprovals={demoApprovals}
                     />
                   )
                 : undefined
