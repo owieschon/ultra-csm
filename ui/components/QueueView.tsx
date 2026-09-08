@@ -131,14 +131,16 @@ export function QueueView({
             day={day}
             onBack={onClearSelection}
             controls={
-              <ActionRail
-                ref={railRef}
-                item={selectedItem}
-                onVerdict={onVerdict}
-                readOnly={readOnly}
-                demoLedger={demoLedger}
-                onDemoVerdict={onDemoVerdict}
-              />
+              <aside className="rail" aria-label="Decision controls and receipt">
+                <ActionRail
+                  ref={railRef}
+                  item={selectedItem}
+                  onVerdict={onVerdict}
+                  readOnly={readOnly}
+                  demoLedger={demoLedger}
+                  onDemoVerdict={onDemoVerdict}
+                />
+              </aside>
             }
           />
         ) : queueClear ? (
