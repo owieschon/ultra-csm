@@ -154,16 +154,19 @@ export const ActionRail = forwardRef<
         <div className="gate">
           {item ? (
             proposalId ? (
-              <span className="st">
-                {readOnly && status === "approved"
-                  ? "Approved (simulated)"
-                  : label(PROPOSAL_STATUS_LABELS, status)}
-              </span>
+              <>
+                proposal <span className="mono">{proposalId.slice(0, 8)}</span> ·{" "}
+                <span className="st">
+                  {readOnly && status === "approved"
+                    ? "Approved (simulated)"
+                    : label(PROPOSAL_STATUS_LABELS, status)}
+                </span>
+              </>
             ) : (
-              "No gate-tracked proposal for this item"
+              "no gate-tracked proposal for this item"
             )
           ) : (
-            "Select an item"
+            "select an item"
           )}
         </div>
         {error && (
