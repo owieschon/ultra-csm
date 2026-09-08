@@ -413,9 +413,6 @@ export function QueueDetail({
           </div>
         </div>
 
-      <details className="decision-reasoning">
-        <summary>Decision reasoning</summary>
-
       <div className="sec">
         <div className="sec-h">
           <span className="t">Why this account, why now</span>
@@ -531,7 +528,6 @@ export function QueueDetail({
           </div>
         </div>
       </div>
-      </details>
     </div>
   );
 }
