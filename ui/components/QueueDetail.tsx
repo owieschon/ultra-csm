@@ -415,7 +415,6 @@ export function QueueDetail({
 
       <details className="decision-reasoning">
         <summary>Decision reasoning</summary>
-      <div>
 
       <div className="sec">
         <div className="sec-h">
