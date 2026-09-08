@@ -360,6 +360,8 @@ export function QueueDetail({
       {controls}
       <p className="hyp-disclaimer">This interpretation has not been independently validated. Inspect the source evidence before acting.</p>
 
+      <DecisionPacket packet={item.work_packet ?? null} />
+
       <div className="sec" id="account-sources">
         <div className="sec-h">
           <span className="t">Account sources</span>
@@ -416,7 +418,6 @@ export function QueueDetail({
         </div>
       </div>
 
-      <DecisionPacket packet={item.work_packet ?? null} />
 
       <div className="sec">
         <div className="sec-h">
