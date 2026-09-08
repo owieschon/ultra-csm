@@ -92,9 +92,9 @@ def test_new_confidence_metadata_leaves_legacy_score_and_action_untouched(sweep_
 
     assert packet.diagnostic_hypothesis.confidence == 0.72
     assert packet.diagnostic_hypothesis.confidence_label == "medium"
-    assert packet.recommended_action.action_type == "draft_customer_outreach"
+    assert packet.recommended_action.action_type == "recommend_next_best_action"
     assert item.priority.score == 172
-    assert packet.lane == "needs_judgment"
+    assert packet.lane == "prepared"
     assert packet.diagnostic_hypothesis.confidence_method == "packet_structure_heuristic"
     assert packet.diagnostic_hypothesis.confidence_calibrated is False
 
