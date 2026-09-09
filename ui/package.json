@@ -9,7 +9,8 @@
     "build:e2e": "NEXT_PUBLIC_UCSM_READONLY_DEMO=1 NEXT_PUBLIC_ACTION_CONTROL_SANDBOX_API=http://127.0.0.1:4173 next build",
     "lint": "eslint .",
     "start": "next start",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:e2e:local-api": "ULTRA_E2E_LOCAL_API=1 playwright test"
   },
   "dependencies": {
     "next": "^16.2.10",
