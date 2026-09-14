@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   sourcebound:
-    uses: owieschon/sourcebound/.github/workflows/reusable-sourcebound.yml@b2851ce13a3f6a0313ee6e17e200e085b495dc07
+    uses: owieschon/sourcebound/.github/workflows/reusable-sourcebound.yml@32174b5a1bd758fb4630938c4b4d93ec5646585e
     with:
       package-ref: b2851ce13a3f6a0313ee6e17e200e085b495dc07
       check_name: sourcebound
